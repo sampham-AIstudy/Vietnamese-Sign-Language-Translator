@@ -1,0 +1,25 @@
+# Configuration for VSL Alphabet Fingerspelling Model (Level 1)
+model:
+  type: "AlphabetMLP"
+  input_dim: 42
+  hidden_dims: [256, 128, 64]
+  dropout: 0.25
+
+training:
+  epochs: 35
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0001
+  seed: 42
+
+data:
+  dataset_csv_path: "data/alphabet_landmarks_full.csv"
+  train_img_dir: "data/asl_alphabet_train"
+  samples_per_class: 80
+  augment: true
+  jitter_std: 0.015
+  rotate_angle_range: 10.0
+
+paths:
+  save_checkpoint: "experiments/alphabet_model.pth"
+  onnx_export: "experiments/alphabet_model.onnx"

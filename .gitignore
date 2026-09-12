@@ -1,0 +1,55 @@
+# Python Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+
+# Node dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Frontend Build Outputs
+frontend/dist/
+dist/
+build/
+.cache/
+
+# Python Byte-compiled / Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Large Datasets (Raw videos, image training sets, NPZ sequence archives)
+data/asl_alphabet_train/
+data/asl_alphabet_test/
+data (2)/Dataset/Videos/
+data (2)/Processed/
+*.mp4
+*.avi
+*.mov
+*.npz
+
+# Keep metadata & label CSV files
+!data (2)/Dataset/Labels/
+!data (2)/Dataset/Labels/label.csv
+!data/alphabet_landmarks_full.csv
+!data/hand_data.csv
+
+# Logs and temp files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
