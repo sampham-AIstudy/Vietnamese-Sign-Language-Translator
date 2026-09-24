@@ -33,6 +33,7 @@ data (2)/Processed/
 *.avi
 *.mov
 *.npz
+*.zip
 
 # Keep metadata & label CSV files
 !data (2)/Dataset/Labels/
@@ -53,3 +54,11 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Kaggle credentials & cloud-run artifacts
+kaggle.json
+.kaggle/
+access_token
+checkpoints/
+kaggle/**/*.zip
+kaggle/vsl-alphabet-level1-training/*.ipynb

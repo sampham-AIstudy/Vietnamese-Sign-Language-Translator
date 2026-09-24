@@ -1,0 +1,183 @@
+{
+  "split": "train",
+  "metric_note": "shape_dev = mean L2 of palm-normalized landmarks from their median; wrist_path = summed wrist displacement in image coords",
+  "per_class": {
+    "A": {
+      "hold_shape_dev": 0.009,
+      "hold_wrist_path": 0.1045,
+      "clip_shape_dev": 0.0085,
+      "clip_wrist_path": 0.8835
+    },
+    "B": {
+      "hold_shape_dev": 0.0094,
+      "hold_wrist_path": 0.1063,
+      "clip_shape_dev": 0.0088,
+      "clip_wrist_path": 0.8853
+    },
+    "C": {
+      "hold_shape_dev": 0.0094,
+      "hold_wrist_path": 0.1027,
+      "clip_shape_dev": 0.0087,
+      "clip_wrist_path": 0.8816
+    },
+    "D": {
+      "hold_shape_dev": 0.0092,
+      "hold_wrist_path": 0.106,
+      "clip_shape_dev": 0.0085,
+      "clip_wrist_path": 0.8851
+    },
+    "Đ": {
+      "hold_shape_dev": 0.0091,
+      "hold_wrist_path": 0.1041,
+      "clip_shape_dev": 0.0085,
+      "clip_wrist_path": 0.8829
+    },
+    "E": {
+      "hold_shape_dev": 0.0091,
+      "hold_wrist_path": 0.1043,
+      "clip_shape_dev": 0.0085,
+      "clip_wrist_path": 0.8835
+    },
+    "G": {
+      "hold_shape_dev": 0.009,
+      "hold_wrist_path": 0.1037,
+      "clip_shape_dev": 0.0083,
+      "clip_wrist_path": 0.8829
+    },
+    "H": {
+      "hold_shape_dev": 0.0091,
+      "hold_wrist_path": 0.102,
+      "clip_shape_dev": 0.0084,
+      "clip_wrist_path": 0.8813
+    },
+    "I": {
+      "hold_shape_dev": 0.0091,
+      "hold_wrist_path": 0.1051,
+      "clip_shape_dev": 0.0085,
+      "clip_wrist_path": 0.884
+    },
+    "K": {
+      "hold_shape_dev": 0.0093,
+      "hold_wrist_path": 0.1073,
+      "clip_shape_dev": 0.0086,
+      "clip_wrist_path": 0.8863
+    },
+    "L": {
+      "hold_shape_dev": 0.0092,
+      "hold_wrist_path": 0.1049,
+      "clip_shape_dev": 0.0085,
+      "clip_wrist_path": 0.884
+    },
+    "M": {
+      "hold_shape_dev": 0.0089,
+      "hold_wrist_path": 0.1036,
+      "clip_shape_dev": 0.0084,
+      "clip_wrist_path": 0.8828
+    },
+    "N": {
+      "hold_shape_dev": 0.009,
+      "hold_wrist_path": 0.104,
+      "clip_shape_dev": 0.0084,
+      "clip_wrist_path": 0.8832
+    },
+    "O": {
+      "hold_shape_dev": 0.0093,
+      "hold_wrist_path": 0.1048,
+      "clip_shape_dev": 0.0086,
+      "clip_wrist_path": 0.8839
+    },
+    "P": {
+      "hold_shape_dev": 0.0089,
+      "hold_wrist_path": 0.1041,
+      "clip_shape_dev": 0.0083,
+      "clip_wrist_path": 0.883
+    },
+    "Q": {
+      "hold_shape_dev": 0.009,
+      "hold_wrist_path": 0.1035,
+      "clip_shape_dev": 0.0084,
+      "clip_wrist_path": 0.8829
+    },
+    "R": {
+      "hold_shape_dev": 0.0093,
+      "hold_wrist_path": 0.1043,
+      "clip_shape_dev": 0.0086,
+      "clip_wrist_path": 0.8834
+    },
+    "S": {
+      "hold_shape_dev": 0.009,
+      "hold_wrist_path": 0.1068,
+      "clip_shape_dev": 0.0083,
+      "clip_wrist_path": 0.886
+    },
+    "T": {
+      "hold_shape_dev": 0.0089,
+      "hold_wrist_path": 0.104,
+      "clip_shape_dev": 0.0083,
+      "clip_wrist_path": 0.8831
+    },
+    "U": {
+      "hold_shape_dev": 0.0093,
+      "hold_wrist_path": 0.1056,
+      "clip_shape_dev": 0.0087,
+      "clip_wrist_path": 0.8847
+    },
+    "V": {
+      "hold_shape_dev": 0.0092,
+      "hold_wrist_path": 0.1046,
+      "clip_shape_dev": 0.0086,
+      "clip_wrist_path": 0.8838
+    },
+    "X": {
+      "hold_shape_dev": 0.009,
+      "hold_wrist_path": 0.1025,
+      "clip_shape_dev": 0.0083,
+      "clip_wrist_path": 0.8818
+    },
+    "Y": {
+      "hold_shape_dev": 0.0092,
+      "hold_wrist_path": 0.1047,
+      "clip_shape_dev": 0.0085,
+      "clip_wrist_path": 0.8834
+    },
+    "Dau_mu": {
+      "hold_shape_dev": 0.0093,
+      "hold_wrist_path": 0.1048,
+      "clip_shape_dev": 0.0086,
+      "clip_wrist_path": 0.8839
+    },
+    "Dau_moc": {
+      "hold_shape_dev": 0.0091,
+      "hold_wrist_path": 0.1049,
+      "clip_shape_dev": 0.0084,
+      "clip_wrist_path": 0.8841
+    }
+  },
+  "order_by_hold_shape_dev": [
+    "B",
+    "C",
+    "K",
+    "O",
+    "R",
+    "U",
+    "Dau_mu",
+    "D",
+    "L",
+    "V",
+    "Y",
+    "Đ",
+    "E",
+    "H",
+    "I",
+    "Dau_moc",
+    "A",
+    "G",
+    "N",
+    "Q",
+    "S",
+    "X",
+    "M",
+    "P",
+    "T"
+  ]
+}

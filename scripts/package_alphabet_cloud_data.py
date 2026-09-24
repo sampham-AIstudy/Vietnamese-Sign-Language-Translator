@@ -36,8 +36,12 @@ def package_alphabet_data():
     if manifest.exists():
         files_to_pack.append((manifest, manifest.relative_to(project_root)))
 
-    # 4. Source modules
+    # 4. Training config + source modules (imported by vsl_alphabet_cloud_training.ipynb)
     src_files = [
+        project_root / "configs" / "alphabet_level1.yaml",
+        project_root / "src" / "__init__.py",
+        project_root / "src" / "data" / "__init__.py",
+        project_root / "src" / "models" / "__init__.py",
         project_root / "src" / "data" / "alphabet_preprocessing.py",
         project_root / "src" / "data" / "alphabet_dataset.py",
         project_root / "src" / "models" / "alphabet_mlp.py",

@@ -1,0 +1,41 @@
+# Level 1 (Fingerspelling) training config — consumed by vsl_alphabet_cloud_training.ipynb.
+# Model hyperparameters MUST match the constructors used by backend/main.py
+# (VSLAlphabetMLP defaults; VSLAlphabetBiGRU hidden_dim=64) or the checkpoint will not load.
+
+seed: 42
+selection_metric: val_top1        # model/epoch selection uses VAL only; TEST is evaluated once at the end
+tie_breakers: [val_macro_f1, prefer_mlp]
+
+data:
+  splits_dir: data/vsl_alphabet_pilot/splits
+  num_classes: 25
+  static_strategy: median         # extract_static_features
+  target_seq_len: 30              # extract_sequence_features
+  default_hold_start: 30          # used only when a split row has no hold_start_frame
+  default_hold_end: 90
+  normalization: palm_scale_wrist_centered
+  augment:
+    jitter_std: 0.005
+    scale_range: [0.95, 1.05]
+
+train:
+  batch_size: 32
+  weight_decay: 1.0e-4
+  label_smoothing: 0.05
+  scheduler: cosine
+  eta_min: 1.0e-5
+
+models:
+  mlp:
+    data_mode: static
+    epochs: 35
+    lr: 1.0e-3
+    hidden_dims: [128, 64]
+    dropout: 0.2
+  bigru:
+    data_mode: sequence
+    epochs: 35
+    lr: 8.0e-4
+    hidden_dim: 64
+    num_layers: 2
+    dropout: 0.3
