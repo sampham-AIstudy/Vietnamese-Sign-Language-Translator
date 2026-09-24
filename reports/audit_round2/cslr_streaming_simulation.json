@@ -1,0 +1,952 @@
+{
+  "num_samples": 30,
+  "chunk_config": {
+    "chunk_size_frames": 60,
+    "stride_frames": 30,
+    "chunk_sec": 2.0,
+    "stride_sec": 1.0
+  },
+  "offline": {
+    "mean_wer": 81.278,
+    "mean_latency_ms": 118.58,
+    "p95_latency_ms": 236.87
+  },
+  "streaming": {
+    "mean_wer": 158.778,
+    "mean_chunk_latency_ms": 38.4,
+    "mean_time_to_first_token_ms": 32.05,
+    "p95_chunk_latency_ms": 73.63
+  },
+  "degradation": {
+    "wer_delta_absolute": 77.5,
+    "wer_relative_increase_percent": 95.35
+  },
+  "samples": [
+    {
+      "sample_id": "SENT271_S06_R01_F",
+      "sentence_id": "SENT271",
+      "num_frames": 55,
+      "reference": [
+        "TÔI",
+        "HIỂU",
+        "RỒI"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 66.67,
+      "offline_latency_ms": 1324.42,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 66.67,
+      "avg_chunk_latency_ms": 28.85,
+      "time_to_first_token_ms": 28.89
+    },
+    {
+      "sample_id": "SENT272_S06_R01_F",
+      "sentence_id": "SENT272",
+      "num_frames": 65,
+      "reference": [
+        "TÔI",
+        "CẢM-ƠN",
+        "BÁC-SĨ"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 66.67,
+      "offline_latency_ms": 81.28,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "RA-NƯỚC"
+      ],
+      "streaming_wer": 166.67,
+      "avg_chunk_latency_ms": 70.53,
+      "time_to_first_token_ms": 73.28
+    },
+    {
+      "sample_id": "SENT273_S06_R01_F",
+      "sentence_id": "SENT273",
+      "num_frames": 114,
+      "reference": [
+        "ĐƠN",
+        "TÔI",
+        "THUỐC",
+        "CÓ"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 75.0,
+      "offline_latency_ms": 82.75,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 200.0,
+      "avg_chunk_latency_ms": 41.83,
+      "time_to_first_token_ms": 30.5
+    },
+    {
+      "sample_id": "SENT274_S06_R01_F",
+      "sentence_id": "SENT274",
+      "num_frames": 67,
+      "reference": [
+        "TÔI",
+        "MUA",
+        "THUỐC",
+        "SẼ"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 75.0,
+      "offline_latency_ms": 68.73,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 125.0,
+      "avg_chunk_latency_ms": 64.04,
+      "time_to_first_token_ms": 52.95
+    },
+    {
+      "sample_id": "SENT275_S06_R01_F",
+      "sentence_id": "SENT275",
+      "num_frames": 113,
+      "reference": [
+        "TÔI",
+        "THẺ",
+        "BẢO-HIỂM",
+        "LẤY-THUỐC"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "BỔI",
+        "CHƯA"
+      ],
+      "offline_wer": 75.0,
+      "offline_latency_ms": 86.86,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "CHƯA"
+      ],
+      "streaming_wer": 175.0,
+      "avg_chunk_latency_ms": 42.79,
+      "time_to_first_token_ms": 29.25
+    },
+    {
+      "sample_id": "SENT276_S06_R01_F",
+      "sentence_id": "SENT276",
+      "num_frames": 77,
+      "reference": [
+        "TÔI",
+        "ĐÓNG-TIỀN",
+        "THÊM",
+        "CẦN"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 75.0,
+      "offline_latency_ms": 74.76,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 125.0,
+      "avg_chunk_latency_ms": 47.31,
+      "time_to_first_token_ms": 28.39
+    },
+    {
+      "sample_id": "SENT277_S06_R01_F",
+      "sentence_id": "SENT277",
+      "num_frames": 94,
+      "reference": [
+        "TÔI",
+        "KHÁM",
+        "KỲ",
+        "SAU",
+        "LẠI"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 80.0,
+      "offline_latency_ms": 273.01,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "CHƯA"
+      ],
+      "streaming_wer": 140.0,
+      "avg_chunk_latency_ms": 55.14,
+      "time_to_first_token_ms": 67.79
+    },
+    {
+      "sample_id": "SENT278_S06_R01_F",
+      "sentence_id": "SENT278",
+      "num_frames": 77,
+      "reference": [
+        "TÔI",
+        "LỊCH",
+        "KHÁM",
+        "LẠI"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 75.0,
+      "offline_latency_ms": 31.37,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 125.0,
+      "avg_chunk_latency_ms": 30.09,
+      "time_to_first_token_ms": 31.92
+    },
+    {
+      "sample_id": "SENT279_S06_R01_F",
+      "sentence_id": "SENT279",
+      "num_frames": 92,
+      "reference": [
+        "TÔI",
+        "XIN",
+        "GIẤY-PHÉP",
+        "ỐM",
+        "CẦN"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 80.0,
+      "offline_latency_ms": 92.65,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 160.0,
+      "avg_chunk_latency_ms": 38.82,
+      "time_to_first_token_ms": 28.71
+    },
+    {
+      "sample_id": "SENT280_S06_R01_F",
+      "sentence_id": "SENT280",
+      "num_frames": 78,
+      "reference": [
+        "TÔI",
+        "BÁC-SĨ",
+        "CHÀO"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "BỔI",
+        "CHƯA"
+      ],
+      "offline_wer": 66.67,
+      "offline_latency_ms": 67.99,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "RA-NƯỚC"
+      ],
+      "streaming_wer": 166.67,
+      "avg_chunk_latency_ms": 51.29,
+      "time_to_first_token_ms": 27.38
+    },
+    {
+      "sample_id": "SENT281_S06_R01_F",
+      "sentence_id": "SENT281",
+      "num_frames": 73,
+      "reference": [
+        "TÔI",
+        "BỆNH",
+        "GÌ",
+        "CUỐI-CÙNG"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 75.0,
+      "offline_latency_ms": 78.18,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 125.0,
+      "avg_chunk_latency_ms": 43.04,
+      "time_to_first_token_ms": 26.81
+    },
+    {
+      "sample_id": "SENT282_S06_R01_F",
+      "sentence_id": "SENT282",
+      "num_frames": 63,
+      "reference": [
+        "TÔI",
+        "BỆNH",
+        "NGHIÊM-TRỌNG",
+        "CÓ-KHÔNG"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 75.0,
+      "offline_latency_ms": 68.41,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 125.0,
+      "avg_chunk_latency_ms": 45.14,
+      "time_to_first_token_ms": 27.25
+    },
+    {
+      "sample_id": "SENT283_S06_R01_F",
+      "sentence_id": "SENT283",
+      "num_frames": 104,
+      "reference": [
+        "1-NGÀY",
+        "TÔI",
+        "THUỐC-UỐNG",
+        "MẤY-LẦN"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 75.0,
+      "offline_latency_ms": 73.0,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 200.0,
+      "avg_chunk_latency_ms": 40.44,
+      "time_to_first_token_ms": 26.92
+    },
+    {
+      "sample_id": "SENT284_S06_R01_F",
+      "sentence_id": "SENT284",
+      "num_frames": 102,
+      "reference": [
+        "KHI",
+        "TRƯỚC",
+        "ĂN",
+        "TÔI",
+        "THUỐC-UỐNG",
+        "PHẢI-KHÔNG"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 83.33,
+      "offline_latency_ms": 73.58,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 133.33,
+      "avg_chunk_latency_ms": 50.81,
+      "time_to_first_token_ms": 28.87
+    },
+    {
+      "sample_id": "SENT285_S06_R01_F",
+      "sentence_id": "SENT285",
+      "num_frames": 109,
+      "reference": [
+        "KHI",
+        "SAU",
+        "ĂN",
+        "TÔI",
+        "THUỐC-UỐNG",
+        "PHẢI-KHÔNG"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 83.33,
+      "offline_latency_ms": 72.96,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 133.33,
+      "avg_chunk_latency_ms": 38.15,
+      "time_to_first_token_ms": 27.61
+    },
+    {
+      "sample_id": "SENT286_S06_R01_F",
+      "sentence_id": "SENT286",
+      "num_frames": 78,
+      "reference": [
+        "THUỐC",
+        "NÀY",
+        "ẢNH-HƯỞNG",
+        "CÓ-KHÔNG"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 100.0,
+      "offline_latency_ms": 15.85,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "HO",
+        "RA-NƯỚC"
+      ],
+      "streaming_wer": 150.0,
+      "avg_chunk_latency_ms": 25.3,
+      "time_to_first_token_ms": 26.3
+    },
+    {
+      "sample_id": "SENT287_S06_R01_F",
+      "sentence_id": "SENT287",
+      "num_frames": 108,
+      "reference": [
+        "TÔI",
+        "KHÁM",
+        "LẠI",
+        "KHI",
+        "NÀO"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 80.0,
+      "offline_latency_ms": 68.84,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "CHƯA"
+      ],
+      "streaming_wer": 140.0,
+      "avg_chunk_latency_ms": 27.23,
+      "time_to_first_token_ms": 28.73
+    },
+    {
+      "sample_id": "SENT288_S06_R01_F",
+      "sentence_id": "SENT288",
+      "num_frames": 73,
+      "reference": [
+        "TÔI",
+        "ĂN",
+        "KIÊNG",
+        "CẦN-KHÔNG"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 75.0,
+      "offline_latency_ms": 29.47,
+      "streaming_prediction": [
+        "TÔI",
+        "BỔI",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 125.0,
+      "avg_chunk_latency_ms": 26.05,
+      "time_to_first_token_ms": 28.65
+    },
+    {
+      "sample_id": "SENT289_S06_R01_F",
+      "sentence_id": "SENT289",
+      "num_frames": 57,
+      "reference": [
+        "TÔI",
+        "PHẪU-THUẬT",
+        "CẦN-KHÔNG"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 66.67,
+      "offline_latency_ms": 67.14,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 66.67,
+      "avg_chunk_latency_ms": 25.39,
+      "time_to_first_token_ms": 25.41
+    },
+    {
+      "sample_id": "SENT290_S06_R01_F",
+      "sentence_id": "SENT290",
+      "num_frames": 122,
+      "reference": [
+        "TÔI",
+        "KẾT-QUẢ",
+        "XEM",
+        "KHÔNG-HIỂU"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 75.0,
+      "offline_latency_ms": 73.51,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 275.0,
+      "avg_chunk_latency_ms": 31.0,
+      "time_to_first_token_ms": 25.56
+    },
+    {
+      "sample_id": "SENT291_S06_R01_F",
+      "sentence_id": "SENT291",
+      "num_frames": 119,
+      "reference": [
+        "TÔI",
+        "BÁC-SĨ",
+        "GIẢI-THÍCH",
+        "CHO-TÔI",
+        "ĐƯỢC-KHÔNG"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "BỔI",
+        "CHƯA"
+      ],
+      "offline_wer": 80.0,
+      "offline_latency_ms": 82.19,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 160.0,
+      "avg_chunk_latency_ms": 41.65,
+      "time_to_first_token_ms": 31.31
+    },
+    {
+      "sample_id": "SENT292_S06_R01_F",
+      "sentence_id": "SENT292",
+      "num_frames": 154,
+      "reference": [
+        "TÔI",
+        "THUỐC-UỐNG",
+        "NÀY",
+        "UỐNG",
+        "BAO-LÂU"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 80.0,
+      "offline_latency_ms": 192.7,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "HO",
+        "CHƯA"
+      ],
+      "streaming_wer": 280.0,
+      "avg_chunk_latency_ms": 26.6,
+      "time_to_first_token_ms": 26.54
+    },
+    {
+      "sample_id": "SENT293_S06_R01_F",
+      "sentence_id": "SENT293",
+      "num_frames": 77,
+      "reference": [
+        "TÔI",
+        "NGHỈ",
+        "NHIỀU",
+        "CẦN-KHÔNG"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 75.0,
+      "offline_latency_ms": 31.36,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 125.0,
+      "avg_chunk_latency_ms": 38.77,
+      "time_to_first_token_ms": 31.28
+    },
+    {
+      "sample_id": "SENT294_S06_R01_F",
+      "sentence_id": "SENT294",
+      "num_frames": 90,
+      "reference": [
+        "HỎI",
+        "BÁC-SĨ",
+        "LÂY",
+        "BỆNH",
+        "CÓ-KHÔNG"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 100.0,
+      "offline_latency_ms": 70.63,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 120.0,
+      "avg_chunk_latency_ms": 28.09,
+      "time_to_first_token_ms": 27.2
+    },
+    {
+      "sample_id": "SENT295_S06_R01_F",
+      "sentence_id": "SENT295",
+      "num_frames": 102,
+      "reference": [
+        "HỎI",
+        "THUỐC-UỐNG",
+        "KHÔNG-CẦN",
+        "PHẢI-KHÔNG"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 100.0,
+      "offline_latency_ms": 38.77,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 225.0,
+      "avg_chunk_latency_ms": 27.25,
+      "time_to_first_token_ms": 27.21
+    },
+    {
+      "sample_id": "SENT296_S06_R01_F",
+      "sentence_id": "SENT296",
+      "num_frames": 89,
+      "reference": [
+        "HỎI",
+        "LỐI-SỐNG",
+        "THAY-ĐỔI",
+        "ĐÚNG-KHÔNG"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 100.0,
+      "offline_latency_ms": 67.48,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 150.0,
+      "avg_chunk_latency_ms": 28.13,
+      "time_to_first_token_ms": 26.85
+    },
+    {
+      "sample_id": "SENT297_S06_R01_F",
+      "sentence_id": "SENT297",
+      "num_frames": 87,
+      "reference": [
+        "HỎI",
+        "THỂ-DỤC",
+        "GÌ"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 100.0,
+      "offline_latency_ms": 68.65,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 200.0,
+      "avg_chunk_latency_ms": 28.73,
+      "time_to_first_token_ms": 31.03
+    },
+    {
+      "sample_id": "SENT298_S06_R01_F",
+      "sentence_id": "SENT298",
+      "num_frames": 86,
+      "reference": [
+        "TÔI",
+        "ĂN",
+        "MẶN",
+        "KHÔNG-ĐƯỢC",
+        "PHẢI-KHÔNG"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 80.0,
+      "offline_latency_ms": 74.42,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 100.0,
+      "avg_chunk_latency_ms": 59.03,
+      "time_to_first_token_ms": 27.63
+    },
+    {
+      "sample_id": "SENT299_S06_R01_F",
+      "sentence_id": "SENT299",
+      "num_frames": 157,
+      "reference": [
+        "HỎI",
+        "RƯỢU-BIA",
+        "THỨC-KHUYA",
+        "ÍT",
+        "PHẢI-KHÔNG"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 100.0,
+      "offline_latency_ms": 82.41,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 300.0,
+      "avg_chunk_latency_ms": 29.58,
+      "time_to_first_token_ms": 28.84
+    },
+    {
+      "sample_id": "SENT300_S06_R01_F",
+      "sentence_id": "SENT300",
+      "num_frames": 108,
+      "reference": [
+        "HỎI",
+        "BÁC-SĨ",
+        "BỆNH",
+        "ĐÁNG-LO",
+        "KHÔNG"
+      ],
+      "offline_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "offline_wer": 100.0,
+      "offline_latency_ms": 43.95,
+      "streaming_prediction": [
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA",
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "streaming_wer": 180.0,
+      "avg_chunk_latency_ms": 38.06,
+      "time_to_first_token_ms": 32.36
+    }
+  ]
+}
