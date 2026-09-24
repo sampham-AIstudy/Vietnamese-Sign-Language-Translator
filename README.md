@@ -44,12 +44,11 @@ Toàn bộ mô hình được đánh giá trên tập **Test Set (50 mẫu độ
 
 ## 2.1. Báo Cáo Kiểm Toán & Độ Tin Cậy Dữ Liệu (Audit Round 2 Update)
 
-> [!IMPORTANT]
-> **CẤP ĐỘ 1 (FINGERSPELLING) — ĐÃ CHUYỂN HOÀN TOÀN SANG BẢNG CHỮ CÁI VSL CHUẨN (PILOT)**:
+> [!CAUTION]
+> **CẤP ĐỘ 1 (FINGERSPELLING) — CHƯA CÓ DỮ LIỆU THẬT, CHƯA CÓ MÔ HÌNH** (đính chính 24/09/2026):
 > - **Loại bỏ ASL:** Đã xóa bỏ hoàn toàn bộ dữ liệu ASL 29 ký tự tiếng Mỹ và loại bỏ chỉ số PoC cũ (98.06% ASL) khỏi toàn bộ tài liệu chính thức.
-> - **Dữ liệu VSL thật:** Tích hợp bộ dữ liệu **VSL Alphabet Pilot** gồm **1.875 clips (.npz)** từ **15 người ra ký hiệu Việt Nam (`S01`..`S15`)** với **25 lớp ký hiệu chuẩn tiếng Việt** (23 chữ cái tĩnh + `Dau_moc`, `Dau_mu`).
-> - **Thiết kế Signer-Disjoint (10 / 2 / 3):** Train (1.250 mẫu, 10 signers), Val (250 mẫu, 2 signers), Test (375 mẫu, 3 signers `S03, S14, S15` độc lập 100%).
-> - **Pipeline:** Đã kiểm thử module chuẩn hóa lòng bàn tay (`tests/test_alphabet_preprocessing.py` PASS), 2 kiến trúc baseline (Static MLP 63 dims và Temporal BiGRU 30 frames), script đóng gói cloud và notebook `vsl_alphabet_cloud_training.ipynb`.
+> - **Đính chính:** Phiên bản trước ghi đây là "dữ liệu VSL thật của 15 người" — **SAI**. Thực tế bộ `data/vsl_alphabet_pilot` (1.875 clip, "15 signers") là **dữ liệu tổng hợp**: sinh bởi `scripts/record_vsl_alphabet.py` từ dáng tay viết cứng + nhiễu Gauss, không có người quay, không chạy MediaPipe; "signer" chỉ khác `hand_scale`. Không được dùng để train/đánh giá (có chốt chặn `DO_NOT_TRAIN_SYNTHETIC.md`). Chi tiết: `reports/alphabet_run_2026-09-24/DATA_INTEGRITY_STOP.md`.
+> - **Pipeline (dùng lại khi có dữ liệu thật):** Đã kiểm thử module chuẩn hóa lòng bàn tay (`tests/test_alphabet_preprocessing.py` PASS), 2 kiến trúc baseline (Static MLP 63 dims và Temporal BiGRU 30 frames), script đóng gói cloud và notebook `vsl_alphabet_cloud_training.ipynb`.
 
 > [!NOTE]
 > **CẤP ĐỘ 2 (TỪ RỜI - 487 LỚP) & CẤP ĐỘ 3 (DỊCH CÂU) — THỐNG KÊ BOOTSTRAP 95% CI**:

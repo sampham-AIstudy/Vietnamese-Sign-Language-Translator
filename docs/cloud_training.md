@@ -149,16 +149,13 @@ Trước và sau khi huấn luyện trên Cloud, hệ thống tuân thủ nghiê
 ## 6. Huấn Luyện Cấp 1: Bảng Chữ Cái Ký Hiệu VSL (Level 1 - Fingerspelling)
 
 ### 📌 Quy cách dữ liệu & thiết kế thử nghiệm:
-- **Dữ liệu**: Bộ dữ liệu VSL Alphabet Pilot gồm 1.875 clip (.npz), 15 người ra ký hiệu (`S01`..`S15`), 25 lớp ký hiệu chuẩn tiếng Việt (23 chữ cái tĩnh + `Dau_moc`, `Dau_mu`).
-- **Phân chia Signer-Disjoint (10 / 2 / 3)**:
-  - **Train** (10 signers): `S01, S04, S05, S06, S07, S08, S09, S10, S11, S13` (1.250 mẫu, 50 mẫu/lớp).
-  - **Val** (2 signers): `S02, S12` (250 mẫu, 10 mẫu/lớp).
-  - **Test** (3 signers): `S03, S14, S15` (375 mẫu, 15 mẫu/lớp - hoàn toàn độc lập với Train/Val).
+- **Dữ liệu**: dữ liệu quay thật từ webcam bằng `scripts/collect_alphabet_real.py` → `data/vsl_alphabet_real/` (25 lớp: 23 chữ cái tĩnh + `Dau_moc`, `Dau_mu`), split theo signer.
+- ⚠ **KHÔNG dùng `data/vsl_alphabet_pilot`**: bộ `data/vsl_alphabet_pilot` (1.875 clip, "15 signers") là **dữ liệu tổng hợp**: sinh bởi `scripts/record_vsl_alphabet.py` từ dáng tay viết cứng + nhiễu Gauss, không có người quay, không chạy MediaPipe; "signer" chỉ khác `hand_scale`. Notebook và script đóng gói tự từ chối thư mục này. Chi tiết: `reports/alphabet_run_2026-09-24/DATA_INTEGRITY_STOP.md`.
 
 ### 🚀 Quy trình thực hiện:
-1. **Đóng gói dữ liệu tại local** (đã hoàn thành):
+1. **Đóng gói dữ liệu tại local** (sau khi đã thu dữ liệu thật):
    ```powershell
-   .\.venv\Scripts\python.exe scripts\package_alphabet_cloud_data.py
+   .\.venv\Scripts\python.exe scripts\package_alphabet_cloud_data.py --data-dir data/vsl_alphabet_real
    ```
    Tạo file: `data/vsl_alphabet_cloud_data.zip` (~98 MB).
 

@@ -14,7 +14,7 @@
 | **V2** | Độ tin cậy của đánh giá Cấp 3 (Bootstrap CI) | **PASS** | 300 clip test S06 gồm: 30 câu unseen (10%) và 270 câu seen (90%). Bootstrap CI 95% (N=1000):<br>- Oracle BLEU: 27.98 [17.60, 38.39]<br>- CSLR BLEU: 23.18 [13.62, 33.70]<br>- $\Delta$ (Mode A - Mode B) = +4.80 [1.29, 9.14] (0 không nằm trong CI $\to$ Chênh lệch có ý nghĩa thống kê $p < 0.05$).<br>- CSLR WER S06: 32.80% [29.48%, 36.62%]. |
 | **V3** | Cầu nối từ vựng Cấp 2 $\to$ ViT5 | **PASS** | 487 lớp Cấp 2: **360/487 lớp (73.92%)** và 901/1090 token (82.66%) có mặt trong ngữ liệu train ViT5; Token OOV rate = **17.34%** (chủ yếu là số lớn và danh từ có dấu ngoặc). Thử nghiệm 10 câu ghép từ Cấp 2: **9/10 câu sinh ra tiếng Việt tự nhiên, chuẩn ngữ pháp**. |
 | **V4** | Khả năng tổng quát Cấp 2 | **UNVERIFIED** | - Metadata kho VSLR: 0/4.362 video có nhãn signer $\to$ không đảm bảo signer-disjoint giữa train và test.<br>- In-domain test (487 mẫu): Top-1 = 46.41% [42.09%, 50.72%], Top-5 = 60.78% [56.26%, 65.10%]. Bắc thấp đột biến [15.34%, 28.22%].<br>- Cross-dialect 3-fold: **CHƯA ĐƯỢC CHẠY LẠI** sau lỗi early stopping $\to$ Gán nhãn UNVERIFIED, chuẩn bị notebook cloud. |
-| **V5** | Kiểm định dữ liệu Cấp 1 (`vsl_alphabet_pilot/`) | **PASS** | 1.875 clip NPZ: shape `(105, 21, 3)` nhất quán 100%, 0 NaN (0.00%), 0 video trùng hash. 15 signers $\times$ 25 lớp $\times$ 5 reps. Đề xuất split theo signer: Train (10 signers, 1.250 clip, 66.7%), Val (2 signers, 250 clip, 13.3%), Test (3 signers, 375 clip, 20.0%). Handedness 100% Right hand nhất quán với frontend webcam không lật tọa độ. |
+| **V5** | Kiểm định dữ liệu Cấp 1 (`vsl_alphabet_pilot/`) | **FAIL** *(đính chính 24/09: dữ liệu tổng hợp; chỉ kiểm shape/NaN, không kiểm nguồn gốc — xem `reports/alphabet_run_2026-09-24/DATA_INTEGRITY_STOP.md`)* | 1.875 clip NPZ: shape `(105, 21, 3)` nhất quán 100%, 0 NaN (0.00%), 0 video trùng hash. 15 signers $\times$ 25 lớp $\times$ 5 reps. Đề xuất split theo signer: Train (10 signers, 1.250 clip, 66.7%), Val (2 signers, 250 clip, 13.3%), Test (3 signers, 375 clip, 20.0%). Handedness 100% Right hand nhất quán với frontend webcam không lật tọa độ. |
 | **V6** | Rà soát cấu hình cũ & mã giả lập | **FAIL** | Đã xác định toàn bộ vị trí tham chiếu sai và mã giả lập:<br>- `tier2_train/val/test.csv` & `489`: trong `configs/vsl_config.yaml`.<br>- `Math.random`: trong `frontend/src/components/Fingerspelling.jsx:33-34`.<br>- `98.06` & `ASL`: trong `README.md` và `EVALUATION.md`. |
 
 ---
@@ -90,6 +90,9 @@
 ---
 
 ### V5. Kiểm định dữ liệu Cấp 1 (`data/vsl_alphabet_pilot/`)
+> [!CAUTION]
+> **Đính chính 24/09/2026 — V5 = FAIL:** bộ `data/vsl_alphabet_pilot` (1.875 clip, "15 signers") là **dữ liệu tổng hợp**: sinh bởi `scripts/record_vsl_alphabet.py` từ dáng tay viết cứng + nhiễu Gauss, không có người quay, không chạy MediaPipe; "signer" chỉ khác `hand_scale`. Các chỉ số bên dưới đúng về mặt file nhưng không chứng minh đây là dữ liệu VSL. Xem `reports/alphabet_run_2026-09-24/DATA_INTEGRITY_STOP.md`.
+
 - **Chỉ số toàn vẹn:**
   - 1.875 file `.npz`: 100% đúng shape `(105, 21, 3)`, 0 NaN (0.00%).
   - 15 signers (S01-S15), mỗi signer có đúng 125 clip (25 lớp $\times$ 5 lần lặp).
