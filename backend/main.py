@@ -579,7 +579,23 @@ def _process_frame_worker(
                 for lm in results.right_hand_landmarks.landmark
             ]
 
-    # 6. Construct required JSON prediction response
+    # 6. Construct neural translation for confirmed sentence if available
+    translated_text = ""
+    oov_warning = None
+    confirmed_sentence = smoothed.get("sentence", [])
+    if confirmed_sentence and len(confirmed_sentence) > 0:
+        try:
+            translator = get_or_load_translator()
+            res = translator.translate_glosses(confirmed_sentence, attach_lexicon=False)
+            translated_text = res.get("translation", "")
+            if hasattr(translator, "gloss_vocab") and translator.gloss_vocab:
+                oov_list = [g for g in confirmed_sentence if g not in translator.gloss_vocab]
+                if oov_list:
+                    oov_warning = f"Cảnh báo OOV: {len(oov_list)} từ ngoài tập train ({', '.join(oov_list[:3])})"
+        except Exception as e:
+            logger.debug(f"[Translation] Error translating sentence: {e}")
+
+    # 7. Construct required JSON prediction response
     top5_raw = smoothed.get("top5", [])
     top5_formatted = []
     if isinstance(top5_raw, list):
@@ -606,6 +622,8 @@ def _process_frame_worker(
         "status": smoothed["status"],
         "sentence": smoothed.get("sentence", []),
         "is_confirmed": smoothed.get("is_confirmed", False),
+        "translated_text": translated_text,
+        "oov_warning": oov_warning,
         "is_signing": bool(pipeline_out["hand_detected"]),
         "hand_detected": bool(pipeline_out["hand_detected"]),
         "buffer_fill": pipeline_out["buffer_fill"],

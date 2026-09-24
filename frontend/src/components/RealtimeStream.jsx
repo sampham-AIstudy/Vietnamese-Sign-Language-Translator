@@ -17,6 +17,7 @@ import {
   Volume2,
   Wifi,
   Zap,
+  Sparkles,
 } from 'lucide-react';
 
 export default function RealtimeStream({ onSaveHistory }) {
@@ -31,6 +32,8 @@ export default function RealtimeStream({ onSaveHistory }) {
   const [isSigning, setIsSigning] = useState(false);
   const [top5Candidates, setTop5Candidates] = useState([]);
   const [accumulatedSentence, setAccumulatedSentence] = useState([]);
+  const [translatedText, setTranslatedText] = useState('');
+  const [oovWarning, setOovWarning] = useState(null);
 
   // Telemetry & Latency Metrics
   const [telemetry, setTelemetry] = useState({
@@ -163,6 +166,13 @@ export default function RealtimeStream({ onSaveHistory }) {
             speakText(data.prediction);
           }
 
+          if (data.translated_text) {
+            setTranslatedText(data.translated_text);
+          }
+          if (data.oov_warning !== undefined) {
+            setOovWarning(data.oov_warning);
+          }
+
           // Update Telemetry metrics
           const newTelemetry = {
             e2eLatency: rtt,
@@ -262,6 +272,11 @@ export default function RealtimeStream({ onSaveHistory }) {
       setTelemetry((prev) => ({ ...prev, clientFps: calculatedFps }));
       frameCountRef.current = 0;
       fpsTimerRef.current = now;
+    }
+
+    // Backpressure guard: skip frame if socket buffer has backlog
+    if (wsRef.current.bufferedAmount && wsRef.current.bufferedAmount > 65536) {
+      return;
     }
 
     // Convert to JPEG base64 (quality 0.75 for fast network transmission)
@@ -648,11 +663,50 @@ export default function RealtimeStream({ onSaveHistory }) {
               )}
             </div>
 
+            {/* Neural Translation Result Box */}
+            <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs uppercase font-semibold text-brand-400 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Dịch Câu Tự Nhiên (ViT5 AI Translation)
+                </span>
+                {translatedText && (
+                  <button
+                    onClick={() => speakText(translatedText)}
+                    className="text-xs text-brand-400 hover:text-brand-300 flex items-center gap-1"
+                    title="Đọc câu dịch tiếng Việt"
+                  >
+                    <Volume2 className="w-3.5 h-3.5" />
+                    <span>Đọc câu dịch</span>
+                  </button>
+                )}
+              </div>
+              <div className="text-sm font-medium text-white min-h-[30px] flex items-center">
+                {translatedText ? (
+                  <span className="text-emerald-300 font-semibold">{translatedText}</span>
+                ) : (
+                  <span className="text-slate-500 italic text-xs">
+                    (Bản dịch tiếng Việt tự nhiên sẽ tự động xuất hiện tại đây khi ghép từ...)
+                  </span>
+                )}
+              </div>
+              {oovWarning && (
+                <div className="text-[11px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-1 rounded-md flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3 shrink-0" />
+                  <span>{oovWarning}</span>
+                </div>
+              )}
+            </div>
+
             {/* Sentence Action Buttons */}
             <div className="flex items-center justify-between gap-2 pt-1">
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setAccumulatedSentence([])}
+                  onClick={() => {
+                    setAccumulatedSentence([]);
+                    setTranslatedText('');
+                    setOovWarning(null);
+                  }}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5 text-rose-400" />
