@@ -1,0 +1,62 @@
+# VSLR Master Dataset & Training Configuration
+# Replaces old word_config.yaml with clean 67-joint, two-tier video-disjoint setup
+
+dataset:
+  name: "VSL-Clean-Raw-Corpus"
+  raw_video_dir: "data/Dataset/Videos"
+  label_csv_path: "data/Dataset/Labels/label.csv"
+  splits_dir: "data/splits"
+  dry_run_dir: "data/dry_run_extracted"
+  extracted_keypoints_dir: "data/extracted_keypoints"
+  tier1_classes_path: "configs/tier1_classes.txt"
+
+benchmark_tier:
+  active_tier: "tier1"  # "tier1" (50 classes) or "tier2" (489 classes)
+  tier1:
+    num_classes: 50
+    train_split: "data/splits/tier1_train.csv"
+    val_split: "data/splits/tier1_val.csv"
+    test_split: "data/splits/tier1_test.csv"
+  tier2:
+    num_classes: 489
+    train_split: "data/splits/tier2_train.csv"
+    val_split: "data/splits/tier2_val.csv"
+    test_split: "data/splits/tier2_test.csv"
+
+skeleton:
+  num_joints: 67
+  coordinate_dim: 3  # (x, y, z)
+  channels_with_vis: 4  # (x, y, z, visibility)
+  joint_groups:
+    pose: 25        # Upper body pose (0..24)
+    left_hand: 21   # Left hand (25..45)
+    right_hand: 21  # Right hand (46..66)
+
+sequence:
+  target_sequence_length: 60
+  sampling_strategy: "uniform_resample" # "uniform_resample", "pad_and_mask"
+  min_valid_frames: 15
+
+preprocessing:
+  no_zero_fill: true
+  missing_strategy: "visibility_aware_interpolation"
+  spatial_normalization: "shoulder_center_and_scale"
+
+augmentation:
+  train_only: true
+  val_test_augmented: false
+  spatial:
+    rotation_range_deg: 10.0
+    scale_range: [0.9, 1.1]
+    shear_range: 0.05
+    noise_std: 0.008
+  temporal:
+    time_warp_ratio: 0.15
+    frame_dropout_prob: 0.05
+
+hardware:
+  device: "cuda"
+  gpu_name: "NVIDIA GeForce RTX 3050 Laptop GPU"
+  amp_enabled: true
+  batch_size: 32
+  num_workers: 0  # 0 for Windows stability

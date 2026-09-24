@@ -1,0 +1,37 @@
+# Configuration for Word-Level VSL Sequence Recognition (Level 2)
+model:
+  type: "bigru" # choices: 'bigru', 'transformer'
+  input_dim: 201
+  hidden_dim: 128
+  num_layers: 2
+  bidirectional: true
+  dropout: 0.3
+
+transformer_options:
+  d_model: 128
+  nhead: 4
+  num_layers: 3
+  dim_feedforward: 256
+  dropout: 0.2
+
+training:
+  epochs: 25
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0001
+  label_smoothing: 0.05
+  top_k_classes: 40
+
+data:
+  processed_dir: "data/Processed"
+  label_map_path: "data/Processed/label_map.json"
+  target_sequence_length: 60
+  augment: true
+  jitter_std: 0.015
+  time_warp_ratio: 0.15
+  mask_prob: 0.05
+
+paths:
+  save_checkpoint: "experiments/word_model_bigru.pth"
+  onnx_export: "experiments/word_model_bigru.onnx"
+  confusion_matrix: "experiments/confusion_matrix_word.png"
