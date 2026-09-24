@@ -25,7 +25,7 @@ def package_alphabet_data(data_dir: str = "data/vsl_alphabet_real"):
     if (data_root / SYNTHETIC_MARKER).exists():
         sys.exit(f"[REFUSED] {data_dir} is synthetic data (see {SYNTHETIC_MARKER}).")
     if not (data_root / "splits" / "train.csv").exists():
-        sys.exit(f"[ERROR] {data_dir}/splits/train.csv not found — run collect_alphabet_real.py --make-splits first.")
+        sys.exit(f"[ERROR] {data_dir}/splits/train.csv not found — run collect_alphabet_real.py make-splits first.")
 
     files_to_pack = []
 
