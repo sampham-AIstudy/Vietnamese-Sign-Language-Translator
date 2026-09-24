@@ -57,9 +57,23 @@ Split Tier 1 (`tier1_*`: B=train, T=val, N=test) chịu cùng lỗi theo chiều
 
 `scripts/crawl_tudienngonngukyhieu.py` chỉ tải (requests, Vimeo). 435 video người thật (nhiều người, nhiều phông), vùng miền lấy từ tiêu đề trang. **Không nằm trong split nào** — chỉ dùng cho `src/data/lexicon_bank.py`/backend để hiển thị video tham khảo. License nội dung web chưa rõ.
 
-## 5. Việc cần làm (chưa làm — chờ quyết định)
+## 5. Nguồn bổ sung đã thẩm định (24/09/2026)
 
-1. **Cấp 2:** coi mọi số liệu Tier 1/Tier 2 hiện có là **không hợp lệ**. Làm lại split theo **bản quay** (gom các video trùng hình thành một nhóm, cả nhóm nằm cùng một split), rồi train lại. Báo cáo số liệu "clean" (≈8% hiện tại là mốc thật).
-2. Gỡ các số 75.77 / 81.60 / 36.20 khỏi `EVALUATION.md`, `AUDIT_ROUND2.md`, `README.md`; thay bằng bảng ở mục 1.
-3. `docs/data_registry.md`: sửa mô tả signer QIPEDC; sửa nhận định "PCFG synthetic" ở AUDIT_REPORT B4; ghi 2 annotation VSL-GH do dự án tự viết.
-4. Thêm guard `DuplicateRecordingLeakageError` vào `src/data/vsl_dataset.py` cạnh `VideoLeakageError` hiện có (guard hiện tại chỉ so `video_id`/tên file — `src/data/vsl_dataset.py:86-101` — nên không bắt được cùng một bản quay mang hai tên file khác nhau).
+| Nguồn | Nội dung | Người thật / người ký | License / truy cập | Kết luận |
+|---|---|---|---|---|
+| **VSL400** — Zenodo [10.5281/zenodo.17943574](https://zenodo.org/records/17943574), bài báo Nguyen Quoc Trung et al. (Authorea 2026); bản tái đăng Kaggle `nguyenanfms/vsl-vietnamese-sign-language-v2` (`raw/raw/VSL400`) | 400 từ, 3 góc máy; bản Kaggle: **24.753 clip mặt trước**, 53–93 clip/từ | **26 signer có `signer_id`** trong `front_view.json`; 397/400 từ đủ 26 signer; bài báo: gồm người Điếc bản ngữ | CC BY 4.0; bản gốc yêu cầu đăng nhập + chấp nhận Data Usage Agreement | **DÙNG cho Cấp 2** (chia split theo signer). Cần chấp nhận DUA trên Zenodo + trích dẫn bài báo |
+| `nguyenanfms/...-v2` phần `online_sourced` và thư mục `processed*` | Video lấy từ internet + clip đã crop/augment | Không rõ | Không rõ nguồn gốc từng clip | **KHÔNG dùng**: có file trùng từng byte dưới tên khác (`333238.mp4` = `333238_1.mp4` = `333238_3.mp4`; `392683.mp4` ≡ `468203.mp4` cùng kích thước) → split 80/20 có sẵn có thể rò rỉ; `processed` trộn online + augmented |
+| `hauuto/vietnamese-sign-language-alphabet` (Kaggle) | **29 chữ cái VSL** (gồm Ă Â Ê Ô Ơ Ư Đ, mã Telex) **+ 5 dấu thanh (động)**; mp4 640×480 + landmark `.npy` | **4 người thật** (hau, khoi, tai, vy), webcam, nhiều môi trường; mỗi người ~4 lần/ký hiệu | License "Unknown"; không có mô tả | **DÙNG cho Cấp 1** (nguồn thật duy nhất tìm được); nhỏ — cần xin phép tác giả, ghi rõ giới hạn 4 người; không có xác nhận của người Điếc |
+| `Kateht/VOYA_VSL` (Hugging Face) | 161 file `.npz` keypoint (60×1605), 56 GB; `labels.json` ~3.093 nhãn dạng "từ (bắc/trung/nam)" | = từ vựng QIPEDC, không thêm signer | MIT; README không nêu nguồn | **KHÔNG dùng**: là QIPEDC đã trích keypoint + nhân bản; trộn vào sẽ đưa lại chính các bản quay trùng |
+| Multi-VSL (WACV 2025), `clone/Multi-VSL_WACV_2025` | 1.000 từ, 30 signer | Có | Link Drive công khai chỉ là `Videos_demo` (~50 clip) | Bộ đầy đủ phải xin tác giả; không cần nếu dùng VSL400 |
+| `aresusayhi/vsl-vietnamese-sign-languages` (Kaggle, 18.5 GB) | Crawl QIPEDC | Cùng nguồn với `data/Dataset` | Apache 2.0 (người tái đăng) | Không cần — trùng nguồn QIPEDC |
+
+## 6. Việc cần làm
+
+- [x] Split theo bản quay: `scripts/build_recording_groups.py` → `data/splits/recording_groups.csv` (4.362 video = 3.946 bản quay); `scripts/create_grouped_splits.py` → `{tier1,tier2}_grouped_*` (kiểm chứng: 0 clip test/val trùng bản quay với train). Commit `98c2e8b`.
+- [x] Guard `DuplicateRecordingLeakageError` trong `validate_split_guards` + test; mọi họ split cũ (tier1, tier2, in-domain, 3 fold cross-dialect) đều bị chặn.
+- [x] Gỡ số 75.77 / 81.60 / 36.20 / 81.72 khỏi `README.md`, `EVALUATION.md`, `AUDIT_ROUND2.md`, `VERIFY.md`, `AUDIT_REPORT.md`; `Reports.jsx` sửa trong working tree (file có thay đổi chưa commit của người dùng).
+- [x] `docs/data_registry.md`: signer QIPEDC, bản quay trùng, 2 annotation VSL-GH tự viết, 10K UNVERIFIED; AUDIT_REPORT B4 bỏ "PCFG".
+- [ ] Cấp 2: train lại trên **VSL400** (split theo signer) — QIPEDC chỉ có 101 từ đủ ≥ 3 bản quay, không đủ để train 487 lớp.
+- [ ] Cấp 1: train trên bộ `hauuto` (29 chữ + 5 dấu thanh, 4 signer, leave-one-signer-out).
+- [ ] Chấp nhận Data Usage Agreement VSL400 trên Zenodo; xin phép tác giả bộ chữ cái (license Unknown).
