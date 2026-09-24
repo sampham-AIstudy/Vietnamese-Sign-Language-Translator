@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { Camera, Sparkles, Trash2, RotateCcw, Volume2, Check, Copy } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Camera, Sparkles, Trash2, RotateCcw, Volume2, Check, Copy, AlertTriangle } from 'lucide-react';
 
 export default function Fingerspelling() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -9,10 +9,39 @@ export default function Fingerspelling() {
   const [spelledText, setSpelledText] = useState('');
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [modelAvailable, setModelAvailable] = useState(false);
+  const [modelStatus, setModelStatus] = useState('Chưa có mô hình Cấp 1');
   const fileInputRef = useRef(null);
 
-  // Example sample letters
-  const sampleLetters = ['A', 'B', 'C', 'D', 'E', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'Y'];
+  useEffect(() => {
+    let isMounted = true;
+    async function checkModelStatus() {
+      try {
+        const res = await fetch('/api/fingerspelling/status');
+        if (res.ok) {
+          const data = await res.json();
+          if (isMounted) {
+            setModelAvailable(Boolean(data.available));
+            setModelStatus(data.message || (data.available ? 'Mô hình Cấp 1 sẵn sàng' : 'Chưa có mô hình Cấp 1'));
+          }
+        } else {
+          if (isMounted) {
+            setModelAvailable(false);
+            setModelStatus('Chưa có mô hình Cấp 1');
+          }
+        }
+      } catch {
+        if (isMounted) {
+          setModelAvailable(false);
+          setModelStatus('Chưa có mô hình Cấp 1');
+        }
+      }
+    }
+    checkModelStatus();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -27,20 +56,35 @@ export default function Fingerspelling() {
   };
 
   const predictStaticImage = async (file) => {
+    if (!modelAvailable) {
+      setPrediction(null);
+      setConfidence(0);
+      setCandidates([]);
+      return;
+    }
     setLoading(true);
-    // Simulating or calling endpoint if available, or direct classification
-    setTimeout(() => {
-      const randomChar = sampleLetters[Math.floor(Math.random() * sampleLetters.length)];
-      const conf = (0.92 + Math.random() * 0.07).toFixed(3);
-      setPrediction(randomChar);
-      setConfidence(parseFloat(conf));
-      setCandidates([
-        { class: randomChar, confidence: parseFloat(conf) },
-        { class: sampleLetters[(sampleLetters.indexOf(randomChar) + 1) % sampleLetters.length], confidence: 0.04 },
-        { class: sampleLetters[(sampleLetters.indexOf(randomChar) + 2) % sampleLetters.length], confidence: 0.02 },
-      ]);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch('/api/fingerspelling', {
+        method: 'POST',
+        body: formData,
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setPrediction(data.prediction || null);
+        setConfidence(data.confidence || 0);
+        setCandidates(data.candidates || []);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.detail || 'Lỗi khi gọi mô hình Cấp 1');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Không thể kết nối đến máy chủ nhận diện Cấp 1');
+    } finally {
       setLoading(false);
-    }, 300);
+    }
   };
 
   const speakText = (text) => {
@@ -60,7 +104,31 @@ export default function Fingerspelling() {
           <div>
             <h3 className="text-lg font-bold text-white">Nhận diện Bảng Chữ Cái Ký Hiệu (Fingerspelling - Level 1)</h3>
             <p className="text-xs text-slate-400">
-              Dựa trên Paper 2: <em>'VSL Alphabet Recognition'</em>. Trích xuất 21 keypoints bàn tay với MediaPipe Hands, chuẩn hóa toạ độ tương đối và phân loại MLP.
+              Dựa trên phương pháp Paper 2: <em>'VSL Alphabet Recognition'</em> (MediaPipe Hands 21 keypoints + Classifier).
+            </p>
+          </div>
+        </div>
+
+        {/* Model Status Banner */}
+        <div className={`mb-6 p-4 rounded-xl border flex items-start gap-3 ${
+          modelAvailable 
+            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300' 
+            : 'bg-amber-500/10 border-amber-500/30 text-amber-300'
+        }`}>
+          <AlertTriangle className={`w-5 h-5 shrink-0 mt-0.5 ${modelAvailable ? 'text-emerald-400' : 'text-amber-400'}`} />
+          <div className="text-xs space-y-1">
+            <div className="font-semibold flex items-center gap-2">
+              <span>{modelAvailable ? 'MÔ HÌNH CẤP 1 SẴN SÀNG' : 'TRẠNG THÁI: CHƯA CÓ MÔ HÌNH CẤP 1'}</span>
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono ${
+                modelAvailable ? 'bg-emerald-500/20 text-emerald-300' : 'bg-amber-500/20 text-amber-300'
+              }`}>
+                {modelAvailable ? 'Active' : 'Offline / Awaiting Checkpoint'}
+              </span>
+            </div>
+            <p className="leading-relaxed opacity-90">
+              {modelAvailable 
+                ? 'Đã tải mô hình VSL Fingerspelling (25 lớp ký hiệu chuẩn). Bạn có thể tải ảnh cử chỉ bàn tay lên để nhận diện.'
+                : 'Mô hình nhận diện Bảng chữ cái VSL chưa được nạp checkpoint (checkpoints/alphabet_best.pt). Vui lòng hoàn tất huấn luyện trên Cloud/Colab và đặt checkpoint vào hệ thống để kích hoạt nhận diện.'}
             </p>
           </div>
         </div>
@@ -93,12 +161,24 @@ export default function Fingerspelling() {
             </div>
 
             <div className="flex gap-3">
-              <input type="file" accept="image/*" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
+              <input 
+                type="file" 
+                accept="image/*" 
+                ref={fileInputRef} 
+                onChange={handleFileUpload} 
+                disabled={!modelAvailable}
+                className="hidden" 
+              />
               <button
-                onClick={() => fileInputRef.current?.click()}
-                className="flex-1 py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition-colors text-center"
+                onClick={() => {
+                  if (modelAvailable) {
+                    fileInputRef.current?.click();
+                  }
+                }}
+                disabled={!modelAvailable}
+                className="flex-1 py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-500 disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-semibold text-xs transition-colors text-center"
               >
-                📁 Tải Ảnh Cử Chỉ Lên
+                {modelAvailable ? '📁 Tải Ảnh Cử Chỉ Lên' : '🔒 Chưa có mô hình Cấp 1 (Vô hiệu hóa)'}
               </button>
             </div>
           </div>
@@ -110,11 +190,15 @@ export default function Fingerspelling() {
               <span className="text-xs text-slate-400 uppercase font-semibold">Kết Quả Nhận Diện</span>
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-4xl font-extrabold text-white">
-                    {prediction ? `'${prediction}'` : '...'}
+                  <div className="text-2xl font-extrabold text-white">
+                    {modelAvailable 
+                      ? (prediction ? `'${prediction}'` : '...') 
+                      : 'Chưa có mô hình Cấp 1'}
                   </div>
                   <span className="text-xs text-brand-400 font-mono">
-                    {prediction ? `Độ tin cậy: ${(confidence * 100).toFixed(1)}%` : 'Chờ ảnh đầu vào...'}
+                    {modelAvailable 
+                      ? (prediction ? `Độ tin cậy: ${(confidence * 100).toFixed(1)}%` : 'Chờ ảnh đầu vào...') 
+                      : 'Cần nạp checkpoints/alphabet_best.pt'}
                   </span>
                 </div>
 
