@@ -52,7 +52,7 @@ Toàn bộ mô hình được đánh giá trên tập **Test Set (50 mẫu độ
 
 > [!NOTE]
 > **CẤP ĐỘ 2 (TỪ RỜI - 487 LỚP) & CẤP ĐỘ 3 (DỊCH CÂU) — THỐNG KÊ BOOTSTRAP 95% CI**:
-> - **Cấp 2 (In-Domain 487 lớp):** Top-1 = **46.41% [42.09%, 50.72%]**, Top-5 = **75.77% [71.87%, 79.47%]**. Thử nghiệm Cross-Dialect 3-Fold: **UNVERIFIED** (cần chạy lại trên Cloud sau khi sửa lỗi early stopping).
+> - **Cấp 2 (487 lớp) — số liệu cũ KHÔNG hợp lệ:** Top-1 46.41% (Top-5 60.78%; con số 75.77% từng ghi ở đây không có lần chạy nào chứng minh) đo trên split rò rỉ. **Đính chính 24/09/2026 (audit vòng 3):** 54% clip test in-domain có *cùng bản quay* trong train (QIPEDC dùng lại một clip cho nhiều vùng, chỉ đổi chú thích). Trên clip test sạch (n=223): **Top-1 8.07% [4.93, 11.66]**, Top-5 17.04%; trên clip trùng (n=264): Top-1 78.79%. 46.41% chủ yếu đo khả năng nhận lại clip đã thấy. Chi tiết: `reports/audit_round3/PROVENANCE.md`. Split mới không rò rỉ: `data/splits/folds/tier2_grouped_*.csv` (chờ train lại). Cross-Dialect 3-Fold: các fold cũng rò rỉ → **INVALID**.
 > - **Cấp 3 (Dịch câu liên tục S06 - 30 câu unseen):**
 >   - Mode A (Oracle Gloss $\to$ ViT5): BLEU = **27.98 [17.60, 38.39]**
 >   - Mode B (CSLR $\to$ ViT5): BLEU = **23.18 [13.62, 33.70]**

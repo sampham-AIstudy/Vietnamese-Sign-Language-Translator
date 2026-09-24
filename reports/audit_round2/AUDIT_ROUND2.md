@@ -83,11 +83,14 @@ OK
 
 ### 4.2 Cấp 2 — Nhận Diện Từ Rời (487 Lớp In-Domain)
 - **Top-1 Accuracy:** **46.41%** `[42.09%, 50.72%]`
-- **Top-5 Accuracy:** **75.77%** `[71.87%, 79.47%]`
+- **Top-5 Accuracy:** ~~75.77% [71.87%, 79.47%]~~ **60.78%** [56.26%, 65.10%] *(đính chính: 75.77% không có artifact chứng minh)*
 - **Phân rã theo phương ngữ trên tập test:**
   - Miền Bắc: 21.47% `[15.34%, 28.22%]` (thấp nhất)
-  - Miền Nam: 36.20% `[28.83%, 43.56%]`
-  - Miền Trung: 81.60% `[75.46%, 87.12%]` (cao nhất)
+  - Miền Nam: ~~36.20%~~ **56.17%** `[48.15%, 63.58%]`
+  - Miền Trung: ~~81.60%~~ **61.73%** `[53.70%, 69.14%]`
+
+> [!CAUTION]
+> **Đính chính 24/09/2026 (audit vòng 3):** 54% clip test in-domain có *cùng bản quay* trong train (QIPEDC dùng lại một clip cho nhiều vùng, chỉ đổi chú thích). Trên clip test sạch (n=223): **Top-1 8.07% [4.93, 11.66]**, Top-5 17.04%; trên clip trùng (n=264): Top-1 78.79%. 46.41% chủ yếu đo khả năng nhận lại clip đã thấy. Chi tiết: `reports/audit_round3/PROVENANCE.md`.
 - **Thử nghiệm Cross-Dialect 3-Fold:** Đánh dấu `UNVERIFIED` (cần chạy lại trên Cloud do lỗi early stopping cũ).
 
 ### 4.3 Cấp 3 — Dịch Câu Liên Tục & ViT5 (S06 - 30 Câu Unseen)

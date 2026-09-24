@@ -14,14 +14,18 @@ benchmark_tier:
   active_tier: "tier1"  # "tier1" (50 classes) or "tier2" (487 classes)
   tier1:
     num_classes: 50
-    train_split: "data/splits/tier1_train.csv"
-    val_split: "data/splits/tier1_val.csv"
-    test_split: "data/splits/tier1_test.csv"
+    # Recording-grouped (scripts/create_grouped_splits.py --tier tier1); legacy tier1_{train,val,test}.csv
+    # put 43 recordings in two splits (mostly the same T/N clip in val and test). Val covers only the 12 classes with >= 3 recordings.
+    train_split: "data/splits/folds/tier1_grouped_train.csv"
+    val_split: "data/splits/folds/tier1_grouped_val.csv"
+    test_split: "data/splits/folds/tier1_grouped_test.csv"
   tier2:
     num_classes: 487
-    train_split: "data/splits/folds/tier2_indomain_train.csv"
-    val_split: "data/splits/folds/tier2_indomain_val.csv"
-    test_split: "data/splits/folds/tier2_indomain_test.csv"
+    # Recording-grouped folds (scripts/create_grouped_splits.py). tier2_indomain_* leaked
+    # re-captioned copies of the same clip across train/test — see reports/audit_round3/PROVENANCE.md.
+    train_split: "data/splits/folds/tier2_grouped_train.csv"
+    val_split: "data/splits/folds/tier2_grouped_val.csv"
+    test_split: "data/splits/folds/tier2_grouped_test.csv"
 
 skeleton:
   num_joints: 67

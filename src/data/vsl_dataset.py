@@ -46,12 +46,23 @@ class ClassCountMismatchError(SplitIntegrityError):
     pass
 
 
+class DuplicateRecordingLeakageError(SplitIntegrityError):
+    """Raised when one physical recording (QIPEDC re-captions a clip per region) spans splits."""
+    pass
+
+
+# Built by scripts/build_recording_groups.py; see reports/audit_round3/PROVENANCE.md.
+DEFAULT_RECORDING_GROUPS_CSV = os.path.join("data", "splits", "recording_groups.csv")
+
+
 def validate_split_guards(
     train_csv: str,
     val_csv: str,
     test_csv: str,
     expected_num_classes: Optional[int] = None,
     allow_cross_dialect_benchmark: bool = False,
+    recording_groups_csv: Optional[str] = DEFAULT_RECORDING_GROUPS_CSV,
+    allow_duplicate_recordings: bool = False,
 ) -> Dict[str, Any]:
     """
     Validates dataset split integrity across train, val, and test CSVs.
@@ -59,6 +70,10 @@ def validate_split_guards(
     Guards:
     1. Video Leakage Guard:
        Ensures no video_id or video file name appears in more than one split.
+    1b. Duplicate Recording Guard:
+       If `recording_groups_csv` exists, ensures no recording group (the same clip saved
+       under several file names) spans splits. `allow_duplicate_recordings=True` exists only
+       to reproduce legacy numbers; results obtained that way are not valid benchmarks.
     2. Dialect Confounding Guard:
        For standard in-domain splits, ensures train is not 100% single dialect
        when multiple dialects exist across the overall dataset.
@@ -107,6 +122,29 @@ def validate_split_guards(
             f"(train-val: {len(leak_train_val)}, train-test: {len(leak_train_test)}, val-test: {len(leak_val_test)})"
         )
 
+    # 1b. Duplicate Recording Guard
+    duplicate_check = "SKIPPED (no recording_groups file)"
+    if allow_duplicate_recordings:
+        duplicate_check = "DISABLED (legacy reproduction only)"
+    elif recording_groups_csv and os.path.exists(recording_groups_csv):
+        with open(recording_groups_csv, "r", encoding="utf-8-sig") as f:
+            group_of = {r["file_name"].strip().lower(): r["recording_group"] for r in csv.DictReader(f)}
+        split_of_group: Dict[str, str] = {}
+        crossing: Set[str] = set()
+        for split_name, rows in (("train", train_rows), ("val", val_rows), ("test", test_rows)):
+            for r in rows:
+                fname = os.path.basename(str(r.get("file_name") or r.get("file_path") or "")).strip().lower()
+                group = group_of.get(fname)
+                if group is not None and split_of_group.setdefault(group, split_name) != split_name:
+                    crossing.add(group)
+        if crossing:
+            raise DuplicateRecordingLeakageError(
+                f"Split integrity violation: {len(crossing)} recordings appear in more than one split under "
+                f"different file names (e.g. {sorted(crossing)[:3]}). Use data/splits/folds/tier2_grouped_*.csv "
+                f"(scripts/create_grouped_splits.py)."
+            )
+        duplicate_check = "PASS"
+
     # 2. Dialect Confounding Guard
     def get_dialects(rows: List[Dict[str, Any]]) -> collections.Counter:
         counts = collections.Counter()
@@ -137,7 +175,7 @@ def validate_split_guards(
             raise DialectConfoundedError(
                 f"Split integrity violation: Train split is confounded with 100% dialect '{dominant}' "
                 f"while dataset contains dialects {known_dialects}. "
-                f"Use balanced in-domain splits (tier2_indomain_*.csv) to prevent single-dialect bias."
+                f"Use recording-grouped splits (tier2_grouped_*.csv) to prevent single-dialect bias."
             )
 
     # 3. Class Count Guard
@@ -169,6 +207,7 @@ def validate_split_guards(
         "train_dialects": dict(train_dialects),
         "val_dialects": dict(val_dialects),
         "test_dialects": dict(test_dialects),
+        "duplicate_recording_check": duplicate_check,
     }
 
 
@@ -350,17 +389,18 @@ def get_vsl_dataloaders(
 
     if train_csv is None or val_csv is None or test_csv is None:
         if tier == "tier2":
-            # Default to balanced in-domain folds (487 classes)
-            train_csv = os.path.join("data", "splits", "folds", "tier2_indomain_train.csv")
-            val_csv = os.path.join("data", "splits", "folds", "tier2_indomain_val.csv")
-            test_csv = os.path.join("data", "splits", "folds", "tier2_indomain_test.csv")
+            # Default to recording-grouped folds (487 classes). The older tier2_indomain_* folds put
+            # re-captioned copies of one clip in train and test (reports/audit_round3/PROVENANCE.md).
+            train_csv = os.path.join("data", "splits", "folds", "tier2_grouped_train.csv")
+            val_csv = os.path.join("data", "splits", "folds", "tier2_grouped_val.csv")
+            test_csv = os.path.join("data", "splits", "folds", "tier2_grouped_test.csv")
             if expected_num_classes is None:
                 expected_num_classes = 487
         else:
-            splits_dir = os.path.join("data", "splits")
-            train_csv = os.path.join(splits_dir, f"{tier}_train.csv")
-            val_csv = os.path.join(splits_dir, f"{tier}_val.csv")
-            test_csv = os.path.join(splits_dir, f"{tier}_test.csv")
+            splits_dir = os.path.join("data", "splits", "folds")
+            train_csv = os.path.join(splits_dir, f"{tier}_grouped_train.csv")
+            val_csv = os.path.join(splits_dir, f"{tier}_grouped_val.csv")
+            test_csv = os.path.join(splits_dir, f"{tier}_grouped_test.csv")
             if tier == "tier1" and expected_num_classes is None:
                 expected_num_classes = 50
 

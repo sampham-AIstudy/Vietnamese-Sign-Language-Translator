@@ -1,7 +1,7 @@
 """
 Unit tests for Dataset Split Guards (P0-2).
 Tests:
-1. Balanced in-domain splits pass all guards (video leakage, dialect confounding, class count).
+1. Recording-grouped splits pass all guards; legacy in-domain splits trip the duplicate-recording guard.
 2. Confounded single-dialect split triggers DialectConfoundedError.
 3. Video ID overlap between splits triggers VideoLeakageError.
 4. Class count mismatch or unseen classes trigger ClassCountMismatchError.
@@ -16,31 +16,68 @@ from src.data.vsl_dataset import (
     VideoLeakageError,
     DialectConfoundedError,
     ClassCountMismatchError,
+    DuplicateRecordingLeakageError,
+    DEFAULT_RECORDING_GROUPS_CSV,
 )
 
 
 class TestSplitGuards(unittest.TestCase):
 
-    def test_balanced_tier2_indomain_splits_pass(self):
-        """Verify that the official tier2 in-domain folds pass all integrity guards."""
-        train_csv = "data/splits/folds/tier2_indomain_train.csv"
-        val_csv = "data/splits/folds/tier2_indomain_val.csv"
-        test_csv = "data/splits/folds/tier2_indomain_test.csv"
+    def test_grouped_splits_pass(self):
+        """The recording-grouped folds (tier1: 50, tier2: 487 classes) pass every guard incl. duplicates."""
+        if not os.path.exists(DEFAULT_RECORDING_GROUPS_CSV):
+            self.skipTest("recording_groups.csv not found (run scripts/build_recording_groups.py).")
+        for tier, n_classes in (("tier1", 50), ("tier2", 487)):
+            paths = [f"data/splits/folds/{tier}_grouped_{s}.csv" for s in ("train", "val", "test")]
+            if not all(os.path.exists(p) for p in paths):
+                self.skipTest(f"{tier} grouped fold CSVs not found.")
+            stats = validate_split_guards(*paths, expected_num_classes=n_classes)
+            self.assertEqual(stats["status"], "PASS")
+            self.assertEqual(stats["duplicate_recording_check"], "PASS")
+            self.assertEqual(stats["num_classes"], n_classes)
+            self.assertGreater(stats["val_samples"], 0)
+            self.assertGreater(stats["test_samples"], 0)
 
-        if not (os.path.exists(train_csv) and os.path.exists(val_csv) and os.path.exists(test_csv)):
-            self.skipTest("In-domain fold CSV files not found.")
+    def test_legacy_indomain_splits_leak_duplicate_recordings(self):
+        """tier2_indomain_* put re-captioned copies of one clip in train and test (audit round 3)."""
+        paths = [f"data/splits/folds/tier2_indomain_{s}.csv" for s in ("train", "val", "test")]
+        if not os.path.exists(DEFAULT_RECORDING_GROUPS_CSV) or not all(os.path.exists(p) for p in paths):
+            self.skipTest("recording_groups.csv or legacy in-domain folds not found.")
+        with self.assertRaises(DuplicateRecordingLeakageError):
+            validate_split_guards(*paths, expected_num_classes=487)
+        stats = validate_split_guards(*paths, expected_num_classes=487, allow_duplicate_recordings=True)
+        self.assertEqual(stats["duplicate_recording_check"], "DISABLED (legacy reproduction only)")
 
-        stats = validate_split_guards(
-            train_csv=train_csv,
-            val_csv=val_csv,
-            test_csv=test_csv,
-            expected_num_classes=487,
-        )
-        self.assertEqual(stats["status"], "PASS")
-        self.assertEqual(stats["num_classes"], 487)
-        self.assertGreater(stats["train_samples"], 0)
-        self.assertGreater(stats["val_samples"], 0)
-        self.assertGreater(stats["test_samples"], 0)
+    def test_duplicate_recording_guard_triggers(self):
+        """Two file names mapped to one recording group in different splits raise, even with distinct IDs."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            fields = ["video_id", "file_name", "gloss_normalized", "dialect"]
+            rows = {
+                "train": [{"video_id": "1", "file_name": "W1T.mp4", "gloss_normalized": "ai", "dialect": "T"},
+                          {"video_id": "3", "file_name": "W2B.mp4", "gloss_normalized": "bạn", "dialect": "B"}],
+                "val": [{"video_id": "4", "file_name": "W2N.mp4", "gloss_normalized": "bạn", "dialect": "N"}],
+                "test": [{"video_id": "2", "file_name": "W1N.mp4", "gloss_normalized": "ai", "dialect": "N"}],
+            }
+            paths = {}
+            for split, split_rows in rows.items():
+                paths[split] = os.path.join(tmpdir, f"{split}.csv")
+                with open(paths[split], "w", newline="", encoding="utf-8") as f:
+                    writer = csv.DictWriter(f, fieldnames=fields)
+                    writer.writeheader()
+                    writer.writerows(split_rows)
+            groups = os.path.join(tmpdir, "recording_groups.csv")
+            with open(groups, "w", newline="", encoding="utf-8") as f:
+                writer = csv.DictWriter(f, fieldnames=["file_name", "recording_group"])
+                writer.writeheader()
+                writer.writerows([{"file_name": "W1T.mp4", "recording_group": "RG1"},
+                                  {"file_name": "W1N.mp4", "recording_group": "RG1"},
+                                  {"file_name": "W2B.mp4", "recording_group": "RG2"},
+                                  {"file_name": "W2N.mp4", "recording_group": "RG3"}])
+            args = (paths["train"], paths["val"], paths["test"])
+            with self.assertRaises(DuplicateRecordingLeakageError):
+                validate_split_guards(*args, recording_groups_csv=groups)
+            stats = validate_split_guards(*args, recording_groups_csv=os.path.join(tmpdir, "missing.csv"))
+            self.assertTrue(stats["duplicate_recording_check"].startswith("SKIPPED"))
 
     def test_video_leakage_guard_triggers(self):
         """Verify VideoLeakageError is raised when identical video IDs exist in train and test."""

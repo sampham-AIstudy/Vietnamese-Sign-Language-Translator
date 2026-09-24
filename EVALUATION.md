@@ -202,6 +202,9 @@ Tiến hành mở rộng toàn diện hệ thống nhận diện lên toàn bộ
 
 ### 8.4 So sánh Tổng hợp Đối đầu: Tier 1 (50 Lớp) vs. Tier 2 (487 Lớp)
 
+> [!CAUTION]
+> Toàn bộ bảng 8.3–8.4 đo trên split có bản quay trùng giữa các tập (Tier 2 in-domain: train↔test; Tier 1: val↔test; cả 3 fold cross-dialect). **Đính chính 24/09/2026 (audit vòng 3):** 54% clip test in-domain có *cùng bản quay* trong train (QIPEDC dùng lại một clip cho nhiều vùng, chỉ đổi chú thích). Trên clip test sạch (n=223): **Top-1 8.07% [4.93, 11.66]**, Top-5 17.04%; trên clip trùng (n=264): Top-1 78.79%. 46.41% chủ yếu đo khả năng nhận lại clip đã thấy. Chi tiết: `reports/audit_round3/PROVENANCE.md`. Các số dưới đây giữ lại để lưu vết, **không dùng làm kết quả**.
+
 | Kịch bản đánh giá | Số lớp | Kích thước Test | Top-1 Acc (%) | Top-5 Acc (%) | Macro F1 (%) | Ý nghĩa kỹ thuật |
 | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
 | **In-Domain Stratified (Tier 1)** | 50 | 50 | **68.00%** | **82.00%** | **61.67%** | Thước đo dev nhanh cho tập từ vựng cốt lõi. |
@@ -328,8 +331,7 @@ Trong tập test 487 mẫu (mỗi lớp 1 mẫu), có 226 mẫu đoán đúng (n
 1. **Khả năng mở rộng từ vựng (Vocabulary Scalability):**  
    Hệ thống đã nâng cấp thành công từ **50 lớp (Tier 1)** lên **487 lớp (Tier 2)** — bao phủ toàn bộ tập từ vựng chuẩn hóa có dữ liệu đối sánh cả 3 miền Bắc, Trung, Nam.
 2. **Độ chính xác mô hình (Accuracy):**  
-   - In-Domain Model đạt **46.41% Top-1** và **60.78% Top-5** trên 487 lớp (với N=1 video/miền/lớp).
-   - Khi có dữ liệu miền Trung trong tập huấn luyện, độ chính xác trên cử chỉ miền Trung đạt tới **81.72% Top-1** và **94.25% Top-5**.
+   - ~~In-Domain Model đạt 46.41% Top-1 và 60.78% Top-5 trên 487 lớp.~~ ~~Miền Trung đạt 81.72% Top-1.~~ **Đính chính 24/09/2026 (audit vòng 3):** 54% clip test in-domain có *cùng bản quay* trong train (QIPEDC dùng lại một clip cho nhiều vùng, chỉ đổi chú thích). Trên clip test sạch (n=223): **Top-1 8.07% [4.93, 11.66]**, Top-5 17.04%; trên clip trùng (n=264): Top-1 78.79%. 46.41% chủ yếu đo khả năng nhận lại clip đã thấy. Chi tiết: `reports/audit_round3/PROVENANCE.md`.
 3. **Phân định rõ ràng hiện tượng suy giảm Cross-Dialect:**  
    Thực nghiệm đã bác bỏ giả thuyết cho rằng cử chỉ miền Trung bất tương thích ngôn ngữ học dẫn tới 0.82% Top-1 ở Fold 2. Nguyên nhân thực chất là hiện tượng **Severe Mode Collapse (Early Stopping dừng ở Epoch 1)** khi số lớp lớn nhưng kích thước mẫu quá nhỏ.
 4. **Hiệu năng Realtime thực tế trên Server Production:**  
@@ -388,13 +390,18 @@ Trong tập test 487 mẫu (mỗi lớp 1 mẫu), có 226 mẫu đoán đúng (n
 - **Cảnh báo học thuộc lòng (Memorization Warning):** Con số BLEU 58.09 trên toàn bộ 300 clips S06 là do 90% câu đã có mặt trong tập train. Đánh giá học thuật nghiêm ngặt bắt buộc chỉ sử dụng tập 30 câu unseen.
 
 ### 13.3 Khả Năng Tổng Quát Hóa Cấp 2 (V4)
-- **Tập test cân bằng 487 lớp (tier2_indomain_test):**
-  - Top-1 Accuracy: **46.41%** `[42.09%, 50.72%]`
-  - Top-5 Accuracy: **75.77%** `[71.87%, 79.47%]`
-- **Bất cân xứng theo phương ngữ:**
-  - Miền Bắc: Top-1 = **21.47%** `[15.34%, 28.22%]` (thấp nhất)
-  - Miền Nam: Top-1 = **36.20%** `[28.83%, 43.56%]`
-  - Miền Trung: Top-1 = **81.60%** `[75.46%, 87.12%]` (cao nhất)
+> [!CAUTION]
+> **Đính chính 24/09/2026 (audit vòng 3):** 54% clip test in-domain có *cùng bản quay* trong train (QIPEDC dùng lại một clip cho nhiều vùng, chỉ đổi chú thích). Trên clip test sạch (n=223): **Top-1 8.07% [4.93, 11.66]**, Top-5 17.04%; trên clip trùng (n=264): Top-1 78.79%. 46.41% chủ yếu đo khả năng nhận lại clip đã thấy. Chi tiết: `reports/audit_round3/PROVENANCE.md`. Các số Top-5 75.77%, Nam 36.20% [28.83, 43.56], Trung 81.60% [75.46, 87.12] từng ghi ở đây **không có artifact nào chứng minh**; artifact `reports/audit_round2/v4_generalization.json` và lần chạy lại `reports/audit_round3/r3_tier2_leakage.json` cho kết quả dưới đây.
+
+| Tập test in-domain (n=487) | Top-1 [95% CI] |
+|---|---|
+| Toàn bộ | 46.41 [42.09, 50.93] (Top-5 60.78) |
+| Clip trùng bản quay trong train (n=264) | 78.79 [73.48, 83.71] |
+| **Clip sạch (n=223)** | **8.07 [4.93, 11.66]** (Top-5 17.04) |
+| Bắc / Trung / Nam — toàn bộ | 21.47 / 61.73 / 56.17 |
+| Bắc / Trung / Nam — sạch | 1.6 (n=125) / 12.5 (n=32) / 18.2 (n=66) |
+
+- Chênh lệch giữa các miền do tỉ lệ trùng (Bắc 23%, Trung 80%, Nam 59%), không phải do đặc điểm phương ngữ.
 - **Thử nghiệm Cross-Dialect 3-Fold:** Đánh dấu **UNVERIFIED** (do lỗi early stopping cũ, đang chờ chạy lại trên Cloud).
 
 ### 13.4 Mô Phỏng Offline vs Streaming CSLR (P1-2)
