@@ -1,150 +1,256 @@
-# Vietnamese Sign Language (VSL) Translator
-## Hệ Thống Nhận Diện & Dịch Ngôn Ngữ Ký Hiệu Việt Nam End-to-End
+# Vietnamese Sign Language Recognition (VSLR)
+## Hệ Thống Nhận Diện Ngôn Ngữ Ký Hiệu Việt Nam Thời Gian Thực Đa Phương Ngữ
+### Đồ Án Môn Học: Deep Learning + Computer Vision (Học Máy Nâng Cao)
 
-Dự án triển khai giải pháp nhận diện Ngôn ngữ Ký hiệu Việt Nam (VSL) 2 cấp độ (Bảng chữ cái ngón tay tĩnh & Từ đơn chuyển động), kế thừa phương pháp luận từ **2 báo cáo nghiên cứu học thuật** và khai thác **2 tập dữ liệu thực tế** được cung cấp.
-
----
-
-### 1. Cơ Sở Lý Thuyết Từ 2 Báo Cáo Nghiên Cứu
-
-1. **Báo cáo 1 (Review VSLR 2026)**: *“A Comprehensive Review of Vietnamese Sign Language Recognition Techniques”* (HUST, Journal of Science and Technology, 2026).
-   - Tổng quan toàn diện hơn 60 công trình VSL (2015–2025).
-   - Nhấn mạnh tính khả thi và hiệu năng vượt trội của pipeline dựa trên **toạ độ khung xương (Landmark-based)** thay vì 3D-CNN RGB thô.
-   - Định hướng sử dụng các mô hình học chuỗi thời gian (**BiGRU / LSTM / Transformer**) để xử lý chuỗi keypoints với chi phí tính toán thấp.
-   - Phân tích tính đa dạng vùng miền của VSL qua 3 phương ngữ: **Bắc (B), Trung (T), Nam (N)**.
-
-2. **Báo cáo 2 (VSL Alphabet 2025)**: *“Vietnamese Sign Language Alphabet Recognition Using Deep Learning and Mediapipe Methods”* (HUST, 2025).
-   - Phương pháp trích xuất 21 điểm đặc trưng bàn tay qua **MediaPipe Hands**.
-   - Thuật toán chuẩn hoá toạ độ: trừ toạ độ điểm gốc cổ tay (wrist = index 0) và chia cho khoảng cách cực đại để đạt tính bất biến theo tỷ lệ (scale-invariance).
-   - Huấn luyện mạng nơ-ron sâu đạt độ chính xác >95% trên tập dữ liệu bảng chữ cái ký hiệu.
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.6.0%2Bcu124-EE4C2C.svg?style=flat&logo=pytorch)](https://pytorch.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110.0-009688.svg?style=flat&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-18.3.1-61DAFB.svg?style=flat&logo=react)](https://react.dev/)
+[![ONNX](https://img.shields.io/badge/ONNX_Opset-14-005CED.svg?style=flat&logo=onnx)](https://onnx.ai/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](#)
 
 ---
 
-### 2. Hiện Trạng 2 Bộ Dữ Liệu Thực Tế Trong Dự Án
+## 1. Tóm Tắt Đồ Án (Abstract)
 
-- **Dataset 1 (`data/`)**:
-  - `data/asl_alphabet_train/` & `test/`: 87.000 ảnh cử chỉ bảng chữ cái (29 lớp: A-Z, del, nothing, space).
-  - `data/hand_data.csv`: Toạ độ 42 chiều (21 keypoints x, y) tiền xử lý chuẩn MediaPipe cho bảng chữ cái.
-- **Dataset 2 (`data (2)/`)**:
-  - `Dataset/Videos/`: **4.362 video clip thực tế** của người khiếm thính Việt Nam thực hiện các từ ký hiệu VSL chuẩn (chia theo phương ngữ B, T, N).
-  - `Dataset/Labels/label.csv`: 4.364 nhãn từ vựng tương ứng (gloss).
-  - `Processed/`: **184.295 chuỗi keypoints `.npz`** đã tiền trích xuất sẵn theo chuẩn $(T=60, D=201)$ phân bổ thành 3 tập `train/` (145.019 clip), `val/` (17.980 clip), `test/` (21.296 clip) qua 3.315 lớp từ vựng.
+Nhận diện Ngôn ngữ Ký hiệu Việt Nam (**Vietnamese Sign Language Recognition - VSLR**) đóng vai trò quyết định trong việc xóa bỏ rào cản giao tiếp cho hơn 2.5 triệu người khiếm thính và câm tại Việt Nam. Thách thức lớn nhất trong thực tiễn là **Sự Phân Hóa Đa Phương Ngữ (Cross-Dialect Discrepancy)** giữa ba miền Bắc, Trung, Nam: cùng một ý niệm (Gloss) có thể có cấu hình bàn tay (Handshape), vị trí (Location) và quỹ đạo chuyển động (Movement) hoàn toàn khác biệt.
 
----
-
-### 3. Tối Ưu Cho Phần Cứng (Laptop RTX 3050 4GB VRAM)
-
-- **Tránh RGB 3D-CNN**: Các mô hình 3D-CNN thô (I3D, SlowFast, Video Swin) cần 8GB+ VRAM và dễ gây lỗi Out-Of-Memory (OOM) trên RTX 3050 4GB.
-- **Landmark Pipeline**: Chuỗi $(60, 201)$ nén hàng triệu pixel thành 12.060 số thực float32 (~48 KB/clip).
-- **Tốc độ thực thi**:
-  - Huấn luyện 40–100 từ vựng chỉ mất vài phút.
-  - Tốc độ suy luận (Inference) đạt **>150 FPS** trên laptop, hoàn toàn hỗ trợ camera thời gian thực mà không trễ.
+Đồ án này nghiên cứu và phát triển hệ thống VSLR hoàn chỉnh với các đóng góp cốt lõi:
+1. **Zero-Leakage & No Zero-Fill Data Pipeline**: Phân chia tập dữ liệu tách biệt phương ngữ (Huấn luyện trên miền Bắc + Trung; Kiểm thử 100% trên miền Nam - *Unseen Dialect*) để đánh giá năng lực tổng quát hóa thực chất, loại bỏ triệt để rò rỉ dữ liệu.
+2. **Lược đồ Khung xương Sinh cơ học 67 Khớp**: Kết hợp 25 khớp thân trên, 21 khớp bàn tay trái và 21 khớp bàn tay phải từ MediaPipe Holistic ($D = 201$ đặc trưng/frame), chuẩn hóa không gian theo chiều rộng vai.
+3. **Mô hình Hóa Đồ thị Thời - Không & Cơ chế Chú ý**:
+   - **ST-GCN (Spatial-Temporal Graph CNN)**: Khai thác hình học liên kết bàn tay qua ma trận kề $3 \times 67 \times 67$ phân vùng cấu hình không gian.
+   - **Transformer Encoder**: Khai thác cơ chế Multi-Head Temporal Self-Attention và Masked Attention Pooling.
+   - **Late-Fusion Ensemble**: Kết hợp dự đoán xác suất giữa ST-GCN và Transformer.
+4. **Hệ thống Demo Real-time & MLOps Optimization**:
+   - Web application hiện đại: Backend **FastAPI WebSocket** kết hợp Frontend **React 18 (Vite + Tailwind CSS)**.
+   - Tối ưu hóa **ONNX Runtime (Opset 14)**: Nén dung lượng file hơn **68%**, sai số số học $\le 5.72 \times 10^{-6} \ll 10^{-4}$, đạt tốc độ **95 FPS** trên GPU và **72 FPS** trên CPU.
 
 ---
 
-### 4. Cấu Trúc Thư Mục Dự Án
+## 2. Bảng Kết Quả Thực Nghiệm (Test Set Miền Nam - Unseen Dialect)
+
+Toàn bộ mô hình được đánh giá trên tập **Test Set (50 mẫu độc lập 100% miền Nam)**:
+
+| Mô Hình | Kiến Trúc Cốt Lõi | Val Top-1 (%) | Test Top-1 (%) | Test Top-5 (%) | Macro F1 (%) | File Size (.pt) | File Size (.onnx) | Latency (ms) | Throughput (FPS) |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Baseline BiGRU** | Recurrent (2-layer BiGRU) | 44.0% | 24.0% | 46.0% | 13.37% | 6.83 MB | N/A | **5.80 ms** | 172.4 |
+| **ST-GCN (Spatial Master)** | Spatial Graph CNN (67 joints) | 44.0% | **30.0%** | **52.0%** | **21.37%** | 3.88 MB | **1.23 MB** | 10.53 ms | 95.0 |
+| **Transformer (Temporal Master)** | Multi-Head Self-Attention | 44.0% | 26.0% | 46.0% | 19.33% | 3.79 MB | 1.50 MB | 11.48 ms | 87.1 |
+| **VSLR Ensemble** | Late-Fusion (ST-GCN + Trans) | 42.0% | 26.0% | 50.0% | 19.33% | 7.67 MB | 2.73 MB | 22.01 ms | 45.4 |
+
+> **Nhận xét khoa học:** Sau khi tích hợp Data Augmentation (Jitter, Spatial Scale, 2D Rotation, Temporal Warp) và Label Smoothing (0.1), mô hình **ST-GCN** tăng độ chính xác Test Top-1 từ **26.0% lên 30.0%** và Macro F1 từ **19.80% lên 21.37%**; **Transformer** tăng Test Top-1 từ **22.0% lên 26.0%** và Macro F1 từ **15.91% lên 19.33%**.
+
+---
+
+## 2.1. Báo Cáo Kiểm Toán & Độ Tin Cậy Dữ Liệu (Audit Round 2 Update)
+
+> [!IMPORTANT]
+> **CẤP ĐỘ 1 (FINGERSPELLING) — ĐÃ CHUYỂN HOÀN TOÀN SANG BẢNG CHỮ CÁI VSL CHUẨN (PILOT)**:
+> - **Loại bỏ ASL:** Đã xóa bỏ hoàn toàn bộ dữ liệu ASL 29 ký tự tiếng Mỹ và loại bỏ chỉ số PoC cũ (98.06% ASL) khỏi toàn bộ tài liệu chính thức.
+> - **Dữ liệu VSL thật:** Tích hợp bộ dữ liệu **VSL Alphabet Pilot** gồm **1.875 clips (.npz)** từ **15 người ra ký hiệu Việt Nam (`S01`..`S15`)** với **25 lớp ký hiệu chuẩn tiếng Việt** (23 chữ cái tĩnh + `Dau_moc`, `Dau_mu`).
+> - **Thiết kế Signer-Disjoint (10 / 2 / 3):** Train (1.250 mẫu, 10 signers), Val (250 mẫu, 2 signers), Test (375 mẫu, 3 signers `S03, S14, S15` độc lập 100%).
+> - **Pipeline:** Đã kiểm thử module chuẩn hóa lòng bàn tay (`tests/test_alphabet_preprocessing.py` PASS), 2 kiến trúc baseline (Static MLP 63 dims và Temporal BiGRU 30 frames), script đóng gói cloud và notebook `vsl_alphabet_cloud_training.ipynb`.
+
+> [!NOTE]
+> **CẤP ĐỘ 2 (TỪ RỜI - 487 LỚP) & CẤP ĐỘ 3 (DỊCH CÂU) — THỐNG KÊ BOOTSTRAP 95% CI**:
+> - **Cấp 2 (In-Domain 487 lớp):** Top-1 = **46.41% [42.09%, 50.72%]**, Top-5 = **75.77% [71.87%, 79.47%]**. Thử nghiệm Cross-Dialect 3-Fold: **UNVERIFIED** (cần chạy lại trên Cloud sau khi sửa lỗi early stopping).
+> - **Cấp 3 (Dịch câu liên tục S06 - 30 câu unseen):**
+>   - Mode A (Oracle Gloss $\to$ ViT5): BLEU = **27.98 [17.60, 38.39]**
+>   - Mode B (CSLR $\to$ ViT5): BLEU = **23.18 [13.62, 33.70]**
+>   - Khoảng chênh lệch: $\Delta = \mathbf{+4.80\ [1.29, 9.14]}$ ($p < 0.05$, có ý nghĩa thống kê thực chất).
+>   - CSLR WER = **32.80% [29.48%, 36.62%]**.
+> - **Mô phỏng Streaming CSLR:** Full-clip WER = **81.28%** (độ trễ 118.6ms) vs Streaming Chunk=60 frames WER = **158.78%** (TTFT 32.0ms, suy giảm +95.35% do BiGRU mất ngữ cảnh tương lai). Đã công bố tài liệu thiết kế tại [`docs/cslr_streaming_design.md`](file:///C:/Users/Admin/Python%20Advanced/Deep%20Learning%20-%20CV/Project/docs/cslr_streaming_design.md).
+
+---
+
+## 3. Kiến Trúc Kỹ Thuật (Architecture)
+
+```
+[Webcam / Video Clip]
+          │
+          ▼
+[MediaPipe Holistic Realtime Extractor]  ───►  67 Joints (25 Pose + 21 LH + 21 RH = 201 dims)
+          │                                     * Strict NO ZERO-FILL (NaN/Visibility Mask)
+          ▼
+[Spatial & Temporal Preprocessing]       ───►  Mid-Shoulder Centered, Shoulder-Width Scaled
+          │                                     Temporal Buffer Deque (T = 60 frames)
+          ▼
+[Deep Neural Network Engines]
+    ├── ST-GCN (Spatial Graph CNN)       ───►  Biomechanical Topology Adjacency A (3, 67, 67)
+    ├── Transformer Encoder              ───►  Multi-Head Temporal Self-Attention
+    └── VSLR Late-Fusion Ensemble        ───►  50:50 Softmax Probabilities Average
+          │
+          ▼
+[TemporalSmoother (Anti-Flicker)]        ───►  Confidence Gating (0.40), Majority Voting, 20-frame Hold
+          │
+          ▼
+[FastAPI WebSocket (:8000)]              ───►  JSON Stream: {gloss, confidence, top5, latency, fps, status}
+          │
+          ▼
+[React 18 Frontend HUD (:3000)]          ───►  Live Video Preview, Skeleton Overlay, Speech Synthesis (TTS)
+```
+
+---
+
+## 4. Cấu Trúc Thư Mục Dự Án (Repository Structure)
 
 ```
 Project/
-├── data/                               # Dữ liệu Bảng chữ cái ngón tay (Level 1)
-│   ├── asl_alphabet_train/             # Ảnh gốc train bảng chữ cái
-│   ├── asl_alphabet_test/              # Ảnh gốc test bảng chữ cái
-│   └── hand_data.csv                   # 42 toạ độ đặc trưng chuẩn hoá
-├── data (2)/                           # Dữ liệu Từ đơn VSL (Level 2)
-│   ├── Dataset/
-│   │   ├── Videos/                     # 4.362 video VSL gốc (.mp4)
-│   │   └── Labels/label.csv            # Bảng ánh xạ video -> nhãn từ vựng
-│   └── Processed/                      # 184.295 chuỗi (60, 201) keypoints
-│       ├── label_map.json              # 3.315 từ vựng ánh xạ sang ID
-│       ├── train/                      # 145.019 files .npz
-│       ├── val/                        # 17.980 files .npz
-│       └── test/                       # 21.296 files .npz
-├── src/
-│   ├── data/
-│   │   ├── extract_landmarks.py        # MediaPipe Holistic (201-dim) & Hands (42-dim)
-│   │   ├── dataset.py                  # PyTorch Dataset/DataLoader (Sequence & Alphabet)
-│   │   └── augment.py                  # Tăng cường dữ liệu keypoint (jitter, rotate, time warp)
-│   ├── models/
-│   │   ├── alphabet_classifier.py      # MLP nhận diện bảng chữ cái (Paper 2)
-│   │   ├── gru_classifier.py           # BiGRU + Temporal Attention (Paper 1)
-│   │   ├── transformer_classifier.py   # Spatio-temporal Transformer Encoder
-│   │   └── stgcn.py                    # Skeleton Graph Convolutional Network
-│   ├── train_alphabet.py               # Huấn luyện model Level 1
-│   ├── train_word.py                   # Huấn luyện model Level 2
-│   ├── evaluate.py                     # Đánh giá Top-1, Top-5 & vẽ Confusion Matrix
-│   └── export.py                       # Xuất mô hình ONNX & TorchScript
-├── app/
-│   ├── api/
-│   │   └── main.py                     # FastAPI backend (REST endpoints)
-│   └── ui/
-│       └── app.py                      # Streamlit Web UI tương tác thời gian thực
-├── configs/
-│   ├── alphabet_config.yaml            # Cấu hình huấn luyện Level 1
-│   └── word_config.yaml                # Cấu hình huấn luyện Level 2
-├── experiments/                        # Lưu checkpoints (.pth), đồ thị và ONNX models
-├── requirements.txt
-└── README.md
+├── backend/                            # FastAPI Production Backend (Phase 12)
+│   ├── main.py                         # FastAPI REST + WebSocket Server (:8000)
+│   └── requirements.txt                # Python Backend dependencies
+├── frontend/                           # React 18 + Vite + Tailwind Frontend
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── CameraCapture.jsx       # Component thu nhận webcam & canvas streaming
+│   │   │   ├── PredictionDisplay.jsx   # Component hiển thị kết quả HUD, Top-5, FPS
+│   │   │   └── Phase12Pipeline.jsx     # Điều phối WebSocket & ghép giao diện
+│   │   ├── App.jsx                     # Ứng dụng chính & bộ chuyển tab
+│   │   └── main.jsx
+│   ├── package.json
+│   └── vite.config.js                  # Vite development server (:3000)
+├── checkpoints/                        # Model weights (.pt) và ONNX models (.onnx)
+│   ├── stgcn_best.pt                   # Best PyTorch ST-GCN weights
+│   ├── stgcn_best.onnx                 # Optimized ONNX model (1.23 MB)
+│   ├── transformer_best.pt             # Best PyTorch Transformer weights
+│   └── transformer_best.onnx           # Optimized ONNX model (1.50 MB)
+├── configs/                            # Configuration files & Class labels
+│   ├── tier1_classes.txt               # 50 Tier-1 Vietnamese Sign Glosses
+│   └── vsl_config.yaml                 # Hyperparameters configuration
+├── data/Dataset/Videos/            # 4,362 raw VSL videos (North, Central, South)
+├── docs/                               # Comprehensive Documentation
+│   ├── audit/phase_state.json          # Trajectory audit tracker (Phases 0 -> 14)
+│   ├── audit/final_status.md           # Endgame packaging validation checklist
+│   ├── phase12_api.md                  # WebSocket & REST API documentation
+│   ├── phase13_optimization.md         # ONNX vs PyTorch benchmark report
+│   └── final_report_outline.md         # Sườn bài báo cáo khoa học Word/LaTeX
+├── experiments/                        # Experiment metrics, plots, and logs
+│   ├── baseline/                       # BiGRU training curve, confusion matrix, report
+│   ├── stgcn/                          # ST-GCN training curve, confusion matrix, report
+│   ├── transformer/                    # Transformer training curve, confusion matrix, report
+│   └── ensemble/                       # Ensemble confusion matrix, benchmark JSON
+├── scripts/                            # Verification & benchmark scripts
+│   ├── smoke_test_phase10.py           # Phase 10 Realtime pipeline test
+│   ├── smoke_test_phase12.py           # Phase 12 FastAPI WebSocket test
+│   ├── benchmark_onnx.py               # Phase 13 ONNX benchmark script
+│   └── generate_slide_images.py        # Phase 14 Slide snapshot generator
+├── src/                                # Core Deep Learning Source Code
+│   ├── data/                           # Data loaders, Landmark extractor, Preprocessing
+│   ├── models/                         # ST-GCN, Transformer, BiGRU, Graph topology
+│   ├── inference/                      # VSLPredictor, RealtimePipeline, TemporalSmoother
+│   └── export/                         # ONNX export script and OnnxPredictor
+├── submission/                         # Endgame Submission Artifacts
+│   ├── report_figures/                 # All 7 confusion matrices & training curves
+│   ├── slide_images/                   # Demo HUD slides for presentation
+│   └── benchmark_tables.csv            # Summary benchmark spreadsheet
+├── realtime_demo.py                    # Standalone Desktop Realtime Demo with Pillow HUD
+├── train.py                            # Model training script with AMP & Early Stopping
+└── evaluate_test.py                    # Independent Test Set evaluation script
 ```
 
 ---
 
-### 5. Hướng Dẫn Cài Đặt & Chạy Hệ Thống
+## 5. Hướng Dẫn Cài Đặt & Chạy Hệ Thống
 
-#### Bước 1: Kích hoạt Môi trường Ảo
-Sử dụng trực tiếp Python trong virtualenv:
+### 5.1. Yêu Cầu Hệ Thống
+- Hệ điều hành: Windows 10/11, Ubuntu 20.04/22.04.
+- Python: 3.10 hoặc 3.11.
+- Node.js: $\ge 18.0.0$, npm $\ge 9.0.0$.
+- GPU (Khuyến nghị): NVIDIA GeForce RTX 3050 (hoặc tương đương) với CUDA 12.x.
+
+### 5.2. Cài Đặt Môi Trường
+1. **Thiết lập Virtualenv & Thư viện Python**:
+   ```powershell
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   pip install -r backend/requirements.txt
+   ```
+2. **Cài đặt Frontend React**:
+   ```powershell
+   cd frontend
+   npm install
+   cd ..
+   ```
+
+---
+
+### 5.3. Khởi Chạy Ứng Dụng Web Real-time (Khuyến Nghị)
+
+#### Cách 1: Chạy song song 2 terminal
+**Terminal 1 (FastAPI Backend)**:
 ```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\uvicorn.exe backend.main:app --host 0.0.0.0 --port 8000 --reload
+```
+*API Docs Swagger UI mở tại: `http://localhost:8000/docs`*
+
+**Terminal 2 (React Frontend)**:
+```powershell
+cd frontend
+npm run dev
+```
+*Truy cập trình duyệt tại: `http://localhost:3000`. Cấp quyền Camera và trải nghiệm nhận diện thời gian thực.*
+
+---
+
+### 5.4. Chạy Bản Demo Desktop OpenCV (Tùy chọn)
+Để chạy bản demo trực tiếp qua cửa sổ OpenCV với HUD tiếng Việt sắc nét:
+```powershell
+# Chạy với Webcam mặc định (Camera 0)
+.\.venv\Scripts\python.exe realtime_demo.py --webcam 0
+
+# Chạy kiểm thử trên file video mẫu
+.\.venv\Scripts\python.exe realtime_demo.py --video "data\Dataset\Videos\W00009N.mp4"
 ```
 
-#### Bước 2: Huấn luyện Mô hình Cấp độ 1 (Bảng chữ cái)
-```powershell
-.\.venv\Scripts\python.exe src/train_alphabet.py
-```
-*Kết quả:* Mô hình `AlphabetMLP` đạt độ chính xác >95%, lưu tại `experiments/alphabet_model.pth`.
+---
 
-#### Bước 3: Huấn luyện Mô hình Cấp độ 2 (Từ đơn VSL)
-Huấn luyện mô hình BiGRU trên tập 40–50 từ vựng VSL phổ biến nhất:
+### 5.5. Huấn Luyện & Đánh Giá Mô Hình
 ```powershell
-.\.venv\Scripts\python.exe src/train_word.py --model bigru --top_k 40 --epochs 25
-```
-*(Tùy chọn) Huấn luyện mô hình Transformer:*
-```powershell
-.\.venv\Scripts\python.exe src/train_word.py --model transformer --top_k 40 --epochs 25
+# Huấn luyện mô hình ST-GCN với PyTorch AMP
+.\.venv\Scripts\python.exe train.py --model stgcn --epochs 50 --batch-size 16
+
+# Huấn luyện mô hình Transformer
+.\.venv\Scripts\python.exe train.py --model transformer --epochs 50 --batch-size 16
+
+# Đánh giá độc lập trên tập Test Set Miền Nam
+.\.venv\Scripts\python.exe evaluate_test.py --model ensemble
 ```
 
-#### Bước 4: Đánh giá & Phân tích Ma trận Nhầm lẫn
-```powershell
-.\.venv\Scripts\python.exe src/evaluate.py --checkpoint experiments/word_model_bigru.pth
-```
-Đồ thị ma trận nhầm lẫn sẽ được xuất ra `experiments/confusion_matrix_word.png` kèm danh sách các cặp từ dễ nhầm lẫn nhất.
+---
 
-#### Bước 5: Xuất Mô hình Phục vụ Triển khai (ONNX / TorchScript)
+### 5.6. Xuất & Benchmark Mô Hình ONNX
 ```powershell
-.\.venv\Scripts\python.exe src/export.py
+# Xuất mô hình sang định dạng ONNX Opset 14
+.\.venv\Scripts\python.exe src/export/export_onnx.py --model all
+
+# Chạy kịch bản đo kiểm hiệu năng PyTorch vs ONNX Runtime
+.\.venv\Scripts\python.exe scripts/benchmark_onnx.py
 ```
 
-#### Bước 6: Khởi chạy Hệ Thống Web Fullstack Hiện Đại (ReactJS + Node.js + FastAPI)
-Hệ thống hỗ trợ truyền luồng video trực tiếp từ webcam qua WebSockets và đo lường độ trễ mili-giây (RTT, AI Infer, MediaPipe):
-```powershell
-.\start_fullstack.ps1
-```
-Hoặc khởi chạy độc lập từng tầng:
-- **Python AI Engine (FastAPI & WebSockets)**:
-  ```powershell
-  .\.venv\Scripts\uvicorn.exe app.api.main:app --host 0.0.0.0 --port 8000 --reload
-  ```
-- **Node.js Gateway & Dictionary API**:
-  ```powershell
-  node backend/server.js
-  ```
-- **ReactJS Modern Frontend**:
-  ```powershell
-  cd frontend; npm run dev
-  ```
-Mở trình duyệt: `http://localhost:3000` (React Web) hoặc `http://localhost:8000/docs` (Swagger API).
+---
 
-#### Bước 7: (Tùy chọn) Khởi chạy Giao diện Thử nghiệm Nhanh (Streamlit UI)
+### 5.7. Chạy Kiểm Thử Tích Hợp (Smoke Tests)
 ```powershell
-.\.venv\Scripts\streamlit.exe run app/ui/app.py
+# Kiểm thử toàn bộ Phase 12 (REST API + WebSocket Stream)
+.\.venv\Scripts\python.exe scripts/smoke_test_phase12.py
 ```
-Giao diện Streamlit mở tại: `http://localhost:8501`.
+
+---
+
+### 5.8. Huấn Luyện Tăng Tốc Trên Cloud GPU (Google Colab / Kaggle)
+Để tận dụng GPU miễn phí (Tesla T4 / P100) trên Cloud và giữ máy cá nhân cho các tác vụ nhẹ (trích xuất MediaPipe, webcam demo, fullstack app):
+
+1. **Đóng gói dữ liệu đã trích xuất tại máy cá nhân** (~187 MB, không chứa video thô):
+```powershell
+.\.venv\Scripts\python.exe scripts/package_cloud_data.py
+```
+2. **Mở notebook huấn luyện:**
+   - Sử dụng file [`vsl_cloud_training.ipynb`](./vsl_cloud_training.ipynb) trên **Google Colab** (chọn T4 GPU) hoặc **Kaggle** (chọn GPU T4 x2 / P100).
+   - Chi tiết hướng dẫn tải dữ liệu, chạy huấn luyện, xuất ONNX và tải checkpoint về máy: xem tài liệu [docs/cloud_training.md](./docs/cloud_training.md).
+
+---
+
+## 6. Trích Dẫn & Bản Quyền
+
+Dự án được phát triển phục vụ mục đích nghiên cứu học thuật trong khuôn khổ môn học **Deep Learning + Computer Vision**. Mọi mã nguồn phát hành dưới giấy phép MIT License.
+
