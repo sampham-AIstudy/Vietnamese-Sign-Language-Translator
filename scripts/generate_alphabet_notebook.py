@@ -19,8 +19,8 @@ from pathlib import Path
 
 MARKDOWN_INTRO = """# VSL Alphabet (Level 1 - Fingerspelling) — Kaggle GPU training
 
-**Data:** VSL Alphabet Pilot (1,875 clips, 15 signers, 25 classes), signer-disjoint split:
-train = 10 signers, val = S02/S12, test = S03/S14/S15.
+**Data:** real webcam recordings from `scripts/collect_alphabet_real.py` (`data/vsl_alphabet_real`), 25 classes,
+signer-disjoint splits. `data/vsl_alphabet_pilot` is SYNTHETIC and is refused by the data cell.
 
 **Protocol**
 1. Train Static MLP (63-d median hold frame) and Temporal BiGRU (30x63 sequence).
@@ -50,7 +50,7 @@ print(f"python={platform.python_version()} torch={torch.__version__} out={OUT_DI
 CELL_DATA = r'''# 2. LOCATE DATA + CODE (dataset zip, auto-extracted dataset, or local repo)
 def locate_root() -> Path:
     here = Path(".").resolve()
-    if (here / "data/vsl_alphabet_pilot/splits/train.csv").exists() and (here / "src/data/alphabet_dataset.py").exists():
+    if (here / "configs/alphabet_level1.yaml").exists() and (here / "src/data/alphabet_dataset.py").exists():
         return here
     base = Path("/kaggle/input")
     zips = sorted(base.rglob("vsl_alphabet_cloud_data.zip")) if base.exists() else []
@@ -64,7 +64,7 @@ def locate_root() -> Path:
         return work
     for hit in sorted(base.rglob("alphabet_dataset.py")) if base.exists() else []:
         root = hit.parents[2]
-        if (root / "data/vsl_alphabet_pilot/splits/train.csv").exists():
+        if (root / "configs/alphabet_level1.yaml").exists():
             return root
     raise FileNotFoundError("vsl_alphabet_cloud_data not found (attach the Kaggle dataset)")
 
@@ -77,6 +77,9 @@ import yaml
 CFG = yaml.safe_load(open("configs/alphabet_level1.yaml", encoding="utf-8"))
 SEED = int(CFG["seed"])
 SPLITS = CFG["data"]["splits_dir"]
+SYNTHETIC_MARKER = Path(SPLITS).parent / "DO_NOT_TRAIN_SYNTHETIC.md"
+if SYNTHETIC_MARKER.exists():
+    raise RuntimeError(f"{SYNTHETIC_MARKER.parent} is synthetic data (see {SYNTHETIC_MARKER.name}) — refusing to train/evaluate")
 CLASSES = [l.strip() for l in open(f"{SPLITS}/classes.txt", encoding="utf-8") if l.strip()]
 assert len(CLASSES) == CFG["data"]["num_classes"] == 25, CLASSES
 

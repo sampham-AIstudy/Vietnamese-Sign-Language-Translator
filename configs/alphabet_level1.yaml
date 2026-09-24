@@ -7,7 +7,8 @@ selection_metric: val_top1        # model/epoch selection uses VAL only; TEST is
 tie_breakers: [val_macro_f1, prefer_mlp]
 
 data:
-  splits_dir: data/vsl_alphabet_pilot/splits
+  # data/vsl_alphabet_pilot is SYNTHETIC (see its DO_NOT_TRAIN_SYNTHETIC.md) — real recordings only.
+  splits_dir: data/vsl_alphabet_real/splits   # written by scripts/collect_alphabet_real.py --make-splits
   num_classes: 25
   static_strategy: median         # extract_static_features
   target_seq_len: 30              # extract_sequence_features
