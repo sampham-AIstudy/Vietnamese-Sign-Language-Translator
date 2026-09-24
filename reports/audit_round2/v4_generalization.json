@@ -1,0 +1,38 @@
+{
+  "signer_metadata": {
+    "annotated_signers": 0,
+    "is_signer_disjoint": false,
+    "note": "VSLR dataset has no signer labels. Signer-disjoint splitting is impossible with current metadata."
+  },
+  "in_domain_test_bootstrap": {
+    "n_samples": 487,
+    "top1_point_estimate": 46.41,
+    "top1_ci_95": [
+      42.09,
+      50.72
+    ],
+    "top5_point_estimate": 60.78,
+    "top5_ci_95": [
+      56.26,
+      65.1
+    ],
+    "dialect_top1_ci_95": {
+      "Bắc (North)": [
+        15.34,
+        28.22
+      ],
+      "Trung (Central)": [
+        53.7,
+        69.14
+      ],
+      "Nam (South)": [
+        48.15,
+        63.58
+      ]
+    }
+  },
+  "cross_dialect_3fold_status": {
+    "has_retrained_checkpoints": false,
+    "status": "UNVERIFIED (Checkpoints for folds 1, 2, 3 do not exist; past evaluation in tier2_benchmark_summary suffered from mode collapse on Fold 2; retrain needed on cloud)."
+  }
+}

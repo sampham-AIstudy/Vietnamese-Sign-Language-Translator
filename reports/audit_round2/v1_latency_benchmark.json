@@ -1,0 +1,35 @@
+{
+  "total_sent": 100,
+  "received_responses": 100,
+  "drop_rate_pct": 0.0,
+  "client_rtt_e2e_ms": {
+    "mean": 90.78,
+    "p50": 88.99,
+    "p95": 103.61,
+    "p99": 111.68
+  },
+  "server_total_ms": {
+    "mean": 88.66,
+    "p50": 86.89,
+    "p95": 101.33,
+    "p99": 109.38
+  },
+  "server_mediapipe_preprocess_ms": {
+    "mean": 35.46,
+    "p50": 34.76,
+    "p95": 40.53,
+    "p99": 43.75
+  },
+  "server_model_infer_ms": {
+    "mean": 53.2,
+    "p50": 52.14,
+    "p95": 60.8,
+    "p99": 65.62
+  },
+  "network_serialize_ms": {
+    "mean": 2.12,
+    "p50": 2.08,
+    "p95": 2.58,
+    "p99": 2.83
+  }
+}

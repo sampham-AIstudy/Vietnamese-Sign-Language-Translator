@@ -1,0 +1,81 @@
+{
+  "tier2_total_classes": 487,
+  "classes_covered_in_combined": 360,
+  "coverage_pct": 73.92,
+  "total_tokens": 1090,
+  "oov_tokens_count": 189,
+  "token_oov_pct": 17.34,
+  "oov_classes_sample": [
+    "1 000 000 (một triệu)",
+    "1 000 000 000 (một tỉ)",
+    "10 000 (mười nghìn)",
+    "11",
+    "23",
+    "anh (nước anh)",
+    "anh hai, anh cả",
+    "anh rể",
+    "bao giờ?",
+    "bra-xin (nước bra-xin)",
+    "bru-nây (nước bru-nây)",
+    "buông màn",
+    "báo (con báo)",
+    "bít tết (bò)",
+    "bẫy chuột (hành động)"
+  ],
+  "code_trace": {
+    "realtime_demo_py": "Accumulates confirmed isolated words in smoothed.get('sentence', []), calls translator.translate(current_history) on new word.",
+    "backend_ws": "Returns confirmed words array in 'sentence' field, DOES NOT call ViT5 inside WebSocket loop. ViT5 is separate on REST POST /api/translate."
+  },
+  "test_phrases_evaluation": [
+    {
+      "input_gloss": "tôi chào bạn",
+      "translation": "Tôi chào bạn.",
+      "latency_ms": 1675.48
+    },
+    {
+      "input_gloss": "bạn tên gì",
+      "translation": "Bạn tên gì?",
+      "latency_ms": 439.46
+    },
+    {
+      "input_gloss": "tôi khám bệnh muốn",
+      "translation": "Tôi muốn khám bệnh.",
+      "latency_ms": 525.72
+    },
+    {
+      "input_gloss": "nhà tôi ba mẹ có",
+      "translation": "Nhà tôi có ba mẹ.",
+      "latency_ms": 532.8
+    },
+    {
+      "input_gloss": "địa chỉ trường học ở đâu",
+      "translation": "Địa chỉ của trường học ở đâu?",
+      "latency_ms": 677.54
+    },
+    {
+      "input_gloss": "tôi xem phim thích",
+      "translation": "Tôi thích xem phim này.",
+      "latency_ms": 496.9
+    },
+    {
+      "input_gloss": "ngày mai đi học sẽ",
+      "translation": "Ngày mai đi học sẽ.",
+      "latency_ms": 633.19
+    },
+    {
+      "input_gloss": "tôi cảm ơn bác sĩ nhiều",
+      "translation": "Tôi cảm ơn bác sĩ rất nhiều.",
+      "latency_ms": 638.9
+    },
+    {
+      "input_gloss": "cảnh sát giao thông bắt xe",
+      "translation": "Cảnh sát giao thông bắt xe.",
+      "latency_ms": 614.82
+    },
+    {
+      "input_gloss": "bạn giúp đỡ tôi được không",
+      "translation": "Bạn giúp đỡ tôi được không?",
+      "latency_ms": 657.71
+    }
+  ]
+}

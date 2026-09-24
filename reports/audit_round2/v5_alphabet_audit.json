@@ -1,0 +1,84 @@
+{
+  "total_npz": 1875,
+  "total_videos": 1875,
+  "shapes": [
+    [
+      105,
+      21,
+      3
+    ]
+  ],
+  "nan_count": 0,
+  "missing_hand_frame_ratio": 24.76,
+  "duplicate_videos": 0,
+  "classes_25": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "Dau_moc",
+    "Dau_mu",
+    "E",
+    "G",
+    "H",
+    "I",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "X",
+    "Y",
+    "Đ"
+  ],
+  "linguistic_notes": {
+    "static_classes": 25,
+    "static_letters": 23,
+    "static_accents": 2,
+    "dynamic_letters_excluded": [
+      "J",
+      "Z"
+    ],
+    "dynamic_accents_excluded": [
+      "Dau_Hoi",
+      "Dau_Nga",
+      "Dau_Nang"
+    ],
+    "standard": "Thông tư 17/2020/TT-BGDĐT"
+  },
+  "handedness_audit": {
+    "dataset_handedness": "100% Right hand",
+    "frontend_camera": "Raw canvas unmirrored; CSS mirrored display only",
+    "consistency": "PASS (Both training data and runtime live pipeline process unmirrored right-hand coordinates)."
+  },
+  "proposed_signer_split": {
+    "train": [
+      "S01",
+      "S04",
+      "S05",
+      "S06",
+      "S07",
+      "S08",
+      "S09",
+      "S10",
+      "S11",
+      "S13"
+    ],
+    "val": [
+      "S02",
+      "S12"
+    ],
+    "test": [
+      "S03",
+      "S14",
+      "S15"
+    ]
+  }
+}

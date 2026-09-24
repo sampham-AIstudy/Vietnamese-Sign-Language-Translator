@@ -1,0 +1,41 @@
+{
+  "sample_counts": {
+    "total_test_samples": 300,
+    "unseen_sentences_count": 30,
+    "seen_sentences_in_train_count": 270,
+    "seen_overlap_ratio": 90.0,
+    "num_signers": 6
+  },
+  "bleu_bootstrap_30_unseen": {
+    "mode_a_oracle": {
+      "point_estimate": 27.98,
+      "ci_95": [
+        17.6,
+        38.39
+      ]
+    },
+    "mode_b_cslr": {
+      "point_estimate": 23.18,
+      "ci_95": [
+        13.62,
+        33.7
+      ]
+    },
+    "delta_mode_a_minus_b": {
+      "point_estimate": 4.8,
+      "ci_95": [
+        1.29,
+        9.14
+      ],
+      "is_statistically_significant": true
+    }
+  },
+  "cslr_wer_bootstrap_300": {
+    "point_estimate": 32.8,
+    "ci_95": [
+      29.48,
+      36.62
+    ]
+  },
+  "conclusion": "Khoảng tin cậy delta giữa Mode A và Mode B KHÔNG bao gồm 0, chứng minh chênh lệch có ý nghĩa thống kê (p < 0.05)."
+}

@@ -1,0 +1,3566 @@
+{
+  "tier2_train.csv": [
+    {
+      "file": "configs/vsl_config.yaml",
+      "line": 22,
+      "content": "train_split: \"data/splits/tier2_train.csv\""
+    },
+    {
+      "file": "docs/phase1_dataset.md",
+      "line": 67,
+      "content": "| `data/splits/tier2_train.csv` | Tier 2 training split (497 videos, 489 classes) |"
+    },
+    {
+      "file": "docs/audit/phase_state.json",
+      "line": 82,
+      "content": "\"data/splits/tier2_train.csv\","
+    },
+    {
+      "file": "docs/audit/phase_state.json",
+      "line": 111,
+      "content": "\"data/splits/tier2_train.csv\","
+    },
+    {
+      "file": "scripts/check_data_leakage.py",
+      "line": 111,
+      "content": "train_csv=os.path.join(SPLITS_DIR, \"tier2_train.csv\"),"
+    },
+    {
+      "file": "scripts/create_video_splits.py",
+      "line": 116,
+      "content": "df_tier2_all[df_tier2_all[\"split\"] == \"train\"].to_csv(os.path.join(SPLITS_DIR, \"tier2_train.csv\"), index=False, encoding=\"utf-8-sig\")"
+    }
+  ],
+  "tier2_val.csv": [
+    {
+      "file": "configs/vsl_config.yaml",
+      "line": 23,
+      "content": "val_split: \"data/splits/tier2_val.csv\""
+    },
+    {
+      "file": "docs/phase1_dataset.md",
+      "line": 68,
+      "content": "| `data/splits/tier2_val.csv` | Tier 2 validation split (489 videos, 489 classes) |"
+    },
+    {
+      "file": "docs/audit/phase_state.json",
+      "line": 83,
+      "content": "\"data/splits/tier2_val.csv\","
+    },
+    {
+      "file": "docs/audit/phase_state.json",
+      "line": 112,
+      "content": "\"data/splits/tier2_val.csv\","
+    },
+    {
+      "file": "scripts/check_data_leakage.py",
+      "line": 112,
+      "content": "val_csv=os.path.join(SPLITS_DIR, \"tier2_val.csv\"),"
+    },
+    {
+      "file": "scripts/create_video_splits.py",
+      "line": 117,
+      "content": "df_tier2_all[df_tier2_all[\"split\"] == \"val\"].to_csv(os.path.join(SPLITS_DIR, \"tier2_val.csv\"), index=False, encoding=\"utf-8-sig\")"
+    }
+  ],
+  "tier2_test.csv": [
+    {
+      "file": "configs/vsl_config.yaml",
+      "line": 24,
+      "content": "test_split: \"data/splits/tier2_test.csv\""
+    },
+    {
+      "file": "docs/phase1_dataset.md",
+      "line": 69,
+      "content": "| `data/splits/tier2_test.csv` | Tier 2 test split (489 videos, 489 classes) |"
+    },
+    {
+      "file": "docs/audit/phase_state.json",
+      "line": 84,
+      "content": "\"data/splits/tier2_test.csv\","
+    },
+    {
+      "file": "docs/audit/phase_state.json",
+      "line": 113,
+      "content": "\"data/splits/tier2_test.csv\","
+    },
+    {
+      "file": "scripts/check_data_leakage.py",
+      "line": 113,
+      "content": "test_csv=os.path.join(SPLITS_DIR, \"tier2_test.csv\"),"
+    },
+    {
+      "file": "scripts/create_video_splits.py",
+      "line": 118,
+      "content": "df_tier2_all[df_tier2_all[\"split\"] == \"test\"].to_csv(os.path.join(SPLITS_DIR, \"tier2_test.csv\"), index=False, encoding=\"utf-8-sig\")"
+    }
+  ],
+  "num_classes_489": [
+    {
+      "file": "checkpoints/vit5_stage1/best_model/tokenizer.json",
+      "line": 1491,
+      "content": "\"▁thủ\": 489,"
+    },
+    {
+      "file": "checkpoints/vit5_stage2/best_model/tokenizer.json",
+      "line": 1491,
+      "content": "\"▁thủ\": 489,"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 1285,
+      "content": "01_Co-Hien_400-700_7-8-9_0122___center_device03_signer01_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 1578,
+      "content": "01_Co-Hien_400_700_7-8-9_0122___left_device20_signer01_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 1871,
+      "content": "01_Co-Hien_400_700_7-8-9_0122___right_device44_signer01_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 4263,
+      "content": "02_Co-Ngan_400-700_13-14-15_0112___center_device05_signer02_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 4560,
+      "content": "02_Co-Ngan_400-700_13-14-15_0112___left_device23_signer02_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 4857,
+      "content": "02_Co-Ngan_400-700_13-14-15_0112___right_device24_signer02_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 9252,
+      "content": "04_Co-Hang_400-607_13-14-15_0122___center_device37_1_signer04_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 9460,
+      "content": "04_Co-Hang_400-607_13-14-15_0122___left_device31_1_signer04_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 9668,
+      "content": "04_Co-Hang_400-607_13-14-15_0122___right_device19_1_signer04_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 13195,
+      "content": "05_Viet-Anh_400-700_4-5-6_0119___center_device05_signer05_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 13493,
+      "content": "05_Viet-Anh_400-700_4-5-6_0119___left_device13_signer05_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 13791,
+      "content": "05_Viet-Anh_400-700_4-5-6_0119___right_device02_signer05_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 15266,
+      "content": "06_Co-Son_400-700_7-8-9_0118___center_device31_signer06_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 15565,
+      "content": "06_Co-Son_400-700_7-8-9_0118___left_device37_signer06_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 15864,
+      "content": "06_Co-Son_400-700_7-8-9_0118___right_device19_signer06_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 18135,
+      "content": "07_Phu_400-700_1-2-3_0119___center_device10_signer07_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 18367,
+      "content": "07_Phu_400-700_1-2-3_0119___left_device17_signer07_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 18599,
+      "content": "07_Phu_400-700_1-2-3_0119___right_device07_signer07_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 20885,
+      "content": "08_Thay-Son_400-700_1-2-3_0112___center_device01_signer08_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 21182,
+      "content": "08_Thay-Son_400-700_1-2-3_0112___left_device20_signer08_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 21479,
+      "content": "08_Thay-Son_400-700_1-2-3_0112___right_device12_signer08_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 23823,
+      "content": "09_Hien_400-606_13-14-15_0118___right_device12_1_signer09_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 24030,
+      "content": "09_Hien_400-700_13-14-15_0118___center_device01_signer09_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 24312,
+      "content": "09_Hien_400-700_13-14-15_0118___left_device36_signer09_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 26745,
+      "content": "10_Vuong_400-700_1-2-3_0115___center_device10_signer10_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 27044,
+      "content": "10_Vuong_400-700_1-2-3_0115___left_device20_signer10_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 27343,
+      "content": "10_Vuong_400-700_1-2-3_0115___right_device12_signer10_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 28533,
+      "content": "11_Tue-Minh_400-698_10-11-12_0117___center_device02_signer11_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 28818,
+      "content": "11_Tue-Minh_400-698_10-11-12_0117___left_device34_signer11_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 29103,
+      "content": "11_Tue-Minh_400-698_10-11-12_0117___right_device33_signer11_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 31290,
+      "content": "12_Linh_400-536_1-2-3_0115___right_device12_signer12_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 31427,
+      "content": "12_Linh_400-563_1-2-3_0115___center_device10_signer12_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 31564,
+      "content": "12_Linh_400-563_1-2-3_0115___left_device20_signer12_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 33795,
+      "content": "13_An-Chi_400-689_10-11-12_0115___left_device05_1_signer13_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 34085,
+      "content": "13_An-Chi_400-700_10-11-12_0115___right_device11_signer13_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 34384,
+      "content": "13_An-Chi_400-700_11-12-13_0115___center_device07_signer13_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 35864,
+      "content": "14_Bao-Nam_400-698_10-11-12_0119___center_device42_signer14_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 36162,
+      "content": "14_Bao-Nam_400-698_10-11-12_0119___left_device41_signer14_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 36460,
+      "content": "14_Bao-Nam_400-698_10-11-12_0119___right_device11_signer14_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 38815,
+      "content": "15_Hoang-Nam_400-700_7-8-9_0112___center_device22_signer15_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 39112,
+      "content": "15_Hoang-Nam_400-700_7-8-9_0112___left_device19_signer15_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 39409,
+      "content": "15_Hoang-Nam_400-700_7-8-9_0112___right_device07_signer15_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 44471,
+      "content": "17_Vu_400-700_10-11-12_0118___center_device05_signer17_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 44768,
+      "content": "17_Vu_400-700_10-11-12_0118___left_device24_signer17_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 45065,
+      "content": "17_Vu_400-700_10-11-12_0118___right_device07_signer17_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 47463,
+      "content": "18_Tuoi_400-700_13-14-15_0115___center_device25_signer18_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 47762,
+      "content": "18_Tuoi_400-700_13-14-15_0115___left_device27_signer18_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 48061,
+      "content": "18_Tuoi_400-700_13-14-15_0115___right_device26_signer18_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 49860,
+      "content": "19_Hoang-Anh_400-700_13-14-15_0119___center_device01_signer19_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 50159,
+      "content": "19_Hoang-Anh_400-700_13-14-15_0119___left_device19_signer19_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 50458,
+      "content": "19_Hoang-Anh_400-700_13-14-15_0119___right_device20_signer19_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 53457,
+      "content": "20_Hong-Anh_400-698_7-8-9_0116___center_device28_signer20_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 53755,
+      "content": "20_Hong-Anh_400-698_7-8-9_0116___left_device16_signer20_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 54053,
+      "content": "20_Hong-Anh_400-698_7-8-9_0116___right_device30_signer20_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 56361,
+      "content": "21_Quoc-Phong_400-698_10-11-12_0116___center_device05_signer21_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 56648,
+      "content": "21_Quoc-Phong_400-698_10-11-12_0116___left_device07_signer21_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 56935,
+      "content": "21_Quoc-Phong_400-698_10-11-12_0116___right_device03_signer21_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 59288,
+      "content": "22_Tri-Trong_400-700_4-5-6_0116___center_device18_signer22_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 59586,
+      "content": "22_Tri-Trong_400-700_4-5-6_0116___left_device17_signer22_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 59884,
+      "content": "22_Tri-Trong_400-700_4-5-6_0116___right_device29_signer22_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 62106,
+      "content": "23_Nhi_400-700_4-5-6_0116___center_device18_signer23_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 62405,
+      "content": "23_Nhi_400-700_4-5-6_0116___left_device17_signer23_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 62704,
+      "content": "23_Nhi_400-700_4-5-6_0116___right_device29_signer23_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 65380,
+      "content": "24_Hang_400-607_1-2-3_0119___center_device10_1_signer24_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 65575,
+      "content": "24_Hang_400-700_1-2-3_0119___left_device17_signer24_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 65852,
+      "content": "24_Hang_400-700_1-2-3_0119___right_device07_signer24_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 68543,
+      "content": "26_Linh_445-661_4-5-6_0424_left_device56_signer26_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 68749,
+      "content": "26_Linh_445-700_4-5-6_0424_center_device54_signer26_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 68992,
+      "content": "26_Linh_445-700_4-5-6_0424_right_device55_signer26_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 70802,
+      "content": "27_Thanh-Tung_400-489_13-14-15_0116___left_device14_signer27_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 70874,
+      "content": "27_Thanh-Tung_400-518_13-14-15_0116___center_device01_1_signer27_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 70946,
+      "content": "27_Thanh-Tung_400-518_13-14-15_0116___right_device32_1_signer27_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 74045,
+      "content": "28_Tung_400-700_10-11-12_0122___center_device43_signer28_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 74342,
+      "content": "28_Tung_400-700_10-11-12_0122___left_device01_signer28_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 74639,
+      "content": "28_Tung_400_700_10-11-12_0122___right_device02_signer28_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 76465,
+      "content": "29_Thao_400-700_4-5-6_0118___center_device17_signer29_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 76764,
+      "content": "29_Thao_400-700_4-5-6_0118___left_device14_signer29_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 77063,
+      "content": "29_Thao_400-700_4-5-6_0118___right_device18_signer29_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 79311,
+      "content": "30_Khanh_400-700_13-14-15_0119___center_device01_signer30_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 79603,
+      "content": "30_Khanh_400-700_13-14-15_0119___left_device38_signer30_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 79895,
+      "content": "30_Khanh_400-700_13-14-15_0119___right_device20_signer30_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 82239,
+      "content": "31_Toan_400-700_1-2-3_0116___center_device10_signer31_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 82537,
+      "content": "31_Toan_400-700_1-2-3_0116___left_device20_signer31_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 82835,
+      "content": "31_Toan_400-700_1-2-3_0116___right_device11_signer31_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 84035,
+      "content": "3_Van-Anh_400-610_10-11-12_0117___center_device02_1_signer03_center_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 84237,
+      "content": "3_Van-Anh_400-698_10-11-12_0117___left_device33_signer03_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/labels_1_1000.csv",
+      "line": 84510,
+      "content": "3_Van-Anh_400-698_10-11-12_0117___right_device34_signer03_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_center_ord1.csv",
+      "line": 2124,
+      "content": "04_Co-Hang_400-607_13-14-15_0122___center_device37_1_signer04_center_ord1_489.mp4,489,1369068"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_center_ord1.csv",
+      "line": 2423,
+      "content": "10_Vuong_400-700_1-2-3_0115___center_device10_signer10_center_ord1_489.mp4,489,1344153"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_center_ord1.csv",
+      "line": 2722,
+      "content": "12_Linh_400-563_1-2-3_0115___center_device10_signer12_center_ord1_489.mp4,489,1520930"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_center_ord1.csv",
+      "line": 2853,
+      "content": "21_Quoc-Phong_400-698_10-11-12_0116___center_device05_signer21_center_ord1_489.mp4,489,1472605"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_left_ord1.csv",
+      "line": 2124,
+      "content": "04_Co-Hang_400-607_13-14-15_0122___left_device31_1_signer04_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_left_ord1.csv",
+      "line": 2423,
+      "content": "10_Vuong_400-700_1-2-3_0115___left_device20_signer10_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_left_ord1.csv",
+      "line": 2722,
+      "content": "12_Linh_400-563_1-2-3_0115___left_device20_signer12_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_left_ord1.csv",
+      "line": 2853,
+      "content": "21_Quoc-Phong_400-698_10-11-12_0116___left_device07_signer21_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_right_ord1.csv",
+      "line": 2124,
+      "content": "04_Co-Hang_400-607_13-14-15_0122___right_device19_1_signer04_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_right_ord1.csv",
+      "line": 2423,
+      "content": "10_Vuong_400-700_1-2-3_0115___right_device12_signer10_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_right_ord1.csv",
+      "line": 2722,
+      "content": "12_Linh_400-536_1-2-3_0115___right_device12_signer12_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_right_ord1.csv",
+      "line": 2853,
+      "content": "21_Quoc-Phong_400-698_10-11-12_0116___right_device03_signer21_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_three_view_ord1.csv",
+      "line": 2124,
+      "content": "04_Co-Hang_400-607_13-14-15_0122___center_device37_1_signer04_center_ord1_489.mp4,04_Co-Hang_400-607_13-14-15_0122___left_device31_1_signer04_left_ord"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_three_view_ord1.csv",
+      "line": 2423,
+      "content": "10_Vuong_400-700_1-2-3_0115___center_device10_signer10_center_ord1_489.mp4,10_Vuong_400-700_1-2-3_0115___left_device20_signer10_left_ord1_489.mp4,10_V"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_three_view_ord1.csv",
+      "line": 2722,
+      "content": "12_Linh_400-563_1-2-3_0115___center_device10_signer12_center_ord1_489.mp4,12_Linh_400-563_1-2-3_0115___left_device20_signer12_left_ord1_489.mp4,12_Lin"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/test_1_1000_three_view_ord1.csv",
+      "line": 2853,
+      "content": "21_Quoc-Phong_400-698_10-11-12_0116___center_device05_signer21_center_ord1_489.mp4,21_Quoc-Phong_400-698_10-11-12_0116___left_device07_signer21_left_o"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 8625,
+      "content": "02_Co-Ngan_400-700_13-14-15_0112___center_device05_signer02_center_ord1_489.mp4,489,1541433"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 8921,
+      "content": "15_Hoang-Nam_400-700_7-8-9_0112___center_device22_signer15_center_ord1_489.mp4,489,1542029"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 9220,
+      "content": "01_Co-Hien_400-700_7-8-9_0122___center_device03_signer01_center_ord1_489.mp4,489,1509341"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 9513,
+      "content": "28_Tung_400-700_10-11-12_0122___center_device43_signer28_center_ord1_489.mp4,489,1510225"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 9810,
+      "content": "06_Co-Son_400-700_7-8-9_0118___center_device31_signer06_center_ord1_489.mp4,489,1534372"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 10108,
+      "content": "17_Vu_400-700_10-11-12_0118___center_device05_signer17_center_ord1_489.mp4,489,1200278"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 10406,
+      "content": "09_Hien_400-700_13-14-15_0118___center_device01_signer09_center_ord1_489.mp4,489,1551380"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 10688,
+      "content": "29_Thao_400-700_4-5-6_0118___center_device17_signer29_center_ord1_489.mp4,489,1121969"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 10984,
+      "content": "11_Tue-Minh_400-698_10-11-12_0117___center_device02_signer11_center_ord1_489.mp4,489,1514196"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 11272,
+      "content": "13_An-Chi_400-700_11-12-13_0115___center_device07_signer13_center_ord1_489.mp4,489,1084781"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 11571,
+      "content": "18_Tuoi_400-700_13-14-15_0115___center_device25_signer18_center_ord1_489.mp4,489,1102774"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 11849,
+      "content": "07_Phu_400-700_1-2-3_0119___center_device10_signer07_center_ord1_489.mp4,489,1099982"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 12102,
+      "content": "19_Hoang-Anh_400-700_13-14-15_0119___center_device01_signer19_center_ord1_489.mp4,489,1531774"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 12400,
+      "content": "05_Viet-Anh_400-700_4-5-6_0119___center_device05_signer05_center_ord1_489.mp4,489,1141716"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 12776,
+      "content": "24_Hang_400-607_1-2-3_0119___center_device10_1_signer24_center_ord1_489.mp4,489,1531574"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 12975,
+      "content": "14_Bao-Nam_400-698_10-11-12_0119___center_device42_signer14_center_ord1_489.mp4,489,1554045"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 13271,
+      "content": "30_Khanh_400-700_13-14-15_0119___center_device01_signer30_center_ord1_489.mp4,489,1535746"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 13566,
+      "content": "20_Hong-Anh_400-698_7-8-9_0116___center_device28_signer20_center_ord1_489.mp4,489,1510524"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 13863,
+      "content": "22_Tri-Trong_400-700_4-5-6_0116___center_device18_signer22_center_ord1_489.mp4,489,1204544"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 14162,
+      "content": "23_Nhi_400-700_4-5-6_0116___center_device18_signer23_center_ord1_489.mp4,489,1471720"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_center_ord1.csv",
+      "line": 14407,
+      "content": "26_Linh_445-700_4-5-6_0424_center_device54_signer26_center_ord1_489.mp4,489,1552295"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 8389,
+      "content": "02_Co-Ngan_400-700_13-14-15_0112___left_device23_signer02_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 8685,
+      "content": "15_Hoang-Nam_400-700_7-8-9_0112___left_device19_signer15_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 8984,
+      "content": "01_Co-Hien_400_700_7-8-9_0122___left_device20_signer01_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 9277,
+      "content": "28_Tung_400-700_10-11-12_0122___left_device01_signer28_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 9574,
+      "content": "06_Co-Son_400-700_7-8-9_0118___left_device37_signer06_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 9872,
+      "content": "17_Vu_400-700_10-11-12_0118___left_device24_signer17_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 10170,
+      "content": "09_Hien_400-700_13-14-15_0118___left_device36_signer09_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 10452,
+      "content": "29_Thao_400-700_4-5-6_0118___left_device14_signer29_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 10748,
+      "content": "11_Tue-Minh_400-698_10-11-12_0117___left_device34_signer11_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 11036,
+      "content": "13_An-Chi_400-689_10-11-12_0115___left_device05_1_signer13_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 11335,
+      "content": "18_Tuoi_400-700_13-14-15_0115___left_device27_signer18_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 11613,
+      "content": "07_Phu_400-700_1-2-3_0119___left_device17_signer07_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 11866,
+      "content": "19_Hoang-Anh_400-700_13-14-15_0119___left_device19_signer19_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 12164,
+      "content": "05_Viet-Anh_400-700_4-5-6_0119___left_device13_signer05_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 12540,
+      "content": "24_Hang_400-700_1-2-3_0119___left_device17_signer24_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 12739,
+      "content": "14_Bao-Nam_400-698_10-11-12_0119___left_device41_signer14_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 13035,
+      "content": "30_Khanh_400-700_13-14-15_0119___left_device38_signer30_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 13330,
+      "content": "20_Hong-Anh_400-698_7-8-9_0116___left_device16_signer20_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 13627,
+      "content": "22_Tri-Trong_400-700_4-5-6_0116___left_device17_signer22_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 13926,
+      "content": "23_Nhi_400-700_4-5-6_0116___left_device17_signer23_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_left_ord1.csv",
+      "line": 14171,
+      "content": "26_Linh_445-661_4-5-6_0424_left_device56_signer26_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 8389,
+      "content": "02_Co-Ngan_400-700_13-14-15_0112___right_device24_signer02_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 8685,
+      "content": "15_Hoang-Nam_400-700_7-8-9_0112___right_device07_signer15_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 8984,
+      "content": "01_Co-Hien_400_700_7-8-9_0122___right_device44_signer01_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 9277,
+      "content": "28_Tung_400_700_10-11-12_0122___right_device02_signer28_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 9574,
+      "content": "06_Co-Son_400-700_7-8-9_0118___right_device19_signer06_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 9872,
+      "content": "17_Vu_400-700_10-11-12_0118___right_device07_signer17_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 10170,
+      "content": "09_Hien_400-606_13-14-15_0118___right_device12_1_signer09_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 10452,
+      "content": "29_Thao_400-700_4-5-6_0118___right_device18_signer29_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 10748,
+      "content": "11_Tue-Minh_400-698_10-11-12_0117___right_device33_signer11_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 11036,
+      "content": "13_An-Chi_400-700_10-11-12_0115___right_device11_signer13_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 11335,
+      "content": "18_Tuoi_400-700_13-14-15_0115___right_device26_signer18_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 11613,
+      "content": "07_Phu_400-700_1-2-3_0119___right_device07_signer07_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 11866,
+      "content": "19_Hoang-Anh_400-700_13-14-15_0119___right_device20_signer19_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 12164,
+      "content": "05_Viet-Anh_400-700_4-5-6_0119___right_device02_signer05_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 12540,
+      "content": "24_Hang_400-700_1-2-3_0119___right_device07_signer24_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 12739,
+      "content": "14_Bao-Nam_400-698_10-11-12_0119___right_device11_signer14_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 13035,
+      "content": "30_Khanh_400-700_13-14-15_0119___right_device20_signer30_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 13330,
+      "content": "20_Hong-Anh_400-698_7-8-9_0116___right_device30_signer20_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 13627,
+      "content": "22_Tri-Trong_400-700_4-5-6_0116___right_device29_signer22_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 13926,
+      "content": "23_Nhi_400-700_4-5-6_0116___right_device29_signer23_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_right_ord1.csv",
+      "line": 14171,
+      "content": "26_Linh_445-700_4-5-6_0424_right_device55_signer26_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 8389,
+      "content": "02_Co-Ngan_400-700_13-14-15_0112___center_device05_signer02_center_ord1_489.mp4,02_Co-Ngan_400-700_13-14-15_0112___left_device23_signer02_left_ord1_48"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 8685,
+      "content": "15_Hoang-Nam_400-700_7-8-9_0112___center_device22_signer15_center_ord1_489.mp4,15_Hoang-Nam_400-700_7-8-9_0112___left_device19_signer15_left_ord1_489."
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 8984,
+      "content": "01_Co-Hien_400-700_7-8-9_0122___center_device03_signer01_center_ord1_489.mp4,01_Co-Hien_400_700_7-8-9_0122___left_device20_signer01_left_ord1_489.mp4,"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 9277,
+      "content": "28_Tung_400-700_10-11-12_0122___center_device43_signer28_center_ord1_489.mp4,28_Tung_400-700_10-11-12_0122___left_device01_signer28_left_ord1_489.mp4,"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 9574,
+      "content": "06_Co-Son_400-700_7-8-9_0118___center_device31_signer06_center_ord1_489.mp4,06_Co-Son_400-700_7-8-9_0118___left_device37_signer06_left_ord1_489.mp4,06"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 9872,
+      "content": "17_Vu_400-700_10-11-12_0118___center_device05_signer17_center_ord1_489.mp4,17_Vu_400-700_10-11-12_0118___left_device24_signer17_left_ord1_489.mp4,17_V"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 10170,
+      "content": "09_Hien_400-700_13-14-15_0118___center_device01_signer09_center_ord1_489.mp4,09_Hien_400-700_13-14-15_0118___left_device36_signer09_left_ord1_489.mp4,"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 10452,
+      "content": "29_Thao_400-700_4-5-6_0118___center_device17_signer29_center_ord1_489.mp4,29_Thao_400-700_4-5-6_0118___left_device14_signer29_left_ord1_489.mp4,29_Tha"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 10748,
+      "content": "11_Tue-Minh_400-698_10-11-12_0117___center_device02_signer11_center_ord1_489.mp4,11_Tue-Minh_400-698_10-11-12_0117___left_device34_signer11_left_ord1_"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 11036,
+      "content": "13_An-Chi_400-700_11-12-13_0115___center_device07_signer13_center_ord1_489.mp4,13_An-Chi_400-689_10-11-12_0115___left_device05_1_signer13_left_ord1_48"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 11335,
+      "content": "18_Tuoi_400-700_13-14-15_0115___center_device25_signer18_center_ord1_489.mp4,18_Tuoi_400-700_13-14-15_0115___left_device27_signer18_left_ord1_489.mp4,"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 11613,
+      "content": "07_Phu_400-700_1-2-3_0119___center_device10_signer07_center_ord1_489.mp4,07_Phu_400-700_1-2-3_0119___left_device17_signer07_left_ord1_489.mp4,07_Phu_4"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 11866,
+      "content": "19_Hoang-Anh_400-700_13-14-15_0119___center_device01_signer19_center_ord1_489.mp4,19_Hoang-Anh_400-700_13-14-15_0119___left_device19_signer19_left_ord"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 12164,
+      "content": "05_Viet-Anh_400-700_4-5-6_0119___center_device05_signer05_center_ord1_489.mp4,05_Viet-Anh_400-700_4-5-6_0119___left_device13_signer05_left_ord1_489.mp"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 12540,
+      "content": "24_Hang_400-607_1-2-3_0119___center_device10_1_signer24_center_ord1_489.mp4,24_Hang_400-700_1-2-3_0119___left_device17_signer24_left_ord1_489.mp4,24_H"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 12739,
+      "content": "14_Bao-Nam_400-698_10-11-12_0119___center_device42_signer14_center_ord1_489.mp4,14_Bao-Nam_400-698_10-11-12_0119___left_device41_signer14_left_ord1_48"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 13035,
+      "content": "30_Khanh_400-700_13-14-15_0119___center_device01_signer30_center_ord1_489.mp4,30_Khanh_400-700_13-14-15_0119___left_device38_signer30_left_ord1_489.mp"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 13330,
+      "content": "20_Hong-Anh_400-698_7-8-9_0116___center_device28_signer20_center_ord1_489.mp4,20_Hong-Anh_400-698_7-8-9_0116___left_device16_signer20_left_ord1_489.mp"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 13627,
+      "content": "22_Tri-Trong_400-700_4-5-6_0116___center_device18_signer22_center_ord1_489.mp4,22_Tri-Trong_400-700_4-5-6_0116___left_device17_signer22_left_ord1_489."
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 13926,
+      "content": "23_Nhi_400-700_4-5-6_0116___center_device18_signer23_center_ord1_489.mp4,23_Nhi_400-700_4-5-6_0116___left_device17_signer23_left_ord1_489.mp4,23_Nhi_4"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 14171,
+      "content": "26_Linh_445-700_4-5-6_0424_center_device54_signer26_center_ord1_489.mp4,26_Linh_445-661_4-5-6_0424_left_device56_signer26_left_ord1_489.mp4,26_Linh_44"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 22049,
+      "content": "04_Co-Hang_400-607_13-14-15_0122___center_device37_1_signer04_center_ord1_489.mp4,04_Co-Hang_400-607_13-14-15_0122___left_device31_1_signer04_left_ord"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 22348,
+      "content": "10_Vuong_400-700_1-2-3_0115___center_device10_signer10_center_ord1_489.mp4,10_Vuong_400-700_1-2-3_0115___left_device20_signer10_left_ord1_489.mp4,10_V"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 22647,
+      "content": "12_Linh_400-563_1-2-3_0115___center_device10_signer12_center_ord1_489.mp4,12_Linh_400-563_1-2-3_0115___left_device20_signer12_left_ord1_489.mp4,12_Lin"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 22778,
+      "content": "21_Quoc-Phong_400-698_10-11-12_0116___center_device05_signer21_center_ord1_489.mp4,21_Quoc-Phong_400-698_10-11-12_0116___left_device07_signer21_left_o"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 26132,
+      "content": "08_Thay-Son_400-700_1-2-3_0112___center_device01_signer08_center_ord1_489.mp4,08_Thay-Son_400-700_1-2-3_0112___left_device20_signer08_left_ord1_489.mp"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 26500,
+      "content": "3_Van-Anh_400-610_10-11-12_0117___center_device02_1_signer03_center_ord1_489.mp4,3_Van-Anh_400-698_10-11-12_0117___left_device33_signer03_left_ord1_48"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 26685,
+      "content": "27_Thanh-Tung_400-518_13-14-15_0116___center_device01_1_signer27_center_ord1_489.mp4,27_Thanh-Tung_400-489_13-14-15_0116___left_device14_signer27_left"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/train_1_1000_three_view_ord1.csv",
+      "line": 26775,
+      "content": "31_Toan_400-700_1-2-3_0116___center_device10_signer31_center_ord1_489.mp4,31_Toan_400-700_1-2-3_0116___left_device20_signer31_left_ord1_489.mp4,31_Toa"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_center_ord1.csv",
+      "line": 1669,
+      "content": "08_Thay-Son_400-700_1-2-3_0112___center_device01_signer08_center_ord1_489.mp4,489,1502421"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_center_ord1.csv",
+      "line": 2037,
+      "content": "3_Van-Anh_400-610_10-11-12_0117___center_device02_1_signer03_center_ord1_489.mp4,489,1512499"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_center_ord1.csv",
+      "line": 2222,
+      "content": "27_Thanh-Tung_400-518_13-14-15_0116___center_device01_1_signer27_center_ord1_489.mp4,489,1522108"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_center_ord1.csv",
+      "line": 2312,
+      "content": "31_Toan_400-700_1-2-3_0116___center_device10_signer31_center_ord1_489.mp4,489,1480196"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_left_ord1.csv",
+      "line": 1669,
+      "content": "08_Thay-Son_400-700_1-2-3_0112___left_device20_signer08_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_left_ord1.csv",
+      "line": 2037,
+      "content": "3_Van-Anh_400-698_10-11-12_0117___left_device33_signer03_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_left_ord1.csv",
+      "line": 2222,
+      "content": "27_Thanh-Tung_400-489_13-14-15_0116___left_device14_signer27_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_left_ord1.csv",
+      "line": 2312,
+      "content": "31_Toan_400-700_1-2-3_0116___left_device20_signer31_left_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_right_ord1.csv",
+      "line": 1669,
+      "content": "08_Thay-Son_400-700_1-2-3_0112___right_device12_signer08_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_right_ord1.csv",
+      "line": 2037,
+      "content": "3_Van-Anh_400-698_10-11-12_0117___right_device34_signer03_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_right_ord1.csv",
+      "line": 2222,
+      "content": "27_Thanh-Tung_400-518_13-14-15_0116___right_device32_1_signer27_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_right_ord1.csv",
+      "line": 2312,
+      "content": "31_Toan_400-700_1-2-3_0116___right_device11_signer31_right_ord1_489.mp4,489"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_three_view_ord1.csv",
+      "line": 1669,
+      "content": "08_Thay-Son_400-700_1-2-3_0112___center_device01_signer08_center_ord1_489.mp4,08_Thay-Son_400-700_1-2-3_0112___left_device20_signer08_left_ord1_489.mp"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_three_view_ord1.csv",
+      "line": 2037,
+      "content": "3_Van-Anh_400-610_10-11-12_0117___center_device02_1_signer03_center_ord1_489.mp4,3_Van-Anh_400-698_10-11-12_0117___left_device33_signer03_left_ord1_48"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_three_view_ord1.csv",
+      "line": 2222,
+      "content": "27_Thanh-Tung_400-518_13-14-15_0116___center_device01_1_signer27_center_ord1_489.mp4,27_Thanh-Tung_400-489_13-14-15_0116___left_device14_signer27_left"
+    },
+    {
+      "file": "clone/Multi-VSL_WACV_2025/data/label_1_1000/val_1_1000_three_view_ord1.csv",
+      "line": 2312,
+      "content": "31_Toan_400-700_1-2-3_0116___center_device10_signer31_center_ord1_489.mp4,31_Toan_400-700_1-2-3_0116___left_device20_signer31_left_ord1_489.mp4,31_Toa"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 93465,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 93469,
+      "content": "\"start_time\": \"00:00:02.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 95490,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 95517,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 96306,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 96333,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 99188,
+      "content": "\"end_time\": \"00:00:01.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 99192,
+      "content": "\"start_time\": \"00:00:01.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 100614,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 100629,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 119698,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 119702,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 119766,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 119770,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 122517,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 122521,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 125857,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset.json",
+      "line": 125861,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 62972,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 62976,
+      "content": "\"start_time\": \"00:00:02.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 64316,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 64343,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 64868,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 64895,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 66964,
+      "content": "\"end_time\": \"00:00:01.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 66968,
+      "content": "\"start_time\": \"00:00:01.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 67984,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 67999,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 81232,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 81236,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 81278,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 81282,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 83179,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 83183,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 85465,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s01.json",
+      "line": 85469,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 62972,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 62976,
+      "content": "\"start_time\": \"00:00:02.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 64316,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 64343,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 64868,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 64895,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 66964,
+      "content": "\"end_time\": \"00:00:01.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 66968,
+      "content": "\"start_time\": \"00:00:01.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 67984,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 67999,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 81232,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 81236,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 81278,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 81282,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 83179,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 83183,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 85465,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s02.json",
+      "line": 85469,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 62972,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 62976,
+      "content": "\"start_time\": \"00:00:02.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 64316,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 64343,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 64868,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 64895,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 66964,
+      "content": "\"end_time\": \"00:00:01.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 66968,
+      "content": "\"start_time\": \"00:00:01.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 67984,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 67999,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 81232,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 81236,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 81278,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 81282,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 83179,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 83183,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 85465,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s03.json",
+      "line": 85469,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 62972,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 62976,
+      "content": "\"start_time\": \"00:00:02.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 64316,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 64343,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 64868,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 64895,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 66964,
+      "content": "\"end_time\": \"00:00:01.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 66968,
+      "content": "\"start_time\": \"00:00:01.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 67984,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 67999,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 81232,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 81236,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 81278,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 81282,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 83179,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 83183,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 85465,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s04.json",
+      "line": 85469,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 62972,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 62976,
+      "content": "\"start_time\": \"00:00:02.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 64316,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 64343,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 64868,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 64895,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 66964,
+      "content": "\"end_time\": \"00:00:01.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 66968,
+      "content": "\"start_time\": \"00:00:01.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 67984,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 67999,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 81232,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 81236,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 81278,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 81282,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 83179,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 83183,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 85465,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s05.json",
+      "line": 85469,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 62972,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 62976,
+      "content": "\"start_time\": \"00:00:02.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 64316,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 64343,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 64868,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 64895,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 66964,
+      "content": "\"end_time\": \"00:00:01.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 66968,
+      "content": "\"start_time\": \"00:00:01.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 67984,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 67999,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 81232,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 81236,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 81278,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 81282,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 83179,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 83183,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 85465,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/dataset_loso_s06.json",
+      "line": 85469,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT097_S01_R01_F.txt",
+      "line": 3,
+      "content": "Gloss\t\t00:00:01.789\t00:00:02.489\tYẾU"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT097_S01_R01_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:02.489\t00:00:03.467\tCÓ-KHÔNG"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT099_S01_R01_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:01.667\t00:00:02.489\tĐÂU"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT099_S01_R01_F.txt",
+      "line": 5,
+      "content": "Translation\t\t00:00:00.000\t00:00:02.489\tTiếp theo tôi đi đâu ạ?"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT099_S05_R01_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:01.960\t00:00:02.489\tĐÂU"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT099_S05_R01_F.txt",
+      "line": 5,
+      "content": "Translation\t\t00:00:00.000\t00:00:02.489\tTiếp theo tôi đi đâu ạ?"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT104_S01_R01_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.200\t00:00:01.489\tLƯNG"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT104_S01_R01_F.txt",
+      "line": 3,
+      "content": "Gloss\t\t00:00:01.489\t00:00:02.433\tĐAU"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT106_S01_R01_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.667\t00:00:02.489\tSỐT"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT106_S01_R01_F.txt",
+      "line": 3,
+      "content": "Translation\t\t00:00:00.000\t00:00:02.489\tTôi bị sốt."
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT128_S04_R02_F.txt",
+      "line": 1,
+      "content": "Gloss\t\t00:00:00.010\t00:00:00.489\tTÔI"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT128_S04_R02_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.489\t00:00:01.378\tTHUỐC"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT128_S04_R03_F.txt",
+      "line": 1,
+      "content": "Gloss\t\t00:00:00.010\t00:00:00.489\tTÔI"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT128_S04_R03_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.489\t00:00:01.378\tTHUỐC"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT132_S01_R01_F.txt",
+      "line": 1,
+      "content": "Gloss\t\t00:00:00.010\t00:00:00.489\tTÔI"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT132_S01_R01_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.489\t00:00:01.178\tDA"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT135_S04_R02_F.txt",
+      "line": 1,
+      "content": "Gloss\t\t00:00:00.010\t00:00:00.489\tTÔI"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT135_S04_R02_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.489\t00:00:01.133\tĐẾN"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT184_S01_R01_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:02.611\t00:00:03.489\tNHIỀU"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT184_S01_R01_F.txt",
+      "line": 5,
+      "content": "Translation\t\t00:00:00.000\t00:00:03.489\tTôi hay cảm thấy lo lắng."
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT184_S01_R02_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:02.611\t00:00:03.489\tNHIỀU"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT184_S01_R02_F.txt",
+      "line": 5,
+      "content": "Translation\t\t00:00:00.000\t00:00:03.489\tTôi hay cảm thấy lo lắng."
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT184_S01_R03_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:02.590\t00:00:03.489\tNHIỀU"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT184_S01_R03_F.txt",
+      "line": 5,
+      "content": "Translation\t\t00:00:00.000\t00:00:03.489\tTôi hay cảm thấy lo lắng."
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT184_S02_R01_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:02.910\t00:00:03.489\tNHIỀU"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT184_S02_R01_F.txt",
+      "line": 5,
+      "content": "Translation\t\t00:00:00.000\t00:00:03.489\tTôi hay cảm thấy lo lắng."
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT220_S01_R01_F.txt",
+      "line": 3,
+      "content": "Gloss\t\t00:00:01.689\t00:00:02.489\tPHẢI"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT220_S01_R01_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:02.489\t00:00:02.978\tNGHE"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT247_S01_R01_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.811\t00:00:01.489\tHÔM-QUA"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT247_S01_R01_F.txt",
+      "line": 3,
+      "content": "Gloss\t\t00:00:01.489\t00:00:01.922\tTÔI"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT264_S03_R03_F.txt",
+      "line": 7,
+      "content": "Gloss\t\t00:00:03.878\t00:00:04.489\tCẦN-KHÔNG"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT264_S03_R03_F.txt",
+      "line": 8,
+      "content": "Translation\t\t00:00:00.000\t00:00:04.489\tTôi có cần uống nhiều nước trước khi siêu âm không?"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT290_S02_R03_F.txt",
+      "line": 1,
+      "content": "Gloss\t\t00:00:00.000\t00:00:00.489\tTÔI"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/annotations/SENT290_S02_R03_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.489\t00:00:01.800\tKẾT-QUẢ"
+    },
+    {
+      "file": "configs/vsl_config.yaml",
+      "line": 14,
+      "content": "active_tier: \"tier1\"  # \"tier1\" (50 classes) or \"tier2\" (489 classes)"
+    },
+    {
+      "file": "configs/vsl_config.yaml",
+      "line": 21,
+      "content": "num_classes: 489"
+    },
+    {
+      "file": "data/Dataset/Labels/label.csv",
+      "line": 490,
+      "content": "489,D0416T.mp4,tuần này"
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 94809,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 94813,
+      "content": "\"start_time\": \"00:00:02.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 96862,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 96889,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 97690,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 97717,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 100630,
+      "content": "\"end_time\": \"00:00:01.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 100634,
+      "content": "\"start_time\": \"00:00:01.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 102084,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 102099,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 121486,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 121490,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 121555,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 121559,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 124351,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 124355,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 127743,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 127747,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 172713,
+      "content": "\"duration_sec\": 3.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 172740,
+      "content": "\"end_time\": \"00:00:03.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 172782,
+      "content": "\"duration_sec\": 3.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 172809,
+      "content": "\"end_time\": \"00:00:03.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 172851,
+      "content": "\"duration_sec\": 3.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 172878,
+      "content": "\"end_time\": \"00:00:03.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 172920,
+      "content": "\"duration_sec\": 3.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 172947,
+      "content": "\"end_time\": \"00:00:03.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 206588,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 206592,
+      "content": "\"start_time\": \"00:00:02.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 233116,
+      "content": "\"end_time\": \"00:00:01.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 233120,
+      "content": "\"start_time\": \"00:00:01.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 252338,
+      "content": "\"duration_sec\": 4.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 252383,
+      "content": "\"end_time\": \"00:00:04.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 278227,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/dataset_canonical.json",
+      "line": 278231,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT097_S01_R01_F.txt",
+      "line": 3,
+      "content": "Gloss\t\t00:00:01.789\t00:00:02.489\tYẾU"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT097_S01_R01_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:02.489\t00:00:03.467\tCÓ-KHÔNG"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT099_S01_R01_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:01.667\t00:00:02.489\tĐÂU"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT099_S01_R01_F.txt",
+      "line": 5,
+      "content": "Translation\t\t00:00:00.000\t00:00:02.489\tTiếp theo tôi đi đâu ạ?"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT099_S05_R01_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:01.960\t00:00:02.489\tĐÂU"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT099_S05_R01_F.txt",
+      "line": 5,
+      "content": "Translation\t\t00:00:00.000\t00:00:02.489\tTiếp theo tôi đi đâu ạ?"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT104_S01_R01_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.200\t00:00:01.489\tLƯNG"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT104_S01_R01_F.txt",
+      "line": 3,
+      "content": "Gloss\t\t00:00:01.489\t00:00:02.433\tĐAU"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT106_S01_R01_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.667\t00:00:02.489\tSỐT"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT106_S01_R01_F.txt",
+      "line": 3,
+      "content": "Translation\t\t00:00:00.000\t00:00:02.489\tTôi bị sốt."
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT128_S04_R02_F.txt",
+      "line": 1,
+      "content": "Gloss\t\t00:00:00.010\t00:00:00.489\tTÔI"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT128_S04_R02_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.489\t00:00:01.378\tTHUỐC"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT128_S04_R03_F.txt",
+      "line": 1,
+      "content": "Gloss\t\t00:00:00.010\t00:00:00.489\tTÔI"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT128_S04_R03_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.489\t00:00:01.378\tTHUỐC"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT132_S01_R01_F.txt",
+      "line": 1,
+      "content": "Gloss\t\t00:00:00.010\t00:00:00.489\tTÔI"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT132_S01_R01_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.489\t00:00:01.178\tDA"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT135_S04_R02_F.txt",
+      "line": 1,
+      "content": "Gloss\t\t00:00:00.010\t00:00:00.489\tTÔI"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT135_S04_R02_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.489\t00:00:01.133\tĐẾN"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT184_S01_R01_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:02.611\t00:00:03.489\tNHIỀU"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT184_S01_R01_F.txt",
+      "line": 5,
+      "content": "Translation\t\t00:00:00.000\t00:00:03.489\tTôi hay cảm thấy lo lắng."
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT184_S01_R02_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:02.611\t00:00:03.489\tNHIỀU"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT184_S01_R02_F.txt",
+      "line": 5,
+      "content": "Translation\t\t00:00:00.000\t00:00:03.489\tTôi hay cảm thấy lo lắng."
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT184_S01_R03_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:02.590\t00:00:03.489\tNHIỀU"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT184_S01_R03_F.txt",
+      "line": 5,
+      "content": "Translation\t\t00:00:00.000\t00:00:03.489\tTôi hay cảm thấy lo lắng."
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT184_S02_R01_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:02.910\t00:00:03.489\tNHIỀU"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT184_S02_R01_F.txt",
+      "line": 5,
+      "content": "Translation\t\t00:00:00.000\t00:00:03.489\tTôi hay cảm thấy lo lắng."
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT220_S01_R01_F.txt",
+      "line": 3,
+      "content": "Gloss\t\t00:00:01.689\t00:00:02.489\tPHẢI"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT220_S01_R01_F.txt",
+      "line": 4,
+      "content": "Gloss\t\t00:00:02.489\t00:00:02.978\tNGHE"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT247_S01_R01_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.811\t00:00:01.489\tHÔM-QUA"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT247_S01_R01_F.txt",
+      "line": 3,
+      "content": "Gloss\t\t00:00:01.489\t00:00:01.922\tTÔI"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT264_S03_R03_F.txt",
+      "line": 7,
+      "content": "Gloss\t\t00:00:03.878\t00:00:04.489\tCẦN-KHÔNG"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT264_S03_R03_F.txt",
+      "line": 8,
+      "content": "Translation\t\t00:00:00.000\t00:00:04.489\tTôi có cần uống nhiều nước trước khi siêu âm không?"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT290_S02_R03_F.txt",
+      "line": 1,
+      "content": "Gloss\t\t00:00:00.000\t00:00:00.489\tTÔI"
+    },
+    {
+      "file": "data/external/vsl_gh/annotations/SENT290_S02_R03_F.txt",
+      "line": 2,
+      "content": "Gloss\t\t00:00:00.489\t00:00:01.800\tKẾT-QUẢ"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 62972,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 62976,
+      "content": "\"start_time\": \"00:00:02.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 64316,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 64343,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 64868,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 64895,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 66964,
+      "content": "\"end_time\": \"00:00:01.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 66968,
+      "content": "\"start_time\": \"00:00:01.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 67984,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 67999,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 81232,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 81236,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 81278,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 81282,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 83179,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 83183,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 85465,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s01.json",
+      "line": 85469,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 62972,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 62976,
+      "content": "\"start_time\": \"00:00:02.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 64316,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 64343,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 64868,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 64895,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 66964,
+      "content": "\"end_time\": \"00:00:01.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 66968,
+      "content": "\"start_time\": \"00:00:01.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 67984,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 67999,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 81232,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 81236,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 81278,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 81282,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 83179,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 83183,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 85465,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s02.json",
+      "line": 85469,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 62972,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 62976,
+      "content": "\"start_time\": \"00:00:02.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 64316,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 64343,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 64868,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 64895,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 66964,
+      "content": "\"end_time\": \"00:00:01.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 66968,
+      "content": "\"start_time\": \"00:00:01.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 67984,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 67999,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 81232,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 81236,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 81278,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 81282,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 83179,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 83183,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 85465,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s03.json",
+      "line": 85469,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 62972,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 62976,
+      "content": "\"start_time\": \"00:00:02.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 64316,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 64343,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 64868,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 64895,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 66964,
+      "content": "\"end_time\": \"00:00:01.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 66968,
+      "content": "\"start_time\": \"00:00:01.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 67984,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 67999,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 81232,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 81236,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 81278,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 81282,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 83179,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 83183,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 85465,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s04.json",
+      "line": 85469,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 62972,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 62976,
+      "content": "\"start_time\": \"00:00:02.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 64316,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 64343,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 64868,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 64895,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 66964,
+      "content": "\"end_time\": \"00:00:01.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 66968,
+      "content": "\"start_time\": \"00:00:01.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 67984,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 67999,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 81232,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 81236,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 81278,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 81282,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 83179,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 83183,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 85465,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s05.json",
+      "line": 85469,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 62972,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 62976,
+      "content": "\"start_time\": \"00:00:02.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 64316,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 64343,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 64868,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 64895,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 66964,
+      "content": "\"end_time\": \"00:00:01.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 66968,
+      "content": "\"start_time\": \"00:00:01.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 67984,
+      "content": "\"duration_sec\": 2.489,"
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 67999,
+      "content": "\"end_time\": \"00:00:02.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 81232,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 81236,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 81278,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 81282,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 83179,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 83183,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 85465,
+      "content": "\"end_time\": \"00:00:00.489\""
+    },
+    {
+      "file": "data/external/vsl_gh/splits/dataset_loso_s06.json",
+      "line": 85469,
+      "content": "\"start_time\": \"00:00:00.489\","
+    },
+    {
+      "file": "data/raw_tudienngonngukyhieu/failed_urls.jsonl",
+      "line": 266,
+      "content": "{\"page_url\": \"https://tudienngonngukyhieu.com/tu-ngu/chinh-sach-489\", \"slug\": \"chinh-sach-489\", \"error\": \"The read operation timed out\"}"
+    },
+    {
+      "file": "data/splits/tier1_50_all.csv",
+      "line": 108,
+      "content": "4274,W03292B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W03292B.mp4,0.489,thông tin,thông tin,B (Miền Bắc / Nor"
+    },
+    {
+      "file": "data/splits/tier1_train.csv",
+      "line": 38,
+      "content": "4274,W03292B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W03292B.mp4,0.489,thông tin,thông tin,B (Miền Bắc / Nor"
+    },
+    {
+      "file": "data/splits/tier2_489_all.csv",
+      "line": 366,
+      "content": "1399,W00820T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W00820T.mp4,0.489,cố gắng,cố gắng,T (Miền Trung / Centr"
+    },
+    {
+      "file": "data/splits/tier2_489_all.csv",
+      "line": 516,
+      "content": "4055,W01577N.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W01577N.mp4,0.489,héc-tô-mét (hm),héc-tô-mét (hm),N (Mi"
+    },
+    {
+      "file": "data/splits/tier2_489_all.csv",
+      "line": 743,
+      "content": "4139,W02354T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02354T.mp4,0.489,nghé,nghé,T (Miền Trung / Central),un"
+    },
+    {
+      "file": "data/splits/tier2_489_all.csv",
+      "line": 945,
+      "content": "2792,W02724B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02724B.mp4,0.489,quả bưởi,quả bưởi,B (Miền Bắc / North"
+    },
+    {
+      "file": "data/splits/tier2_489_all.csv",
+      "line": 1095,
+      "content": "4274,W03292B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W03292B.mp4,0.489,thông tin,thông tin,B (Miền Bắc / Nor"
+    },
+    {
+      "file": "data/splits/tier2_489_all.csv",
+      "line": 1222,
+      "content": "489,D0416T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\D0416T.mp4,0.43,tuần này,tuần này,T (Miền Trung / Central"
+    },
+    {
+      "file": "data/splits/tier2_489_all.csv",
+      "line": 1394,
+      "content": "586,D0507T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\D0507T.mp4,0.489,ô,ô,T (Miền Trung / Central),unknown,68,"
+    },
+    {
+      "file": "data/splits/tier2_test.csv",
+      "line": 173,
+      "content": "4055,W01577N.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W01577N.mp4,0.489,héc-tô-mét (hm),héc-tô-mét (hm),N (Mi"
+    },
+    {
+      "file": "data/splits/tier2_train.csv",
+      "line": 317,
+      "content": "2792,W02724B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02724B.mp4,0.489,quả bưởi,quả bưởi,B (Miền Bắc / North"
+    },
+    {
+      "file": "data/splits/tier2_train.csv",
+      "line": 367,
+      "content": "4274,W03292B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W03292B.mp4,0.489,thông tin,thông tin,B (Miền Bắc / Nor"
+    },
+    {
+      "file": "data/splits/tier2_val.csv",
+      "line": 123,
+      "content": "1399,W00820T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W00820T.mp4,0.489,cố gắng,cố gắng,T (Miền Trung / Centr"
+    },
+    {
+      "file": "data/splits/tier2_val.csv",
+      "line": 248,
+      "content": "4139,W02354T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02354T.mp4,0.489,nghé,nghé,T (Miền Trung / Central),un"
+    },
+    {
+      "file": "data/splits/tier2_val.csv",
+      "line": 406,
+      "content": "489,D0416T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\D0416T.mp4,0.43,tuần này,tuần này,T (Miền Trung / Central"
+    },
+    {
+      "file": "data/splits/tier2_val.csv",
+      "line": 463,
+      "content": "586,D0507T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\D0507T.mp4,0.489,ô,ô,T (Miền Trung / Central),unknown,68,"
+    },
+    {
+      "file": "data/splits/folds/cd_fold1_test_N_train.csv",
+      "line": 30,
+      "content": "4274,W03292B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W03292B.mp4,0.489,thông tin,thông tin,B (Miền Bắc / Nor"
+    },
+    {
+      "file": "data/splits/folds/cd_fold2_test_T_train.csv",
+      "line": 30,
+      "content": "4274,W03292B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W03292B.mp4,0.489,thông tin,thông tin,B (Miền Bắc / Nor"
+    },
+    {
+      "file": "data/splits/folds/cd_fold3_test_B_test.csv",
+      "line": 36,
+      "content": "4274,W03292B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W03292B.mp4,0.489,thông tin,thông tin,B (Miền Bắc / Nor"
+    },
+    {
+      "file": "data/splits/folds/indomain_train.csv",
+      "line": 59,
+      "content": "4274,W03292B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W03292B.mp4,0.489,thông tin,thông tin,B (Miền Bắc / Nor"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold1_test_N_test.csv",
+      "line": 171,
+      "content": "4055,W01577N.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W01577N.mp4,0.489,héc-tô-mét (hm),héc-tô-mét (hm),N (Mi"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold1_test_N_train.csv",
+      "line": 516,
+      "content": "1399,W00820T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W00820T.mp4,0.489,cố gắng,cố gắng,T (Miền Trung / Centr"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold1_test_N_train.csv",
+      "line": 622,
+      "content": "4139,W02354T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02354T.mp4,0.489,nghé,nghé,T (Miền Trung / Central),un"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold1_test_N_train.csv",
+      "line": 763,
+      "content": "489,D0416T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\D0416T.mp4,0.43,tuần này,tuần này,T (Miền Trung / Central"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold1_test_N_train.csv",
+      "line": 807,
+      "content": "586,D0507T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\D0507T.mp4,0.489,ô,ô,T (Miền Trung / Central),unknown,68,"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold1_test_N_val.csv",
+      "line": 50,
+      "content": "2792,W02724B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02724B.mp4,0.489,quả bưởi,quả bưởi,B (Miền Bắc / North"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold1_test_N_val.csv",
+      "line": 57,
+      "content": "4274,W03292B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W03292B.mp4,0.489,thông tin,thông tin,B (Miền Bắc / Nor"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold2_test_T_test.csv",
+      "line": 121,
+      "content": "1399,W00820T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W00820T.mp4,0.489,cố gắng,cố gắng,T (Miền Trung / Centr"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold2_test_T_test.csv",
+      "line": 246,
+      "content": "4139,W02354T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02354T.mp4,0.489,nghé,nghé,T (Miền Trung / Central),un"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold2_test_T_test.csv",
+      "line": 404,
+      "content": "489,D0416T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\D0416T.mp4,0.43,tuần này,tuần này,T (Miền Trung / Central"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold2_test_T_test.csv",
+      "line": 461,
+      "content": "586,D0507T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\D0507T.mp4,0.489,ô,ô,T (Miền Trung / Central),unknown,68,"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold2_test_T_train.csv",
+      "line": 560,
+      "content": "4055,W01577N.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W01577N.mp4,0.489,héc-tô-mét (hm),héc-tô-mét (hm),N (Mi"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold2_test_T_val.csv",
+      "line": 39,
+      "content": "2792,W02724B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02724B.mp4,0.489,quả bưởi,quả bưởi,B (Miền Bắc / North"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold2_test_T_val.csv",
+      "line": 51,
+      "content": "4274,W03292B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W03292B.mp4,0.489,thông tin,thông tin,B (Miền Bắc / Nor"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold3_test_B_test.csv",
+      "line": 314,
+      "content": "2792,W02724B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02724B.mp4,0.489,quả bưởi,quả bưởi,B (Miền Bắc / North"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold3_test_B_test.csv",
+      "line": 363,
+      "content": "4274,W03292B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W03292B.mp4,0.489,thông tin,thông tin,B (Miền Bắc / Nor"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold3_test_B_train.csv",
+      "line": 199,
+      "content": "4139,W02354T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02354T.mp4,0.489,nghé,nghé,T (Miền Trung / Central),un"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold3_test_B_train.csv",
+      "line": 341,
+      "content": "489,D0416T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\D0416T.mp4,0.43,tuần này,tuần này,T (Miền Trung / Central"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold3_test_B_train.csv",
+      "line": 389,
+      "content": "586,D0507T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\D0507T.mp4,0.489,ô,ô,T (Miền Trung / Central),unknown,68,"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold3_test_B_train.csv",
+      "line": 564,
+      "content": "4055,W01577N.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W01577N.mp4,0.489,héc-tô-mét (hm),héc-tô-mét (hm),N (Mi"
+    },
+    {
+      "file": "data/splits/folds/tier2_cd_fold3_test_B_val.csv",
+      "line": 25,
+      "content": "1399,W00820T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W00820T.mp4,0.489,cố gắng,cố gắng,T (Miền Trung / Centr"
+    },
+    {
+      "file": "data/splits/folds/tier2_indomain_test.csv",
+      "line": 246,
+      "content": "4139,W02354T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02354T.mp4,0.489,nghé,nghé,T (Miền Trung / Central),un"
+    },
+    {
+      "file": "data/splits/folds/tier2_indomain_test.csv",
+      "line": 314,
+      "content": "2792,W02724B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02724B.mp4,0.489,quả bưởi,quả bưởi,B (Miền Bắc / North"
+    },
+    {
+      "file": "data/splits/folds/tier2_indomain_train.csv",
+      "line": 201,
+      "content": "1399,W00820T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W00820T.mp4,0.489,cố gắng,cố gắng,T (Miền Trung / Centr"
+    },
+    {
+      "file": "data/splits/folds/tier2_indomain_train.csv",
+      "line": 283,
+      "content": "4055,W01577N.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W01577N.mp4,0.489,héc-tô-mét (hm),héc-tô-mét (hm),N (Mi"
+    },
+    {
+      "file": "data/splits/folds/tier2_indomain_train.csv",
+      "line": 604,
+      "content": "4274,W03292B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W03292B.mp4,0.489,thông tin,thông tin,B (Miền Bắc / Nor"
+    },
+    {
+      "file": "data/splits/folds/tier2_indomain_train.csv",
+      "line": 672,
+      "content": "489,D0416T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\D0416T.mp4,0.43,tuần này,tuần này,T (Miền Trung / Central"
+    },
+    {
+      "file": "data/splits/folds/tier2_indomain_train.csv",
+      "line": 767,
+      "content": "586,D0507T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\D0507T.mp4,0.489,ô,ô,T (Miền Trung / Central),unknown,68,"
+    },
+    {
+      "file": "docs/data_registry.md",
+      "line": 12,
+      "content": "- **Purpose**: Isolated sign language recognition (ISLR) across 50 core classes (Tier 1) and 489 extended classes (Tier 2)."
+    },
+    {
+      "file": "docs/data_registry.md",
+      "line": 17,
+      "content": "- Total cataloged: 1,475 raw video clips across 489 gloss classes ($\\ge 3$ video recordings per class)."
+    },
+    {
+      "file": "docs/data_registry.md",
+      "line": 19,
+      "content": "- Tier 2 (Extended 489 classes): 1,475 videos (Train: 497, Val: 489, Test: 489)."
+    },
+    {
+      "file": "docs/final_report_outline.md",
+      "line": 57,
+      "content": "- 489 từ vựng có đủ $\\ge 3$ video (đại diện cả 3 miền)."
+    },
+    {
+      "file": "docs/final_report_outline.md",
+      "line": 178,
+      "content": "1. Mở rộng tập từ vựng từ 50 từ (Tier-1) lên toàn bộ 489 từ có $\\ge 3$ video và tiến tới 3,314 từ vựng."
+    },
+    {
+      "file": "docs/phase1_dataset.md",
+      "line": 14,
+      "content": "- Implement the approved **Two-Tier Benchmark strategy** (Tier 1: Core 50 classes; Tier 2: Extended 489 classes)."
+    },
+    {
+      "file": "docs/phase1_dataset.md",
+      "line": 28,
+      "content": "- Processed all 489 glosses possessing $\\ge 3$ video recordings (total 1,475 videos)."
+    },
+    {
+      "file": "docs/phase1_dataset.md",
+      "line": 30,
+      "content": "- Partitioned Tier 2: 489 classes (Train: 497, Val: 489, Test: 489)."
+    },
+    {
+      "file": "docs/phase1_dataset.md",
+      "line": 48,
+      "content": "- Class coverage: **100% synchronized (50 classes for Tier 1, 489 classes for Tier 2)**."
+    },
+    {
+      "file": "docs/phase1_dataset.md",
+      "line": 67,
+      "content": "| `data/splits/tier2_train.csv` | Tier 2 training split (497 videos, 489 classes) |"
+    },
+    {
+      "file": "docs/phase1_dataset.md",
+      "line": 68,
+      "content": "| `data/splits/tier2_val.csv` | Tier 2 validation split (489 videos, 489 classes) |"
+    },
+    {
+      "file": "docs/phase1_dataset.md",
+      "line": 69,
+      "content": "| `data/splits/tier2_test.csv` | Tier 2 test split (489 videos, 489 classes) |"
+    },
+    {
+      "file": "docs/phase1_dataset.md",
+      "line": 94,
+      "content": "Tier 2: 489 classes strictly synchronized"
+    },
+    {
+      "file": "docs/phase1_dataset.md",
+      "line": 102,
+      "content": "- [x] Strict video-disjoint split created for 489 classes and 50 classes."
+    },
+    {
+      "file": "docs/audit/final_health_check.md",
+      "line": 42,
+      "content": "Đã thực thi script kiểm tra tự động [`scripts/check_data_leakage.py`](file:///C:/Users/Admin/Python%20Advanced/Deep%20Learning%20-%20CV/Project/script"
+    },
+    {
+      "file": "docs/audit/phase_state.json",
+      "line": 56,
+      "content": "\"Empirical class feasibility analysis completed (3,314 unique glosses, 489 with >=3 videos)\","
+    },
+    {
+      "file": "docs/audit/phase_state.json",
+      "line": 90,
+      "content": "\"Two-Tier Benchmark strategy implemented (Tier 1: 50 Core, Tier 2: 489 Extended)\","
+    },
+    {
+      "file": "docs/audit/raw_dataset_scope_proposal.md",
+      "line": 17,
+      "content": "- Gloss có $\\ge 3$ video: **489 glosses** (chiếm 14.8%)."
+    },
+    {
+      "file": "docs/audit/raw_dataset_scope_proposal.md",
+      "line": 24,
+      "content": "2. **Nguồn gốc thực sự của \"472/489 classes\"**: Có đúng **489 glosses** có đủ 3 video (đại diện cho bộ 3 phương ngữ: `B` - Bắc, `T` - Trung, `N` - Nam"
+    },
+    {
+      "file": "docs/audit/raw_dataset_scope_proposal.md",
+      "line": 30,
+      "content": "### PHƯƠNG ÁN A (Khuyến nghị Nghiên cứu Học thuật Toàn diện) — 489 Glosses Triplet"
+    },
+    {
+      "file": "docs/audit/raw_dataset_scope_proposal.md",
+      "line": 32,
+      "content": "* **Quy mô:** **489 classes** / **1.474 videos**."
+    },
+    {
+      "file": "docs/audit/raw_dataset_scope_proposal.md",
+      "line": 34,
+      "content": "- Train: 489 videos (ví dụ: Miền Bắc + augment sau split)"
+    },
+    {
+      "file": "docs/audit/raw_dataset_scope_proposal.md",
+      "line": 35,
+      "content": "- Val: 489 videos (ví dụ: Miền Trung, clean)"
+    },
+    {
+      "file": "docs/audit/raw_dataset_scope_proposal.md",
+      "line": 36,
+      "content": "- Test: 489 videos (ví dụ: Miền Nam, clean)"
+    },
+    {
+      "file": "docs/audit/raw_dataset_scope_proposal.md",
+      "line": 38,
+      "content": "- Quy mô lớn (~489 từ vựng, rất gần với con số 472 glosses kỳ vọng ban đầu)."
+    },
+    {
+      "file": "docs/audit/raw_dataset_scope_proposal.md",
+      "line": 47,
+      "content": "* **Tiêu chí:** Chọn top 50 hoặc top 100 từ vựng cốt lõi (chào hỏi, số đếm, gia đình, đại từ, giao tiếp thường ngày) từ nhóm 489 glosses có $\\ge 3$ vi"
+    },
+    {
+      "file": "docs/audit/raw_dataset_scope_proposal.md",
+      "line": 82,
+      "content": "> 1. **Core Benchmark (50 Classes)**: Đóng băng tập 50 từ vựng giao tiếp cốt lõi (từ tập 489 glosses có đủ B-T-N). Dùng tập này để chạy toàn bộ các th"
+    },
+    {
+      "file": "docs/audit/raw_dataset_scope_proposal.md",
+      "line": 83,
+      "content": "> 2. **Extended Benchmark (489 Classes)**: Mở rộng đánh giá trên toàn bộ 489 classes có đủ 3 miền để báo cáo năng lực nhận diện quy mô lớn trong bài b"
+    },
+    {
+      "file": "results/class_feasibility_summary.json",
+      "line": 9,
+      "content": "\"num_glosses_with_ge_3\": 489,"
+    },
+    {
+      "file": "results/class_feasibility_summary.json",
+      "line": 97,
+      "content": "\"recommendation\": \"Extremely high class imbalance and sparsity. A closed-set classification across all 3314 glosses is mathematically invalid because "
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 490,
+      "content": "489,D0416T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\D0416T.mp4,0.43,tuần này,tuần này,T (Miền Trung / Central"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 587,
+      "content": "586,D0507T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\D0507T.mp4,0.489,ô,ô,T (Miền Trung / Central),unknown,68,"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 844,
+      "content": "843,W00219.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W00219.mp4,0.489,bé loắt choắt,bé loắt choắt,Neutral / Un"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 1361,
+      "content": "1360,W00781N.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W00781N.mp4,0.489,con ong,con ong,N (Miền Nam / South),"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 1400,
+      "content": "1399,W00820T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W00820T.mp4,0.489,cố gắng,cố gắng,T (Miền Trung / Centr"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 1548,
+      "content": "1547,W01021.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W01021.mp4,0.489,dẻo,dẻo,Neutral / Unspecified,unknown,9"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 1621,
+      "content": "1620,W01128.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W01128.mp4,0.489,đằng sau,đằng sau,Neutral / Unspecified"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 2074,
+      "content": "2073,W01735.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W01735.mp4,0.489,kèn,kèn,Neutral / Unspecified,unknown,1"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 2175,
+      "content": "2174,W01890.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W01890.mp4,0.489,kim,kim,Neutral / Unspecified,unknown,1"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 2793,
+      "content": "2792,W02724B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02724B.mp4,0.489,quả bưởi,quả bưởi,B (Miền Bắc / North"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 2813,
+      "content": "2812,W02739.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02739.mp4,0.489,quả gấc,quả gấc,Neutral / Unspecified,u"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 2863,
+      "content": "2862,W02798.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02798.mp4,0.489,quên,quên,Neutral / Unspecified,unknown"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 2893,
+      "content": "2892,W02844.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02844.mp4,0.489,rau mùng tơi,rau mùng tơi,Neutral / Uns"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 3562,
+      "content": "3561,W03876.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W03876.mp4,1.489,vỗ tay,vỗ tay,Neutral / Unspecified,unk"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 4056,
+      "content": "4055,W01577N.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W01577N.mp4,0.489,héc-tô-mét (hm),héc-tô-mét (hm),N (Mi"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 4140,
+      "content": "4139,W02354T.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02354T.mp4,0.489,nghé,nghé,T (Miền Trung / Central),un"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 4199,
+      "content": "4198,W02809.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W02809.mp4,0.489,quy đồng mẫu số,quy đồng mẫu số,Neutral"
+    },
+    {
+      "file": "results/raw_dataset_inventory.csv",
+      "line": 4275,
+      "content": "4274,W03292B.mp4,C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\Dataset\\Videos\\W03292B.mp4,0.489,thông tin,thông tin,B (Miền Bắc / Nor"
+    },
+    {
+      "file": "scripts/check_data_leakage.py",
+      "line": 108,
+      "content": "# 2. Check Tier 2 (489 classes)"
+    },
+    {
+      "file": "scripts/check_data_leakage.py",
+      "line": 110,
+      "content": "tier_name=\"Tier 2 (Extended 489 Classes)\","
+    },
+    {
+      "file": "scripts/create_video_splits.py",
+      "line": 3,
+      "content": "- Tier 2 (Extended): 489 classes with >= 3 videos"
+    },
+    {
+      "file": "scripts/create_video_splits.py",
+      "line": 98,
+      "content": "# Process all 489 classes"
+    },
+    {
+      "file": "scripts/create_video_splits.py",
+      "line": 106,
+      "content": "print(f\"\\n[2/4] Tier 2 (Extended - 489 classes) Split Statistics:\")"
+    },
+    {
+      "file": "scripts/create_video_splits.py",
+      "line": 183,
+      "content": "for tier_name, df_check in [(\"Tier 2 (489)\", df_tier2_all), (\"Tier 1 (50)\", df_tier1_all)]:"
+    }
+  ],
+  "math_random": [
+    {
+      "file": "frontend/dist/assets/index-DjjRrjiG.js",
+      "line": 37,
+      "content": "`+l[s].replace(\" at new \",\" at \");return e.displayName&&u.includes(\"<anonymous>\")&&(u=u.replace(\"<anonymous>\",e.displayName)),u}while(1<=s&&0<=a);brea"
+    },
+    {
+      "file": "frontend/dist/assets/index-DjjRrjiG.js",
+      "line": 38,
+      "content": "`).replace(ed,\"\")}function Wr(e,t,n){if(t=Ko(t),Ko(e)!==t&&n)throw Error(h(425))}function Hr(){}var mi=null,vi=null;function gi(e,t){return e===\"texta"
+    },
+    {
+      "file": "frontend/dist/assets/index-DjjRrjiG.js",
+      "line": 205,
+      "content": "*/const Yf=[[\"path\",{d:\"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-."
+    },
+    {
+      "file": "frontend/src/components/Fingerspelling.jsx",
+      "line": 33,
+      "content": "const randomChar = sampleLetters[Math.floor(Math.random() * sampleLetters.length)];"
+    },
+    {
+      "file": "frontend/src/components/Fingerspelling.jsx",
+      "line": 34,
+      "content": "const conf = (0.92 + Math.random() * 0.07).toFixed(3);"
+    }
+  ],
+  "acc_98.06": [
+    {
+      "file": "EVALUATION.md",
+      "line": 49,
+      "content": "- Mô hình `AlphabetMLP` đạt **98.06% Test Accuracy** trên bộ ASL, được định vị rõ ràng trong báo cáo là Proof-of-Concept kỹ thuật, sẵn sàng thay thế n"
+    },
+    {
+      "file": "README.md",
+      "line": 49,
+      "content": "> - **Hiện trạng thực tế:** Thư mục `data/asl_alphabet_train` chứa 29 lớp chữ cái tiếng Anh (`A-Z`, `del`, `nothing`, `space`) từ bộ dữ liệu ASL Alpha"
+    },
+    {
+      "file": ".agents/skills/vsl-data-integrity/SKILL.md",
+      "line": 10,
+      "content": "Bộ dữ liệu `asl_alphabet_train/test` từng được dùng để huấn luyện bộ nhận diện \"VSL Fingerspelling\" — nhưng đó thực chất là bảng chữ cái Mỹ (ASL), khô"
+    },
+    {
+      "file": ".claude/skills/vsl-data-integrity/SKILL.md",
+      "line": 10,
+      "content": "Bộ dữ liệu `asl_alphabet_train/test` từng được dùng để huấn luyện bộ nhận diện \"VSL Fingerspelling\" — nhưng đó thực chất là bảng chữ cái Mỹ (ASL), khô"
+    },
+    {
+      "file": "frontend/dist/assets/index-DjjRrjiG.js",
+      "line": 205,
+      "content": "*/const Yf=[[\"path\",{d:\"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-."
+    },
+    {
+      "file": "frontend/src/components/Fingerspelling.jsx",
+      "line": 77,
+      "content": "Phân hệ Fingerspelling hiện đang sử dụng bộ dữ liệu <strong>ASL Alphabet (Mỹ - 29 ký tự A-Z, del, space)</strong> để kiểm chứng kỹ thuật (đạt 98.06% T"
+    },
+    {
+      "file": "frontend/src/components/Reports.jsx",
+      "line": 29,
+      "content": "• <strong>Cấp độ 1 (Fingerspelling)</strong>: Hiện dùng bộ dữ liệu ASL Alphabet (29 ký tự) làm PoC kỹ thuật (đạt 98.06% ASL Test Acc). Nghiên cứu cơ s"
+    },
+    {
+      "file": "frontend/src/components/Reports.jsx",
+      "line": 78,
+      "content": "Fingerspelling: 98.06% ASL Test"
+    }
+  ],
+  "asl_reference": [
+    {
+      "file": "EVALUATION.md",
+      "line": 47,
+      "content": "- Bộ dữ liệu `data/asl_alphabet_train` thực chất là **ASL Alphabet (Mỹ - 29 classes: A-Z, del, space, nothing)** từ Kaggle, **không phải bảng chữ cái "
+    },
+    {
+      "file": "EVALUATION.md",
+      "line": 49,
+      "content": "- Mô hình `AlphabetMLP` đạt **98.06% Test Accuracy** trên bộ ASL, được định vị rõ ràng trong báo cáo là Proof-of-Concept kỹ thuật, sẵn sàng thay thế n"
+    },
+    {
+      "file": "PHASE4_AUDIT.md",
+      "line": 12,
+      "content": "Nhằm đảm bảo tính khoa học, trung thực tuyệt đối và tránh lặp lại bài học lịch sử (từng nhầm lẫn bộ ký hiệu tay ASL của Mỹ thành bảng chữ cái VSL), đợ"
+    },
+    {
+      "file": "PHASE4_AUDIT.md",
+      "line": 210,
+      "content": "| `data` | 98.536 | 2.173,68 MB | **7.34%** | VSL-GH canonical + VSLR keypoints + **Bộ ảnh ASL (1.05 GB)** |"
+    },
+    {
+      "file": "PHASE4_AUDIT.md",
+      "line": 238,
+      "content": "- Là bộ ảnh bảng chữ cái Mỹ (ASL) không liên quan tới tiếng Việt hay VSL, từng bị huấn luyện nhầm trong quá khứ."
+    },
+    {
+      "file": "PHASE4_AUDIT.md",
+      "line": 255,
+      "content": "| 2 | `data/asl_alphabet_train/` & `test/` | **1.055 MB** (87.028 files) | Sai miền (ASL) | **Xóa bỏ (Delete)** | Bảng chữ cái ký hiệu Mỹ, không liên "
+    },
+    {
+      "file": "PHASE4_AUDIT.md",
+      "line": 260,
+      "content": "| 7 | `experiments/alphabet_model.*` (3 files) | **0,7 MB** | Model nhận diện ASL | **Xóa bỏ (Delete)** | Model cũ nhận diện bảng chữ cái ASL của Mỹ. "
+    },
+    {
+      "file": "README.md",
+      "line": 48,
+      "content": "> **CẤP ĐỘ 1 (FINGERSPELLING) — ĐANG DÙNG BẢNG CHỮ CÁI ASL (MỸ), CHƯA PHẢI VSL**:"
+    },
+    {
+      "file": "README.md",
+      "line": 49,
+      "content": "> - **Hiện trạng thực tế:** Thư mục `data/asl_alphabet_train` chứa 29 lớp chữ cái tiếng Anh (`A-Z`, `del`, `nothing`, `space`) từ bộ dữ liệu ASL Alpha"
+    },
+    {
+      "file": "README.md",
+      "line": 50,
+      "content": "> - **Rà soát \"Báo cáo 2 (VSL Alphabet 2025)\"**: Nghiên cứu cơ sở *(Tran Anh Vu et al., JST 2025, ĐHBK Hà Nội)* thu thập nội bộ 25 ký hiệu VSL tĩnh từ"
+    },
+    {
+      "file": ".agents/skills/vsl-data-integrity/SKILL.md",
+      "line": 10,
+      "content": "Bộ dữ liệu `asl_alphabet_train/test` từng được dùng để huấn luyện bộ nhận diện \"VSL Fingerspelling\" — nhưng đó thực chất là bảng chữ cái Mỹ (ASL), khô"
+    },
+    {
+      "file": ".agents/skills/vsl-data-integrity/SKILL.md",
+      "line": 14,
+      "content": "1. **Nguồn gốc**: bộ dữ liệu này đến từ đâu? Có tài liệu/paper/link xác nhận nó thực sự là dữ liệu Việt Nam / VSL không, hay chỉ là bộ dữ liệu ký hiệu"
+    },
+    {
+      "file": ".claude/skills/vsl-data-integrity/SKILL.md",
+      "line": 10,
+      "content": "Bộ dữ liệu `asl_alphabet_train/test` từng được dùng để huấn luyện bộ nhận diện \"VSL Fingerspelling\" — nhưng đó thực chất là bảng chữ cái Mỹ (ASL), khô"
+    },
+    {
+      "file": ".claude/skills/vsl-data-integrity/SKILL.md",
+      "line": 14,
+      "content": "1. **Nguồn gốc**: bộ dữ liệu này đến từ đâu? Có tài liệu/paper/link xác nhận nó thực sự là dữ liệu Việt Nam / VSL không, hay chỉ là bộ dữ liệu ký hiệu"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/paper_text.txt",
+      "line": 107,
+      "content": "How2Sign [3] ASL 35,191 35,191 11 ✓ ✓ ✓ ✓ Multi-domain"
+    },
+    {
+      "file": "clone/Vietnamese-Sign-Language-Translation/data/paper_text.txt",
+      "line": 151,
+      "content": "is the largest ASL dataset to date, comprising 35,191 videos"
+    },
+    {
+      "file": "docs/cloud_training.md",
+      "line": 139,
+      "content": "- Đã kiểm tra nguồn gốc dữ liệu: Dữ liệu sử dụng là bộ từ điển video VSL chuẩn (Tier 1: 50 lớp, 3 miền Bắc - Trung - Nam), không sử dụng nhầm dữ liệu "
+    },
+    {
+      "file": "docs/audit/phase0_baseline.md",
+      "line": 43,
+      "content": "│   ├── asl_alphabet_train/        # ASL image dataset (29 classes, 87,000 jpgs)"
+    },
+    {
+      "file": "docs/audit/phase0_baseline.md",
+      "line": 44,
+      "content": "│   └── asl_alphabet_test/         # ASL image test set"
+    },
+    {
+      "file": "frontend/dist/assets/index-DjjRrjiG.js",
+      "line": 205,
+      "content": "*/const Yf=[[\"path\",{d:\"M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-."
+    },
+    {
+      "file": "frontend/src/components/Fingerspelling.jsx",
+      "line": 73,
+      "content": "<span>CẢNH BÁO KIỂM TOÁN DỮ LIỆU: Đang sử dụng Bảng chữ cái ASL (Mỹ)</span>"
+    },
+    {
+      "file": "frontend/src/components/Fingerspelling.jsx",
+      "line": 77,
+      "content": "Phân hệ Fingerspelling hiện đang sử dụng bộ dữ liệu <strong>ASL Alphabet (Mỹ - 29 ký tự A-Z, del, space)</strong> để kiểm chứng kỹ thuật (đạt 98.06% T"
+    },
+    {
+      "file": "frontend/src/components/Reports.jsx",
+      "line": 29,
+      "content": "• <strong>Cấp độ 1 (Fingerspelling)</strong>: Hiện dùng bộ dữ liệu ASL Alphabet (29 ký tự) làm PoC kỹ thuật (đạt 98.06% ASL Test Acc). Nghiên cứu cơ s"
+    },
+    {
+      "file": "frontend/src/components/Reports.jsx",
+      "line": 78,
+      "content": "Fingerspelling: 98.06% ASL Test"
+    }
+  ]
+}
