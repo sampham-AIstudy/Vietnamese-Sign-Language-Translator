@@ -9,21 +9,23 @@ Applies transformations directly on landmark sequences (T, D) and static keypoin
 """
 
 import numpy as np
-from typing import Optional
+from typing import Optional, Tuple
 
 
 class KeypointAugmenter:
     def __init__(
         self,
-        jitter_std: float = 0.015,
+        jitter_std: float = 0.008,
         scale_range: tuple = (0.9, 1.1),
         rotate_angle_range: float = 10.0,  # in degrees
+        shear_range: float = 0.05,
         time_warp_ratio: float = 0.15,
         mask_prob: float = 0.05,
     ):
         self.jitter_std = jitter_std
         self.scale_range = scale_range
         self.rotate_angle_range = rotate_angle_range
+        self.shear_range = shear_range
         self.time_warp_ratio = time_warp_ratio
         self.mask_prob = mask_prob
 
@@ -124,3 +126,68 @@ class KeypointAugmenter:
         if np.random.rand() > 0.5:
             kp = self.random_rotate_2d(kp)
         return kp
+
+    def augment_vsl_sequence(
+        self,
+        sequence: np.ndarray,
+        joint_mask: np.ndarray,
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Augmentation pipeline for 67-joint normalized sequence [T, 67, 3] and joint_mask [T, 67].
+        Guarantees:
+          - No NaNs or Infs
+          - Inactive/masked joints remain zero and mask is preserved
+          - Spatial and temporal invariance learning
+        """
+        seq = sequence.copy().astype(np.float32)
+        jmask = joint_mask.copy().astype(np.float32)
+        T, V, C = seq.shape
+
+        # 1. Random Scale (Zoom in / Zoom out)
+        if np.random.rand() > 0.3:
+            scale = np.random.uniform(self.scale_range[0], self.scale_range[1])
+            seq = seq * scale
+
+        # 2. Random 2D Rotation (Roll in xy plane around origin)
+        if np.random.rand() > 0.3:
+            angle = np.radians(np.random.uniform(-self.rotate_angle_range, self.rotate_angle_range))
+            cos_a, sin_a = np.cos(angle), np.sin(angle)
+            rot_matrix = np.array([[cos_a, -sin_a], [sin_a, cos_a]], dtype=np.float32)
+            xy = seq[:, :, :2]
+            xy_rot = np.matmul(xy, rot_matrix)
+            seq[:, :, :2] = xy_rot
+
+        # 3. Random 2D Shear
+        if np.random.rand() > 0.5:
+            shear = np.random.uniform(-self.shear_range, self.shear_range)
+            seq[:, :, 0] = seq[:, :, 0] + shear * seq[:, :, 1]
+
+        # 4. Temporal Time Warping (Pacing / Speed Variation)
+        if np.random.rand() > 0.4:
+            warp_factor = np.random.uniform(1.0 - self.time_warp_ratio, 1.0 + self.time_warp_ratio)
+            new_T = max(20, int(T * warp_factor))
+            old_idx = np.linspace(0, T - 1, new_T)
+            warped_seq = np.zeros((new_T, V, C), dtype=np.float32)
+            for v in range(V):
+                for c in range(C):
+                    warped_seq[:, v, c] = np.interp(old_idx, np.arange(T), seq[:, v, c])
+            
+            resampled_idx = np.linspace(0, new_T - 1, T)
+            for v in range(V):
+                for c in range(C):
+                    seq[:, v, c] = np.interp(resampled_idx, np.arange(new_T), warped_seq[:, v, c])
+
+        # 5. Gaussian Jitter (applied only to active joints)
+        if np.random.rand() > 0.3:
+            noise = np.random.normal(0, self.jitter_std, size=seq.shape).astype(np.float32)
+            seq = seq + noise * jmask[:, :, None]
+
+        # 6. Random Partial Hand Occlusion
+        if np.random.rand() < self.mask_prob:
+            # 25..45 is left hand, 46..66 is right hand
+            drop_hand = np.random.choice(["lh", "rh"])
+            hand_slice = slice(25, 46) if drop_hand == "lh" else slice(46, 67)
+            jmask[:, hand_slice] = 0.0
+            seq[:, hand_slice, :] = 0.0
+
+        return seq.astype(np.float32), jmask.astype(np.float32)

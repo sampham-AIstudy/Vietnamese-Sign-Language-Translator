@@ -42,7 +42,7 @@ def train_word_model(
     epochs: int = 25,
     batch_size: int = 32,
     lr: float = 1e-3,
-    processed_dir: str = "data (2)/Processed",
+    processed_dir: str = "data/Processed",
     save_path: str = None,
 ):
     os.makedirs("experiments", exist_ok=True)

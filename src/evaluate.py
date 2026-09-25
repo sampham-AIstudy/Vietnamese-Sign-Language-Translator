@@ -37,7 +37,7 @@ from torch.utils.data import DataLoader
 
 def evaluate_word_model(
     checkpoint_path: str = "experiments/word_model_bigru.pth",
-    processed_dir: str = "data (2)/Processed",
+    processed_dir: str = "data/Processed",
     output_img: str = "experiments/confusion_matrix_word.png",
     batch_size: int = 32,
 ):
