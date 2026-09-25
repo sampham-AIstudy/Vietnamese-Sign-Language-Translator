@@ -9,7 +9,7 @@ Yêu cầu nhất quán train ↔ camera: skill `.claude/skills/vsl-landmark-con
 | Kernel | Đầu vào | Việc | Đầu ra |
 |---|---|---|---|
 | `vsl-extract-qipedc` | Kaggle `aresusayhi/vsl-vietnamese-sign-languages` (QIPEDC) | `scripts/extract_keypoints_batch.py` — Holistic 67 khớp, mediapipe 0.10.14 | `qipedc_kps/*.npz` |
-| `vsl-train-unified` (GPU T4) | output `vsl-extract-qipedc` + VSL-GH upstream @ `6c351e6` | `prepare_canonical_vsl_gh.py` → `export_vslgh_segments.py` → `train_unified.py` | `run/stgcn_unified_best.pt`, `metrics.json` |
+| `vsl-train-unified` (GPU T4 x2) | output `vsl-extract-qipedc` + VSL-GH upstream @ `6c351e6` | `prepare_canonical_vsl_gh.py` → `export_vslgh_segments.py` → `train_unified.py`, seed 42 trên GPU 0 và seed 43 trên GPU 1 song song | `run/` (seed 42, kết quả chính) + `run_seed43/` (chỉ đo dao động) |
 | `vsl-extract-alphabet` | Kaggle `hauuto/vietnamese-sign-language-alphabet` + QIPEDC | `build_alphabet_tasks.py` → `extract_hands_batch.py` (MediaPipe Hands) | `alphabet_hands/*.npz` |
 | `vsl-train-alphabet` (CPU) | output `vsl-extract-alphabet` | `train_alphabet_real.py` — LOSO 4 người + test ngoài QIPEDC | `alphabet_real_best.pt`, `alphabet_report.json` |
 
@@ -20,6 +20,13 @@ cd kaggle\vsl-train-unified
 ..\..\.venv\Scripts\kaggle.exe kernels status phmvnsm33/vsl-train-unified
 ..\..\.venv\Scripts\kaggle.exe kernels output phmvnsm33/vsl-train-unified -p ..\..\reports\<run_dir>
 ```
+
+## Phân bổ quota Kaggle (mỗi tuần: GPU T4 x2 30 h, TPU v5e-8 20 h; CPU không tính quota)
+- **CPU**: trích landmark (MediaPipe chỉ chạy CPU), train Cấp 1. Không bật accelerator cho các kernel này.
+- **GPU T4 x2**: train Cấp 2; mỗi phiên dùng cả 2 GPU (2 seed song song). Fine-tune ViT5 Cấp 3 nếu cần.
+  Seed chính khai báo trước (42); các seed khác chỉ để báo độ dao động, không chọn seed theo kết quả test.
+- **TPU v5e-8**: để dự phòng. Code STGCN/BiGRU là PyTorch + CUDA autocast, chuỗi dài thay đổi → chuyển sang
+  torch_xla tốn công, lợi ích nhỏ với model nhỏ. Chỉ cân nhắc cho fine-tune ViT5 (T5 chạy tốt trên TPU với JAX).
 
 ## Dữ liệu và cách chia
 - Manifest hợp nhất (không phân biệt miền): `scripts/build_unified_manifest.py` → `data/splits/unified/`.

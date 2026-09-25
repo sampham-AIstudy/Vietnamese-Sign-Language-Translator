@@ -30,6 +30,27 @@ for name, target in (("qipedc_kps", kps[0]), ("vslgh_segments", f"{REPO}/data/pr
 print("qipedc npz:", len(glob.glob(f"{kps[0]}/*.npz")), flush=True)
 
 sh(f"{sys.executable} -c \"import torch; print(torch.__version__, torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else None)\"")
-sh(f"{sys.executable} scripts/train_unified.py --data-root {root} --out-dir /kaggle/working/run "
-   f"--epochs 120 --batch-size 64 --num-workers {os.cpu_count()} --patience 20")
+# T4 x2: one training per GPU in parallel. Seed 42 (-> run/) is the pre-declared primary result used
+# for the report and the backend gate; seed 43 (-> run_seed43/) only measures seed-to-seed variance.
+import torch
+n_gpu = torch.cuda.device_count()
+workers = max(1, (os.cpu_count() or 2) // max(1, min(n_gpu, 2)))
+cmd = (f"{sys.executable} scripts/train_unified.py --data-root {root} --epochs 120 --batch-size 64 "
+       f"--num-workers {workers} --patience 20")
+jobs = [("0", 42, "/kaggle/working/run")] + ([("1", 43, "/kaggle/working/run_seed43")] if n_gpu >= 2 else [])
+procs = []
+for gpu, seed, out in jobs:
+    os.makedirs(out, exist_ok=True)
+    print(f"$ [GPU {gpu}] {cmd} --seed {seed} --out-dir {out}", flush=True)
+    log = open(f"{out}/train.log", "w")
+    procs.append((seed, out, log, subprocess.Popen(f"{cmd} --seed {seed} --out-dir {out}", shell=True, stdout=log,
+                                                   stderr=subprocess.STDOUT, env={**os.environ, "CUDA_VISIBLE_DEVICES": gpu})))
+failed = []
+for seed, out, log, p in procs:
+    rc = p.wait(); log.close()
+    print(f"--- seed {seed} exit {rc}; tail of {out}/train.log ---", flush=True)
+    print("".join(open(f"{out}/train.log").readlines()[-40:]), flush=True)
+    if rc != 0:
+        failed.append(seed)
+assert 42 not in failed, "primary run (seed 42) failed"
 print(f"total {(time.time() - t0) / 60:.1f} min", flush=True)
