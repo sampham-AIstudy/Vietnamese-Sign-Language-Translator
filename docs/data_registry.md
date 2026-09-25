@@ -38,6 +38,15 @@ Last Updated: **2026-09-24** (audit round 3 corrections)
 
 ---
 
+## 1b. hauuto Vietnamese Sign Language Alphabet (Level 1 fingerspelling)
+
+- **Source**: https://www.kaggle.com/datasets/hauuto/vietnamese-sign-language-alphabet (created 2026-09-18). **License: unknown** (no description, no paper).
+- **Usage restriction (until the uploader grants permission)**: internal use only. **Never commit** the videos, the extracted landmarks (`data/external/alphabet_hands_kaggle/`, `data/external/hauuto_raw/`, both gitignored) or any per-clip file. Note: the model trained on it (`reports/alphabet_real_run_2026-09-25/alphabet_run/alphabet_real_best.pt`) is already committed and pushed in the public repo; whether to keep it there is the owner's call. Permission request draft: `docs/provenance/hauuto_permission_request.md`.
+- **Content**: webcam mp4 (640×480, variable fps), `raw/raw/<signer>/<telex>_<signer>_<A|B>_<n>.mp4`; 4 signers (hau, khoi, tai, vy), 34 classes (29 letters + 5 tone marks), 4–6 reps/class/signer, 640 clips. Signer IDs and labels come from the file paths.
+- **Extraction**: `scripts/build_alphabet_tasks.py` + `scripts/extract_hands_batch.py` (MediaPipe 0.10.14 `solutions.hands`, backend settings), Kaggle `phmvnsm33/vsl-extract-alphabet`. The same run adds 46 QIPEDC single-letter clips (40 distinct recordings) as an external test set.
+- **Integrity**: `reports/alphabet_real_run_2026-09-25/GATE0_integrity.md` (real people, real MediaPipe; tone-mark sign forms not checked against a standard).
+- **Evaluation**: leave-one-signer-out only (4 signers → wide CI).
+
 ## 2. VSL-GH (Continuous VSL Sign Language Translation)
 
 - **Dataset**: VSL-GH (Vietnamese Sign Language - Gloss & Hand)

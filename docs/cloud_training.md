@@ -26,6 +26,15 @@ cd kaggle\vsl-train-unified
   QIPEDC chia theo **bản quay** (`data/splits/recording_groups.csv`), VSL-GH chia theo **người ký** (S01–S04 / S05 / S06).
 - Guard `DuplicateRecordingLeakageError` (`src/data/vsl_dataset.py`) chặn mọi split để cùng một bản quay ở hai phía.
 - Cấp 1: chỉ dữ liệu quay thật (hauuto 4 người, 29 chữ + 5 dấu thanh); `data/vsl_alphabet_pilot` là dữ liệu tổng hợp, không dùng.
+- `train_unified.py` dừng hẳn (FAIL) nếu một nhóm bản quay QIPEDC nằm ở hai tập, thiếu `recording_group`,
+  bỏ qua kiểm tra trùng bản quay, hoặc S06 xuất hiện ngoài test (`assert_split_integrity`).
+
+## Ghi chú hạ tầng — lần trích xuất sau (chưa áp dụng)
+`extract_qipedc` (4.362 video) chạy > 5 giờ vì mỗi video tạo một phiên MediaPipe mới (nạp lại graph + model).
+Lần sau: mỗi worker giữ **một** phiên `Holistic`/`Hands` và gọi `.reset()` (`SolutionBase.reset`, có trong
+mediapipe 0.10.14: đóng và khởi động lại graph run) trước mỗi video, để tracker không mang vị trí tay của clip trước
+sang clip sau. Trước khi dùng, đo lại: (1) thời gian/video so với phiên mới, (2) landmark của 20 video giống hệt
+cách cũ (`np.allclose`); nếu `reset()` không giữ được model đã nạp thì lợi ích nhỏ, giữ cách cũ.
 
 ## Colab (tương tác)
 Dùng qua Colab MCP khi cần thử nhanh với GPU T4: mở tab Colab (runtime T4), rồi trong Claude Code gọi

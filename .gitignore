@@ -65,3 +65,9 @@ kaggle/vsl-alphabet-level1-training/*.ipynb
 
 # Derived keypoints / segments (regenerate with scripts/export_vslgh_segments.py, extract_keypoints_batch.py)
 data/processed/
+
+# hauuto alphabet (license unknown, internal use only; see docs/data_registry.md 1b)
+data/external/alphabet_hands_kaggle/
+data/external/hauuto_raw/
+reports/alphabet_nested_*/**/nested_predictions.csv
+reports/alphabet_nested_*/**/*.pt
