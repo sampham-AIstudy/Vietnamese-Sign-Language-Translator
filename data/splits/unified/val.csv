@@ -1,0 +1,1296 @@
+video_id,file_name,source,gloss_raw,gloss_normalized,dialect,signer_id,recording_group,width,height,npz_path,split
+qipedc_D0020B,D0020B.mp4,qipedc,lung tung,lung tung,B,,RG01792,1280,720,qipedc_kps/D0020B.npz,val
+qipedc_D0035N,D0035N.mp4,qipedc,không nên,không nên,N,,RG01674,1280,720,qipedc_kps/D0035N.npz,val
+qipedc_D0040N,D0040N.mp4,qipedc,Tết hàn thực,tết hàn thực,N,,RG00166,1280,720,qipedc_kps/D0040N.npz,val
+qipedc_D0042B,D0042B.mp4,qipedc,ngày Quốc tế phụ nữ 8/3,ngày quốc tế phụ nữ 8/3,B,,RG02172,1280,720,qipedc_kps/D0042B.npz,val
+qipedc_D0045T,D0045T.mp4,qipedc,ngày Người khuyết tật Việt Nam 18/4,ngày người khuyết tật việt nam 18/4,T,,RG02163,1280,720,qipedc_kps/D0045T.npz,val
+qipedc_D0046T,D0046T.mp4,qipedc,ngày Người khuyết tật Thế giới 3/12,ngày người khuyết tật thế giới 3/12,T,,RG02160,1280,720,qipedc_kps/D0046T.npz,val
+qipedc_D0049B,D0049B.mp4,qipedc,ngày Phụ nữ Việt Nam 20/10,ngày phụ nữ việt nam 20/10,B,,RG02166,1280,720,qipedc_kps/D0049B.npz,val
+qipedc_D0056T,D0056T.mp4,qipedc,ngày gia đình Việt Nam 28/6,ngày gia đình việt nam 28/6,T,,RG02181,1280,720,qipedc_kps/D0056T.npz,val
+qipedc_D0119B,D0119B.mp4,qipedc,đúng không?,đúng không?,B,,RG03778,1280,720,qipedc_kps/D0119B.npz,val
+qipedc_D0153T,D0153T.mp4,qipedc,em họ,em họ,T,,RG01236,1280,720,qipedc_kps/D0153T.npz,val
+qipedc_D0154T,D0154T.mp4,qipedc,cháu họ,cháu họ,T,,RG00611,1280,720,qipedc_kps/D0154T.npz,val
+qipedc_D0156B,D0156B.mp4,qipedc,thường xuyên,thường xuyên,B,,RG02963,1280,720,qipedc_kps/D0156B.npz,val
+qipedc_D0210T,D0210T.mp4,qipedc,không dám,không dám,T,,RG01663,1280,720,qipedc_kps/D0210T.npz,val
+qipedc_D0223B,D0223B.mp4,qipedc,Mã Lai (nước Ma-lai-xi-a),mã lai (nước ma lai xi a),B,,RG00112,1280,720,qipedc_kps/D0223B.npz,val
+qipedc_D0418T,D0418T.mp4,qipedc,tuần trước,tuần trước,T,,RG03191,1280,720,qipedc_kps/D0418T.npz,val
+qipedc_D0500B,D0500B.mp4,qipedc,h,h,B,,RG01397,1280,720,qipedc_kps/D0500B.npz,val
+qipedc_D0513B,D0513B.mp4,qipedc,t,t,B,,RG02825,1280,720,qipedc_kps/D0513B.npz,val
+qipedc_D0550N,D0550N.mp4,qipedc,10 000 (mười nghìn),10 000 (mười nghìn),N,,RG00010,1280,720,qipedc_kps/D0550N.npz,val
+qipedc_D0551B,D0551B.mp4,qipedc,1 000 000 (một triệu),1 000 000 (một triệu),B,,RG00003,1280,720,qipedc_kps/D0551B.npz,val
+qipedc_W00035N,W00035N.mp4,qipedc,áo phông,áo phông,N,,RG03601,1280,720,qipedc_kps/W00035N.npz,val
+qipedc_W00057T,W00057T.mp4,qipedc,ân hận,ân hận,T,,RG03612,1280,720,qipedc_kps/W00057T.npz,val
+qipedc_W00198B,W00198B.mp4,qipedc,bắt đền,bắt đền,B,,RG00428,1280,720,qipedc_kps/W00198B.npz,val
+qipedc_W00255T,W00255T.mp4,qipedc,bìa vở,bìa vở,T,,RG00311,1280,720,qipedc_kps/W00255T.npz,val
+qipedc_W00328N,W00328N.mp4,qipedc,bộ đội,bộ đội,N,,RG00483,1280,720,qipedc_kps/W00328N.npz,val
+qipedc_W00370N,W00370N.mp4,qipedc,buổi trưa,buổi trưa,N,,RG00237,1280,720,qipedc_kps/W00370N.npz,val
+qipedc_W00374N,W00374N.mp4,qipedc,buông màn,buông màn,N,,RG00228,1280,720,qipedc_kps/W00374N.npz,val
+qipedc_W00383N,W00383N.mp4,qipedc,bút màu,bút màu,N,,RG00348,1280,720,qipedc_kps/W00383N.npz,val
+qipedc_W00398B,W00398B.mp4,qipedc,cá kho,cá kho,B,,RG00877,1280,720,qipedc_kps/W00398B.npz,val
+qipedc_W00496B,W00496B.mp4,qipedc,cháu ngoại,cháu ngoại,B,,RG00612,1280,720,qipedc_kps/W00496B.npz,val
+qipedc_W00497N,W00497N.mp4,qipedc,cháu nội,cháu nội,N,,RG00616,1280,720,qipedc_kps/W00497N.npz,val
+qipedc_W00508N,W00508N.mp4,qipedc,chăm sóc sức khỏe,chăm sóc sức khỏe,N,,RG00676,1280,720,qipedc_kps/W00508N.npz,val
+qipedc_W00510B,W00510B.mp4,qipedc,chăn nuôi,chăn nuôi,B,,RG00680,1280,720,qipedc_kps/W00510B.npz,val
+qipedc_W00516N,W00516N.mp4,qipedc,châm cứu,châm cứu,N,,RG00623,1280,720,qipedc_kps/W00516N.npz,val
+qipedc_W00584B,W00584B.mp4,qipedc,chiếc gối,chiếc gối,B,,RG00558,1280,720,qipedc_kps/W00584B.npz,val
+qipedc_W00655N,W00655N.mp4,qipedc,chùa,chùa,N,,RG00647,1280,720,qipedc_kps/W00655N.npz,val
+qipedc_W00664N,W00664N.mp4,qipedc,chúc tết,chúc tết,N,,RG00666,1280,720,qipedc_kps/W00664N.npz,val
+qipedc_W00734T,W00734T.mp4,qipedc,con bê,con bê,T,,RG00770,1280,720,qipedc_kps/W00734T.npz,val
+qipedc_W00758N,W00758N.mp4,qipedc,con ếch,con ếch,N,,RG00857,1280,720,qipedc_kps/W00758N.npz,val
+qipedc_W00770T,W00770T.mp4,qipedc,con lợn (con heo),con lợn (con heo),T,,RG00810,1280,720,qipedc_kps/W00770T.npz,val
+qipedc_W00780B,W00780B.mp4,qipedc,con nuôi,con nuôi,B,,RG00823,1280,720,qipedc_kps/W00780B.npz,val
+qipedc_W00885B,W00885B.mp4,qipedc,cơm bình dân,cơm bình dân,B,,RG00977,1280,720,qipedc_kps/W00885B.npz,val
+qipedc_W01032N,W01032N.mp4,qipedc,di truyền,di truyền,N,,RG01119,1280,720,qipedc_kps/W01032N.npz,val
+qipedc_W01033B,W01033B.mp4,qipedc,dịch vụ,dịch vụ,B,,RG01214,1280,720,qipedc_kps/W01033B.npz,val
+qipedc_W01122N,W01122N.mp4,qipedc,đặc biệt,đặc biệt,N,,RG03842,1280,720,qipedc_kps/W01122N.npz,val
+qipedc_W01122T,W01122T.mp4,qipedc,đặc biệt,đặc biệt,T,,RG03842,1280,720,qipedc_kps/W01122T.npz,val
+qipedc_W01159N,W01159N.mp4,qipedc,đèn pin,đèn pin,N,,RG03745,1280,720,qipedc_kps/W01159N.npz,val
+qipedc_W01161N,W01161N.mp4,qipedc,đèn vàng,đèn vàng,N,,RG03748,1280,720,qipedc_kps/W01161N.npz,val
+qipedc_W01162B,W01162B.mp4,qipedc,đèn xanh,đèn xanh,B,,RG03750,1280,720,qipedc_kps/W01162B.npz,val
+qipedc_W01259B,W01259B.mp4,qipedc,nhập ngũ,nhập ngũ,B,,RG02327,1280,720,qipedc_kps/W01259B.npz,val
+qipedc_W01348T,W01348T.mp4,qipedc,e thẹn,e thẹn,T,,RG01231,1280,720,qipedc_kps/W01348T.npz,val
+qipedc_W01351N,W01351N.mp4,qipedc,em rể,em rể,N,,RG01238,1280,720,qipedc_kps/W01351N.npz,val
+qipedc_W01403T,W01403T.mp4,qipedc,gầy (miền Nam: ốm),gầy (miền nam: ốm),T,,RG01374,1280,720,qipedc_kps/W01403T.npz,val
+qipedc_W01433N,W01433N.mp4,qipedc,giá trị,giá trị,N,,RG01281,1280,720,qipedc_kps/W01433N.npz,val
+qipedc_W01516B,W01516B.mp4,qipedc,gỗ,gỗ,B,,RG01390,1280,720,qipedc_kps/W01516B.npz,val
+qipedc_W01557T,W01557T.mp4,qipedc,hành quân,hành quân,T,,RG01472,1280,720,qipedc_kps/W01557T.npz,val
+qipedc_W01583N,W01583N.mp4,qipedc,hi sinh,hi sinh,N,,RG01407,1280,720,qipedc_kps/W01583N.npz,val
+qipedc_W01629N,W01629N.mp4,qipedc,hoa sen,hoa sen,N,,RG01429,1280,720,qipedc_kps/W01629N.npz,val
+qipedc_W01692B,W01692B.mp4,qipedc,hối hận,hối hận,B,,RG01567,1280,720,qipedc_kps/W01692B.npz,val
+qipedc_W01721N,W01721N.mp4,qipedc,huyện,huyện,N,,RG01448,1280,720,qipedc_kps/W01721N.npz,val
+qipedc_W01824B,W01824B.mp4,qipedc,khỏi bệnh,khỏi bệnh,B,,RG01689,1280,720,qipedc_kps/W01824B.npz,val
+qipedc_W01979T,W01979T.mp4,qipedc,lễ Nô-en,lễ nô en,T,,RG01880,1280,720,qipedc_kps/W01979T.npz,val
+qipedc_W01996B,W01996B.mp4,qipedc,Liên Bang Nga (nước Nga),liên bang nga (nước nga),B,,RG00096,1280,720,qipedc_kps/W01996B.npz,val
+qipedc_W02000T,W02000T.mp4,qipedc,liên lạc,liên lạc,T,,RG01774,1280,720,qipedc_kps/W02000T.npz,val
+qipedc_W02120N,W02120N.mp4,qipedc,màn,màn,N,,RG01936,1280,720,qipedc_kps/W02120N.npz,val
+qipedc_W02142T,W02142T.mp4,qipedc,màu xanh da trời,màu xanh da trời,T,,RG01946,1280,720,qipedc_kps/W02142T.npz,val
+qipedc_W02143B,W02143B.mp4,qipedc,màu xanh lá cây,màu xanh lá cây,B,,RG01947,1280,720,qipedc_kps/W02143B.npz,val
+qipedc_W02164N,W02164N.mp4,qipedc,mắng,mắng,N,,RG02058,1280,720,qipedc_kps/W02164N.npz,val
+qipedc_W02187N,W02187N.mp4,qipedc,mật khẩu,mật khẩu,N,,RG02052,1280,720,qipedc_kps/W02187N.npz,val
+qipedc_W02270B,W02270B.mp4,qipedc,mùa hè,mùa hè,B,,RG02016,1280,720,qipedc_kps/W02270B.npz,val
+qipedc_W02329T,W02329T.mp4,qipedc,ngày tháng,ngày tháng,T,,RG02197,1280,720,qipedc_kps/W02329T.npz,val
+qipedc_W02336B,W02336B.mp4,qipedc,ngày nay,ngày nay,B,,RG02187,1280,720,qipedc_kps/W02336B.npz,val
+qipedc_W02337B,W02337B.mp4,qipedc,ngày Quốc tế Lao động,ngày quốc tế lao động,B,,RG02169,1280,720,qipedc_kps/W02337B.npz,val
+qipedc_W02338T,W02338T.mp4,qipedc,ngày sinh,ngày sinh,T,,RG02192,1280,720,qipedc_kps/W02338T.npz,val
+qipedc_W02360N,W02360N.mp4,qipedc,nghỉ hè,nghỉ hè,N,,RG02129,1280,720,qipedc_kps/W02360N.npz,val
+qipedc_W02438B,W02438B.mp4,qipedc,người xưa,người xưa,B,,RG02232,1280,720,qipedc_kps/W02438B.npz,val
+qipedc_W02439T,W02439T.mp4,qipedc,người yêu,người yêu,T,,RG02239,1280,720,qipedc_kps/W02439T.npz,val
+qipedc_W02461T,W02461T.mp4,qipedc,nhãn vở,nhãn vở,T,,RG02301,1280,720,qipedc_kps/W02461T.npz,val
+qipedc_W02520N,W02520N.mp4,qipedc,no,no,N,,RG02351,1280,720,qipedc_kps/W02520N.npz,val
+qipedc_W02576N,W02576N.mp4,qipedc,ông nội,ông nội,N,,RG03634,1280,720,qipedc_kps/W02576N.npz,val
+qipedc_W02656N,W02656N.mp4,qipedc,phim hoạt hình,phim hoạt hình,N,,RG02433,1280,720,qipedc_kps/W02656N.npz,val
+qipedc_W02737T,W02737T.mp4,qipedc,quả đu đủ,quả đu đủ,T,,RG02613,1280,720,qipedc_kps/W02737T.npz,val
+qipedc_W02932N,W02932N.mp4,qipedc,sắt,sắt,N,,RG02782,1280,720,qipedc_kps/W02932N.npz,val
+qipedc_W03011T,W03011T.mp4,qipedc,sơ mi,sơ mi,T,,RG02771,1280,720,qipedc_kps/W03011T.npz,val
+qipedc_W03085B,W03085B.mp4,qipedc,tàu hoả,tàu hoả,B,,RG03199,1280,720,qipedc_kps/W03085B.npz,val
+qipedc_W03138B,W03138B.mp4,qipedc,tha thứ,tha thứ,B,,RG02840,1280,720,qipedc_kps/W03138B.npz,val
+qipedc_W03175B,W03175B.mp4,qipedc,thành lập,thành lập,B,,RG02895,1280,720,qipedc_kps/W03175B.npz,val
+qipedc_W03175T,W03175T.mp4,qipedc,thành lập,thành lập,T,,RG02895,1280,720,qipedc_kps/W03175T.npz,val
+qipedc_W03252T,W03252T.mp4,qipedc,thích thú,thích thú,T,,RG02930,1280,720,qipedc_kps/W03252T.npz,val
+qipedc_W03320N,W03320N.mp4,qipedc,thủ công,thủ công,N,,RG03011,1280,720,qipedc_kps/W03320N.npz,val
+qipedc_W03361B,W03361B.mp4,qipedc,Thừa Thiên – Huế,thừa thiên – huế,B,,RG00146,1280,720,qipedc_kps/W03361B.npz,val
+qipedc_W03422B,W03422B.mp4,qipedc,tiết kiệm,tiết kiệm,B,,RG03054,1280,720,qipedc_kps/W03422B.npz,val
+qipedc_W03450N,W03450N.mp4,qipedc,thương yêu,thương yêu,N,,RG02961,1280,720,qipedc_kps/W03450N.npz,val
+qipedc_W03450T,W03450T.mp4,qipedc,thương yêu,thương yêu,T,,RG02961,1280,720,qipedc_kps/W03450T.npz,val
+qipedc_W03571T,W03571T.mp4,qipedc,tre,tre,T,,RG03074,1280,720,qipedc_kps/W03571T.npz,val
+qipedc_W03659B,W03659B.mp4,qipedc,trứng,trứng,B,,RG03167,1280,720,qipedc_kps/W03659B.npz,val
+qipedc_W03685T,W03685T.mp4,qipedc,tuần,tuần,T,,RG03181,1280,720,qipedc_kps/W03685T.npz,val
+qipedc_W03719B,W03719B.mp4,qipedc,tự lập,tự lập,B,,RG03334,1280,720,qipedc_kps/W03719B.npz,val
+qipedc_W03722T,W03722T.mp4,qipedc,tự vệ,tự vệ,T,,RG03342,1280,720,qipedc_kps/W03722T.npz,val
+qipedc_W03732B,W03732B.mp4,qipedc,tưởng tượng,tưởng tượng,B,,RG03273,1280,720,qipedc_kps/W03732B.npz,val
+qipedc_W03732T,W03732T.mp4,qipedc,tưởng tượng,tưởng tượng,T,,RG03273,1280,720,qipedc_kps/W03732T.npz,val
+qipedc_W03795B,W03795B.mp4,qipedc,vắng,vắng,B,,RG03443,1280,720,qipedc_kps/W03795B.npz,val
+qipedc_W03809N,W03809N.mp4,qipedc,vật nuôi,vật nuôi,N,,RG03440,1280,720,qipedc_kps/W03809N.npz,val
+qipedc_W03930T,W03930T.mp4,qipedc,xà phòng,xà phòng,T,,RG03522,1280,720,qipedc_kps/W03930T.npz,val
+qipedc_W03967T,W03967T.mp4,qipedc,xe khách,xe khách,T,,RG03493,1280,720,qipedc_kps/W03967T.npz,val
+qipedc_W04025T,W04025T.mp4,qipedc,xưa,xưa,T,,RG03557,1280,720,qipedc_kps/W04025T.npz,val
+vslgh_SENT001_S05_R01_F_g00,SENT001_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT001_S05_R01_F_g00.npz,val
+vslgh_SENT001_S05_R01_F_g01,SENT001_S05_R01_F_g01,vslgh,ĐĂNG-KÝ,đăng ký,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT001_S05_R01_F_g01.npz,val
+vslgh_SENT001_S05_R01_F_g02,SENT001_S05_R01_F_g02,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT001_S05_R01_F_g02.npz,val
+vslgh_SENT001_S05_R01_F_g03,SENT001_S05_R01_F_g03,vslgh,SỨC-KHỎE,sức khỏe,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT001_S05_R01_F_g03.npz,val
+vslgh_SENT001_S05_R01_F_g04,SENT001_S05_R01_F_g04,vslgh,MUỐN,muốn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT001_S05_R01_F_g04.npz,val
+vslgh_SENT002_S05_R01_F_g00,SENT002_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT002_S05_R01_F_g00.npz,val
+vslgh_SENT002_S05_R01_F_g01,SENT002_S05_R01_F_g01,vslgh,TUỔI,tuổi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT002_S05_R01_F_g01.npz,val
+vslgh_SENT002_S05_R01_F_g02,SENT002_S05_R01_F_g02,vslgh,2,2,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT002_S05_R01_F_g02.npz,val
+vslgh_SENT002_S05_R01_F_g03,SENT002_S05_R01_F_g03,vslgh,4,4,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT002_S05_R01_F_g03.npz,val
+vslgh_SENT003_S05_R01_F_g00,SENT003_S05_R01_F_g00,vslgh,IX,ix,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT003_S05_R01_F_g00.npz,val
+vslgh_SENT003_S05_R01_F_g01,SENT003_S05_R01_F_g01,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT003_S05_R01_F_g01.npz,val
+vslgh_SENT003_S05_R01_F_g02,SENT003_S05_R01_F_g02,vslgh,TÊN,tên,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT003_S05_R01_F_g02.npz,val
+vslgh_SENT003_S05_R01_F_g03,SENT003_S05_R01_F_g03,vslgh,GÌ,gì,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT003_S05_R01_F_g03.npz,val
+vslgh_SENT004_S05_R01_F_g00,SENT004_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT004_S05_R01_F_g00.npz,val
+vslgh_SENT004_S05_R01_F_g01,SENT004_S05_R01_F_g01,vslgh,NỮ,nữ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT004_S05_R01_F_g01.npz,val
+vslgh_SENT005_S05_R01_F_g00,SENT005_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT005_S05_R01_F_g00.npz,val
+vslgh_SENT005_S05_R01_F_g01,SENT005_S05_R01_F_g01,vslgh,NAM,nam,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT005_S05_R01_F_g01.npz,val
+vslgh_SENT006_S05_R01_F_g00,SENT006_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT006_S05_R01_F_g00.npz,val
+vslgh_SENT006_S05_R01_F_g01,SENT006_S05_R01_F_g01,vslgh,ĐỘC-THÂN,độc thân,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT006_S05_R01_F_g01.npz,val
+vslgh_SENT006_S05_R01_F_g02,SENT006_S05_R01_F_g02,vslgh,CÒN,còn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT006_S05_R01_F_g02.npz,val
+vslgh_SENT007_S05_R01_F_g00,SENT007_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT007_S05_R01_F_g00.npz,val
+vslgh_SENT007_S05_R01_F_g01,SENT007_S05_R01_F_g01,vslgh,CON,con,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT007_S05_R01_F_g01.npz,val
+vslgh_SENT007_S05_R01_F_g02,SENT007_S05_R01_F_g02,vslgh,2,2,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT007_S05_R01_F_g02.npz,val
+vslgh_SENT008_S05_R01_F_g00,SENT008_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT008_S05_R01_F_g00.npz,val
+vslgh_SENT008_S05_R01_F_g01,SENT008_S05_R01_F_g01,vslgh,QUÊ-QUÁN,quê quán,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT008_S05_R01_F_g01.npz,val
+vslgh_SENT008_S05_R01_F_g02,SENT008_S05_R01_F_g02,vslgh,SÀI-GÒN,sài gòn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT008_S05_R01_F_g02.npz,val
+vslgh_SENT009_S05_R01_F_g00,SENT009_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT009_S05_R01_F_g00.npz,val
+vslgh_SENT009_S05_R01_F_g01,SENT009_S05_R01_F_g01,vslgh,ĐIỆN-THOẠI,điện thoại,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT009_S05_R01_F_g01.npz,val
+vslgh_SENT009_S05_R01_F_g02,SENT009_S05_R01_F_g02,vslgh,SỐ,số,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT009_S05_R01_F_g02.npz,val
+vslgh_SENT009_S05_R01_F_g03,SENT009_S05_R01_F_g03,vslgh,1,1,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT009_S05_R01_F_g03.npz,val
+vslgh_SENT009_S05_R01_F_g04,SENT009_S05_R01_F_g04,vslgh,2,2,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT009_S05_R01_F_g04.npz,val
+vslgh_SENT009_S05_R01_F_g05,SENT009_S05_R01_F_g05,vslgh,3,3,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT009_S05_R01_F_g05.npz,val
+vslgh_SENT010_S05_R01_F_g00,SENT010_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT010_S05_R01_F_g00.npz,val
+vslgh_SENT010_S05_R01_F_g01,SENT010_S05_R01_F_g01,vslgh,ĐẶT,đặt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT010_S05_R01_F_g01.npz,val
+vslgh_SENT010_S05_R01_F_g02,SENT010_S05_R01_F_g02,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT010_S05_R01_F_g02.npz,val
+vslgh_SENT010_S05_R01_F_g03,SENT010_S05_R01_F_g03,vslgh,SỨC-KHỎE,sức khỏe,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT010_S05_R01_F_g03.npz,val
+vslgh_SENT010_S05_R01_F_g04,SENT010_S05_R01_F_g04,vslgh,GÓI,gói,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT010_S05_R01_F_g04.npz,val
+vslgh_SENT010_S05_R01_F_g05,SENT010_S05_R01_F_g05,vslgh,CƠ-BẢN,cơ bản,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT010_S05_R01_F_g05.npz,val
+vslgh_SENT010_S05_R01_F_g06,SENT010_S05_R01_F_g06,vslgh,MUỐN,muốn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT010_S05_R01_F_g06.npz,val
+vslgh_SENT011_S05_R01_F_g00,SENT011_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT011_S05_R01_F_g00.npz,val
+vslgh_SENT011_S05_R01_F_g01,SENT011_S05_R01_F_g01,vslgh,GIÁO-VIÊN,giáo viên,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT011_S05_R01_F_g01.npz,val
+vslgh_SENT011_S05_R01_F_g02,SENT011_S05_R01_F_g02,vslgh,LÀM,làm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT011_S05_R01_F_g02.npz,val
+vslgh_SENT012_S05_R01_F_g00,SENT012_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT012_S05_R01_F_g00.npz,val
+vslgh_SENT012_S05_R01_F_g01,SENT012_S05_R01_F_g01,vslgh,THẺ,thẻ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT012_S05_R01_F_g01.npz,val
+vslgh_SENT012_S05_R01_F_g02,SENT012_S05_R01_F_g02,vslgh,CCCD,cccd,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT012_S05_R01_F_g02.npz,val
+vslgh_SENT012_S05_R01_F_g03,SENT012_S05_R01_F_g03,vslgh,MANG,mang,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT012_S05_R01_F_g03.npz,val
+vslgh_SENT013_S05_R01_F_g00,SENT013_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT013_S05_R01_F_g00.npz,val
+vslgh_SENT013_S05_R01_F_g01,SENT013_S05_R01_F_g01,vslgh,NỘP,nộp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT013_S05_R01_F_g01.npz,val
+vslgh_SENT013_S05_R01_F_g02,SENT013_S05_R01_F_g02,vslgh,GIẤY,giấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT013_S05_R01_F_g02.npz,val
+vslgh_SENT013_S05_R01_F_g03,SENT013_S05_R01_F_g03,vslgh,CẦN,cần,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT013_S05_R01_F_g03.npz,val
+vslgh_SENT014_S05_R01_F_g00,SENT014_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT014_S05_R01_F_g00.npz,val
+vslgh_SENT014_S05_R01_F_g01,SENT014_S05_R01_F_g01,vslgh,BẢO-HIỂM,bảo hiểm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT014_S05_R01_F_g01.npz,val
+vslgh_SENT014_S05_R01_F_g02,SENT014_S05_R01_F_g02,vslgh,Y-TẾ,y tế,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT014_S05_R01_F_g02.npz,val
+vslgh_SENT014_S05_R01_F_g03,SENT014_S05_R01_F_g03,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT014_S05_R01_F_g03.npz,val
+vslgh_SENT015_S05_R01_F_g00,SENT015_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT015_S05_R01_F_g00.npz,val
+vslgh_SENT015_S05_R01_F_g01,SENT015_S05_R01_F_g01,vslgh,ĐẾN,đến,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT015_S05_R01_F_g01.npz,val
+vslgh_SENT015_S05_R01_F_g02,SENT015_S05_R01_F_g02,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT015_S05_R01_F_g02.npz,val
+vslgh_SENT015_S05_R01_F_g03,SENT015_S05_R01_F_g03,vslgh,ĐỂ,để,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT015_S05_R01_F_g03.npz,val
+vslgh_SENT015_S05_R01_F_g04,SENT015_S05_R01_F_g04,vslgh,XIN,xin,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT015_S05_R01_F_g04.npz,val
+vslgh_SENT015_S05_R01_F_g05,SENT015_S05_R01_F_g05,vslgh,VIỆC,việc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT015_S05_R01_F_g05.npz,val
+vslgh_SENT016_S05_R01_F_g00,SENT016_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT016_S05_R01_F_g00.npz,val
+vslgh_SENT016_S05_R01_F_g01,SENT016_S05_R01_F_g01,vslgh,ĐẾN,đến,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT016_S05_R01_F_g01.npz,val
+vslgh_SENT016_S05_R01_F_g02,SENT016_S05_R01_F_g02,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT016_S05_R01_F_g02.npz,val
+vslgh_SENT016_S05_R01_F_g03,SENT016_S05_R01_F_g03,vslgh,ĐỂ,để,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT016_S05_R01_F_g03.npz,val
+vslgh_SENT016_S05_R01_F_g04,SENT016_S05_R01_F_g04,vslgh,ĐĂNG-KÝ,đăng ký,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT016_S05_R01_F_g04.npz,val
+vslgh_SENT016_S05_R01_F_g05,SENT016_S05_R01_F_g05,vslgh,THẺ,thẻ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT016_S05_R01_F_g05.npz,val
+vslgh_SENT016_S05_R01_F_g06,SENT016_S05_R01_F_g06,vslgh,LÁI-XE,lái xe,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT016_S05_R01_F_g06.npz,val
+vslgh_SENT016_S05_R01_F_g07,SENT016_S05_R01_F_g07,vslgh,THI,thi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT016_S05_R01_F_g07.npz,val
+vslgh_SENT017_S05_R01_F_g00,SENT017_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT017_S05_R01_F_g00.npz,val
+vslgh_SENT017_S05_R01_F_g01,SENT017_S05_R01_F_g01,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT017_S05_R01_F_g01.npz,val
+vslgh_SENT017_S05_R01_F_g02,SENT017_S05_R01_F_g02,vslgh,GÓI,gói,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT017_S05_R01_F_g02.npz,val
+vslgh_SENT017_S05_R01_F_g03,SENT017_S05_R01_F_g03,vslgh,CƠ-BẢN,cơ bản,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT017_S05_R01_F_g03.npz,val
+vslgh_SENT017_S05_R01_F_g04,SENT017_S05_R01_F_g04,vslgh,MUỐN,muốn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT017_S05_R01_F_g04.npz,val
+vslgh_SENT018_S05_R01_F_g00,SENT018_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT018_S05_R01_F_g00.npz,val
+vslgh_SENT018_S05_R01_F_g01,SENT018_S05_R01_F_g01,vslgh,LỊCH,lịch,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT018_S05_R01_F_g01.npz,val
+vslgh_SENT018_S05_R01_F_g02,SENT018_S05_R01_F_g02,vslgh,ĐẶT,đặt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT018_S05_R01_F_g02.npz,val
+vslgh_SENT018_S05_R01_F_g03,SENT018_S05_R01_F_g03,vslgh,HẸN,hẹn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT018_S05_R01_F_g03.npz,val
+vslgh_SENT018_S05_R01_F_g04,SENT018_S05_R01_F_g04,vslgh,RỒI,rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT018_S05_R01_F_g04.npz,val
+vslgh_SENT019_S05_R01_F_g00,SENT019_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT019_S05_R01_F_g00.npz,val
+vslgh_SENT019_S05_R01_F_g01,SENT019_S05_R01_F_g01,vslgh,HẸN,hẹn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT019_S05_R01_F_g01.npz,val
+vslgh_SENT019_S05_R01_F_g02,SENT019_S05_R01_F_g02,vslgh,GIỜ,giờ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT019_S05_R01_F_g02.npz,val
+vslgh_SENT019_S05_R01_F_g03,SENT019_S05_R01_F_g03,vslgh,9,9,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT019_S05_R01_F_g03.npz,val
+vslgh_SENT019_S05_R01_F_g04,SENT019_S05_R01_F_g04,vslgh,SÁNG,sáng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT019_S05_R01_F_g04.npz,val
+vslgh_SENT019_S05_R01_F_g05,SENT019_S05_R01_F_g05,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT019_S05_R01_F_g05.npz,val
+vslgh_SENT020_S05_R01_F_g00,SENT020_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT020_S05_R01_F_g00.npz,val
+vslgh_SENT020_S05_R01_F_g01,SENT020_S05_R01_F_g01,vslgh,ĐÓNG,đóng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT020_S05_R01_F_g01.npz,val
+vslgh_SENT020_S05_R01_F_g02,SENT020_S05_R01_F_g02,vslgh,TIỀN,tiền,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT020_S05_R01_F_g02.npz,val
+vslgh_SENT020_S05_R01_F_g03,SENT020_S05_R01_F_g03,vslgh,RỒI,rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT020_S05_R01_F_g03.npz,val
+vslgh_SENT021_S05_R01_F_g00,SENT021_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT021_S05_R01_F_g00.npz,val
+vslgh_SENT021_S05_R01_F_g01,SENT021_S05_R01_F_g01,vslgh,GIẤY,giấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT021_S05_R01_F_g01.npz,val
+vslgh_SENT021_S05_R01_F_g02,SENT021_S05_R01_F_g02,vslgh,BIÊN-LAI,biên lai,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT021_S05_R01_F_g02.npz,val
+vslgh_SENT021_S05_R01_F_g03,SENT021_S05_R01_F_g03,vslgh,CẦM,cầm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT021_S05_R01_F_g03.npz,val
+vslgh_SENT021_S05_R01_F_g04,SENT021_S05_R01_F_g04,vslgh,ĐANG,đang,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT021_S05_R01_F_g04.npz,val
+vslgh_SENT022_S05_R01_F_g00,SENT022_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT022_S05_R01_F_g00.npz,val
+vslgh_SENT022_S05_R01_F_g01,SENT022_S05_R01_F_g01,vslgh,GẶP,gặp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT022_S05_R01_F_g01.npz,val
+vslgh_SENT022_S05_R01_F_g02,SENT022_S05_R01_F_g02,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT022_S05_R01_F_g02.npz,val
+vslgh_SENT022_S05_R01_F_g03,SENT022_S05_R01_F_g03,vslgh,MUỐN,muốn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT022_S05_R01_F_g03.npz,val
+vslgh_SENT023_S05_R01_F_g00,SENT023_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT023_S05_R01_F_g00.npz,val
+vslgh_SENT023_S05_R01_F_g01,SENT023_S05_R01_F_g01,vslgh,ĐẾN,đến,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT023_S05_R01_F_g01.npz,val
+vslgh_SENT023_S05_R01_F_g02,SENT023_S05_R01_F_g02,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT023_S05_R01_F_g02.npz,val
+vslgh_SENT023_S05_R01_F_g03,SENT023_S05_R01_F_g03,vslgh,LẦN-ĐẦU,lần đầu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT023_S05_R01_F_g03.npz,val
+vslgh_SENT024_S05_R01_F_g00,SENT024_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT024_S05_R01_F_g00.npz,val
+vslgh_SENT024_S05_R01_F_g01,SENT024_S05_R01_F_g01,vslgh,ĐẾN,đến,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT024_S05_R01_F_g01.npz,val
+vslgh_SENT024_S05_R01_F_g02,SENT024_S05_R01_F_g02,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT024_S05_R01_F_g02.npz,val
+vslgh_SENT024_S05_R01_F_g03,SENT024_S05_R01_F_g03,vslgh,LẠI,lại,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT024_S05_R01_F_g03.npz,val
+vslgh_SENT025_S05_R01_F_g00,SENT025_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT025_S05_R01_F_g00.npz,val
+vslgh_SENT025_S05_R01_F_g01,SENT025_S05_R01_F_g01,vslgh,GIẤY,giấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT025_S05_R01_F_g01.npz,val
+vslgh_SENT025_S05_R01_F_g02,SENT025_S05_R01_F_g02,vslgh,GIỚI-THIỆU,giới thiệu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT025_S05_R01_F_g02.npz,val
+vslgh_SENT025_S05_R01_F_g03,SENT025_S05_R01_F_g03,vslgh,MANG,mang,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT025_S05_R01_F_g03.npz,val
+vslgh_SENT025_S05_R01_F_g04,SENT025_S05_R01_F_g04,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT025_S05_R01_F_g04.npz,val
+vslgh_SENT026_S05_R01_F_g00,SENT026_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT026_S05_R01_F_g00.npz,val
+vslgh_SENT026_S05_R01_F_g01,SENT026_S05_R01_F_g01,vslgh,SỐ,số,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT026_S05_R01_F_g01.npz,val
+vslgh_SENT026_S05_R01_F_g02,SENT026_S05_R01_F_g02,vslgh,THỨ-TỰ,thứ tự,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT026_S05_R01_F_g02.npz,val
+vslgh_SENT026_S05_R01_F_g03,SENT026_S05_R01_F_g03,vslgh,NHẬN,nhận,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT026_S05_R01_F_g03.npz,val
+vslgh_SENT026_S05_R01_F_g04,SENT026_S05_R01_F_g04,vslgh,RỒI,rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT026_S05_R01_F_g04.npz,val
+vslgh_SENT027_S05_R01_F_g00,SENT027_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT027_S05_R01_F_g00.npz,val
+vslgh_SENT027_S05_R01_F_g01,SENT027_S05_R01_F_g01,vslgh,SỐ,số,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT027_S05_R01_F_g01.npz,val
+vslgh_SENT027_S05_R01_F_g02,SENT027_S05_R01_F_g02,vslgh,THỨ-TỰ,thứ tự,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT027_S05_R01_F_g02.npz,val
+vslgh_SENT027_S05_R01_F_g03,SENT027_S05_R01_F_g03,vslgh,1,1,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT027_S05_R01_F_g03.npz,val
+vslgh_SENT027_S05_R01_F_g04,SENT027_S05_R01_F_g04,vslgh,0,0,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT027_S05_R01_F_g04.npz,val
+vslgh_SENT027_S05_R01_F_g05,SENT027_S05_R01_F_g05,vslgh,5,5,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT027_S05_R01_F_g05.npz,val
+vslgh_SENT028_S05_R01_F_g00,SENT028_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT028_S05_R01_F_g00.npz,val
+vslgh_SENT028_S05_R01_F_g01,SENT028_S05_R01_F_g01,vslgh,NGỒI,ngồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT028_S05_R01_F_g01.npz,val
+vslgh_SENT028_S05_R01_F_g02,SENT028_S05_R01_F_g02,vslgh,ĐỢI,đợi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT028_S05_R01_F_g02.npz,val
+vslgh_SENT028_S05_R01_F_g03,SENT028_S05_R01_F_g03,vslgh,ĐÂY,đây,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT028_S05_R01_F_g03.npz,val
+vslgh_SENT029_S05_R01_F_g00,SENT029_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT029_S05_R01_F_g00.npz,val
+vslgh_SENT029_S05_R01_F_g01,SENT029_S05_R01_F_g01,vslgh,ĐẾN,đến,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT029_S05_R01_F_g01.npz,val
+vslgh_SENT029_S05_R01_F_g02,SENT029_S05_R01_F_g02,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT029_S05_R01_F_g02.npz,val
+vslgh_SENT029_S05_R01_F_g03,SENT029_S05_R01_F_g03,vslgh,PHÒNG,phòng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT029_S05_R01_F_g03.npz,val
+vslgh_SENT029_S05_R01_F_g04,SENT029_S05_R01_F_g04,vslgh,2,2,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT029_S05_R01_F_g04.npz,val
+vslgh_SENT029_S05_R01_F_g05,SENT029_S05_R01_F_g05,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT029_S05_R01_F_g05.npz,val
+vslgh_SENT030_S05_R01_F_g00,SENT030_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT030_S05_R01_F_g00.npz,val
+vslgh_SENT030_S05_R01_F_g01,SENT030_S05_R01_F_g01,vslgh,ĐÓNG-TIỀN,đóng tiền,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT030_S05_R01_F_g01.npz,val
+vslgh_SENT030_S05_R01_F_g02,SENT030_S05_R01_F_g02,vslgh,Ở-ĐÂU,ở đâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT030_S05_R01_F_g02.npz,val
+vslgh_SENT031_S05_R01_F_g00,SENT031_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT031_S05_R01_F_g00.npz,val
+vslgh_SENT031_S05_R01_F_g01,SENT031_S05_R01_F_g01,vslgh,ĐẾN,đến,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT031_S05_R01_F_g01.npz,val
+vslgh_SENT031_S05_R01_F_g02,SENT031_S05_R01_F_g02,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT031_S05_R01_F_g02.npz,val
+vslgh_SENT031_S05_R01_F_g03,SENT031_S05_R01_F_g03,vslgh,PHÒNG,phòng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT031_S05_R01_F_g03.npz,val
+vslgh_SENT031_S05_R01_F_g04,SENT031_S05_R01_F_g04,vslgh,SỐ-MẤY,số mấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT031_S05_R01_F_g04.npz,val
+vslgh_SENT032_S05_R01_F_g00,SENT032_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT032_S05_R01_F_g00.npz,val
+vslgh_SENT032_S05_R01_F_g01,SENT032_S05_R01_F_g01,vslgh,CHỜ,chờ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT032_S05_R01_F_g01.npz,val
+vslgh_SENT032_S05_R01_F_g02,SENT032_S05_R01_F_g02,vslgh,LÂU,lâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT032_S05_R01_F_g02.npz,val
+vslgh_SENT032_S05_R01_F_g03,SENT032_S05_R01_F_g03,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT032_S05_R01_F_g03.npz,val
+vslgh_SENT033_S05_R01_F_g00,SENT033_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT033_S05_R01_F_g00.npz,val
+vslgh_SENT033_S05_R01_F_g01,SENT033_S05_R01_F_g01,vslgh,HẸN,hẹn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT033_S05_R01_F_g01.npz,val
+vslgh_SENT033_S05_R01_F_g02,SENT033_S05_R01_F_g02,vslgh,TRƯỚC,trước,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT033_S05_R01_F_g02.npz,val
+vslgh_SENT033_S05_R01_F_g03,SENT033_S05_R01_F_g03,vslgh,CHƯA,chưa,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT033_S05_R01_F_g03.npz,val
+vslgh_SENT034_S05_R01_F_g00,SENT034_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT034_S05_R01_F_g00.npz,val
+vslgh_SENT034_S05_R01_F_g01,SENT034_S05_R01_F_g01,vslgh,NỘP,nộp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT034_S05_R01_F_g01.npz,val
+vslgh_SENT034_S05_R01_F_g02,SENT034_S05_R01_F_g02,vslgh,GIẤY,giấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT034_S05_R01_F_g02.npz,val
+vslgh_SENT034_S05_R01_F_g03,SENT034_S05_R01_F_g03,vslgh,KHÁC,khác,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT034_S05_R01_F_g03.npz,val
+vslgh_SENT034_S05_R01_F_g04,SENT034_S05_R01_F_g04,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT034_S05_R01_F_g04.npz,val
+vslgh_SENT035_S05_R01_F_g00,SENT035_S05_R01_F_g00,vslgh,Ở-ĐÂY,ở đây,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT035_S05_R01_F_g00.npz,val
+vslgh_SENT035_S05_R01_F_g01,SENT035_S05_R01_F_g01,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT035_S05_R01_F_g01.npz,val
+vslgh_SENT035_S05_R01_F_g03,SENT035_S05_R01_F_g03,vslgh,BẢO-HIỂM,bảo hiểm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT035_S05_R01_F_g03.npz,val
+vslgh_SENT035_S05_R01_F_g04,SENT035_S05_R01_F_g04,vslgh,Y-TẾ,y tế,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT035_S05_R01_F_g04.npz,val
+vslgh_SENT035_S05_R01_F_g05,SENT035_S05_R01_F_g05,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT035_S05_R01_F_g05.npz,val
+vslgh_SENT036_S05_R01_F_g00,SENT036_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT036_S05_R01_F_g00.npz,val
+vslgh_SENT036_S05_R01_F_g01,SENT036_S05_R01_F_g01,vslgh,HIỂU,hiểu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT036_S05_R01_F_g01.npz,val
+vslgh_SENT036_S05_R01_F_g02,SENT036_S05_R01_F_g02,vslgh,KHÔNG,không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT036_S05_R01_F_g02.npz,val
+vslgh_SENT037_S05_R01_F_g00,SENT037_S05_R01_F_g00,vslgh,IX,ix,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT037_S05_R01_F_g00.npz,val
+vslgh_SENT037_S05_R01_F_g01,SENT037_S05_R01_F_g01,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT037_S05_R01_F_g01.npz,val
+vslgh_SENT037_S05_R01_F_g02,SENT037_S05_R01_F_g02,vslgh,VIẾT,viết,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT037_S05_R01_F_g02.npz,val
+vslgh_SENT037_S05_R01_F_g03,SENT037_S05_R01_F_g03,vslgh,GIẤY,giấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT037_S05_R01_F_g03.npz,val
+vslgh_SENT037_S05_R01_F_g04,SENT037_S05_R01_F_g04,vslgh,CÓ-THẾ,có thế,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT037_S05_R01_F_g04.npz,val
+vslgh_SENT038_S05_R01_F_g00,SENT038_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT038_S05_R01_F_g00.npz,val
+vslgh_SENT038_S05_R01_F_g01,SENT038_S05_R01_F_g01,vslgh,ĐỢI,đợi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT038_S05_R01_F_g01.npz,val
+vslgh_SENT038_S05_R01_F_g02,SENT038_S05_R01_F_g02,vslgh,ĐÂY,đây,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT038_S05_R01_F_g02.npz,val
+vslgh_SENT038_S05_R01_F_g03,SENT038_S05_R01_F_g03,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT038_S05_R01_F_g03.npz,val
+vslgh_SENT039_S05_R01_F_g00,SENT039_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT039_S05_R01_F_g00.npz,val
+vslgh_SENT039_S05_R01_F_g01,SENT039_S05_R01_F_g01,vslgh,LƯỢT,lượt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT039_S05_R01_F_g01.npz,val
+vslgh_SENT039_S05_R01_F_g02,SENT039_S05_R01_F_g02,vslgh,KHI-NÀO,khi nào,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT039_S05_R01_F_g02.npz,val
+vslgh_SENT040_S05_R01_F_g00,SENT040_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT040_S05_R01_F_g00.npz,val
+vslgh_SENT040_S05_R01_F_g01,SENT040_S05_R01_F_g01,vslgh,VIẾT,viết,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT040_S05_R01_F_g01.npz,val
+vslgh_SENT040_S05_R01_F_g02,SENT040_S05_R01_F_g02,vslgh,GIẤY,giấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT040_S05_R01_F_g02.npz,val
+vslgh_SENT040_S05_R01_F_g03,SENT040_S05_R01_F_g03,vslgh,NÀO,nào,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT040_S05_R01_F_g03.npz,val
+vslgh_SENT040_S05_R01_F_g04,SENT040_S05_R01_F_g04,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT040_S05_R01_F_g04.npz,val
+vslgh_SENT041_S05_R01_F_g00,SENT041_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT041_S05_R01_F_g00.npz,val
+vslgh_SENT041_S05_R01_F_g01,SENT041_S05_R01_F_g01,vslgh,VIẾT,viết,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT041_S05_R01_F_g01.npz,val
+vslgh_SENT041_S05_R01_F_g02,SENT041_S05_R01_F_g02,vslgh,ĐÂY,đây,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT041_S05_R01_F_g02.npz,val
+vslgh_SENT041_S05_R01_F_g03,SENT041_S05_R01_F_g03,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT041_S05_R01_F_g03.npz,val
+vslgh_SENT042_S05_R01_F_g00,SENT042_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT042_S05_R01_F_g00.npz,val
+vslgh_SENT042_S05_R01_F_g01,SENT042_S05_R01_F_g01,vslgh,KÝ-TÊN,ký tên,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT042_S05_R01_F_g01.npz,val
+vslgh_SENT042_S05_R01_F_g02,SENT042_S05_R01_F_g02,vslgh,Ở-ĐÂU,ở đâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT042_S05_R01_F_g02.npz,val
+vslgh_SENT043_S05_R01_F_g00,SENT043_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT043_S05_R01_F_g00.npz,val
+vslgh_SENT043_S05_R01_F_g01,SENT043_S05_R01_F_g01,vslgh,BẢO-HIỂM,bảo hiểm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT043_S05_R01_F_g01.npz,val
+vslgh_SENT043_S05_R01_F_g02,SENT043_S05_R01_F_g02,vslgh,Y-TẾ,y tế,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT043_S05_R01_F_g02.npz,val
+vslgh_SENT043_S05_R01_F_g03,SENT043_S05_R01_F_g03,vslgh,KHÔNG-CÓ,không có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT043_S05_R01_F_g03.npz,val
+vslgh_SENT044_S05_R01_F_g00,SENT044_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT044_S05_R01_F_g00.npz,val
+vslgh_SENT044_S05_R01_F_g01,SENT044_S05_R01_F_g01,vslgh,ĐẶT,đặt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT044_S05_R01_F_g01.npz,val
+vslgh_SENT044_S05_R01_F_g02,SENT044_S05_R01_F_g02,vslgh,LỊCH,lịch,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT044_S05_R01_F_g02.npz,val
+vslgh_SENT044_S05_R01_F_g03,SENT044_S05_R01_F_g03,vslgh,CHƯA,chưa,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT044_S05_R01_F_g03.npz,val
+vslgh_SENT045_S05_R01_F_g00,SENT045_S05_R01_F_g00,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT045_S05_R01_F_g00.npz,val
+vslgh_SENT045_S05_R01_F_g01,SENT045_S05_R01_F_g01,vslgh,CHI-PHÍ,chi phí,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT045_S05_R01_F_g01.npz,val
+vslgh_SENT045_S05_R01_F_g02,SENT045_S05_R01_F_g02,vslgh,BAO-NHIÊU,bao nhiêu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT045_S05_R01_F_g02.npz,val
+vslgh_SENT046_S05_R01_F_g00,SENT046_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT046_S05_R01_F_g00.npz,val
+vslgh_SENT046_S05_R01_F_g01,SENT046_S05_R01_F_g01,vslgh,TRẢ,trả,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT046_S05_R01_F_g01.npz,val
+vslgh_SENT046_S05_R01_F_g02,SENT046_S05_R01_F_g02,vslgh,THẺ,thẻ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT046_S05_R01_F_g02.npz,val
+vslgh_SENT046_S05_R01_F_g03,SENT046_S05_R01_F_g03,vslgh,ĐƯỢC-KHÔNG,được không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT046_S05_R01_F_g03.npz,val
+vslgh_SENT047_S05_R01_F_g00,SENT047_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT047_S05_R01_F_g00.npz,val
+vslgh_SENT047_S05_R01_F_g01,SENT047_S05_R01_F_g01,vslgh,TIỀN,tiền,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT047_S05_R01_F_g01.npz,val
+vslgh_SENT047_S05_R01_F_g02,SENT047_S05_R01_F_g02,vslgh,KHÔNG-CÓ,không có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT047_S05_R01_F_g02.npz,val
+vslgh_SENT048_S05_R01_F_g00,SENT048_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT048_S05_R01_F_g00.npz,val
+vslgh_SENT048_S05_R01_F_g01,SENT048_S05_R01_F_g01,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT048_S05_R01_F_g01.npz,val
+vslgh_SENT048_S05_R01_F_g02,SENT048_S05_R01_F_g02,vslgh,GẶP,gặp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT048_S05_R01_F_g02.npz,val
+vslgh_SENT048_S05_R01_F_g03,SENT048_S05_R01_F_g03,vslgh,NÀO,nào,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT048_S05_R01_F_g03.npz,val
+vslgh_SENT049_S05_R01_F_g00,SENT049_S05_R01_F_g00,vslgh,IX,ix,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT049_S05_R01_F_g00.npz,val
+vslgh_SENT049_S05_R01_F_g01,SENT049_S05_R01_F_g01,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT049_S05_R01_F_g01.npz,val
+vslgh_SENT049_S05_R01_F_g02,SENT049_S05_R01_F_g02,vslgh,TÊN,tên,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT049_S05_R01_F_g02.npz,val
+vslgh_SENT049_S05_R01_F_g03,SENT049_S05_R01_F_g03,vslgh,GÌ,gì,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT049_S05_R01_F_g03.npz,val
+vslgh_SENT050_S05_R01_F_g00,SENT050_S05_R01_F_g00,vslgh,WC,wc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT050_S05_R01_F_g00.npz,val
+vslgh_SENT050_S05_R01_F_g01,SENT050_S05_R01_F_g01,vslgh,Ở-ĐÂU,ở đâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT050_S05_R01_F_g01.npz,val
+vslgh_SENT051_S05_R01_F_g00,SENT051_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT051_S05_R01_F_g00.npz,val
+vslgh_SENT051_S05_R01_F_g01,SENT051_S05_R01_F_g01,vslgh,ĐÂY,đây,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT051_S05_R01_F_g01.npz,val
+vslgh_SENT051_S05_R01_F_g02,SENT051_S05_R01_F_g02,vslgh,NGỒI,ngồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT051_S05_R01_F_g02.npz,val
+vslgh_SENT051_S05_R01_F_g03,SENT051_S05_R01_F_g03,vslgh,ĐÚNG-KHÔNG,đúng không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT051_S05_R01_F_g03.npz,val
+vslgh_SENT052_S05_R01_F_g00,SENT052_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT052_S05_R01_F_g00.npz,val
+vslgh_SENT052_S05_R01_F_g01,SENT052_S05_R01_F_g01,vslgh,NỘP,nộp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT052_S05_R01_F_g01.npz,val
+vslgh_SENT052_S05_R01_F_g02,SENT052_S05_R01_F_g02,vslgh,HỒ-SƠ,hồ sơ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT052_S05_R01_F_g02.npz,val
+vslgh_SENT052_S05_R01_F_g03,SENT052_S05_R01_F_g03,vslgh,QUẦY,quầy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT052_S05_R01_F_g03.npz,val
+vslgh_SENT052_S05_R01_F_g04,SENT052_S05_R01_F_g04,vslgh,ĐÂU,đâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT052_S05_R01_F_g04.npz,val
+vslgh_SENT053_S05_R01_F_g00,SENT053_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT053_S05_R01_F_g00.npz,val
+vslgh_SENT053_S05_R01_F_g01,SENT053_S05_R01_F_g01,vslgh,NỘP,nộp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT053_S05_R01_F_g01.npz,val
+vslgh_SENT053_S05_R01_F_g02,SENT053_S05_R01_F_g02,vslgh,RỒI,rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT053_S05_R01_F_g02.npz,val
+vslgh_SENT054_S05_R01_F_g00,SENT054_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT054_S05_R01_F_g00.npz,val
+vslgh_SENT054_S05_R01_F_g01,SENT054_S05_R01_F_g01,vslgh,LÂU,lâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT054_S05_R01_F_g01.npz,val
+vslgh_SENT054_S05_R01_F_g02,SENT054_S05_R01_F_g02,vslgh,CHỜ,chờ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT054_S05_R01_F_g02.npz,val
+vslgh_SENT054_S05_R01_F_g03,SENT054_S05_R01_F_g03,vslgh,TẠI-SAO,tại sao,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT054_S05_R01_F_g03.npz,val
+vslgh_SENT055_S05_R01_F_g00,SENT055_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT055_S05_R01_F_g00.npz,val
+vslgh_SENT055_S05_R01_F_g01,SENT055_S05_R01_F_g01,vslgh,THÔNG-TIN,thông tin,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT055_S05_R01_F_g01.npz,val
+vslgh_SENT055_S05_R01_F_g02,SENT055_S05_R01_F_g02,vslgh,SAI,sai,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT055_S05_R01_F_g02.npz,val
+vslgh_SENT056_S05_R01_F_g00,SENT056_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT056_S05_R01_F_g00.npz,val
+vslgh_SENT056_S05_R01_F_g01,SENT056_S05_R01_F_g01,vslgh,THÔNG-TIN,thông tin,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT056_S05_R01_F_g01.npz,val
+vslgh_SENT056_S05_R01_F_g02,SENT056_S05_R01_F_g02,vslgh,SỬA,sửa,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT056_S05_R01_F_g02.npz,val
+vslgh_SENT056_S05_R01_F_g03,SENT056_S05_R01_F_g03,vslgh,LẠI,lại,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT056_S05_R01_F_g03.npz,val
+vslgh_SENT056_S05_R01_F_g04,SENT056_S05_R01_F_g04,vslgh,MUỐN,muốn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT056_S05_R01_F_g04.npz,val
+vslgh_SENT057_S05_R01_F_g00,SENT057_S05_R01_F_g00,vslgh,HÔM-NAY,hôm nay,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT057_S05_R01_F_g00.npz,val
+vslgh_SENT057_S05_R01_F_g01,SENT057_S05_R01_F_g01,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT057_S05_R01_F_g01.npz,val
+vslgh_SENT057_S05_R01_F_g02,SENT057_S05_R01_F_g02,vslgh,MỘT-MÌNH,một mình,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT057_S05_R01_F_g02.npz,val
+vslgh_SENT057_S05_R01_F_g03,SENT057_S05_R01_F_g03,vslgh,ĐI,đi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT057_S05_R01_F_g03.npz,val
+vslgh_SENT058_S05_R01_F_g00,SENT058_S05_R01_F_g00,vslgh,NHÀ,nhà,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT058_S05_R01_F_g00.npz,val
+vslgh_SENT058_S05_R01_F_g01,SENT058_S05_R01_F_g01,vslgh,IX,ix,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT058_S05_R01_F_g01.npz,val
+vslgh_SENT058_S05_R01_F_g02,SENT058_S05_R01_F_g02,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT058_S05_R01_F_g02.npz,val
+vslgh_SENT058_S05_R01_F_g03,SENT058_S05_R01_F_g03,vslgh,CÙNG,cùng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT058_S05_R01_F_g03.npz,val
+vslgh_SENT058_S05_R01_F_g04,SENT058_S05_R01_F_g04,vslgh,VÀO,vào,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT058_S05_R01_F_g04.npz,val
+vslgh_SENT058_S05_R01_F_g05,SENT058_S05_R01_F_g05,vslgh,ĐƯỢC-KHÔNG,được không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT058_S05_R01_F_g05.npz,val
+vslgh_SENT059_S05_R01_F_g00,SENT059_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT059_S05_R01_F_g00.npz,val
+vslgh_SENT059_S05_R01_F_g01,SENT059_S05_R01_F_g01,vslgh,ĐỌC,đọc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT059_S05_R01_F_g01.npz,val
+vslgh_SENT059_S05_R01_F_g02,SENT059_S05_R01_F_g02,vslgh,CHỮ,chữ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT059_S05_R01_F_g02.npz,val
+vslgh_SENT059_S05_R01_F_g03,SENT059_S05_R01_F_g03,vslgh,KHÔNG-ĐƯỢC,không được,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT059_S05_R01_F_g03.npz,val
+vslgh_SENT060_S05_R01_F_g00,SENT060_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT060_S05_R01_F_g00.npz,val
+vslgh_SENT060_S05_R01_F_g01,SENT060_S05_R01_F_g01,vslgh,SỐ,số,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT060_S05_R01_F_g01.npz,val
+vslgh_SENT060_S05_R01_F_g02,SENT060_S05_R01_F_g02,vslgh,THỨ-TỰ,thứ tự,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT060_S05_R01_F_g02.npz,val
+vslgh_SENT060_S05_R01_F_g03,SENT060_S05_R01_F_g03,vslgh,LỠ-MẤT,lỡ mất,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT060_S05_R01_F_g03.npz,val
+vslgh_SENT061_S05_R01_F_g00,SENT061_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT061_S05_R01_F_g00.npz,val
+vslgh_SENT061_S05_R01_F_g01,SENT061_S05_R01_F_g01,vslgh,NÀY,này,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT061_S05_R01_F_g01.npz,val
+vslgh_SENT061_S05_R01_F_g02,SENT061_S05_R01_F_g02,vslgh,PHÒNG,phòng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT061_S05_R01_F_g02.npz,val
+vslgh_SENT061_S05_R01_F_g03,SENT061_S05_R01_F_g03,vslgh,CHỜ,chờ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT061_S05_R01_F_g03.npz,val
+vslgh_SENT061_S05_R01_F_g04,SENT061_S05_R01_F_g04,vslgh,ĐÚNG-KHÔNG,đúng không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT061_S05_R01_F_g04.npz,val
+vslgh_SENT062_S05_R01_F_g00,SENT062_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT062_S05_R01_F_g00.npz,val
+vslgh_SENT062_S05_R01_F_g01,SENT062_S05_R01_F_g01,vslgh,VÀO,vào,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT062_S05_R01_F_g01.npz,val
+vslgh_SENT062_S05_R01_F_g02,SENT062_S05_R01_F_g02,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT062_S05_R01_F_g02.npz,val
+vslgh_SENT062_S05_R01_F_g03,SENT062_S05_R01_F_g03,vslgh,ĐƯỢC-KHÔNG,được không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT062_S05_R01_F_g03.npz,val
+vslgh_SENT063_S05_R01_F_g00,SENT063_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT063_S05_R01_F_g00.npz,val
+vslgh_SENT063_S05_R01_F_g01,SENT063_S05_R01_F_g01,vslgh,NGHE,nghe,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT063_S05_R01_F_g01.npz,val
+vslgh_SENT063_S05_R01_F_g02,SENT063_S05_R01_F_g02,vslgh,KHÔNG-ĐƯỢC,không được,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT063_S05_R01_F_g02.npz,val
+vslgh_SENT064_S05_R01_F_g00,SENT064_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT064_S05_R01_F_g00.npz,val
+vslgh_SENT064_S05_R01_F_g01,SENT064_S05_R01_F_g01,vslgh,XIN,xin,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT064_S05_R01_F_g01.npz,val
+vslgh_SENT064_S05_R01_F_g02,SENT064_S05_R01_F_g02,vslgh,VIẾT,viết,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT064_S05_R01_F_g02.npz,val
+vslgh_SENT064_S05_R01_F_g03,SENT064_S05_R01_F_g03,vslgh,GIÚP,giúp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT064_S05_R01_F_g03.npz,val
+vslgh_SENT065_S05_R01_F_g00,SENT065_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT065_S05_R01_F_g00.npz,val
+vslgh_SENT065_S05_R01_F_g01,SENT065_S05_R01_F_g01,vslgh,LẤY,lấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT065_S05_R01_F_g01.npz,val
+vslgh_SENT065_S05_R01_F_g02,SENT065_S05_R01_F_g02,vslgh,HÓA-ĐƠN,hóa đơn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT065_S05_R01_F_g02.npz,val
+vslgh_SENT065_S05_R01_F_g03,SENT065_S05_R01_F_g03,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT065_S05_R01_F_g03.npz,val
+vslgh_SENT066_S05_R01_F_g00,SENT066_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT066_S05_R01_F_g00.npz,val
+vslgh_SENT066_S05_R01_F_g01,SENT066_S05_R01_F_g01,vslgh,LẤY,lấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT066_S05_R01_F_g01.npz,val
+vslgh_SENT066_S05_R01_F_g02,SENT066_S05_R01_F_g02,vslgh,HÓA-ĐƠN,hóa đơn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT066_S05_R01_F_g02.npz,val
+vslgh_SENT066_S05_R01_F_g03,SENT066_S05_R01_F_g03,vslgh,KHÔNG-CẦN,không cần,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT066_S05_R01_F_g03.npz,val
+vslgh_SENT067_S05_R01_F_g00,SENT067_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT067_S05_R01_F_g00.npz,val
+vslgh_SENT067_S05_R01_F_g01,SENT067_S05_R01_F_g01,vslgh,ĐỢI,đợi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT067_S05_R01_F_g01.npz,val
+vslgh_SENT067_S05_R01_F_g02,SENT067_S05_R01_F_g02,vslgh,BAO-LÂU,bao lâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT067_S05_R01_F_g02.npz,val
+vslgh_SENT068_S05_R01_F_g00,SENT068_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT068_S05_R01_F_g00.npz,val
+vslgh_SENT068_S05_R01_F_g01,SENT068_S05_R01_F_g01,vslgh,LƯỢT,lượt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT068_S05_R01_F_g01.npz,val
+vslgh_SENT068_S05_R01_F_g02,SENT068_S05_R01_F_g02,vslgh,SẮP,sắp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT068_S05_R01_F_g02.npz,val
+vslgh_SENT068_S05_R01_F_g03,SENT068_S05_R01_F_g03,vslgh,CHƯA,chưa,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT068_S05_R01_F_g03.npz,val
+vslgh_SENT069_S05_R01_F_g00,SENT069_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT069_S05_R01_F_g00.npz,val
+vslgh_SENT069_S05_R01_F_g01,SENT069_S05_R01_F_g01,vslgh,ĐO,đo,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT069_S05_R01_F_g01.npz,val
+vslgh_SENT069_S05_R01_F_g02,SENT069_S05_R01_F_g02,vslgh,CHIỀU-CAO,chiều cao,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT069_S05_R01_F_g02.npz,val
+vslgh_SENT069_S05_R01_F_g03,SENT069_S05_R01_F_g03,vslgh,CẦN,cần,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT069_S05_R01_F_g03.npz,val
+vslgh_SENT070_S05_R01_F_g00,SENT070_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT070_S05_R01_F_g00.npz,val
+vslgh_SENT070_S05_R01_F_g01,SENT070_S05_R01_F_g01,vslgh,ĐO,đo,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT070_S05_R01_F_g01.npz,val
+vslgh_SENT070_S05_R01_F_g02,SENT070_S05_R01_F_g02,vslgh,CÂN-NẶNG,cân nặng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT070_S05_R01_F_g02.npz,val
+vslgh_SENT070_S05_R01_F_g03,SENT070_S05_R01_F_g03,vslgh,CẦN,cần,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT070_S05_R01_F_g03.npz,val
+vslgh_SENT071_S05_R01_F_g00,SENT071_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT071_S05_R01_F_g00.npz,val
+vslgh_SENT071_S05_R01_F_g01,SENT071_S05_R01_F_g01,vslgh,CAO,cao,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT071_S05_R01_F_g01.npz,val
+vslgh_SENT071_S05_R01_F_g02,SENT071_S05_R01_F_g02,vslgh,1,1,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT071_S05_R01_F_g02.npz,val
+vslgh_SENT071_S05_R01_F_g03,SENT071_S05_R01_F_g03,vslgh,MÉT,mét,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT071_S05_R01_F_g03.npz,val
+vslgh_SENT071_S05_R01_F_g04,SENT071_S05_R01_F_g04,vslgh,60,60,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT071_S05_R01_F_g04.npz,val
+vslgh_SENT072_S05_R01_F_g00,SENT072_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT072_S05_R01_F_g00.npz,val
+vslgh_SENT072_S05_R01_F_g01,SENT072_S05_R01_F_g01,vslgh,NẶNG,nặng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT072_S05_R01_F_g01.npz,val
+vslgh_SENT072_S05_R01_F_g02,SENT072_S05_R01_F_g02,vslgh,55,55,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT072_S05_R01_F_g02.npz,val
+vslgh_SENT073_S05_R01_F_g00,SENT073_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT073_S05_R01_F_g00.npz,val
+vslgh_SENT073_S05_R01_F_g01,SENT073_S05_R01_F_g01,vslgh,HUYẾT-ÁP,huyết áp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT073_S05_R01_F_g01.npz,val
+vslgh_SENT073_S05_R01_F_g02,SENT073_S05_R01_F_g02,vslgh,ĐO,đo,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT073_S05_R01_F_g02.npz,val
+vslgh_SENT073_S05_R01_F_g03,SENT073_S05_R01_F_g03,vslgh,CẦN,cần,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT073_S05_R01_F_g03.npz,val
+vslgh_SENT074_S05_R01_F_g00,SENT074_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT074_S05_R01_F_g00.npz,val
+vslgh_SENT074_S05_R01_F_g01,SENT074_S05_R01_F_g01,vslgh,HUYẾT-ÁP,huyết áp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT074_S05_R01_F_g01.npz,val
+vslgh_SENT074_S05_R01_F_g02,SENT074_S05_R01_F_g02,vslgh,120,120,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT074_S05_R01_F_g02.npz,val
+vslgh_SENT075_S05_R01_F_g00,SENT075_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT075_S05_R01_F_g00.npz,val
+vslgh_SENT075_S05_R01_F_g01,SENT075_S05_R01_F_g01,vslgh,MẠCH,mạch,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT075_S05_R01_F_g01.npz,val
+vslgh_SENT075_S05_R01_F_g02,SENT075_S05_R01_F_g02,vslgh,ĐO,đo,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT075_S05_R01_F_g02.npz,val
+vslgh_SENT075_S05_R01_F_g03,SENT075_S05_R01_F_g03,vslgh,CẦN,cần,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT075_S05_R01_F_g03.npz,val
+vslgh_SENT076_S05_R01_F_g00,SENT076_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT076_S05_R01_F_g00.npz,val
+vslgh_SENT076_S05_R01_F_g01,SENT076_S05_R01_F_g01,vslgh,MẠCH,mạch,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT076_S05_R01_F_g01.npz,val
+vslgh_SENT076_S05_R01_F_g02,SENT076_S05_R01_F_g02,vslgh,70,70,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT076_S05_R01_F_g02.npz,val
+vslgh_SENT077_S05_R01_F_g00,SENT077_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT077_S05_R01_F_g00.npz,val
+vslgh_SENT077_S05_R01_F_g01,SENT077_S05_R01_F_g01,vslgh,BMI,bmi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT077_S05_R01_F_g01.npz,val
+vslgh_SENT077_S05_R01_F_g02,SENT077_S05_R01_F_g02,vslgh,BAO-NHIÊU,bao nhiêu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT077_S05_R01_F_g02.npz,val
+vslgh_SENT078_S05_R01_F_g00,SENT078_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT078_S05_R01_F_g00.npz,val
+vslgh_SENT078_S05_R01_F_g01,SENT078_S05_R01_F_g01,vslgh,BMI,bmi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT078_S05_R01_F_g01.npz,val
+vslgh_SENT078_S05_R01_F_g02,SENT078_S05_R01_F_g02,vslgh,22,22,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT078_S05_R01_F_g02.npz,val
+vslgh_SENT079_S05_R01_F_g00,SENT079_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT079_S05_R01_F_g00.npz,val
+vslgh_SENT079_S05_R01_F_g01,SENT079_S05_R01_F_g01,vslgh,THỊ-LỰC,thị lực,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT079_S05_R01_F_g01.npz,val
+vslgh_SENT079_S05_R01_F_g02,SENT079_S05_R01_F_g02,vslgh,ĐO,đo,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT079_S05_R01_F_g02.npz,val
+vslgh_SENT079_S05_R01_F_g03,SENT079_S05_R01_F_g03,vslgh,RỒI,rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT079_S05_R01_F_g03.npz,val
+vslgh_SENT080_S05_R01_F_g00,SENT080_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT080_S05_R01_F_g00.npz,val
+vslgh_SENT080_S05_R01_F_g01,SENT080_S05_R01_F_g01,vslgh,HUYẾT-ÁP,huyết áp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT080_S05_R01_F_g01.npz,val
+vslgh_SENT080_S05_R01_F_g02,SENT080_S05_R01_F_g02,vslgh,ĐO,đo,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT080_S05_R01_F_g02.npz,val
+vslgh_SENT080_S05_R01_F_g03,SENT080_S05_R01_F_g03,vslgh,RỒI,rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT080_S05_R01_F_g03.npz,val
+vslgh_SENT081_S05_R01_F_g00,SENT081_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT081_S05_R01_F_g00.npz,val
+vslgh_SENT081_S05_R01_F_g01,SENT081_S05_R01_F_g01,vslgh,ÁO-KHOÁC,áo khoác,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT081_S05_R01_F_g01.npz,val
+vslgh_SENT081_S05_R01_F_g02,SENT081_S05_R01_F_g02,vslgh,CỞI,cởi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT081_S05_R01_F_g02.npz,val
+vslgh_SENT081_S05_R01_F_g03,SENT081_S05_R01_F_g03,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT081_S05_R01_F_g03.npz,val
+vslgh_SENT082_S05_R01_F_g00,SENT082_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT082_S05_R01_F_g00.npz,val
+vslgh_SENT082_S05_R01_F_g01,SENT082_S05_R01_F_g01,vslgh,ĐỨNG,đứng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT082_S05_R01_F_g01.npz,val
+vslgh_SENT082_S05_R01_F_g02,SENT082_S05_R01_F_g02,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT082_S05_R01_F_g02.npz,val
+vslgh_SENT083_S05_R01_F_g00,SENT083_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT083_S05_R01_F_g00.npz,val
+vslgh_SENT083_S05_R01_F_g01,SENT083_S05_R01_F_g01,vslgh,GIÀY,giày,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT083_S05_R01_F_g01.npz,val
+vslgh_SENT083_S05_R01_F_g02,SENT083_S05_R01_F_g02,vslgh,CỞI,cởi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT083_S05_R01_F_g02.npz,val
+vslgh_SENT083_S05_R01_F_g03,SENT083_S05_R01_F_g03,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT083_S05_R01_F_g03.npz,val
+vslgh_SENT084_S05_R01_F_g00,SENT084_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT084_S05_R01_F_g00.npz,val
+vslgh_SENT084_S05_R01_F_g01,SENT084_S05_R01_F_g01,vslgh,HÍT-THỞ,hít thở,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT084_S05_R01_F_g01.npz,val
+vslgh_SENT084_S05_R01_F_g02,SENT084_S05_R01_F_g02,vslgh,SÂU,sâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT084_S05_R01_F_g02.npz,val
+vslgh_SENT084_S05_R01_F_g03,SENT084_S05_R01_F_g03,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT084_S05_R01_F_g03.npz,val
+vslgh_SENT085_S05_R01_F_g00,SENT085_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT085_S05_R01_F_g00.npz,val
+vslgh_SENT085_S05_R01_F_g01,SENT085_S05_R01_F_g01,vslgh,NÍN-THỞ,nín thở,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT085_S05_R01_F_g01.npz,val
+vslgh_SENT085_S05_R01_F_g02,SENT085_S05_R01_F_g02,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT085_S05_R01_F_g02.npz,val
+vslgh_SENT086_S05_R01_F_g00,SENT086_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT086_S05_R01_F_g00.npz,val
+vslgh_SENT086_S05_R01_F_g01,SENT086_S05_R01_F_g01,vslgh,HUYẾT-ÁP,huyết áp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT086_S05_R01_F_g01.npz,val
+vslgh_SENT086_S05_R01_F_g02,SENT086_S05_R01_F_g02,vslgh,CAO,cao,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT086_S05_R01_F_g02.npz,val
+vslgh_SENT086_S05_R01_F_g03,SENT086_S05_R01_F_g03,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT086_S05_R01_F_g03.npz,val
+vslgh_SENT087_S05_R01_F_g00,SENT087_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT087_S05_R01_F_g00.npz,val
+vslgh_SENT087_S05_R01_F_g01,SENT087_S05_R01_F_g01,vslgh,HUYẾT-ÁP,huyết áp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT087_S05_R01_F_g01.npz,val
+vslgh_SENT087_S05_R01_F_g02,SENT087_S05_R01_F_g02,vslgh,THẤP,thấp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT087_S05_R01_F_g02.npz,val
+vslgh_SENT087_S05_R01_F_g03,SENT087_S05_R01_F_g03,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT087_S05_R01_F_g03.npz,val
+vslgh_SENT088_S05_R01_F_g00,SENT088_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT088_S05_R01_F_g00.npz,val
+vslgh_SENT088_S05_R01_F_g01,SENT088_S05_R01_F_g01,vslgh,HUYẾT-ÁP,huyết áp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT088_S05_R01_F_g01.npz,val
+vslgh_SENT088_S05_R01_F_g02,SENT088_S05_R01_F_g02,vslgh,BÌNH-THƯỜNG,bình thường,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT088_S05_R01_F_g02.npz,val
+vslgh_SENT088_S05_R01_F_g03,SENT088_S05_R01_F_g03,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT088_S05_R01_F_g03.npz,val
+vslgh_SENT089_S05_R01_F_g00,SENT089_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT089_S05_R01_F_g00.npz,val
+vslgh_SENT089_S05_R01_F_g01,SENT089_S05_R01_F_g01,vslgh,CẢM-THẤY,cảm thấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT089_S05_R01_F_g01.npz,val
+vslgh_SENT089_S05_R01_F_g02,SENT089_S05_R01_F_g02,vslgh,BÌNH-THƯỜNG,bình thường,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT089_S05_R01_F_g02.npz,val
+vslgh_SENT090_S05_R01_F_g00,SENT090_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT090_S05_R01_F_g00.npz,val
+vslgh_SENT090_S05_R01_F_g01,SENT090_S05_R01_F_g01,vslgh,CẢM-THẤY,cảm thấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT090_S05_R01_F_g01.npz,val
+vslgh_SENT090_S05_R01_F_g02,SENT090_S05_R01_F_g02,vslgh,HỒI-HỘP,hồi hộp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT090_S05_R01_F_g02.npz,val
+vslgh_SENT091_S05_R01_F_g00,SENT091_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT091_S05_R01_F_g00.npz,val
+vslgh_SENT091_S05_R01_F_g01,SENT091_S05_R01_F_g01,vslgh,IX,ix,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT091_S05_R01_F_g01.npz,val
+vslgh_SENT091_S05_R01_F_g02,SENT091_S05_R01_F_g02,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT091_S05_R01_F_g02.npz,val
+vslgh_SENT091_S05_R01_F_g03,SENT091_S05_R01_F_g03,vslgh,GIÚP,giúp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT091_S05_R01_F_g03.npz,val
+vslgh_SENT091_S05_R01_F_g04,SENT091_S05_R01_F_g04,vslgh,ĐO,đo,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT091_S05_R01_F_g04.npz,val
+vslgh_SENT091_S05_R01_F_g05,SENT091_S05_R01_F_g05,vslgh,LẠI,lại,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT091_S05_R01_F_g05.npz,val
+vslgh_SENT092_S05_R01_F_g00,SENT092_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT092_S05_R01_F_g00.npz,val
+vslgh_SENT092_S05_R01_F_g01,SENT092_S05_R01_F_g01,vslgh,MẠCH,mạch,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT092_S05_R01_F_g01.npz,val
+vslgh_SENT092_S05_R01_F_g02,SENT092_S05_R01_F_g02,vslgh,ĐẬP,đập,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT092_S05_R01_F_g02.npz,val
+vslgh_SENT092_S05_R01_F_g03,SENT092_S05_R01_F_g03,vslgh,NHANH,nhanh,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT092_S05_R01_F_g03.npz,val
+vslgh_SENT092_S05_R01_F_g04,SENT092_S05_R01_F_g04,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT092_S05_R01_F_g04.npz,val
+vslgh_SENT093_S05_R01_F_g00,SENT093_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT093_S05_R01_F_g00.npz,val
+vslgh_SENT093_S05_R01_F_g01,SENT093_S05_R01_F_g01,vslgh,MẠCH,mạch,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT093_S05_R01_F_g01.npz,val
+vslgh_SENT093_S05_R01_F_g02,SENT093_S05_R01_F_g02,vslgh,ĐẬP,đập,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT093_S05_R01_F_g02.npz,val
+vslgh_SENT093_S05_R01_F_g03,SENT093_S05_R01_F_g03,vslgh,CHẬM,chậm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT093_S05_R01_F_g03.npz,val
+vslgh_SENT093_S05_R01_F_g04,SENT093_S05_R01_F_g04,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT093_S05_R01_F_g04.npz,val
+vslgh_SENT094_S05_R01_F_g00,SENT094_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT094_S05_R01_F_g00.npz,val
+vslgh_SENT094_S05_R01_F_g01,SENT094_S05_R01_F_g01,vslgh,MẮT,mắt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT094_S05_R01_F_g01.npz,val
+vslgh_SENT094_S05_R01_F_g02,SENT094_S05_R01_F_g02,vslgh,ĐO,đo,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT094_S05_R01_F_g02.npz,val
+vslgh_SENT094_S05_R01_F_g03,SENT094_S05_R01_F_g03,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT094_S05_R01_F_g03.npz,val
+vslgh_SENT095_S05_R01_F_g00,SENT095_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT095_S05_R01_F_g00.npz,val
+vslgh_SENT095_S05_R01_F_g01,SENT095_S05_R01_F_g01,vslgh,BMI,bmi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT095_S05_R01_F_g01.npz,val
+vslgh_SENT095_S05_R01_F_g02,SENT095_S05_R01_F_g02,vslgh,TỐT,tốt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT095_S05_R01_F_g02.npz,val
+vslgh_SENT095_S05_R01_F_g03,SENT095_S05_R01_F_g03,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT095_S05_R01_F_g03.npz,val
+vslgh_SENT096_S05_R01_F_g00,SENT096_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT096_S05_R01_F_g00.npz,val
+vslgh_SENT096_S05_R01_F_g01,SENT096_S05_R01_F_g01,vslgh,BÉO-PHÌ,béo phì,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT096_S05_R01_F_g01.npz,val
+vslgh_SENT096_S05_R01_F_g02,SENT096_S05_R01_F_g02,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT096_S05_R01_F_g02.npz,val
+vslgh_SENT097_S05_R01_F_g00,SENT097_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT097_S05_R01_F_g00.npz,val
+vslgh_SENT097_S05_R01_F_g01,SENT097_S05_R01_F_g01,vslgh,SỨC-KHỎE,sức khỏe,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT097_S05_R01_F_g01.npz,val
+vslgh_SENT097_S05_R01_F_g02,SENT097_S05_R01_F_g02,vslgh,YẾU,yếu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT097_S05_R01_F_g02.npz,val
+vslgh_SENT098_S05_R01_F_g00,SENT098_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT098_S05_R01_F_g00.npz,val
+vslgh_SENT098_S05_R01_F_g01,SENT098_S05_R01_F_g01,vslgh,ĐO,đo,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT098_S05_R01_F_g01.npz,val
+vslgh_SENT098_S05_R01_F_g02,SENT098_S05_R01_F_g02,vslgh,HẾT,hết,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT098_S05_R01_F_g02.npz,val
+vslgh_SENT098_S05_R01_F_g03,SENT098_S05_R01_F_g03,vslgh,XONG,xong,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT098_S05_R01_F_g03.npz,val
+vslgh_SENT098_S05_R01_F_g04,SENT098_S05_R01_F_g04,vslgh,CHƯA,chưa,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT098_S05_R01_F_g04.npz,val
+vslgh_SENT099_S05_R01_F_g00,SENT099_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT099_S05_R01_F_g00.npz,val
+vslgh_SENT099_S05_R01_F_g01,SENT099_S05_R01_F_g01,vslgh,TIẾP,tiếp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT099_S05_R01_F_g01.npz,val
+vslgh_SENT099_S05_R01_F_g02,SENT099_S05_R01_F_g02,vslgh,ĐI,đi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT099_S05_R01_F_g02.npz,val
+vslgh_SENT099_S05_R01_F_g03,SENT099_S05_R01_F_g03,vslgh,ĐÂU,đâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT099_S05_R01_F_g03.npz,val
+vslgh_SENT100_S05_R01_F_g00,SENT100_S05_R01_F_g00,vslgh,NAY,nay,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT100_S05_R01_F_g00.npz,val
+vslgh_SENT100_S05_R01_F_g01,SENT100_S05_R01_F_g01,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT100_S05_R01_F_g01.npz,val
+vslgh_SENT100_S05_R01_F_g02,SENT100_S05_R01_F_g02,vslgh,TĂNG-CÂN,tăng cân,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT100_S05_R01_F_g02.npz,val
+vslgh_SENT101_S05_R01_F_g00,SENT101_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT101_S05_R01_F_g00.npz,val
+vslgh_SENT101_S05_R01_F_g01,SENT101_S05_R01_F_g01,vslgh,ĐẦU-ĐAU,đầu đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT101_S05_R01_F_g01.npz,val
+vslgh_SENT102_S05_R01_F_g00,SENT102_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT102_S05_R01_F_g00.npz,val
+vslgh_SENT102_S05_R01_F_g01,SENT102_S05_R01_F_g01,vslgh,BỤNG-ĐAU,bụng đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT102_S05_R01_F_g01.npz,val
+vslgh_SENT103_S05_R01_F_g00,SENT103_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT103_S05_R01_F_g00.npz,val
+vslgh_SENT103_S05_R01_F_g01,SENT103_S05_R01_F_g01,vslgh,NGỰC-ĐAU,ngực đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT103_S05_R01_F_g01.npz,val
+vslgh_SENT104_S05_R01_F_g00,SENT104_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT104_S05_R01_F_g00.npz,val
+vslgh_SENT104_S05_R01_F_g01,SENT104_S05_R01_F_g01,vslgh,LƯNG,lưng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT104_S05_R01_F_g01.npz,val
+vslgh_SENT104_S05_R01_F_g02,SENT104_S05_R01_F_g02,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT104_S05_R01_F_g02.npz,val
+vslgh_SENT105_S05_R01_F_g00,SENT105_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT105_S05_R01_F_g00.npz,val
+vslgh_SENT105_S05_R01_F_g01,SENT105_S05_R01_F_g01,vslgh,HO,ho,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT105_S05_R01_F_g01.npz,val
+vslgh_SENT106_S05_R01_F_g00,SENT106_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT106_S05_R01_F_g00.npz,val
+vslgh_SENT106_S05_R01_F_g01,SENT106_S05_R01_F_g01,vslgh,SỐT,sốt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT106_S05_R01_F_g01.npz,val
+vslgh_SENT107_S05_R01_F_g00,SENT107_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT107_S05_R01_F_g00.npz,val
+vslgh_SENT107_S05_R01_F_g01,SENT107_S05_R01_F_g01,vslgh,CẢM-THẤY,cảm thấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT107_S05_R01_F_g01.npz,val
+vslgh_SENT107_S05_R01_F_g02,SENT107_S05_R01_F_g02,vslgh,MỆT,mệt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT107_S05_R01_F_g02.npz,val
+vslgh_SENT108_S05_R01_F_g00,SENT108_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT108_S05_R01_F_g00.npz,val
+vslgh_SENT108_S05_R01_F_g01,SENT108_S05_R01_F_g01,vslgh,NGỦ-KHÓ,ngủ khó,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT108_S05_R01_F_g01.npz,val
+vslgh_SENT109_S05_R01_F_g00,SENT109_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT109_S05_R01_F_g00.npz,val
+vslgh_SENT109_S05_R01_F_g01,SENT109_S05_R01_F_g01,vslgh,ĂN,ăn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT109_S05_R01_F_g01.npz,val
+vslgh_SENT109_S05_R01_F_g02,SENT109_S05_R01_F_g02,vslgh,VỊ,vị,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT109_S05_R01_F_g02.npz,val
+vslgh_SENT109_S05_R01_F_g03,SENT109_S05_R01_F_g03,vslgh,KHÔNG-NHẬN,không nhận,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT109_S05_R01_F_g03.npz,val
+vslgh_SENT110_S05_R01_F_g00,SENT110_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT110_S05_R01_F_g00.npz,val
+vslgh_SENT110_S05_R01_F_g01,SENT110_S05_R01_F_g01,vslgh,CHÓNG-MẶT,chóng mặt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT110_S05_R01_F_g01.npz,val
+vslgh_SENT111_S05_R01_F_g00,SENT111_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT111_S05_R01_F_g00.npz,val
+vslgh_SENT111_S05_R01_F_g01,SENT111_S05_R01_F_g01,vslgh,CẢM-THẤY,cảm thấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT111_S05_R01_F_g01.npz,val
+vslgh_SENT111_S05_R01_F_g02,SENT111_S05_R01_F_g02,vslgh,NÔN,nôn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT111_S05_R01_F_g02.npz,val
+vslgh_SENT112_S05_R01_F_g00,SENT112_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT112_S05_R01_F_g00.npz,val
+vslgh_SENT112_S05_R01_F_g01,SENT112_S05_R01_F_g01,vslgh,TÁO-BÓN,táo bón,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT112_S05_R01_F_g01.npz,val
+vslgh_SENT113_S05_R01_F_g00,SENT113_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT113_S05_R01_F_g00.npz,val
+vslgh_SENT113_S05_R01_F_g01,SENT113_S05_R01_F_g01,vslgh,TIÊU-CHẢY,tiêu chảy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT113_S05_R01_F_g01.npz,val
+vslgh_SENT114_S05_R01_F_g00,SENT114_S05_R01_F_g00,vslgh,GẦN-ĐÂY,gần đây,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT114_S05_R01_F_g00.npz,val
+vslgh_SENT114_S05_R01_F_g01,SENT114_S05_R01_F_g01,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT114_S05_R01_F_g01.npz,val
+vslgh_SENT114_S05_R01_F_g02,SENT114_S05_R01_F_g02,vslgh,XUỐNG,xuống,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT114_S05_R01_F_g02.npz,val
+vslgh_SENT114_S05_R01_F_g03,SENT114_S05_R01_F_g03,vslgh,CÂN,cân,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT114_S05_R01_F_g03.npz,val
+vslgh_SENT115_S05_R01_F_g00,SENT115_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT115_S05_R01_F_g00.npz,val
+vslgh_SENT115_S05_R01_F_g01,SENT115_S05_R01_F_g01,vslgh,CẢM-THẤY,cảm thấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT115_S05_R01_F_g01.npz,val
+vslgh_SENT115_S05_R01_F_g02,SENT115_S05_R01_F_g02,vslgh,THỞ-KHÓ,thở khó,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT115_S05_R01_F_g02.npz,val
+vslgh_SENT116_S05_R01_F_g00,SENT116_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT116_S05_R01_F_g00.npz,val
+vslgh_SENT116_S05_R01_F_g01,SENT116_S05_R01_F_g01,vslgh,ĐI,đi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT116_S05_R01_F_g01.npz,val
+vslgh_SENT116_S05_R01_F_g02,SENT116_S05_R01_F_g02,vslgh,ĐÊM,đêm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT116_S05_R01_F_g02.npz,val
+vslgh_SENT117_S05_R01_F_g00,SENT117_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT117_S05_R01_F_g00.npz,val
+vslgh_SENT117_S05_R01_F_g01,SENT117_S05_R01_F_g01,vslgh,BỆNH,bệnh,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT117_S05_R01_F_g01.npz,val
+vslgh_SENT117_S05_R01_F_g02,SENT117_S05_R01_F_g02,vslgh,TIM,tim,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT117_S05_R01_F_g02.npz,val
+vslgh_SENT117_S05_R01_F_g03,SENT117_S05_R01_F_g03,vslgh,TIỀN-SỬ,tiền sử,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT117_S05_R01_F_g03.npz,val
+vslgh_SENT117_S05_R01_F_g04,SENT117_S05_R01_F_g04,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT117_S05_R01_F_g04.npz,val
+vslgh_SENT118_S05_R01_F_g00,SENT118_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT118_S05_R01_F_g00.npz,val
+vslgh_SENT118_S05_R01_F_g01,SENT118_S05_R01_F_g01,vslgh,HUYẾT-ÁP,huyết áp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT118_S05_R01_F_g01.npz,val
+vslgh_SENT118_S05_R01_F_g02,SENT118_S05_R01_F_g02,vslgh,CAO,cao,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT118_S05_R01_F_g02.npz,val
+vslgh_SENT118_S05_R01_F_g03,SENT118_S05_R01_F_g03,vslgh,BỆNH,bệnh,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT118_S05_R01_F_g03.npz,val
+vslgh_SENT119_S05_R01_F_g00,SENT119_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT119_S05_R01_F_g00.npz,val
+vslgh_SENT119_S05_R01_F_g01,SENT119_S05_R01_F_g01,vslgh,TIỂU-ĐƯỜNG,tiểu đường,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT119_S05_R01_F_g01.npz,val
+vslgh_SENT119_S05_R01_F_g02,SENT119_S05_R01_F_g02,vslgh,BỆNH,bệnh,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT119_S05_R01_F_g02.npz,val
+vslgh_SENT120_S05_R01_F_g00,SENT120_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT120_S05_R01_F_g00.npz,val
+vslgh_SENT120_S05_R01_F_g01,SENT120_S05_R01_F_g01,vslgh,HEN-SUYỄN,hen suyễn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT120_S05_R01_F_g01.npz,val
+vslgh_SENT120_S05_R01_F_g02,SENT120_S05_R01_F_g02,vslgh,BỆNH,bệnh,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT120_S05_R01_F_g02.npz,val
+vslgh_SENT121_S05_R01_F_g00,SENT121_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT121_S05_R01_F_g00.npz,val
+vslgh_SENT121_S05_R01_F_g01,SENT121_S05_R01_F_g01,vslgh,KHỚP-GỐI,khớp gối,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT121_S05_R01_F_g01.npz,val
+vslgh_SENT121_S05_R01_F_g02,SENT121_S05_R01_F_g02,vslgh,CHÂN,chân,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT121_S05_R01_F_g02.npz,val
+vslgh_SENT121_S05_R01_F_g03,SENT121_S05_R01_F_g03,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT121_S05_R01_F_g03.npz,val
+vslgh_SENT122_S05_R01_F_g00,SENT122_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT122_S05_R01_F_g00.npz,val
+vslgh_SENT122_S05_R01_F_g01,SENT122_S05_R01_F_g01,vslgh,TÊ-TAY,tê tay,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT122_S05_R01_F_g01.npz,val
+vslgh_SENT122_S05_R01_F_g02,SENT122_S05_R01_F_g02,vslgh,BỆNH,bệnh,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT122_S05_R01_F_g02.npz,val
+vslgh_SENT123_S05_R01_F_g00,SENT123_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT123_S05_R01_F_g00.npz,val
+vslgh_SENT123_S05_R01_F_g01,SENT123_S05_R01_F_g01,vslgh,PHẪU-THUẬT,phẫu thuật,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT123_S05_R01_F_g01.npz,val
+vslgh_SENT123_S05_R01_F_g02,SENT123_S05_R01_F_g02,vslgh,TỪNG,từng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT123_S05_R01_F_g02.npz,val
+vslgh_SENT123_S05_R01_F_g03,SENT123_S05_R01_F_g03,vslgh,RỒI,rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT123_S05_R01_F_g03.npz,val
+vslgh_SENT124_S05_R01_F_g00,SENT124_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT124_S05_R01_F_g00.npz,val
+vslgh_SENT124_S05_R01_F_g01,SENT124_S05_R01_F_g01,vslgh,THỪA-RUỘT,thừa ruột,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT124_S05_R01_F_g01.npz,val
+vslgh_SENT124_S05_R01_F_g02,SENT124_S05_R01_F_g02,vslgh,PHẪU-THUẬT,phẫu thuật,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT124_S05_R01_F_g02.npz,val
+vslgh_SENT124_S05_R01_F_g03,SENT124_S05_R01_F_g03,vslgh,NĂM-NGOÁI,năm ngoái,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT124_S05_R01_F_g03.npz,val
+vslgh_SENT125_S05_R01_F_g00,SENT125_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT125_S05_R01_F_g00.npz,val
+vslgh_SENT125_S05_R01_F_g01,SENT125_S05_R01_F_g01,vslgh,THUỐC,thuốc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT125_S05_R01_F_g01.npz,val
+vslgh_SENT125_S05_R01_F_g02,SENT125_S05_R01_F_g02,vslgh,UỐNG,uống,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT125_S05_R01_F_g02.npz,val
+vslgh_SENT125_S05_R01_F_g03,SENT125_S05_R01_F_g03,vslgh,MỖI-NGÀY,mỗi ngày,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT125_S05_R01_F_g03.npz,val
+vslgh_SENT126_S05_R01_F_g00,SENT126_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT126_S05_R01_F_g00.npz,val
+vslgh_SENT126_S05_R01_F_g01,SENT126_S05_R01_F_g01,vslgh,HÚT-THUỐC,hút thuốc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT126_S05_R01_F_g01.npz,val
+vslgh_SENT126_S05_R01_F_g02,SENT126_S05_R01_F_g02,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT126_S05_R01_F_g02.npz,val
+vslgh_SENT127_S05_R01_F_g00,SENT127_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT127_S05_R01_F_g00.npz,val
+vslgh_SENT127_S05_R01_F_g01,SENT127_S05_R01_F_g01,vslgh,BIA-RƯỢU,bia rượu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT127_S05_R01_F_g01.npz,val
+vslgh_SENT127_S05_R01_F_g02,SENT127_S05_R01_F_g02,vslgh,UỐNG,uống,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT127_S05_R01_F_g02.npz,val
+vslgh_SENT127_S05_R01_F_g03,SENT127_S05_R01_F_g03,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT127_S05_R01_F_g03.npz,val
+vslgh_SENT128_S05_R01_F_g00,SENT128_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT128_S05_R01_F_g00.npz,val
+vslgh_SENT128_S05_R01_F_g01,SENT128_S05_R01_F_g01,vslgh,THUỐC,thuốc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT128_S05_R01_F_g01.npz,val
+vslgh_SENT128_S05_R01_F_g02,SENT128_S05_R01_F_g02,vslgh,DỊ-ỨNG,dị ứng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT128_S05_R01_F_g02.npz,val
+vslgh_SENT128_S05_R01_F_g03,SENT128_S05_R01_F_g03,vslgh,BỆNH,bệnh,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT128_S05_R01_F_g03.npz,val
+vslgh_SENT129_S05_R01_F_g00,SENT129_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT129_S05_R01_F_g00.npz,val
+vslgh_SENT129_S05_R01_F_g01,SENT129_S05_R01_F_g01,vslgh,HẢI-SẢN,hải sản,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT129_S05_R01_F_g01.npz,val
+vslgh_SENT129_S05_R01_F_g02,SENT129_S05_R01_F_g02,vslgh,DỊ-ỨNG,dị ứng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT129_S05_R01_F_g02.npz,val
+vslgh_SENT129_S05_R01_F_g03,SENT129_S05_R01_F_g03,vslgh,BỆNH,bệnh,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT129_S05_R01_F_g03.npz,val
+vslgh_SENT130_S05_R01_F_g00,SENT130_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT130_S05_R01_F_g00.npz,val
+vslgh_SENT130_S05_R01_F_g01,SENT130_S05_R01_F_g01,vslgh,TÉ,té,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT130_S05_R01_F_g01.npz,val
+vslgh_SENT130_S05_R01_F_g02,SENT130_S05_R01_F_g02,vslgh,VỪA,vừa,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT130_S05_R01_F_g02.npz,val
+vslgh_SENT131_S05_R01_F_g00,SENT131_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT131_S05_R01_F_g00.npz,val
+vslgh_SENT131_S05_R01_F_g01,SENT131_S05_R01_F_g01,vslgh,VẾT-THƯƠNG,vết thương,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT131_S05_R01_F_g01.npz,val
+vslgh_SENT131_S05_R01_F_g02,SENT131_S05_R01_F_g02,vslgh,SƯNG,sưng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT131_S05_R01_F_g02.npz,val
+vslgh_SENT132_S05_R01_F_g00,SENT132_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT132_S05_R01_F_g00.npz,val
+vslgh_SENT132_S05_R01_F_g01,SENT132_S05_R01_F_g01,vslgh,DA,da,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT132_S05_R01_F_g01.npz,val
+vslgh_SENT132_S05_R01_F_g02,SENT132_S05_R01_F_g02,vslgh,NỔI-MẪN,nổi mẫn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT132_S05_R01_F_g02.npz,val
+vslgh_SENT133_S05_R01_F_g00,SENT133_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT133_S05_R01_F_g00.npz,val
+vslgh_SENT133_S05_R01_F_g01,SENT133_S05_R01_F_g01,vslgh,MỤN,mụn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT133_S05_R01_F_g01.npz,val
+vslgh_SENT133_S05_R01_F_g02,SENT133_S05_R01_F_g02,vslgh,NHIỀU,nhiều,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT133_S05_R01_F_g02.npz,val
+vslgh_SENT133_S05_R01_F_g03,SENT133_S05_R01_F_g03,vslgh,GẦN-ĐÂY,gần đây,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT133_S05_R01_F_g03.npz,val
+vslgh_SENT134_S05_R01_F_g00,SENT134_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT134_S05_R01_F_g00.npz,val
+vslgh_SENT134_S05_R01_F_g01,SENT134_S05_R01_F_g01,vslgh,NGHĨ,nghĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT134_S05_R01_F_g01.npz,val
+vslgh_SENT134_S05_R01_F_g02,SENT134_S05_R01_F_g02,vslgh,NẤM-DA,nấm da,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT134_S05_R01_F_g02.npz,val
+vslgh_SENT135_S05_R01_F_g00,SENT135_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT135_S05_R01_F_g00.npz,val
+vslgh_SENT135_S05_R01_F_g01,SENT135_S05_R01_F_g01,vslgh,ĐẾN,đến,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT135_S05_R01_F_g01.npz,val
+vslgh_SENT135_S05_R01_F_g02,SENT135_S05_R01_F_g02,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT135_S05_R01_F_g02.npz,val
+vslgh_SENT135_S05_R01_F_g03,SENT135_S05_R01_F_g03,vslgh,PHỤ-KHOA,phụ khoa,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT135_S05_R01_F_g03.npz,val
+vslgh_SENT135_S05_R01_F_g04,SENT135_S05_R01_F_g04,vslgh,NỮ,nữ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT135_S05_R01_F_g04.npz,val
+vslgh_SENT136_S05_R01_F_g00,SENT136_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT136_S05_R01_F_g00.npz,val
+vslgh_SENT136_S05_R01_F_g01,SENT136_S05_R01_F_g01,vslgh,NGHĨ,nghĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT136_S05_R01_F_g01.npz,val
+vslgh_SENT136_S05_R01_F_g02,SENT136_S05_R01_F_g02,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT136_S05_R01_F_g02.npz,val
+vslgh_SENT136_S05_R01_F_g03,SENT136_S05_R01_F_g03,vslgh,THAI,thai,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT136_S05_R01_F_g03.npz,val
+vslgh_SENT136_S05_R01_F_g04,SENT136_S05_R01_F_g04,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT136_S05_R01_F_g04.npz,val
+vslgh_SENT137_S05_R01_F_g00,SENT137_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT137_S05_R01_F_g00.npz,val
+vslgh_SENT137_S05_R01_F_g01,SENT137_S05_R01_F_g01,vslgh,KINH-NGUYỆT,kinh nguyệt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT137_S05_R01_F_g01.npz,val
+vslgh_SENT137_S05_R01_F_g02,SENT137_S05_R01_F_g02,vslgh,ĐỀU,đều,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT137_S05_R01_F_g02.npz,val
+vslgh_SENT138_S05_R01_F_g00,SENT138_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT138_S05_R01_F_g00.npz,val
+vslgh_SENT138_S05_R01_F_g01,SENT138_S05_R01_F_g01,vslgh,ĐAU-BỤNG,đau bụng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT138_S05_R01_F_g01.npz,val
+vslgh_SENT138_S05_R01_F_g02,SENT138_S05_R01_F_g02,vslgh,KHI,khi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT138_S05_R01_F_g02.npz,val
+vslgh_SENT138_S05_R01_F_g03,SENT138_S05_R01_F_g03,vslgh,KINH-NGUYỆT,kinh nguyệt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT138_S05_R01_F_g03.npz,val
+vslgh_SENT138_S05_R01_F_g04,SENT138_S05_R01_F_g04,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT138_S05_R01_F_g04.npz,val
+vslgh_SENT139_S05_R01_F_g00,SENT139_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT139_S05_R01_F_g00.npz,val
+vslgh_SENT139_S05_R01_F_g01,SENT139_S05_R01_F_g01,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT139_S05_R01_F_g01.npz,val
+vslgh_SENT139_S05_R01_F_g02,SENT139_S05_R01_F_g02,vslgh,ĐẾN,đến,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT139_S05_R01_F_g02.npz,val
+vslgh_SENT139_S05_R01_F_g03,SENT139_S05_R01_F_g03,vslgh,MẮT,mắt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT139_S05_R01_F_g03.npz,val
+vslgh_SENT140_S05_R01_F_g00,SENT140_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT140_S05_R01_F_g00.npz,val
+vslgh_SENT140_S05_R01_F_g01,SENT140_S05_R01_F_g01,vslgh,MẮT,mắt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT140_S05_R01_F_g01.npz,val
+vslgh_SENT140_S05_R01_F_g02,SENT140_S05_R01_F_g02,vslgh,PHẢI,phải,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT140_S05_R01_F_g02.npz,val
+vslgh_SENT140_S05_R01_F_g03,SENT140_S05_R01_F_g03,vslgh,MỜ,mờ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT140_S05_R01_F_g03.npz,val
+vslgh_SENT141_S05_R01_F_g00,SENT141_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT141_S05_R01_F_g00.npz,val
+vslgh_SENT141_S05_R01_F_g01,SENT141_S05_R01_F_g01,vslgh,CẬN-THỊ,cận thị,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT141_S05_R01_F_g01.npz,val
+vslgh_SENT142_S05_R01_F_g00,SENT142_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT142_S05_R01_F_g00.npz,val
+vslgh_SENT142_S05_R01_F_g01,SENT142_S05_R01_F_g01,vslgh,ĐEO-KÍNH,đeo kính,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT142_S05_R01_F_g01.npz,val
+vslgh_SENT142_S05_R01_F_g02,SENT142_S05_R01_F_g02,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT142_S05_R01_F_g02.npz,val
+vslgh_SENT143_S05_R01_F_g00,SENT143_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT143_S05_R01_F_g00.npz,val
+vslgh_SENT143_S05_R01_F_g01,SENT143_S05_R01_F_g01,vslgh,ĐẾN,đến,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT143_S05_R01_F_g01.npz,val
+vslgh_SENT143_S05_R01_F_g02,SENT143_S05_R01_F_g02,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT143_S05_R01_F_g02.npz,val
+vslgh_SENT143_S05_R01_F_g03,SENT143_S05_R01_F_g03,vslgh,TAI,tai,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT143_S05_R01_F_g03.npz,val
+vslgh_SENT143_S05_R01_F_g04,SENT143_S05_R01_F_g04,vslgh,MŨI,mũi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT143_S05_R01_F_g04.npz,val
+vslgh_SENT143_S05_R01_F_g05,SENT143_S05_R01_F_g05,vslgh,HỌNG,họng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT143_S05_R01_F_g05.npz,val
+vslgh_SENT144_S05_R01_F_g00,SENT144_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT144_S05_R01_F_g00.npz,val
+vslgh_SENT144_S05_R01_F_g01,SENT144_S05_R01_F_g01,vslgh,TAI,tai,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT144_S05_R01_F_g01.npz,val
+vslgh_SENT144_S05_R01_F_g02,SENT144_S05_R01_F_g02,vslgh,Ù,ù,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT144_S05_R01_F_g02.npz,val
+vslgh_SENT144_S05_R01_F_g03,SENT144_S05_R01_F_g03,vslgh,BỆNH,bệnh,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT144_S05_R01_F_g03.npz,val
+vslgh_SENT145_S05_R01_F_g00,SENT145_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT145_S05_R01_F_g00.npz,val
+vslgh_SENT145_S05_R01_F_g01,SENT145_S05_R01_F_g01,vslgh,VIÊM-XOANG,viêm xoang,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT145_S05_R01_F_g01.npz,val
+vslgh_SENT145_S05_R01_F_g02,SENT145_S05_R01_F_g02,vslgh,BỆNH,bệnh,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT145_S05_R01_F_g02.npz,val
+vslgh_SENT146_S05_R01_F_g00,SENT146_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT146_S05_R01_F_g00.npz,val
+vslgh_SENT146_S05_R01_F_g01,SENT146_S05_R01_F_g01,vslgh,ĐẾN,đến,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT146_S05_R01_F_g01.npz,val
+vslgh_SENT146_S05_R01_F_g02,SENT146_S05_R01_F_g02,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT146_S05_R01_F_g02.npz,val
+vslgh_SENT146_S05_R01_F_g03,SENT146_S05_R01_F_g03,vslgh,RĂNG,răng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT146_S05_R01_F_g03.npz,val
+vslgh_SENT147_S05_R01_F_g00,SENT147_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT147_S05_R01_F_g00.npz,val
+vslgh_SENT147_S05_R01_F_g01,SENT147_S05_R01_F_g01,vslgh,RĂNG,răng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT147_S05_R01_F_g01.npz,val
+vslgh_SENT147_S05_R01_F_g02,SENT147_S05_R01_F_g02,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT147_S05_R01_F_g02.npz,val
+vslgh_SENT148_S05_R01_F_g00,SENT148_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT148_S05_R01_F_g00.npz,val
+vslgh_SENT148_S05_R01_F_g01,SENT148_S05_R01_F_g01,vslgh,RĂNG,răng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT148_S05_R01_F_g01.npz,val
+vslgh_SENT148_S05_R01_F_g02,SENT148_S05_R01_F_g02,vslgh,SÂU,sâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT148_S05_R01_F_g02.npz,val
+vslgh_SENT149_S05_R01_F_g00,SENT149_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT149_S05_R01_F_g00.npz,val
+vslgh_SENT149_S05_R01_F_g01,SENT149_S05_R01_F_g01,vslgh,CHÂN-RĂNG,chân răng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT149_S05_R01_F_g01.npz,val
+vslgh_SENT149_S05_R01_F_g02,SENT149_S05_R01_F_g02,vslgh,CHẢY-MÁU,chảy máu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT149_S05_R01_F_g02.npz,val
+vslgh_SENT150_S05_R01_F_g00,SENT150_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT150_S05_R01_F_g00.npz,val
+vslgh_SENT150_S05_R01_F_g01,SENT150_S05_R01_F_g01,vslgh,CẠO-RĂNG,cạo răng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT150_S05_R01_F_g01.npz,val
+vslgh_SENT150_S05_R01_F_g02,SENT150_S05_R01_F_g02,vslgh,MUỐN,muốn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT150_S05_R01_F_g02.npz,val
+vslgh_SENT151_S05_R01_F_g00,SENT151_S05_R01_F_g00,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT151_S05_R01_F_g00.npz,val
+vslgh_SENT151_S05_R01_F_g01,SENT151_S05_R01_F_g01,vslgh,HỎI,hỏi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT151_S05_R01_F_g01.npz,val
+vslgh_SENT151_S05_R01_F_g02,SENT151_S05_R01_F_g02,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT151_S05_R01_F_g02.npz,val
+vslgh_SENT151_S05_R01_F_g03,SENT151_S05_R01_F_g03,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT151_S05_R01_F_g03.npz,val
+vslgh_SENT151_S05_R01_F_g04,SENT151_S05_R01_F_g04,vslgh,ĐÂU,đâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT151_S05_R01_F_g04.npz,val
+vslgh_SENT152_S05_R01_F_g00,SENT152_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT152_S05_R01_F_g00.npz,val
+vslgh_SENT152_S05_R01_F_g01,SENT152_S05_R01_F_g01,vslgh,NGAY ĐÂY,ngay đây,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT152_S05_R01_F_g01.npz,val
+vslgh_SENT152_S05_R01_F_g02,SENT152_S05_R01_F_g02,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT152_S05_R01_F_g02.npz,val
+vslgh_SENT153_S05_R01_F_g00,SENT153_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT153_S05_R01_F_g00.npz,val
+vslgh_SENT153_S05_R01_F_g01,SENT153_S05_R01_F_g01,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT153_S05_R01_F_g01.npz,val
+vslgh_SENT153_S05_R01_F_g02,SENT153_S05_R01_F_g02,vslgh,LẮM,lắm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT153_S05_R01_F_g02.npz,val
+vslgh_SENT154_S05_R01_F_g00,SENT154_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT154_S05_R01_F_g00.npz,val
+vslgh_SENT154_S05_R01_F_g01,SENT154_S05_R01_F_g01,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT154_S05_R01_F_g01.npz,val
+vslgh_SENT154_S05_R01_F_g02,SENT154_S05_R01_F_g02,vslgh,HƠI HƠI,hơi hơi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT154_S05_R01_F_g02.npz,val
+vslgh_SENT155_S05_R01_F_g00,SENT155_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT155_S05_R01_F_g00.npz,val
+vslgh_SENT155_S05_R01_F_g01,SENT155_S05_R01_F_g01,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT155_S05_R01_F_g01.npz,val
+vslgh_SENT155_S05_R01_F_g02,SENT155_S05_R01_F_g02,vslgh,ÂM-Ỉ,âm ỉ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT155_S05_R01_F_g02.npz,val
+vslgh_SENT156_S05_R01_F_g00,SENT156_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT156_S05_R01_F_g00.npz,val
+vslgh_SENT156_S05_R01_F_g01,SENT156_S05_R01_F_g01,vslgh,NHÓI,nhói,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT156_S05_R01_F_g01.npz,val
+vslgh_SENT156_S05_R01_F_g02,SENT156_S05_R01_F_g02,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT156_S05_R01_F_g02.npz,val
+vslgh_SENT157_S05_R01_F_g00,SENT157_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT157_S05_R01_F_g00.npz,val
+vslgh_SENT157_S05_R01_F_g01,SENT157_S05_R01_F_g01,vslgh,QUẶN-THẮT,quặn thắt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT157_S05_R01_F_g01.npz,val
+vslgh_SENT157_S05_R01_F_g02,SENT157_S05_R01_F_g02,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT157_S05_R01_F_g02.npz,val
+vslgh_SENT158_S05_R01_F_g00,SENT158_S05_R01_F_g00,vslgh,NAY,nay,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT158_S05_R01_F_g00.npz,val
+vslgh_SENT158_S05_R01_F_g01,SENT158_S05_R01_F_g01,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT158_S05_R01_F_g01.npz,val
+vslgh_SENT158_S05_R01_F_g02,SENT158_S05_R01_F_g02,vslgh,KHÓ-NGỦ,khó ngủ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT158_S05_R01_F_g02.npz,val
+vslgh_SENT159_S05_R01_F_g00,SENT159_S05_R01_F_g00,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT159_S05_R01_F_g00.npz,val
+vslgh_SENT159_S05_R01_F_g01,SENT159_S05_R01_F_g01,vslgh,HỎI,hỏi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT159_S05_R01_F_g01.npz,val
+vslgh_SENT159_S05_R01_F_g02,SENT159_S05_R01_F_g02,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT159_S05_R01_F_g02.npz,val
+vslgh_SENT159_S05_R01_F_g03,SENT159_S05_R01_F_g03,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT159_S05_R01_F_g03.npz,val
+vslgh_SENT159_S05_R01_F_g04,SENT159_S05_R01_F_g04,vslgh,KHI,khi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT159_S05_R01_F_g04.npz,val
+vslgh_SENT159_S05_R01_F_g05,SENT159_S05_R01_F_g05,vslgh,NÀO,nào,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT159_S05_R01_F_g05.npz,val
+vslgh_SENT160_S05_R01_F_g00,SENT160_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT160_S05_R01_F_g00.npz,val
+vslgh_SENT160_S05_R01_F_g01,SENT160_S05_R01_F_g01,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT160_S05_R01_F_g01.npz,val
+vslgh_SENT160_S05_R01_F_g02,SENT160_S05_R01_F_g02,vslgh,3-NGÀY,3 ngày,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT160_S05_R01_F_g02.npz,val
+vslgh_SENT160_S05_R01_F_g03,SENT160_S05_R01_F_g03,vslgh,RỒI,rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT160_S05_R01_F_g03.npz,val
+vslgh_SENT161_S05_R01_F_g00,SENT161_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT161_S05_R01_F_g00.npz,val
+vslgh_SENT161_S05_R01_F_g01,SENT161_S05_R01_F_g01,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT161_S05_R01_F_g01.npz,val
+vslgh_SENT161_S05_R01_F_g02,SENT161_S05_R01_F_g02,vslgh,MỚI,mới,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT161_S05_R01_F_g02.npz,val
+vslgh_SENT161_S05_R01_F_g03,SENT161_S05_R01_F_g03,vslgh,HÔM-QUA,hôm qua,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT161_S05_R01_F_g03.npz,val
+vslgh_SENT162_S05_R01_F_g00,SENT162_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT162_S05_R01_F_g00.npz,val
+vslgh_SENT162_S05_R01_F_g01,SENT162_S05_R01_F_g01,vslgh,ĂN,ăn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT162_S05_R01_F_g01.npz,val
+vslgh_SENT162_S05_R01_F_g02,SENT162_S05_R01_F_g02,vslgh,XONG,xong,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT162_S05_R01_F_g02.npz,val
+vslgh_SENT162_S05_R01_F_g03,SENT162_S05_R01_F_g03,vslgh,MỚI,mới,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT162_S05_R01_F_g03.npz,val
+vslgh_SENT162_S05_R01_F_g04,SENT162_S05_R01_F_g04,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT162_S05_R01_F_g04.npz,val
+vslgh_SENT163_S05_R01_F_g00,SENT163_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT163_S05_R01_F_g00.npz,val
+vslgh_SENT163_S05_R01_F_g01,SENT163_S05_R01_F_g01,vslgh,LÚC,lúc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT163_S05_R01_F_g01.npz,val
+vslgh_SENT163_S05_R01_F_g02,SENT163_S05_R01_F_g02,vslgh,ĐÓI,đói,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT163_S05_R01_F_g02.npz,val
+vslgh_SENT163_S05_R01_F_g03,SENT163_S05_R01_F_g03,vslgh,ĐAU-BỤNG,đau bụng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT163_S05_R01_F_g03.npz,val
+vslgh_SENT164_S05_R01_F_g00,SENT164_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT164_S05_R01_F_g00.npz,val
+vslgh_SENT164_S05_R01_F_g01,SENT164_S05_R01_F_g01,vslgh,ĂN,ăn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT164_S05_R01_F_g01.npz,val
+vslgh_SENT164_S05_R01_F_g02,SENT164_S05_R01_F_g02,vslgh,MUỐN,muốn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT164_S05_R01_F_g02.npz,val
+vslgh_SENT164_S05_R01_F_g03,SENT164_S05_R01_F_g03,vslgh,KHÔNG,không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT164_S05_R01_F_g03.npz,val
+vslgh_SENT165_S05_R01_F_g00,SENT165_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT165_S05_R01_F_g00.npz,val
+vslgh_SENT165_S05_R01_F_g01,SENT165_S05_R01_F_g01,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT165_S05_R01_F_g01.npz,val
+vslgh_SENT165_S05_R01_F_g02,SENT165_S05_R01_F_g02,vslgh,HỎI,hỏi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT165_S05_R01_F_g02.npz,val
+vslgh_SENT165_S05_R01_F_g03,SENT165_S05_R01_F_g03,vslgh,THUỐC-UỐNG,thuốc uống,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT165_S05_R01_F_g03.npz,val
+vslgh_SENT165_S05_R01_F_g04,SENT165_S05_R01_F_g04,vslgh,GÌ,gì,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT165_S05_R01_F_g04.npz,val
+vslgh_SENT165_S05_R01_F_g05,SENT165_S05_R01_F_g05,vslgh,ĐANG,đang,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT165_S05_R01_F_g05.npz,val
+vslgh_SENT166_S05_R01_F_g00,SENT166_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT166_S05_R01_F_g00.npz,val
+vslgh_SENT166_S05_R01_F_g01,SENT166_S05_R01_F_g01,vslgh,THUỐC,thuốc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT166_S05_R01_F_g01.npz,val
+vslgh_SENT166_S05_R01_F_g02,SENT166_S05_R01_F_g02,vslgh,DỊ-ỨNG,dị ứng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT166_S05_R01_F_g02.npz,val
+vslgh_SENT166_S05_R01_F_g03,SENT166_S05_R01_F_g03,vslgh,KHÔNG,không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT166_S05_R01_F_g03.npz,val
+vslgh_SENT167_S05_R01_F_g00,SENT167_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT167_S05_R01_F_g00.npz,val
+vslgh_SENT167_S05_R01_F_g01,SENT167_S05_R01_F_g01,vslgh,DỊ-ỨNG,dị ứng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT167_S05_R01_F_g01.npz,val
+vslgh_SENT167_S05_R01_F_g02,SENT167_S05_R01_F_g02,vslgh,KHÔNG,không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT167_S05_R01_F_g02.npz,val
+vslgh_SENT168_S05_R01_F_g00,SENT168_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT168_S05_R01_F_g00.npz,val
+vslgh_SENT168_S05_R01_F_g01,SENT168_S05_R01_F_g01,vslgh,MŨI-SỔ,mũi sổ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT168_S05_R01_F_g01.npz,val
+vslgh_SENT168_S05_R01_F_g02,SENT168_S05_R01_F_g02,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT168_S05_R01_F_g02.npz,val
+vslgh_SENT169_S05_R01_F_g00,SENT169_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT169_S05_R01_F_g00.npz,val
+vslgh_SENT169_S05_R01_F_g01,SENT169_S05_R01_F_g01,vslgh,MŨI-NGHẸT,mũi nghẹt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT169_S05_R01_F_g01.npz,val
+vslgh_SENT169_S05_R01_F_g02,SENT169_S05_R01_F_g02,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT169_S05_R01_F_g02.npz,val
+vslgh_SENT170_S05_R01_F_g00,SENT170_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT170_S05_R01_F_g00.npz,val
+vslgh_SENT170_S05_R01_F_g01,SENT170_S05_R01_F_g01,vslgh,KHAN-HO,khan ho,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT170_S05_R01_F_g01.npz,val
+vslgh_SENT171_S05_R01_F_g00,SENT171_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT171_S05_R01_F_g00.npz,val
+vslgh_SENT171_S05_R01_F_g01,SENT171_S05_R01_F_g01,vslgh,HO,ho,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT171_S05_R01_F_g01.npz,val
+vslgh_SENT171_S05_R01_F_g02,SENT171_S05_R01_F_g02,vslgh,RA-NƯỚC,ra nước,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT171_S05_R01_F_g02.npz,val
+vslgh_SENT172_S05_R01_F_g00,SENT172_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT172_S05_R01_F_g00.npz,val
+vslgh_SENT172_S05_R01_F_g01,SENT172_S05_R01_F_g01,vslgh,CẢM-THẤY,cảm thấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT172_S05_R01_F_g01.npz,val
+vslgh_SENT172_S05_R01_F_g02,SENT172_S05_R01_F_g02,vslgh,THỞ-KHÓ,thở khó,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT172_S05_R01_F_g02.npz,val
+vslgh_SENT173_S05_R01_F_g00,SENT173_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT173_S05_R01_F_g00.npz,val
+vslgh_SENT173_S05_R01_F_g01,SENT173_S05_R01_F_g01,vslgh,HÚT-THUỐC,hút thuốc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT173_S05_R01_F_g01.npz,val
+vslgh_SENT173_S05_R01_F_g02,SENT173_S05_R01_F_g02,vslgh,KHÔNG-CÓ,không có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT173_S05_R01_F_g02.npz,val
+vslgh_SENT174_S05_R01_F_g00,SENT174_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT174_S05_R01_F_g00.npz,val
+vslgh_SENT174_S05_R01_F_g01,SENT174_S05_R01_F_g01,vslgh,RƯỢU-BIA,rượu bia,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT174_S05_R01_F_g01.npz,val
+vslgh_SENT174_S05_R01_F_g02,SENT174_S05_R01_F_g02,vslgh,UỐNG,uống,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT174_S05_R01_F_g02.npz,val
+vslgh_SENT174_S05_R01_F_g03,SENT174_S05_R01_F_g03,vslgh,ÍT,ít,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT174_S05_R01_F_g03.npz,val
+vslgh_SENT175_S05_R01_F_g00,SENT175_S05_R01_F_g00,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT175_S05_R01_F_g00.npz,val
+vslgh_SENT175_S05_R01_F_g01,SENT175_S05_R01_F_g01,vslgh,HỎI,hỏi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT175_S05_R01_F_g01.npz,val
+vslgh_SENT175_S05_R01_F_g02,SENT175_S05_R01_F_g02,vslgh,GIA-ĐÌNH,gia đình,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT175_S05_R01_F_g02.npz,val
+vslgh_SENT175_S05_R01_F_g03,SENT175_S05_R01_F_g03,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT175_S05_R01_F_g03.npz,val
+vslgh_SENT175_S05_R01_F_g04,SENT175_S05_R01_F_g04,vslgh,BỆNH-GÌ,bệnh gì,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT175_S05_R01_F_g04.npz,val
+vslgh_SENT175_S05_R01_F_g05,SENT175_S05_R01_F_g05,vslgh,KHÔNG,không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT175_S05_R01_F_g05.npz,val
+vslgh_SENT176_S05_R01_F_g00,SENT176_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT176_S05_R01_F_g00.npz,val
+vslgh_SENT176_S05_R01_F_g01,SENT176_S05_R01_F_g01,vslgh,GIA-ĐÌNH,gia đình,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT176_S05_R01_F_g01.npz,val
+vslgh_SENT176_S05_R01_F_g02,SENT176_S05_R01_F_g02,vslgh,BỆNH-GÌ,bệnh gì,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT176_S05_R01_F_g02.npz,val
+vslgh_SENT176_S05_R01_F_g03,SENT176_S05_R01_F_g03,vslgh,KHÔNG-CÓ,không có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT176_S05_R01_F_g03.npz,val
+vslgh_SENT177_S05_R01_F_g00,SENT177_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT177_S05_R01_F_g00.npz,val
+vslgh_SENT177_S05_R01_F_g01,SENT177_S05_R01_F_g01,vslgh,THUỐC,thuốc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT177_S05_R01_F_g01.npz,val
+vslgh_SENT177_S05_R01_F_g02,SENT177_S05_R01_F_g02,vslgh,UỐNG,uống,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT177_S05_R01_F_g02.npz,val
+vslgh_SENT177_S05_R01_F_g03,SENT177_S05_R01_F_g03,vslgh,RỒI,rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT177_S05_R01_F_g03.npz,val
+vslgh_SENT177_S05_R01_F_g04,SENT177_S05_R01_F_g04,vslgh,BỚT,bớt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT177_S05_R01_F_g04.npz,val
+vslgh_SENT177_S05_R01_F_g05,SENT177_S05_R01_F_g05,vslgh,KHÔNG,không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT177_S05_R01_F_g05.npz,val
+vslgh_SENT178_S05_R01_F_g00,SENT178_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT178_S05_R01_F_g00.npz,val
+vslgh_SENT178_S05_R01_F_g01,SENT178_S05_R01_F_g01,vslgh,NẰM,nằm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT178_S05_R01_F_g01.npz,val
+vslgh_SENT178_S05_R01_F_g02,SENT178_S05_R01_F_g02,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT178_S05_R01_F_g02.npz,val
+vslgh_SENT179_S05_R01_F_g00,SENT179_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT179_S05_R01_F_g00.npz,val
+vslgh_SENT179_S05_R01_F_g01,SENT179_S05_R01_F_g01,vslgh,VÉN-ÁO,vén áo,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT179_S05_R01_F_g01.npz,val
+vslgh_SENT179_S05_R01_F_g02,SENT179_S05_R01_F_g02,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT179_S05_R01_F_g02.npz,val
+vslgh_SENT180_S05_R01_F_g00,SENT180_S05_R01_F_g00,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT180_S05_R01_F_g00.npz,val
+vslgh_SENT180_S05_R01_F_g01,SENT180_S05_R01_F_g01,vslgh,XEM,xem,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT180_S05_R01_F_g01.npz,val
+vslgh_SENT180_S05_R01_F_g02,SENT180_S05_R01_F_g02,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT180_S05_R01_F_g02.npz,val
+vslgh_SENT180_S05_R01_F_g03,SENT180_S05_R01_F_g03,vslgh,ẤN,ấn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT180_S05_R01_F_g03.npz,val
+vslgh_SENT180_S05_R01_F_g04,SENT180_S05_R01_F_g04,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT180_S05_R01_F_g04.npz,val
+vslgh_SENT180_S05_R01_F_g05,SENT180_S05_R01_F_g05,vslgh,KHÔNG,không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT180_S05_R01_F_g05.npz,val
+vslgh_SENT181_S05_R01_F_g00,SENT181_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT181_S05_R01_F_g00.npz,val
+vslgh_SENT181_S05_R01_F_g01,SENT181_S05_R01_F_g01,vslgh,ẤN,ấn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT181_S05_R01_F_g01.npz,val
+vslgh_SENT181_S05_R01_F_g02,SENT181_S05_R01_F_g02,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT181_S05_R01_F_g02.npz,val
+vslgh_SENT181_S05_R01_F_g03,SENT181_S05_R01_F_g03,vslgh,LẮM,lắm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT181_S05_R01_F_g03.npz,val
+vslgh_SENT182_S05_R01_F_g00,SENT182_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT182_S05_R01_F_g00.npz,val
+vslgh_SENT182_S05_R01_F_g01,SENT182_S05_R01_F_g01,vslgh,CHỖ-KHÁC,chỗ khác,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT182_S05_R01_F_g01.npz,val
+vslgh_SENT182_S05_R01_F_g02,SENT182_S05_R01_F_g02,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT182_S05_R01_F_g02.npz,val
+vslgh_SENT182_S05_R01_F_g03,SENT182_S05_R01_F_g03,vslgh,KHÔNG-CÓ,không có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT182_S05_R01_F_g03.npz,val
+vslgh_SENT183_S05_R01_F_g00,SENT183_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT183_S05_R01_F_g00.npz,val
+vslgh_SENT183_S05_R01_F_g01,SENT183_S05_R01_F_g01,vslgh,HAY-QUÊN,hay quên,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT183_S05_R01_F_g01.npz,val
+vslgh_SENT183_S05_R01_F_g02,SENT183_S05_R01_F_g02,vslgh,NHIỀU,nhiều,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT183_S05_R01_F_g02.npz,val
+vslgh_SENT184_S05_R01_F_g00,SENT184_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT184_S05_R01_F_g00.npz,val
+vslgh_SENT184_S05_R01_F_g01,SENT184_S05_R01_F_g01,vslgh,CẢM-THẤY,cảm thấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT184_S05_R01_F_g01.npz,val
+vslgh_SENT184_S05_R01_F_g02,SENT184_S05_R01_F_g02,vslgh,LO-LẮNG,lo lắng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT184_S05_R01_F_g02.npz,val
+vslgh_SENT184_S05_R01_F_g03,SENT184_S05_R01_F_g03,vslgh,NHIỀU,nhiều,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT184_S05_R01_F_g03.npz,val
+vslgh_SENT185_S05_R01_F_g00,SENT185_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT185_S05_R01_F_g00.npz,val
+vslgh_SENT185_S05_R01_F_g01,SENT185_S05_R01_F_g01,vslgh,CẢM-THẤY,cảm thấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT185_S05_R01_F_g01.npz,val
+vslgh_SENT185_S05_R01_F_g02,SENT185_S05_R01_F_g02,vslgh,BUỒN,buồn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT185_S05_R01_F_g02.npz,val
+vslgh_SENT185_S05_R01_F_g03,SENT185_S05_R01_F_g03,vslgh,NHIỀU,nhiều,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT185_S05_R01_F_g03.npz,val
+vslgh_SENT186_S05_R01_F_g00,SENT186_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT186_S05_R01_F_g00.npz,val
+vslgh_SENT186_S05_R01_F_g01,SENT186_S05_R01_F_g01,vslgh,LIỆU,liệu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT186_S05_R01_F_g01.npz,val
+vslgh_SENT186_S05_R01_F_g02,SENT186_S05_R01_F_g02,vslgh,TRẦM-CẢM,trầm cảm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT186_S05_R01_F_g02.npz,val
+vslgh_SENT186_S05_R01_F_g03,SENT186_S05_R01_F_g03,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT186_S05_R01_F_g03.npz,val
+vslgh_SENT187_S05_R01_F_g00,SENT187_S05_R01_F_g00,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT187_S05_R01_F_g00.npz,val
+vslgh_SENT187_S05_R01_F_g01,SENT187_S05_R01_F_g01,vslgh,HỎI-TÔI,hỏi tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT187_S05_R01_F_g01.npz,val
+vslgh_SENT187_S05_R01_F_g02,SENT187_S05_R01_F_g02,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT187_S05_R01_F_g02.npz,val
+vslgh_SENT187_S05_R01_F_g03,SENT187_S05_R01_F_g03,vslgh,BAO-LÂU,bao lâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT187_S05_R01_F_g03.npz,val
+vslgh_SENT188_S05_R01_F_g00,SENT188_S05_R01_F_g00,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT188_S05_R01_F_g00.npz,val
+vslgh_SENT188_S05_R01_F_g01,SENT188_S05_R01_F_g01,vslgh,HỎI-TÔI,hỏi tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT188_S05_R01_F_g01.npz,val
+vslgh_SENT188_S05_R01_F_g02,SENT188_S05_R01_F_g02,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT188_S05_R01_F_g02.npz,val
+vslgh_SENT188_S05_R01_F_g03,SENT188_S05_R01_F_g03,vslgh,THƯỜNG-XUYÊN,thường xuyên,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT188_S05_R01_F_g03.npz,val
+vslgh_SENT188_S05_R01_F_g04,SENT188_S05_R01_F_g04,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT188_S05_R01_F_g04.npz,val
+vslgh_SENT189_S05_R01_F_g00,SENT189_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT189_S05_R01_F_g00.npz,val
+vslgh_SENT189_S05_R01_F_g01,SENT189_S05_R01_F_g01,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT189_S05_R01_F_g01.npz,val
+vslgh_SENT189_S05_R01_F_g02,SENT189_S05_R01_F_g02,vslgh,MỚI,mới,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT189_S05_R01_F_g02.npz,val
+vslgh_SENT189_S05_R01_F_g03,SENT189_S05_R01_F_g03,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT189_S05_R01_F_g03.npz,val
+vslgh_SENT189_S05_R01_F_g04,SENT189_S05_R01_F_g04,vslgh,THỈNH-THOẢNG,thỉnh thoảng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT189_S05_R01_F_g04.npz,val
+vslgh_SENT190_S05_R01_F_g00,SENT190_S05_R01_F_g00,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT190_S05_R01_F_g00.npz,val
+vslgh_SENT190_S05_R01_F_g01,SENT190_S05_R01_F_g01,vslgh,HỎI-TÔI,hỏi tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT190_S05_R01_F_g01.npz,val
+vslgh_SENT190_S05_R01_F_g02,SENT190_S05_R01_F_g02,vslgh,TIỂU,tiểu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT190_S05_R01_F_g02.npz,val
+vslgh_SENT190_S05_R01_F_g03,SENT190_S05_R01_F_g03,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT190_S05_R01_F_g03.npz,val
+vslgh_SENT190_S05_R01_F_g04,SENT190_S05_R01_F_g04,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT190_S05_R01_F_g04.npz,val
+vslgh_SENT191_S05_R01_F_g00,SENT191_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT191_S05_R01_F_g00.npz,val
+vslgh_SENT191_S05_R01_F_g01,SENT191_S05_R01_F_g01,vslgh,VẾT-THƯƠNG,vết thương,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT191_S05_R01_F_g01.npz,val
+vslgh_SENT191_S05_R01_F_g02,SENT191_S05_R01_F_g02,vslgh,SÂU,sâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT191_S05_R01_F_g02.npz,val
+vslgh_SENT191_S05_R01_F_g03,SENT191_S05_R01_F_g03,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT191_S05_R01_F_g03.npz,val
+vslgh_SENT192_S05_R01_F_g00,SENT192_S05_R01_F_g00,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT192_S05_R01_F_g00.npz,val
+vslgh_SENT192_S05_R01_F_g01,SENT192_S05_R01_F_g01,vslgh,HỎI-TÔI,hỏi tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT192_S05_R01_F_g01.npz,val
+vslgh_SENT192_S05_R01_F_g02,SENT192_S05_R01_F_g02,vslgh,NGÃ,ngã,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT192_S05_R01_F_g02.npz,val
+vslgh_SENT192_S05_R01_F_g03,SENT192_S05_R01_F_g03,vslgh,KHI,khi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT192_S05_R01_F_g03.npz,val
+vslgh_SENT192_S05_R01_F_g04,SENT192_S05_R01_F_g04,vslgh,NÀO,nào,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT192_S05_R01_F_g04.npz,val
+vslgh_SENT193_S05_R01_F_g00,SENT193_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT193_S05_R01_F_g00.npz,val
+vslgh_SENT193_S05_R01_F_g01,SENT193_S05_R01_F_g01,vslgh,DA,da,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT193_S05_R01_F_g01.npz,val
+vslgh_SENT193_S05_R01_F_g02,SENT193_S05_R01_F_g02,vslgh,NGỨA-NHIỀU,ngứa nhiều,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT193_S05_R01_F_g02.npz,val
+vslgh_SENT194_S05_R01_F_g00,SENT194_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT194_S05_R01_F_g00.npz,val
+vslgh_SENT194_S05_R01_F_g01,SENT194_S05_R01_F_g01,vslgh,MỀ-ĐAY,mề đay,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT194_S05_R01_F_g01.npz,val
+vslgh_SENT194_S05_R01_F_g02,SENT194_S05_R01_F_g02,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT194_S05_R01_F_g02.npz,val
+vslgh_SENT195_S05_R01_F_g00,SENT195_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT195_S05_R01_F_g00.npz,val
+vslgh_SENT195_S05_R01_F_g01,SENT195_S05_R01_F_g01,vslgh,GÃI,gãi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT195_S05_R01_F_g01.npz,val
+vslgh_SENT195_S05_R01_F_g02,SENT195_S05_R01_F_g02,vslgh,SUỐT,suốt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT195_S05_R01_F_g02.npz,val
+vslgh_SENT196_S05_R01_F_g00,SENT196_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT196_S05_R01_F_g00.npz,val
+vslgh_SENT196_S05_R01_F_g01,SENT196_S05_R01_F_g01,vslgh,THUỐC,thuốc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT196_S05_R01_F_g01.npz,val
+vslgh_SENT196_S05_R01_F_g02,SENT196_S05_R01_F_g02,vslgh,BỔI,bổi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT196_S05_R01_F_g02.npz,val
+vslgh_SENT196_S05_R01_F_g03,SENT196_S05_R01_F_g03,vslgh,CHƯA,chưa,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT196_S05_R01_F_g03.npz,val
+vslgh_SENT197_S05_R01_F_g00,SENT197_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT197_S05_R01_F_g00.npz,val
+vslgh_SENT197_S05_R01_F_g01,SENT197_S05_R01_F_g01,vslgh,CỞI-ÁO,cởi áo,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT197_S05_R01_F_g01.npz,val
+vslgh_SENT197_S05_R01_F_g02,SENT197_S05_R01_F_g02,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT197_S05_R01_F_g02.npz,val
+vslgh_SENT198_S05_R01_F_g00,SENT198_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT198_S05_R01_F_g00.npz,val
+vslgh_SENT198_S05_R01_F_g01,SENT198_S05_R01_F_g01,vslgh,NƯỚC-SÔI,nước sôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT198_S05_R01_F_g01.npz,val
+vslgh_SENT198_S05_R01_F_g02,SENT198_S05_R01_F_g02,vslgh,PHỎNG,phỏng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT198_S05_R01_F_g02.npz,val
+vslgh_SENT199_S05_R01_F_g00,SENT199_S05_R01_F_g00,vslgh,CÓ-PHẢI,có phải,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT199_S05_R01_F_g00.npz,val
+vslgh_SENT199_S05_R01_F_g01,SENT199_S05_R01_F_g01,vslgh,THAI,thai,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT199_S05_R01_F_g01.npz,val
+vslgh_SENT199_S05_R01_F_g02,SENT199_S05_R01_F_g02,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT199_S05_R01_F_g02.npz,val
+vslgh_SENT200_S05_R01_F_g00,SENT200_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT200_S05_R01_F_g00.npz,val
+vslgh_SENT200_S05_R01_F_g01,SENT200_S05_R01_F_g01,vslgh,THAI,thai,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT200_S05_R01_F_g01.npz,val
+vslgh_SENT200_S05_R01_F_g02,SENT200_S05_R01_F_g02,vslgh,KHÔNG-CÓ,không có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT200_S05_R01_F_g02.npz,val
+vslgh_SENT201_S05_R01_F_g00,SENT201_S05_R01_F_g00,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT201_S05_R01_F_g00.npz,val
+vslgh_SENT201_S05_R01_F_g01,SENT201_S05_R01_F_g01,vslgh,HỎI-TÔI,hỏi tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT201_S05_R01_F_g01.npz,val
+vslgh_SENT201_S05_R01_F_g02,SENT201_S05_R01_F_g02,vslgh,KINH-NGUYỆT,kinh nguyệt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT201_S05_R01_F_g02.npz,val
+vslgh_SENT201_S05_R01_F_g03,SENT201_S05_R01_F_g03,vslgh,ĐỀU,đều,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT201_S05_R01_F_g03.npz,val
+vslgh_SENT201_S05_R01_F_g04,SENT201_S05_R01_F_g04,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT201_S05_R01_F_g04.npz,val
+vslgh_SENT202_S05_R01_F_g00,SENT202_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT202_S05_R01_F_g00.npz,val
+vslgh_SENT202_S05_R01_F_g01,SENT202_S05_R01_F_g01,vslgh,KINH-NGUYỆT,kinh nguyệt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT202_S05_R01_F_g01.npz,val
+vslgh_SENT202_S05_R01_F_g02,SENT202_S05_R01_F_g02,vslgh,ĐỀU,đều,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT202_S05_R01_F_g02.npz,val
+vslgh_SENT202_S05_R01_F_g03,SENT202_S05_R01_F_g03,vslgh,KHÔNG,không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT202_S05_R01_F_g03.npz,val
+vslgh_SENT203_S05_R01_F_g00,SENT203_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT203_S05_R01_F_g00.npz,val
+vslgh_SENT203_S05_R01_F_g01,SENT203_S05_R01_F_g01,vslgh,KINH,kinh,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT203_S05_R01_F_g01.npz,val
+vslgh_SENT203_S05_R01_F_g02,SENT203_S05_R01_F_g02,vslgh,HẾT,hết,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT203_S05_R01_F_g02.npz,val
+vslgh_SENT204_S05_R01_F_g00,SENT204_S05_R01_F_g00,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT204_S05_R01_F_g00.npz,val
+vslgh_SENT204_S05_R01_F_g01,SENT204_S05_R01_F_g01,vslgh,HỎI-TÔI,hỏi tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT204_S05_R01_F_g01.npz,val
+vslgh_SENT204_S05_R01_F_g02,SENT204_S05_R01_F_g02,vslgh,CON,con,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT204_S05_R01_F_g02.npz,val
+vslgh_SENT204_S05_R01_F_g03,SENT204_S05_R01_F_g03,vslgh,CÓ-CHƯA,có chưa,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT204_S05_R01_F_g03.npz,val
+vslgh_SENT205_S05_R01_F_g00,SENT205_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT205_S05_R01_F_g00.npz,val
+vslgh_SENT205_S05_R01_F_g01,SENT205_S05_R01_F_g01,vslgh,CON,con,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT205_S05_R01_F_g01.npz,val
+vslgh_SENT205_S05_R01_F_g02,SENT205_S05_R01_F_g02,vslgh,2,2,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT205_S05_R01_F_g02.npz,val
+vslgh_SENT205_S05_R01_F_g03,SENT205_S05_R01_F_g03,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT205_S05_R01_F_g03.npz,val
+vslgh_SENT206_S05_R01_F_g00,SENT206_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT206_S05_R01_F_g00.npz,val
+vslgh_SENT206_S05_R01_F_g01,SENT206_S05_R01_F_g01,vslgh,CON,con,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT206_S05_R01_F_g01.npz,val
+vslgh_SENT206_S05_R01_F_g02,SENT206_S05_R01_F_g02,vslgh,CHƯA-CÓ,chưa có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT206_S05_R01_F_g02.npz,val
+vslgh_SENT207_S05_R01_F_g00,SENT207_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT207_S05_R01_F_g00.npz,val
+vslgh_SENT207_S05_R01_F_g01,SENT207_S05_R01_F_g01,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT207_S05_R01_F_g01.npz,val
+vslgh_SENT207_S05_R01_F_g02,SENT207_S05_R01_F_g02,vslgh,THÊM,thêm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT207_S05_R01_F_g02.npz,val
+vslgh_SENT207_S05_R01_F_g03,SENT207_S05_R01_F_g03,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT207_S05_R01_F_g03.npz,val
+vslgh_SENT208_S05_R01_F_g00,SENT208_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT208_S05_R01_F_g00.npz,val
+vslgh_SENT208_S05_R01_F_g01,SENT208_S05_R01_F_g01,vslgh,KHÍ-HƯ,khí hư,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT208_S05_R01_F_g01.npz,val
+vslgh_SENT208_S05_R01_F_g02,SENT208_S05_R01_F_g02,vslgh,RA,ra,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT208_S05_R01_F_g02.npz,val
+vslgh_SENT208_S05_R01_F_g03,SENT208_S05_R01_F_g03,vslgh,BẤT-THƯỜNG,bất thường,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT208_S05_R01_F_g03.npz,val
+vslgh_SENT209_S05_R01_F_g00,SENT209_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT209_S05_R01_F_g00.npz,val
+vslgh_SENT209_S05_R01_F_g01,SENT209_S05_R01_F_g01,vslgh,MẮT,mắt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT209_S05_R01_F_g01.npz,val
+vslgh_SENT209_S05_R01_F_g02,SENT209_S05_R01_F_g02,vslgh,MỜ,mờ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT209_S05_R01_F_g02.npz,val
+vslgh_SENT210_S05_R01_F_g00,SENT210_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT210_S05_R01_F_g00.npz,val
+vslgh_SENT210_S05_R01_F_g01,SENT210_S05_R01_F_g01,vslgh,NHÌN,nhìn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT210_S05_R01_F_g01.npz,val
+vslgh_SENT210_S05_R01_F_g02,SENT210_S05_R01_F_g02,vslgh,RÕ,rõ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT210_S05_R01_F_g02.npz,val
+vslgh_SENT210_S05_R01_F_g03,SENT210_S05_R01_F_g03,vslgh,KHÔNG,không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT210_S05_R01_F_g03.npz,val
+vslgh_SENT211_S05_R01_F_g00,SENT211_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT211_S05_R01_F_g00.npz,val
+vslgh_SENT211_S05_R01_F_g01,SENT211_S05_R01_F_g01,vslgh,ĐỌC,đọc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT211_S05_R01_F_g01.npz,val
+vslgh_SENT211_S05_R01_F_g02,SENT211_S05_R01_F_g02,vslgh,HÀNG-NÀY,hàng này,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT211_S05_R01_F_g02.npz,val
+vslgh_SENT211_S05_R01_F_g03,SENT211_S05_R01_F_g03,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT211_S05_R01_F_g03.npz,val
+vslgh_SENT212_S05_R01_F_g00,SENT212_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT212_S05_R01_F_g00.npz,val
+vslgh_SENT212_S05_R01_F_g01,SENT212_S05_R01_F_g01,vslgh,CHỮ,chữ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT212_S05_R01_F_g01.npz,val
+vslgh_SENT212_S05_R01_F_g02,SENT212_S05_R01_F_g02,vslgh,NHỎ,nhỏ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT212_S05_R01_F_g02.npz,val
+vslgh_SENT212_S05_R01_F_g03,SENT212_S05_R01_F_g03,vslgh,KHÔNG-THẤY,không thấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT212_S05_R01_F_g03.npz,val
+vslgh_SENT213_S05_R01_F_g00,SENT213_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT213_S05_R01_F_g00.npz,val
+vslgh_SENT213_S05_R01_F_g01,SENT213_S05_R01_F_g01,vslgh,THẤY,thấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT213_S05_R01_F_g01.npz,val
+vslgh_SENT213_S05_R01_F_g02,SENT213_S05_R01_F_g02,vslgh,KHÔNG-CÓ,không có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT213_S05_R01_F_g02.npz,val
+vslgh_SENT214_S05_R01_F_g00,SENT214_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT214_S05_R01_F_g00.npz,val
+vslgh_SENT214_S05_R01_F_g01,SENT214_S05_R01_F_g01,vslgh,MẮT-TRÁI,mắt trái,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT214_S05_R01_F_g01.npz,val
+vslgh_SENT214_S05_R01_F_g02,SENT214_S05_R01_F_g02,vslgh,CHE,che,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT214_S05_R01_F_g02.npz,val
+vslgh_SENT215_S05_R01_F_g00,SENT215_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT215_S05_R01_F_g00.npz,val
+vslgh_SENT215_S05_R01_F_g01,SENT215_S05_R01_F_g01,vslgh,ĐỌC,đọc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT215_S05_R01_F_g01.npz,val
+vslgh_SENT215_S05_R01_F_g02,SENT215_S05_R01_F_g02,vslgh,SỖ-GÌ,sỗ gì,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT215_S05_R01_F_g02.npz,val
+vslgh_SENT216_S05_R01_F_g00,SENT216_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT216_S05_R01_F_g00.npz,val
+vslgh_SENT216_S05_R01_F_g01,SENT216_S05_R01_F_g01,vslgh,ĐEO-KÍNH,đeo kính,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT216_S05_R01_F_g01.npz,val
+vslgh_SENT216_S05_R01_F_g02,SENT216_S05_R01_F_g02,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT216_S05_R01_F_g02.npz,val
+vslgh_SENT217_S05_R01_F_g00,SENT217_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT217_S05_R01_F_g00.npz,val
+vslgh_SENT217_S05_R01_F_g01,SENT217_S05_R01_F_g01,vslgh,KÍNH,kính,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT217_S05_R01_F_g01.npz,val
+vslgh_SENT217_S05_R01_F_g02,SENT217_S05_R01_F_g02,vslgh,BỎ-RA,bỏ ra,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT217_S05_R01_F_g02.npz,val
+vslgh_SENT217_S05_R01_F_g03,SENT217_S05_R01_F_g03,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT217_S05_R01_F_g03.npz,val
+vslgh_SENT218_S05_R01_F_g00,SENT218_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT218_S05_R01_F_g00.npz,val
+vslgh_SENT218_S05_R01_F_g01,SENT218_S05_R01_F_g01,vslgh,MẮT,mắt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT218_S05_R01_F_g01.npz,val
+vslgh_SENT218_S05_R01_F_g02,SENT218_S05_R01_F_g02,vslgh,ĐỎ,đỏ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT218_S05_R01_F_g02.npz,val
+vslgh_SENT218_S05_R01_F_g03,SENT218_S05_R01_F_g03,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT218_S05_R01_F_g03.npz,val
+vslgh_SENT218_S05_R01_F_g04,SENT218_S05_R01_F_g04,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT218_S05_R01_F_g04.npz,val
+vslgh_SENT219_S05_R01_F_g00,SENT219_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT219_S05_R01_F_g00.npz,val
+vslgh_SENT219_S05_R01_F_g01,SENT219_S05_R01_F_g01,vslgh,TAI,tai,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT219_S05_R01_F_g01.npz,val
+vslgh_SENT219_S05_R01_F_g02,SENT219_S05_R01_F_g02,vslgh,TRÁI,trái,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT219_S05_R01_F_g02.npz,val
+vslgh_SENT219_S05_R01_F_g03,SENT219_S05_R01_F_g03,vslgh,NGHE,nghe,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT219_S05_R01_F_g03.npz,val
+vslgh_SENT219_S05_R01_F_g04,SENT219_S05_R01_F_g04,vslgh,RÕ,rõ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT219_S05_R01_F_g04.npz,val
+vslgh_SENT219_S05_R01_F_g05,SENT219_S05_R01_F_g05,vslgh,KHÔNG,không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT219_S05_R01_F_g05.npz,val
+vslgh_SENT220_S05_R01_F_g00,SENT220_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT220_S05_R01_F_g00.npz,val
+vslgh_SENT220_S05_R01_F_g01,SENT220_S05_R01_F_g01,vslgh,TAI,tai,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT220_S05_R01_F_g01.npz,val
+vslgh_SENT220_S05_R01_F_g02,SENT220_S05_R01_F_g02,vslgh,PHẢI,phải,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT220_S05_R01_F_g02.npz,val
+vslgh_SENT220_S05_R01_F_g03,SENT220_S05_R01_F_g03,vslgh,NGHE,nghe,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT220_S05_R01_F_g03.npz,val
+vslgh_SENT220_S05_R01_F_g04,SENT220_S05_R01_F_g04,vslgh,BÌNH-THƯỜNG,bình thường,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT220_S05_R01_F_g04.npz,val
+vslgh_SENT221_S05_R01_F_g00,SENT221_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT221_S05_R01_F_g00.npz,val
+vslgh_SENT221_S05_R01_F_g01,SENT221_S05_R01_F_g01,vslgh,TAI-Ù,tai ù,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT221_S05_R01_F_g01.npz,val
+vslgh_SENT221_S05_R01_F_g02,SENT221_S05_R01_F_g02,vslgh,LẮM,lắm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT221_S05_R01_F_g02.npz,val
+vslgh_SENT222_S05_R01_F_g00,SENT222_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT222_S05_R01_F_g00.npz,val
+vslgh_SENT222_S05_R01_F_g01,SENT222_S05_R01_F_g01,vslgh,MIỆNG-HÁ,miệng há,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT222_S05_R01_F_g01.npz,val
+vslgh_SENT222_S05_R01_F_g02,SENT222_S05_R01_F_g02,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT222_S05_R01_F_g02.npz,val
+vslgh_SENT223_S05_R01_F_g00,SENT223_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT223_S05_R01_F_g00.npz,val
+vslgh_SENT223_S05_R01_F_g01,SENT223_S05_R01_F_g01,vslgh,HỌNG,họng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT223_S05_R01_F_g01.npz,val
+vslgh_SENT223_S05_R01_F_g02,SENT223_S05_R01_F_g02,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT223_S05_R01_F_g02.npz,val
+vslgh_SENT224_S05_R01_F_g00,SENT224_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT224_S05_R01_F_g00.npz,val
+vslgh_SENT224_S05_R01_F_g01,SENT224_S05_R01_F_g01,vslgh,HỌNG,họng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT224_S05_R01_F_g01.npz,val
+vslgh_SENT224_S05_R01_F_g02,SENT224_S05_R01_F_g02,vslgh,AMIDAN,amidan,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT224_S05_R01_F_g02.npz,val
+vslgh_SENT224_S05_R01_F_g03,SENT224_S05_R01_F_g03,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT224_S05_R01_F_g03.npz,val
+vslgh_SENT225_S05_R01_F_g00,SENT225_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT225_S05_R01_F_g00.npz,val
+vslgh_SENT225_S05_R01_F_g01,SENT225_S05_R01_F_g01,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT225_S05_R01_F_g01.npz,val
+vslgh_SENT225_S05_R01_F_g02,SENT225_S05_R01_F_g02,vslgh,RĂNG,răng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT225_S05_R01_F_g02.npz,val
+vslgh_SENT225_S05_R01_F_g03,SENT225_S05_R01_F_g03,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT225_S05_R01_F_g03.npz,val
+vslgh_SENT225_S05_R01_F_g04,SENT225_S05_R01_F_g04,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT225_S05_R01_F_g04.npz,val
+vslgh_SENT226_S05_R01_F_g00,SENT226_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT226_S05_R01_F_g00.npz,val
+vslgh_SENT226_S05_R01_F_g01,SENT226_S05_R01_F_g01,vslgh,RĂNG,răng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT226_S05_R01_F_g01.npz,val
+vslgh_SENT226_S05_R01_F_g02,SENT226_S05_R01_F_g02,vslgh,SÂU,sâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT226_S05_R01_F_g02.npz,val
+vslgh_SENT226_S05_R01_F_g03,SENT226_S05_R01_F_g03,vslgh,NẶNG,nặng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT226_S05_R01_F_g03.npz,val
+vslgh_SENT226_S05_R01_F_g04,SENT226_S05_R01_F_g04,vslgh,LẮM,lắm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT226_S05_R01_F_g04.npz,val
+vslgh_SENT227_S05_R01_F_g00,SENT227_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT227_S05_R01_F_g00.npz,val
+vslgh_SENT227_S05_R01_F_g01,SENT227_S05_R01_F_g01,vslgh,RĂNG,răng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT227_S05_R01_F_g01.npz,val
+vslgh_SENT227_S05_R01_F_g02,SENT227_S05_R01_F_g02,vslgh,NHỔ,nhổ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT227_S05_R01_F_g02.npz,val
+vslgh_SENT227_S05_R01_F_g03,SENT227_S05_R01_F_g03,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT227_S05_R01_F_g03.npz,val
+vslgh_SENT228_S05_R01_F_g00,SENT228_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT228_S05_R01_F_g00.npz,val
+vslgh_SENT228_S05_R01_F_g01,SENT228_S05_R01_F_g01,vslgh,RĂNG,răng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT228_S05_R01_F_g01.npz,val
+vslgh_SENT228_S05_R01_F_g02,SENT228_S05_R01_F_g02,vslgh,NHỔ,nhổ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT228_S05_R01_F_g02.npz,val
+vslgh_SENT228_S05_R01_F_g03,SENT228_S05_R01_F_g03,vslgh,MUỐN,muốn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT228_S05_R01_F_g03.npz,val
+vslgh_SENT228_S05_R01_F_g04,SENT228_S05_R01_F_g04,vslgh,KHÔNG,không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT228_S05_R01_F_g04.npz,val
+vslgh_SENT229_S05_R01_F_g00,SENT229_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT229_S05_R01_F_g00.npz,val
+vslgh_SENT229_S05_R01_F_g01,SENT229_S05_R01_F_g01,vslgh,RĂNG,răng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT229_S05_R01_F_g01.npz,val
+vslgh_SENT229_S05_R01_F_g02,SENT229_S05_R01_F_g02,vslgh,Ê-BUỐT,ê buốt,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT229_S05_R01_F_g02.npz,val
+vslgh_SENT230_S05_R01_F_g00,SENT230_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT230_S05_R01_F_g00.npz,val
+vslgh_SENT230_S05_R01_F_g01,SENT230_S05_R01_F_g01,vslgh,RĂNG,răng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT230_S05_R01_F_g01.npz,val
+vslgh_SENT230_S05_R01_F_g02,SENT230_S05_R01_F_g02,vslgh,TRÁM,trám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT230_S05_R01_F_g02.npz,val
+vslgh_SENT230_S05_R01_F_g03,SENT230_S05_R01_F_g03,vslgh,MUỐN,muốn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT230_S05_R01_F_g03.npz,val
+vslgh_SENT231_S05_R01_F_g00,SENT231_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT231_S05_R01_F_g00.npz,val
+vslgh_SENT231_S05_R01_F_g01,SENT231_S05_R01_F_g01,vslgh,MÁU,máu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT231_S05_R01_F_g01.npz,val
+vslgh_SENT231_S05_R01_F_g02,SENT231_S05_R01_F_g02,vslgh,LẤY,lấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT231_S05_R01_F_g02.npz,val
+vslgh_SENT231_S05_R01_F_g03,SENT231_S05_R01_F_g03,vslgh,RỒI,rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT231_S05_R01_F_g03.npz,val
+vslgh_SENT232_S05_R01_F_g00,SENT232_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT232_S05_R01_F_g00.npz,val
+vslgh_SENT232_S05_R01_F_g01,SENT232_S05_R01_F_g01,vslgh,NƯỚC-TIỂU,nước tiểu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT232_S05_R01_F_g01.npz,val
+vslgh_SENT232_S05_R01_F_g02,SENT232_S05_R01_F_g02,vslgh,VÀO-BÌNH,vào bình,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT232_S05_R01_F_g02.npz,val
+vslgh_SENT232_S05_R01_F_g03,SENT232_S05_R01_F_g03,vslgh,RỒI,rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT232_S05_R01_F_g03.npz,val
+vslgh_SENT233_S05_R01_F_g00,SENT233_S05_R01_F_g00,vslgh,NỘI-SOI,nội soi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT233_S05_R01_F_g00.npz,val
+vslgh_SENT233_S05_R01_F_g01,SENT233_S05_R01_F_g01,vslgh,GÂY-MÊ,gây mê,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT233_S05_R01_F_g01.npz,val
+vslgh_SENT233_S05_R01_F_g02,SENT233_S05_R01_F_g02,vslgh,ĐAU,đau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT233_S05_R01_F_g02.npz,val
+vslgh_SENT233_S05_R01_F_g03,SENT233_S05_R01_F_g03,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT233_S05_R01_F_g03.npz,val
+vslgh_SENT234_S05_R01_F_g00,SENT234_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT234_S05_R01_F_g00.npz,val
+vslgh_SENT234_S05_R01_F_g01,SENT234_S05_R01_F_g01,vslgh,NƯỚC-TIỂU,nước tiểu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT234_S05_R01_F_g01.npz,val
+vslgh_SENT234_S05_R01_F_g02,SENT234_S05_R01_F_g02,vslgh,XÉT-NGHIỆM,xét nghiệm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT234_S05_R01_F_g02.npz,val
+vslgh_SENT234_S05_R01_F_g03,SENT234_S05_R01_F_g03,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT234_S05_R01_F_g03.npz,val
+vslgh_SENT235_S05_R01_F_g00,SENT235_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT235_S05_R01_F_g00.npz,val
+vslgh_SENT235_S05_R01_F_g01,SENT235_S05_R01_F_g01,vslgh,XÉT-NGHIỆM,xét nghiệm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT235_S05_R01_F_g01.npz,val
+vslgh_SENT235_S05_R01_F_g02,SENT235_S05_R01_F_g02,vslgh,MÁU,máu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT235_S05_R01_F_g02.npz,val
+vslgh_SENT235_S05_R01_F_g03,SENT235_S05_R01_F_g03,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT235_S05_R01_F_g03.npz,val
+vslgh_SENT236_S05_R01_F_g00,SENT236_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT236_S05_R01_F_g00.npz,val
+vslgh_SENT236_S05_R01_F_g01,SENT236_S05_R01_F_g01,vslgh,XÉT-NGHIỆM,xét nghiệm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT236_S05_R01_F_g01.npz,val
+vslgh_SENT236_S05_R01_F_g02,SENT236_S05_R01_F_g02,vslgh,SINH-HÓA,sinh hóa,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT236_S05_R01_F_g02.npz,val
+vslgh_SENT236_S05_R01_F_g03,SENT236_S05_R01_F_g03,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT236_S05_R01_F_g03.npz,val
+vslgh_SENT237_S05_R01_F_g00,SENT237_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT237_S05_R01_F_g00.npz,val
+vslgh_SENT237_S05_R01_F_g01,SENT237_S05_R01_F_g01,vslgh,CHỤP,chụp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT237_S05_R01_F_g01.npz,val
+vslgh_SENT237_S05_R01_F_g02,SENT237_S05_R01_F_g02,vslgh,X-QUANG,x quang,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT237_S05_R01_F_g02.npz,val
+vslgh_SENT237_S05_R01_F_g03,SENT237_S05_R01_F_g03,vslgh,RỒI,rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT237_S05_R01_F_g03.npz,val
+vslgh_SENT238_S05_R01_F_g00,SENT238_S05_R01_F_g00,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT238_S05_R01_F_g00.npz,val
+vslgh_SENT238_S05_R01_F_g01,SENT238_S05_R01_F_g01,vslgh,CHỈ-ĐỊNH,chỉ định,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT238_S05_R01_F_g01.npz,val
+vslgh_SENT238_S05_R01_F_g02,SENT238_S05_R01_F_g02,vslgh,CHỤP,chụp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT238_S05_R01_F_g02.npz,val
+vslgh_SENT238_S05_R01_F_g03,SENT238_S05_R01_F_g03,vslgh,X-QUANG,x quang,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT238_S05_R01_F_g03.npz,val
+vslgh_SENT238_S05_R01_F_g04,SENT238_S05_R01_F_g04,vslgh,PHỔI,phổi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT238_S05_R01_F_g04.npz,val
+vslgh_SENT239_S05_R01_F_g00,SENT239_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT239_S05_R01_F_g00.npz,val
+vslgh_SENT239_S05_R01_F_g01,SENT239_S05_R01_F_g01,vslgh,CHỈ-ĐỊNH,chỉ định,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT239_S05_R01_F_g01.npz,val
+vslgh_SENT239_S05_R01_F_g02,SENT239_S05_R01_F_g02,vslgh,SIÊU-ẨM,siêu ẩm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT239_S05_R01_F_g02.npz,val
+vslgh_SENT239_S05_R01_F_g03,SENT239_S05_R01_F_g03,vslgh,BỤNG,bụng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT239_S05_R01_F_g03.npz,val
+vslgh_SENT240_S05_R01_F_g00,SENT240_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT240_S05_R01_F_g00.npz,val
+vslgh_SENT240_S05_R01_F_g01,SENT240_S05_R01_F_g01,vslgh,CHỈ-ĐỊNH,chỉ định,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT240_S05_R01_F_g01.npz,val
+vslgh_SENT240_S05_R01_F_g02,SENT240_S05_R01_F_g02,vslgh,SIÊU-ÂM,siêu âm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT240_S05_R01_F_g02.npz,val
+vslgh_SENT240_S05_R01_F_g03,SENT240_S05_R01_F_g03,vslgh,TIM,tim,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT240_S05_R01_F_g03.npz,val
+vslgh_SENT241_S05_R01_F_g00,SENT241_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT241_S05_R01_F_g00.npz,val
+vslgh_SENT241_S05_R01_F_g01,SENT241_S05_R01_F_g01,vslgh,ĐO,đo,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT241_S05_R01_F_g01.npz,val
+vslgh_SENT241_S05_R01_F_g02,SENT241_S05_R01_F_g02,vslgh,TIM,tim,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT241_S05_R01_F_g02.npz,val
+vslgh_SENT241_S05_R01_F_g03,SENT241_S05_R01_F_g03,vslgh,ĐIỆN,điện,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT241_S05_R01_F_g03.npz,val
+vslgh_SENT241_S05_R01_F_g04,SENT241_S05_R01_F_g04,vslgh,XONG-RỒI,xong rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT241_S05_R01_F_g04.npz,val
+vslgh_SENT242_S05_R01_F_g00,SENT242_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT242_S05_R01_F_g00.npz,val
+vslgh_SENT242_S05_R01_F_g01,SENT242_S05_R01_F_g01,vslgh,SOI-NỘI,soi nội,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT242_S05_R01_F_g01.npz,val
+vslgh_SENT242_S05_R01_F_g02,SENT242_S05_R01_F_g02,vslgh,DẠ-DÀY,dạ dày,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT242_S05_R01_F_g02.npz,val
+vslgh_SENT242_S05_R01_F_g03,SENT242_S05_R01_F_g03,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT242_S05_R01_F_g03.npz,val
+vslgh_SENT243_S05_R01_F_g00,SENT243_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT243_S05_R01_F_g00.npz,val
+vslgh_SENT243_S05_R01_F_g01,SENT243_S05_R01_F_g01,vslgh,ĐO,đo,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT243_S05_R01_F_g01.npz,val
+vslgh_SENT243_S05_R01_F_g02,SENT243_S05_R01_F_g02,vslgh,LOÃNG-XƯƠNG,loãng xương,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT243_S05_R01_F_g02.npz,val
+vslgh_SENT244_S05_R01_F_g00,SENT244_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT244_S05_R01_F_g00.npz,val
+vslgh_SENT244_S05_R01_F_g01,SENT244_S05_R01_F_g01,vslgh,XÉT-NGHIỆM,xét nghiệm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT244_S05_R01_F_g01.npz,val
+vslgh_SENT244_S05_R01_F_g02,SENT244_S05_R01_F_g02,vslgh,GAN,gan,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT244_S05_R01_F_g02.npz,val
+vslgh_SENT244_S05_R01_F_g03,SENT244_S05_R01_F_g03,vslgh,CHỨC-NĂNG,chức năng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT244_S05_R01_F_g03.npz,val
+vslgh_SENT244_S05_R01_F_g04,SENT244_S05_R01_F_g04,vslgh,CẦN,cần,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT244_S05_R01_F_g04.npz,val
+vslgh_SENT245_S05_R01_F_g00,SENT245_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT245_S05_R01_F_g00.npz,val
+vslgh_SENT245_S05_R01_F_g01,SENT245_S05_R01_F_g01,vslgh,XÉT-NGHIỆM,xét nghiệm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT245_S05_R01_F_g01.npz,val
+vslgh_SENT245_S05_R01_F_g02,SENT245_S05_R01_F_g02,vslgh,THẬN,thận,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT245_S05_R01_F_g02.npz,val
+vslgh_SENT245_S05_R01_F_g03,SENT245_S05_R01_F_g03,vslgh,CHỨC-NĂNG,chức năng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT245_S05_R01_F_g03.npz,val
+vslgh_SENT245_S05_R01_F_g04,SENT245_S05_R01_F_g04,vslgh,MUỐN,muốn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT245_S05_R01_F_g04.npz,val
+vslgh_SENT246_S05_R01_F_g00,SENT246_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT246_S05_R01_F_g00.npz,val
+vslgh_SENT246_S05_R01_F_g01,SENT246_S05_R01_F_g01,vslgh,XÉT-NGHIỆM,xét nghiệm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT246_S05_R01_F_g01.npz,val
+vslgh_SENT246_S05_R01_F_g02,SENT246_S05_R01_F_g02,vslgh,TỔNG-QUÁT,tổng quát,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT246_S05_R01_F_g02.npz,val
+vslgh_SENT246_S05_R01_F_g03,SENT246_S05_R01_F_g03,vslgh,MUỐN,muốn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT246_S05_R01_F_g03.npz,val
+vslgh_SENT247_S05_R01_F_g00,SENT247_S05_R01_F_g00,vslgh,TỐI,tối,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT247_S05_R01_F_g00.npz,val
+vslgh_SENT247_S05_R01_F_g01,SENT247_S05_R01_F_g01,vslgh,HÔM-QUA,hôm qua,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT247_S05_R01_F_g01.npz,val
+vslgh_SENT247_S05_R01_F_g02,SENT247_S05_R01_F_g02,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT247_S05_R01_F_g02.npz,val
+vslgh_SENT247_S05_R01_F_g03,SENT247_S05_R01_F_g03,vslgh,ĂN,ăn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT247_S05_R01_F_g03.npz,val
+vslgh_SENT247_S05_R01_F_g04,SENT247_S05_R01_F_g04,vslgh,KHÔNG,không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT247_S05_R01_F_g04.npz,val
+vslgh_SENT248_S05_R01_F_g00,SENT248_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT248_S05_R01_F_g00.npz,val
+vslgh_SENT248_S05_R01_F_g01,SENT248_S05_R01_F_g01,vslgh,NƯỚC,nước,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT248_S05_R01_F_g01.npz,val
+vslgh_SENT248_S05_R01_F_g02,SENT248_S05_R01_F_g02,vslgh,UỐNG,uống,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT248_S05_R01_F_g02.npz,val
+vslgh_SENT248_S05_R01_F_g03,SENT248_S05_R01_F_g03,vslgh,NHIỀU,nhiều,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT248_S05_R01_F_g03.npz,val
+vslgh_SENT249_S05_R01_F_g00,SENT249_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT249_S05_R01_F_g00.npz,val
+vslgh_SENT249_S05_R01_F_g01,SENT249_S05_R01_F_g01,vslgh,TAY-TRÁI,tay trái,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT249_S05_R01_F_g01.npz,val
+vslgh_SENT249_S05_R01_F_g02,SENT249_S05_R01_F_g02,vslgh,MÁU,máu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT249_S05_R01_F_g02.npz,val
+vslgh_SENT249_S05_R01_F_g03,SENT249_S05_R01_F_g03,vslgh,LẤY,lấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT249_S05_R01_F_g03.npz,val
+vslgh_SENT249_S05_R01_F_g04,SENT249_S05_R01_F_g04,vslgh,Y-TÁ,y tá,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT249_S05_R01_F_g04.npz,val
+vslgh_SENT250_S05_R01_F_g00,SENT250_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT250_S05_R01_F_g00.npz,val
+vslgh_SENT250_S05_R01_F_g01,SENT250_S05_R01_F_g01,vslgh,NỘP,nộp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT250_S05_R01_F_g01.npz,val
+vslgh_SENT250_S05_R01_F_g02,SENT250_S05_R01_F_g02,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT250_S05_R01_F_g02.npz,val
+vslgh_SENT250_S05_R01_F_g03,SENT250_S05_R01_F_g03,vslgh,KẾT-QUẢ,kết quả,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT250_S05_R01_F_g03.npz,val
+vslgh_SENT251_S05_R01_F_g00,SENT251_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT251_S05_R01_F_g00.npz,val
+vslgh_SENT251_S05_R01_F_g01,SENT251_S05_R01_F_g01,vslgh,ĐẾN,đến,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT251_S05_R01_F_g01.npz,val
+vslgh_SENT251_S05_R01_F_g02,SENT251_S05_R01_F_g02,vslgh,PHÒNG,phòng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT251_S05_R01_F_g02.npz,val
+vslgh_SENT251_S05_R01_F_g03,SENT251_S05_R01_F_g03,vslgh,XÉT-NGHIỆM,xét nghiệm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT251_S05_R01_F_g03.npz,val
+vslgh_SENT251_S05_R01_F_g04,SENT251_S05_R01_F_g04,vslgh,Ở-ĐÂU,ở đâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT251_S05_R01_F_g04.npz,val
+vslgh_SENT252_S05_R01_F_g00,SENT252_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT252_S05_R01_F_g00.npz,val
+vslgh_SENT252_S05_R01_F_g01,SENT252_S05_R01_F_g01,vslgh,ĐẾN,đến,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT252_S05_R01_F_g01.npz,val
+vslgh_SENT252_S05_R01_F_g02,SENT252_S05_R01_F_g02,vslgh,XÉT-NGHIỆM,xét nghiệm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT252_S05_R01_F_g02.npz,val
+vslgh_SENT252_S05_R01_F_g03,SENT252_S05_R01_F_g03,vslgh,ĂN,ăn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT252_S05_R01_F_g03.npz,val
+vslgh_SENT252_S05_R01_F_g04,SENT252_S05_R01_F_g04,vslgh,KHÔNG,không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT252_S05_R01_F_g04.npz,val
+vslgh_SENT252_S05_R01_F_g05,SENT252_S05_R01_F_g05,vslgh,CẦN,cần,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT252_S05_R01_F_g05.npz,val
+vslgh_SENT253_S05_R01_F_g00,SENT253_S05_R01_F_g00,vslgh,SÁNG,sáng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT253_S05_R01_F_g00.npz,val
+vslgh_SENT253_S05_R01_F_g01,SENT253_S05_R01_F_g01,vslgh,NAY,nay,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT253_S05_R01_F_g01.npz,val
+vslgh_SENT253_S05_R01_F_g02,SENT253_S05_R01_F_g02,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT253_S05_R01_F_g02.npz,val
+vslgh_SENT253_S05_R01_F_g03,SENT253_S05_R01_F_g03,vslgh,ĂN,ăn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT253_S05_R01_F_g03.npz,val
+vslgh_SENT253_S05_R01_F_g04,SENT253_S05_R01_F_g04,vslgh,RỒI,rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT253_S05_R01_F_g04.npz,val
+vslgh_SENT254_S05_R01_F_g00,SENT254_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT254_S05_R01_F_g00.npz,val
+vslgh_SENT254_S05_R01_F_g01,SENT254_S05_R01_F_g01,vslgh,SAO-KHÔNG,sao không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT254_S05_R01_F_g01.npz,val
+vslgh_SENT255_S05_R01_F_g00,SENT255_S05_R01_F_g00,vslgh,LẤY,lấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT255_S05_R01_F_g00.npz,val
+vslgh_SENT255_S05_R01_F_g01,SENT255_S05_R01_F_g01,vslgh,MÁU,máu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT255_S05_R01_F_g01.npz,val
+vslgh_SENT255_S05_R01_F_g02,SENT255_S05_R01_F_g02,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT255_S05_R01_F_g02.npz,val
+vslgh_SENT255_S05_R01_F_g03,SENT255_S05_R01_F_g03,vslgh,ĐAU-KHÔNG,đau không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT255_S05_R01_F_g03.npz,val
+vslgh_SENT256_S05_R01_F_g00,SENT256_S05_R01_F_g00,vslgh,LẤY,lấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT256_S05_R01_F_g00.npz,val
+vslgh_SENT256_S05_R01_F_g01,SENT256_S05_R01_F_g01,vslgh,MÁU,máu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT256_S05_R01_F_g01.npz,val
+vslgh_SENT256_S05_R01_F_g02,SENT256_S05_R01_F_g02,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT256_S05_R01_F_g02.npz,val
+vslgh_SENT256_S05_R01_F_g03,SENT256_S05_R01_F_g03,vslgh,SỢ-LẮM,sợ lắm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT256_S05_R01_F_g03.npz,val
+vslgh_SENT257_S05_R01_F_g00,SENT257_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT257_S05_R01_F_g00.npz,val
+vslgh_SENT257_S05_R01_F_g01,SENT257_S05_R01_F_g01,vslgh,LẤY,lấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT257_S05_R01_F_g01.npz,val
+vslgh_SENT257_S05_R01_F_g02,SENT257_S05_R01_F_g02,vslgh,MÁU,máu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT257_S05_R01_F_g02.npz,val
+vslgh_SENT257_S05_R01_F_g03,SENT257_S05_R01_F_g03,vslgh,TAY,tay,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT257_S05_R01_F_g03.npz,val
+vslgh_SENT257_S05_R01_F_g04,SENT257_S05_R01_F_g04,vslgh,NÀO,nào,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT257_S05_R01_F_g04.npz,val
+vslgh_SENT258_S05_R01_F_g00,SENT258_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT258_S05_R01_F_g00.npz,val
+vslgh_SENT258_S05_R01_F_g01,SENT258_S05_R01_F_g01,vslgh,NƯỚC-TIỂU,nước tiểu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT258_S05_R01_F_g01.npz,val
+vslgh_SENT258_S05_R01_F_g02,SENT258_S05_R01_F_g02,vslgh,MẪU,mẫu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT258_S05_R01_F_g02.npz,val
+vslgh_SENT258_S05_R01_F_g03,SENT258_S05_R01_F_g03,vslgh,LẤY,lấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT258_S05_R01_F_g03.npz,val
+vslgh_SENT258_S05_R01_F_g04,SENT258_S05_R01_F_g04,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT258_S05_R01_F_g04.npz,val
+vslgh_SENT259_S05_R01_F_g00,SENT259_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT259_S05_R01_F_g00.npz,val
+vslgh_SENT259_S05_R01_F_g01,SENT259_S05_R01_F_g01,vslgh,NƯỚC-TIỂU,nước tiểu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT259_S05_R01_F_g01.npz,val
+vslgh_SENT259_S05_R01_F_g02,SENT259_S05_R01_F_g02,vslgh,MẪU,mẫu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT259_S05_R01_F_g02.npz,val
+vslgh_SENT259_S05_R01_F_g03,SENT259_S05_R01_F_g03,vslgh,LẤY,lấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT259_S05_R01_F_g03.npz,val
+vslgh_SENT259_S05_R01_F_g04,SENT259_S05_R01_F_g04,vslgh,Ở-ĐÂU,ở đâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT259_S05_R01_F_g04.npz,val
+vslgh_SENT260_S05_R01_F_g00,SENT260_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT260_S05_R01_F_g00.npz,val
+vslgh_SENT260_S05_R01_F_g01,SENT260_S05_R01_F_g01,vslgh,NƯỚC-TIỂU,nước tiểu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT260_S05_R01_F_g01.npz,val
+vslgh_SENT260_S05_R01_F_g02,SENT260_S05_R01_F_g02,vslgh,MẪU,mẫu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT260_S05_R01_F_g02.npz,val
+vslgh_SENT260_S05_R01_F_g03,SENT260_S05_R01_F_g03,vslgh,BAO-NHIÊU,bao nhiêu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT260_S05_R01_F_g03.npz,val
+vslgh_SENT260_S05_R01_F_g04,SENT260_S05_R01_F_g04,vslgh,CẦN,cần,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT260_S05_R01_F_g04.npz,val
+vslgh_SENT261_S05_R01_F_g00,SENT261_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT261_S05_R01_F_g00.npz,val
+vslgh_SENT261_S05_R01_F_g01,SENT261_S05_R01_F_g01,vslgh,ÁO-CỞI,áo cởi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT261_S05_R01_F_g01.npz,val
+vslgh_SENT261_S05_R01_F_g02,SENT261_S05_R01_F_g02,vslgh,KHI,khi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT261_S05_R01_F_g02.npz,val
+vslgh_SENT261_S05_R01_F_g03,SENT261_S05_R01_F_g03,vslgh,CHỤP,chụp,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT261_S05_R01_F_g03.npz,val
+vslgh_SENT261_S05_R01_F_g04,SENT261_S05_R01_F_g04,vslgh,X-QUANG,x quang,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT261_S05_R01_F_g04.npz,val
+vslgh_SENT261_S05_R01_F_g05,SENT261_S05_R01_F_g05,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT261_S05_R01_F_g05.npz,val
+vslgh_SENT262_S05_R01_F_g00,SENT262_S05_R01_F_g00,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT262_S05_R01_F_g00.npz,val
+vslgh_SENT262_S05_R01_F_g01,SENT262_S05_R01_F_g01,vslgh,HỎI-TÔI,hỏi tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT262_S05_R01_F_g01.npz,val
+vslgh_SENT262_S05_R01_F_g02,SENT262_S05_R01_F_g02,vslgh,ĐEO-TAY,đeo tay,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT262_S05_R01_F_g02.npz,val
+vslgh_SENT262_S05_R01_F_g03,SENT262_S05_R01_F_g03,vslgh,VÒNG,vòng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT262_S05_R01_F_g03.npz,val
+vslgh_SENT262_S05_R01_F_g04,SENT262_S05_R01_F_g04,vslgh,KIM-LOẠI,kim loại,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT262_S05_R01_F_g04.npz,val
+vslgh_SENT262_S05_R01_F_g05,SENT262_S05_R01_F_g05,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT262_S05_R01_F_g05.npz,val
+vslgh_SENT263_S05_R01_F_g00,SENT263_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT263_S05_R01_F_g00.npz,val
+vslgh_SENT263_S05_R01_F_g01,SENT263_S05_R01_F_g01,vslgh,ĐEO-TAY,đeo tay,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT263_S05_R01_F_g01.npz,val
+vslgh_SENT263_S05_R01_F_g02,SENT263_S05_R01_F_g02,vslgh,VÒNG,vòng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT263_S05_R01_F_g02.npz,val
+vslgh_SENT263_S05_R01_F_g03,SENT263_S05_R01_F_g03,vslgh,KIM-LOẠI,kim loại,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT263_S05_R01_F_g03.npz,val
+vslgh_SENT263_S05_R01_F_g04,SENT263_S05_R01_F_g04,vslgh,KHÔNG-CÓ,không có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT263_S05_R01_F_g04.npz,val
+vslgh_SENT264_S05_R01_F_g00,SENT264_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT264_S05_R01_F_g00.npz,val
+vslgh_SENT264_S05_R01_F_g01,SENT264_S05_R01_F_g01,vslgh,NƯỚC,nước,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT264_S05_R01_F_g01.npz,val
+vslgh_SENT264_S05_R01_F_g02,SENT264_S05_R01_F_g02,vslgh,UỐNG,uống,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT264_S05_R01_F_g02.npz,val
+vslgh_SENT264_S05_R01_F_g03,SENT264_S05_R01_F_g03,vslgh,NHIỀU,nhiều,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT264_S05_R01_F_g03.npz,val
+vslgh_SENT264_S05_R01_F_g04,SENT264_S05_R01_F_g04,vslgh,KHI,khi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT264_S05_R01_F_g04.npz,val
+vslgh_SENT264_S05_R01_F_g05,SENT264_S05_R01_F_g05,vslgh,SIÊU-ÂM,siêu âm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT264_S05_R01_F_g05.npz,val
+vslgh_SENT264_S05_R01_F_g06,SENT264_S05_R01_F_g06,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT264_S05_R01_F_g06.npz,val
+vslgh_SENT265_S05_R01_F_g00,SENT265_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT265_S05_R01_F_g00.npz,val
+vslgh_SENT265_S05_R01_F_g01,SENT265_S05_R01_F_g01,vslgh,CHỜ,chờ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT265_S05_R01_F_g01.npz,val
+vslgh_SENT265_S05_R01_F_g02,SENT265_S05_R01_F_g02,vslgh,KẾT-QUẢ,kết quả,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT265_S05_R01_F_g02.npz,val
+vslgh_SENT265_S05_R01_F_g03,SENT265_S05_R01_F_g03,vslgh,BAO-LÂU,bao lâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT265_S05_R01_F_g03.npz,val
+vslgh_SENT266_S05_R01_F_g00,SENT266_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT266_S05_R01_F_g00.npz,val
+vslgh_SENT266_S05_R01_F_g01,SENT266_S05_R01_F_g01,vslgh,KẾT-QUẢ,kết quả,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT266_S05_R01_F_g01.npz,val
+vslgh_SENT266_S05_R01_F_g02,SENT266_S05_R01_F_g02,vslgh,LẤY,lấy,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT266_S05_R01_F_g02.npz,val
+vslgh_SENT266_S05_R01_F_g03,SENT266_S05_R01_F_g03,vslgh,Ở-ĐÂU,ở đâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT266_S05_R01_F_g03.npz,val
+vslgh_SENT267_S05_R01_F_g00,SENT267_S05_R01_F_g00,vslgh,KẾT-QUẢ,kết quả,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT267_S05_R01_F_g00.npz,val
+vslgh_SENT267_S05_R01_F_g01,SENT267_S05_R01_F_g01,vslgh,HÔM-NAY,hôm nay,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT267_S05_R01_F_g01.npz,val
+vslgh_SENT267_S05_R01_F_g02,SENT267_S05_R01_F_g02,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT267_S05_R01_F_g02.npz,val
+vslgh_SENT268_S05_R01_F_g00,SENT268_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT268_S05_R01_F_g00.npz,val
+vslgh_SENT268_S05_R01_F_g01,SENT268_S05_R01_F_g01,vslgh,XÉT-NGHIỆM,xét nghiệm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT268_S05_R01_F_g01.npz,val
+vslgh_SENT268_S05_R01_F_g02,SENT268_S05_R01_F_g02,vslgh,TẤT-CẢ,tất cả,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT268_S05_R01_F_g02.npz,val
+vslgh_SENT268_S05_R01_F_g03,SENT268_S05_R01_F_g03,vslgh,XONG,xong,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT268_S05_R01_F_g03.npz,val
+vslgh_SENT268_S05_R01_F_g04,SENT268_S05_R01_F_g04,vslgh,RỒI,rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT268_S05_R01_F_g04.npz,val
+vslgh_SENT269_S05_R01_F_g00,SENT269_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT269_S05_R01_F_g00.npz,val
+vslgh_SENT269_S05_R01_F_g01,SENT269_S05_R01_F_g01,vslgh,PHÒNG,phòng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT269_S05_R01_F_g01.npz,val
+vslgh_SENT269_S05_R01_F_g02,SENT269_S05_R01_F_g02,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT269_S05_R01_F_g02.npz,val
+vslgh_SENT269_S05_R01_F_g03,SENT269_S05_R01_F_g03,vslgh,QUAY-LẠI,quay lại,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT269_S05_R01_F_g03.npz,val
+vslgh_SENT269_S05_R01_F_g04,SENT269_S05_R01_F_g04,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT269_S05_R01_F_g04.npz,val
+vslgh_SENT270_S05_R01_F_g00,SENT270_S05_R01_F_g00,vslgh,SÁNG,sáng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT270_S05_R01_F_g00.npz,val
+vslgh_SENT270_S05_R01_F_g01,SENT270_S05_R01_F_g01,vslgh,NAY,nay,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT270_S05_R01_F_g01.npz,val
+vslgh_SENT270_S05_R01_F_g02,SENT270_S05_R01_F_g02,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT270_S05_R01_F_g02.npz,val
+vslgh_SENT270_S05_R01_F_g03,SENT270_S05_R01_F_g03,vslgh,ĂN,ăn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT270_S05_R01_F_g03.npz,val
+vslgh_SENT270_S05_R01_F_g04,SENT270_S05_R01_F_g04,vslgh,CHƯA,chưa,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT270_S05_R01_F_g04.npz,val
+vslgh_SENT271_S05_R01_F_g00,SENT271_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT271_S05_R01_F_g00.npz,val
+vslgh_SENT271_S05_R01_F_g01,SENT271_S05_R01_F_g01,vslgh,HIỂU,hiểu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT271_S05_R01_F_g01.npz,val
+vslgh_SENT271_S05_R01_F_g02,SENT271_S05_R01_F_g02,vslgh,RỒI,rồi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT271_S05_R01_F_g02.npz,val
+vslgh_SENT272_S05_R01_F_g00,SENT272_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT272_S05_R01_F_g00.npz,val
+vslgh_SENT272_S05_R01_F_g01,SENT272_S05_R01_F_g01,vslgh,CẢM-ƠN,cảm ơn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT272_S05_R01_F_g01.npz,val
+vslgh_SENT272_S05_R01_F_g02,SENT272_S05_R01_F_g02,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT272_S05_R01_F_g02.npz,val
+vslgh_SENT273_S05_R01_F_g00,SENT273_S05_R01_F_g00,vslgh,ĐƠN,đơn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT273_S05_R01_F_g00.npz,val
+vslgh_SENT273_S05_R01_F_g01,SENT273_S05_R01_F_g01,vslgh,THUỐC,thuốc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT273_S05_R01_F_g01.npz,val
+vslgh_SENT273_S05_R01_F_g02,SENT273_S05_R01_F_g02,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT273_S05_R01_F_g02.npz,val
+vslgh_SENT273_S05_R01_F_g03,SENT273_S05_R01_F_g03,vslgh,CÓ,có,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT273_S05_R01_F_g03.npz,val
+vslgh_SENT274_S05_R01_F_g00,SENT274_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT274_S05_R01_F_g00.npz,val
+vslgh_SENT274_S05_R01_F_g01,SENT274_S05_R01_F_g01,vslgh,MUA,mua,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT274_S05_R01_F_g01.npz,val
+vslgh_SENT274_S05_R01_F_g02,SENT274_S05_R01_F_g02,vslgh,THUỐC,thuốc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT274_S05_R01_F_g02.npz,val
+vslgh_SENT274_S05_R01_F_g03,SENT274_S05_R01_F_g03,vslgh,SẼ,sẽ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT274_S05_R01_F_g03.npz,val
+vslgh_SENT275_S05_R01_F_g00,SENT275_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT275_S05_R01_F_g00.npz,val
+vslgh_SENT275_S05_R01_F_g01,SENT275_S05_R01_F_g01,vslgh,THẺ,thẻ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT275_S05_R01_F_g01.npz,val
+vslgh_SENT275_S05_R01_F_g02,SENT275_S05_R01_F_g02,vslgh,BẢO-HIỂM,bảo hiểm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT275_S05_R01_F_g02.npz,val
+vslgh_SENT275_S05_R01_F_g03,SENT275_S05_R01_F_g03,vslgh,LẤY-THUỐC,lấy thuốc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT275_S05_R01_F_g03.npz,val
+vslgh_SENT276_S05_R01_F_g00,SENT276_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT276_S05_R01_F_g00.npz,val
+vslgh_SENT276_S05_R01_F_g01,SENT276_S05_R01_F_g01,vslgh,ĐÓNG-TIỀN,đóng tiền,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT276_S05_R01_F_g01.npz,val
+vslgh_SENT276_S05_R01_F_g02,SENT276_S05_R01_F_g02,vslgh,THÊM,thêm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT276_S05_R01_F_g02.npz,val
+vslgh_SENT276_S05_R01_F_g03,SENT276_S05_R01_F_g03,vslgh,CẦN,cần,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT276_S05_R01_F_g03.npz,val
+vslgh_SENT277_S05_R01_F_g00,SENT277_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT277_S05_R01_F_g00.npz,val
+vslgh_SENT277_S05_R01_F_g01,SENT277_S05_R01_F_g01,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT277_S05_R01_F_g01.npz,val
+vslgh_SENT277_S05_R01_F_g02,SENT277_S05_R01_F_g02,vslgh,KỲ,kỳ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT277_S05_R01_F_g02.npz,val
+vslgh_SENT277_S05_R01_F_g03,SENT277_S05_R01_F_g03,vslgh,SAU,sau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT277_S05_R01_F_g03.npz,val
+vslgh_SENT277_S05_R01_F_g04,SENT277_S05_R01_F_g04,vslgh,LẠI,lại,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT277_S05_R01_F_g04.npz,val
+vslgh_SENT278_S05_R01_F_g00,SENT278_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT278_S05_R01_F_g00.npz,val
+vslgh_SENT278_S05_R01_F_g01,SENT278_S05_R01_F_g01,vslgh,LỊCH,lịch,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT278_S05_R01_F_g01.npz,val
+vslgh_SENT278_S05_R01_F_g02,SENT278_S05_R01_F_g02,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT278_S05_R01_F_g02.npz,val
+vslgh_SENT278_S05_R01_F_g03,SENT278_S05_R01_F_g03,vslgh,LẠI,lại,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT278_S05_R01_F_g03.npz,val
+vslgh_SENT279_S05_R01_F_g00,SENT279_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT279_S05_R01_F_g00.npz,val
+vslgh_SENT279_S05_R01_F_g01,SENT279_S05_R01_F_g01,vslgh,XIN,xin,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT279_S05_R01_F_g01.npz,val
+vslgh_SENT279_S05_R01_F_g02,SENT279_S05_R01_F_g02,vslgh,GIẤY-PHÉP,giấy phép,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT279_S05_R01_F_g02.npz,val
+vslgh_SENT279_S05_R01_F_g03,SENT279_S05_R01_F_g03,vslgh,ỐM,ốm,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT279_S05_R01_F_g03.npz,val
+vslgh_SENT279_S05_R01_F_g04,SENT279_S05_R01_F_g04,vslgh,CẦN,cần,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT279_S05_R01_F_g04.npz,val
+vslgh_SENT280_S05_R01_F_g00,SENT280_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT280_S05_R01_F_g00.npz,val
+vslgh_SENT280_S05_R01_F_g01,SENT280_S05_R01_F_g01,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT280_S05_R01_F_g01.npz,val
+vslgh_SENT280_S05_R01_F_g02,SENT280_S05_R01_F_g02,vslgh,CHÀO,chào,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT280_S05_R01_F_g02.npz,val
+vslgh_SENT281_S05_R01_F_g00,SENT281_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT281_S05_R01_F_g00.npz,val
+vslgh_SENT281_S05_R01_F_g01,SENT281_S05_R01_F_g01,vslgh,BỆNH,bệnh,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT281_S05_R01_F_g01.npz,val
+vslgh_SENT281_S05_R01_F_g02,SENT281_S05_R01_F_g02,vslgh,GÌ,gì,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT281_S05_R01_F_g02.npz,val
+vslgh_SENT281_S05_R01_F_g03,SENT281_S05_R01_F_g03,vslgh,CUỐI-CÙNG,cuối cùng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT281_S05_R01_F_g03.npz,val
+vslgh_SENT282_S05_R01_F_g00,SENT282_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT282_S05_R01_F_g00.npz,val
+vslgh_SENT282_S05_R01_F_g01,SENT282_S05_R01_F_g01,vslgh,BỆNH,bệnh,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT282_S05_R01_F_g01.npz,val
+vslgh_SENT282_S05_R01_F_g02,SENT282_S05_R01_F_g02,vslgh,NGHIÊM-TRỌNG,nghiêm trọng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT282_S05_R01_F_g02.npz,val
+vslgh_SENT282_S05_R01_F_g03,SENT282_S05_R01_F_g03,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT282_S05_R01_F_g03.npz,val
+vslgh_SENT283_S05_R01_F_g00,SENT283_S05_R01_F_g00,vslgh,1-NGÀY,1 ngày,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT283_S05_R01_F_g00.npz,val
+vslgh_SENT283_S05_R01_F_g01,SENT283_S05_R01_F_g01,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT283_S05_R01_F_g01.npz,val
+vslgh_SENT283_S05_R01_F_g02,SENT283_S05_R01_F_g02,vslgh,THUỐC-UỐNG,thuốc uống,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT283_S05_R01_F_g02.npz,val
+vslgh_SENT283_S05_R01_F_g03,SENT283_S05_R01_F_g03,vslgh,MẤY-LẦN,mấy lần,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT283_S05_R01_F_g03.npz,val
+vslgh_SENT284_S05_R01_F_g00,SENT284_S05_R01_F_g00,vslgh,KHI,khi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT284_S05_R01_F_g00.npz,val
+vslgh_SENT284_S05_R01_F_g01,SENT284_S05_R01_F_g01,vslgh,TRƯỚC,trước,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT284_S05_R01_F_g01.npz,val
+vslgh_SENT284_S05_R01_F_g02,SENT284_S05_R01_F_g02,vslgh,ĂN,ăn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT284_S05_R01_F_g02.npz,val
+vslgh_SENT284_S05_R01_F_g03,SENT284_S05_R01_F_g03,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT284_S05_R01_F_g03.npz,val
+vslgh_SENT284_S05_R01_F_g04,SENT284_S05_R01_F_g04,vslgh,THUỐC-UỐNG,thuốc uống,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT284_S05_R01_F_g04.npz,val
+vslgh_SENT284_S05_R01_F_g05,SENT284_S05_R01_F_g05,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT284_S05_R01_F_g05.npz,val
+vslgh_SENT285_S05_R01_F_g00,SENT285_S05_R01_F_g00,vslgh,KHI,khi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT285_S05_R01_F_g00.npz,val
+vslgh_SENT285_S05_R01_F_g01,SENT285_S05_R01_F_g01,vslgh,SAU,sau,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT285_S05_R01_F_g01.npz,val
+vslgh_SENT285_S05_R01_F_g02,SENT285_S05_R01_F_g02,vslgh,ĂN,ăn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT285_S05_R01_F_g02.npz,val
+vslgh_SENT285_S05_R01_F_g03,SENT285_S05_R01_F_g03,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT285_S05_R01_F_g03.npz,val
+vslgh_SENT285_S05_R01_F_g04,SENT285_S05_R01_F_g04,vslgh,THUỐC-UỐNG,thuốc uống,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT285_S05_R01_F_g04.npz,val
+vslgh_SENT285_S05_R01_F_g05,SENT285_S05_R01_F_g05,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT285_S05_R01_F_g05.npz,val
+vslgh_SENT286_S05_R01_F_g00,SENT286_S05_R01_F_g00,vslgh,THUỐC,thuốc,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT286_S05_R01_F_g00.npz,val
+vslgh_SENT286_S05_R01_F_g01,SENT286_S05_R01_F_g01,vslgh,NÀY,này,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT286_S05_R01_F_g01.npz,val
+vslgh_SENT286_S05_R01_F_g02,SENT286_S05_R01_F_g02,vslgh,ẢNH-HƯỞNG,ảnh hưởng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT286_S05_R01_F_g02.npz,val
+vslgh_SENT286_S05_R01_F_g03,SENT286_S05_R01_F_g03,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT286_S05_R01_F_g03.npz,val
+vslgh_SENT287_S05_R01_F_g00,SENT287_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT287_S05_R01_F_g00.npz,val
+vslgh_SENT287_S05_R01_F_g01,SENT287_S05_R01_F_g01,vslgh,KHÁM,khám,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT287_S05_R01_F_g01.npz,val
+vslgh_SENT287_S05_R01_F_g02,SENT287_S05_R01_F_g02,vslgh,LẠI,lại,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT287_S05_R01_F_g02.npz,val
+vslgh_SENT287_S05_R01_F_g03,SENT287_S05_R01_F_g03,vslgh,KHI,khi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT287_S05_R01_F_g03.npz,val
+vslgh_SENT287_S05_R01_F_g04,SENT287_S05_R01_F_g04,vslgh,NÀO,nào,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT287_S05_R01_F_g04.npz,val
+vslgh_SENT288_S05_R01_F_g00,SENT288_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT288_S05_R01_F_g00.npz,val
+vslgh_SENT288_S05_R01_F_g01,SENT288_S05_R01_F_g01,vslgh,ĂN,ăn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT288_S05_R01_F_g01.npz,val
+vslgh_SENT288_S05_R01_F_g02,SENT288_S05_R01_F_g02,vslgh,KIÊNG,kiêng,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT288_S05_R01_F_g02.npz,val
+vslgh_SENT288_S05_R01_F_g03,SENT288_S05_R01_F_g03,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT288_S05_R01_F_g03.npz,val
+vslgh_SENT289_S05_R01_F_g00,SENT289_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT289_S05_R01_F_g00.npz,val
+vslgh_SENT289_S05_R01_F_g01,SENT289_S05_R01_F_g01,vslgh,PHẪU-THUẬT,phẫu thuật,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT289_S05_R01_F_g01.npz,val
+vslgh_SENT289_S05_R01_F_g02,SENT289_S05_R01_F_g02,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT289_S05_R01_F_g02.npz,val
+vslgh_SENT290_S05_R01_F_g00,SENT290_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT290_S05_R01_F_g00.npz,val
+vslgh_SENT290_S05_R01_F_g01,SENT290_S05_R01_F_g01,vslgh,KẾT-QUẢ,kết quả,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT290_S05_R01_F_g01.npz,val
+vslgh_SENT290_S05_R01_F_g02,SENT290_S05_R01_F_g02,vslgh,XEM,xem,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT290_S05_R01_F_g02.npz,val
+vslgh_SENT290_S05_R01_F_g03,SENT290_S05_R01_F_g03,vslgh,KHÔNG-HIỂU,không hiểu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT290_S05_R01_F_g03.npz,val
+vslgh_SENT291_S05_R01_F_g00,SENT291_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT291_S05_R01_F_g00.npz,val
+vslgh_SENT291_S05_R01_F_g01,SENT291_S05_R01_F_g01,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT291_S05_R01_F_g01.npz,val
+vslgh_SENT291_S05_R01_F_g02,SENT291_S05_R01_F_g02,vslgh,GIẢI-THÍCH,giải thích,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT291_S05_R01_F_g02.npz,val
+vslgh_SENT291_S05_R01_F_g03,SENT291_S05_R01_F_g03,vslgh,CHO-TÔI,cho tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT291_S05_R01_F_g03.npz,val
+vslgh_SENT291_S05_R01_F_g04,SENT291_S05_R01_F_g04,vslgh,ĐƯỢC-KHÔNG,được không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT291_S05_R01_F_g04.npz,val
+vslgh_SENT292_S05_R01_F_g00,SENT292_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT292_S05_R01_F_g00.npz,val
+vslgh_SENT292_S05_R01_F_g01,SENT292_S05_R01_F_g01,vslgh,THUỐC-UỐNG,thuốc uống,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT292_S05_R01_F_g01.npz,val
+vslgh_SENT292_S05_R01_F_g02,SENT292_S05_R01_F_g02,vslgh,NÀY,này,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT292_S05_R01_F_g02.npz,val
+vslgh_SENT292_S05_R01_F_g03,SENT292_S05_R01_F_g03,vslgh,UỐNG,uống,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT292_S05_R01_F_g03.npz,val
+vslgh_SENT292_S05_R01_F_g04,SENT292_S05_R01_F_g04,vslgh,BAO-LÂU,bao lâu,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT292_S05_R01_F_g04.npz,val
+vslgh_SENT293_S05_R01_F_g00,SENT293_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT293_S05_R01_F_g00.npz,val
+vslgh_SENT293_S05_R01_F_g01,SENT293_S05_R01_F_g01,vslgh,NGHỈ,nghỉ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT293_S05_R01_F_g01.npz,val
+vslgh_SENT293_S05_R01_F_g02,SENT293_S05_R01_F_g02,vslgh,NHIỀU,nhiều,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT293_S05_R01_F_g02.npz,val
+vslgh_SENT293_S05_R01_F_g03,SENT293_S05_R01_F_g03,vslgh,CẦN-KHÔNG,cần không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT293_S05_R01_F_g03.npz,val
+vslgh_SENT294_S05_R01_F_g00,SENT294_S05_R01_F_g00,vslgh,HỎI,hỏi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT294_S05_R01_F_g00.npz,val
+vslgh_SENT294_S05_R01_F_g01,SENT294_S05_R01_F_g01,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT294_S05_R01_F_g01.npz,val
+vslgh_SENT294_S05_R01_F_g02,SENT294_S05_R01_F_g02,vslgh,BỆNH,bệnh,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT294_S05_R01_F_g02.npz,val
+vslgh_SENT294_S05_R01_F_g03,SENT294_S05_R01_F_g03,vslgh,LÂY,lây,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT294_S05_R01_F_g03.npz,val
+vslgh_SENT294_S05_R01_F_g04,SENT294_S05_R01_F_g04,vslgh,CÓ-KHÔNG,có không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT294_S05_R01_F_g04.npz,val
+vslgh_SENT295_S05_R01_F_g00,SENT295_S05_R01_F_g00,vslgh,HỎI,hỏi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT295_S05_R01_F_g00.npz,val
+vslgh_SENT295_S05_R01_F_g01,SENT295_S05_R01_F_g01,vslgh,THUỐC-UỐNG,thuốc uống,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT295_S05_R01_F_g01.npz,val
+vslgh_SENT295_S05_R01_F_g02,SENT295_S05_R01_F_g02,vslgh,KHÔNG-CẦN,không cần,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT295_S05_R01_F_g02.npz,val
+vslgh_SENT295_S05_R01_F_g03,SENT295_S05_R01_F_g03,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT295_S05_R01_F_g03.npz,val
+vslgh_SENT296_S05_R01_F_g00,SENT296_S05_R01_F_g00,vslgh,HỎI,hỏi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT296_S05_R01_F_g00.npz,val
+vslgh_SENT296_S05_R01_F_g01,SENT296_S05_R01_F_g01,vslgh,LỐI-SỐNG,lối sống,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT296_S05_R01_F_g01.npz,val
+vslgh_SENT296_S05_R01_F_g02,SENT296_S05_R01_F_g02,vslgh,THAY-ĐỔI,thay đổi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT296_S05_R01_F_g02.npz,val
+vslgh_SENT296_S05_R01_F_g03,SENT296_S05_R01_F_g03,vslgh,ĐÚNG-KHÔNG,đúng không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT296_S05_R01_F_g03.npz,val
+vslgh_SENT297_S05_R01_F_g00,SENT297_S05_R01_F_g00,vslgh,HỎI,hỏi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT297_S05_R01_F_g00.npz,val
+vslgh_SENT297_S05_R01_F_g01,SENT297_S05_R01_F_g01,vslgh,THỂ-DỤC,thể dục,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT297_S05_R01_F_g01.npz,val
+vslgh_SENT297_S05_R01_F_g02,SENT297_S05_R01_F_g02,vslgh,GÌ,gì,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT297_S05_R01_F_g02.npz,val
+vslgh_SENT298_S05_R01_F_g00,SENT298_S05_R01_F_g00,vslgh,TÔI,tôi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT298_S05_R01_F_g00.npz,val
+vslgh_SENT298_S05_R01_F_g01,SENT298_S05_R01_F_g01,vslgh,ĂN,ăn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT298_S05_R01_F_g01.npz,val
+vslgh_SENT298_S05_R01_F_g02,SENT298_S05_R01_F_g02,vslgh,MẶN,mặn,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT298_S05_R01_F_g02.npz,val
+vslgh_SENT298_S05_R01_F_g03,SENT298_S05_R01_F_g03,vslgh,KHÔNG-ĐƯỢC,không được,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT298_S05_R01_F_g03.npz,val
+vslgh_SENT298_S05_R01_F_g04,SENT298_S05_R01_F_g04,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT298_S05_R01_F_g04.npz,val
+vslgh_SENT299_S05_R01_F_g00,SENT299_S05_R01_F_g00,vslgh,HỎI,hỏi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT299_S05_R01_F_g00.npz,val
+vslgh_SENT299_S05_R01_F_g01,SENT299_S05_R01_F_g01,vslgh,RƯỢU-BIA,rượu bia,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT299_S05_R01_F_g01.npz,val
+vslgh_SENT299_S05_R01_F_g02,SENT299_S05_R01_F_g02,vslgh,THỨC-KHUYA,thức khuya,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT299_S05_R01_F_g02.npz,val
+vslgh_SENT299_S05_R01_F_g03,SENT299_S05_R01_F_g03,vslgh,ÍT,ít,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT299_S05_R01_F_g03.npz,val
+vslgh_SENT299_S05_R01_F_g04,SENT299_S05_R01_F_g04,vslgh,PHẢI-KHÔNG,phải không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT299_S05_R01_F_g04.npz,val
+vslgh_SENT300_S05_R01_F_g00,SENT300_S05_R01_F_g00,vslgh,HỎI,hỏi,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT300_S05_R01_F_g00.npz,val
+vslgh_SENT300_S05_R01_F_g01,SENT300_S05_R01_F_g01,vslgh,BÁC-SĨ,bác sĩ,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT300_S05_R01_F_g01.npz,val
+vslgh_SENT300_S05_R01_F_g02,SENT300_S05_R01_F_g02,vslgh,BỆNH,bệnh,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT300_S05_R01_F_g02.npz,val
+vslgh_SENT300_S05_R01_F_g03,SENT300_S05_R01_F_g03,vslgh,ĐÁNG-LO,đáng lo,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT300_S05_R01_F_g03.npz,val
+vslgh_SENT300_S05_R01_F_g04,SENT300_S05_R01_F_g04,vslgh,KHÔNG,không,Other,S05,vslgh_S05,1080,1080,vslgh_segments/S05/SENT300_S05_R01_F_g04.npz,val
