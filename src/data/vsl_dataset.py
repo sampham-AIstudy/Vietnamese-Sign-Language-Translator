@@ -226,6 +226,7 @@ class VSLDataset(Dataset):
         auto_extract: bool = True,
         augment: bool = False,
         epoch_multiplier: int = 1,
+        aspect_correct: bool = False,
     ):
         """
         Args:
@@ -237,6 +238,9 @@ class VSLDataset(Dataset):
             auto_extract: If True, extracts and caches landmarks from raw video if .npz is missing.
             augment: If True, applies on-the-fly keypoint and temporal augmentation.
             epoch_multiplier: Multiplies virtual dataset length for diverse augmented batches.
+            aspect_correct: If True, pass width/height from the split row to the pipeline so
+                sources with different frame shapes (16:9 dictionary, 1:1 VSL-GH, 4:3 webcam)
+                share one geometry. Rows without width/height are an error in this mode.
         """
         if not os.path.exists(split_csv):
             raise FileNotFoundError(f"Split CSV not found: {split_csv}")
@@ -250,6 +254,7 @@ class VSLDataset(Dataset):
         self.augment = augment
         self.epoch_multiplier = max(1, int(epoch_multiplier)) if augment else 1
         self.augmenter = KeypointAugmenter() if augment else None
+        self.aspect_correct = aspect_correct
 
         # Establish deterministic label mapping
         if label_map is not None:
@@ -276,6 +281,13 @@ class VSLDataset(Dataset):
 
     def _locate_or_extract_npz(self, row: Dict[str, Any]) -> str:
         """Finds existing .npz file or extracts from raw video and caches it."""
+        # 0. Explicit path (multi-source manifests, e.g. scripts/build_unified_manifest.py)
+        explicit = (row.get("npz_path") or "").strip()
+        if explicit:
+            if not os.path.exists(explicit):
+                raise FileNotFoundError(f"npz_path does not exist: {explicit}")
+            return explicit
+
         video_id = row["video_id"]
         gloss = row["gloss_normalized"]
         split = row.get("split", "unknown")
@@ -343,10 +355,18 @@ class VSLDataset(Dataset):
         raw_keypoints = npz_data["keypoints"].astype(np.float32)  # [T, 67, 3]
         visibility_mask = npz_data["visibility_mask"].astype(np.float32)  # [T, 67]
 
+        aspect_ratio = None
+        if self.aspect_correct:
+            try:
+                aspect_ratio = float(row["width"]) / float(row["height"])
+            except (KeyError, TypeError, ValueError, ZeroDivisionError) as e:
+                raise ValueError(f"aspect_correct=True but row {video_id} has no usable width/height") from e
+
         # Apply robust preprocessing pipeline
         final_kps, final_joint_mask, temporal_mask = self.pipeline(
             raw_keypoints=raw_keypoints,
             visibility=visibility_mask,
+            aspect_ratio=aspect_ratio,
         )
 
         # Apply active data augmentation if enabled for training
@@ -380,6 +400,7 @@ def get_vsl_dataloaders(
     test_csv: Optional[str] = None,
     validate_guards: bool = True,
     expected_num_classes: Optional[int] = None,
+    aspect_correct: bool = False,
 ) -> Tuple[DataLoader, DataLoader, DataLoader, Dict[str, int]]:
     """
     Creates Train, Val, and Test DataLoaders for the specified tier.
@@ -423,6 +444,7 @@ def get_vsl_dataloaders(
         keypoints_dir=keypoints_dir,
         label_map=label_map,
         target_len=target_len,
+        aspect_correct=aspect_correct,
         augment=augment_train,
         epoch_multiplier=epoch_multiplier,
     )
@@ -431,6 +453,7 @@ def get_vsl_dataloaders(
         keypoints_dir=keypoints_dir,
         label_map=label_map,
         target_len=target_len,
+        aspect_correct=aspect_correct,
         augment=False,
     )
     test_ds = VSLDataset(
@@ -438,6 +461,7 @@ def get_vsl_dataloaders(
         keypoints_dir=keypoints_dir,
         label_map=label_map,
         target_len=target_len,
+        aspect_correct=aspect_correct,
         augment=False,
     )
 

@@ -1,0 +1,3862 @@
+label,independent_units,qipedc_recordings,qipedc_videos,hcmue_videos,vslgh_signers,vslgh_segments,sources,surface_forms
+0,6,0,0,0,6,14,vslgh,0
+0 (số không),1,1,1,0,0,0,qipedc,0 (số không)
+1,7,1,1,0,6,42,qipedc+vslgh,1
+1 000 000 (một triệu),3,3,3,0,0,0,qipedc,1 000 000 (một triệu)
+1 000 000 000 (một tỉ),2,2,3,0,0,0,qipedc,1 000 000 000 (một tỉ)
+1 ngày,6,0,0,0,6,14,vslgh,1-NGÀY
+10,2,1,1,1,0,0,qipedc+hcmue,10
+10 000 (mười nghìn),3,3,3,0,0,0,qipedc,10 000 (mười nghìn)
+100,1,1,1,0,0,0,qipedc,100
+1000 (một nghìn),1,1,1,0,0,0,qipedc,1000 (một nghìn)
+11,2,2,3,0,0,0,qipedc,11
+1100000,1,0,0,1,0,0,hcmue,1100000
+12,2,2,3,0,0,0,qipedc,12
+120,6,0,0,0,6,14,vslgh,120
+2,7,1,1,0,6,70,qipedc+vslgh,2
+2 < 5 (toán học),1,1,1,0,0,0,qipedc,2 < 5 (Toán học)
+2 < 6 (toán học),1,1,1,0,0,0,qipedc,2 < 6 (Toán học)
+22,6,0,0,0,6,14,vslgh,22
+23,2,2,3,0,0,0,qipedc,23
+3,7,1,1,0,6,14,qipedc+vslgh,3
+3 ngày,6,0,0,0,6,14,vslgh,3-NGÀY
+33,1,1,2,0,0,0,qipedc,33
+4,7,1,1,0,6,14,qipedc+vslgh,4
+40,1,1,1,0,0,0,qipedc,40
+5,8,1,1,1,6,14,qipedc+hcmue+vslgh,5
+5 > 3 (toán học),1,1,1,0,0,0,qipedc,5 > 3 (Toán học)
+5000 (năm nghìn),2,2,2,0,0,0,qipedc,5000 (năm nghìn)
+55,6,0,0,0,6,14,vslgh,55
+6,2,2,3,0,0,0,qipedc,6
+60,6,0,0,0,6,14,vslgh,60
+7,1,1,1,0,0,0,qipedc,7
+70,6,0,0,0,6,14,vslgh,70
+7up,1,1,1,0,0,0,qipedc,7up
+8,1,1,1,0,0,0,qipedc,8
+80,1,1,1,0,0,0,qipedc,80
+9,7,1,1,0,6,14,qipedc+vslgh,9
+90,1,1,1,0,0,0,qipedc,90
+a,2,1,1,1,0,0,qipedc+hcmue,a
+ai,2,2,3,0,0,0,qipedc,ai
+ai bảo,1,1,1,0,0,0,qipedc,ai bảo
+ai cho,1,1,1,0,0,0,qipedc,ai cho
+albania (nước albania),1,1,1,0,0,0,qipedc,Albania (nước Albania)
+amidan,6,0,0,0,6,14,vslgh,AMIDAN
+an giang,1,1,1,0,0,0,qipedc,An Giang
+an ninh,2,1,1,1,0,0,qipedc+hcmue,an ninh
+an toàn,1,0,0,1,0,0,hcmue,an toàn
+anh (nước anh),2,2,3,0,0,0,qipedc,Anh (nước Anh)
+anh chị,1,1,1,0,0,0,qipedc,anh chị
+anh chị em,1,1,1,0,0,0,qipedc,anh chị em
+anh cả,2,0,0,2,0,0,hcmue,anh cả
+anh dũng,2,2,3,0,0,0,qipedc,anh dũng
+anh em,2,2,3,0,0,0,qipedc,anh em
+anh em ruột,1,0,0,1,0,0,hcmue,anh em ruột
+anh em sinh đôi,1,0,0,1,0,0,hcmue,anh em sinh đôi
+"anh hai, anh cả",2,2,3,0,0,0,qipedc,"anh hai, anh cả"
+anh hùng,2,1,1,1,0,0,qipedc+hcmue,anh hùng
+anh họ,1,1,2,0,0,0,qipedc,anh họ
+anh ruột,2,2,3,0,0,0,qipedc,anh ruột
+anh rể,2,2,3,0,0,0,qipedc,anh rể
+anh trai,2,0,0,2,0,0,hcmue,anh trai
+anh vợ,1,1,1,0,0,0,qipedc,anh vợ
+ao chuôm,1,1,1,0,0,0,qipedc,ao chuôm
+b,2,1,1,1,0,0,qipedc+hcmue,b
+ba,1,0,0,1,0,0,hcmue,Ba
+ba (cha),1,0,0,1,0,0,hcmue,ba (cha)
+ba chân bốn cẳng,1,1,1,0,0,0,qipedc,Ba chân bốn cẳng
+ba là,1,1,1,0,0,0,qipedc,ba là
+ban giám hiệu,1,1,1,0,0,0,qipedc,ban giám hiệu
+ban ngày,1,1,1,0,0,0,qipedc,ban ngày
+ban đêm,2,2,3,0,0,0,qipedc,ban đêm
+bao giờ?,2,2,3,0,0,0,qipedc,bao giờ?
+bao la,1,1,1,0,0,0,qipedc,bao la
+bao lâu,6,0,0,0,6,56,vslgh,BAO-LÂU
+bao nhiêu,6,0,0,0,6,42,vslgh,BAO-NHIÊU
+bao nhiêu?,1,1,1,0,0,0,qipedc,bao nhiêu?
+bao tay (dùng cho trẻ sơ sinh),1,1,1,0,0,0,qipedc,bao tay (dùng cho trẻ sơ sinh)
+bay,2,1,1,1,0,0,qipedc+hcmue,bay
+bay liệng (bay lượn),1,1,1,0,0,0,qipedc,bay liệng (bay lượn)
+bay nhanh (máy bay),1,1,1,0,0,0,qipedc,bay nhanh (máy bay)
+bia rượu,6,0,0,0,6,14,vslgh,BIA-RƯỢU
+binh chủng,1,0,0,1,0,0,hcmue,binh chủng
+biên lai,6,0,0,0,6,14,vslgh,BIÊN-LAI
+biên vải,1,0,0,1,0,0,hcmue,biên vải
+biến đổi,1,1,1,0,0,0,qipedc,biến đổi
+biển chỉ dẫn,1,0,0,1,0,0,hcmue,biển chỉ dẫn
+biển cấm,1,0,0,1,0,0,hcmue,biển cấm
+biển hiệu,1,1,1,0,0,0,qipedc,biển hiệu
+biển đông,1,1,1,0,0,0,qipedc,biển đông
+biểu thị,1,1,1,0,0,0,qipedc,biểu thị
+biểu thức,1,1,1,0,0,0,qipedc,biểu thức
+biểu đồ,1,1,1,0,0,0,qipedc,biểu đồ
+biểu đồ cột,1,1,1,0,0,0,qipedc,biểu đồ cột
+biểu đồ hình quạt,1,1,1,0,0,0,qipedc,biểu đồ hình quạt
+biện pháp,1,1,1,0,0,0,qipedc,biện pháp
+bmi,6,0,0,0,6,42,vslgh,BMI
+bom,1,0,0,1,0,0,hcmue,bom
+bom nguyên tử,1,1,1,0,0,0,qipedc,bom nguyên tử
+bom đạn,1,1,1,0,0,0,qipedc,bom đạn
+boong tàu,1,1,1,0,0,0,qipedc,boong tàu
+bra xin (nước bra xin),2,2,3,0,0,0,qipedc,Bra-xin (nước Bra-xin)
+bru nây (nước bru nây),2,2,3,0,0,0,qipedc,Bru-nây (nước Bru-nây)
+bun ga ri (nước bun ga ri),1,1,1,0,0,0,qipedc,Bun-ga-ri (nước Bun-ga-ri)
+buôn làng,1,1,1,0,0,0,qipedc,buôn làng
+buông màn,3,3,3,0,0,0,qipedc,buông màn
+buồn,6,0,0,0,6,14,vslgh,BUỒN
+buồn nôn,1,1,1,0,0,0,qipedc,buồn nôn
+buồn thảm,1,1,1,0,0,0,qipedc,buồn thảm
+buồng trứng,1,1,1,0,0,0,qipedc,buồng trứng
+buổi chiều,2,1,1,1,0,0,qipedc+hcmue,buổi chiều
+buổi sáng,3,2,3,1,0,0,qipedc+hcmue,buổi sáng
+buổi trưa,3,3,3,0,0,0,qipedc,buổi trưa
+buổi tối,2,2,3,0,0,0,qipedc,buổi tối
+buổi đêm,2,2,3,0,0,0,qipedc,buổi đêm
+buộc dây,1,1,1,0,0,0,qipedc,buộc dây
+buộc tóc,1,1,1,0,0,0,qipedc,buộc tóc
+bà,3,0,0,3,0,0,hcmue,bà
+bà ngoại,5,0,0,5,0,0,hcmue,bà ngoại
+bà nà,1,1,1,0,0,0,qipedc,Bà Nà
+bà nội,2,0,0,2,0,0,hcmue,bà nội
+bà rịa vũng tàu,1,1,1,0,0,0,qipedc,Bà Rịa - Vũng Tàu
+bài báo,1,1,1,0,0,0,qipedc,bài báo
+bài thơ,2,2,3,0,0,0,qipedc,bài thơ
+bàn bạc,1,1,1,0,0,0,qipedc,bàn bạc
+bàn chân,1,1,1,0,0,0,qipedc,bàn chân
+bàn chải đánh răng,1,1,1,0,0,0,qipedc,bàn chải đánh răng
+bàn ghế,1,1,1,0,0,0,qipedc,bàn ghế
+bàn là,1,1,1,0,0,0,qipedc,bàn là
+bàn phím,1,0,0,1,0,0,hcmue,bàn phím
+bàn phím (máy vi tính),1,1,1,0,0,0,qipedc,bàn phím (máy vi tính)
+bàn tay,1,1,1,0,0,0,qipedc,bàn tay
+bàn tán,1,1,1,0,0,0,qipedc,bàn tán
+bác gái,1,0,0,1,0,0,hcmue,bác gái
+bác sĩ,6,0,0,0,6,363,vslgh,BÁC-SĨ
+bác trai,1,0,0,1,0,0,hcmue,bác trai
+bán buôn,1,1,1,0,0,0,qipedc,bán buôn
+bán hàng,2,2,3,0,0,0,qipedc,bán hàng
+bán kính (hình tròn),1,1,1,0,0,0,qipedc,bán kính (hình tròn)
+bán đảo,1,1,1,0,0,0,qipedc,bán đảo
+bánh bột lọc,1,1,1,0,0,0,qipedc,bánh bột lọc
+bánh canh,1,1,1,0,0,0,qipedc,bánh canh
+bánh cuốn,2,2,3,0,0,0,qipedc,bánh cuốn
+bánh cốm,1,1,1,0,0,0,qipedc,bánh cốm
+bánh gai,1,1,1,0,0,0,qipedc,bánh gai
+bánh giò,1,1,1,0,0,0,qipedc,bánh giò
+bánh giầy,1,1,1,0,0,0,qipedc,bánh giầy
+bánh gối,1,1,1,0,0,0,qipedc,bánh gối
+bánh hamburger,1,1,1,0,0,0,qipedc,bánh hamburger
+bánh mì,2,2,3,0,0,0,qipedc,bánh mì
+bánh pizza,1,1,1,0,0,0,qipedc,bánh pizza
+bánh pía,1,1,1,0,0,0,qipedc,bánh pía
+bánh sandwich,1,1,1,0,0,0,qipedc,bánh sandwich
+bánh trung thu,1,1,1,0,0,0,qipedc,bánh Trung Thu
+bánh tráng,1,1,1,0,0,0,qipedc,bánh tráng
+bánh xe,1,1,1,0,0,0,qipedc,bánh xe
+bánh đa,1,1,1,0,0,0,qipedc,bánh đa
+bánh đúc,1,1,1,0,0,0,qipedc,bánh đúc
+báo (con báo),2,2,3,0,0,0,qipedc,báo (con báo)
+báo cáo,1,1,1,0,0,0,qipedc,báo cáo
+báo thù,1,1,1,0,0,0,qipedc,báo thù
+báo động,1,1,1,0,0,0,qipedc,báo động
+bát,1,1,1,0,0,0,qipedc,bát
+bát hương,1,1,1,0,0,0,qipedc,bát hương
+bát ngát,1,1,1,0,0,0,qipedc,bát ngát
+bâu áo,1,0,0,1,0,0,hcmue,bâu áo
+bãi biển vũng tàu,1,1,1,0,0,0,qipedc,Bãi biển Vũng Tàu
+bãi cát,1,1,1,0,0,0,qipedc,bãi cát
+bãi cỏ,1,1,1,0,0,0,qipedc,bãi cỏ
+bãi tắm,1,1,1,0,0,0,qipedc,bãi tắm
+bãi đỗ xe (ô tô),1,1,1,0,0,0,qipedc,bãi đỗ xe (ô tô)
+bão,3,0,0,3,0,0,hcmue,bão
+bão biển,1,0,0,1,0,0,hcmue,bão biển
+bé (em bé),2,0,0,2,0,0,hcmue,bé (em bé)
+bé gái,1,1,1,0,0,0,qipedc,bé gái
+bé hơn,1,1,1,0,0,0,qipedc,bé hơn
+bé loắt choắt,1,1,1,0,0,0,qipedc,bé loắt choắt
+bé trai,2,2,3,0,0,0,qipedc,bé trai
+béo,1,1,1,0,0,0,qipedc,béo
+béo phì,6,0,0,0,6,14,vslgh,BÉO-PHÌ
+bê tông,2,1,1,1,0,0,qipedc+hcmue,bê tông
+bên cạnh,2,2,2,0,0,0,qipedc,bên cạnh
+bên dưới,1,1,1,0,0,0,qipedc,bên dưới
+bên phải,1,1,1,0,0,0,qipedc,bên phải
+bên trong,1,1,1,0,0,0,qipedc,bên trong
+bên trái,1,1,1,0,0,0,qipedc,bên trái
+bên trên,1,1,1,0,0,0,qipedc,bên trên
+bênh vực,1,1,1,0,0,0,qipedc,bênh vực
+bìa sách,1,1,1,0,0,0,qipedc,bìa sách
+bìa vở,3,3,3,0,0,0,qipedc,bìa vở
+bình an,2,2,3,0,0,0,qipedc,bình an
+bình dương,1,1,1,0,0,0,qipedc,Bình Dương
+bình minh,1,1,1,0,0,0,qipedc,bình minh
+bình phương,1,1,1,0,0,0,qipedc,bình phương
+bình phước,1,1,1,0,0,0,qipedc,Bình Phước
+bình sữa (em bé),1,1,1,0,0,0,qipedc,bình sữa (em bé)
+bình thuận,1,1,1,0,0,0,qipedc,Bình Thuận
+bình thường,8,2,3,0,6,42,qipedc+vslgh,BÌNH-THƯỜNG | bình thường
+bình định,1,1,1,0,0,0,qipedc,Bình Định
+bí ngô,1,1,1,0,0,0,qipedc,bí ngô
+bím tóc đuôi sam,1,1,1,0,0,0,qipedc,bím tóc đuôi sam
+bít tất,1,1,1,0,0,0,qipedc,bít tất
+bít tết (bò),2,2,3,0,0,0,qipedc,bít tết (bò)
+bò,1,1,1,0,0,0,qipedc,bò
+bò sát,1,1,1,0,0,0,qipedc,bò sát
+bò tót,1,1,1,0,0,0,qipedc,bò tót
+bó hoa,1,1,1,0,0,0,qipedc,bó hoa
+bó đũa,1,1,1,0,0,0,qipedc,bó đũa
+bóc lột,1,1,1,0,0,0,qipedc,bóc lột
+bóc vỏ,1,1,1,0,0,0,qipedc,bóc vỏ
+bón phân,2,2,3,0,0,0,qipedc,bón phân
+bóng bay,1,1,1,0,0,0,qipedc,bóng bay
+bóng chuyền,1,0,0,1,0,0,hcmue,bóng chuyền
+bóp (đấm bóp),1,0,0,1,0,0,hcmue,bóp (đấm bóp)
+bông hoa,2,2,3,0,0,0,qipedc,bông hoa
+bùn,1,1,1,0,0,0,qipedc,bùn
+bùng binh,1,1,1,0,0,0,qipedc,bùng binh
+bún chả,1,1,1,0,0,0,qipedc,bún chả
+bún mắm,1,1,1,0,0,0,qipedc,bún mắm
+bún ngan,1,1,1,0,0,0,qipedc,bún ngan
+bún đậu,1,1,1,0,0,0,qipedc,bún đậu
+bún ốc,1,1,1,0,0,0,qipedc,bún ốc
+búp bê,1,1,1,0,0,0,qipedc,búp bê
+bút,1,1,1,0,0,0,qipedc,bút
+bút bi,1,1,1,0,0,0,qipedc,bút bi
+bút dạ,1,1,1,0,0,0,qipedc,bút dạ
+bút màu,3,3,3,0,0,0,qipedc,bút màu
+bút máy,1,1,1,0,0,0,qipedc,bút máy
+băng bó,1,1,1,0,0,0,qipedc,băng bó
+băng chuyền,1,1,1,0,0,0,qipedc,băng chuyền
+băng dính,1,1,1,0,0,0,qipedc,băng dính
+băng giá,1,1,1,0,0,0,qipedc,băng giá
+băng hình,1,1,1,0,0,0,qipedc,băng hình
+băng la đét (nước băng la đét),1,1,1,0,0,0,qipedc,Băng-la-đét (nước Băng-la-đét)
+bơi,2,1,1,1,0,0,qipedc+hcmue,bơi
+bơi (lội),1,0,0,1,0,0,hcmue,bơi (lội)
+bơi lội,1,1,1,0,0,0,qipedc,bơi lội
+bơm (cái bơm),1,1,1,0,0,0,qipedc,bơm (cái bơm)
+bơm nước,1,1,1,0,0,0,qipedc,bơm nước
+bơm xe,1,1,1,0,0,0,qipedc,bơm xe
+bưu tá,1,1,1,0,0,0,qipedc,bưu tá
+bước,1,1,1,0,0,0,qipedc,bước
+bước chân,1,1,1,0,0,0,qipedc,bước chân
+bướng bỉnh,1,1,2,0,0,0,qipedc,bướng bỉnh
+bạc liêu,1,1,1,0,0,0,qipedc,Bạc Liêu
+bạn,4,2,3,2,0,0,qipedc+hcmue,bạn
+bạn gái,2,2,3,0,0,0,qipedc,bạn gái
+bạn trai,2,2,3,0,0,0,qipedc,bạn trai
+bạn yêu bạn ấy,1,1,1,0,0,0,qipedc,bạn yêu bạn ấy
+bạn yêu tôi,1,1,1,0,0,0,qipedc,bạn yêu tôi
+bạn ấy yêu bạn,1,1,1,0,0,0,qipedc,bạn ấy yêu bạn
+bạn ấy yêu tôi,1,1,1,0,0,0,qipedc,bạn ấy yêu tôi
+bản làng,1,1,1,0,0,0,qipedc,bản làng
+bản lề,1,1,1,0,0,0,qipedc,bản lề
+bản nhạc,1,1,1,0,0,0,qipedc,bản nhạc
+bản sao (chỉ người),1,1,1,0,0,0,qipedc,bản sao (chỉ người)
+bản thân,1,1,1,0,0,0,qipedc,bản thân
+bản đồ việt nam,2,2,3,0,0,0,qipedc,bản đồ Việt Nam
+bảng,1,0,0,1,0,0,hcmue,bảng
+bảng chia,1,1,2,0,0,0,qipedc,bảng chia
+bảng chỉ dẫn,1,1,1,0,0,0,qipedc,bảng chỉ dẫn
+bảng chữ cái ngón tay,1,1,1,0,0,0,qipedc,bảng chữ cái ngón tay
+bảng cộng,2,2,3,0,0,0,qipedc,bảng cộng
+bảng cửu chương,1,1,1,0,0,0,qipedc,bảng cửu chương
+bảng học sinh,1,1,1,0,0,0,qipedc,bảng học sinh
+bảng màu,1,1,1,0,0,0,qipedc,bảng màu
+bảng nhân,2,2,3,0,0,0,qipedc,bảng nhân
+bảng trừ,2,2,3,0,0,0,qipedc,bảng trừ
+bảng đen,2,2,3,0,0,0,qipedc,bảng đen
+bảo hiểm,7,1,1,0,6,56,qipedc+vslgh,BẢO-HIỂM | bảo hiểm
+bảo thủ,1,1,1,0,0,0,qipedc,bảo thủ
+bảo tàng,1,1,1,0,0,0,qipedc,bảo tàng
+bảo vệ môi trường,2,2,3,0,0,0,qipedc,bảo vệ môi trường
+bảo đảm,2,1,1,1,0,0,qipedc+hcmue,bảo đảm
+bảy mươi,1,0,0,1,0,0,hcmue,Bảy mươi
+bất hiếu,1,1,1,0,0,0,qipedc,bất hiếu
+bất khuất,1,1,1,0,0,0,qipedc,bất khuất
+bất thường,6,0,0,0,6,14,vslgh,BẤT-THƯỜNG
+bất động,1,1,1,0,0,0,qipedc,bất động
+bầu trời,3,1,1,2,0,0,qipedc+hcmue,bầu trời
+bẫy chim,1,1,1,0,0,0,qipedc,bẫy chim
+bẫy chuột (dụng cụ),1,1,1,0,0,0,qipedc,bẫy chuột (dụng cụ)
+bẫy chuột (hành động),2,2,3,0,0,0,qipedc,bẫy chuột (hành động)
+bậc thang,1,1,1,0,0,0,qipedc,bậc thang
+bập bênh,1,1,1,0,0,0,qipedc,bập bênh
+bật lửa,1,1,1,0,0,0,qipedc,bật lửa
+bật đèn,1,1,1,0,0,0,qipedc,bật đèn
+bắc bán cầu,1,1,1,0,0,0,qipedc,bắc bán cầu
+bắc bộ,1,1,1,0,0,0,qipedc,Bắc bộ
+bắc giang,1,1,1,0,0,0,qipedc,Bắc Giang
+bắc kạn,1,1,1,0,0,0,qipedc,Bắc Kạn
+bắc nam,1,1,2,0,0,0,qipedc,bắc nam
+bắc ninh,1,1,1,0,0,0,qipedc,Bắc Ninh
+bắn bi,2,2,3,0,0,0,qipedc,bắn bi
+bắn cung tên,1,1,1,0,0,0,qipedc,bắn cung tên
+bắn súng,1,1,1,0,0,0,qipedc,bắn súng
+bắp ngô,2,2,3,0,0,0,qipedc,bắp ngô
+bắt,1,1,1,0,0,0,qipedc,bắt
+bắt buộc,1,1,1,0,0,0,qipedc,bắt buộc
+bắt giữ,1,1,1,0,0,0,qipedc,bắt giữ
+bắt nạt,1,1,1,0,0,0,qipedc,bắt nạt
+bắt tay,1,1,1,0,0,0,qipedc,bắt tay
+bắt đền,3,3,3,0,0,0,qipedc,bắt đền
+bằng,1,1,1,0,0,0,qipedc,bằng
+bằng cách,1,0,0,1,0,0,hcmue,bằng cách
+bằng phẳng,1,1,1,0,0,0,qipedc,bằng phẳng
+bẻ ngô,2,2,3,0,0,0,qipedc,bẻ ngô
+bế em,1,1,1,0,0,0,qipedc,bế em
+bến phà,1,1,1,0,0,0,qipedc,bến phà
+bến tre,1,1,1,0,0,0,qipedc,Bến Tre
+bến tàu,2,1,1,1,0,0,qipedc+hcmue,bến tàu
+bến xe,3,1,1,2,0,0,qipedc+hcmue,bến xe
+bể bơi,2,1,1,1,0,0,qipedc+hcmue,bể bơi
+bể cá,1,1,1,0,0,0,qipedc,bể cá
+bệ hạ,1,1,2,0,0,0,qipedc,bệ hạ
+bệ xí,1,1,1,0,0,0,qipedc,bệ xí
+bệnh,6,0,0,0,6,182,vslgh,BỆNH
+bệnh gì,6,0,0,0,6,28,vslgh,BỆNH-GÌ
+bệnh nhân,1,1,1,0,0,0,qipedc,bệnh nhân
+bệnh phong/cùi,1,1,1,0,0,0,qipedc,bệnh phong/cùi
+bệnh thủy đậu,1,1,1,0,0,0,qipedc,bệnh thủy đậu
+bệnh tật,1,1,1,0,0,0,qipedc,bệnh tật
+bệnh đao down,1,1,1,0,0,0,qipedc,bệnh Đao - Down
+bị động,1,1,1,0,0,0,qipedc,bị động
+bịa đặt,1,1,1,0,0,0,qipedc,bịa đặt
+bọ cạp,1,0,0,1,0,0,hcmue,bọ cạp
+bọc sách,1,1,1,0,0,0,qipedc,bọc sách
+bọt biển,1,1,1,0,0,0,qipedc,bọt biển
+bọt khí,1,0,0,1,0,0,hcmue,bọt khí
+bọt xà phòng,1,1,1,0,0,0,qipedc,bọt xà phòng
+bỏ hoang,1,1,1,0,0,0,qipedc,bỏ hoang
+bỏ phiếu,1,1,1,0,0,0,qipedc,bỏ phiếu
+bỏ qua,1,1,1,0,0,0,qipedc,bỏ qua
+bỏ ra,6,0,0,0,6,14,vslgh,BỎ-RA
+bỏ rơi,1,1,1,0,0,0,qipedc,bỏ rơi
+bỏ đĩa,1,0,0,1,0,0,hcmue,bỏ đĩa
+bỏng,1,1,1,0,0,0,qipedc,bỏng
+bỏng ngô,1,1,1,0,0,0,qipedc,bỏng ngô
+bố,2,1,1,1,0,0,qipedc+hcmue,bố
+bố cục,1,0,0,1,0,0,hcmue,bố cục
+bố dượng,3,2,3,1,0,0,qipedc+hcmue,bố dượng
+bố mẹ,1,1,1,0,0,0,qipedc,bố mẹ
+bố trí,1,1,1,0,0,0,qipedc,bố trí
+bốc hơi,1,1,1,0,0,0,qipedc,bốc hơi
+bốc thăm,1,1,1,0,0,0,qipedc,bốc thăm
+bốc vác,1,1,1,0,0,0,qipedc,bốc vác
+bối rối,1,1,1,0,0,0,qipedc,bối rối
+bốn là,1,1,1,0,0,0,qipedc,bốn là
+bốt cảnh sát,2,2,3,0,0,0,qipedc,bốt cảnh sát
+bốt điện,2,2,3,0,0,0,qipedc,bốt điện
+bồ kết,1,1,1,0,0,0,qipedc,bồ kết
+bồi bàn,1,1,1,0,0,0,qipedc,bồi bàn
+bồi thường,1,1,1,0,0,0,qipedc,bồi thường
+bồn hoa,1,1,1,0,0,0,qipedc,bồn hoa
+bồn rửa bát,1,1,1,0,0,0,qipedc,bồn rửa bát
+bổ ngữ,1,1,1,0,0,0,qipedc,bổ ngữ
+bổ trợ,1,1,1,0,0,0,qipedc,bổ trợ
+bổ ích,1,1,1,0,0,0,qipedc,bổ ích
+bổi,6,0,0,0,6,14,vslgh,BỔI
+bộ nhớ,1,0,0,1,0,0,hcmue,bộ nhớ
+bộ sách,1,1,1,0,0,0,qipedc,bộ sách
+bộ truyện,1,1,1,0,0,0,qipedc,bộ truyện
+bộ xử lý,1,0,0,1,0,0,hcmue,bộ xử lý
+bộ đội,4,3,3,1,0,0,qipedc+hcmue,bộ đội
+bột giặt,1,1,1,0,0,0,qipedc,bột giặt
+bột màu,2,2,3,0,0,0,qipedc,bột màu
+bột ngọt,1,1,2,0,0,0,qipedc,bột ngọt
+bớt,7,1,1,0,6,14,qipedc+vslgh,BỚT | bớt
+bớt đi,1,1,1,0,0,0,qipedc,bớt đi
+bờ biển,1,1,1,0,0,0,qipedc,bờ biển
+bờ ruộng,1,1,1,0,0,0,qipedc,bờ ruộng
+bờ rào,1,1,1,0,0,0,qipedc,bờ rào
+bờm tóc,1,1,1,0,0,0,qipedc,bờm tóc
+bụi phấn,2,2,3,0,0,0,qipedc,bụi phấn
+bụi tre,1,1,1,0,0,0,qipedc,bụi tre
+bụi đời,1,1,1,0,0,0,qipedc,bụi đời
+bụng,7,1,1,0,6,14,qipedc+vslgh,BỤNG | bụng
+bụng đau,6,0,0,0,6,14,vslgh,BỤNG-ĐAU
+bức tranh,2,2,3,0,0,0,qipedc,bức tranh
+bức tường,1,1,1,0,0,0,qipedc,bức tường
+bữa cơm,1,1,1,0,0,0,qipedc,bữa cơm
+bực mình,1,1,1,0,0,0,qipedc,bực mình
+c,2,1,1,1,0,0,qipedc+hcmue,c
+ca,1,1,1,0,0,0,qipedc,ca
+ca nô,1,1,1,0,0,0,qipedc,ca nô
+cam pu chia (nước cam pu chia),2,2,3,0,0,0,qipedc,Cam-pu-chia (nước Cam-pu-chia)
+canh giữa,1,0,0,1,0,0,hcmue,canh giữa
+cao,6,0,0,0,6,42,vslgh,CAO
+cao (người),1,1,1,0,0,0,qipedc,cao (người)
+cao (nhà),1,1,1,0,0,0,qipedc,cao (nhà)
+cao (núi),1,1,1,0,0,0,qipedc,cao (núi)
+cao (vật),1,1,1,0,0,0,qipedc,cao (vật)
+cao bằng,1,1,1,0,0,0,qipedc,Cao Bằng
+cao nguyên,1,1,1,0,0,0,qipedc,cao nguyên
+cao quý,1,1,1,0,0,0,qipedc,cao quý
+cao thấp,1,1,1,0,0,0,qipedc,cao thấp
+cao tầng,1,1,1,0,0,0,qipedc,cao tầng
+cao tốc,1,1,1,0,0,0,qipedc,cao tốc
+cao độ,1,1,1,0,0,0,qipedc,cao độ
+cau có,1,1,1,0,0,0,qipedc,cau có
+cccd,6,0,0,0,6,14,vslgh,CCCD
+cha,2,1,1,1,0,0,qipedc+hcmue,cha
+cha mẹ,1,1,1,0,0,0,qipedc,cha mẹ
+chai,1,1,1,0,0,0,qipedc,chai
+chai nước,1,1,1,0,0,0,qipedc,chai nước
+chanh muối,1,1,1,0,0,0,qipedc,chanh muối
+chanh nóng,1,1,1,0,0,0,qipedc,chanh nóng
+chanh đá,1,1,1,0,0,0,qipedc,chanh đá
+chat,1,0,0,1,0,0,hcmue,chat
+che,6,0,0,0,6,14,vslgh,CHE
+che chở,1,1,1,0,0,0,qipedc,che chở
+che phủ,1,1,1,0,0,0,qipedc,che phủ
+chen lấn,1,1,1,0,0,0,qipedc,chen lấn
+chi hội,1,1,1,0,0,0,qipedc,chi hội
+chi lê (nước chi lê),1,1,1,0,0,0,qipedc,Chi-lê (nước Chi-lê)
+chi nhánh,1,0,0,1,0,0,hcmue,chi nhánh
+chi phí,6,0,0,0,6,14,vslgh,CHI-PHÍ
+chi tiết,1,1,1,0,0,0,qipedc,chi tiết
+chia,2,2,3,0,0,0,qipedc,chia
+chia ba,2,2,3,0,0,0,qipedc,chia ba
+chia cắt,1,1,1,0,0,0,qipedc,chia cắt
+chia hết,1,1,1,0,0,0,qipedc,chia hết
+chia phần,1,1,1,0,0,0,qipedc,chia phần
+chia rẽ,1,1,1,0,0,0,qipedc,chia rẽ
+chia sẻ,1,1,1,0,0,0,qipedc,chia sẻ
+chia tay,1,1,1,0,0,0,qipedc,chia tay
+chia đôi,2,2,3,0,0,0,qipedc,chia đôi
+chia đều,1,1,1,0,0,0,qipedc,chia đều
+chim bồ câu,1,1,1,0,0,0,qipedc,chim bồ câu
+chim chuyền cành,1,1,1,0,0,0,qipedc,chim chuyền cành
+chim chào mào,1,1,1,0,0,0,qipedc,chim chào mào
+chim chích chòe,1,1,1,0,0,0,qipedc,chim chích chòe
+chim chóc,1,1,1,0,0,0,qipedc,chim chóc
+chim gõ kiến,1,1,1,0,0,0,qipedc,chim gõ kiến
+chim phượng hoàng,1,1,1,0,0,0,qipedc,chim phượng hoàng
+chim sâu,1,1,1,0,0,0,qipedc,chim sâu
+chim sơn ca,1,1,1,0,0,0,qipedc,chim sơn ca
+chim sẻ,1,1,1,0,0,0,qipedc,chim sẻ
+chim yến,1,1,1,0,0,0,qipedc,chim yến
+chim đại bàng,1,1,1,0,0,0,qipedc,chim đại bàng
+chiên/rán (1)(2),1,1,1,0,0,0,qipedc,chiên/rán (1)(2)
+chiêng,1,1,1,0,0,0,qipedc,chiêng
+chiếc ghe,1,0,0,1,0,0,hcmue,chiếc ghe
+chiếc gối,3,3,3,0,0,0,qipedc,chiếc gối
+chiếm đoạt,1,1,1,0,0,0,qipedc,chiếm đoạt
+chiến công,1,0,0,1,0,0,hcmue,chiến công
+chiến dịch,1,0,0,1,0,0,hcmue,chiến dịch
+chiến khu,1,1,1,0,0,0,qipedc,chiến khu
+chiến sĩ,1,0,0,1,0,0,hcmue,chiến sĩ
+chiến thắng,2,1,1,1,0,0,qipedc+hcmue,chiến thắng
+chiến đấu,1,0,0,1,0,0,hcmue,chiến đấu
+chiếu,2,2,3,0,0,0,qipedc,chiếu
+chiếu phim,1,1,1,0,0,0,qipedc,chiếu phim
+chiều cao,7,1,1,0,6,14,qipedc+vslgh,CHIỀU-CAO | chiều cao
+chiều dài,1,1,1,0,0,0,qipedc,chiều dài
+chiều rộng,1,1,1,0,0,0,qipedc,chiều rộng
+chiều tối,1,1,1,0,0,0,qipedc,chiều tối
+cho tôi,6,0,0,0,6,14,vslgh,CHO-TÔI
+chong chóng,1,1,1,0,0,0,qipedc,chong chóng
+chu vi,1,1,1,0,0,0,qipedc,chu vi
+chui,1,1,1,0,0,0,qipedc,chui
+chum,1,1,1,0,0,0,qipedc,chum
+chung kết,1,1,1,0,0,0,qipedc,chung kết
+chung tay,1,1,1,0,0,0,qipedc,chung tay
+chuyên biệt,1,1,1,0,0,0,qipedc,chuyên biệt
+chuyên cần,1,1,1,0,0,0,qipedc,chuyên cần
+chuyên gia,2,2,3,0,0,0,qipedc,chuyên gia
+chuyền bóng,1,1,1,0,0,0,qipedc,chuyền bóng
+chuyển giao,1,1,1,0,0,0,qipedc,chuyển giao
+chuyển hướng,1,1,1,0,0,0,qipedc,chuyển hướng
+chuyển vế,1,1,1,0,0,0,qipedc,chuyển vế
+chuyển đồ,1,1,1,0,0,0,qipedc,chuyển đồ
+chuyển đổi số đo,1,1,1,0,0,0,qipedc,chuyển đổi số đo
+chuyển động,1,1,1,0,0,0,qipedc,chuyển động
+chuyển động quay,1,1,1,0,0,0,qipedc,chuyển động quay
+chuyển động đều,1,1,1,0,0,0,qipedc,chuyển động đều
+chuyện lớn,1,1,1,0,0,0,qipedc,chuyện lớn
+chuyện nhỏ,1,1,1,0,0,0,qipedc,chuyện nhỏ
+chuyện trò,1,1,1,0,0,0,qipedc,chuyện trò
+chuông,1,1,1,0,0,0,qipedc,chuông
+chuông nhà,1,1,1,0,0,0,qipedc,chuông nhà
+chuẩn bị,2,2,3,0,0,0,qipedc,chuẩn bị
+chuồng,1,1,1,0,0,0,qipedc,chuồng
+chuỗi hạt,1,1,1,0,0,0,qipedc,chuỗi hạt
+chuột quang,1,1,1,0,0,0,qipedc,chuột quang
+chàng trai,1,1,1,0,0,0,qipedc,chàng trai
+chào,7,1,1,0,6,14,qipedc+vslgh,CHÀO | chào
+chào cờ,1,1,1,0,0,0,qipedc,chào cờ
+chào mừng,1,1,1,0,0,0,qipedc,chào mừng
+chày,1,1,1,0,0,0,qipedc,chày
+cháo sườn,1,1,1,0,0,0,qipedc,cháo sườn
+chát,1,1,1,0,0,0,qipedc,chát
+cháu gái,2,2,3,0,0,0,qipedc,cháu gái
+cháu họ,3,3,3,0,0,0,qipedc,cháu họ
+cháu ngoại,5,3,3,2,0,0,qipedc+hcmue,cháu ngoại
+cháu nội,3,3,3,0,0,0,qipedc,cháu nội
+cháu trai,2,2,2,0,0,0,qipedc,cháu trai
+cháy rừng,1,1,1,0,0,0,qipedc,cháy rừng
+châm chọc,1,1,1,0,0,0,qipedc,châm chọc
+châm cứu,3,3,3,0,0,0,qipedc,châm cứu
+chân,6,0,0,0,6,14,vslgh,CHÂN
+chân dung,1,1,1,0,0,0,qipedc,chân dung
+chân răng,6,0,0,0,6,14,vslgh,CHÂN-RĂNG
+chân tay,1,1,1,0,0,0,qipedc,chân tay
+chân vịt,1,0,0,1,0,0,hcmue,chân vịt
+chân đất,1,1,1,0,0,0,qipedc,chân đất
+châu á thái bình dương,1,1,1,0,0,0,qipedc,Châu Á Thái Bình Dương
+châu đại dương,1,1,1,0,0,0,qipedc,Châu Đại Dương
+chè đỗ đỏ,1,1,1,0,0,0,qipedc,chè đỗ đỏ
+chèn,1,0,0,1,0,0,hcmue,chèn
+chèn ép,1,1,1,0,0,0,qipedc,chèn ép
+chèo thuyền,1,1,1,0,0,0,qipedc,chèo thuyền
+chém,1,1,1,0,0,0,qipedc,chém
+chén,1,1,1,0,0,0,qipedc,chén
+chép bài,1,1,1,0,0,0,qipedc,chép bài
+chìa khóa,1,1,1,0,0,0,qipedc,chìa khóa
+chín,2,1,1,1,0,0,qipedc+hcmue,Chín | chín
+chín mươi,1,0,0,1,0,0,hcmue,Chín mươi
+chính phủ,2,2,2,0,0,0,qipedc,chính phủ
+chính quyền,1,1,1,0,0,0,qipedc,chính quyền
+chính trị,1,0,0,1,0,0,hcmue,chính trị
+chính tả,1,1,1,0,0,0,qipedc,chính tả
+chính xác,2,2,3,0,0,0,qipedc,chính xác
+chó cắn,1,1,1,0,0,0,qipedc,chó cắn
+chó sói,1,1,1,0,0,0,qipedc,chó sói
+chó xù,1,1,1,0,0,0,qipedc,chó xù
+chóng mặt,6,0,0,0,6,14,vslgh,CHÓNG-MẶT
+chông,1,0,0,1,0,0,hcmue,chông
+chõ xôi,1,1,1,0,0,0,qipedc,chõ xôi
+chùa,3,3,3,0,0,0,qipedc,chùa
+chùa hương,1,1,1,0,0,0,qipedc,chùa Hương
+chùa một cột,1,1,1,0,0,0,qipedc,chùa Một Cột
+chùa yên tử,1,1,1,0,0,0,qipedc,chùa Yên Tử
+chùm hoa,1,1,1,0,0,0,qipedc,chùm hoa
+chùm khế,1,1,1,0,0,0,qipedc,chùm khế
+chùm nho,1,1,1,0,0,0,qipedc,chùm nho
+chùm vải,1,1,1,0,0,0,qipedc,chùm vải
+chú ( người),1,1,1,0,0,0,qipedc,chú ( người)
+chú hề,1,1,1,0,0,0,qipedc,chú hề
+chú rể,1,1,1,0,0,0,qipedc,chú rể
+chú tễu,1,1,1,0,0,0,qipedc,chú tễu
+chú ý,1,1,1,0,0,0,qipedc,chú ý
+chúc mừng,2,2,3,0,0,0,qipedc,chúc mừng
+chúc thọ,2,2,3,0,0,0,qipedc,chúc thọ
+chúc tết,3,3,3,0,0,0,qipedc,chúc tết
+chúi đầu,1,1,1,0,0,0,qipedc,chúi đầu
+chúng em,3,0,0,3,0,0,hcmue,chúng em
+chúng tôi (2 người) (đại từ),1,1,1,0,0,0,qipedc,chúng tôi (2 người) (đại từ)
+chúng tôi (3 người) (đại từ),1,1,1,0,0,0,qipedc,chúng tôi (3 người) (đại từ)
+chúng tôi (4 người) (đại từ),1,1,1,0,0,0,qipedc,chúng tôi (4 người) (đại từ)
+chúng tôi (5 người) (đại từ),1,1,1,0,0,0,qipedc,chúng tôi (5 người) (đại từ)
+chúng tôi (đại từ),1,1,1,0,0,0,qipedc,chúng tôi (đại từ)
+chăm học,1,1,1,0,0,0,qipedc,chăm học
+chăm sóc sức khỏe,3,3,3,0,0,0,qipedc,chăm sóc sức khỏe
+chăn (cái chăn),2,2,3,0,0,0,qipedc,chăn (cái chăn)
+chăn nuôi,3,3,3,0,0,0,qipedc,chăn nuôi
+chơi,1,1,2,0,0,0,qipedc,chơi
+chưa,6,0,0,0,6,84,vslgh,CHƯA
+chưa có,6,0,0,0,6,14,vslgh,CHƯA-CÓ
+chương trình,1,1,1,0,0,0,qipedc,chương trình
+chạy,1,1,1,0,0,0,qipedc,chạy
+chạy (động vật),1,1,1,0,0,0,qipedc,chạy (động vật)
+chạy bàn,1,1,1,0,0,0,qipedc,chạy bàn
+chạy chậm,1,1,1,0,0,0,qipedc,chạy chậm
+chạy nhanh,1,1,1,0,0,0,qipedc,chạy nhanh
+chạy tiếp sức,1,0,0,1,0,0,hcmue,chạy tiếp sức
+chả cá,2,2,3,0,0,0,qipedc,chả cá
+chảo,2,2,3,0,0,0,qipedc,chảo
+chảy máu,6,0,0,0,6,14,vslgh,CHẢY-MÁU
+chấm dứt,1,1,1,0,0,0,qipedc,chấm dứt
+chấm điểm,1,1,1,0,0,0,qipedc,chấm điểm
+chấp hành,1,0,0,1,0,0,hcmue,chấp hành
+chất dẻo,1,1,1,0,0,0,qipedc,chất dẻo
+chất hữu cơ,1,1,1,0,0,0,qipedc,chất hữu cơ
+chất lượng,1,1,1,0,0,0,qipedc,chất lượng
+chất lỏng,1,1,1,0,0,0,qipedc,chất lỏng
+chất rắn,1,1,1,0,0,0,qipedc,chất rắn
+chất thải,1,1,1,0,0,0,qipedc,chất thải
+chất đốt,1,1,1,0,0,0,qipedc,chất đốt
+chất độc,1,1,1,0,0,0,qipedc,chất độc
+chất độc màu da cam,1,1,1,0,0,0,qipedc,chất độc màu da cam
+chậm,6,0,0,0,6,14,vslgh,CHẬM
+chậm chạp,1,1,1,0,0,0,qipedc,chậm chạp
+chật chội,1,1,1,0,0,0,qipedc,chật chội
+chậu,1,1,1,0,0,0,qipedc,chậu
+chặn,1,1,1,0,0,0,qipedc,chặn
+chặt,2,2,3,0,0,0,qipedc,chặt
+chặt chẽ,1,1,1,0,0,0,qipedc,chặt chẽ
+chế độ xem bình thường,1,0,0,1,0,0,hcmue,chế độ xem bình thường
+chỉ,1,1,1,0,0,0,qipedc,chỉ
+chỉ dẫn,1,1,1,0,0,0,qipedc,chỉ dẫn
+chỉ huy,1,1,1,0,0,0,qipedc,chỉ huy
+chỉ khâu,1,1,1,0,0,0,qipedc,chỉ khâu
+chỉ định,6,0,0,0,6,42,vslgh,CHỈ-ĐỊNH
+chỉnh sửa,1,1,1,0,0,0,qipedc,chỉnh sửa
+chị,3,2,3,1,0,0,qipedc+hcmue,chị
+chị chồng,2,2,2,0,0,0,qipedc,chị chồng
+chị dâu,1,1,1,0,0,0,qipedc,chị dâu
+chị gái,1,0,0,1,0,0,hcmue,chị gái
+"chị hai, chị cả",2,2,3,0,0,0,qipedc,"chị hai, chị cả"
+chị họ,2,2,3,0,0,0,qipedc,chị họ
+chọi gà,1,1,1,0,0,0,qipedc,chọi gà
+chọi trâu,1,1,1,0,0,0,qipedc,chọi trâu
+chọn,1,0,0,1,0,0,hcmue,chọn
+chọn lọc,1,1,1,0,0,0,qipedc,chọn lọc
+chọn lựa,1,1,1,0,0,0,qipedc,chọn lựa
+chống đối,2,2,3,0,0,0,qipedc,chống đối
+chồi non,1,1,1,0,0,0,qipedc,chồi non
+chồng (vợ chồng),1,0,0,1,0,0,hcmue,chồng (vợ chồng)
+chỗ khác,6,0,0,0,6,14,vslgh,CHỖ-KHÁC
+chớp mắt,1,1,1,0,0,0,qipedc,chớp mắt
+chờ,6,0,0,0,6,55,vslgh,CHỜ
+chợ bến thành,1,1,1,0,0,0,qipedc,chợ Bến Thành
+chợ nổi,1,1,1,0,0,0,qipedc,chợ nổi
+chợ nổi cái bè,1,1,1,0,0,0,qipedc,chợ nổi Cái Bè
+chợ nổi cái răng,1,1,1,0,0,0,qipedc,chợ nổi Cái Răng
+chục,1,1,1,0,0,0,qipedc,chục
+chục nghìn,1,1,1,0,0,0,qipedc,chục nghìn
+chục triệu,1,1,1,0,0,0,qipedc,chục triệu
+chụp,6,0,0,0,6,42,vslgh,CHỤP
+chụp đèn,1,1,1,0,0,0,qipedc,chụp đèn
+chụp ảnh,1,1,1,0,0,0,qipedc,chụp ảnh
+chủ nghĩa xã hội,1,1,1,0,0,0,qipedc,chủ nghĩa xã hội
+chủ ngữ,1,1,1,0,0,0,qipedc,chủ ngữ
+chủ nhiệm,1,1,1,0,0,0,qipedc,chủ nhiệm
+chủ nhật,1,0,0,1,0,0,hcmue,chủ nhật
+chủ tịch,2,2,3,0,0,0,qipedc,chủ tịch
+chủ đề,1,1,1,0,0,0,qipedc,chủ đề
+chủ động,1,1,1,0,0,0,qipedc,chủ động
+chức năng,7,1,1,0,6,27,qipedc+vslgh,CHỨC-NĂNG | chức năng
+chức vụ,1,1,1,0,0,0,qipedc,chức vụ
+chứng cớ,1,1,1,0,0,0,qipedc,chứng cớ
+chứng kiến,1,1,1,0,0,0,qipedc,chứng kiến
+chứng minh,1,1,1,0,0,0,qipedc,chứng minh
+chứng nhận,1,1,1,0,0,0,qipedc,chứng nhận
+chữ,7,1,1,0,6,28,qipedc+vslgh,CHỮ | chữ
+chữ chi,1,0,0,1,0,0,hcmue,chữ chi
+chữ cái,1,1,1,0,0,0,qipedc,chữ cái
+chữ hoa,1,1,1,0,0,0,qipedc,chữ hoa
+chữ viết,1,1,1,0,0,0,qipedc,chữ viết
+chữ đậm,1,0,0,1,0,0,hcmue,chữ đậm
+chữa bài,2,2,3,0,0,0,qipedc,chữa bài
+chữa bệnh,1,1,1,0,0,0,qipedc,chữa bệnh
+chữa cháy,1,1,1,0,0,0,qipedc,chữa cháy
+co dãn,1,1,1,0,0,0,qipedc,co dãn
+co giật,1,1,1,0,0,0,qipedc,co giật
+cocacola,1,1,1,0,0,0,qipedc,Cocacola
+coi thường,1,1,1,0,0,0,qipedc,coi thường
+con,6,0,0,0,6,56,vslgh,CON
+con ba ba,1,1,1,0,0,0,qipedc,con ba ba
+con bê,3,3,3,0,0,0,qipedc,con bê
+con bò,2,2,3,0,0,0,qipedc,con bò
+con bướm,1,1,1,0,0,0,qipedc,con bướm
+con chim,1,1,1,0,0,0,qipedc,con chim
+con chuồn chuồn,1,1,1,0,0,0,qipedc,con chuồn chuồn
+con chuột,2,2,3,0,0,0,qipedc,con chuột
+con chuột nhắt,1,1,1,0,0,0,qipedc,con chuột nhắt
+con chó,2,2,3,0,0,0,qipedc,con chó
+con chồn,1,1,1,0,0,0,qipedc,con chồn
+con cua,1,1,1,0,0,0,qipedc,con cua
+con cá,2,2,3,0,0,0,qipedc,con cá
+con cá sấu,1,1,1,0,0,0,qipedc,con cá sấu
+con cái,1,0,0,1,0,0,hcmue,con cái
+con cò,1,1,1,0,0,0,qipedc,con cò
+con cóc,1,1,1,0,0,0,qipedc,con cóc
+con công,1,1,1,0,0,0,qipedc,con công
+con cú mèo,1,1,1,0,0,0,qipedc,con cú mèo
+con cọp,2,2,3,0,0,0,qipedc,con cọp
+con cừu,1,1,1,0,0,0,qipedc,con cừu
+con dâu,1,1,1,0,0,0,qipedc,con dâu
+con dê,1,1,1,0,0,0,qipedc,con dê
+con dế,1,1,1,0,0,0,qipedc,con dế
+con ghẹ,1,1,1,0,0,0,qipedc,con ghẹ
+con gián,1,1,1,0,0,0,qipedc,con gián
+con gà,1,1,1,0,0,0,qipedc,con gà
+con gái,2,1,1,1,0,0,qipedc+hcmue,con gái
+con gấu,1,1,1,0,0,0,qipedc,con gấu
+con hoẵng,1,1,1,0,0,0,qipedc,con hoẵng
+con hàu,1,1,1,0,0,0,qipedc,con hàu
+con hươu,1,1,1,0,0,0,qipedc,con hươu
+con khỉ,1,1,1,0,0,0,qipedc,con khỉ
+con kiến,2,2,3,0,0,0,qipedc,con kiến
+con lươn,1,1,1,0,0,0,qipedc,con lươn
+con lợn (con heo),3,3,3,0,0,0,qipedc,con lợn (con heo)
+con muỗi,2,2,3,0,0,0,qipedc,con muỗi
+con mèo,2,2,3,0,0,0,qipedc,con mèo
+con mực,1,1,1,0,0,0,qipedc,con mực
+con nai,1,1,1,0,0,0,qipedc,con nai
+con người,2,2,3,0,0,0,qipedc,con người
+con ngỗng,1,1,1,0,0,0,qipedc,con ngỗng
+con ngựa,2,2,3,0,0,0,qipedc,con ngựa
+con nhím,1,1,1,0,0,0,qipedc,con nhím
+con nuôi,3,3,3,0,0,0,qipedc,con nuôi
+con ong,1,1,2,0,0,0,qipedc,con ong
+con quạ,1,1,1,0,0,0,qipedc,con quạ
+con ruồi,1,1,1,0,0,0,qipedc,con ruồi
+con rùa,1,1,1,0,0,0,qipedc,con rùa
+con rắn,1,1,1,0,0,0,qipedc,con rắn
+con rối,1,1,1,0,0,0,qipedc,con rối
+con sâu,1,1,1,0,0,0,qipedc,con sâu
+con sò,1,1,1,0,0,0,qipedc,con sò
+con sóc,1,1,1,0,0,0,qipedc,con sóc
+con sói,1,1,1,0,0,0,qipedc,con sói
+con sông,1,1,1,0,0,0,qipedc,con sông
+con sư tử,2,2,2,0,0,0,qipedc,con sư tử
+con số,1,1,1,0,0,0,qipedc,con số
+con tem,1,1,1,0,0,0,qipedc,con tem
+con thỏ,1,1,1,0,0,0,qipedc,con thỏ
+con trai,2,1,1,1,0,0,qipedc+hcmue,con trai
+con trai (động vật),1,1,1,0,0,0,qipedc,con trai (động vật)
+con trăn,1,1,1,0,0,0,qipedc,con trăn
+con trỏ,1,1,1,0,0,0,qipedc,con trỏ
+con tôm,2,2,3,0,0,0,qipedc,con tôm
+con voi,2,2,3,0,0,0,qipedc,con voi
+con vượn,1,1,1,0,0,0,qipedc,con vượn
+con vẹt,1,1,1,0,0,0,qipedc,con vẹt
+con vịt,1,1,1,0,0,0,qipedc,con vịt
+con đom đóm,1,1,1,0,0,0,qipedc,con đom đóm
+con đường,1,1,1,0,0,0,qipedc,con đường
+con đẻ,1,1,1,0,0,0,qipedc,con đẻ
+con ếch,3,3,3,0,0,0,qipedc,con ếch
+con ốc,1,1,1,0,0,0,qipedc,con ốc
+cong,1,1,1,0,0,0,qipedc,cong
+cu ba (nước cu ba),1,1,1,0,0,0,qipedc,Cu ba (nước Cu ba)
+cua đồng,1,1,1,0,0,0,qipedc,cua đồng
+cung cấp,1,1,1,0,0,0,qipedc,cung cấp
+cung tên,1,1,1,0,0,0,qipedc,cung tên
+cung điện,2,2,3,0,0,0,qipedc,cung điện
+cuối cùng,6,0,0,0,6,14,vslgh,CUỐI-CÙNG
+cuối năm,1,1,1,0,0,0,qipedc,cuối năm
+cuối tháng,1,1,1,0,0,0,qipedc,cuối tháng
+cuối tuần,1,1,1,0,0,0,qipedc,cuối tuần
+cuốn,1,1,1,0,0,0,qipedc,cuốn
+cuống hoa,1,1,1,0,0,0,qipedc,cuống hoa
+cuống lá,1,1,1,0,0,0,qipedc,cuống lá
+cuộc sống,1,1,1,0,0,0,qipedc,cuộc sống
+cuộc đời,1,1,1,0,0,0,qipedc,cuộc đời
+cuộn chỉ,1,0,0,1,0,0,hcmue,cuộn chỉ
+cuộn giấy vệ sinh,1,1,1,0,0,0,qipedc,cuộn giấy vệ sinh
+cà mau,1,1,1,0,0,0,qipedc,Cà Mau
+cà vạt,1,0,0,1,0,0,hcmue,cà vạt
+cày,1,1,1,0,0,0,qipedc,cày
+cày ruộng,1,1,1,0,0,0,qipedc,cày ruộng
+cá kho,3,3,3,0,0,0,qipedc,cá kho
+cá kiếm,1,1,1,0,0,0,qipedc,cá kiếm
+cá mập,1,1,1,0,0,0,qipedc,cá mập
+cá voi,1,1,1,0,0,0,qipedc,cá voi
+các bạn,1,1,1,0,0,0,qipedc,các bạn
+các bạn (2 người),1,1,1,0,0,0,qipedc,các bạn (2 người)
+cách ly,1,1,1,0,0,0,qipedc,cách ly
+cách mạng,1,0,0,1,0,0,hcmue,cách mạng
+cái bè,1,1,1,0,0,0,qipedc,cái bè
+cái gùi,1,1,1,0,0,0,qipedc,cái gùi
+cái gương,2,2,3,0,0,0,qipedc,cái gương
+cái neo,1,1,1,0,0,0,qipedc,cái neo
+cái nhíp,1,1,1,0,0,0,qipedc,cái nhíp
+cái túi,1,1,1,0,0,0,qipedc,cái túi
+cái vợt cá,1,1,1,0,0,0,qipedc,cái vợt cá
+cánh buồm,1,1,1,0,0,0,qipedc,cánh buồm
+cánh tay,1,1,1,0,0,0,qipedc,cánh tay
+cáp treo,1,1,1,0,0,0,qipedc,cáp treo
+cát,1,1,1,0,0,0,qipedc,cát
+cân,6,0,0,0,6,14,vslgh,CÂN
+cân nặng,6,0,0,0,6,14,vslgh,CÂN-NẶNG
+câu chuyện,1,1,1,0,0,0,qipedc,câu chuyện
+câu cá,1,1,1,0,0,0,qipedc,câu cá
+câu ghép,1,1,1,0,0,0,qipedc,câu ghép
+câu thơ,2,2,3,0,0,0,qipedc,câu thơ
+câu văn,1,1,1,0,0,0,qipedc,câu văn
+câu đơn,1,1,1,0,0,0,qipedc,câu đơn
+câu đố,1,1,1,0,0,0,qipedc,câu đố
+câu đối,1,1,1,0,0,0,qipedc,câu đối
+cây bàng,2,2,2,0,0,0,qipedc,cây bàng
+cây cọ,1,1,1,0,0,0,qipedc,cây cọ
+cây cối,1,1,1,0,0,0,qipedc,cây cối
+cây cổ thụ,2,2,3,0,0,0,qipedc,cây cổ thụ
+cây gỗ,1,1,1,0,0,0,qipedc,cây gỗ
+cây khế,1,1,1,0,0,0,qipedc,cây khế
+cây ngô,2,2,3,0,0,0,qipedc,cây ngô
+cây nến,1,1,1,0,0,0,qipedc,cây nến
+cây phượng,2,2,3,0,0,0,qipedc,cây phượng
+cây sả,1,1,1,0,0,0,qipedc,cây sả
+cây số,1,1,1,0,0,0,qipedc,cây số
+cây thân gỗ,2,2,3,0,0,0,qipedc,cây thân gỗ
+cây thông,1,1,1,0,0,0,qipedc,cây thông
+cây tre,1,1,1,0,0,0,qipedc,cây tre
+cây trồng,1,1,1,0,0,0,qipedc,cây trồng
+cây xanh,1,1,1,0,0,0,qipedc,cây xanh
+cây xanh tươi,2,2,3,0,0,0,qipedc,cây xanh tươi
+cây ăn quả,2,2,3,0,0,0,qipedc,cây ăn quả
+cây đa,1,1,1,0,0,0,qipedc,cây đa
+cãi nhau,1,1,1,0,0,0,qipedc,cãi nhau
+còi,1,1,1,0,0,0,qipedc,còi
+còi xương,1,1,1,0,0,0,qipedc,còi xương
+còn,6,0,0,0,6,14,vslgh,CÒN
+còn bạn?,1,1,1,0,0,0,qipedc,còn bạn?
+còng,1,1,1,0,0,0,qipedc,còng
+còng (cái còng),1,1,1,0,0,0,qipedc,còng (cái còng)
+có,7,0,0,1,6,231,hcmue+vslgh,CÓ | có
+có chưa,6,0,0,0,6,14,vslgh,CÓ-CHƯA
+có không,6,0,0,0,6,350,vslgh,CÓ-KHÔNG
+có phải,6,0,0,0,6,14,vslgh,CÓ-PHẢI
+có thế,6,0,0,0,6,14,vslgh,CÓ-THẾ
+có ích,1,1,1,0,0,0,qipedc,có ích
+có … không?,1,1,1,0,0,0,qipedc,có … không?
+cô,1,0,0,1,0,0,hcmue,cô
+cô dâu,1,1,1,0,0,0,qipedc,cô dâu
+cô giáo,2,2,3,0,0,0,qipedc,cô giáo
+cô lôm bi a (nước cô lôm bi a),1,1,1,0,0,0,qipedc,Cô-lôm-bi-a (nước Cô-lôm-bi-a)
+cô vy (covid),1,1,1,0,0,0,qipedc,Cô vy (covid)
+cô đơn,1,1,1,0,0,0,qipedc,cô đơn
+côn trùng,1,1,1,0,0,0,qipedc,côn trùng
+công bằng,1,1,1,0,0,0,qipedc,công bằng
+công chúa,1,1,1,0,0,0,qipedc,công chúa
+công cộng,1,1,1,0,0,0,qipedc,công cộng
+công cụ,1,1,1,0,0,0,qipedc,công cụ
+công nghiệp,2,2,3,0,0,0,qipedc,công nghiệp
+công nhận,1,1,1,0,0,0,qipedc,công nhận
+công sức,1,1,1,0,0,0,qipedc,công sức
+công thức,1,1,1,0,0,0,qipedc,công thức
+công trường,1,1,1,0,0,0,qipedc,công trường
+công tắc,1,1,1,0,0,0,qipedc,công tắc
+công viên,2,2,3,0,0,0,qipedc,công viên
+công việc,1,1,1,0,0,0,qipedc,công việc
+công văn,1,1,1,0,0,0,qipedc,công văn
+công ước,1,1,1,0,0,0,qipedc,công ước
+cõng,1,1,1,0,0,0,qipedc,cõng
+cù,1,1,1,0,0,0,qipedc,cù
+cùi chỏ,1,1,1,0,0,0,qipedc,cùi chỏ
+cùng,6,0,0,0,6,14,vslgh,CÙNG
+cùng / với (giới từ),1,1,1,0,0,0,qipedc,cùng / với (giới từ)
+cúc áo,1,1,1,0,0,0,qipedc,cúc áo
+cúi,1,1,1,0,0,0,qipedc,cúi
+căm thù,1,1,1,0,0,0,qipedc,căm thù
+căn cứ,1,0,0,1,0,0,hcmue,căn cứ
+cũng vậy/cũng thế,1,1,1,0,0,0,qipedc,cũng vậy/cũng thế
+cơ bản,6,0,0,0,6,26,vslgh,CƠ-BẢN
+cơ bắp,1,1,1,0,0,0,qipedc,cơ bắp
+cơ hội,2,2,3,0,0,0,qipedc,cơ hội
+cơ quan,1,1,1,0,0,0,qipedc,cơ quan
+cơ sở,1,1,1,0,0,0,qipedc,cơ sở
+cơ thể,1,1,1,0,0,0,qipedc,cơ thể
+cơm,1,1,1,0,0,0,qipedc,cơm
+cơm bình dân,3,3,3,0,0,0,qipedc,cơm bình dân
+cơm hộp,1,1,1,0,0,0,qipedc,cơm hộp
+cơm rang,1,1,1,0,0,0,qipedc,cơm rang
+cưa,1,1,1,0,0,0,qipedc,cưa
+cưa (cái cưa),1,1,1,0,0,0,qipedc,cưa (cái cưa)
+cướp,2,2,3,0,0,0,qipedc,cướp
+cướp biển,1,1,1,0,0,0,qipedc,cướp biển
+cướp cờ,1,1,1,0,0,0,qipedc,cướp cờ
+cướp giật,1,1,1,0,0,0,qipedc,cướp giật
+cười nhếch mép,1,1,1,0,0,0,qipedc,cười nhếch mép
+cười vỡ bụng,1,1,1,0,0,0,qipedc,cười vỡ bụng
+cưỡi ngựa,1,1,1,0,0,0,qipedc,cưỡi ngựa
+cạnh,1,1,1,0,0,0,qipedc,cạnh
+cạnh bên (toán),1,1,1,0,0,0,qipedc,cạnh bên (toán)
+cạnh tranh,1,1,1,0,0,0,qipedc,cạnh tranh
+cạnh đáy,1,1,1,0,0,0,qipedc,cạnh đáy
+cạnh đối diện,1,1,1,0,0,0,qipedc,cạnh đối diện
+cạo răng,6,0,0,0,6,14,vslgh,CẠO-RĂNG
+cả ngày,1,1,1,0,0,0,qipedc,cả ngày
+cảm thấy,6,0,0,0,6,112,vslgh,CẢM-THẤY
+cảm ơn,6,0,0,0,6,14,vslgh,CẢM-ƠN
+cảng hải phòng,1,1,1,0,0,0,qipedc,cảng Hải Phòng
+cảng sài gòn,1,1,1,0,0,0,qipedc,cảng Sài Gòn
+cảnh giác,1,1,1,0,0,0,qipedc,cảnh giác
+cảnh vật,1,1,1,0,0,0,qipedc,cảnh vật
+cấm,1,0,0,1,0,0,hcmue,cấm
+cấp cứu,1,1,1,0,0,0,qipedc,cấp cứu
+cấp dưỡng,1,1,1,0,0,0,qipedc,cấp dưỡng
+cất giấu,1,1,1,0,0,0,qipedc,cất giấu
+cất giữ,1,1,1,0,0,0,qipedc,cất giữ
+cất tiếng khóc,1,1,1,0,0,0,qipedc,cất tiếng khóc
+cất tiếng nói,1,1,1,0,0,0,qipedc,cất tiếng nói
+cấy,1,1,1,0,0,0,qipedc,cấy
+cấy lúa,1,1,1,0,0,0,qipedc,cấy lúa
+cầm,6,0,0,0,6,14,vslgh,CẦM
+cần,6,0,0,0,6,153,vslgh,CẦN
+cần không,6,0,0,0,6,262,vslgh,CẦN-KHÔNG
+cần không?,2,2,3,0,0,0,qipedc,cần không?
+cần khởi động,1,1,1,0,0,0,qipedc,cần khởi động
+cầu (cây cầu),1,1,1,0,0,0,qipedc,cầu (cây cầu)
+cầu cứu,1,1,1,0,0,0,qipedc,cầu cứu
+cầu giao,1,1,1,0,0,0,qipedc,cầu giao
+cầu kì,1,1,1,0,0,0,qipedc,cầu kì
+cầu long biên,1,1,1,0,0,0,qipedc,cầu Long Biên
+cầu lông,1,0,0,1,0,0,hcmue,cầu lông
+cầu nguyện,1,1,1,0,0,0,qipedc,cầu nguyện
+cầu phao,1,0,0,1,0,0,hcmue,cầu phao
+cầu thang,1,1,1,0,0,0,qipedc,cầu thang
+cầu thê húc (hồ gươm),1,1,1,0,0,0,qipedc,cầu Thê Húc (Hồ Gươm)
+cầu thủ,1,1,1,0,0,0,qipedc,cầu thủ
+cầu tre,1,1,1,0,0,0,qipedc,cầu tre
+cầu trượt,1,1,1,0,0,0,qipedc,cầu trượt
+cầu vượt,2,1,1,1,0,0,qipedc+hcmue,cầu vượt
+cầu vồng,1,0,0,1,0,0,hcmue,cầu vồng
+cận thị,6,0,0,0,6,14,vslgh,CẬN-THỊ
+cắm trại,1,1,1,0,0,0,qipedc,cắm trại
+cắt,1,0,0,1,0,0,hcmue,cắt
+cắt lông mũi,1,1,1,0,0,0,qipedc,cắt lông mũi
+cắt nhau,1,1,1,0,0,0,qipedc,cắt nhau
+cắt vải,1,0,0,1,0,0,hcmue,cắt vải
+cặp sách,1,1,1,0,0,0,qipedc,cặp sách
+cặp tóc,1,1,1,0,0,0,qipedc,cặp tóc
+cỏ,2,2,3,0,0,0,qipedc,cỏ
+cỏ may,1,1,1,0,0,0,qipedc,cỏ may
+cố gắng,2,2,3,0,0,0,qipedc,cố gắng
+cố ý (như cố tình),1,1,1,0,0,0,qipedc,cố ý (như cố tình)
+cố đô huế,1,1,1,0,0,0,qipedc,Cố đô Huế
+cố định,1,1,1,0,0,0,qipedc,cố định
+cốc,1,1,1,0,0,0,qipedc,cốc
+cối giã,1,1,1,0,0,0,qipedc,cối giã
+cối xay gió,1,1,1,0,0,0,qipedc,cối xay gió
+cối xay lúa,1,1,1,0,0,0,qipedc,cối xay lúa
+cốm,1,1,1,0,0,0,qipedc,cốm
+cống,1,1,1,0,0,0,qipedc,cống
+cốp xe,1,1,1,0,0,0,qipedc,cốp xe
+cổ,1,1,1,0,0,0,qipedc,cổ
+cổ chân,1,1,1,0,0,0,qipedc,cổ chân
+cổ họng,1,1,1,0,0,0,qipedc,cổ họng
+cổ kính,1,1,1,0,0,0,qipedc,cổ kính
+cổ tay,1,1,1,0,0,0,qipedc,cổ tay
+cổ truyền,1,1,1,0,0,0,qipedc,cổ truyền
+cổ tích,1,1,1,0,0,0,qipedc,cổ tích
+cổ vũ,1,1,1,0,0,0,qipedc,cổ vũ
+cổ áo,1,1,1,0,0,0,qipedc,cổ áo
+cổ đại,1,1,1,0,0,0,qipedc,cổ đại
+cổ động viên,1,0,0,1,0,0,hcmue,cổ động viên
+cổng,1,1,1,0,0,0,qipedc,cổng
+cổng trường,1,1,2,0,0,0,qipedc,cổng trường
+cỗ,1,1,1,0,0,0,qipedc,cỗ
+cộng (toán học),2,2,3,0,0,0,qipedc,cộng (Toán học)
+cộng hòa,1,0,0,1,0,0,hcmue,cộng hòa
+cộng hòa séc (nước cộng hòa séc),1,1,1,0,0,0,qipedc,Cộng Hòa Séc (nước Cộng Hòa Séc)
+cộng đồng,1,0,0,1,0,0,hcmue,cộng đồng
+cột,1,1,1,0,0,0,qipedc,cột
+cột nhà,1,1,1,0,0,0,qipedc,cột nhà
+cột sống,1,1,1,0,0,0,qipedc,cột sống
+cột điện,2,2,3,0,0,0,qipedc,cột điện
+cột đèn,1,1,1,0,0,0,qipedc,cột đèn
+cờ,1,1,1,0,0,0,qipedc,cờ
+cờ ca rô,1,1,1,0,0,0,qipedc,cờ ca rô
+cờ tướng,2,1,1,1,0,0,qipedc+hcmue,cờ tướng
+cờ vua,1,1,1,0,0,0,qipedc,cờ vua
+cởi,6,0,0,0,6,28,vslgh,CỞI
+cởi mở,1,1,1,0,0,0,qipedc,cởi mở
+cởi áo,7,1,1,0,6,14,qipedc+vslgh,CỞI-ÁO | cởi áo
+cụ,1,1,1,0,0,0,qipedc,cụ
+cụ già,1,1,1,0,0,0,qipedc,cụ già
+cụ thể,1,1,1,0,0,0,qipedc,cụ thể
+cụ đồ,1,1,1,0,0,0,qipedc,cụ đồ
+cục tẩy,1,1,1,0,0,0,qipedc,cục tẩy
+cụm từ,1,1,1,0,0,0,qipedc,cụm từ
+củ cà rốt,1,1,1,0,0,0,qipedc,củ cà rốt
+củ cải trắng,1,1,1,0,0,0,qipedc,củ cải trắng
+củ gừng,1,1,1,0,0,0,qipedc,củ gừng
+củ hành tây,1,1,1,0,0,0,qipedc,củ hành tây
+củ khoai lang,1,1,1,0,0,0,qipedc,củ khoai lang
+củ khoai tây,1,1,1,0,0,0,qipedc,củ khoai tây
+củ nghệ,1,1,1,0,0,0,qipedc,củ nghệ
+củ su hào,1,1,1,0,0,0,qipedc,củ su hào
+củ sả,1,1,1,0,0,0,qipedc,củ sả
+củ tỏi,1,1,1,0,0,0,qipedc,củ tỏi
+củ từ,1,1,1,0,0,0,qipedc,củ từ
+củ đậu,1,1,1,0,0,0,qipedc,củ đậu
+củi,1,1,1,0,0,0,qipedc,củi
+cứu,1,1,1,0,0,0,qipedc,cứu
+cứu hộ,1,1,1,0,0,0,qipedc,cứu hộ
+cứu sống,1,1,1,0,0,0,qipedc,cứu sống
+cử chỉ điệu bộ,1,1,1,0,0,0,qipedc,cử chỉ điệu bộ
+cử động,1,1,1,0,0,0,qipedc,cử động
+cửa hàng,2,2,3,0,0,0,qipedc,cửa hàng
+cửa khẩu,1,1,1,0,0,0,qipedc,cửa khẩu
+cửa kính,1,1,1,0,0,0,qipedc,cửa kính
+cửa sổ,1,1,1,0,0,0,qipedc,cửa sổ
+cực khổ,1,1,1,0,0,0,qipedc,cực khổ
+d,2,1,1,1,0,0,qipedc+hcmue,d
+da,6,0,0,0,6,27,vslgh,DA
+da ngăm (nước da ngăm đen),2,2,3,0,0,0,qipedc,da ngăm (nước da ngăm đen)
+da trắng,2,2,3,0,0,0,qipedc,da trắng
+dai,1,1,1,0,0,0,qipedc,dai
+danh bạ,1,1,1,0,0,0,qipedc,danh bạ
+danh dự,1,1,1,0,0,0,qipedc,danh dự
+danh hiệu,1,1,1,0,0,0,qipedc,danh hiệu
+danh lam thắng cảnh,1,1,1,0,0,0,qipedc,danh lam thắng cảnh
+danh mục,1,1,1,0,0,0,qipedc,danh mục
+danh nhân,1,1,1,0,0,0,qipedc,danh nhân
+danh sách,2,1,1,1,0,0,qipedc+hcmue,danh sách
+danh từ,1,1,1,0,0,0,qipedc,danh từ
+danh từ riêng,1,1,1,0,0,0,qipedc,danh từ riêng
+dao,1,1,1,0,0,0,qipedc,dao
+di chuyển,1,1,1,0,0,0,qipedc,di chuyển
+di truyền,3,3,3,0,0,0,qipedc,di truyền
+dinh độc lập,1,1,1,0,0,0,qipedc,Dinh Độc Lập
+diêm,1,1,1,0,0,0,qipedc,diêm
+diều,1,1,1,0,0,0,qipedc,diều
+diễn thuyết,1,1,1,0,0,0,qipedc,diễn thuyết
+diện tích,1,1,1,0,0,0,qipedc,diện tích
+diện tích toàn phần,1,1,1,0,0,0,qipedc,diện tích toàn phần
+diện tích xung quanh,1,1,1,0,0,0,qipedc,diện tích xung quanh
+diệt chủng,1,1,1,0,0,0,qipedc,diệt chủng
+do thái,1,1,1,0,0,0,qipedc,Do Thái
+doanh nghiệp,1,1,1,0,0,0,qipedc,doanh nghiệp
+doanh trại,2,1,1,1,0,0,qipedc+hcmue,doanh trại
+du học,1,1,1,0,0,0,qipedc,du học
+du kích,1,0,0,1,0,0,hcmue,du kích
+du thuyền,1,1,1,0,0,0,qipedc,du thuyền
+dung tích,1,1,1,0,0,0,qipedc,dung tích
+duy nhất,1,1,1,0,0,0,qipedc,duy nhất
+duyên dáng,1,1,1,0,0,0,qipedc,duyên dáng
+duyệt binh,1,1,1,0,0,0,qipedc,duyệt binh
+dài,1,1,1,0,0,0,qipedc,dài
+dài hơn,1,1,1,0,0,0,qipedc,dài hơn
+dài hạn,1,1,1,0,0,0,qipedc,dài hạn
+dài nhất,1,1,1,0,0,0,qipedc,dài nhất
+dài quần,1,0,0,1,0,0,hcmue,dài quần
+dàn bài,1,1,1,0,0,0,qipedc,dàn bài
+dàn nhạc,1,1,1,0,0,0,qipedc,dàn nhạc
+dám làm,2,2,3,0,0,0,qipedc,dám làm
+dán,1,1,1,0,0,0,qipedc,dán
+dân ca,1,1,1,0,0,0,qipedc,dân ca
+dân chài,1,1,1,0,0,0,qipedc,dân chài
+dân chủ,1,1,1,0,0,0,qipedc,dân chủ
+dân số,1,1,1,0,0,0,qipedc,dân số
+dân tộc,2,2,3,0,0,0,qipedc,dân tộc
+dân tộc chăm,1,1,1,0,0,0,qipedc,dân tộc Chăm
+dân tộc khơ me,1,1,1,0,0,0,qipedc,dân tộc Khơ me
+dân tộc mông,1,1,1,0,0,0,qipedc,dân tộc Mông
+dân tộc mường,1,1,1,0,0,0,qipedc,dân tộc Mường
+dân tộc thiểu số,2,2,3,0,0,0,qipedc,dân tộc thiểu số
+dân tộc thái,1,1,1,0,0,0,qipedc,dân tộc Thái
+dây buộc tóc,1,1,1,0,0,0,qipedc,dây buộc tóc
+dây chun,1,1,1,0,0,0,qipedc,dây chun
+dây kéo,1,0,0,1,0,0,hcmue,dây kéo
+dây thần kinh,1,1,1,0,0,0,qipedc,dây thần kinh
+dây thừng,1,1,1,0,0,0,qipedc,dây thừng
+dây xích,1,1,1,0,0,0,qipedc,dây xích
+dây điện,2,2,3,0,0,0,qipedc,dây điện
+dãy nhà,1,1,1,0,0,0,qipedc,dãy nhà
+dãy núi,1,1,1,0,0,0,qipedc,dãy núi
+dãy núi hoàng liên sơn,1,1,1,0,0,0,qipedc,dãy núi Hoàng Liên Sơn
+dãy số,1,1,1,0,0,0,qipedc,dãy số
+dãy số liệu,1,1,1,0,0,0,qipedc,dãy số liệu
+dép quai hậu,2,2,3,0,0,0,qipedc,dép quai hậu
+dê con,1,1,1,0,0,0,qipedc,dê con
+dê mẹ,1,1,1,0,0,0,qipedc,dê mẹ
+dì,1,0,0,1,0,0,hcmue,dì
+dì ghẻ,1,0,0,1,0,0,hcmue,dì ghẻ
+dòng chữ,1,1,1,0,0,0,qipedc,dòng chữ
+dòng họ,1,1,1,0,0,0,qipedc,dòng họ
+dòng sông,1,1,1,0,0,0,qipedc,dòng sông
+dòng sông chảy,1,1,1,0,0,0,qipedc,dòng sông chảy
+dùng,5,0,0,0,5,13,vslgh,DÙNG
+dũng cảm,2,1,1,1,0,0,qipedc+hcmue,dũng cảm
+dạ dày,6,0,0,0,6,14,vslgh,DẠ-DÀY
+dạy,1,1,1,0,0,0,qipedc,dạy
+dải phân cách,1,1,1,0,0,0,qipedc,dải phân cách
+dấu bằng,1,1,1,0,0,0,qipedc,dấu bằng
+dấu chia,1,1,1,0,0,0,qipedc,dấu chia
+dấu chấm,1,1,1,0,0,0,qipedc,dấu chấm
+dấu chấm hỏi,1,1,1,0,0,0,qipedc,dấu chấm hỏi
+dấu chấm than,1,1,1,0,0,0,qipedc,dấu chấm than
+dấu gạch ngang,1,1,1,0,0,0,qipedc,dấu gạch ngang
+dấu hai chấm,1,1,1,0,0,0,qipedc,dấu hai chấm
+dấu hiệu,1,0,0,1,0,0,hcmue,dấu hiệu
+dấu huyền,2,2,3,0,0,0,qipedc,dấu huyền
+dấu hỏi,2,2,3,0,0,0,qipedc,dấu hỏi
+dấu ngoặc đơn,1,1,1,0,0,0,qipedc,dấu ngoặc đơn
+dấu ngã,2,2,3,0,0,0,qipedc,dấu ngã
+dấu nhân,1,1,1,0,0,0,qipedc,dấu nhân
+dấu nặng,1,1,1,0,0,0,qipedc,dấu nặng
+dấu phẩy,1,1,1,0,0,0,qipedc,dấu phẩy
+dấu sắc,2,2,3,0,0,0,qipedc,dấu sắc
+dầu gội đầu,1,1,1,0,0,0,qipedc,dầu gội đầu
+dầu hoả,1,1,1,0,0,0,qipedc,dầu hoả
+dầu khí,1,1,1,0,0,0,qipedc,dầu khí
+dầu mỏ,1,1,1,0,0,0,qipedc,dầu mỏ
+dầu ăn,1,1,1,0,0,0,qipedc,dầu ăn
+dẫn chương trình,1,1,1,0,0,0,qipedc,dẫn chương trình
+dẫn chứng,1,1,1,0,0,0,qipedc,dẫn chứng
+dập,1,1,1,0,0,0,qipedc,dập
+dắt,1,1,1,0,0,0,qipedc,dắt
+dặn dò,1,1,1,0,0,0,qipedc,dặn dò
+dẻo,1,1,1,0,0,0,qipedc,dẻo
+dễ chịu,1,1,1,0,0,0,qipedc,dễ chịu
+dễ thương,1,1,1,0,0,0,qipedc,dễ thương
+dệt,1,1,1,0,0,0,qipedc,dệt
+dị ứng,6,0,0,0,6,56,vslgh,DỊ-ỨNG
+dịch vụ,3,3,3,0,0,0,qipedc,dịch vụ
+dịu dàng,1,1,1,0,0,0,qipedc,dịu dàng
+dọc,1,1,1,0,0,0,qipedc,dọc
+dốc,1,1,1,0,0,0,qipedc,dốc
+dốt,1,1,1,0,0,0,qipedc,dốt
+dỗi,2,2,3,0,0,0,qipedc,dỗi
+dụng cụ,1,1,1,0,0,0,qipedc,dụng cụ
+dừng lại,2,1,1,1,0,0,qipedc+hcmue,dừng lại
+dự trữ,1,1,1,0,0,0,qipedc,dự trữ
+dự án,1,1,1,0,0,0,qipedc,dự án
+dựng phim,1,1,1,0,0,0,qipedc,dựng phim
+e,2,1,1,1,0,0,qipedc+hcmue,e
+e thẹn,3,3,3,0,0,0,qipedc,e thẹn
+em bé,3,0,0,3,0,0,hcmue,em bé
+em dâu,1,1,1,0,0,0,qipedc,em dâu
+em gái,2,1,1,1,0,0,qipedc+hcmue,em gái
+em họ,3,3,3,0,0,0,qipedc,em họ
+em rể,3,3,3,0,0,0,qipedc,em rể
+em trai,3,2,3,1,0,0,qipedc+hcmue,em trai
+em út,1,1,1,0,0,0,qipedc,em út
+email,1,1,1,0,0,0,qipedc,email
+f,1,1,1,0,0,0,qipedc,f
+g,3,2,2,1,0,0,qipedc+hcmue,g
+ga tàu,2,2,3,0,0,0,qipedc,ga tàu
+gai,1,1,1,0,0,0,qipedc,gai
+gan,7,1,1,0,6,14,qipedc+vslgh,GAN | gan
+gan dạ,2,1,1,1,0,0,qipedc+hcmue,gan dạ
+gan lì,1,1,1,0,0,0,qipedc,gan lì
+gang tay,1,1,1,0,0,0,qipedc,gang tay
+ghen tị,2,2,3,0,0,0,qipedc,ghen tị
+ghi chép,1,1,1,0,0,0,qipedc,ghi chép
+ghi chú,1,1,1,0,0,0,qipedc,ghi chú
+ghi hình,1,1,1,0,0,0,qipedc,ghi hình
+ghi nhớ,1,1,1,0,0,0,qipedc,ghi nhớ
+ghé thăm,1,1,1,0,0,0,qipedc,ghé thăm
+ghép hình,1,1,1,0,0,0,qipedc,ghép hình
+gia lai,1,1,1,0,0,0,qipedc,Gia Lai
+gia đình,6,0,0,0,6,28,vslgh,GIA-ĐÌNH
+giai đoạn,1,1,1,0,0,0,qipedc,giai đoạn
+gian dối,1,1,1,0,0,0,qipedc,gian dối
+gian khổ,1,1,1,0,0,0,qipedc,gian khổ
+gian lận,1,1,1,0,0,0,qipedc,gian lận
+giao diện,1,0,0,1,0,0,hcmue,giao diện
+giao hoán,1,1,1,0,0,0,qipedc,giao hoán
+giao hàng,1,1,1,0,0,0,qipedc,giao hàng
+giao lưu,1,1,1,0,0,0,qipedc,giao lưu
+giao thông,2,2,2,0,0,0,qipedc,giao thông
+giao thừa,1,1,1,0,0,0,qipedc,giao thừa
+giao tiếp,2,2,3,0,0,0,qipedc,giao tiếp
+gieo xúc xắc,1,1,1,0,0,0,qipedc,gieo xúc xắc
+giàn khoan,1,1,1,0,0,0,qipedc,giàn khoan
+giàn mướp,1,1,1,0,0,0,qipedc,giàn mướp
+giàn nho,1,1,1,0,0,0,qipedc,giàn nho
+giàu có,1,1,1,0,0,0,qipedc,giàu có
+giày,6,0,0,0,6,14,vslgh,GIÀY
+giá sách,1,1,1,0,0,0,qipedc,giá sách
+giá trị,3,3,3,0,0,0,qipedc,giá trị
+giá trị phần trăm,2,2,3,0,0,0,qipedc,giá trị phần trăm
+giá trị tuyệt đối,1,1,1,0,0,0,qipedc,giá trị tuyệt đối
+giám khảo,1,1,1,0,0,0,qipedc,giám khảo
+giám sát,2,2,2,0,0,0,qipedc,giám sát
+giám đốc,1,1,1,0,0,0,qipedc,giám đốc
+gián tiếp,2,2,3,0,0,0,qipedc,gián tiếp
+giáo dục,1,1,1,0,0,0,qipedc,giáo dục
+giáo sĩ,1,1,1,0,0,0,qipedc,giáo sĩ
+giáo viên,6,0,0,0,6,14,vslgh,GIÁO-VIÊN
+giã,1,1,1,0,0,0,qipedc,giã
+giãn cách xã hội,1,1,1,0,0,0,qipedc,giãn cách xã hội
+gió biển,1,0,0,1,0,0,hcmue,gió biển
+gió lào,1,1,1,0,0,0,qipedc,gió Lào
+gió nam,1,0,0,1,0,0,hcmue,gió nam
+gió nồm,1,0,0,1,0,0,hcmue,gió nồm
+giông bão,1,1,1,0,0,0,qipedc,giông bão
+giúp,6,0,0,0,6,28,vslgh,GIÚP
+giúp đỡ,2,2,3,0,0,0,qipedc,giúp đỡ
+giơ tay,1,1,1,0,0,0,qipedc,giơ tay
+giường,1,1,1,0,0,0,qipedc,giường
+giả bộ (giống giả vờ),1,1,1,0,0,0,qipedc,giả bộ (giống giả vờ)
+giả mạo,1,1,1,0,0,0,qipedc,giả mạo
+giả sử,1,1,1,0,0,0,qipedc,giả sử
+giải lao,1,1,1,0,0,0,qipedc,giải lao
+giải quyết,1,1,1,0,0,0,qipedc,giải quyết
+giải thích,7,1,1,0,6,14,qipedc+vslgh,GIẢI-THÍCH | giải thích
+giải vô địch,1,1,1,0,0,0,qipedc,giải vô địch
+giảm,1,1,1,0,0,0,qipedc,giảm
+giấc ngủ,1,1,1,0,0,0,qipedc,giấc ngủ
+giấy,8,2,3,0,6,95,qipedc+vslgh,GIẤY | giấy
+giấy màu,2,2,3,0,0,0,qipedc,giấy màu
+giấy nháp,2,2,3,0,0,0,qipedc,giấy nháp
+giấy phép,6,0,0,0,6,14,vslgh,GIẤY-PHÉP
+giấy tờ,1,1,1,0,0,0,qipedc,giấy tờ
+giấy ăn,2,2,3,0,0,0,qipedc,giấy ăn
+giầy ba ta,1,1,1,0,0,0,qipedc,giầy ba ta
+giầy dép,1,1,1,0,0,0,qipedc,giầy dép
+giầy thể thao,1,1,1,0,0,0,qipedc,giầy thể thao
+giẫm,1,1,1,0,0,0,qipedc,giẫm
+giận dỗi,1,1,1,0,0,0,qipedc,giận dỗi
+giận dữ,1,1,1,0,0,0,qipedc,giận dữ
+giật mình,1,1,1,0,0,0,qipedc,giật mình
+giặc ngoại xâm,1,0,0,1,0,0,hcmue,giặc ngoại xâm
+giẻ lau,1,1,1,0,0,0,qipedc,giẻ lau
+giếng nước,1,1,1,0,0,0,qipedc,giếng nước
+giết,1,1,1,0,0,0,qipedc,giết
+giọng ca,1,1,1,0,0,0,qipedc,giọng ca
+giọng nói,1,1,1,0,0,0,qipedc,giọng nói
+giỏi,1,1,1,0,0,0,qipedc,giỏi
+giống nhau,1,1,1,0,0,0,qipedc,giống nhau
+giỗ,1,1,1,0,0,0,qipedc,giỗ
+giới hạn,1,1,1,0,0,0,qipedc,giới hạn
+giới thiệu,7,1,1,0,6,14,qipedc+vslgh,GIỚI-THIỆU | giới thiệu
+giờ,8,0,0,2,6,14,hcmue+vslgh,GIỜ | giờ
+giờ khởi hành,2,0,0,2,0,0,hcmue,giờ khởi hành
+giữ nguyên,1,1,1,0,0,0,qipedc,giữ nguyên
+gloss,2,0,0,0,2,2,vslgh,Gloss
+gà mái,1,1,1,0,0,0,qipedc,gà mái
+gà nướng lu,1,1,1,0,0,0,qipedc,gà nướng lu
+gà rừng,1,1,1,0,0,0,qipedc,gà rừng
+gà trống,1,1,1,0,0,0,qipedc,gà trống
+gà tây,1,1,1,0,0,0,qipedc,gà tây
+gài nút,1,0,0,1,0,0,hcmue,gài nút
+gánh,1,1,1,0,0,0,qipedc,gánh
+gáy,1,1,1,0,0,0,qipedc,gáy
+gây mê,6,0,0,0,6,14,vslgh,GÂY-MÊ
+gãi,6,0,0,0,6,14,vslgh,GÃI
+gãi đầu gãi tai,1,1,1,0,0,0,qipedc,gãi đầu gãi tai
+gãy chân,1,1,1,0,0,0,qipedc,gãy chân
+gãy tay,1,1,1,0,0,0,qipedc,gãy tay
+gì,6,0,0,0,6,70,vslgh,GÌ
+góc bẹt,1,1,1,0,0,0,qipedc,góc bẹt
+góc bếp,1,1,1,0,0,0,qipedc,góc bếp
+góc học tập,1,1,1,0,0,0,qipedc,góc học tập
+góc nhọn,1,1,1,0,0,0,qipedc,góc nhọn
+góc tù,1,1,1,0,0,0,qipedc,góc tù
+góc vuông,1,1,1,0,0,0,qipedc,góc vuông
+góc vườn,1,1,1,0,0,0,qipedc,góc vườn
+gói,7,1,1,0,6,28,qipedc+vslgh,GÓI | gói
+gói (đgt),1,1,1,0,0,0,qipedc,gói (đgt)
+góp tiền,1,1,1,0,0,0,qipedc,góp tiền
+góp ý,1,1,1,0,0,0,qipedc,góp ý
+gù lưng,1,1,1,0,0,0,qipedc,gù lưng
+găng tay,1,1,1,0,0,0,qipedc,găng tay
+gương,1,1,1,0,0,0,qipedc,gương
+gương mẫu,1,1,1,0,0,0,qipedc,gương mẫu
+gương mặt,1,1,1,0,0,0,qipedc,gương mặt
+gạo,2,2,3,0,0,0,qipedc,gạo
+gạo nếp,1,1,1,0,0,0,qipedc,gạo nếp
+gấp ba,1,1,1,0,0,0,qipedc,gấp ba
+gấp giấy,1,1,1,0,0,0,qipedc,gấp giấy
+gấp quần áo,1,1,1,0,0,0,qipedc,gấp quần áo
+gấp đôi,1,1,1,0,0,0,qipedc,gấp đôi
+gần gũi,1,1,1,0,0,0,qipedc,gần gũi
+gần đây,6,0,0,0,6,28,vslgh,GẦN-ĐÂY
+gầy (miền nam: ốm),3,3,3,0,0,0,qipedc,gầy (miền Nam: ốm)
+gật gù,1,1,1,0,0,0,qipedc,gật gù
+gật đầu,1,1,1,0,0,0,qipedc,gật đầu
+gậy của người già,1,1,1,0,0,0,qipedc,gậy của người già
+gắn bó,1,1,1,0,0,0,qipedc,gắn bó
+gắp thức ăn,1,1,1,0,0,0,qipedc,gắp thức ăn
+gặm cỏ,1,1,1,0,0,0,qipedc,gặm cỏ
+gặm xương (con chó gặm xương),1,1,1,0,0,0,qipedc,gặm xương (con chó gặm xương)
+gặp,6,0,0,0,6,28,vslgh,GẶP
+gặp gỡ,1,1,1,0,0,0,qipedc,gặp gỡ
+gặt lúa,1,1,1,0,0,0,qipedc,gặt lúa
+gọi,1,1,1,0,0,0,qipedc,gọi
+gọn gàng,1,1,1,0,0,0,qipedc,gọn gàng
+gọt bút chì,1,1,1,0,0,0,qipedc,gọt bút chì
+gọt bút chì (cái),1,1,1,0,0,0,qipedc,gọt bút chì (cái)
+gỏi/nộm,1,1,1,0,0,0,qipedc,gỏi/nộm
+gốm sứ,1,1,1,0,0,0,qipedc,gốm sứ
+gỗ,3,3,3,0,0,0,qipedc,gỗ
+gợi ý,1,1,1,0,0,0,qipedc,gợi ý
+gửi,1,1,1,0,0,0,qipedc,gửi
+gửi quà,1,1,1,0,0,0,qipedc,gửi quà
+gửi thư,1,1,1,0,0,0,qipedc,gửi thư
+h,5,3,3,2,0,0,qipedc+hcmue,h
+hai,1,0,0,1,0,0,hcmue,Hai
+hai là,1,1,1,0,0,0,qipedc,hai là
+hai mươi ngàn,1,0,0,1,0,0,hcmue,Hai mươi ngàn
+hai ngàn,1,0,0,1,0,0,hcmue,Hai ngàn
+hai phân số bằng nhau,1,1,1,0,0,0,qipedc,hai phân số bằng nhau
+hai triệu,1,0,0,1,0,0,hcmue,Hai triệu
+hai trăm,1,0,0,1,0,0,hcmue,Hai trăm
+ham chơi,2,2,3,0,0,0,qipedc,ham chơi
+hay là (hoặc là),2,2,3,0,0,0,qipedc,hay là (hoặc là)
+hay quên,6,0,0,0,6,14,vslgh,HAY-QUÊN
+hen suyễn,6,0,0,0,6,14,vslgh,HEN-SUYỄN
+hi sinh,3,3,3,0,0,0,qipedc,hi sinh
+hi vọng,2,2,3,0,0,0,qipedc,hi vọng
+hiếu thảo,1,1,1,0,0,0,qipedc,hiếu thảo
+hiển thị,1,0,0,1,0,0,hcmue,hiển thị
+hiểu,8,2,3,0,6,28,qipedc+vslgh,HIỂU | hiểu
+hiện nay,1,1,1,0,0,0,qipedc,hiện nay
+hiện đại,1,1,1,0,0,0,qipedc,hiện đại
+hiệu (toán học),1,1,1,0,0,0,qipedc,hiệu (Toán học)
+hiệu cầm đồ,1,1,1,0,0,0,qipedc,hiệu cầm đồ
+hiệu thuốc,1,1,1,0,0,0,qipedc,hiệu thuốc
+ho,6,0,0,0,6,27,vslgh,HO
+hoa,2,2,3,0,0,0,qipedc,hoa
+hoa cúc,1,1,1,0,0,0,qipedc,hoa cúc
+hoa dâm bụt,1,1,1,0,0,0,qipedc,hoa dâm bụt
+hoa giấy,1,1,1,0,0,0,qipedc,hoa giấy
+hoa hậu,1,1,1,0,0,0,qipedc,hoa hậu
+hoa hồng,1,1,1,0,0,0,qipedc,hoa hồng
+hoa lay ơn,1,1,1,0,0,0,qipedc,hoa lay ơn
+hoa mai,1,1,1,0,0,0,qipedc,hoa mai
+hoa sen,3,3,3,0,0,0,qipedc,hoa sen
+hoa đào,1,1,1,0,0,0,qipedc,hoa đào
+hoan hô,1,1,1,0,0,0,qipedc,hoan hô
+hoang mang,1,1,1,0,0,0,qipedc,hoang mang
+hoàn thành,1,1,1,0,0,0,qipedc,hoàn thành
+hoàn tác,1,0,0,1,0,0,hcmue,hoàn tác
+hoàng hôn,1,1,1,0,0,0,qipedc,hoàng hôn
+hoàng tử,1,1,1,0,0,0,qipedc,Hoàng tử
+hoàng đế,1,1,1,0,0,0,qipedc,hoàng đế
+hoán vị,1,1,1,0,0,0,qipedc,hoán vị
+hoãn,1,1,1,0,0,0,qipedc,Hoãn
+hoạt hình,2,2,3,0,0,0,qipedc,hoạt hình
+hoạt động,1,1,1,0,0,0,qipedc,hoạt động
+hoảng sợ,1,1,1,0,0,0,qipedc,hoảng sợ
+hoặc,2,2,3,0,0,0,qipedc,hoặc
+hung ga ri (nước hung ga ri),1,1,1,0,0,0,qipedc,Hung-ga-ri (nước Hung-ga-ri)
+hung thủ,1,1,1,0,0,0,qipedc,hung thủ
+hung ác,1,1,1,0,0,0,qipedc,hung ác
+huy hiệu,1,1,1,0,0,0,qipedc,huy hiệu
+huyết áp,6,0,0,0,6,98,vslgh,HUYẾT-ÁP
+huyện,3,3,3,0,0,0,qipedc,huyện
+huân chương,1,1,1,0,0,0,qipedc,huân chương
+huỷ,1,1,1,0,0,0,qipedc,huỷ
+huỷ diệt,1,1,1,0,0,0,qipedc,huỷ diệt
+hà giang,1,1,1,0,0,0,qipedc,Hà Giang
+hà lan (nước hà lan),1,1,1,0,0,0,qipedc,Hà Lan (nước Hà Lan)
+hài hước,1,1,1,0,0,0,qipedc,hài hước
+hài lòng,1,1,1,0,0,0,qipedc,hài lòng
+hàm răng,1,1,1,0,0,0,qipedc,hàm răng
+hàng chục,1,1,1,0,0,0,qipedc,hàng chục
+hàng chục nghìn,1,1,1,0,0,0,qipedc,hàng chục nghìn
+hàng chục triệu,1,1,1,0,0,0,qipedc,hàng chục triệu
+hàng dọc,1,1,1,0,0,0,qipedc,hàng dọc
+hàng ngang,1,1,1,0,0,0,qipedc,hàng ngang
+hàng nghìn,1,1,1,0,0,0,qipedc,hàng nghìn
+hàng ngày,2,2,3,0,0,0,qipedc,hàng ngày
+hàng này,6,0,0,0,6,14,vslgh,HÀNG-NÀY
+hàng triệu,1,1,1,0,0,0,qipedc,hàng triệu
+hàng trăm,1,1,1,0,0,0,qipedc,hàng trăm
+hàng trăm nghìn,1,1,1,0,0,0,qipedc,hàng trăm nghìn
+hàng xóm,2,1,1,1,0,0,qipedc+hcmue,hàng xóm
+hàng đơn vị,1,1,1,0,0,0,qipedc,hàng đơn vị
+hành lang,1,1,1,0,0,0,qipedc,hành lang
+hành quân,3,3,3,0,0,0,qipedc,hành quân
+hành tinh,1,1,1,0,0,0,qipedc,hành tinh
+hành vi,1,1,1,0,0,0,qipedc,hành vi
+hành động,1,1,1,0,0,0,qipedc,hành động
+háo hức,1,1,1,0,0,0,qipedc,háo hức
+hát ru,1,1,1,0,0,0,qipedc,hát ru
+hãng máy bay,1,1,1,0,0,0,qipedc,hãng máy bay
+hãng tàu thuyền,1,1,1,0,0,0,qipedc,hãng tàu thuyền
+hãng xe máy,1,1,1,0,0,0,qipedc,hãng xe máy
+hãng ô tô,1,1,1,0,0,0,qipedc,hãng ô tô
+héc ta (ha),1,1,1,0,0,0,qipedc,héc-ta (ha)
+héc tô gam (hg),2,2,3,0,0,0,qipedc,héc-tô-gam (hg)
+héc tô mét (hm),2,2,3,0,0,0,qipedc,héc-tô-mét (hm)
+héc tô mét vuông (hm2),2,2,3,0,0,0,qipedc,héc-tô-mét vuông (hm2)
+héo,1,1,1,0,0,0,qipedc,héo
+hét (giống la),1,1,1,0,0,0,qipedc,hét (giống la)
+hên/gặp may,1,1,1,0,0,0,qipedc,hên/gặp may
+hình,1,1,1,0,0,0,qipedc,hình
+hình bình hành,1,1,1,0,0,0,qipedc,hình bình hành
+hình chiếu,1,1,1,0,0,0,qipedc,hình chiếu
+hình cầu,1,1,1,0,0,0,qipedc,hình cầu
+hình dáng,1,1,1,0,0,0,qipedc,hình dáng
+hình elip,1,1,1,0,0,0,qipedc,hình elip
+hình học,1,1,1,0,0,0,qipedc,hình học
+hình hộp chữ nhật,1,1,1,0,0,0,qipedc,hình hộp chữ nhật
+hình lập phương,1,1,1,0,0,0,qipedc,hình lập phương
+hình phạt,1,1,1,0,0,0,qipedc,hình phạt
+hình thang,1,1,1,0,0,0,qipedc,hình thang
+hình trụ,1,1,1,0,0,0,qipedc,hình trụ
+hình tứ giác,1,1,1,0,0,0,qipedc,hình tứ giác
+hình vuông,1,1,1,0,0,0,qipedc,hình vuông
+hình vẽ,1,1,1,0,0,0,qipedc,hình vẽ
+hình ảnh,1,0,0,1,0,0,hcmue,hình ảnh
+hít thở,6,0,0,0,6,14,vslgh,HÍT-THỞ
+hòa bình,1,1,1,0,0,0,qipedc,hòa bình
+hòa nhập,1,1,1,0,0,0,qipedc,hòa nhập
+hòn bi (giống viên bi),1,1,1,0,0,0,qipedc,hòn bi (giống viên bi)
+hòn đá,1,1,1,0,0,0,qipedc,hòn đá
+hóa đơn,7,1,1,0,6,28,qipedc+vslgh,HÓA-ĐƠN | hóa đơn
+hói đầu,1,1,1,0,0,0,qipedc,hói đầu
+hót,1,1,1,0,0,0,qipedc,hót
+hót rác,1,1,1,0,0,0,qipedc,hót rác
+hót rác (cái hót rác),1,1,1,0,0,0,qipedc,hót rác (cái hót rác)
+hôi,1,1,1,0,0,0,qipedc,hôi
+hôm nay,11,0,0,5,6,28,hcmue+vslgh,HÔM-NAY | hôm nay
+hôm qua,10,0,0,4,6,28,hcmue+vslgh,HÔM-QUA | hôm qua
+hôn,1,1,1,0,0,0,qipedc,hôn
+hùng vĩ,1,1,1,0,0,0,qipedc,hùng vĩ
+hùng vương,1,1,1,0,0,0,qipedc,Hùng Vương
+hú vía,1,1,1,0,0,0,qipedc,hú vía
+hút nước,1,1,1,0,0,0,qipedc,hút nước
+hút thuốc,6,0,0,0,6,28,vslgh,HÚT-THUỐC
+hút thuốc lá,1,1,1,0,0,0,qipedc,hút thuốc lá
+hăm dọa,1,1,1,0,0,0,qipedc,hăm dọa
+hăng hái,1,1,1,0,0,0,qipedc,hăng hái
+hơi hơi,6,0,0,0,6,13,vslgh,HƠI HƠI
+hơi nước,1,1,1,0,0,0,qipedc,hơi nước
+hưng yên,1,1,1,0,0,0,qipedc,Hưng Yên
+hướng dẫn,1,1,1,0,0,0,qipedc,hướng dẫn
+hạ long,1,1,1,0,0,0,qipedc,Hạ Long
+hạ nách,1,0,0,1,0,0,hcmue,hạ nách
+hạn hán,1,1,1,0,0,0,qipedc,hạn hán
+hạt,1,1,1,0,0,0,qipedc,hạt
+hạt cườm,1,1,1,0,0,0,qipedc,hạt cườm
+hạt lúa,1,1,1,0,0,0,qipedc,hạt lúa
+hạt lạc,1,1,1,0,0,0,qipedc,hạt lạc
+hạt tiêu,1,1,1,0,0,0,qipedc,hạt tiêu
+hải dương,1,1,1,0,0,0,qipedc,Hải Dương
+hải quân,1,0,0,1,0,0,hcmue,hải quân
+hải sản,7,1,1,0,6,14,qipedc+vslgh,HẢI-SẢN | hải sản
+hải đảo,1,1,1,0,0,0,qipedc,hải đảo
+hấp,1,1,1,0,0,0,qipedc,hấp
+hấp dẫn,1,1,1,0,0,0,qipedc,hấp dẫn
+hậu giang,1,1,1,0,0,0,qipedc,Hậu Giang
+hậu quả,1,1,1,0,0,0,qipedc,hậu quả
+hắt hơi,1,1,1,0,0,0,qipedc,hắt hơi
+hằng đẳng thức,1,1,1,0,0,0,qipedc,hằng đẳng thức
+hẹn,8,2,3,0,6,29,qipedc+vslgh,HẸN | hẹn
+hết,6,0,0,0,6,28,vslgh,HẾT
+hệ bài tiết,1,1,1,0,0,0,qipedc,hệ bài tiết
+hệ thống,2,2,3,0,0,0,qipedc,hệ thống
+hệ điều hành,1,0,0,1,0,0,hcmue,hệ điều hành
+họ (2 người) (đại từ),1,1,1,0,0,0,qipedc,họ (2 người) (đại từ)
+họ (đại từ),1,1,1,0,0,0,qipedc,họ (đại từ)
+họ hàng,1,0,0,1,0,0,hcmue,họ hàng
+họa sỹ,1,1,1,0,0,0,qipedc,họa sỹ
+học bổng,1,1,1,0,0,0,qipedc,học bổng
+học giỏi,1,1,1,0,0,0,qipedc,học giỏi
+học kém,1,1,1,0,0,0,qipedc,học kém
+học nhóm,1,1,1,0,0,0,qipedc,học nhóm
+học phí,1,1,1,0,0,0,qipedc,học phí
+học sinh miền nam,1,1,1,0,0,0,qipedc,học sinh Miền Nam
+học trung bình,1,1,1,0,0,0,qipedc,học trung bình
+học trò,1,1,1,0,0,0,qipedc,học trò
+học tập,1,1,1,0,0,0,qipedc,học tập
+họng,7,1,1,0,6,42,qipedc+vslgh,HỌNG | họng
+họp,2,2,3,0,0,0,qipedc,họp
+họp nhóm,2,2,3,0,0,0,qipedc,họp nhóm
+hỏi,8,2,3,0,6,140,qipedc+vslgh,HỎI | hỏi
+hỏi han,1,1,1,0,0,0,qipedc,hỏi han
+hỏi thăm,1,1,1,0,0,0,qipedc,hỏi thăm
+hỏi tôi,6,0,0,0,6,98,vslgh,HỎI-TÔI
+hỏng,2,2,3,0,0,0,qipedc,hỏng
+hối hận,3,3,3,0,0,0,qipedc,hối hận
+hối lộ,1,1,1,0,0,0,qipedc,hối lộ
+hốt hoảng,1,1,1,0,0,0,qipedc,hốt hoảng
+hồ chí minh,1,1,1,0,0,0,qipedc,Hồ Chí Minh
+hồ dán,1,1,1,0,0,0,qipedc,hồ dán
+hồ hoàn kiếm,1,1,1,0,0,0,qipedc,hồ Hoàn Kiếm
+hồ nước,1,1,1,0,0,0,qipedc,hồ nước
+hồ sơ,6,0,0,0,6,14,vslgh,HỒ-SƠ
+hồi hộp,8,2,3,0,6,14,qipedc+vslgh,HỒI-HỘP | hồi hộp
+hỗn số,1,1,1,0,0,0,qipedc,hỗn số
+hội chứng đao down,1,1,1,0,0,0,qipedc,hội chứng Đao - Down
+hội nghị,1,1,1,0,0,0,qipedc,hội nghị
+hội thoại,1,1,1,0,0,0,qipedc,hội thoại
+hội thảo,2,2,2,0,0,0,qipedc,hội thảo
+hội trường,1,1,1,0,0,0,qipedc,hội trường
+hộp,1,1,1,0,0,0,qipedc,hộp
+hộp bút,1,1,1,0,0,0,qipedc,hộp bút
+hộp sữa,1,1,1,0,0,0,qipedc,hộp sữa
+hở hang,1,0,0,1,0,0,hcmue,hở hang
+hợp lí,1,1,1,0,0,0,qipedc,hợp lí
+hợp tác,1,1,1,0,0,0,qipedc,hợp tác
+hợp đồng,1,1,2,0,0,0,qipedc,hợp đồng
+hứa,2,2,3,0,0,0,qipedc,hứa
+hữu nghị,1,1,1,0,0,0,qipedc,hữu nghị
+i,2,1,1,1,0,0,qipedc+hcmue,i
+i rắc (nước i rắc),1,1,1,0,0,0,qipedc,I-rắc (nước I-rắc)
+in,1,0,0,1,0,0,hcmue,in
+in (ấn),1,1,1,0,0,0,qipedc,in (ấn)
+internet,1,1,1,0,0,0,qipedc,internet
+italia (nước italia),1,1,1,0,0,0,qipedc,Italia (nước Italia)
+ix,6,0,0,0,6,83,vslgh,IX
+j,1,1,1,0,0,0,qipedc,j
+k,2,1,1,1,0,0,qipedc+hcmue,k
+keo kiệt,1,1,1,0,0,0,qipedc,keo kiệt
+khai mạc,1,1,1,0,0,0,qipedc,khai mạc
+khan ho,6,0,0,0,6,14,vslgh,KHAN-HO
+khe cửa,1,1,1,0,0,0,qipedc,khe cửa
+khe núi,1,1,1,0,0,0,qipedc,khe núi
+khen,1,1,1,0,0,0,qipedc,khen
+khen tặng,1,1,1,0,0,0,qipedc,khen tặng
+khi,6,0,0,0,6,112,vslgh,KHI
+khi nào,8,0,0,2,6,14,hcmue+vslgh,KHI-NÀO | khi nào
+khiêm tốn,1,1,1,0,0,0,qipedc,khiêm tốn
+khiêng,1,1,1,0,0,0,qipedc,khiêng
+khoa học,1,1,1,0,0,0,qipedc,khoa học
+khoan,1,1,1,0,0,0,qipedc,khoan
+khoan (cái khoan),1,1,1,0,0,0,qipedc,khoan (cái khoan)
+khoan (khoan đã),1,1,1,0,0,0,qipedc,khoan (khoan đã)
+khoang tàu,1,1,1,0,0,0,qipedc,khoang tàu
+khoanh tay,1,1,1,0,0,0,qipedc,khoanh tay
+khoe,1,1,1,0,0,0,qipedc,khoe
+khoá (cái khóa),1,1,1,0,0,0,qipedc,khoá (cái khóa)
+khoác tay,1,1,1,0,0,0,qipedc,khoác tay
+khoác vai,1,1,1,0,0,0,qipedc,khoác vai
+khoác áo,1,1,1,0,0,0,qipedc,khoác áo
+khoáng sản,1,1,1,0,0,0,qipedc,khoáng sản
+khoảng cách,1,1,1,0,0,0,qipedc,khoảng cách
+khoẻ mạnh,1,1,1,0,0,0,qipedc,khoẻ mạnh
+khu rừng,1,1,1,0,0,0,qipedc,khu rừng
+khu vườn,1,1,1,0,0,0,qipedc,khu vườn
+khu vực cách ly,1,1,1,0,0,0,qipedc,khu vực cách ly
+khung cửa số,1,1,1,0,0,0,qipedc,khung cửa số
+khung thành,1,1,1,0,0,0,qipedc,khung thành
+khuy,1,1,1,0,0,0,qipedc,khuy
+khuya,2,0,0,2,0,0,hcmue,khuya
+khuyên tai,1,1,1,0,0,0,qipedc,khuyên tai
+khuyến khích,1,1,1,0,0,0,qipedc,khuyến khích
+khuôn hình,1,1,1,0,0,0,qipedc,khuôn hình
+khác,7,1,1,0,6,14,qipedc+vslgh,KHÁC | khác
+khách,1,1,1,0,0,0,qipedc,khách
+khách mời,1,1,1,0,0,0,qipedc,khách mời
+khách sạn,1,1,1,0,0,0,qipedc,khách sạn
+khách vip,1,1,1,0,0,0,qipedc,khách vip
+khám,6,0,0,0,6,279,vslgh,KHÁM
+khám bệnh,1,1,1,0,0,0,qipedc,khám bệnh
+khám phá,1,1,1,0,0,0,qipedc,khám phá
+kháng cự,1,1,1,0,0,0,qipedc,kháng cự
+kháng sinh,1,1,1,0,0,0,qipedc,kháng sinh
+khánh hòa,1,1,1,0,0,0,qipedc,Khánh Hòa
+khát nước,1,1,1,0,0,0,qipedc,khát nước
+khát vọng,1,1,1,0,0,0,qipedc,khát vọng
+kháu khỉnh,1,1,1,0,0,0,qipedc,kháu khỉnh
+khâm phục,1,1,1,0,0,0,qipedc,khâm phục
+khâu vá,1,1,1,0,0,0,qipedc,khâu vá
+khéo,1,1,1,0,0,0,qipedc,khéo
+khép cửa,1,1,1,0,0,0,qipedc,khép cửa
+khí cầu,1,1,1,0,0,0,qipedc,khí cầu
+khí hư,6,0,0,0,6,14,vslgh,KHÍ-HƯ
+khí hậu,1,0,0,1,0,0,hcmue,khí hậu
+khó khăn,2,2,2,0,0,0,qipedc,khó khăn
+khó ngủ,6,0,0,0,6,14,vslgh,KHÓ-NGỦ
+khó tiêu,1,1,1,0,0,0,qipedc,khó tiêu
+khóa cửa,1,1,1,0,0,0,qipedc,khóa cửa
+khóa quần,1,1,1,0,0,0,qipedc,khóa quần
+khóc,1,1,1,0,0,0,qipedc,khóc
+khói,1,1,1,0,0,0,qipedc,khói
+khóm dứa,1,1,1,0,0,0,qipedc,khóm dứa
+khô héo,1,1,1,0,0,0,qipedc,khô héo
+không,7,0,0,1,6,196,hcmue+vslgh,KHÔNG | không
+không bình đẳng,1,1,1,0,0,0,qipedc,không bình đẳng
+không cho,2,2,3,0,0,0,qipedc,không cho
+không có,7,1,1,0,6,112,qipedc+vslgh,KHÔNG-CÓ | không có
+không có chi,1,1,1,0,0,0,qipedc,không có chi
+không cần,7,1,1,0,6,30,qipedc+vslgh,KHÔNG-CẦN | không cần
+không dám,3,3,3,0,0,0,qipedc,không dám
+không gian,1,1,1,0,0,0,qipedc,không gian
+không hiểu,8,2,3,0,6,14,qipedc+vslgh,KHÔNG-HIỂU | không hiểu
+không khí,1,1,1,0,0,0,qipedc,không khí
+không muốn,2,2,3,0,0,0,qipedc,không muốn
+không nghe lời,2,2,3,0,0,0,qipedc,không nghe lời
+không ngon,1,1,1,0,0,0,qipedc,không ngon
+không nhận,6,0,0,0,6,14,vslgh,KHÔNG-NHẬN
+không nên,3,3,3,0,0,0,qipedc,không nên
+không quen,2,2,3,0,0,0,qipedc,không quen
+không quân,1,0,0,1,0,0,hcmue,không quân
+không thấy,6,0,0,0,6,14,vslgh,KHÔNG-THẤY
+không thẳng hàng,1,1,1,0,0,0,qipedc,không thẳng hàng
+không được,6,0,0,0,6,43,vslgh,KHÔNG-ĐƯỢC
+không đẹp,2,2,3,0,0,0,qipedc,không đẹp
+khúc khuỷu,1,1,1,0,0,0,qipedc,khúc khuỷu
+khăn mặt,1,1,1,0,0,0,qipedc,khăn mặt
+khăn quàng,1,1,1,0,0,0,qipedc,khăn quàng
+khăn quàng đỏ,1,1,1,0,0,0,qipedc,khăn quàng đỏ
+khả năng,1,1,1,0,0,0,qipedc,khả năng
+khẩu hiệu,1,1,1,0,0,0,qipedc,khẩu hiệu
+khẩu trang,1,1,1,0,0,0,qipedc,khẩu trang
+khắc phục,1,1,1,0,0,0,qipedc,khắc phục
+khỏi bệnh,3,3,3,0,0,0,qipedc,khỏi bệnh
+khố,1,1,1,0,0,0,qipedc,khố
+khối lượng,1,1,1,0,0,0,qipedc,khối lượng
+khổ,2,2,2,0,0,0,qipedc,khổ
+khổ công,1,1,1,0,0,0,qipedc,khổ công
+khổ thơ,1,1,1,0,0,0,qipedc,khổ thơ
+khổ vải,1,0,0,1,0,0,hcmue,khổ vải
+khổng lồ,1,1,1,0,0,0,qipedc,khổng lồ
+khớp gối,6,0,0,0,6,14,vslgh,KHỚP-GỐI
+khớp xương,1,1,1,0,0,0,qipedc,khớp xương
+khờ dại,1,1,1,0,0,0,qipedc,khờ dại
+khởi hành,1,0,0,1,0,0,hcmue,khởi hành
+khởi nghiệp,1,1,1,0,0,0,qipedc,khởi nghiệp
+ki lô gam,1,1,1,0,0,0,qipedc,ki-lô-gam
+ki lô mét (km),1,1,1,0,0,0,qipedc,ki-lô-mét (km)
+ki lô mét vuông (km2),1,1,1,0,0,0,qipedc,ki-lô-mét vuông (km2)
+kia,1,1,1,0,0,0,qipedc,kia
+kim,1,1,1,0,0,0,qipedc,kim
+kim cương,1,1,1,0,0,0,qipedc,kim cương
+kim loại,6,0,0,0,6,28,vslgh,KIM-LOẠI
+kim tay,1,0,0,1,0,0,hcmue,kim tay
+kim đồng,1,1,1,0,0,0,qipedc,Kim Đồng
+kinh,6,0,0,0,6,14,vslgh,KINH
+kinh nghiệm,2,2,3,0,0,0,qipedc,kinh nghiệm
+kinh nguyệt,6,0,0,0,6,56,vslgh,KINH-NGUYỆT
+kinh ngạc,1,1,1,0,0,0,qipedc,kinh ngạc
+kiên giang,1,1,1,0,0,0,qipedc,Kiên Giang
+kiên quyết,1,1,1,0,0,0,qipedc,kiên quyết
+kiên trì (giống: kiên nhẫn),1,1,1,0,0,0,qipedc,kiên trì (giống: kiên nhẫn)
+kiêng,6,0,0,0,6,14,vslgh,KIÊNG
+"kiêu (kiêu căng, kiêu xa)",1,1,1,0,0,0,qipedc,"kiêu (kiêu căng, kiêu xa)"
+kiếm (cái kiếm),1,1,1,0,0,0,qipedc,kiếm (cái kiếm)
+kiến thức,1,1,1,0,0,0,qipedc,kiến thức
+kiến trúc,1,1,1,0,0,0,qipedc,kiến trúc
+kiến trúc sư,1,1,1,0,0,0,qipedc,kiến trúc sư
+kiểm tra,2,2,3,0,0,0,qipedc,kiểm tra
+kiểm tra chính tả,1,0,0,1,0,0,hcmue,kiểm tra chính tả
+kon tum,1,1,1,0,0,0,qipedc,Kon Tum
+kèn,1,1,1,0,0,0,qipedc,kèn
+kém,2,2,3,0,0,0,qipedc,kém
+kéo,1,1,1,0,0,0,qipedc,kéo
+kéo bấm chỉ,1,0,0,1,0,0,hcmue,kéo bấm chỉ
+kéo co,1,1,1,0,0,0,qipedc,kéo co
+kêu,1,1,1,0,0,0,qipedc,kêu
+kêu gọi,1,1,1,0,0,0,qipedc,kêu gọi
+kì diệu,1,1,1,0,0,0,qipedc,kì diệu
+kì lạ,1,1,1,0,0,0,qipedc,kì lạ
+kí duyệt,1,1,1,0,0,0,qipedc,kí duyệt
+kí hiệu,1,1,1,0,0,0,qipedc,kí hiệu
+kí tên,2,2,3,0,0,0,qipedc,kí tên
+kính,7,1,1,0,6,14,qipedc+vslgh,KÍNH | kính
+kính hiển vi,1,1,1,0,0,0,qipedc,kính hiển vi
+kính lão,1,1,1,0,0,0,qipedc,kính lão
+kính lúp,1,1,1,0,0,0,qipedc,kính lúp
+kính trọng,1,1,1,0,0,0,qipedc,kính trọng
+ký tên,6,0,0,0,6,14,vslgh,KÝ-TÊN
+kẹo,2,2,3,0,0,0,qipedc,kẹo
+kẹp,1,1,1,0,0,0,qipedc,kẹp
+kẹt xe/tắc đường,1,1,1,0,0,0,qipedc,kẹt xe/tắc đường
+kẻ cắp,1,1,1,0,0,0,qipedc,kẻ cắp
+kẻ thù,1,1,1,0,0,0,qipedc,kẻ thù
+kết bạn,1,1,1,0,0,0,qipedc,kết bạn
+kết hôn,1,0,0,1,0,0,hcmue,kết hôn
+kết hợp,1,1,1,0,0,0,qipedc,kết hợp
+kết luận,1,1,1,0,0,0,qipedc,kết luận
+kết nút,1,0,0,1,0,0,hcmue,kết nút
+kết quả,8,2,3,0,6,70,qipedc+vslgh,KẾT-QUẢ | kết quả
+kể chuyện,1,1,1,0,0,0,qipedc,kể chuyện
+kỉ luật,1,1,1,0,0,0,qipedc,kỉ luật
+kỉ niệm,2,2,3,0,0,0,qipedc,kỉ niệm
+kịch,1,1,1,0,0,0,qipedc,kịch
+kịch bản,1,1,1,0,0,0,qipedc,kịch bản
+kịch câm,1,1,1,0,0,0,qipedc,kịch câm
+kịp thời,1,1,1,0,0,0,qipedc,kịp thời
+kỳ,6,0,0,0,6,14,vslgh,KỲ
+kỹ năng,1,1,1,0,0,0,qipedc,kỹ năng
+l,2,1,1,1,0,0,qipedc+hcmue,L | l
+la bàn,1,1,1,0,0,0,qipedc,la bàn
+la hét,1,1,1,0,0,0,qipedc,la hét
+lang thang,1,1,1,0,0,0,qipedc,lang thang
+lao phổi,1,1,1,0,0,0,qipedc,lao phổi
+lau chùi,1,1,1,0,0,0,qipedc,lau chùi
+lau khô,1,1,1,0,0,0,qipedc,lau khô
+lau miệng,1,1,1,0,0,0,qipedc,lau miệng
+lau nhà,1,1,1,0,0,0,qipedc,lau nhà
+leo trèo,1,1,1,0,0,0,qipedc,leo trèo
+li dị,1,0,0,1,0,0,hcmue,li dị
+linh hồn,1,1,1,0,0,0,qipedc,linh hồn
+liên bang nga (nước nga),3,3,3,0,0,0,qipedc,Liên Bang Nga (nước Nga)
+liên hoan,2,2,3,0,0,0,qipedc,liên hoan
+liên kết,1,1,1,0,0,0,qipedc,liên kết
+liên lạc,3,3,3,0,0,0,qipedc,liên lạc
+liên quan,2,2,3,0,0,0,qipedc,liên quan
+liên tục,1,1,1,0,0,0,qipedc,liên tục
+liếc nhìn,2,2,3,0,0,0,qipedc,liếc nhìn
+liền sau,1,1,1,0,0,0,qipedc,liền sau
+liền trước,1,1,1,0,0,0,qipedc,liền trước
+liều lĩnh,1,1,1,0,0,0,qipedc,liều lĩnh
+liều mình,1,1,1,0,0,0,qipedc,liều mình
+liệt (liệt tay chân),1,1,1,0,0,0,qipedc,liệt (liệt tay chân)
+liệt sĩ,1,0,0,1,0,0,hcmue,liệt sĩ
+liệu,6,0,0,0,6,14,vslgh,LIỆU
+lo lắng,6,0,0,0,6,14,vslgh,LO-LẮNG
+lo sợ,1,1,1,0,0,0,qipedc,lo sợ
+loa,1,1,1,0,0,0,qipedc,loa
+lon bia,1,1,1,0,0,0,qipedc,lon bia
+long an,1,1,1,0,0,0,qipedc,Long An
+long lanh (mắt),1,1,1,0,0,0,qipedc,long lanh (mắt)
+long vương,1,1,1,0,0,0,qipedc,Long Vương
+loài vật,2,2,3,0,0,0,qipedc,loài vật
+loãng xương,6,0,0,0,6,14,vslgh,LOÃNG-XƯƠNG
+loạn thị,1,1,1,0,0,0,qipedc,loạn thị
+lung tung,3,3,3,0,0,0,qipedc,lung tung
+luyện tập,1,1,1,0,0,0,qipedc,luyện tập
+luyện từ và câu,1,1,1,0,0,0,qipedc,luyện từ và câu
+luân phiên,2,2,2,0,0,0,qipedc,luân phiên
+luật chơi,2,2,3,0,0,0,qipedc,luật chơi
+luật lệ,1,1,1,0,0,0,qipedc,luật lệ
+luộc,1,1,1,0,0,0,qipedc,luộc
+luộc rau,1,1,1,0,0,0,qipedc,luộc rau
+là gì?,2,2,3,0,0,0,qipedc,là gì?
+làm,6,0,0,0,6,14,vslgh,LÀM
+làm bài tập,2,2,2,0,0,0,qipedc,làm bài tập
+làm lại,1,0,0,1,0,0,hcmue,làm lại
+làm quen,1,1,1,0,0,0,qipedc,làm quen
+làm ruộng,1,1,1,0,0,0,qipedc,làm ruộng
+làm việc,1,1,1,0,0,0,qipedc,làm việc
+làm được,1,1,1,0,0,0,qipedc,làm được
+làn sóng,1,1,1,0,0,0,qipedc,làn sóng
+làng gốm bát tràng,1,1,1,0,0,0,qipedc,làng gốm Bát Tràng
+làng xóm,1,1,1,0,0,0,qipedc,làng xóm
+lào (nước lào),2,2,3,0,0,0,qipedc,Lào (nước Lào)
+lá cây,2,2,2,0,0,0,qipedc,lá cây
+lá thư,1,1,1,0,0,0,qipedc,lá thư
+lái tàu hỏa,2,2,3,0,0,0,qipedc,lái tàu hỏa
+lái xe,7,0,0,1,6,14,hcmue+vslgh,LÁI-XE | lái xe
+lâm đồng,1,1,1,0,0,0,qipedc,Lâm Đồng
+lâu,8,2,2,0,6,28,qipedc+vslgh,LÂU | lâu
+lây,6,0,0,0,6,14,vslgh,LÂY
+lây bệnh,1,1,1,0,0,0,qipedc,lây bệnh
+lây nhiễm,1,1,1,0,0,0,qipedc,lây nhiễm
+lãng phí,1,1,1,0,0,0,qipedc,lãng phí
+lãnh đạo,1,1,1,0,0,0,qipedc,lãnh đạo
+lão già,1,1,1,0,0,0,qipedc,lão già
+lên ngôi,1,1,1,0,0,0,qipedc,lên ngôi
+lên xe,1,1,1,0,0,0,qipedc,lên xe
+lên đường,1,1,1,0,0,0,qipedc,lên đường
+lí do,1,1,1,0,0,0,qipedc,lí do
+lò xo,1,1,1,0,0,0,qipedc,lò xo
+lông,1,1,1,0,0,0,qipedc,lông
+lông gà,1,1,1,0,0,0,qipedc,lông gà
+lùi bước,1,1,1,0,0,0,qipedc,lùi bước
+lúa,1,1,1,0,0,0,qipedc,lúa
+lúc,6,0,0,0,6,14,vslgh,LÚC
+lúc nào,2,2,3,0,0,0,qipedc,lúc nào
+lúng túng,1,1,1,0,0,0,qipedc,lúng túng
+lý do,1,1,1,0,0,0,qipedc,lý do
+lăng bác hồ,1,1,1,0,0,0,qipedc,lăng Bác Hồ
+lĩnh hội,1,1,1,0,0,0,qipedc,lĩnh hội
+lĩnh vực,2,2,3,0,0,0,qipedc,lĩnh vực
+lũ quét,1,1,1,0,0,0,qipedc,lũ quét
+lũy tre,1,1,1,0,0,0,qipedc,lũy tre
+lơ lửng,1,1,1,0,0,0,qipedc,lơ lửng
+lưng,6,0,0,0,6,14,vslgh,LƯNG
+lưng quần,1,0,0,1,0,0,hcmue,lưng quần
+lưu,1,1,1,0,0,0,qipedc,lưu
+lưu ý,1,1,1,0,0,0,qipedc,lưu ý
+lương thực,1,1,1,0,0,0,qipedc,lương thực
+lưới,1,1,1,0,0,0,qipedc,lưới
+lướt ván,1,1,1,0,0,0,qipedc,lướt ván
+lười,2,2,3,0,0,0,qipedc,lười
+lười học,2,2,3,0,0,0,qipedc,lười học
+lưỡi,1,1,1,0,0,0,qipedc,lưỡi
+lưỡi câu,1,1,1,0,0,0,qipedc,lưỡi câu
+lược,1,1,1,0,0,0,qipedc,lược
+lượm,2,2,2,0,0,0,qipedc,Lượm | lượm
+lượt,6,0,0,0,6,28,vslgh,LƯỢT
+lượt về (trong thể thao),1,1,1,0,0,0,qipedc,lượt về (trong thể thao)
+lượt đi,1,1,1,0,0,0,qipedc,lượt đi
+lạc long quân,1,1,1,0,0,0,qipedc,Lạc Long Quân
+lạc quan,1,1,1,0,0,0,qipedc,lạc quan
+lại,6,0,0,0,6,84,vslgh,LẠI
+lạng sơn,1,1,1,0,0,0,qipedc,Lạng Sơn
+lạnh lùng,2,2,3,0,0,0,qipedc,lạnh lùng
+lấm lem,1,1,1,0,0,0,qipedc,lấm lem
+lấm tấm,1,0,0,1,0,0,hcmue,lấm tấm
+lấy,7,1,1,0,6,140,qipedc+vslgh,LẤY | lấy
+lấy thuốc,6,0,0,0,6,14,vslgh,LẤY-THUỐC
+lần đầu,6,0,0,0,6,14,vslgh,LẦN-ĐẦU
+lầu (tầng),1,1,1,0,0,0,qipedc,lầu (tầng)
+lẩu,1,1,1,0,0,0,qipedc,lẩu
+lẫn lộn,1,1,1,0,0,0,qipedc,lẫn lộn
+lắc đầu,1,1,1,0,0,0,qipedc,lắc đầu
+lắm,6,0,0,0,6,56,vslgh,LẮM
+lắng nghe,1,1,1,0,0,0,qipedc,lắng nghe
+lắp ráp,1,1,1,0,0,0,qipedc,lắp ráp
+lặn,1,1,1,0,0,0,qipedc,lặn
+lặng lẽ,1,1,1,0,0,0,qipedc,lặng lẽ
+lều trại,1,1,1,0,0,0,qipedc,lều trại
+lễ bế giảng,2,2,2,0,0,0,qipedc,lễ bế giảng
+lễ halloween 31/10,2,2,3,0,0,0,qipedc,lễ Halloween 31/10
+lễ hội,2,2,3,0,0,0,qipedc,lễ hội
+lễ hội hóa trang,2,2,3,0,0,0,qipedc,lễ hội hóa trang
+lễ nô en,3,3,3,0,0,0,qipedc,lễ Nô-en
+lễ phép,1,1,1,0,0,0,qipedc,lễ phép
+lễ vật,1,1,1,0,0,0,qipedc,lễ vật
+lệnh,1,0,0,1,0,0,hcmue,lệnh
+lịch,8,0,0,2,6,29,hcmue+vslgh,LỊCH | lịch
+lịch hẹn,5,0,0,0,5,13,vslgh,LỊCH-HẸN
+lọ hoa,1,1,1,0,0,0,qipedc,lọ hoa
+lọ mực,1,1,1,0,0,0,qipedc,lọ mực
+lọng,1,1,1,0,0,0,qipedc,lọng
+lốc xoáy,1,1,1,0,0,0,qipedc,lốc xoáy
+lối dành cho người đi bộ,1,0,0,1,0,0,hcmue,lối dành cho người đi bộ
+lối sống,6,0,0,0,6,14,vslgh,LỐI-SỐNG
+lối đi,1,1,1,0,0,0,qipedc,lối đi
+lồng bàn,1,1,1,0,0,0,qipedc,lồng bàn
+lồng chim,1,1,1,0,0,0,qipedc,lồng chim
+lồng tiếng,1,1,1,0,0,0,qipedc,lồng tiếng
+lỗi,1,0,0,1,0,0,hcmue,lỗi
+lỗi chính tả,1,1,1,0,0,0,qipedc,lỗi chính tả
+lỗi lầm,1,1,1,0,0,0,qipedc,lỗi lầm
+lớn hơn 1 (toán học),1,1,1,0,0,0,qipedc,lớn hơn 1 (Toán học)
+lớn hơn 2 (toán học),1,1,1,0,0,0,qipedc,lớn hơn 2 (Toán học)
+lớp,1,1,1,0,0,0,qipedc,lớp
+lớp phó,1,1,1,0,0,0,qipedc,lớp phó
+lớp trưởng,1,1,1,0,0,0,qipedc,lớp trưởng
+lời giải,1,1,1,0,0,0,qipedc,lời giải
+lời nói,1,1,1,0,0,0,qipedc,lời nói
+lỡ mất,6,0,0,0,6,14,vslgh,LỠ-MẤT
+lợi ích,1,1,1,0,0,0,qipedc,lợi ích
+lục giác,1,1,1,0,0,0,qipedc,lục giác
+lục địa,1,1,1,0,0,0,qipedc,lục địa
+lụt,1,0,0,1,0,0,hcmue,lụt
+lửa,1,1,1,0,0,0,qipedc,lửa
+lựu,1,1,1,0,0,0,qipedc,lựu
+lựu đạn,1,1,1,0,0,0,qipedc,lựu đạn
+m,2,1,1,1,0,0,qipedc+hcmue,m
+ma,1,1,1,0,0,0,qipedc,ma
+ma cao,1,1,1,0,0,0,qipedc,Ma Cao
+ma cà rồng,1,1,1,0,0,0,qipedc,ma cà rồng
+ma quỷ,1,1,1,0,0,0,qipedc,ma quỷ
+ma sát,1,1,1,0,0,0,qipedc,ma sát
+ma túy,2,1,1,1,0,0,qipedc+hcmue,ma túy
+mang,6,0,0,0,6,27,vslgh,MANG
+may cầu vai,1,0,0,1,0,0,hcmue,may cầu vai
+may lai tay,1,0,0,1,0,0,hcmue,may lai tay
+may mắn,1,1,1,0,0,0,qipedc,may mắn
+may sườn vai,1,0,0,1,0,0,hcmue,may sườn vai
+mexico (nước mexico),2,2,3,0,0,0,qipedc,Mexico (nước Mexico)
+mi li mét (mm),1,1,1,0,0,0,qipedc,mi-li-mét (mm)
+minh hoạ,1,1,1,0,0,0,qipedc,minh hoạ
+miêu tả,1,1,1,0,0,0,qipedc,miêu tả
+miến,1,1,1,0,0,0,qipedc,miến
+miến điện (nước mi an ma),2,2,3,0,0,0,qipedc,Miến Điện (nước Mi-an-ma)
+miền bắc việt nam,1,1,1,0,0,0,qipedc,miền Bắc Việt Nam
+miền nam việt nam,1,1,1,0,0,0,qipedc,miền Nam Việt Nam
+miệng há,6,0,0,0,6,14,vslgh,MIỆNG-HÁ
+mua,6,0,0,0,6,14,vslgh,MUA
+mua bán,1,1,1,0,0,0,qipedc,mua bán
+mua vé,1,1,1,0,0,0,qipedc,mua vé
+mui xe,1,1,1,0,0,0,qipedc,mui xe
+muối,1,1,1,0,0,0,qipedc,muối
+muối i ốt,1,1,1,0,0,0,qipedc,muối i-ốt
+muốn,8,2,3,0,6,154,qipedc+vslgh,MUỐN | muốn
+muốn không?,2,2,3,0,0,0,qipedc,muốn không?
+muộn,1,1,1,0,0,0,qipedc,muộn
+màn,3,3,3,0,0,0,qipedc,màn
+màn hình,2,0,0,2,0,0,hcmue,màn hình
+màu cam,1,1,1,0,0,0,qipedc,màu cam
+màu cánh sen,1,0,0,1,0,0,hcmue,màu cánh sen
+màu hồng,1,0,0,1,0,0,hcmue,màu hồng
+màu nhiệm,1,1,1,0,0,0,qipedc,màu nhiệm
+màu nâu,3,2,3,1,0,0,qipedc+hcmue,màu nâu
+màu sắc,2,0,0,2,0,0,hcmue,màu sắc
+màu trắng,3,2,3,1,0,0,qipedc+hcmue,màu trắng
+màu tím,1,0,0,1,0,0,hcmue,màu tím
+màu vàng,1,0,0,1,0,0,hcmue,màu vàng
+màu xanh,3,0,0,3,0,0,hcmue,màu xanh
+màu xanh da trời,3,3,3,0,0,0,qipedc,màu xanh da trời
+màu xanh lá cây,3,3,3,0,0,0,qipedc,màu xanh lá cây
+màu xanh ngắt,1,0,0,1,0,0,hcmue,màu xanh ngắt
+màu xanh thẳm,1,0,0,1,0,0,hcmue,màu xanh thẳm
+màu xám xịt,1,0,0,1,0,0,hcmue,màu xám xịt
+màu đen,2,1,1,1,0,0,qipedc+hcmue,màu đen
+màu đỏ,2,1,1,1,0,0,qipedc+hcmue,màu đỏ
+màu đỏ tía,1,0,0,1,0,0,hcmue,màu đỏ tía
+má,2,1,1,1,0,0,qipedc+hcmue,má
+má (giống: mẹ),1,1,1,0,0,0,qipedc,má (giống: mẹ)
+má hồng,1,1,1,0,0,0,qipedc,má hồng
+mách,2,2,3,0,0,0,qipedc,mách
+mái chèo,1,1,1,0,0,0,qipedc,mái chèo
+mái hiên,1,1,1,0,0,0,qipedc,mái hiên
+mái nhà,1,1,1,0,0,0,qipedc,mái nhà
+mái tóc,1,1,1,0,0,0,qipedc,mái tóc
+mái vòm,1,1,1,0,0,0,qipedc,mái vòm
+máu,6,0,0,0,6,84,vslgh,MÁU
+máy bay,2,0,0,2,0,0,hcmue,máy bay
+máy bơm,1,1,1,0,0,0,qipedc,máy bơm
+máy chiếu,1,1,1,0,0,0,qipedc,máy chiếu
+máy in,2,2,3,0,0,0,qipedc,máy in
+máy khâu,1,1,1,0,0,0,qipedc,máy khâu
+máy may,1,0,0,1,0,0,hcmue,máy may
+máy quay,1,1,1,0,0,0,qipedc,máy quay
+máy tính (laptop),1,1,1,0,0,0,qipedc,máy tính (laptop)
+máy tính bỏ túi,1,1,1,0,0,0,qipedc,máy tính bỏ túi
+máy vi tính,1,1,1,0,0,0,qipedc,máy vi tính
+máy vi tính cá nhân,1,0,0,1,0,0,hcmue,máy vi tính cá nhân
+máy xúc,1,1,1,0,0,0,qipedc,máy xúc
+máy ảnh,1,1,1,0,0,0,qipedc,máy ảnh
+mâm cơm,1,1,1,0,0,0,qipedc,mâm cơm
+mâm ngũ quả,2,2,3,0,0,0,qipedc,mâm ngũ quả
+mây,2,1,1,1,0,0,qipedc+hcmue,mây
+mã lai (nước ma lai xi a),3,3,3,0,0,0,qipedc,Mã Lai (nước Ma-lai-xi-a)
+mã vạch,1,1,1,0,0,0,qipedc,mã vạch
+mèo cào,1,1,1,0,0,0,qipedc,mèo cào
+mét,6,0,0,0,6,14,vslgh,MÉT
+mét (m),1,1,1,0,0,0,qipedc,mét (m)
+mét khối (m3),1,1,1,0,0,0,qipedc,mét khối (m3)
+mét vuông (m2),1,1,1,0,0,0,qipedc,mét vuông (m2)
+mê say (như: say mê),1,1,1,0,0,0,qipedc,mê say (như: say mê)
+mê tín,1,1,1,0,0,0,qipedc,mê tín
+mênh mông,1,1,1,0,0,0,qipedc,mênh mông
+mía,1,1,1,0,0,0,qipedc,mía
+mít tinh,1,1,1,0,0,0,qipedc,mít tinh
+móc áo,1,1,1,0,0,0,qipedc,móc áo
+móng chân,1,1,1,0,0,0,qipedc,móng chân
+móng tay,1,1,1,0,0,0,qipedc,móng tay
+móng vuốt,1,1,1,0,0,0,qipedc,móng vuốt
+mô hình,1,1,1,0,0,0,qipedc,mô hình
+mô tả,1,1,1,0,0,0,qipedc,mô tả
+môi,1,1,1,0,0,0,qipedc,môi
+môi trường,1,1,1,0,0,0,qipedc,môi trường
+môn giáo dục công dân,1,1,1,0,0,0,qipedc,môn Giáo dục công dân
+môn giáo dục thể chất,1,1,1,0,0,0,qipedc,môn Giáo dục thể chất
+môn khoa học,1,1,1,0,0,0,qipedc,môn Khoa học
+môn kĩ thuật,2,2,4,0,0,0,qipedc,môn Kĩ thuật
+môn lịch sử,2,2,3,0,0,0,qipedc,môn Lịch sử
+môn mĩ thuật,1,1,1,0,0,0,qipedc,môn Mĩ thuật
+môn ngoại ngữ,1,1,1,0,0,0,qipedc,môn Ngoại ngữ
+môn sinh học,1,1,1,0,0,0,qipedc,môn Sinh học
+môn tin học và công nghệ,1,1,1,0,0,0,qipedc,môn Tin học và Công nghệ
+môn tiếng việt,1,1,1,0,0,0,qipedc,môn Tiếng Việt
+môn toán,1,1,1,0,0,0,qipedc,môn Toán
+môn tự nhiên và xã hội,1,1,1,0,0,0,qipedc,môn Tự nhiên và Xã hội
+môn âm nhạc,1,1,1,0,0,0,qipedc,môn Âm nhạc
+môn đạo đức,2,2,3,0,0,0,qipedc,môn Đạo đức
+môn địa lý,2,2,3,0,0,0,qipedc,môn Địa lý
+mõm,1,1,1,0,0,0,qipedc,mõm
+mù chữ,1,1,1,0,0,0,qipedc,mù chữ
+mùa hè,4,3,3,1,0,0,qipedc+hcmue,mùa hè
+mùa hạ,2,0,0,2,0,0,hcmue,mùa hạ
+mùa thu,2,1,1,1,0,0,qipedc+hcmue,mùa thu
+mùa xuân,4,2,3,2,0,0,qipedc+hcmue,mùa xuân
+mùa đông,2,1,1,1,0,0,qipedc+hcmue,mùa đông
+múa,1,1,1,0,0,0,qipedc,múa
+múa lân,1,1,1,0,0,0,qipedc,múa lân
+múa rối,1,1,1,0,0,0,qipedc,múa rối
+múa sạp,1,1,1,0,0,0,qipedc,múa sạp
+măng,1,1,1,0,0,0,qipedc,măng
+mĩ thuật,1,1,1,0,0,0,qipedc,mĩ thuật
+mũ,1,1,1,0,0,0,qipedc,mũ
+mũ lưỡi trai,1,1,1,0,0,0,qipedc,mũ lưỡi trai
+mũi,6,0,0,0,6,14,vslgh,MŨI
+mũi nghẹt,6,0,0,0,6,14,vslgh,MŨI-NGHẸT
+mũi sổ,6,0,0,0,6,14,vslgh,MŨI-SỔ
+mũi tên,1,1,1,0,0,0,qipedc,mũi tên
+mũm mĩm,1,1,1,0,0,0,qipedc,mũm mĩm
+mơ ngủ,1,1,1,0,0,0,qipedc,mơ ngủ
+mơ ước,1,1,1,0,0,0,qipedc,mơ ước
+mưa,2,0,0,2,0,0,hcmue,mưa
+mưa phùn,2,1,1,1,0,0,qipedc+hcmue,mưa phùn
+mưu kế,1,0,0,1,0,0,hcmue,mưu kế
+mưu trí,1,0,0,1,0,0,hcmue,mưu trí
+mạch,6,0,0,0,6,56,vslgh,MẠCH
+mạch lạc,1,1,1,0,0,0,qipedc,mạch lạc
+mạch máu,1,1,1,0,0,0,qipedc,mạch máu
+mạng lưới,1,1,1,0,0,0,qipedc,mạng lưới
+mạnh bạo (giống: mạnh dạn),1,1,1,0,0,0,qipedc,mạnh bạo (giống: mạnh dạn)
+mạnh mẽ,1,1,1,0,0,0,qipedc,mạnh mẽ
+mất (chết) (chỉ người),1,1,1,0,0,0,qipedc,mất (chết) (chỉ người)
+mất ngủ,1,1,1,0,0,0,qipedc,mất ngủ
+mất trí,1,1,1,0,0,0,qipedc,mất trí
+mấy giờ?,1,1,1,0,0,0,qipedc,mấy giờ?
+mấy lần,6,0,0,0,6,14,vslgh,MẤY-LẦN
+mầm cây,1,1,1,0,0,0,qipedc,mầm cây
+mầm non,1,1,1,0,0,0,qipedc,mầm non
+mẫu,6,0,0,0,6,42,vslgh,MẪU
+mẫu số,1,1,1,0,0,0,qipedc,mẫu số
+mẫu số bé,1,1,1,0,0,0,qipedc,mẫu số bé
+mẫu số chung,1,1,1,0,0,0,qipedc,mẫu số chung
+mẫu số lớn,1,1,1,0,0,0,qipedc,mẫu số lớn
+mật khẩu,4,3,3,1,0,0,qipedc+hcmue,mật khẩu
+mật ong,1,1,1,0,0,0,qipedc,mật ong
+mắc áo,1,1,1,0,0,0,qipedc,mắc áo
+mắm,1,1,1,0,0,0,qipedc,mắm
+mắng,3,3,3,0,0,0,qipedc,mắng
+mắt,6,0,0,0,6,70,vslgh,MẮT
+mắt trái,6,0,0,0,6,14,vslgh,MẮT-TRÁI
+mặc,2,1,1,1,0,0,qipedc+hcmue,mặc
+mặc kệ,1,1,1,0,0,0,qipedc,mặc kệ
+mặc quần áo,1,1,1,0,0,0,qipedc,mặc quần áo
+mặc định,1,0,0,1,0,0,hcmue,mặc định
+mặn,6,0,0,0,6,14,vslgh,MẶN
+mặt,1,1,1,0,0,0,qipedc,mặt
+mặt dài,1,1,1,0,0,0,qipedc,mặt dài
+mặt nạ,1,1,1,0,0,0,qipedc,mặt nạ
+mặt trăng,2,0,0,2,0,0,hcmue,mặt trăng
+mặt trời,1,0,0,1,0,0,hcmue,mặt trời
+mặt trời lặn,1,1,1,0,0,0,qipedc,Mặt trời lặn
+mặt trời mọc,1,1,1,0,0,0,qipedc,Mặt trời mọc
+mặt vuông,1,1,1,0,0,0,qipedc,mặt vuông
+mặt đất,1,1,1,0,0,0,qipedc,mặt đất
+mẹ ghẻ,1,0,0,1,0,0,hcmue,mẹ ghẻ
+mề đay,6,0,0,0,6,14,vslgh,MỀ-ĐAY
+mề đây,1,0,0,0,1,1,vslgh,MỀ-ĐÂY
+mềm mại,1,1,1,0,0,0,qipedc,mềm mại
+mệt,6,0,0,0,6,14,vslgh,MỆT
+mệt không?,1,1,1,0,0,0,qipedc,mệt không?
+mệt mỏi,1,1,1,0,0,0,qipedc,mệt mỏi
+mọc ria mép,1,1,1,0,0,0,qipedc,mọc ria mép
+mọc râu,1,1,1,0,0,0,qipedc,mọc râu
+mọc tóc,1,1,1,0,0,0,qipedc,mọc tóc
+mồ côi,2,1,1,1,0,0,qipedc+hcmue,mồ côi
+mồ côi cha mẹ,1,1,1,0,0,0,qipedc,mồ côi cha mẹ
+mồ hôi,1,1,1,0,0,0,qipedc,mồ hôi
+mồ hôi nhễ nhại,1,1,1,0,0,0,qipedc,mồ hôi nhễ nhại
+mỗi,1,1,1,0,0,0,qipedc,mỗi
+mỗi ngày,8,2,3,0,6,14,qipedc+vslgh,MỖI-NGÀY | mỗi ngày
+mộc nhĩ,1,1,1,0,0,0,qipedc,mộc nhĩ
+một,1,0,0,1,0,0,hcmue,Một
+một cặp,1,1,1,0,0,0,qipedc,một cặp
+một giây,1,0,0,1,0,0,hcmue,một giây
+một giờ,1,0,0,1,0,0,hcmue,một giờ
+một là,1,1,1,0,0,0,qipedc,một là
+một mình,7,1,1,0,6,14,qipedc+vslgh,MỘT-MÌNH | một mình
+một nghìn,1,0,0,1,0,0,hcmue,Một nghìn
+"một nghìn lẻ một (1,001)",1,0,0,1,0,0,hcmue,"một nghìn lẻ một (1,001)"
+một ngàn linh một,1,0,0,1,0,0,hcmue,Một ngàn linh một
+một tiếng,2,2,3,0,0,0,qipedc,một tiếng
+một tiết học,1,1,1,0,0,0,qipedc,một tiết học
+một triệu,2,0,0,2,0,0,hcmue,Một triệu
+một triệu một trăm ngàn,1,0,0,1,0,0,hcmue,Một triệu một trăm ngàn
+một trăm,1,0,0,1,0,0,hcmue,Một trăm
+một ít/ một chút,1,1,1,0,0,0,qipedc,một ít/ một chút
+một đôi,1,1,1,0,0,0,qipedc,một đôi
+mớ rau,1,1,1,0,0,0,qipedc,mớ rau
+mới,8,2,3,0,6,42,qipedc+vslgh,MỚI | mới
+mờ,6,0,0,0,6,28,vslgh,MỜ
+mời,1,1,1,0,0,0,qipedc,mời
+mở,1,1,1,0,0,0,qipedc,mở
+mở cửa,1,1,1,0,0,0,qipedc,mở cửa
+mở màn,1,1,1,0,0,0,qipedc,mở màn
+mở máy,1,0,0,1,0,0,hcmue,mở máy
+mở rộng,1,1,1,0,0,0,qipedc,mở rộng
+mở đầu,1,1,1,0,0,0,qipedc,mở đầu
+mục lục,1,1,1,0,0,0,qipedc,mục lục
+mục tiêu,1,1,1,0,0,0,qipedc,mục tiêu
+mục đích,1,1,1,0,0,0,qipedc,mục đích
+mụn,6,0,0,0,6,14,vslgh,MỤN
+mứt,1,1,1,0,0,0,qipedc,mứt
+mỳ tôm,2,2,3,0,0,0,qipedc,mỳ tôm
+mỳ vằn thắn,1,1,1,0,0,0,qipedc,mỳ vằn thắn
+mỳ ý,2,2,3,0,0,0,qipedc,mỳ ý
+n,2,1,1,1,0,0,qipedc+hcmue,n
+nam,6,0,0,0,6,14,vslgh,NAM
+nam bán cầu,1,1,1,0,0,0,qipedc,Nam bán cầu
+nam định,1,1,1,0,0,0,qipedc,Nam Định
+nay,6,0,0,0,6,56,vslgh,NAY
+ngay,5,0,0,0,5,12,vslgh,NGAY
+ngay đây,6,0,0,0,6,14,vslgh,NGAY ĐÂY
+nghe,7,1,1,0,6,43,qipedc+vslgh,NGHE | nghe
+nghi ngờ,2,2,3,0,0,0,qipedc,nghi ngờ
+nghiêm chỉnh,1,0,0,1,0,0,hcmue,nghiêm chỉnh
+nghiêm cấm,1,0,0,1,0,0,hcmue,nghiêm cấm
+nghiêm khắc,2,2,3,0,0,0,qipedc,nghiêm khắc
+nghiêm trọng,6,0,0,0,6,14,vslgh,NGHIÊM-TRỌNG
+nghiêm túc,1,1,1,0,0,0,qipedc,nghiêm túc
+nghiên cứu,1,1,1,0,0,0,qipedc,nghiên cứu
+nghiến răng,1,1,1,0,0,0,qipedc,nghiến răng
+nghé,2,2,3,0,0,0,qipedc,nghé
+nghênh nghênh (đầu),1,1,1,0,0,0,qipedc,nghênh nghênh (đầu)
+nghĩ,7,1,1,0,6,28,qipedc+vslgh,NGHĨ | nghĩ
+nghĩa bóng,1,1,1,0,0,0,qipedc,nghĩa bóng
+nghĩa trang,1,1,1,0,0,0,qipedc,nghĩa trang
+nghĩa đen,1,1,1,0,0,0,qipedc,nghĩa đen
+nghẹn ngào,1,1,1,0,0,0,qipedc,nghẹn ngào
+nghệ sĩ,1,1,1,0,0,0,qipedc,nghệ sĩ
+nghệ thuật,2,2,3,0,0,0,qipedc,nghệ thuật
+nghỉ,6,0,0,0,6,14,vslgh,NGHỈ
+nghỉ hè,4,3,3,1,0,0,qipedc+hcmue,nghỉ hè
+nghỉ hưu,1,1,1,0,0,0,qipedc,nghỉ hưu
+nghỉ học,3,2,3,1,0,0,qipedc+hcmue,nghỉ học
+nghỉ mát,1,1,1,0,0,0,qipedc,nghỉ mát
+nghỉ ngơi,1,1,1,0,0,0,qipedc,nghỉ ngơi
+nghị lực,1,1,1,0,0,0,qipedc,nghị lực
+ngoan ngoãn,1,1,1,0,0,0,qipedc,ngoan ngoãn
+ngon giấc,1,1,1,0,0,0,qipedc,ngon giấc
+ngon miệng,1,1,1,0,0,0,qipedc,ngon miệng
+ngoại hình,1,1,1,0,0,0,qipedc,ngoại hình
+ngoắc tay,1,1,1,0,0,0,qipedc,ngoắc tay
+ngoằn ngoèo,1,1,1,0,0,0,qipedc,ngoằn ngoèo
+ngoặc kép,1,1,1,0,0,0,qipedc,ngoặc kép
+ngoặc đơn,1,1,1,0,0,0,qipedc,ngoặc đơn
+nguy hiểm,2,2,3,0,0,0,qipedc,nguy hiểm
+nguyên nhân,1,1,1,0,0,0,qipedc,nguyên nhân
+nguyện vọng,1,1,1,0,0,0,qipedc,nguyện vọng
+nguệch ngoạc,1,1,1,0,0,0,qipedc,nguệch ngoạc
+nguồn gốc,1,1,1,0,0,0,qipedc,nguồn gốc
+nguội,1,1,1,0,0,0,qipedc,nguội
+ngà voi,1,1,1,0,0,0,qipedc,ngà voi
+ngành nghề,1,1,1,0,0,0,qipedc,ngành nghề
+ngày,1,0,0,1,0,0,hcmue,ngày
+ngày của cha,2,2,3,0,0,0,qipedc,ngày của Cha
+ngày của mẹ,2,2,3,0,0,0,qipedc,ngày của Mẹ
+ngày gia đình việt nam 28/6,3,3,3,0,0,0,qipedc,ngày gia đình Việt Nam 28/6
+ngày giải phóng miền nam 30/4,2,2,3,0,0,0,qipedc,ngày Giải phóng miền Nam 30/4
+ngày giải phóng thủ đô 10/10,2,2,3,0,0,0,qipedc,ngày giải phóng thủ đô 10/10
+ngày giỗ tổ hùng vương (âm lịch 10/3),2,2,3,0,0,0,qipedc,ngày giỗ tổ Hùng Vương (âm lịch 10/3)
+ngày khai trường,1,1,1,0,0,0,qipedc,ngày khai trường
+ngày mai,4,0,0,4,0,0,hcmue,ngày mai
+ngày nay,3,3,3,0,0,0,qipedc,ngày nay
+ngày ngôn ngữ kí hiệu quốc tế 23/9,2,2,3,0,0,0,qipedc,ngày Ngôn ngữ kí hiệu Quốc tế 23/9
+ngày người khuyết tật thế giới 3/12,3,3,3,0,0,0,qipedc,ngày Người khuyết tật Thế giới 3/12
+ngày người khuyết tật việt nam 18/4,3,3,3,0,0,0,qipedc,ngày Người khuyết tật Việt Nam 18/4
+ngày nhà giáo việt nam,2,2,2,0,0,0,qipedc,ngày Nhà giáo Việt nam
+ngày phụ nữ việt nam 20/10,3,3,3,0,0,0,qipedc,ngày Phụ nữ Việt Nam 20/10
+ngày quốc tế lao động,3,3,3,0,0,0,qipedc,ngày Quốc tế Lao động
+ngày quốc tế phụ nữ 8/3,3,3,3,0,0,0,qipedc,ngày Quốc tế phụ nữ 8/3
+ngày sinh,3,3,3,0,0,0,qipedc,ngày sinh
+ngày thành lập quân đội nhân dân việt nam,2,2,3,0,0,0,qipedc,ngày thành lập quân đội nhân dân Việt Nam
+ngày tháng,3,3,3,0,0,0,qipedc,ngày tháng
+ngày thương bình liệt sĩ 27/7,2,2,3,0,0,0,qipedc,ngày thương bình liệt sĩ 27/7
+ngày thầy thuốc việt nam,2,2,3,0,0,0,qipedc,ngày thầy thuốc Việt Nam
+ngày xưa,1,1,1,0,0,0,qipedc,ngày xưa
+ngày đêm,1,1,1,0,0,0,qipedc,ngày đêm
+ngán,1,1,1,0,0,0,qipedc,ngán
+ngâm hạt,1,1,1,0,0,0,qipedc,ngâm hạt
+ngân hàng,1,1,1,0,0,0,qipedc,ngân hàng
+ngây thơ,1,1,1,0,0,0,qipedc,ngây thơ
+ngã,7,1,1,0,6,14,qipedc+vslgh,NGÃ | ngã
+ngã ba,1,1,1,0,0,0,qipedc,ngã ba
+ngã bảy,1,0,0,1,0,0,hcmue,ngã bảy
+ngã tư,1,0,0,1,0,0,hcmue,ngã tư
+ngói,1,1,1,0,0,0,qipedc,ngói
+ngón chân,1,1,1,0,0,0,qipedc,ngón chân
+ngón tay,1,1,1,0,0,0,qipedc,ngón tay
+ngô,1,1,2,0,0,0,qipedc,ngô
+ngôn ngữ,1,1,1,0,0,0,qipedc,ngôn ngữ
+ngôn ngữ kí hiệu,1,1,1,0,0,0,qipedc,ngôn ngữ kí hiệu
+ngõ,1,1,1,0,0,0,qipedc,ngõ
+ngăn chặn,1,1,1,0,0,0,qipedc,ngăn chặn
+ngăn cản,1,1,1,0,0,0,qipedc,ngăn cản
+ngũ quả,2,2,3,0,0,0,qipedc,ngũ quả
+ngước nhìn,1,1,1,0,0,0,qipedc,ngước nhìn
+người bán hàng,1,1,1,0,0,0,qipedc,người bán hàng
+người gửi,1,1,1,0,0,0,qipedc,người gửi
+người lái xe (ô tô),2,2,3,0,0,0,qipedc,người lái xe (ô tô)
+người lạ,1,1,1,0,0,0,qipedc,người lạ
+người máy,1,1,1,0,0,0,qipedc,người máy
+người nhận,1,1,1,0,0,0,qipedc,người nhận
+người nước ngoài,1,1,1,0,0,0,qipedc,người nước ngoài
+người quen,2,2,3,0,0,0,qipedc,người quen
+người xưa,3,3,3,0,0,0,qipedc,người xưa
+người xấu,2,2,3,0,0,0,qipedc,người xấu
+người yêu,3,3,3,0,0,0,qipedc,người yêu
+ngưỡng mộ,1,1,1,0,0,0,qipedc,ngưỡng mộ
+ngược lại,1,1,1,0,0,0,qipedc,ngược lại
+ngược đãi,1,1,1,0,0,0,qipedc,ngược đãi
+ngạc nhiên,1,1,1,0,0,0,qipedc,ngạc nhiên
+ngẩng đầu,1,1,1,0,0,0,qipedc,ngẩng đầu
+ngập lụt,1,1,1,0,0,0,qipedc,ngập lụt
+ngập ngừng,1,1,1,0,0,0,qipedc,ngập ngừng
+ngắn,1,1,1,0,0,0,qipedc,ngắn
+ngắn nhất,1,1,1,0,0,0,qipedc,ngắn nhất
+ngắt hoa,2,2,2,0,0,0,qipedc,ngắt hoa
+ngọn cây,2,2,3,0,0,0,qipedc,ngọn cây
+ngồi,8,2,3,0,6,29,qipedc+vslgh,NGỒI | ngồi
+ngộ nghĩnh,1,1,1,0,0,0,qipedc,ngộ nghĩnh
+ngộ độc,1,1,1,0,0,0,qipedc,ngộ độc
+ngủ khó,6,0,0,0,6,14,vslgh,NGỦ-KHÓ
+ngứa nhiều,6,0,0,0,6,13,vslgh,NGỨA-NHIỀU
+ngừng lại,1,1,1,0,0,0,qipedc,ngừng lại
+ngữ pháp,2,2,3,0,0,0,qipedc,ngữ pháp
+ngữ điệu,1,1,1,0,0,0,qipedc,ngữ điệu
+ngực đau,6,0,0,0,6,14,vslgh,NGỰC-ĐAU
+nhanh,6,0,0,0,6,14,vslgh,NHANH
+nhanh nhẹn,1,1,1,0,0,0,qipedc,nhanh nhẹn
+nhi đồng,1,1,1,0,0,0,qipedc,nhi đồng
+nhiều,6,0,0,0,6,98,vslgh,NHIỀU
+nhiều hơn,1,1,1,0,0,0,qipedc,nhiều hơn
+nhiều vô cùng,1,1,1,0,0,0,qipedc,nhiều vô cùng
+nhiệm vụ,1,0,0,1,0,0,hcmue,nhiệm vụ
+nhiệt kế,2,2,3,0,0,0,qipedc,nhiệt kế
+nhiệt độ,1,1,1,0,0,0,qipedc,nhiệt độ
+nhu cầu,1,1,1,0,0,0,qipedc,nhu cầu
+nhà,6,0,0,0,6,14,vslgh,NHÀ
+nhà bác học,1,1,1,0,0,0,qipedc,nhà bác học
+nhà cửa,1,1,1,0,0,0,qipedc,nhà cửa
+nhà kho,1,1,1,0,0,0,qipedc,nhà kho
+nhà nước,2,2,3,0,0,0,qipedc,nhà nước
+nhà rông,1,1,1,0,0,0,qipedc,nhà rông
+nhà sàn,1,1,1,0,0,0,qipedc,nhà sàn
+nhà thơ,1,1,1,0,0,0,qipedc,nhà thơ
+nhà thờ,1,1,1,0,0,0,qipedc,nhà thờ
+nhà thờ đức bà,1,1,1,0,0,0,qipedc,nhà thờ Đức Bà
+nhà toán học,1,1,1,0,0,0,qipedc,nhà toán học
+nhà trường,2,2,3,0,0,0,qipedc,nhà trường
+nhà tù,1,1,1,0,0,0,qipedc,nhà tù
+nhà tầng,1,1,1,0,0,0,qipedc,nhà tầng
+nhà văn hóa,2,2,3,0,0,0,qipedc,nhà văn hóa
+nhà vệ sinh,1,1,1,0,0,0,qipedc,nhà vệ sinh
+nhà xe,1,0,0,1,0,0,hcmue,nhà xe
+nhào lộn,1,1,1,0,0,0,qipedc,nhào lộn
+nhát gan,1,1,1,0,0,0,qipedc,nhát gan
+nháy mắt,1,1,1,0,0,0,qipedc,nháy mắt
+nhân (toán học),2,2,3,0,0,0,qipedc,nhân (Toán học)
+nhân chứng,1,1,1,0,0,0,qipedc,nhân chứng
+nhân cách hoá,1,1,1,0,0,0,qipedc,nhân cách hoá
+nhân dân,1,1,1,0,0,0,qipedc,nhân dân
+nhân hậu,2,2,3,0,0,0,qipedc,nhân hậu
+nhân viên,1,1,1,0,0,0,qipedc,nhân viên
+nhân vật,1,1,1,0,0,0,qipedc,nhân vật
+nhãn vở,3,3,3,0,0,0,qipedc,nhãn vở
+nhìn,7,1,1,0,6,14,qipedc+vslgh,NHÌN | nhìn
+nhói,6,0,0,0,6,14,vslgh,NHÓI
+nhóm,1,1,1,0,0,0,qipedc,nhóm
+nhõng nhẽo,1,1,1,0,0,0,qipedc,nhõng nhẽo
+nhút nhát,1,1,1,0,0,0,qipedc,nhút nhát
+nhăn mặt,1,1,1,0,0,0,qipedc,nhăn mặt
+như hình với bóng,1,1,1,0,0,0,qipedc,như hình với bóng
+nhưng,2,2,3,0,0,0,qipedc,nhưng
+nhường nhịn,1,1,1,0,0,0,qipedc,nhường nhịn
+nhược điểm,1,1,1,0,0,0,qipedc,nhược điểm
+nhạy cảm,1,1,1,0,0,0,qipedc,nhạy cảm
+nhảy bao bố,1,1,1,0,0,0,qipedc,nhảy bao bố
+nhảy cao,1,1,1,0,0,0,qipedc,nhảy cao
+nhảy dù,1,1,1,0,0,0,qipedc,nhảy dù
+nhảy lò cò,1,1,1,0,0,0,qipedc,nhảy lò cò
+nhảy múa,1,1,1,0,0,0,qipedc,nhảy múa
+nhấn mạnh,1,1,1,0,0,0,qipedc,nhấn mạnh
+nhấp kép,1,0,0,1,0,0,hcmue,nhấp kép
+nhấp nháy,1,1,1,0,0,0,qipedc,nhấp nháy
+nhầm,2,2,3,0,0,0,qipedc,nhầm
+nhận,7,1,1,0,6,14,qipedc+vslgh,NHẬN | nhận
+nhận hàng,1,1,1,0,0,0,qipedc,nhận hàng
+nhận thức,1,1,1,0,0,0,qipedc,nhận thức
+nhận xét,1,1,1,0,0,0,qipedc,nhận xét
+nhập dữ liệu,1,0,0,1,0,0,hcmue,nhập dữ liệu
+nhập khẩu,1,1,1,0,0,0,qipedc,nhập khẩu
+nhập ngũ,3,3,3,0,0,0,qipedc,nhập ngũ
+nhập trường,2,2,3,0,0,0,qipedc,nhập trường
+nhật (nước nhật),2,2,3,0,0,0,qipedc,Nhật (nước Nhật)
+nhắc nhở,1,1,1,0,0,0,qipedc,nhắc nhở
+nhắm mắt,1,1,1,0,0,0,qipedc,nhắm mắt
+nhặt rau,1,1,1,0,0,0,qipedc,nhặt rau
+nhẹ hơn,1,1,1,0,0,0,qipedc,nhẹ hơn
+nhẹ nhàng,1,1,1,0,0,0,qipedc,nhẹ nhàng
+nhọn,1,1,1,0,0,0,qipedc,nhọn
+nhọn hoắt,1,1,1,0,0,0,qipedc,nhọn hoắt
+nhỏ,6,0,0,0,6,14,vslgh,NHỎ
+nhỏ hơn,1,1,1,0,0,0,qipedc,nhỏ hơn
+nhỏ tuổi,1,1,1,0,0,0,qipedc,nhỏ tuổi
+nhỏ/ nhỏ bé,1,1,1,0,0,0,qipedc,nhỏ/ nhỏ bé
+nhổ,6,0,0,0,6,28,vslgh,NHỔ
+nhổ củ cải,1,1,1,0,0,0,qipedc,nhổ củ cải
+nhổ lông mày,1,1,1,0,0,0,qipedc,nhổ lông mày
+nhổ râu,1,1,1,0,0,0,qipedc,nhổ râu
+nhổ răng,1,1,1,0,0,0,qipedc,nhổ răng
+nhổ tóc,1,1,1,0,0,0,qipedc,nhổ tóc
+nhộn nhịp (đông người),1,1,1,0,0,0,qipedc,nhộn nhịp (đông người)
+nhụy hoa,1,1,1,0,0,0,qipedc,nhụy hoa
+ninh bình,1,1,1,0,0,0,qipedc,Ninh Bình
+ninh thuận,1,1,1,0,0,0,qipedc,Ninh Thuận
+niềm vui,1,1,1,0,0,0,qipedc,niềm vui
+no,3,3,3,0,0,0,qipedc,no
+nào,6,0,0,0,6,84,vslgh,NÀO
+này,6,0,0,0,6,42,vslgh,NÀY
+nách tay,1,0,0,1,0,0,hcmue,nách tay
+náo nức,1,1,1,0,0,0,qipedc,náo nức
+"náo động, náo nhiệt",1,1,1,0,0,0,qipedc,"náo động, náo nhiệt"
+nén,1,1,1,0,0,0,qipedc,nén
+nét mặt,1,1,1,0,0,0,qipedc,nét mặt
+nên không?,2,2,3,0,0,0,qipedc,nên không?
+nín thở,6,0,0,0,6,14,vslgh,NÍN-THỞ
+nóc nhà,1,1,1,0,0,0,qipedc,nóc nhà
+nói chuyện,1,1,1,0,0,0,qipedc,nói chuyện
+nói dối,1,1,1,0,0,0,qipedc,nói dối
+nói leo,1,1,1,0,0,0,qipedc,nói leo
+nói ngập ngừng,1,1,1,0,0,0,qipedc,nói ngập ngừng
+nón,1,1,1,0,0,0,qipedc,nón
+nóng,1,0,0,1,0,0,hcmue,nóng
+nóng tính,1,1,1,0,0,0,qipedc,nóng tính
+nô lệ,1,1,1,0,0,0,qipedc,nô lệ
+nôn,6,0,0,0,6,14,vslgh,NÔN
+nông nghiệp,1,1,1,0,0,0,qipedc,nông nghiệp
+nông thôn,1,1,1,0,0,0,qipedc,nông thôn
+núi cao,1,1,1,0,0,0,qipedc,núi cao
+núi lửa,1,1,1,0,0,0,qipedc,núi lửa
+núi thấp,1,1,1,0,0,0,qipedc,núi thấp
+năm,1,0,0,1,0,0,hcmue,năm
+năm là,1,1,1,0,0,0,qipedc,năm là
+năm ngoái,7,1,1,0,6,14,qipedc+vslgh,NĂM-NGOÁI | năm ngoái
+năm tới,1,1,1,0,0,0,qipedc,năm tới
+năn nỉ,1,1,1,0,0,0,qipedc,năn nỉ
+năng khiếu,1,1,1,0,0,0,qipedc,năng khiếu
+năng lực,1,1,1,0,0,0,qipedc,năng lực
+nơ,1,1,1,0,0,0,qipedc,nơ
+nơi chốn,1,1,1,0,0,0,qipedc,nơi chốn
+nước,6,0,0,0,6,28,vslgh,NƯỚC
+nước mắm,1,1,1,0,0,0,qipedc,nước mắm
+nước mắt,1,1,1,0,0,0,qipedc,nước mắt
+nước sôi,6,0,0,0,6,14,vslgh,NƯỚC-SÔI
+nước tiểu,6,0,0,0,6,70,vslgh,NƯỚC-TIỂU
+nước tương (xì dầu),1,1,1,0,0,0,qipedc,nước tương (xì dầu)
+nước tới chân mới nhảy,1,1,1,0,0,0,qipedc,nước tới chân mới nhảy
+nước việt nam,2,2,3,0,0,0,qipedc,nước Việt nam
+"nước ép (cam, cà chua,..)",1,1,1,0,0,0,qipedc,"nước ép (cam, cà chua,..)"
+nước ép trái cây,2,2,3,0,0,0,qipedc,nước ép trái cây
+nướng,1,1,1,0,0,0,qipedc,nướng
+nạn nhân,1,1,1,0,0,0,qipedc,nạn nhân
+nạp điện,2,2,3,0,0,0,qipedc,nạp điện
+nấm,1,1,1,0,0,0,qipedc,nấm
+nấm da,6,0,0,0,6,14,vslgh,NẤM-DA
+nấu nướng,1,1,1,0,0,0,qipedc,nấu nướng
+nắn nót,1,1,1,0,0,0,qipedc,nắn nót
+nắng,2,0,0,2,0,0,hcmue,nắng
+nắp,1,1,1,0,0,0,qipedc,nắp
+nằm,7,1,1,0,6,14,qipedc+vslgh,NẰM | nằm
+nặn,1,1,1,0,0,0,qipedc,nặn
+nặng,6,0,0,0,6,28,vslgh,NẶNG
+nặng hơn,1,1,1,0,0,0,qipedc,nặng hơn
+nẻ,1,1,1,0,0,0,qipedc,nẻ
+nếm,1,1,1,0,0,0,qipedc,nếm
+nến,1,1,1,0,0,0,qipedc,nến
+nền nhà,1,1,1,0,0,0,qipedc,nền nhà
+nỏ,1,1,1,0,0,0,qipedc,nỏ
+nối tiếp,1,1,1,0,0,0,qipedc,nối tiếp
+nốt ruồi,1,1,1,0,0,0,qipedc,nốt ruồi
+nồi,1,1,1,0,0,0,qipedc,nồi
+nồi cơm điện,1,1,1,0,0,0,qipedc,nồi cơm điện
+nổ lốp xe,1,1,1,0,0,0,qipedc,nổ lốp xe
+nổ mìn,1,1,1,0,0,0,qipedc,nổ mìn
+nổ súng,1,1,1,0,0,0,qipedc,nổ súng
+nổi bật,1,1,1,0,0,0,qipedc,nổi bật
+nổi da gà,1,1,1,0,0,0,qipedc,nổi da gà
+nổi dậy,1,1,1,0,0,0,qipedc,nổi dậy
+nổi giận,1,1,1,0,0,0,qipedc,nổi giận
+nổi mẫn,6,0,0,0,6,14,vslgh,NỔI-MẪN
+nổi nóng,1,1,1,0,0,0,qipedc,nổi nóng
+nội dung,2,2,3,0,0,0,qipedc,nội dung
+nội quy,1,1,1,0,0,0,qipedc,nội quy
+nội soi,6,0,0,0,6,14,vslgh,NỘI-SOI
+nội tiếp,1,1,1,0,0,0,qipedc,nội tiếp
+nộp,6,0,0,0,6,70,vslgh,NỘP
+nứt nẻ (ruộng),1,1,1,0,0,0,qipedc,nứt nẻ (ruộng)
+nữ,6,0,0,0,6,28,vslgh,NỮ
+o,2,1,1,1,0,0,qipedc+hcmue,o
+oa sinh tơn,1,1,1,0,0,0,qipedc,Oa-sinh-tơn
+oi bức,2,0,0,2,0,0,hcmue,oi bức
+p,3,2,3,1,0,0,qipedc+hcmue,p
+pa ki xtan (nước pa ki xtan),1,1,1,0,0,0,qipedc,Pa-ki-xtan (nước Pa-ki-xtan)
+paris,1,1,1,0,0,0,qipedc,Paris
+pha chế,1,1,1,0,0,0,qipedc,pha chế
+pha cà phê,1,1,1,0,0,0,qipedc,pha cà phê
+pha lê,1,1,1,0,0,0,qipedc,pha lê
+phao,1,1,1,0,0,0,qipedc,phao
+phao bơi,1,0,0,1,0,0,hcmue,phao bơi
+phi công,1,1,1,0,0,0,qipedc,phi công
+phi líp pin (nước phi líp pin),2,2,3,0,0,0,qipedc,Phi-líp-pin (nước Phi-líp-pin)
+phi ngựa,1,1,1,0,0,0,qipedc,phi ngựa
+phi tiêu,1,1,1,0,0,0,qipedc,phi tiêu
+phim hoạt hình,3,3,3,0,0,0,qipedc,phim hoạt hình
+phim truyện,2,2,3,0,0,0,qipedc,phim truyện
+phim tài liệu,1,1,1,0,0,0,qipedc,phim tài liệu
+phiên dịch,2,2,3,0,0,0,qipedc,phiên dịch
+phiền hà,1,1,1,0,0,0,qipedc,phiền hà
+phong bì,1,1,1,0,0,0,qipedc,phong bì
+phong cách,1,1,1,0,0,0,qipedc,phong cách
+phong kiến,1,1,1,0,0,0,qipedc,phong kiến
+phong toả,1,1,1,0,0,0,qipedc,phong toả
+phong trào,1,1,1,0,0,0,qipedc,phong trào
+phong tục,1,1,1,0,0,0,qipedc,phong tục
+phun nước,1,1,1,0,0,0,qipedc,phun nước
+phà,3,1,1,2,0,0,qipedc+hcmue,phà
+phá,2,2,3,0,0,0,qipedc,phá
+pháo cao xạ,1,0,0,1,0,0,hcmue,pháo cao xạ
+pháo hoa,1,1,1,0,0,0,qipedc,pháo hoa
+pháo sáng,1,1,1,0,0,0,qipedc,pháo sáng
+pháo đài,1,1,1,0,0,0,qipedc,pháo đài
+phát biểu,1,1,1,0,0,0,qipedc,phát biểu
+phát hiện,1,1,1,0,0,0,qipedc,phát hiện
+phát động,1,1,1,0,0,0,qipedc,phát động
+phân biệt,1,1,1,0,0,0,qipedc,phân biệt
+phân công,1,1,1,0,0,0,qipedc,phân công
+phân loại,1,1,1,0,0,0,qipedc,phân loại
+phân số,1,1,1,0,0,0,qipedc,phân số
+phân số thập phân,1,1,1,0,0,0,qipedc,phân số thập phân
+phân số tối giản,1,1,1,0,0,0,qipedc,phân số tối giản
+phân tích,1,1,1,0,0,0,qipedc,phân tích
+phân vân,1,1,1,0,0,0,qipedc,phân vân
+phép mầu,1,1,1,0,0,0,qipedc,phép mầu
+phép tính,1,1,1,0,0,0,qipedc,phép tính
+phê bình,1,1,1,0,0,0,qipedc,phê bình
+phích nước,1,1,1,0,0,0,qipedc,phích nước
+phòng,6,0,0,0,6,70,vslgh,PHÒNG
+phòng bệnh,1,1,1,0,0,0,qipedc,phòng bệnh
+phòng chống,1,1,1,0,0,0,qipedc,phòng chống
+phòng chức năng,1,1,1,0,0,0,qipedc,phòng chức năng
+phòng học tin học,1,1,1,0,0,0,qipedc,phòng học tin học
+phòng máy tính,1,1,1,0,0,0,qipedc,phòng máy tính
+phòng mĩ thuật,1,1,1,0,0,0,qipedc,phòng mĩ thuật
+phòng thí nghiệm,1,1,1,0,0,0,qipedc,phòng thí nghiệm
+phòng thư viện,1,1,1,0,0,0,qipedc,phòng thư viện
+phòng y tế,1,1,1,0,0,0,qipedc,phòng y tế
+phòng âm nhạc,1,1,1,0,0,0,qipedc,phòng âm nhạc
+phòng đa năng,1,1,1,0,0,0,qipedc,phòng đa năng
+phó hiệu trưởng,2,2,3,0,0,0,qipedc,phó hiệu trưởng
+phóng viên,1,1,1,0,0,0,qipedc,phóng viên
+phô tô,1,1,1,0,0,0,qipedc,phô tô
+phù hợp,1,1,1,0,0,0,qipedc,phù hợp
+phú thọ,1,1,1,0,0,0,qipedc,Phú Thọ
+phơi,1,0,0,1,0,0,hcmue,phơi
+phơi quần áo,1,1,1,0,0,0,qipedc,phơi quần áo
+phương hướng,1,1,1,0,0,0,qipedc,phương hướng
+phương pháp,1,1,1,0,0,0,qipedc,phương pháp
+phương tiện,1,1,1,0,0,0,qipedc,phương tiện
+phương tiện giao thông,2,2,3,0,0,0,qipedc,phương tiện giao thông
+phương tây,1,1,1,0,0,0,qipedc,phương Tây
+phương đông,1,1,1,0,0,0,qipedc,phương Đông
+phải,6,0,0,0,6,28,vslgh,PHẢI
+phải không,6,0,0,0,6,238,vslgh,PHẢI-KHÔNG
+phải không?,2,2,3,0,0,0,qipedc,phải không?
+phản bội,2,2,3,0,0,0,qipedc,phản bội
+phản xạ,1,1,1,0,0,0,qipedc,phản xạ
+phản động,1,1,1,0,0,0,qipedc,phản động
+phấn (viết bảng),2,2,3,0,0,0,qipedc,phấn (viết bảng)
+phấn trang điểm,1,1,1,0,0,0,qipedc,phấn trang điểm
+phấn vẽ,1,0,0,1,0,0,hcmue,phấn vẽ
+phấn đấu,1,1,1,0,0,0,qipedc,phấn đấu
+phấp phới,1,1,1,0,0,0,qipedc,phấp phới
+phần cứng,1,0,0,1,0,0,hcmue,phần cứng
+phần mềm ứng dụng,1,0,0,1,0,0,hcmue,phần mềm ứng dụng
+phần trăm,1,1,1,0,0,0,qipedc,phần trăm
+phẫu thuật,6,0,0,0,6,42,vslgh,PHẪU-THUẬT
+phẫu thuật bụng,1,1,1,0,0,0,qipedc,phẫu thuật bụng
+phẫu thuật chân,1,1,1,0,0,0,qipedc,phẫu thuật chân
+phẫu thuật cổ,1,1,1,0,0,0,qipedc,phẫu thuật cổ
+phẫu thuật mũi,1,1,1,0,0,0,qipedc,phẫu thuật mũi
+phẫu thuật mắt,1,1,1,0,0,0,qipedc,phẫu thuật mắt
+phẫu thuật tay,1,1,1,0,0,0,qipedc,phẫu thuật tay
+phật (tượng),1,1,1,0,0,0,qipedc,phật (tượng)
+phễu,1,1,1,0,0,0,qipedc,phễu
+phỏng,6,0,0,0,6,14,vslgh,PHỎNG
+phố,1,1,1,0,0,0,qipedc,phố
+phố cổ,1,1,1,0,0,0,qipedc,phố cổ
+phố cổ hội an,1,1,1,0,0,0,qipedc,phố cổ Hội an
+phổ biến,1,1,1,0,0,0,qipedc,phổ biến
+phổi,7,1,1,0,6,14,qipedc+vslgh,PHỔI | phổi
+phở,2,2,3,0,0,0,qipedc,phở
+phở cuốn,2,2,3,0,0,0,qipedc,phở cuốn
+phụ huynh,1,1,1,0,0,0,qipedc,phụ huynh
+phụ khoa,6,0,0,0,6,14,vslgh,PHỤ-KHOA
+phụ thuộc,1,1,1,0,0,0,qipedc,phụ thuộc
+phục hồi,1,1,1,0,0,0,qipedc,phục hồi
+phục vụ,1,1,1,0,0,0,qipedc,phục vụ
+phủ nhận,1,1,1,0,0,0,qipedc,phủ nhận
+phức tạp,1,1,1,0,0,0,qipedc,phức tạp
+pi a nô (dương cầm),1,1,1,0,0,0,qipedc,pi-a-nô (dương cầm)
+pê ru (nước pê ru),1,1,1,0,0,0,qipedc,Pê-ru (nước Pê-ru)
+q,2,1,1,1,0,0,qipedc+hcmue,q
+quan (chức vụ),1,1,1,0,0,0,qipedc,quan (chức vụ)
+quan hệ,1,1,1,0,0,0,qipedc,quan hệ
+quan hệ từ,1,1,1,0,0,0,qipedc,quan hệ từ
+quan sát,1,1,1,0,0,0,qipedc,quan sát
+quan trọng,1,1,1,0,0,0,qipedc,quan trọng
+quan tâm,1,1,1,0,0,0,qipedc,quan tâm
+quan điểm,1,1,1,0,0,0,qipedc,quan điểm
+quang hợp,1,1,1,0,0,0,qipedc,quang hợp
+quanh năm,1,1,1,0,0,0,qipedc,quanh năm
+quay cóp,1,1,1,0,0,0,qipedc,quay cóp
+quay lại,6,0,0,0,6,14,vslgh,QUAY-LẠI
+quay phim,1,1,1,0,0,0,qipedc,quay phim
+quay đầu xe,1,0,0,1,0,0,hcmue,quay đầu xe
+qui định,1,0,0,1,0,0,hcmue,qui định
+quy nhơn,1,1,1,0,0,0,qipedc,Quy Nhơn
+quy nạp,1,1,1,0,0,0,qipedc,quy nạp
+quy tắc,1,1,1,0,0,0,qipedc,quy tắc
+quy định,1,1,1,0,0,0,qipedc,quy định
+quy đồng mẫu số,1,1,1,0,0,0,qipedc,quy đồng mẫu số
+quyên góp,1,1,1,0,0,0,qipedc,quyên góp
+quyến luyến,1,1,1,0,0,0,qipedc,quyến luyến
+quyết tâm,2,2,3,0,0,0,qipedc,quyết tâm
+quyết định,3,2,3,1,0,0,qipedc+hcmue,quyết định
+quyền lợi,2,2,3,0,0,0,qipedc,quyền lợi
+quyển vở,2,2,3,0,0,0,qipedc,quyển vở
+quà,1,1,1,0,0,0,qipedc,quà
+quàng khăn,1,1,1,0,0,0,qipedc,quàng khăn
+quá cảnh,1,1,1,0,0,0,qipedc,quá cảnh
+quát mắng,1,1,1,0,0,0,qipedc,quát mắng
+quân trang,1,0,0,1,0,0,hcmue,quân trang
+quân đội,2,2,2,0,0,0,qipedc,quân đội
+quét dọn,1,1,1,0,0,0,qipedc,quét dọn
+quét nhà,1,1,1,0,0,0,qipedc,quét nhà
+quê,2,2,3,0,0,0,qipedc,quê
+quê quán,6,0,0,0,6,14,vslgh,QUÊ-QUÁN
+quên,1,1,1,0,0,0,qipedc,quên
+quý giá,1,1,1,0,0,0,qipedc,quý giá
+quý hiếm,1,1,1,0,0,0,qipedc,quý hiếm
+quạt cây,1,1,1,0,0,0,qipedc,quạt cây
+quạt treo tường,1,1,1,0,0,0,qipedc,quạt treo tường
+quạt trần,1,1,1,0,0,0,qipedc,quạt trần
+quả,1,1,1,0,0,0,qipedc,quả
+quả bưởi,2,2,3,0,0,0,qipedc,quả bưởi
+quả bầu,1,1,1,0,0,0,qipedc,quả bầu
+quả bầu hồ lô,1,1,1,0,0,0,qipedc,quả bầu hồ lô
+quả cam,1,1,1,0,0,0,qipedc,quả cam
+quả chanh,1,1,1,0,0,0,qipedc,quả chanh
+quả chuối,1,1,1,0,0,0,qipedc,quả chuối
+quả chôm chôm,1,1,1,0,0,0,qipedc,quả chôm chôm
+quả dưa hấu,2,2,3,0,0,0,qipedc,quả dưa hấu
+quả dừa,2,2,3,0,0,0,qipedc,quả dừa
+quả dừa xiêm,2,2,3,0,0,0,qipedc,quả dừa xiêm
+quả gấc,1,1,1,0,0,0,qipedc,quả gấc
+quả hồng,1,1,1,0,0,0,qipedc,quả hồng
+quả hồng xiêm,1,1,1,0,0,0,qipedc,quả hồng xiêm
+quả khế,2,2,3,0,0,0,qipedc,quả khế
+quả lê,1,1,1,0,0,0,qipedc,quả lê
+quả mít,1,1,1,0,0,0,qipedc,quả mít
+quả mướp,1,1,1,0,0,0,qipedc,quả mướp
+quả na,1,1,1,0,0,0,qipedc,quả na
+quả nho,1,1,1,0,0,0,qipedc,quả nho
+quả nhãn,2,2,3,0,0,0,qipedc,quả nhãn
+quả quýt,1,1,1,0,0,0,qipedc,quả quýt
+quả quất,1,1,1,0,0,0,qipedc,quả quất
+quả roi,2,2,3,0,0,0,qipedc,quả roi
+quả su su,1,1,1,0,0,0,qipedc,quả su su
+quả sầu riêng,1,1,1,0,0,0,qipedc,quả sầu riêng
+quả thanh long,1,1,1,0,0,0,qipedc,quả thanh long
+quả táo,2,2,2,0,0,0,qipedc,quả táo
+quả vải,1,1,1,0,0,0,qipedc,quả vải
+quả xoài,1,1,1,0,0,0,qipedc,quả xoài
+quả điều,2,2,2,0,0,0,qipedc,quả điều
+quả đu đủ,3,3,3,0,0,0,qipedc,quả đu đủ
+quả đất,1,1,1,0,0,0,qipedc,quả đất
+quả địa cầu,1,1,1,0,0,0,qipedc,quả địa cầu
+quả ổi,1,1,1,0,0,0,qipedc,quả ổi
+quả ớt,1,1,1,0,0,0,qipedc,quả ớt
+quảng bình,1,1,1,0,0,0,qipedc,Quảng Bình
+quảng cáo,1,1,1,0,0,0,qipedc,quảng cáo
+quảng nam,1,1,1,0,0,0,qipedc,Quảng Nam
+quảng ngãi,1,1,1,0,0,0,qipedc,Quảng Ngãi
+quảng ninh,1,1,1,0,0,0,qipedc,Quảng Ninh
+quảng trị,1,1,1,0,0,0,qipedc,Quảng Trị
+quần,1,0,0,1,0,0,hcmue,quần
+quần bò,2,2,3,0,0,0,qipedc,quần bò
+quần sọt,1,0,0,1,0,0,hcmue,quần sọt
+quần yếm,1,1,1,0,0,0,qipedc,quần yếm
+quần áo,1,0,0,1,0,0,hcmue,quần áo
+quần âu,1,1,1,0,0,0,qipedc,quần âu
+quần đùi,1,1,1,0,0,0,qipedc,quần đùi
+quầy,6,0,0,0,6,14,vslgh,QUẦY
+quận,2,2,3,0,0,0,qipedc,quận
+quặn thắt,6,0,0,0,6,14,vslgh,QUẶN-THẮT
+quốc ca,1,1,1,0,0,0,qipedc,quốc ca
+quốc gia,2,1,1,1,0,0,qipedc+hcmue,quốc gia
+quốc hội,1,1,1,0,0,0,qipedc,quốc hội
+quốc khánh,1,1,1,0,0,0,qipedc,quốc khánh
+quốc tế,1,1,1,0,0,0,qipedc,quốc tế
+quốc tử giám,1,1,1,0,0,0,qipedc,Quốc Tử Giám
+quỳ,1,1,1,0,0,0,qipedc,quỳ
+r,2,1,1,1,0,0,qipedc+hcmue,r
+ra,6,0,0,0,6,14,vslgh,RA
+ra lệnh,2,1,1,1,0,0,qipedc+hcmue,ra lệnh
+ra ngoài,2,2,3,0,0,0,qipedc,ra ngoài
+ra nước,6,0,0,0,6,14,vslgh,RA-NƯỚC
+rau,1,1,1,0,0,0,qipedc,rau
+rau bắp cải,1,1,1,0,0,0,qipedc,rau bắp cải
+rau cải,1,1,1,0,0,0,qipedc,rau cải
+rau cải thảo,1,1,1,0,0,0,qipedc,rau cải thảo
+rau diếp cá,1,1,1,0,0,0,qipedc,rau diếp cá
+rau dền,1,1,1,0,0,0,qipedc,rau dền
+rau mùng tơi,1,1,1,0,0,0,qipedc,rau mùng tơi
+rau ngò/rau mùi,1,1,1,0,0,0,qipedc,rau ngò/rau mùi
+rau ngót,1,1,1,0,0,0,qipedc,rau ngót
+reo hò,1,1,1,0,0,0,qipedc,reo hò
+ria mép,1,1,1,0,0,0,qipedc,ria mép
+riêng biệt,1,1,1,0,0,0,qipedc,riêng biệt
+riêng tư,1,1,1,0,0,0,qipedc,riêng tư
+rong biển,1,1,1,0,0,0,qipedc,rong biển
+rong chơi,2,2,3,0,0,0,qipedc,rong chơi
+ru ngủ,1,1,1,0,0,0,qipedc,ru ngủ
+ruộng bậc thang,1,1,1,0,0,0,qipedc,ruộng bậc thang
+ruột già,1,1,1,0,0,0,qipedc,ruột già
+ruột non,1,1,1,0,0,0,qipedc,ruột non
+rào chắn,1,1,1,0,0,0,qipedc,rào chắn
+rách,1,1,1,0,0,0,qipedc,rách
+rách rưới,1,0,0,1,0,0,hcmue,rách rưới
+ráp đường ống giữa,1,0,0,1,0,0,hcmue,ráp đường ống giữa
+râu,1,1,1,0,0,0,qipedc,râu
+rèn luyện,1,1,1,0,0,0,qipedc,rèn luyện
+rèn sắt,1,1,1,0,0,0,qipedc,rèn sắt
+rình mò,1,1,1,0,0,0,qipedc,rình mò
+rìu,1,1,1,0,0,0,qipedc,rìu
+róc rách,1,1,1,0,0,0,qipedc,róc rách
+rón rén,1,1,1,0,0,0,qipedc,rón rén
+rõ,6,0,0,0,6,28,vslgh,RÕ
+rõ ràng,1,1,2,0,0,0,qipedc,rõ ràng
+rút gọn,1,1,1,0,0,0,qipedc,rút gọn
+rút gọn phân số,1,1,1,0,0,0,qipedc,rút gọn phân số
+răng,7,1,1,0,6,126,qipedc+vslgh,RĂNG | răng
+răng cưa,1,1,1,0,0,0,qipedc,răng cưa
+răng hô,1,1,1,0,0,0,qipedc,răng hô
+răng khểnh,1,1,1,0,0,0,qipedc,răng khểnh
+rơi,1,1,1,0,0,0,qipedc,rơi
+rơm,1,1,1,0,0,0,qipedc,rơm
+rơm rớm,1,1,1,0,0,0,qipedc,rơm rớm
+rước đèn,1,1,1,0,0,0,qipedc,rước đèn
+rưỡi,2,2,3,0,0,0,qipedc,rưỡi
+rượu,2,2,3,0,0,0,qipedc,rượu
+rượu bia,6,0,0,0,6,28,vslgh,RƯỢU-BIA
+rạch,1,1,1,0,0,0,qipedc,rạch
+rạp chiếu phim,1,1,1,0,0,0,qipedc,rạp chiếu phim
+rắc rối,1,1,1,0,0,0,qipedc,rắc rối
+rằm trung thu,2,2,3,0,0,0,qipedc,rằm trung thu
+rẽ phải,2,1,1,1,0,0,qipedc+hcmue,rẽ phải
+rế,1,1,1,0,0,0,qipedc,rế
+rễ chùm,1,1,1,0,0,0,qipedc,rễ chùm
+rễ cây,1,1,1,0,0,0,qipedc,rễ cây
+rễ cọc,1,1,1,0,0,0,qipedc,rễ cọc
+rồi,6,0,0,0,6,209,vslgh,RỒI
+rổ,1,1,1,0,0,0,qipedc,rổ
+rộng lớn,1,1,1,0,0,0,qipedc,rộng lớn
+rộng rãi,1,1,1,0,0,0,qipedc,rộng rãi
+rụng tóc (đt),1,1,1,0,0,0,qipedc,rụng tóc (đt)
+rừng núi,1,1,1,0,0,0,qipedc,rừng núi
+rừng rậm,1,1,1,0,0,0,qipedc,rừng rậm
+rừng thưa,1,1,1,0,0,0,qipedc,rừng thưa
+rửa bát,1,1,1,0,0,0,qipedc,rửa bát
+rửa chân,2,2,2,0,0,0,qipedc,rửa chân
+rửa mặt,2,2,2,0,0,0,qipedc,rửa mặt
+rửa tay,1,1,1,0,0,0,qipedc,rửa tay
+rực rỡ,1,1,1,0,0,0,qipedc,rực rỡ
+s,2,1,1,1,0,0,qipedc+hcmue,s
+sa mạc,1,1,1,0,0,0,qipedc,sa mạc
+sa thải,1,1,1,0,0,0,qipedc,sa thải
+sai,6,0,0,0,6,14,vslgh,SAI
+san hô,1,1,1,0,0,0,qipedc,san hô
+san sẻ,1,1,1,0,0,0,qipedc,san sẻ
+sao,2,1,2,1,0,0,qipedc+hcmue,sao
+sao chép,2,1,1,1,0,0,qipedc+hcmue,sao chép
+sao không,6,0,0,0,6,14,vslgh,SAO-KHÔNG
+sapa,1,1,1,0,0,0,qipedc,Sapa
+sau,7,1,1,0,6,28,qipedc+vslgh,SAU | sau
+say sưa,1,1,1,0,0,0,qipedc,say sưa
+sinh hoạt,1,1,1,0,0,0,qipedc,sinh hoạt
+sinh hóa,6,0,0,0,6,14,vslgh,SINH-HÓA
+sinh nhật,3,0,0,3,0,0,hcmue,sinh nhật
+sinh sản,2,2,3,0,0,0,qipedc,sinh sản
+sinh sống,1,1,1,0,0,0,qipedc,sinh sống
+sinh tố,1,1,1,0,0,0,qipedc,sinh tố
+"sinh tố (bơ, dâu,..)",1,1,1,0,0,0,qipedc,"sinh tố (bơ, dâu,..)"
+sinh vật,1,1,1,0,0,0,qipedc,sinh vật
+sinh đôi,2,2,3,0,0,0,qipedc,sinh đôi
+sinh đẻ,2,2,3,0,0,0,qipedc,sinh đẻ
+sinh động,1,1,1,0,0,0,qipedc,sinh động
+siêng năng,1,1,1,0,0,0,qipedc,siêng năng
+siêu thị,1,1,1,0,0,0,qipedc,siêu thị
+siêu tốc,1,1,1,0,0,0,qipedc,siêu tốc
+siêu âm,7,1,1,0,6,28,qipedc+vslgh,SIÊU-ÂM | siêu âm
+siêu ẩm,6,0,0,0,6,14,vslgh,SIÊU-ẨM
+socola,1,1,1,0,0,0,qipedc,Socola
+soi,1,1,1,0,0,0,qipedc,soi
+soi nội,6,0,0,0,6,14,vslgh,SOI-NỘI
+son môi,1,1,1,0,0,0,qipedc,son môi
+song ca,1,0,0,1,0,0,hcmue,song ca
+song song,1,1,1,0,0,0,qipedc,song song
+sum họp,1,1,1,0,0,0,qipedc,sum họp
+suy nghĩ,2,2,2,0,0,0,qipedc,suy nghĩ
+suy ra (toán học),1,1,1,0,0,0,qipedc,suy ra (Toán học)
+suýt,2,2,3,0,0,0,qipedc,suýt
+suối,1,1,1,0,0,0,qipedc,suối
+suốt,6,0,0,0,6,14,vslgh,SUỐT
+suỵt,1,1,1,0,0,0,qipedc,suỵt
+sài gòn,6,0,0,0,6,14,vslgh,SÀI-GÒN
+sách,1,1,1,0,0,0,qipedc,sách
+sách giáo khoa,1,1,1,0,0,0,qipedc,sách giáo khoa
+sách toán,1,1,1,0,0,0,qipedc,sách toán
+sáng,7,1,1,0,6,42,qipedc+vslgh,SÁNG | sáng
+sáng chói,1,1,1,0,0,0,qipedc,sáng chói
+sáng kiến,1,1,1,0,0,0,qipedc,sáng kiến
+sáng tạo,1,1,1,0,0,0,qipedc,sáng tạo
+sáo,1,1,1,0,0,0,qipedc,sáo
+sân bay,1,0,0,1,0,0,hcmue,sân bay
+sân chơi,1,1,2,0,0,0,qipedc,sân chơi
+sân golf,1,0,0,1,0,0,hcmue,sân golf
+sân khấu,1,1,1,0,0,0,qipedc,sân khấu
+sân nhà,1,1,1,0,0,0,qipedc,sân nhà
+sân thượng,1,1,1,0,0,0,qipedc,sân thượng
+sân trường,2,2,3,0,0,0,qipedc,sân trường
+sân vận động,2,1,1,1,0,0,qipedc+hcmue,sân vận động
+sâu,7,1,1,0,6,56,qipedc+vslgh,SÂU | sâu
+sâu bọ,1,1,1,0,0,0,qipedc,sâu bọ
+sâu răng,1,1,1,0,0,0,qipedc,sâu răng
+sâu thẳm,1,1,1,0,0,0,qipedc,sâu thẳm
+sét,1,0,0,1,0,0,hcmue,sét
+sóc trăng,1,1,1,0,0,0,qipedc,Sóc Trăng
+sóng biển,1,1,1,0,0,0,qipedc,sóng biển
+sóng thần,1,1,1,0,0,0,qipedc,sóng thần
+sông hồng,1,1,1,0,0,0,qipedc,sông Hồng
+súc miệng,1,1,1,0,0,0,qipedc,súc miệng
+súng,1,0,0,1,0,0,hcmue,súng
+súng trường,1,0,0,1,0,0,hcmue,súng trường
+súp,1,1,1,0,0,0,qipedc,súp
+súp lơ,1,1,1,0,0,0,qipedc,súp lơ
+săn bắn,1,1,1,0,0,0,qipedc,săn bắn
+sĩ diện,2,2,2,0,0,0,qipedc,sĩ diện
+sĩ quan,1,1,1,0,0,0,qipedc,sĩ quan
+sơ mi,4,3,3,1,0,0,qipedc+hcmue,sơ mi
+sơ đồ,1,1,2,0,0,0,qipedc,sơ đồ
+sơn,1,1,1,0,0,0,qipedc,sơn
+sưng,6,0,0,0,6,14,vslgh,SƯNG
+sương gió,1,1,1,0,0,0,qipedc,sương gió
+sườn,1,1,1,0,0,0,qipedc,sườn
+sản xuất,1,1,1,0,0,0,qipedc,sản xuất
+sấm,1,0,0,1,0,0,hcmue,sấm
+sấm chớp,1,1,1,0,0,0,qipedc,sấm chớp
+sấm sét,1,1,1,0,0,0,qipedc,sấm sét
+sắp,6,0,0,0,6,14,vslgh,SẮP
+sắp xếp,2,2,3,0,0,0,qipedc,sắp xếp
+sắt,3,3,3,0,0,0,qipedc,sắt
+sẽ,6,0,0,0,6,14,vslgh,SẼ
+số,6,0,0,0,6,69,vslgh,SỐ
+số bé,1,1,1,0,0,0,qipedc,số bé
+số chín,1,1,1,0,0,0,qipedc,số chín
+số chẵn,1,1,1,0,0,0,qipedc,số chẵn
+số la mã (toán học),1,1,1,0,0,0,qipedc,số La Mã (Toán học)
+số liền sau,1,1,1,0,0,0,qipedc,số liền sau
+số liền trước,1,1,1,0,0,0,qipedc,số liền trước
+số lẻ,1,1,1,0,0,0,qipedc,số lẻ
+số lớn,1,1,1,0,0,0,qipedc,số lớn
+số mấy,6,0,0,0,6,14,vslgh,SỐ-MẤY
+số thập phân,1,1,1,0,0,0,qipedc,số thập phân
+số đo,1,1,1,0,0,0,qipedc,số đo
+sống sót,2,2,3,0,0,0,qipedc,sống sót
+sốt,7,1,1,0,6,15,qipedc+vslgh,SỐT | sốt
+sổ tay,1,1,1,0,0,0,qipedc,sổ tay
+sổ điểm danh,1,1,1,0,0,0,qipedc,sổ điểm danh
+sổ đầu bài,1,1,1,0,0,0,qipedc,sổ đầu bài
+sỗ gì,6,0,0,0,6,14,vslgh,SỖ-GÌ
+sớm,1,0,0,1,0,0,hcmue,sớm
+sờ,1,1,1,0,0,0,qipedc,sờ
+sợ không?,1,1,1,0,0,0,qipedc,sợ không?
+sợ lắm,6,0,0,0,6,14,vslgh,SỢ-LẮM
+sợi,1,1,1,0,0,0,qipedc,sợi
+sợi chỉ,1,1,1,0,0,0,qipedc,sợi chỉ
+sợi dây,1,1,1,0,0,0,qipedc,sợi dây
+sợi len,1,1,1,0,0,0,qipedc,sợi len
+sụp đổ,1,1,1,0,0,0,qipedc,sụp đổ
+sức khỏe,7,1,1,0,6,38,qipedc+vslgh,SỨC-KHỎE | sức khỏe
+sừng,1,1,1,0,0,0,qipedc,sừng
+sừng bò,1,1,1,0,0,0,qipedc,sừng bò
+sừng trâu,1,1,1,0,0,0,qipedc,sừng trâu
+sửa,6,0,0,0,6,14,vslgh,SỬA
+sửa chữa,1,1,1,0,0,0,qipedc,sửa chữa
+sữa,2,2,3,0,0,0,qipedc,sữa
+sữa bò,2,2,3,0,0,0,qipedc,sữa bò
+sữa bột,2,2,3,0,0,0,qipedc,sữa bột
+sữa dê,2,2,3,0,0,0,qipedc,sữa dê
+sữa hộp,2,2,3,0,0,0,qipedc,sữa hộp
+sữa rửa mặt,1,1,1,0,0,0,qipedc,sữa rửa mặt
+sữa đặc,1,1,1,0,0,0,qipedc,sữa đặc
+sự thật,1,1,1,0,0,0,qipedc,sự thật
+t,4,3,3,1,0,0,qipedc+hcmue,t
+tai,7,1,1,0,6,56,qipedc+vslgh,TAI | tai
+tai nạn,1,1,1,0,0,0,qipedc,tai nạn
+tai nạn giao thông,1,1,1,0,0,0,qipedc,tai nạn giao thông
+tai ù,6,0,0,0,6,14,vslgh,TAI-Ù
+tam giác,1,1,1,0,0,0,qipedc,tam giác
+taxi,2,1,1,1,0,0,qipedc+hcmue,taxi
+tay,7,1,1,0,6,14,qipedc+vslgh,TAY | tay
+tay chân sạch sẽ,2,2,3,0,0,0,qipedc,tay chân sạch sẽ
+tay manchette,1,0,0,1,0,0,hcmue,tay manchette
+tay phải,1,1,1,0,0,0,qipedc,tay phải
+tay quay,1,0,0,1,0,0,hcmue,tay quay
+tay trái,7,1,1,0,6,14,qipedc+vslgh,TAY-TRÁI | tay trái
+tha,1,1,1,0,0,0,qipedc,tha
+tha mồi,1,1,1,0,0,0,qipedc,tha mồi
+tha thứ,3,3,3,0,0,0,qipedc,tha thứ
+thai,6,0,0,0,6,42,vslgh,THAI
+tham dự,2,2,3,0,0,0,qipedc,tham dự
+tham khảo,1,1,1,0,0,0,qipedc,tham khảo
+tham lam,1,1,1,0,0,0,qipedc,tham lam
+tham quan,2,2,3,0,0,0,qipedc,tham quan
+tham ăn,2,2,3,0,0,0,qipedc,tham ăn
+thanh hóa,1,1,1,0,0,0,qipedc,Thanh Hóa
+thanh niên,1,1,1,0,0,0,qipedc,thanh niên
+thao thức,1,1,1,0,0,0,qipedc,thao thức
+thay đổi,6,0,0,0,6,14,vslgh,THAY-ĐỔI
+theo dõi,1,1,1,0,0,0,qipedc,theo dõi
+theo đuổi,1,1,1,0,0,0,qipedc,theo đuổi
+thi,6,0,0,0,6,14,vslgh,THI
+thi cử,2,2,3,0,0,0,qipedc,thi cử
+thiu,1,1,1,0,0,0,qipedc,thiu
+thiên nhiên,1,1,1,0,0,0,qipedc,thiên nhiên
+thiên thần,1,1,1,0,0,0,qipedc,thiên thần
+thiên đình,1,1,1,0,0,0,qipedc,thiên đình
+thiếp mời,1,1,1,0,0,0,qipedc,thiếp mời
+thiếp đi,1,1,1,0,0,0,qipedc,thiếp đi
+thiết bị lưu trữ,1,0,0,1,0,0,hcmue,thiết bị lưu trữ
+thiết kế,2,2,3,0,0,0,qipedc,thiết kế
+thiếu nhi,1,1,1,0,0,0,qipedc,thiếu nhi
+thiếu niên,1,1,1,0,0,0,qipedc,thiếu niên
+thiếu thốn,2,2,3,0,0,0,qipedc,thiếu thốn
+thiệp sinh nhật,2,2,3,0,0,0,qipedc,thiệp sinh nhật
+thiệt thòi,1,1,1,0,0,0,qipedc,thiệt thòi
+thoát hiểm,1,1,1,0,0,0,qipedc,thoát hiểm
+thoăn thoắt,1,1,1,0,0,0,qipedc,thoăn thoắt
+thu mua,1,1,1,0,0,0,qipedc,thu mua
+thu nhỏ,1,1,1,0,0,0,qipedc,thu nhỏ
+thu thập,1,1,1,0,0,0,qipedc,thu thập
+thua,1,0,0,1,0,0,hcmue,thua
+thung lũng,1,1,1,0,0,0,qipedc,thung lũng
+thuyết phục,1,1,1,0,0,0,qipedc,thuyết phục
+thuyết trình,1,1,1,0,0,0,qipedc,thuyết trình
+thuyền chài,1,1,1,0,0,0,qipedc,thuyền chài
+thuyền rồng,1,1,1,0,0,0,qipedc,thuyền rồng
+thuê,2,2,3,0,0,0,qipedc,thuê
+thuận lợi,1,1,1,0,0,0,qipedc,thuận lợi
+thuận tiện,1,0,0,1,0,0,hcmue,thuận tiện
+thuốc,6,0,0,0,6,112,vslgh,THUỐC
+thuốc bắc,1,1,1,0,0,0,qipedc,thuốc bắc
+thuốc bổ,1,1,1,0,0,0,qipedc,thuốc bổ
+thuốc lá,1,1,1,0,0,0,qipedc,thuốc lá
+thuốc uống,6,0,0,0,6,84,vslgh,THUỐC-UỐNG
+thuộc lòng,1,1,1,0,0,0,qipedc,thuộc lòng
+thuộc địa,1,1,1,0,0,0,qipedc,thuộc địa
+thuỷ thủ,1,1,1,0,0,0,qipedc,thuỷ thủ
+thuỷ điện,2,2,3,0,0,0,qipedc,thuỷ điện
+thành công,1,1,1,0,0,0,qipedc,thành công
+thành lập,3,3,4,0,0,0,qipedc,thành lập
+thành thạo,1,1,1,0,0,0,qipedc,thành thạo
+thành thị,1,1,1,0,0,0,qipedc,thành thị
+thành viên,1,1,1,0,0,0,qipedc,thành viên
+thác,1,1,1,0,0,0,qipedc,thác
+thái nguyên,1,1,1,0,0,0,qipedc,Thái Nguyên
+thái độ,2,2,3,0,0,0,qipedc,thái độ
+thám tử,1,1,1,0,0,0,qipedc,thám tử
+thán phục,1,1,1,0,0,0,qipedc,thán phục
+tháng,2,2,3,0,0,0,qipedc,tháng
+thánh gióng,1,1,1,0,0,0,qipedc,Thánh Gióng
+thánh địa mỹ sơn,1,1,1,0,0,0,qipedc,thánh địa Mỹ Sơn
+tháo gỡ,1,1,1,0,0,0,qipedc,tháo gỡ
+tháp,1,1,1,0,0,0,qipedc,tháp
+tháp rùa,1,1,1,0,0,0,qipedc,tháp Rùa
+thâm quầng mắt,1,1,1,0,0,0,qipedc,thâm quầng mắt
+thân cây,2,2,3,0,0,0,qipedc,thân cây
+thân hình,1,1,1,0,0,0,qipedc,thân hình
+thân nhân,1,0,0,1,0,0,hcmue,thân nhân
+thân thiết,1,1,1,0,0,0,qipedc,thân thiết
+thân thiện,1,1,1,0,0,0,qipedc,thân thiện
+thèm,1,1,1,0,0,0,qipedc,thèm
+thèm rỏ dãi,1,1,1,0,0,0,qipedc,thèm rỏ dãi
+thét,1,1,1,0,0,0,qipedc,thét
+thêm,7,1,1,0,6,28,qipedc+vslgh,THÊM | thêm
+thêu,2,2,2,0,0,0,qipedc,thêu
+thì thầm,1,1,1,0,0,0,qipedc,thì thầm
+thìa,2,2,3,0,0,0,qipedc,thìa
+thí nghiệm,1,1,1,0,0,0,qipedc,thí nghiệm
+thích nghi,1,1,1,0,0,0,qipedc,thích nghi
+thích thú,3,3,3,0,0,0,qipedc,thích thú
+thím,2,1,1,1,0,0,qipedc+hcmue,thím
+thóc (gạo),1,1,1,0,0,0,qipedc,thóc (gạo)
+thói quen,2,2,3,0,0,0,qipedc,thói quen
+thông báo,1,1,1,0,0,0,qipedc,thông báo
+thông cảm,1,1,1,0,0,0,qipedc,thông cảm
+thông minh,2,2,3,0,0,0,qipedc,thông minh
+thông qua,1,1,1,0,0,0,qipedc,thông qua
+thông thường,1,1,1,0,0,0,qipedc,thông thường
+thông tin,8,2,3,0,6,28,qipedc+vslgh,THÔNG-TIN | thông tin
+thù lao,1,1,1,0,0,0,qipedc,thù lao
+thùng,1,1,1,0,0,0,qipedc,thùng
+thú dữ,2,2,3,0,0,0,qipedc,thú dữ
+thú y,2,2,3,0,0,0,qipedc,thú y
+thúc đẩy,1,1,1,0,0,0,qipedc,thúc đẩy
+thăm hỏi,2,2,3,0,0,0,qipedc,thăm hỏi
+thăng bằng,1,1,1,0,0,0,qipedc,thăng bằng
+thăng long,1,1,1,0,0,0,qipedc,Thăng Long
+thơm,2,2,3,0,0,0,qipedc,thơm
+thư giãn,1,1,1,0,0,0,qipedc,thư giãn
+thư điện tử,1,0,0,1,0,0,hcmue,thư điện tử
+thương (số),1,1,1,0,0,0,qipedc,thương (số)
+thương mại,1,1,1,0,0,0,qipedc,thương mại
+thương yêu,4,4,6,0,0,0,qipedc,thương yêu
+thước cuộn,1,0,0,1,0,0,hcmue,thước cuộn
+thước gấp,1,0,0,1,0,0,hcmue,thước gấp
+thường xuyên,9,3,4,0,6,14,qipedc+vslgh,THƯỜNG-XUYÊN | thường xuyên
+thả diều,1,1,1,0,0,0,qipedc,thả diều
+thả mồi,1,1,1,0,0,0,qipedc,thả mồi
+thản nhiên,1,1,1,0,0,0,qipedc,thản nhiên
+thấp,6,0,0,0,6,14,vslgh,THẤP
+thấp hơn,1,1,1,0,0,0,qipedc,thấp hơn
+thấp nhất,1,1,1,0,0,0,qipedc,thấp nhất
+thấy,6,0,0,0,6,14,vslgh,THẤY
+thần chết,1,1,1,0,0,0,qipedc,thần chết
+thần kinh,1,1,1,0,0,0,qipedc,thần kinh
+thần kì,1,1,1,0,0,0,qipedc,thần kì
+thầy cô,2,2,3,0,0,0,qipedc,thầy cô
+thầy cúng,1,1,1,0,0,0,qipedc,thầy cúng
+thầy giáo,2,2,3,0,0,0,qipedc,thầy giáo
+thận,6,1,1,0,5,13,qipedc+vslgh,THẬN | thận
+thập thò,1,1,1,0,0,0,qipedc,thập thò
+thật thà,1,1,1,0,0,0,qipedc,thật thà
+thắc mắc,1,1,1,0,0,0,qipedc,thắc mắc
+thắng lợi,1,1,1,0,0,0,qipedc,thắng lợi
+thắp đèn,1,1,1,0,0,0,qipedc,thắp đèn
+thẳng hàng (toán học),1,1,1,0,0,0,qipedc,thẳng hàng (Toán học)
+thẳng tắp,1,1,1,0,0,0,qipedc,thẳng tắp
+thẻ,7,1,1,0,6,55,qipedc+vslgh,THẺ | thẻ
+thế hệ,1,1,1,0,0,0,qipedc,thế hệ
+thế nào?,2,2,3,0,0,0,qipedc,thế nào?
+thề,1,1,1,0,0,0,qipedc,thề
+thềm,1,1,1,0,0,0,qipedc,thềm
+thể dục,6,0,0,0,6,14,vslgh,THỂ-DỤC
+thể hình,1,0,0,1,0,0,hcmue,thể hình
+thể thao,1,0,0,1,0,0,hcmue,thể thao
+thỉnh thoảng,6,0,0,0,6,14,vslgh,THỈNH-THOẢNG
+thị giác,1,1,1,0,0,0,qipedc,thị giác
+thị lực,7,1,1,0,6,14,qipedc+vslgh,THỊ-LỰC | thị lực
+thịnh vượng,1,1,1,0,0,0,qipedc,thịnh vượng
+thối,1,1,1,0,0,0,qipedc,thối
+thống nhất,1,1,1,0,0,0,qipedc,thống nhất
+thống nhất đất nước,1,1,1,0,0,0,qipedc,thống nhất đất nước
+thổ dân,1,1,1,0,0,0,qipedc,thổ dân
+thổi,1,1,1,0,0,0,qipedc,thổi
+thổi bóng,1,1,1,0,0,0,qipedc,thổi bóng
+thổi kèn,1,1,1,0,0,0,qipedc,thổi kèn
+thờ cúng,1,1,1,0,0,0,qipedc,thờ cúng
+thời gian biểu,1,1,1,0,0,0,qipedc,thời gian biểu
+thở,1,1,1,0,0,0,qipedc,thở
+thở dài,1,1,1,0,0,0,qipedc,thở dài
+thở khó,6,0,0,0,6,28,vslgh,THỞ-KHÓ
+thợ kim hoàn,1,1,1,0,0,0,qipedc,thợ kim hoàn
+thợ rèn,1,1,1,0,0,0,qipedc,thợ rèn
+thợ thêu,1,1,1,0,0,0,qipedc,thợ thêu
+thụ phấn (hoa),1,1,1,0,0,0,qipedc,thụ phấn (hoa)
+thủ công,3,3,3,0,0,0,qipedc,thủ công
+thủ tướng,2,2,3,0,0,0,qipedc,thủ tướng
+thủng,1,1,1,0,0,0,qipedc,thủng
+thủy chung,1,1,1,0,0,0,qipedc,thủy chung
+thủy điện hòa bình,2,2,3,0,0,0,qipedc,Thủy Điện Hòa Bình
+thứ tự,7,1,1,0,6,42,qipedc+vslgh,THỨ-TỰ | thứ tự
+thức khuya,6,0,0,0,6,14,vslgh,THỨC-KHUYA
+thừa,2,2,3,0,0,0,qipedc,thừa
+thừa ruột,6,0,0,0,6,14,vslgh,THỪA-RUỘT
+thừa thiên – huế,3,3,3,0,0,0,qipedc,Thừa Thiên – Huế
+thực hiện,1,1,1,0,0,0,qipedc,thực hiện
+thực hành,1,1,1,0,0,0,qipedc,thực hành
+thực phẩm,1,1,1,0,0,0,qipedc,thực phẩm
+thực sự,1,1,1,0,0,0,qipedc,thực sự
+thực tế,1,1,1,0,0,0,qipedc,thực tế
+thực vật,1,1,1,0,0,0,qipedc,thực vật
+ti hí mắt,1,1,1,0,0,0,qipedc,ti hí mắt
+tia chớp,1,1,1,0,0,0,qipedc,tia chớp
+tia nắng,1,1,1,0,0,0,qipedc,tia nắng
+tia số,1,1,1,0,0,0,qipedc,tia số
+tim,7,1,1,0,6,42,qipedc+vslgh,TIM | tim
+tin cậy,1,1,1,0,0,0,qipedc,tin cậy
+tin học,1,1,1,0,0,0,qipedc,tin học
+tin nhắn,1,1,1,0,0,0,qipedc,tin nhắn
+tin tức,1,1,1,0,0,0,qipedc,tin tức
+tinh mắt,1,1,1,0,0,0,qipedc,tinh mắt
+tinh trùng,1,1,1,0,0,0,qipedc,tinh trùng
+tiêm,1,1,1,0,0,0,qipedc,tiêm
+tiêu chảy,6,0,0,0,6,14,vslgh,TIÊU-CHẢY
+tiêu cực,1,1,1,0,0,0,qipedc,tiêu cực
+tiêu diệt,3,1,1,2,0,0,qipedc+hcmue,tiêu diệt
+tiêu hoá,1,1,1,0,0,0,qipedc,tiêu hoá
+tiếc,2,2,3,0,0,0,qipedc,tiếc
+tiến bộ,1,1,1,0,0,0,qipedc,tiến bộ
+tiến sĩ,1,1,1,0,0,0,qipedc,tiến sĩ
+tiếng anh,2,2,3,0,0,0,qipedc,tiếng Anh
+tiếng nói,1,1,1,0,0,0,qipedc,tiếng nói
+tiếp,6,0,0,0,6,14,vslgh,TIẾP
+tiếp nhận,1,1,1,0,0,0,qipedc,tiếp nhận
+tiếp theo,1,1,1,0,0,0,qipedc,tiếp theo
+tiếp thu,1,1,1,0,0,0,qipedc,tiếp thu
+tiếp tân,1,1,1,0,0,0,qipedc,tiếp tân
+tiếp tục,2,2,3,0,0,0,qipedc,tiếp tục
+tiết kiệm,3,3,3,0,0,0,qipedc,tiết kiệm
+tiền,6,0,0,0,6,28,vslgh,TIỀN
+tiền giang,1,1,1,0,0,0,qipedc,Tiền Giang
+tiền sử,6,0,0,0,6,14,vslgh,TIỀN-SỬ
+tiểu,6,0,0,0,6,27,vslgh,TIỂU
+tiểu học,1,1,1,0,0,0,qipedc,tiểu học
+tiểu đường,6,0,0,0,6,14,vslgh,TIỂU-ĐƯỜNG
+tiểu đội,1,0,0,1,0,0,hcmue,tiểu đội
+tiệc,1,1,1,0,0,0,qipedc,tiệc
+tiện nghi,1,1,1,0,0,0,qipedc,tiện nghi
+to lớn,1,1,1,0,0,0,qipedc,to lớn
+toa lét,1,1,1,0,0,0,qipedc,toa lét
+toa xe,2,2,3,0,0,0,qipedc,toa xe
+toà án,2,2,3,0,0,0,qipedc,toà án
+toàn cầu,1,1,1,0,0,0,qipedc,toàn cầu
+trang phục,1,1,1,0,0,0,qipedc,trang phục
+trang trí,1,1,1,0,0,0,qipedc,trang trí
+trang điểm,2,1,1,1,0,0,qipedc+hcmue,trang điểm
+tranh luận,1,1,1,0,0,0,qipedc,tranh luận
+trao tặng,1,1,1,0,0,0,qipedc,trao tặng
+tre,3,3,3,0,0,0,qipedc,tre
+tri kỉ,1,1,1,0,0,0,qipedc,tri kỉ
+triều cường,1,1,1,0,0,0,qipedc,triều cường
+triều đình,1,1,1,0,0,0,qipedc,triều đình
+triệu phú,1,1,1,0,0,0,qipedc,triệu phú
+trong khoảng,1,1,1,0,0,0,qipedc,trong khoảng
+trong ngoài,2,2,3,0,0,0,qipedc,trong ngoài
+trong suốt,1,1,1,0,0,0,qipedc,trong suốt
+trong sáng,1,1,1,0,0,0,qipedc,trong sáng
+trung bình,1,1,1,0,0,0,qipedc,trung bình
+trung quốc (nước trung quốc),2,2,3,0,0,0,qipedc,Trung Quốc (nước Trung Quốc)
+trung thu,2,2,3,0,0,0,qipedc,Trung Thu
+trung thành,1,1,1,0,0,0,qipedc,trung thành
+trung tâm,1,1,1,0,0,0,qipedc,trung tâm
+trung điểm,1,1,1,0,0,0,qipedc,trung điểm
+trung ương,1,1,1,0,0,0,qipedc,trung ương
+truyền dịch,1,1,1,0,0,0,qipedc,truyền dịch
+truyền thông,1,1,1,0,0,0,qipedc,truyền thông
+truyền thống,1,1,1,0,0,0,qipedc,truyền thống
+trà,1,1,1,0,0,0,qipedc,trà
+trà nóng,1,1,1,0,0,0,qipedc,trà nóng
+trà sữa,1,1,1,0,0,0,qipedc,trà sữa
+trà vinh,1,1,1,0,0,0,qipedc,Trà Vinh
+trà đá,1,1,1,0,0,0,qipedc,trà đá
+tràn ngập (nước),1,1,1,0,0,0,qipedc,tràn ngập (nước)
+trách mắng,1,1,1,0,0,0,qipedc,trách mắng
+trách nhiệm,1,1,1,0,0,0,qipedc,trách nhiệm
+trái,6,0,0,0,6,14,vslgh,TRÁI
+trái nghĩa,1,1,2,0,0,0,qipedc,trái nghĩa
+trám,6,0,0,0,6,14,vslgh,TRÁM
+tránh thai,1,1,1,0,0,0,qipedc,tránh thai
+trêu,1,1,1,0,0,0,qipedc,trêu
+trêu tức,1,1,1,0,0,0,qipedc,trêu tức
+trình bày,1,1,1,0,0,0,qipedc,trình bày
+trình điều khiển,1,0,0,1,0,0,hcmue,trình điều khiển
+trình đơn,1,0,0,1,0,0,hcmue,trình đơn
+trình độ,1,1,1,0,0,0,qipedc,trình độ
+trí khôn,1,1,1,0,0,0,qipedc,trí khôn
+trí thức,1,1,1,0,0,0,qipedc,trí thức
+trò chơi,1,1,1,0,0,0,qipedc,trò chơi
+tròn,1,1,1,0,0,0,qipedc,tròn
+tròn trịa (mặt),1,1,1,0,0,0,qipedc,tròn trịa (mặt)
+trói tay,1,1,1,0,0,0,qipedc,trói tay
+trông chờ,2,2,3,0,0,0,qipedc,trông chờ
+trông coi,1,1,1,0,0,0,qipedc,trông coi
+trông nhà,1,1,1,0,0,0,qipedc,trông nhà
+trông nom,2,2,3,0,0,0,qipedc,trông nom
+trùm chăn,1,1,1,0,0,0,qipedc,trùm chăn
+trú mưa,1,1,1,0,0,0,qipedc,trú mưa
+trúng thưởng,1,1,1,0,0,0,qipedc,trúng thưởng
+trúng tuyển,2,2,3,0,0,0,qipedc,trúng tuyển
+trăng,2,2,3,0,0,0,qipedc,trăng
+trưng bày,1,1,1,0,0,0,qipedc,trưng bày
+trước,8,2,3,0,6,28,qipedc+vslgh,TRƯỚC | trước
+trường hợp,1,1,1,0,0,0,qipedc,trường hợp
+trường mầm non,2,2,3,0,0,0,qipedc,trường mầm non
+trường ptcs (cấp 2),2,2,3,0,0,0,qipedc,trường PTCS (cấp 2)
+trường thpt ( cấp 3),2,2,3,0,0,0,qipedc,trường THPT ( cấp 3)
+trường tiểu học,1,1,2,0,0,0,qipedc,trường tiểu học
+trưởng nhóm,1,1,1,0,0,0,qipedc,trưởng nhóm
+trưởng thành,1,1,1,0,0,0,qipedc,trưởng thành
+trại giam,1,1,1,0,0,0,qipedc,trại giam
+trạm xe buýt,1,1,1,0,0,0,qipedc,trạm xe buýt
+trạm y tế,1,1,1,0,0,0,qipedc,trạm y tế
+trả,6,0,0,0,6,14,vslgh,TRẢ
+trả (đt),1,1,1,0,0,0,qipedc,trả (đt)
+trả lời,1,1,1,0,0,0,qipedc,trả lời
+trả thù,1,1,1,0,0,0,qipedc,trả thù
+trầm cảm,6,0,0,0,6,14,vslgh,TRẦM-CẢM
+trầm trồ,1,1,1,0,0,0,qipedc,trầm trồ
+trần nhà,1,1,1,0,0,0,qipedc,trần nhà
+trần quốc toản,1,1,1,0,0,0,qipedc,Trần Quốc Toản
+trắng muốt,2,2,3,0,0,0,qipedc,trắng muốt
+trắng tay,1,1,1,0,0,0,qipedc,trắng tay
+trẻ con/con nít,2,2,3,0,0,0,qipedc,trẻ con/con nít
+trọc đầu,2,2,3,0,0,0,qipedc,trọc đầu
+trọng nam khinh nữ,1,1,1,0,0,0,qipedc,trọng nam khinh nữ
+trọng tài,1,1,1,0,0,0,qipedc,trọng tài
+trốn chạy,2,2,3,0,0,0,qipedc,trốn chạy
+trốn tìm,1,1,1,0,0,0,qipedc,trốn tìm
+trống,1,1,1,0,0,0,qipedc,trống
+trống (không có gì),1,1,1,0,0,0,qipedc,trống (không có gì)
+trộm cắp,1,1,1,0,0,0,qipedc,trộm cắp
+trộn (đt),1,1,1,0,0,0,qipedc,trộn (đt)
+trở thành,1,1,1,0,0,0,qipedc,trở thành
+trục hoành,1,1,1,0,0,0,qipedc,trục hoành
+trục tung,1,1,1,0,0,0,qipedc,trục tung
+trục xuất,1,1,1,0,0,0,qipedc,trục xuất
+trụi lá,2,2,3,0,0,0,qipedc,trụi lá
+trứng,3,3,3,0,0,0,qipedc,trứng
+trực nhật,1,1,1,0,0,0,qipedc,trực nhật
+trực tiếp,1,1,1,0,0,0,qipedc,trực tiếp
+tung tăng,1,1,1,0,0,0,qipedc,tung tăng
+tuy hoà,1,1,1,0,0,0,qipedc,Tuy Hoà
+tuyên bố,1,1,1,0,0,0,qipedc,tuyên bố
+tuyên ngôn,1,1,1,0,0,0,qipedc,tuyên ngôn
+tuyên truyền,1,1,1,0,0,0,qipedc,tuyên truyền
+tuyệt vọng,1,1,1,0,0,0,qipedc,tuyệt vọng
+tuân lệnh,1,1,1,0,0,0,qipedc,tuân lệnh
+tuân thủ,1,1,1,0,0,0,qipedc,tuân thủ
+tuần,3,3,3,0,0,0,qipedc,tuần
+tuần lễ người điếc thế giới,2,2,3,0,0,0,qipedc,tuần lễ người Điếc thế giới
+tuần này,2,2,3,0,0,0,qipedc,tuần này
+tuần sau,2,2,3,0,0,0,qipedc,tuần sau
+tuần trăng mật,1,1,1,0,0,0,qipedc,tuần trăng mật
+tuần trước,3,3,3,0,0,0,qipedc,tuần trước
+tuốt lúa,1,1,1,0,0,0,qipedc,tuốt lúa
+tuổi,6,0,0,0,6,14,vslgh,TUỔI
+tuổi thơ,1,1,1,0,0,0,qipedc,tuổi thơ
+tuổi thơ ấu,1,1,1,0,0,0,qipedc,tuổi thơ ấu
+tuỷ sống,1,1,1,0,0,0,qipedc,tuỷ sống
+tài giỏi,1,1,1,0,0,0,qipedc,tài giỏi
+tài năng,1,1,1,0,0,0,qipedc,tài năng
+tài trợ,1,1,1,0,0,0,qipedc,tài trợ
+tài xế,1,0,0,1,0,0,hcmue,tài xế
+tàu hoả,3,3,3,0,0,0,qipedc,tàu hoả
+tàu ngầm,1,1,1,0,0,0,qipedc,tàu ngầm
+tàu thuyền,1,1,1,0,0,0,qipedc,tàu thuyền
+tàu thủy,2,1,1,1,0,0,qipedc+hcmue,tàu thủy
+tàu vũ trụ,1,0,0,1,0,0,hcmue,tàu vũ trụ
+tác dụng,1,1,1,0,0,0,qipedc,tác dụng
+tác giả,1,1,1,0,0,0,qipedc,tác giả
+tác phẩm,1,1,1,0,0,0,qipedc,tác phẩm
+tác động,2,2,2,0,0,0,qipedc,tác động
+tách,1,1,1,0,0,0,qipedc,tách
+tách lớp,1,1,1,0,0,0,qipedc,tách lớp
+tái phát,1,1,1,0,0,0,qipedc,tái phát
+tái phạm,2,2,3,0,0,0,qipedc,tái phạm
+tán thành,1,1,1,0,0,0,qipedc,tán thành
+táo bón,6,0,0,0,6,14,vslgh,TÁO-BÓN
+tát,1,1,1,0,0,0,qipedc,tát
+tâm thần,1,1,1,0,0,0,qipedc,tâm thần
+tây bắc,1,1,1,0,0,0,qipedc,Tây Bắc
+tây nguyên,1,1,1,0,0,0,qipedc,Tây Nguyên
+tây ninh,1,1,1,0,0,0,qipedc,Tây Ninh
+té,6,0,0,0,6,14,vslgh,TÉ
+tê tay,6,0,0,0,6,14,vslgh,TÊ-TAY
+tên,6,0,0,0,6,28,vslgh,TÊN
+tên là gì?,2,2,2,0,0,0,qipedc,tên là gì?
+tên riêng,1,1,1,0,0,0,qipedc,tên riêng
+tìm hiểu,2,2,3,0,0,0,qipedc,tìm hiểu
+tình cảm,1,1,1,0,0,0,qipedc,tình cảm
+tình cờ,1,1,1,0,0,0,qipedc,tình cờ
+tình huống,1,1,1,0,0,0,qipedc,tình huống
+tình yêu,1,1,1,0,0,0,qipedc,tình yêu
+tí hon,1,1,1,0,0,0,qipedc,tí hon
+tích (số),1,1,1,0,0,0,qipedc,tích (số)
+tích cực,1,1,1,0,0,0,qipedc,tích cực
+tím tái,1,1,1,0,0,0,qipedc,tím tái
+tính,1,1,1,0,0,0,qipedc,tính
+tính chất,1,1,1,0,0,0,qipedc,tính chất
+tính chất bằng nhau,1,1,1,0,0,0,qipedc,tính chất bằng nhau
+tính chất cơ bản của phân số,1,1,1,0,0,0,qipedc,tính chất cơ bản của phân số
+tính chất giao hoán,1,1,1,0,0,0,qipedc,tính chất giao hoán
+tính chất kết hợp,1,1,1,0,0,0,qipedc,tính chất kết hợp
+tính cách,1,1,1,0,0,0,qipedc,tính cách
+tính nhẩm,1,1,1,0,0,0,qipedc,tính nhẩm
+tính toán,1,1,1,0,0,0,qipedc,tính toán
+tính từ,1,1,1,0,0,0,qipedc,tính từ
+tò mò,1,1,2,0,0,0,qipedc,tò mò
+tòa soạn,1,1,1,0,0,0,qipedc,tòa soạn
+tóc dài,1,1,1,0,0,0,qipedc,tóc dài
+tóc dựng đứng,1,1,1,0,0,0,qipedc,tóc dựng đứng
+tóc ngắn,2,2,3,0,0,0,qipedc,tóc ngắn
+tóc xoăn,1,1,1,0,0,0,qipedc,tóc xoăn
+tóm cổ,1,1,1,0,0,0,qipedc,tóm cổ
+tóm lược,1,1,1,0,0,0,qipedc,tóm lược
+tóm tắt,1,1,1,0,0,0,qipedc,tóm tắt
+tô màu,2,2,3,0,0,0,qipedc,tô màu
+tôi,6,0,0,0,6,3878,vslgh,TÔI
+tôi yêu bạn,2,2,3,0,0,0,qipedc,tôi yêu bạn
+tôi yêu bạn ấy,1,1,1,0,0,0,qipedc,tôi yêu bạn ấy
+tôm hùm,1,1,1,0,0,0,qipedc,tôm hùm
+tôn thờ,1,1,1,0,0,0,qipedc,tôn thờ
+tôn trọng,2,2,2,0,0,0,qipedc,tôn trọng
+tù giam,1,1,1,0,0,0,qipedc,tù giam
+túm tóc,1,1,1,0,0,0,qipedc,túm tóc
+tăm,1,1,1,0,0,0,qipedc,tăm
+tăng cân,6,0,0,0,6,14,vslgh,TĂNG-CÂN
+tĩnh lặng,1,1,1,0,0,0,qipedc,tĩnh lặng
+tươi cười,1,1,1,0,0,0,qipedc,tươi cười
+tương lai,1,1,1,0,0,0,qipedc,tương lai
+tương ớt,2,2,3,0,0,0,qipedc,tương ớt
+tương ứng,1,1,1,0,0,0,qipedc,tương ứng
+tưới cây,2,2,3,0,0,0,qipedc,tưới cây
+tưởng,1,1,1,0,0,0,qipedc,tưởng
+tưởng tượng,3,3,4,0,0,0,qipedc,tưởng tượng
+tượng,1,1,1,0,0,0,qipedc,tượng
+tượng đài,1,1,1,0,0,0,qipedc,tượng đài
+tại sao,6,0,0,0,6,14,vslgh,TẠI-SAO
+tạm biệt,1,1,1,0,0,0,qipedc,tạm biệt
+tạo dáng,1,1,1,0,0,0,qipedc,tạo dáng
+tạo thành,1,1,1,0,0,0,qipedc,tạo thành
+tải về,1,1,1,0,0,0,qipedc,tải về
+tấm lòng,1,1,1,0,0,0,qipedc,tấm lòng
+tấm vải,2,2,3,0,0,0,qipedc,tấm vải
+tấn,1,0,0,1,0,0,hcmue,tấn
+tấn công,1,1,1,0,0,0,qipedc,tấn công
+tất cả,6,0,0,0,6,14,vslgh,TẤT-CẢ
+tẩy chay,1,1,1,0,0,0,qipedc,tẩy chay
+tận số,1,1,1,0,0,0,qipedc,tận số
+tập hợp (toán học),1,1,1,0,0,0,qipedc,tập hợp (Toán học)
+tập hợp rỗng,1,1,1,0,0,0,qipedc,tập hợp rỗng
+tập làm văn,1,1,1,0,0,0,qipedc,tập làm văn
+tập thể,1,1,1,0,0,0,qipedc,tập thể
+tập thể dục,3,1,2,2,0,0,qipedc+hcmue,tập thể dục
+tập trung,1,1,1,0,0,0,qipedc,tập trung
+tập viết,1,1,1,0,0,0,qipedc,tập viết
+tặc lưỡi,1,1,1,0,0,0,qipedc,tặc lưỡi
+tết dương,2,2,2,0,0,0,qipedc,Tết Dương
+tết hàn thực,3,3,3,0,0,0,qipedc,Tết hàn thực
+tết thiếu nhi,1,1,1,0,0,0,qipedc,Tết Thiếu nhi
+tết trung thu,2,2,3,0,0,0,qipedc,Tết Trung thu
+tết âm,2,2,2,0,0,0,qipedc,Tết Âm
+tệp,1,0,0,1,0,0,hcmue,tệp
+tỉ lệ,1,1,1,0,0,0,qipedc,tỉ lệ
+tỉ mỉ,1,1,1,0,0,0,qipedc,tỉ mỉ
+tỉ số,1,1,1,0,0,0,qipedc,tỉ số
+tỉ số phần trăm,1,1,1,0,0,0,qipedc,tỉ số phần trăm
+tỉnh,1,1,1,0,0,0,qipedc,tỉnh
+tỉnh táo,1,1,1,0,0,0,qipedc,tỉnh táo
+tỏa hương,1,1,1,0,0,0,qipedc,tỏa hương
+tối,6,0,0,0,6,14,vslgh,TỐI
+tống tiền,1,1,1,0,0,0,qipedc,tống tiền
+tốt,6,0,0,0,6,14,vslgh,TỐT
+tồn tại,1,1,1,0,0,0,qipedc,tồn tại
+tổ chim,1,1,1,0,0,0,qipedc,tổ chim
+tổ tiên,1,1,1,0,0,0,qipedc,tổ tiên
+tổ trưởng,1,1,1,0,0,0,qipedc,tổ trưởng
+tổng (số),1,1,1,0,0,0,qipedc,tổng (số)
+tổng hợp,1,1,1,0,0,0,qipedc,tổng hợp
+tổng kết/bế giảng,2,2,3,0,0,0,qipedc,tổng kết/bế giảng
+tổng quát,6,0,0,0,6,15,vslgh,TỔNG-QUÁT
+tổng thống,2,2,3,0,0,0,qipedc,tổng thống
+tờ báo,2,2,3,0,0,0,qipedc,tờ báo
+tờ giấy,2,2,3,0,0,0,qipedc,tờ giấy
+tờ tiền,1,1,1,0,0,0,qipedc,tờ tiền
+tụ tập,1,1,1,0,0,0,qipedc,tụ tập
+tủi thân,1,1,1,0,0,0,qipedc,tủi thân
+từ bỏ,1,1,1,0,0,0,qipedc,từ bỏ
+từ chối,2,2,3,0,0,0,qipedc,từ chối
+từ ngữ,1,1,1,0,0,0,qipedc,từ ngữ
+từ phải sang trái,1,1,1,0,0,0,qipedc,từ phải sang trái
+từ trái nghĩa,2,2,3,0,0,0,qipedc,từ trái nghĩa
+từ trái sang phải,1,1,1,0,0,0,qipedc,từ trái sang phải
+từ đồng âm,1,1,1,0,0,0,qipedc,từ đồng âm
+từng,6,0,0,0,6,14,vslgh,TỪNG
+tự (tự làm),1,1,1,0,0,0,qipedc,tự (tự làm)
+tự do,2,2,3,0,0,0,qipedc,tự do
+tự giác,1,1,1,0,0,0,qipedc,tự giác
+tự hào,1,1,1,0,0,0,qipedc,tự hào
+tự lập,3,3,3,0,0,0,qipedc,tự lập
+tự tin,2,2,3,0,0,0,qipedc,tự tin
+tự trọng,1,1,1,0,0,0,qipedc,tự trọng
+tự vệ,3,3,3,0,0,0,qipedc,tự vệ
+u,2,1,1,1,0,0,qipedc+hcmue,u
+u ám ( trời u ám),1,1,1,0,0,0,qipedc,u ám ( trời u ám)
+ung dung,1,1,1,0,0,0,qipedc,ung dung
+ung thư,2,2,3,0,0,0,qipedc,ung thư
+unicef,1,1,1,0,0,0,qipedc,UNICEF
+uốn,1,1,1,0,0,0,qipedc,uốn
+uốn cong,1,1,1,0,0,0,qipedc,uốn cong
+uốn dẻo,1,1,1,0,0,0,qipedc,uốn dẻo
+uốn tóc,1,1,1,0,0,0,qipedc,uốn tóc
+uống,6,0,0,0,6,98,vslgh,UỐNG
+v,2,1,1,1,0,0,qipedc+hcmue,v
+va chạm,1,1,1,0,0,0,qipedc,va chạm
+va li,1,1,1,0,0,0,qipedc,va li
+vai,1,1,1,0,0,0,qipedc,vai
+vai trò,1,1,1,0,0,0,qipedc,vai trò
+vi khuẩn,1,1,1,0,0,0,qipedc,vi khuẩn
+vi phạm luật,1,0,0,1,0,0,hcmue,vi phạm luật
+virus,1,0,0,1,0,0,hcmue,virus
+viêm xoang,6,0,0,0,6,14,vslgh,VIÊM-XOANG
+viết,6,0,0,0,6,56,vslgh,VIẾT
+viết lia lịa,1,1,1,0,0,0,qipedc,viết lia lịa
+viền cửa tay,1,0,0,1,0,0,hcmue,viền cửa tay
+việc,6,0,0,0,6,14,vslgh,VIỆC
+việc làm,1,1,1,0,0,0,qipedc,việc làm
+viện bảo tàng,1,1,1,0,0,0,qipedc,viện bảo tàng
+viện nghiên cứu,1,1,1,0,0,0,qipedc,viện nghiên cứu
+vua hùng,1,1,1,0,0,0,qipedc,vua Hùng
+vui chơi,2,2,3,0,0,0,qipedc,vui chơi
+vui mừng,2,2,3,0,0,0,qipedc,vui mừng
+vui sướng,2,2,3,0,0,0,qipedc,vui sướng
+vui tính,1,1,1,0,0,0,qipedc,vui tính
+vun đắp,1,1,1,0,0,0,qipedc,vun đắp
+vuông góc,1,1,1,0,0,0,qipedc,vuông góc
+vuốt tóc,1,1,1,0,0,0,qipedc,vuốt tóc
+vàng (kim loại),2,1,1,1,0,0,qipedc+hcmue,vàng (kim loại)
+vàng bạc,1,1,1,0,0,0,qipedc,vàng bạc
+vào,7,1,1,0,6,27,qipedc+vslgh,VÀO | vào
+vào bình,6,0,0,0,6,14,vslgh,VÀO-BÌNH
+vào lớp,1,1,1,0,0,0,qipedc,vào lớp
+vào mùa,2,2,2,0,0,0,qipedc,vào mùa
+vào mạng,1,0,0,1,0,0,hcmue,vào mạng
+vá quần áo,1,1,1,0,0,0,qipedc,vá quần áo
+vá xe,1,1,1,0,0,0,qipedc,vá xe
+vác,1,1,1,0,0,0,qipedc,vác
+vái lạy,1,1,1,0,0,0,qipedc,vái lạy
+vái tứ phương,1,1,1,0,0,0,qipedc,vái tứ phương
+váy,1,0,0,1,0,0,hcmue,váy
+vây bắt,1,1,1,0,0,0,qipedc,vây bắt
+vé,1,1,1,0,0,0,qipedc,vé
+vén áo,6,0,0,0,6,14,vslgh,VÉN-ÁO
+vênh váo,1,1,1,0,0,0,qipedc,vênh váo
+vì sao?,2,2,3,0,0,0,qipedc,vì sao?
+ví dụ,2,2,3,0,0,0,qipedc,ví dụ
+vòi nước,1,1,1,0,0,0,qipedc,vòi nước
+vòi voi,1,1,1,0,0,0,qipedc,vòi voi
+vòm lá,1,1,1,0,0,0,qipedc,vòm lá
+vòng,6,0,0,0,6,28,vslgh,VÒNG
+vòng cung,1,1,1,0,0,0,qipedc,vòng cung
+vòng nguyệt quế,1,1,1,0,0,0,qipedc,vòng nguyệt quế
+vòng nách,1,0,0,1,0,0,hcmue,vòng nách
+vòng quanh trái đất,1,1,1,0,0,0,qipedc,vòng quanh Trái Đất
+vòng tròn,1,1,1,0,0,0,qipedc,vòng tròn
+vòng đeo tay,1,1,1,0,0,0,qipedc,vòng đeo tay
+vòng đời,1,1,1,0,0,0,qipedc,vòng đời
+vô duyên,2,2,3,0,0,0,qipedc,vô duyên
+vô lo vô nghĩ,1,1,1,0,0,0,qipedc,vô lo vô nghĩ
+vô lí,1,1,1,0,0,0,qipedc,vô lí
+vô tâm,1,1,1,0,0,0,qipedc,vô tâm
+vô tình,1,1,1,0,0,0,qipedc,vô tình
+vô tư,1,1,1,0,0,0,qipedc,vô tư
+vô ý,1,1,1,0,0,0,qipedc,vô ý
+vô ý thức,1,1,1,0,0,0,qipedc,vô ý thức
+võ nguyên giáp,1,1,1,0,0,0,qipedc,Võ Nguyên Giáp
+võ thuật,1,1,1,0,0,0,qipedc,võ thuật
+võ thị sáu,1,1,1,0,0,0,qipedc,Võ Thị Sáu
+võng (cái võng),1,1,1,0,0,0,qipedc,võng (cái võng)
+vùng vẫy (dành cho người),1,1,1,0,0,0,qipedc,vùng vẫy (dành cho người)
+văn,1,1,1,0,0,0,qipedc,văn
+văn bản,1,1,1,0,0,0,qipedc,văn bản
+văn miếu quốc tử giám,1,1,1,0,0,0,qipedc,Văn miếu Quốc Tử Giám
+văn nghệ,2,2,3,0,0,0,qipedc,văn nghệ
+vĩ cầm,1,1,1,0,0,0,qipedc,vĩ cầm
+vĩ đại,1,1,1,0,0,0,qipedc,vĩ đại
+vĩnh long,1,1,1,0,0,0,qipedc,Vĩnh Long
+vĩnh phúc,1,1,1,0,0,0,qipedc,Vĩnh Phúc
+vũ công,1,1,1,0,0,0,qipedc,vũ công
+vũ trụ,1,1,1,0,0,0,qipedc,vũ trụ
+vườn thú,1,1,1,0,0,0,qipedc,vườn thú
+vượt trội,1,1,1,0,0,0,qipedc,vượt trội
+vạch,1,0,0,1,0,0,hcmue,vạch
+vạch trần,1,1,1,0,0,0,qipedc,vạch trần
+vạch xuất phát,1,1,1,0,0,0,qipedc,vạch xuất phát
+vạm vỡ,1,1,1,0,0,0,qipedc,vạm vỡ
+vạt áo,1,1,1,0,0,0,qipedc,vạt áo
+vải,1,0,0,1,0,0,hcmue,vải
+vải (may mặc),1,0,0,1,0,0,hcmue,vải (may mặc)
+vải lụa,2,2,3,0,0,0,qipedc,vải lụa
+vấn đề,2,2,3,0,0,0,qipedc,vấn đề
+vầng trăng,1,1,2,0,0,0,qipedc,vầng trăng
+vẫn,2,2,3,0,0,0,qipedc,vẫn
+vẫy tay,1,1,1,0,0,0,qipedc,vẫy tay
+vẫy vùng (cá),1,1,1,0,0,0,qipedc,vẫy vùng (cá)
+vận chuyển,1,1,1,0,0,0,qipedc,vận chuyển
+vận tốc,1,1,1,0,0,0,qipedc,vận tốc
+vận động,1,1,1,0,0,0,qipedc,vận động
+vận động viên,1,0,0,1,0,0,hcmue,vận động viên
+vật,1,1,1,0,0,0,qipedc,vật
+vật nuôi,3,3,3,0,0,0,qipedc,vật nuôi
+vắn tắt,1,1,1,0,0,0,qipedc,vắn tắt
+vắng,3,3,3,0,0,0,qipedc,vắng
+vắng lặng,1,1,1,0,0,0,qipedc,vắng lặng
+vắt cam,1,1,1,0,0,0,qipedc,vắt cam
+vắt chanh,1,1,1,0,0,0,qipedc,vắt chanh
+vết thương,7,1,1,0,6,28,qipedc+vslgh,VẾT-THƯƠNG | vết thương
+về,1,1,1,0,0,0,qipedc,về (Sài Gòn)
+về 2,2,2,2,0,0,0,qipedc,về 2 (Miền Bắc)
+về 3 (đi về),1,1,1,0,0,0,qipedc,về 3 (đi về)
+về 4 (từ nơi khác về),1,1,1,0,0,0,qipedc,về 4 (từ nơi khác về)
+về 5 (về nhà),1,1,1,0,0,0,qipedc,về 5 (về nhà)
+vệ sinh cá nhân,1,1,1,0,0,0,qipedc,vệ sinh cá nhân
+vị,6,0,0,0,6,14,vslgh,VỊ
+vị ngữ,1,1,1,0,0,0,qipedc,vị ngữ
+vị trí,1,1,1,0,0,0,qipedc,vị trí
+vịnh,1,1,1,0,0,0,qipedc,vịnh
+vịnh hạ long,1,1,1,0,0,0,qipedc,vịnh Hạ Long
+vịt quay,1,1,1,0,0,0,qipedc,vịt quay
+vỏ,1,1,1,0,0,0,qipedc,vỏ
+vồ,1,1,1,0,0,0,qipedc,vồ
+vỗ cánh,1,1,1,0,0,0,qipedc,vỗ cánh
+vỗ tay,1,1,1,0,0,0,qipedc,vỗ tay
+vỗ về,1,1,1,0,0,0,qipedc,vỗ về
+vội vã,1,1,1,0,0,0,qipedc,vội vã
+vớt,1,1,1,0,0,0,qipedc,vớt
+vở chèo,1,1,1,0,0,0,qipedc,vở chèo
+vỡ,1,1,1,0,0,0,qipedc,vỡ
+vỡ lòng,1,1,1,0,0,0,qipedc,vỡ lòng
+vợ,1,0,0,1,0,0,hcmue,vợ
+vợ chồng,1,0,0,1,0,0,hcmue,vợ chồng
+vợ con,1,0,0,1,0,0,hcmue,vợ con
+vợt cầu lông,1,1,1,0,0,0,qipedc,vợt cầu lông
+vừa,6,0,0,0,6,14,vslgh,VỪA
+vững chắc,1,1,1,0,0,0,qipedc,vững chắc
+vực sâu,1,1,1,0,0,0,qipedc,vực sâu
+w,1,1,1,0,0,0,qipedc,w
+wc,6,0,0,0,6,14,vslgh,WC
+x,2,2,3,0,0,0,qipedc,x
+x quang,6,0,0,0,6,42,vslgh,X-QUANG
+xa cách,1,1,1,0,0,0,qipedc,xa cách
+xa vô tận,1,1,1,0,0,0,qipedc,xa vô tận
+xa xôi,1,1,1,0,0,0,qipedc,xa xôi
+xanh xao,2,2,3,0,0,0,qipedc,xanh xao
+xe ben,2,1,1,1,0,0,qipedc+hcmue,xe ben
+xe buýt,1,0,0,1,0,0,hcmue,xe buýt
+xe bò,1,0,0,1,0,0,hcmue,xe bò
+xe container,1,1,1,0,0,0,qipedc,xe container
+xe cảnh sát,2,2,3,0,0,0,qipedc,xe cảnh sát
+xe cẩu,1,1,1,0,0,0,qipedc,xe cẩu
+xe cứu hỏa,2,2,2,0,0,0,qipedc,xe cứu hỏa
+xe cứu thương,2,1,1,1,0,0,qipedc+hcmue,xe cứu thương
+xe gắn máy,1,0,0,1,0,0,hcmue,xe gắn máy
+xe khách,3,3,3,0,0,0,qipedc,xe khách
+xe lam,1,1,1,0,0,0,qipedc,xe lam
+xe lu,1,1,1,0,0,0,qipedc,xe lu
+xe máy,1,1,1,0,0,0,qipedc,xe máy
+xe ngựa,1,0,0,1,0,0,hcmue,xe ngựa
+xe tải,1,1,1,0,0,0,qipedc,xe tải
+xe xích lô,1,0,0,1,0,0,hcmue,xe xích lô
+xe ôm,1,0,0,1,0,0,hcmue,xe ôm
+xe đạp,2,1,1,1,0,0,qipedc+hcmue,xe đạp
+xem,8,2,3,0,6,28,qipedc+vslgh,XEM | xem
+xem xét,1,1,1,0,0,0,qipedc,xem xét
+xem đã,1,1,1,0,0,0,qipedc,xem đã
+xen,1,1,1,0,0,0,qipedc,xen
+xin,6,0,0,0,6,42,vslgh,XIN
+xin lỗi,1,1,1,0,0,0,qipedc,xin lỗi
+xin đường,1,0,0,1,0,0,hcmue,xin đường
+xinh,1,1,1,0,0,0,qipedc,xinh
+xinh xắn,1,1,1,0,0,0,qipedc,xinh xắn
+xoa đầu,1,1,1,0,0,0,qipedc,xoa đầu
+xong,6,0,0,0,6,42,vslgh,XONG
+xong rồi,6,0,0,0,6,14,vslgh,XONG-RỒI
+xoá bỏ,1,1,1,0,0,0,qipedc,xoá bỏ
+xoáy,1,1,1,0,0,0,qipedc,xoáy
+xu (tiền),1,1,1,0,0,0,qipedc,xu (tiền)
+xui xẻo,1,1,1,0,0,0,qipedc,xui xẻo
+xung phong,2,1,1,1,0,0,qipedc+hcmue,xung phong
+xung quanh nhà,1,1,1,0,0,0,qipedc,xung quanh nhà
+xung đột,1,1,1,0,0,0,qipedc,xung đột
+xuyên việt,1,1,1,0,0,0,qipedc,xuyên Việt
+xuất hiện,2,2,3,0,0,0,qipedc,xuất hiện
+xuất khẩu,1,1,1,0,0,0,qipedc,xuất khẩu
+xuống,7,1,1,0,6,14,qipedc+vslgh,XUỐNG | xuống
+xà lan,1,0,0,1,0,0,hcmue,xà lan
+xà phòng,3,3,3,0,0,0,qipedc,xà phòng
+xà phòng giặt,2,2,3,0,0,0,qipedc,xà phòng giặt
+xào,1,1,1,0,0,0,qipedc,xào
+xác chết,1,1,1,0,0,0,qipedc,xác chết
+xác định,1,1,1,0,0,0,qipedc,xác định
+xách nặng,1,1,1,0,0,0,qipedc,xách nặng
+xách túi,1,1,1,0,0,0,qipedc,xách túi
+xâm hại tình dục,1,1,1,0,0,0,qipedc,xâm hại tình dục
+xâm lược,1,1,1,0,0,0,qipedc,xâm lược
+xây,2,2,3,0,0,0,qipedc,xây
+xây nhà,1,1,1,0,0,0,qipedc,xây nhà
+xã,1,1,1,0,0,0,qipedc,xã
+xã hội,2,2,3,0,0,0,qipedc,xã hội
+xé rách,1,1,1,0,0,0,qipedc,xé rách
+xét nghiệm,6,0,0,0,6,126,vslgh,XÉT-NGHIỆM
+xì hơi (đánh rắm),2,2,2,0,0,0,qipedc,xì hơi (đánh rắm)
+xích đạo,1,1,1,0,0,0,qipedc,xích đạo
+xóa bảng,1,1,1,0,0,0,qipedc,xóa bảng
+xóm làng,1,1,1,0,0,0,qipedc,xóm làng
+xô,1,1,1,0,0,0,qipedc,xô
+xôi,1,1,1,0,0,0,qipedc,xôi
+xôi gà,1,1,1,0,0,0,qipedc,xôi gà
+xôi gấc,1,1,1,0,0,0,qipedc,xôi gấc
+xông hơi,1,1,1,0,0,0,qipedc,xông hơi
+xúc xắc,1,1,1,0,0,0,qipedc,xúc xắc
+xăm,1,1,1,0,0,0,qipedc,xăm
+xăng,1,1,1,0,0,0,qipedc,xăng
+xăng ti mét (cm),1,1,1,0,0,0,qipedc,xăng-ti-mét (cm)
+xăng ti mét khối (cm3),1,1,1,0,0,0,qipedc,xăng-ti-mét-khối (cm3)
+xăng ti mét vuông (cm2),1,1,1,0,0,0,qipedc,xăng-ti-mét-vuông (cm2)
+xưa,3,3,3,0,0,0,qipedc,xưa
+xương rồng,1,1,1,0,0,0,qipedc,xương rồng
+xả rác,1,1,1,0,0,0,qipedc,xả rác
+xảy ra,1,1,1,0,0,0,qipedc,xảy ra
+xẻng,1,1,1,0,0,0,qipedc,xẻng
+xếp,1,1,1,0,0,0,qipedc,xếp
+xếp hàng,1,1,1,0,0,0,qipedc,xếp hàng
+xếp hàng dọc,1,1,1,0,0,0,qipedc,xếp hàng dọc
+xếp hàng ngang,1,1,1,0,0,0,qipedc,xếp hàng ngang
+xếp hàng ưu tiên,1,1,1,0,0,0,qipedc,xếp hàng ưu tiên
+xếp hình,1,1,1,0,0,0,qipedc,xếp hình
+xịt côn trùng,1,1,1,0,0,0,qipedc,xịt côn trùng
+xứ nghệ,1,1,1,0,0,0,qipedc,xứ Nghệ
+xử lý,1,1,1,0,0,0,qipedc,xử lý
+y,2,1,1,1,0,0,qipedc+hcmue,y
+y tá,6,0,0,0,6,14,vslgh,Y-TÁ
+y tế,7,1,1,0,6,42,qipedc+vslgh,Y-TẾ | y tế
+y éc xanh,1,1,1,0,0,0,qipedc,Y-Éc-Xanh
+yên bái,1,1,1,0,0,0,qipedc,Yên Bái
+yên bình,1,1,1,0,0,0,qipedc,yên bình
+yên lòng,1,1,1,0,0,0,qipedc,yên lòng
+yên ngựa,1,1,1,0,0,0,qipedc,yên ngựa
+yên tâm,1,1,1,0,0,0,qipedc,yên tâm
+yêu cầu,2,2,3,0,0,0,qipedc,yêu cầu
+yêu mến (yêu quí),2,2,3,0,0,0,qipedc,yêu mến (yêu quí)
+yêu nước việt nam,1,1,1,0,0,0,qipedc,yêu nước Việt Nam
+yếm,1,1,1,0,0,0,qipedc,yếm
+yếu,8,2,3,0,6,14,qipedc+vslgh,YẾU | yếu
+yếu tố,1,1,1,0,0,0,qipedc,yếu tố
+z,1,1,1,0,0,0,qipedc,z
+ác,1,1,1,0,0,0,qipedc,ác
+ác cảm,1,1,1,0,0,0,qipedc,ác cảm
+ác mộng,1,1,1,0,0,0,qipedc,ác mộng
+ác độc,1,1,1,0,0,0,qipedc,ác độc
+áo,1,1,1,0,0,0,qipedc,áo
+áo choàng,2,0,0,2,0,0,hcmue,áo choàng
+áo cánh,1,1,1,0,0,0,qipedc,áo cánh
+áo cưới,1,0,0,1,0,0,hcmue,áo cưới
+áo cởi,6,0,0,0,6,14,vslgh,ÁO-CỞI
+áo dài,1,0,0,1,0,0,hcmue,áo dài
+áo gile,1,0,0,1,0,0,hcmue,áo gile
+áo khoác,7,0,0,1,6,14,hcmue+vslgh,ÁO-KHOÁC | áo khoác
+áo kẻ sọc,1,1,1,0,0,0,qipedc,áo kẻ sọc
+áo len,3,1,1,2,0,0,qipedc+hcmue,áo len
+áo mưa,1,0,0,1,0,0,hcmue,áo mưa
+áo ngủ,1,0,0,1,0,0,hcmue,áo ngủ
+áo phao,1,1,1,0,0,0,qipedc,áo phao
+áo phông,3,3,3,0,0,0,qipedc,áo phông
+áo sơ mi,1,0,0,1,0,0,hcmue,áo sơ mi
+áo tắm,1,0,0,1,0,0,hcmue,áo tắm
+áo đuôi tôm,1,0,0,1,0,0,hcmue,áo đuôi tôm
+áo đầm,1,0,0,1,0,0,hcmue,áo đầm
+áo đồng phục,2,2,3,0,0,0,qipedc,áo đồng phục
+áo ấm,1,1,1,0,0,0,qipedc,áo ấm
+áp phích,1,1,1,0,0,0,qipedc,áp phích
+â,2,2,3,0,0,0,qipedc,â
+âm thanh,2,1,1,1,0,0,qipedc+hcmue,âm thanh
+âm ỉ,6,0,0,0,6,15,vslgh,ÂM-Ỉ
+ân hận,3,3,3,0,0,0,qipedc,ân hận
+ân nhân,1,0,0,1,0,0,hcmue,ân nhân
+âu cơ,1,1,1,0,0,0,qipedc,Âu Cơ
+ê,2,2,3,0,0,0,qipedc,ê
+ê buốt,6,0,0,0,6,14,vslgh,Ê-BUỐT
+ê ti ô pi a (nước ê ti ô pi a),1,1,1,0,0,0,qipedc,Ê-ti-ô-pi-a (nước Ê-ti-ô-pi-a)
+ê đê,1,1,1,0,0,0,qipedc,Ê Đê
+ích lợi,1,1,1,0,0,0,qipedc,ích lợi
+ít,7,1,1,0,6,28,qipedc+vslgh,ÍT | ít
+ít hơn,1,1,1,0,0,0,qipedc,ít hơn
+ít nhất,1,1,1,0,0,0,qipedc,ít nhất
+óc,1,1,1,0,0,0,qipedc,óc
+ô,3,2,3,1,0,0,qipedc+hcmue,ô
+ô lim píc,1,1,1,0,0,0,qipedc,Ô-lim-píc
+ô nhiễm,1,1,1,0,0,0,qipedc,ô nhiễm
+ô tô,1,1,1,0,0,0,qipedc,ô tô
+ô ăn quan,1,1,1,0,0,0,qipedc,ô ăn quan
+ôm,1,1,1,0,0,0,qipedc,ôm
+ôn luyện,1,1,1,0,0,0,qipedc,ôn luyện
+ôn tập,1,1,1,0,0,0,qipedc,ôn tập
+ông,1,0,0,1,0,0,hcmue,ông
+ông bà,2,2,3,0,0,0,qipedc,ông bà
+ông già,1,1,1,0,0,0,qipedc,ông già
+ông ngoại,3,2,3,1,0,0,qipedc+hcmue,ông ngoại
+ông nội,4,3,3,1,0,0,qipedc+hcmue,ông nội
+ù,6,0,0,0,6,14,vslgh,Ù
+úp,1,1,1,0,0,0,qipedc,úp
+ý chí,1,1,1,0,0,0,qipedc,ý chí
+ý nghĩa,2,2,3,0,0,0,qipedc,ý nghĩa
+ý thức,1,1,1,0,0,0,qipedc,ý thức
+ý tưởng,1,1,1,0,0,0,qipedc,ý tưởng
+ă,2,2,3,0,0,0,qipedc,ă
+ăn,6,0,0,0,6,154,vslgh,ĂN
+ăn bám,1,1,1,0,0,0,qipedc,ăn bám
+ăn cóc,1,1,1,0,0,0,qipedc,ăn cóc
+ăn diện,1,1,1,0,0,0,qipedc,ăn diện
+ăn hối lộ,1,1,1,0,0,0,qipedc,ăn hối lộ
+ăn uống,1,1,1,0,0,0,qipedc,ăn uống
+ăn vú sữa,1,1,1,0,0,0,qipedc,ăn vú sữa
+ăn vú sữa (bằng thìa),1,1,1,0,0,0,qipedc,ăn vú sữa (bằng thìa)
+ăn vặt,1,1,1,0,0,0,qipedc,ăn vặt
+ăn vụng,1,1,1,0,0,0,qipedc,ăn vụng
+ăn vừa,1,1,1,0,0,0,qipedc,ăn vừa
+ăn xin,1,1,1,0,0,0,qipedc,ăn xin
+ăn ít,1,1,1,0,0,0,qipedc,ăn ít
+ăn đủ,1,1,1,0,0,0,qipedc,ăn đủ
+đ,2,1,1,1,0,0,qipedc+hcmue,đ
+đan,1,1,1,0,0,0,qipedc,đan
+đang,6,0,0,0,6,28,vslgh,ĐANG
+đau,6,0,0,0,6,350,vslgh,ĐAU
+đau bụng,7,1,1,0,6,28,qipedc+vslgh,ĐAU-BỤNG | đau bụng
+đau chân,1,1,1,0,0,0,qipedc,đau chân
+đau không,6,0,0,0,6,14,vslgh,ĐAU-KHÔNG
+đau mắt,1,1,1,0,0,0,qipedc,đau mắt
+đau mắt đỏ,1,1,1,0,0,0,qipedc,đau mắt đỏ
+đau tai,1,1,1,0,0,0,qipedc,đau tai
+đau tay,1,1,1,0,0,0,qipedc,đau tay
+đen láy (như đen nhánh),2,2,3,0,0,0,qipedc,đen láy (như đen nhánh)
+đen đủi,1,1,1,0,0,0,qipedc,đen đủi
+đeo kính,7,1,1,0,6,28,qipedc+vslgh,ĐEO-KÍNH | đeo kính
+đeo tay,6,0,0,0,6,28,vslgh,ĐEO-TAY
+đi,7,1,1,0,6,42,qipedc+vslgh,ĐI | đi
+đi dạo,2,2,3,0,0,0,qipedc,đi dạo
+đi học,1,1,1,0,0,0,qipedc,đi học
+"đi lạc (đường, rừng..)",1,1,1,0,0,0,qipedc,"đi lạc (đường, rừng..)"
+đi tuần,1,1,1,0,0,0,qipedc,đi tuần
+đi vệ sinh,1,1,1,0,0,0,qipedc,đi vệ sinh
+đinh,1,1,1,0,0,0,qipedc,đinh
+điêu khắc,1,1,1,0,0,0,qipedc,điêu khắc
+điều hòa,2,2,2,0,0,0,qipedc,điều hòa
+điều khiển,1,1,1,0,0,0,qipedc,điều khiển
+điều kiện,1,1,1,0,0,0,qipedc,điều kiện
+điều phối,2,2,2,0,0,0,qipedc,điều phối
+điều tra,1,1,1,0,0,0,qipedc,điều tra
+điều trị,1,1,1,0,0,0,qipedc,điều trị
+điểm ở giữa đoạn thẳng,1,1,1,0,0,0,qipedc,điểm ở giữa đoạn thẳng
+điện,8,2,3,0,6,14,qipedc+vslgh,ĐIỆN | điện
+điện biên phủ,1,1,1,0,0,0,qipedc,Điện Biên Phủ
+điện thoại,7,1,1,0,6,14,qipedc+vslgh,ĐIỆN-THOẠI | điện thoại
+đo,7,1,1,0,6,154,qipedc+vslgh,ĐO | đo
+đoàn cải lương,1,1,1,0,0,0,qipedc,đoàn cải lương
+đoàn kết,2,0,0,2,0,0,hcmue,đoàn kết
+đoàn thanh niên,1,1,1,0,0,0,qipedc,đoàn thanh niên
+đoàn thuyền,1,0,0,1,0,0,hcmue,đoàn thuyền
+đoàn tụ,1,1,1,0,0,0,qipedc,đoàn tụ
+đoán,1,1,1,0,0,0,qipedc,đoán
+đoạn thơ,1,1,1,0,0,0,qipedc,đoạn thơ
+đoạn thẳng,1,1,1,0,0,0,qipedc,đoạn thẳng
+đoạn văn,1,1,1,0,0,0,qipedc,đoạn văn
+đu bai (nước đu bai),1,1,1,0,0,0,qipedc,Đu Bai (nước Đu Bai)
+đua ngựa,1,1,1,0,0,0,qipedc,đua ngựa
+đua thuyền,1,1,1,0,0,0,qipedc,đua thuyền
+đua xe máy,1,1,1,0,0,0,qipedc,đua xe máy
+đua đòi,1,1,1,0,0,0,qipedc,đua đòi
+đun nấu,1,1,1,0,0,0,qipedc,đun nấu
+đuôi,1,1,1,0,0,0,qipedc,đuôi
+đuôi chuột,1,1,1,0,0,0,qipedc,đuôi chuột
+đuôi cá,1,1,1,0,0,0,qipedc,đuôi cá
+đuốc,1,1,1,0,0,0,qipedc,đuốc
+đài sen,1,1,1,0,0,0,qipedc,đài sen
+đàn bướm,1,1,1,0,0,0,qipedc,đàn bướm
+đàn bầu,1,1,1,0,0,0,qipedc,đàn bầu
+đàn ghi ta,1,1,1,0,0,0,qipedc,đàn ghi ta
+đàn kiến,1,1,1,0,0,0,qipedc,đàn kiến
+đàn tơ rưng,1,1,1,0,0,0,qipedc,đàn tơ-rưng
+đàn xê lô đại vĩ cầm,1,1,1,0,0,0,qipedc,đàn xê lô đại vĩ cầm
+đàng hoàng,1,1,1,0,0,0,qipedc,đàng hoàng
+đàng ngoài,1,1,1,0,0,0,qipedc,đàng ngoài
+đàng trong,1,1,1,0,0,0,qipedc,đàng trong
+đào tạo,1,1,1,0,0,0,qipedc,đào tạo
+đá bóng,3,1,1,2,0,0,qipedc+hcmue,đá bóng
+đá cầu,1,0,0,1,0,0,hcmue,đá cầu
+đám ma,1,1,1,0,0,0,qipedc,đám ma
+đám mây,1,1,1,0,0,0,qipedc,đám mây
+đáng lo,6,0,0,0,6,14,vslgh,ĐÁNG-LO
+đáng quý,1,1,1,0,0,0,qipedc,đáng quý
+đánh,1,1,1,0,0,0,qipedc,đánh
+đánh bắt,1,1,1,0,0,0,qipedc,đánh bắt
+đánh cầu lông,1,1,1,0,0,0,qipedc,đánh cầu lông
+đánh giá,1,1,1,0,0,0,qipedc,đánh giá
+đánh răng,2,2,2,0,0,0,qipedc,đánh răng
+đánh trống,1,1,1,0,0,0,qipedc,đánh trống
+đâm,1,0,0,1,0,0,hcmue,đâm
+đâu,6,0,0,0,6,42,vslgh,ĐÂU
+đây,6,0,0,0,6,65,vslgh,ĐÂY
+đèn báo giao thông,2,2,3,0,0,0,qipedc,đèn báo giao thông
+đèn lồng,1,1,1,0,0,0,qipedc,đèn lồng
+đèn pin,3,3,3,0,0,0,qipedc,đèn pin
+đèn vàng,3,3,3,0,0,0,qipedc,đèn vàng
+đèn xanh,3,3,3,0,0,0,qipedc,đèn xanh
+đèn ông sao,1,1,1,0,0,0,qipedc,đèn ông sao
+đèn điện,2,2,3,0,0,0,qipedc,đèn điện
+đèn đỏ,1,1,1,0,0,0,qipedc,đèn đỏ
+đèo,1,1,1,0,0,0,qipedc,đèo
+đèo hải vân,2,2,3,0,0,0,qipedc,đèo Hải Vân
+đêm,6,0,0,0,6,14,vslgh,ĐÊM
+đích,2,1,1,1,0,0,qipedc+hcmue,đích
+đòi,1,1,1,0,0,0,qipedc,đòi
+đòi hỏi,1,1,1,0,0,0,qipedc,đòi hỏi
+đói,6,0,0,0,6,14,vslgh,ĐÓI
+đói không?,1,1,1,0,0,0,qipedc,đói không?
+đón,1,1,1,0,0,0,qipedc,đón
+đón tiếp,1,1,1,0,0,0,qipedc,đón tiếp
+đóng,6,0,0,0,6,14,vslgh,ĐÓNG
+đóng cửa,1,1,1,0,0,0,qipedc,đóng cửa
+đóng dấu,1,1,1,0,0,0,qipedc,đóng dấu
+đóng góp,1,1,1,0,0,0,qipedc,đóng góp
+đóng tiền,6,0,0,0,6,28,vslgh,ĐÓNG-TIỀN
+đô thị,1,1,1,0,0,0,qipedc,đô thị
+đôi chân,1,1,1,0,0,0,qipedc,đôi chân
+đôi dép,1,1,1,0,0,0,qipedc,đôi dép
+đôi tay,1,1,1,0,0,0,qipedc,đôi tay
+đôi/cặp,1,1,1,0,0,0,qipedc,đôi/cặp
+đông dương,1,1,1,0,0,0,qipedc,Đông Dương
+đông lạnh,1,1,1,0,0,0,qipedc,đông lạnh
+đông nam,1,1,1,0,0,0,qipedc,Đông Nam
+đông nam á,1,1,1,0,0,0,qipedc,Đông Nam Á
+đông timor (nước đông timor),1,1,1,0,0,0,qipedc,Đông Timor (nước Đông Timor)
+đùa,2,2,3,0,0,0,qipedc,đùa
+đùm bọc,1,1,1,0,0,0,qipedc,đùm bọc
+đúng không,6,0,0,0,6,42,vslgh,ĐÚNG-KHÔNG
+đúng không?,3,3,3,0,0,0,qipedc,đúng không?
+đăng ký,7,1,1,0,6,28,qipedc+vslgh,ĐĂNG-KÝ | đăng ký
+đăng nhập,2,1,1,1,0,0,qipedc+hcmue,đăng nhập
+đĩa,1,1,1,0,0,0,qipedc,đĩa
+đĩa cd,1,0,0,1,0,0,hcmue,đĩa cd
+đĩa dvd,1,1,1,0,0,0,qipedc,đĩa DVD
+đũa,1,1,1,0,0,0,qipedc,đũa
+đơn,6,0,0,0,6,14,vslgh,ĐƠN
+đơn giản,1,1,1,0,0,0,qipedc,đơn giản
+đưa đón,1,1,1,0,0,0,qipedc,đưa đón
+đường biên giới,1,1,1,0,0,0,qipedc,đường biên giới
+đường bộ,1,1,1,0,0,0,qipedc,đường bộ
+đường cao,1,1,1,0,0,0,qipedc,đường cao
+đường chéo,1,1,1,0,0,0,qipedc,đường chéo
+đường chính trung,1,0,0,1,0,0,hcmue,đường chính trung
+đường chỉ tay,1,1,1,0,0,0,qipedc,đường chỉ tay
+đường góc đáy thân trước,2,0,0,2,0,0,hcmue,đường góc đáy thân trước
+đường hàng không,1,1,1,0,0,0,qipedc,đường hàng không
+đường hầm,1,1,1,0,0,0,qipedc,đường hầm
+đường khuy nút,1,0,0,1,0,0,hcmue,đường khuy nút
+đường kính,1,1,1,0,0,0,qipedc,đường kính
+đường một chiều,1,0,0,1,0,0,hcmue,đường một chiều
+đường nguyễn huệ,1,1,1,0,0,0,qipedc,đường Nguyễn Huệ
+đường ray xe lửa,1,1,1,0,0,0,qipedc,đường ray xe lửa
+đường sắt,1,1,1,0,0,0,qipedc,đường sắt
+đường thuỷ,1,1,1,0,0,0,qipedc,đường thuỷ
+đường thẳng,1,1,1,0,0,0,qipedc,đường thẳng
+đường tròn,1,1,1,0,0,0,qipedc,đường tròn
+được không,6,0,0,0,6,68,vslgh,ĐƯỢC-KHÔNG
+đại diện,2,2,3,0,0,0,qipedc,đại diện
+đại dương,1,1,1,0,0,0,qipedc,đại dương
+đại số,1,1,1,0,0,0,qipedc,đại số
+đại sứ,1,1,1,0,0,0,qipedc,đại sứ
+đại tá,1,1,1,0,0,0,qipedc,đại tá
+đại tướng,1,1,1,0,0,0,qipedc,đại tướng
+đại úy,1,1,1,0,0,0,qipedc,đại úy
+đạn,1,1,1,0,0,0,qipedc,đạn
+đạo diễn,1,1,1,0,0,0,qipedc,đạo diễn
+đảm nhiệm,1,1,1,0,0,0,qipedc,đảm nhiệm
+đảng,1,1,1,0,0,0,qipedc,Đảng
+đảo,1,1,1,0,0,0,qipedc,đảo
+đảo hoàng sa,1,1,1,0,0,0,qipedc,đảo Hoàng Sa
+đảo lý sơn,1,1,1,0,0,0,qipedc,đảo Lý Sơn
+đảo phú quốc,1,1,1,0,0,0,qipedc,đảo Phú Quốc
+đảo trường sa,1,1,1,0,0,0,qipedc,đảo Trường Sa
+đất,1,1,1,0,0,0,qipedc,đất
+đất màu mỡ,1,1,1,0,0,0,qipedc,đất màu mỡ
+đất nước bị chia cắt (việt nam),1,1,1,0,0,0,qipedc,đất nước bị chia cắt (Việt Nam)
+đất nặn,1,1,1,0,0,0,qipedc,đất nặn
+đất ruộng,1,1,1,0,0,0,qipedc,đất ruộng
+đất trồng cây,1,1,1,0,0,0,qipedc,đất trồng cây
+đấu tranh,1,1,1,0,0,0,qipedc,đấu tranh
+đấu vật,1,1,1,0,0,0,qipedc,đấu vật
+đầu gối,1,1,1,0,0,0,qipedc,đầu gối
+đầu hàng,1,1,1,0,0,0,qipedc,đầu hàng
+đầu tiên,1,1,1,0,0,0,qipedc,đầu tiên
+đầu tàu,1,1,1,0,0,0,qipedc,đầu tàu
+đầu tư,1,1,1,0,0,0,qipedc,đầu tư
+đầu vai,1,0,0,1,0,0,hcmue,đầu vai
+đầu vai phải,1,0,0,1,0,0,hcmue,đầu vai phải
+đầu xuôi đuôi lọt,1,1,1,0,0,0,qipedc,đầu xuôi đuôi lọt
+đầu đau,6,0,0,0,6,14,vslgh,ĐẦU-ĐAU
+đầy,1,1,1,0,0,0,qipedc,đầy
+đầy tớ,1,1,1,0,0,0,qipedc,đầy tớ
+đầy đủ,1,1,1,0,0,0,qipedc,đầy đủ
+đẩy,1,1,1,0,0,0,qipedc,đẩy
+đập,7,1,1,0,6,28,qipedc+vslgh,ĐẬP | đập
+đắk lắk,1,1,1,0,0,0,qipedc,Đắk Lắk
+đắt đỏ,1,1,1,0,0,0,qipedc,đắt đỏ
+đằng sau,1,1,1,0,0,0,qipedc,đằng sau
+đằng trước,1,1,1,0,0,0,qipedc,đằng trước
+đặc biệt,3,3,4,0,0,0,qipedc,đặc biệt
+đặc điểm,1,1,1,0,0,0,qipedc,đặc điểm
+đặng văn ngữ,1,1,1,0,0,0,qipedc,Đặng Văn Ngữ
+đặt,7,1,1,0,6,42,qipedc+vslgh,ĐẶT | đặt
+đẹp không?,2,2,3,0,0,0,qipedc,đẹp không?
+đẹp không? (người),2,2,3,0,0,0,qipedc,đẹp không? (người)
+đẹp mê hồn,1,1,1,0,0,0,qipedc,đẹp mê hồn
+đẹp đẽ (như đẹp),1,1,1,0,0,0,qipedc,đẹp đẽ (như đẹp)
+đẻ,1,0,0,0,1,1,vslgh,ĐẺ
+đếm,1,1,1,0,0,0,qipedc,đếm
+đến,6,0,0,0,6,168,vslgh,ĐẾN
+đề ca mét (dam),1,1,1,0,0,0,qipedc,đề-ca-mét (dam)
+đề ca mét vuông (dam2),1,1,1,0,0,0,qipedc,đề-ca-mét vuông (dam2)
+đề nghị,2,2,3,0,0,0,qipedc,đề nghị
+đề phòng,1,1,1,0,0,0,qipedc,đề phòng
+đề tài,1,1,1,0,0,0,qipedc,đề tài
+đề xi mét (dm),1,1,1,0,0,0,qipedc,đề-xi-mét (dm)
+đề xi mét khối (dm3),1,1,1,0,0,0,qipedc,đề-xi-mét khối (dm3)
+đề xi mét vuông (dm2),1,1,1,0,0,0,qipedc,đề-xi-mét vuông (dm2)
+đền,1,1,1,0,0,0,qipedc,đền
+đền hùng,1,1,1,0,0,0,qipedc,Đền Hùng
+đều,6,0,0,0,6,42,vslgh,ĐỀU
+đều đặn,1,1,1,0,0,0,qipedc,đều đặn
+để,6,0,0,0,6,27,vslgh,ĐỂ
+để (đặt),1,1,1,0,0,0,qipedc,để (đặt)
+đệm,1,1,1,0,0,0,qipedc,đệm
+đỉnh,1,1,1,0,0,0,qipedc,đỉnh
+đỉnh núi,1,1,1,0,0,0,qipedc,đỉnh núi
+địa chỉ,2,2,3,0,0,0,qipedc,địa chỉ
+địa cầu,1,1,1,0,0,0,qipedc,địa cầu
+địa hình,1,1,1,0,0,0,qipedc,địa hình
+địa lí,1,1,1,0,0,0,qipedc,địa lí
+địa điểm,1,1,1,0,0,0,qipedc,địa điểm
+địa đạo,1,0,0,1,0,0,hcmue,địa đạo
+địa đạo củ chi,1,1,1,0,0,0,qipedc,địa đạo Củ Chi
+định vị,1,1,1,0,0,0,qipedc,định vị
+đọc,6,0,0,0,6,42,vslgh,ĐỌC
+đọc sách,1,1,1,0,0,0,qipedc,đọc sách
+đỏ,6,0,0,0,6,14,vslgh,ĐỎ
+đỏ thắm,1,1,1,0,0,0,qipedc,đỏ thắm
+đối diện,1,1,1,0,0,0,qipedc,đối diện
+đối thoại,1,1,1,0,0,0,qipedc,đối thoại
+đối tượng,1,1,1,0,0,0,qipedc,đối tượng
+đối xứng,1,1,1,0,0,0,qipedc,đối xứng
+đối xử,1,1,1,0,0,0,qipedc,đối xử
+đồ chơi,1,1,1,0,0,0,qipedc,đồ chơi
+đồ dùng dạy học,1,1,1,0,0,0,qipedc,đồ dùng dạy học
+đồ dùng học tập,1,1,1,0,0,0,qipedc,đồ dùng học tập
+đồ họa,1,0,0,1,0,0,hcmue,đồ họa
+đồ uống,1,1,1,0,0,0,qipedc,đồ uống
+đồ ăn,1,1,1,0,0,0,qipedc,đồ ăn
+đồn công an,1,1,1,0,0,0,qipedc,đồn công an
+đồng bào,1,1,1,0,0,0,qipedc,đồng bào
+đồng bằng,1,1,1,0,0,0,qipedc,đồng bằng
+đồng bằng duyên hải miền trung,1,1,1,0,0,0,qipedc,đồng bằng duyên hải miền Trung
+đồng bằng sông cửu long,1,1,1,0,0,0,qipedc,đồng bằng sông Cửu Long
+đồng bằng sông hồng,1,1,1,0,0,0,qipedc,đồng bằng sông Hồng
+đồng diễn thể dục,1,0,0,1,0,0,hcmue,đồng diễn thể dục
+đồng hồ,2,1,1,1,0,0,qipedc+hcmue,đồng hồ
+đồng lúa,1,1,1,0,0,0,qipedc,đồng lúa
+đồng nai,1,1,1,0,0,0,qipedc,Đồng Nai
+đồng phục,2,2,3,0,0,0,qipedc,đồng phục
+đồng ruộng,1,1,1,0,0,0,qipedc,đồng ruộng
+đồng tháp mười,1,1,1,0,0,0,qipedc,Đồng Tháp Mười
+đồng tiền,1,1,1,0,0,0,qipedc,đồng tiền
+đổ nước,1,1,1,0,0,0,qipedc,đổ nước
+đổi,1,1,1,0,0,0,qipedc,đổi
+đổi mới,1,1,1,0,0,0,qipedc,đổi mới
+độc hại,1,1,1,0,0,0,qipedc,độc hại
+độc lập,1,1,1,0,0,0,qipedc,độc lập
+độc thân,6,0,0,0,6,14,vslgh,ĐỘC-THÂN
+đội thiếu niên,1,1,1,0,0,0,qipedc,đội thiếu niên
+đội trưởng,1,1,1,0,0,0,qipedc,đội trưởng
+động cơ,1,1,1,0,0,0,qipedc,động cơ
+động viên,1,1,1,0,0,0,qipedc,động viên
+đỡ,1,1,1,0,0,0,qipedc,đỡ
+đợi,8,2,3,0,6,42,qipedc+vslgh,ĐỢI | đợi
+đứng,6,0,0,0,6,14,vslgh,ĐỨNG
+đứng nghiêm,1,1,1,0,0,0,qipedc,đứng nghiêm
+đứng đầu (hàng đầu),1,1,1,0,0,0,qipedc,đứng đầu (hàng đầu)
+đựng,1,1,1,0,0,0,qipedc,đựng
+ơ,2,1,1,1,0,0,qipedc+hcmue,ơ
+ư,1,1,1,0,0,0,qipedc,ư
+ưu tiên,2,2,3,0,0,0,qipedc,ưu tiên
+ưu điểm,1,1,1,0,0,0,qipedc,ưu điểm
+ả rập (nước ả rập),1,1,1,0,0,0,qipedc,Ả Rập (nước Ả Rập)
+ảnh,1,0,0,1,0,0,hcmue,ảnh
+ảnh hưởng,6,0,0,0,6,14,vslgh,ẢNH-HƯỞNG
+ảo thuật,1,1,1,0,0,0,qipedc,ảo thuật
+ấm no,1,1,1,0,0,0,qipedc,ấm no
+ấm trà,1,1,1,0,0,0,qipedc,ấm trà
+ấm áp,2,1,1,1,0,0,qipedc+hcmue,ấm áp
+ấm đun nước,1,1,1,0,0,0,qipedc,ấm đun nước
+ấn,7,1,1,0,6,28,qipedc+vslgh,ẤN | ấn
+ấn tượng,1,1,1,0,0,0,qipedc,ấn tượng
+ầm ĩ,1,1,1,0,0,0,qipedc,ầm ĩ
+ẩm mốc,1,1,1,0,0,0,qipedc,ẩm mốc
+ẩm ướt,2,1,1,1,0,0,qipedc+hcmue,ẩm ướt
+ế ẩm,1,1,1,0,0,0,qipedc,ế ẩm
+ốc vít,1,1,1,0,0,0,qipedc,ốc vít
+ốc điều chỉnh bàn đưa vải,1,0,0,1,0,0,hcmue,ốc điều chỉnh bàn đưa vải
+ốm,6,0,0,0,6,14,vslgh,ỐM
+ốm đau,1,1,1,0,0,0,qipedc,ốm đau
+ống nghe,1,1,1,0,0,0,qipedc,ống nghe
+ống nhòm,1,1,1,0,0,0,qipedc,ống nhòm
+ống nước,1,1,1,0,0,0,qipedc,ống nước
+ống tay áo,1,0,0,1,0,0,hcmue,ống tay áo
+ổ,1,0,0,1,0,0,hcmue,ổ
+ổn định,1,1,1,0,0,0,qipedc,ổn định
+ở ngoài,2,2,3,0,0,0,qipedc,ở ngoài
+ở trong,1,1,1,0,0,0,qipedc,ở trong
+ở đâu,6,0,0,0,6,84,vslgh,Ở-ĐÂU
+ở đây,6,0,0,0,6,13,vslgh,Ở-ĐÂY
+ủng,1,1,1,0,0,0,qipedc,ủng
+ủng hộ,1,1,1,0,0,0,qipedc,ủng hộ
+ủy ban,1,1,1,0,0,0,qipedc,ủy ban
+ủy ban nhân dân,1,1,1,0,0,0,qipedc,ủy ban nhân dân
+ủy quyền,2,2,3,0,0,0,qipedc,ủy quyền
+ức chế,1,1,1,0,0,0,qipedc,ức chế

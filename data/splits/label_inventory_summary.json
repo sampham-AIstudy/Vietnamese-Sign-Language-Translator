@@ -1,0 +1,18 @@
+{
+  "labels_total": 3861,
+  "labels_by_source": {
+    "qipedc": 3314,
+    "hcmue": 377,
+    "vslgh": 370
+  },
+  "labels_in_2plus_sources": 199,
+  "independent_units_ge": {
+    "1": 3861,
+    "2": 986,
+    "3": 496,
+    "5": 370,
+    "6": 364
+  },
+  "train_only_labels_(1_unit)": 2875,
+  "note": "Labels with >=2 independent units can be trained AND tested on an unseen recording; >=3 also allow a validation sample. 1-unit labels can be trained but never measured."
+}
