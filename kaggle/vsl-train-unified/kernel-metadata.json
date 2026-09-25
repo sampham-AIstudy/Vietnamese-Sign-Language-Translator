@@ -1,0 +1,14 @@
+{
+  "id": "phmvnsm33/vsl-train-unified",
+  "title": "vsl-train-unified",
+  "code_file": "train_unified_kernel.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": [],
+  "kernel_sources": ["phmvnsm33/vsl-extract-qipedc"],
+  "competition_sources": [],
+  "model_sources": []
+}

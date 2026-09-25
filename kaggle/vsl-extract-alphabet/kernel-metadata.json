@@ -1,0 +1,14 @@
+{
+  "id": "phmvnsm33/vsl-extract-alphabet",
+  "title": "vsl-extract-alphabet",
+  "code_file": "extract_alphabet.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": true,
+  "dataset_sources": ["hauuto/vietnamese-sign-language-alphabet", "aresusayhi/vsl-vietnamese-sign-languages"],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}

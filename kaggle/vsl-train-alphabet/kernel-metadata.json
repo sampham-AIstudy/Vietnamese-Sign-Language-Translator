@@ -1,0 +1,14 @@
+{
+  "id": "phmvnsm33/vsl-train-alphabet",
+  "title": "vsl-train-alphabet",
+  "code_file": "train_alphabet_kernel.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": true,
+  "dataset_sources": [],
+  "kernel_sources": ["phmvnsm33/vsl-extract-alphabet"],
+  "competition_sources": [],
+  "model_sources": []
+}
