@@ -4,6 +4,8 @@ Provides:
 - GET /health: System health and hardware telemetry
 - GET /model/info: Active VSL deep learning model specifications and vocabulary
 - WebSocket /ws/live-stream: Low-latency live video streaming & sign language recognition
+- POST /api/fingerspelling/sequence: Level 1 letters/tone marks from a hand-landmark sequence
+  (POST /api/fingerspelling with an image returns 409)
 """
 
 # ============================================================
@@ -335,116 +337,183 @@ def get_dictionary(
 
 
 # -------------------------------------------------------------
-# Level 1 Fingerspelling Model Singleton & Endpoints
+# Level 1 Fingerspelling (letters + tone marks) — landmark-sequence model
 # -------------------------------------------------------------
+# The client runs MediaPipe Hands (0.10.14 settings: max_num_hands=1, model_complexity=1) on
+# UNMIRRORED frames and posts the landmark sequence of one sign. Preprocessing is the shared
+# src.data.alphabet_preprocessing.alphabet_clip_features, configured by the checkpoint's
+# `preprocessing` dict, so live input goes through exactly the training code path.
+ALPHABET_CKPT = os.getenv("VSL_ALPHABET_CKPT", "checkpoints/alphabet_best.pt")
+ALPHABET_MAX_FRAMES = 300
+ALPHABET_SEQUENCE_ENDPOINT = "/api/fingerspelling/sequence"
 _alphabet_model = None
-_alphabet_classes = None
+_alphabet_meta: Optional[Dict[str, Any]] = None
 
 
 def get_or_load_alphabet_model():
-    """Lazily loads the Level 1 Alphabet model if checkpoint exists."""
-    global _alphabet_model, _alphabet_classes
-    checkpoint_path = "checkpoints/alphabet_best.pt"
-    if not os.path.exists(checkpoint_path):
+    """Lazily loads the Level 1 model. Returns (model, meta) or (None, None).
+    The checkpoint must carry `classes` and `preprocessing`; without them the train/live
+    input cannot be guaranteed identical, so it is refused."""
+    global _alphabet_model, _alphabet_meta
+    if _alphabet_model is not None:
+        return _alphabet_model, _alphabet_meta
+    if not os.path.exists(ALPHABET_CKPT):
         return None, None
-    if _alphabet_model is None:
-        try:
-            ckpt = torch.load(checkpoint_path, map_location="cpu")
-            num_classes = ckpt.get("num_classes", 25)
-            classes = ckpt.get("classes", [])
-            model_type = ckpt.get("model_type", "mlp")
-            if model_type == "mlp":
-                from src.models.alphabet_mlp import VSLAlphabetMLP
-                model = VSLAlphabetMLP(input_dim=63, num_classes=num_classes)
-            else:
-                from src.models.alphabet_temporal import VSLAlphabetBiGRU
-                model = VSLAlphabetBiGRU(input_dim=63, hidden_dim=64, num_classes=num_classes)
-            model.load_state_dict(ckpt["state_dict"])
-            model.eval()
-            _alphabet_model = model
-            _alphabet_classes = classes
-            logger.info("Successfully loaded Level 1 Alphabet model from %s", checkpoint_path)
-        except Exception as e:
-            logger.error("Failed to load alphabet model: %s", e)
-            return None, None
-    return _alphabet_model, _alphabet_classes
+    try:
+        ckpt = torch.load(ALPHABET_CKPT, map_location="cpu")
+        classes, preprocessing = list(ckpt["classes"]), dict(ckpt["preprocessing"])
+        model_type = ckpt.get("model_type", "bigru")
+        hparams = ckpt.get("hparams", {})
+        if model_type == "mlp":
+            from src.models.alphabet_mlp import VSLAlphabetMLP
+            model = VSLAlphabetMLP(input_dim=63, num_classes=len(classes),
+                                   hidden_dims=tuple(hparams.get("hidden_dims", (128, 64))))
+        else:
+            from src.models.alphabet_temporal import VSLAlphabetBiGRU
+            model = VSLAlphabetBiGRU(input_dim=63, hidden_dim=hparams.get("hidden_dim", 64),
+                                     num_layers=hparams.get("num_layers", 2), num_classes=len(classes))
+        model.load_state_dict(ckpt["state_dict"])
+        model.eval()
+        _alphabet_model = model
+        _alphabet_meta = {"classes": classes, "preprocessing": preprocessing, "model_type": model_type,
+                          "checkpoint": os.path.basename(ALPHABET_CKPT)}
+        logger.info("Loaded Level 1 alphabet model (%s, %d classes) from %s", model_type, len(classes), ALPHABET_CKPT)
+    except Exception as e:
+        logger.error("Failed to load alphabet model %s: %s", ALPHABET_CKPT, e)
+        return None, None
+    return _alphabet_model, _alphabet_meta
+
+
+class FingerspellingSequenceRequest(BaseModel):
+    """One sign as MediaPipe Hands output, one entry per video frame.
+    landmarks[t]: 21 x [x, y, z] in MediaPipe image coordinates, or null/[] when no hand.
+    handedness[t]: 'Left' / 'Right' / '' (MediaPipe label); required when the model mirrors left hands.
+    timestamps_ms[t]: capture time; required when the model resamples by time.
+    source_mirrored: true if MediaPipe ran on selfie-mirrored frames (the server un-mirrors)."""
+    landmarks: List[Optional[List[List[float]]]]
+    handedness: Optional[List[str]] = None
+    timestamps_ms: Optional[List[float]] = None
+    frame_width: int
+    frame_height: int
+    source_mirrored: bool = False
+    top_k: int = 3
+
+
+def parse_fingerspelling_sequence(req: FingerspellingSequenceRequest, preprocessing: Dict[str, Any]):
+    """Validates the request -> (raw [T,21,3], detected [T], handedness [T], timestamps or None).
+    Raises ValueError with a client-facing message."""
+    T = len(req.landmarks)
+    if not 1 <= T <= ALPHABET_MAX_FRAMES:
+        raise ValueError(f"landmarks must have 1..{ALPHABET_MAX_FRAMES} frames, got {T}")
+    if req.frame_width <= 0 or req.frame_height <= 0:
+        raise ValueError("frame_width and frame_height must be positive")
+    if not 1 <= req.top_k <= 10:
+        raise ValueError("top_k must be in 1..10")
+    raw = np.zeros((T, 21, 3), dtype=np.float32)
+    detected = np.zeros(T, dtype=bool)
+    for t, frame in enumerate(req.landmarks):
+        if not frame:
+            continue
+        arr = np.asarray(frame, dtype=np.float32)
+        if arr.shape != (21, 3) or not np.isfinite(arr).all():
+            raise ValueError(f"landmarks[{t}] must be 21 x [x, y, z] finite numbers or null")
+        raw[t], detected[t] = arr, True
+
+    if req.handedness is None:
+        if preprocessing.get("mirror_left_hand", True):
+            raise ValueError("handedness is required by this model (left hands are mirrored)")
+        hand = np.array([""] * T)
+    else:
+        if len(req.handedness) != T:
+            raise ValueError(f"handedness must have {T} entries, got {len(req.handedness)}")
+        bad = sorted({h for h in req.handedness if h not in ("Left", "Right", "")})
+        if bad:
+            raise ValueError(f"handedness values must be 'Left', 'Right' or '', got {bad}")
+        hand = np.array(req.handedness)
+
+    ts = None
+    if req.timestamps_ms is not None:
+        ts = np.asarray(req.timestamps_ms, dtype=np.float64)
+        if len(ts) != T or not np.isfinite(ts).all() or np.any(np.diff(ts) < 0):
+            raise ValueError(f"timestamps_ms must be {T} finite non-decreasing values")
+    elif preprocessing.get("resample") == "time":
+        raise ValueError("timestamps_ms is required by this model (time-based resampling)")
+
+    if req.source_mirrored:  # back to the unmirrored convention used in training
+        raw[detected, :, 0] = 1.0 - raw[detected, :, 0]
+        hand = np.array([{"Left": "Right", "Right": "Left"}.get(h, h) for h in hand])
+    return raw, detected, hand, ts
 
 
 @app.get("/api/fingerspelling/status")
 def get_fingerspelling_status():
     """Returns availability status of Level 1 Fingerspelling model."""
-    ckpt_path = "checkpoints/alphabet_best.pt"
-    if os.path.exists(ckpt_path):
-        model, classes = get_or_load_alphabet_model()
-        if model is not None:
-            return {
-                "available": True,
-                "model": "VSL Alphabet Classifier",
-                "num_classes": len(classes),
-                "classes": classes,
-                "message": "Mô hình Cấp 1 đã sẵn sàng",
-            }
+    model, meta = get_or_load_alphabet_model()
+    if model is not None:
+        return {
+            "available": True,
+            "model": "VSL Alphabet Classifier",
+            "model_type": meta["model_type"],
+            "num_classes": len(meta["classes"]),
+            "classes": meta["classes"],
+            "preprocessing": meta["preprocessing"],
+            "endpoint": ALPHABET_SEQUENCE_ENDPOINT,
+            "input": "landmark_sequence",
+            "message": "Mô hình Cấp 1 đã sẵn sàng",
+        }
     return {
         "available": False,
         "model": None,
-        "message": "Chưa có mô hình Cấp 1 (checkpoints/alphabet_best.pt)",
+        "endpoint": ALPHABET_SEQUENCE_ENDPOINT,
+        "message": f"Chưa có mô hình Cấp 1 hợp lệ ({ALPHABET_CKPT})",
+    }
+
+
+@app.post(ALPHABET_SEQUENCE_ENDPOINT)
+def predict_fingerspelling_sequence(req: FingerspellingSequenceRequest):
+    """Classifies one fingerspelled letter / tone mark from a MediaPipe Hands landmark sequence."""
+    from src.data.alphabet_preprocessing import alphabet_clip_features
+
+    model, meta = get_or_load_alphabet_model()
+    if model is None:
+        raise HTTPException(status_code=503, detail=f"Chưa có mô hình Cấp 1 hợp lệ ({ALPHABET_CKPT})")
+    try:
+        raw, detected, hand, ts = parse_fingerspelling_sequence(req, meta["preprocessing"])
+        feats = alphabet_clip_features(raw, detected, hand, req.frame_width / req.frame_height, ts,
+                                       meta["preprocessing"], meta["model_type"])
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+    classes = meta["classes"]
+    with torch.no_grad():
+        probs = torch.softmax(model(torch.from_numpy(feats).unsqueeze(0)), dim=-1)[0]
+        topk = torch.topk(probs, k=min(req.top_k, len(classes)))
+    candidates = [{"class": classes[i], "confidence": round(v, 4)}
+                  for v, i in zip(topk.values.tolist(), topk.indices.tolist())]
+    return {
+        "prediction": candidates[0]["class"],
+        "confidence": candidates[0]["confidence"],
+        "candidates": candidates,
+        "frames": len(req.landmarks),
+        "detected_frames": int(detected.sum()),
+        "model_type": meta["model_type"],
+        "checkpoint": meta["checkpoint"],
     }
 
 
 @app.post("/api/fingerspelling")
-async def predict_fingerspelling(file: UploadFile = File(...)):
-    """
-    Receives an image of hand sign, extracts 21 keypoints with MediaPipe Hands,
-    normalizes coordinates, and classifies into VSL alphabet character.
-    """
-    model, classes = get_or_load_alphabet_model()
-    if model is None:
-        raise HTTPException(
-            status_code=503,
-            detail="Chưa có mô hình Cấp 1. Vui lòng hoàn tất huấn luyện trên Cloud và đặt file vào checkpoints/alphabet_best.pt",
-        )
-
-    contents = await file.read()
-    nparr = np.frombuffer(contents, np.uint8)
-    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    if img is None:
-        raise HTTPException(status_code=400, detail="Không thể giải mã định dạng ảnh.")
-
-    import mediapipe as mp
-    from src.data.alphabet_preprocessing import preprocess_realtime_frame
-
-    mp_hands = mp.solutions.hands
-    with mp_hands.Hands(static_image_mode=True, max_num_hands=1, min_detection_confidence=0.5) as hands:
-        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        results = hands.process(img_rgb)
-        if not results.multi_hand_landmarks:
-            raise HTTPException(status_code=422, detail="Không tìm thấy bàn tay trong ảnh. Vui lòng chụp rõ lòng bàn tay.")
-
-        hand_landmarks = results.multi_hand_landmarks[0]
-        pts = np.array([[lm.x, lm.y, lm.z] for lm in hand_landmarks.landmark], dtype=np.float32)
-        norm_feat = preprocess_realtime_frame(pts)
-
-    tensor_in = torch.tensor(norm_feat, dtype=torch.float32).unsqueeze(0)
-    with torch.no_grad():
-        logits = model(tensor_in)
-        probs = torch.softmax(logits, dim=-1)[0]
-        topk = torch.topk(probs, k=min(3, len(classes)))
-
-        top1_idx = topk.indices[0].item()
-        top1_conf = topk.values[0].item()
-
-        candidates = []
-        for val, idx in zip(topk.values.tolist(), topk.indices.tolist()):
-            candidates.append({
-                "class": classes[idx] if idx < len(classes) else str(idx),
-                "confidence": round(val, 4),
-            })
-
-        return {
-            "prediction": classes[top1_idx] if top1_idx < len(classes) else str(top1_idx),
-            "confidence": round(top1_conf, 4),
-            "candidates": candidates,
-        }
+async def predict_fingerspelling(file: Optional[UploadFile] = File(None)):
+    """Retired single-image endpoint: the Level 1 model classifies a landmark sequence
+    (letters with motion and tone marks cannot be read from one frame)."""
+    raise HTTPException(
+        status_code=409,
+        detail={
+            "error": "single_image_not_supported",
+            "message": "Cấp 1 nhận chuỗi landmark của cả ký hiệu, không nhận một ảnh. "
+                       f"Gửi POST {ALPHABET_SEQUENCE_ENDPOINT}.",
+            "use": ALPHABET_SEQUENCE_ENDPOINT,
+        },
+    )
 
 
 class TranslateRequest(BaseModel):

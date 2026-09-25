@@ -226,3 +226,79 @@ def sequence_features_from_clip(
         return np.zeros((target_frames, 63), dtype=np.float32)
     idx = np.linspace(0, len(frames) - 1, target_frames).round().astype(int)
     return normalize_hand_landmarks(frames[idx]).reshape(target_frames, -1).astype(np.float32)
+
+
+# ---------------------------------------------------------------------------
+# One entry point for "clip of MediaPipe hand landmarks -> model input".
+# Used by the training scripts and by the backend sequence endpoint, driven by the
+# `preprocessing` dict stored in the checkpoint.
+# ---------------------------------------------------------------------------
+DEFAULT_ALPHABET_PREPROCESSING = {
+    "aspect_correct": True, "mirror_left_hand": True, "target_frames": 30,
+    "resample": "frame_index", "wrist_trajectory": False, "min_detected_frames": 3,
+}
+
+
+def resample_by_time(landmarks: np.ndarray, detected: np.ndarray, timestamps_ms: np.ndarray,
+                     target_frames: int = 30) -> np.ndarray:
+    """[T,21,3] -> [target_frames,21,3] sampled uniformly in time between the first and last
+    detected frame; missing-hand frames are bridged by linear interpolation."""
+    idx = np.flatnonzero(detected)
+    t = np.asarray(timestamps_ms, dtype=np.float64)[idx]
+    frames = landmarks[idx].reshape(len(idx), -1)
+    grid = np.linspace(t[0], t[-1], target_frames) if t[-1] > t[0] else np.full(target_frames, t[0])
+    out = np.stack([np.interp(grid, t, frames[:, j]) for j in range(frames.shape[1])], axis=1)
+    return out.reshape(target_frames, 21, 3).astype(np.float32)
+
+
+def resample_by_index(landmarks: np.ndarray, detected: np.ndarray, target_frames: int = 30) -> np.ndarray:
+    """[T,21,3] -> [target_frames,21,3] picked uniformly over detected frames (gaps dropped)."""
+    frames = landmarks[detected]
+    return frames[np.linspace(0, len(frames) - 1, target_frames).round().astype(int)]
+
+
+def features_with_wrist_trajectory(sampled: np.ndarray) -> np.ndarray:
+    """Palm-normalised frames whose wrist slot (always 0 after normalisation) carries the wrist
+    displacement from the first sampled frame, in units of the clip's median palm length."""
+    palm = float(np.median(np.linalg.norm(sampled[:, MIDDLE_MCP_IDX] - sampled[:, WRIST_IDX], axis=-1)))
+    feats = normalize_hand_landmarks(sampled)
+    feats[:, WRIST_IDX, :2] = (sampled[:, WRIST_IDX, :2] - sampled[0, WRIST_IDX, :2]) / max(palm, EPS)
+    feats[:, WRIST_IDX, 2] = 0.0
+    return feats.reshape(len(sampled), -1).astype(np.float32)
+
+
+def alphabet_clip_features(
+    raw_landmarks: np.ndarray,
+    detected_mask: Optional[np.ndarray] = None,
+    handedness_labels: Optional[np.ndarray] = None,
+    aspect_ratio: Optional[float] = None,
+    timestamps_ms: Optional[np.ndarray] = None,
+    preprocessing: Optional[Dict[str, Any]] = None,
+    model_type: str = "bigru",
+) -> np.ndarray:
+    """
+    Raw MediaPipe Hands clip (unmirrored frames, image coordinates) -> model input.
+    bigru: [target_frames, 63]; mlp: [63] (median canonical frame).
+    Raises ValueError when fewer than `min_detected_frames` frames contain a hand.
+    """
+    p = {**DEFAULT_ALPHABET_PREPROCESSING, **(preprocessing or {})}
+    lms, det, _ = canonicalize_hand_sequence(
+        raw_landmarks, detected_mask,
+        handedness_labels if p["mirror_left_hand"] else None,
+        aspect_ratio if p["aspect_correct"] else None)
+    if det.sum() < p["min_detected_frames"]:
+        raise ValueError(f"only {int(det.sum())} frames with a hand (need {p['min_detected_frames']})")
+    if model_type == "mlp":
+        return normalize_hand_landmarks(np.median(lms[det], axis=0)).reshape(-1).astype(np.float32)
+    n = int(p["target_frames"])
+    if p["resample"] == "time":
+        if timestamps_ms is None:
+            raise ValueError("preprocessing.resample='time' needs timestamps_ms")
+        sampled = resample_by_time(lms, det, timestamps_ms, n)
+    elif p["resample"] == "frame_index":
+        sampled = resample_by_index(lms, det, n)
+    else:
+        raise ValueError(f"unknown resample mode {p['resample']!r}")
+    if p["wrist_trajectory"]:
+        return features_with_wrist_trajectory(sampled)
+    return normalize_hand_landmarks(sampled).reshape(n, -1).astype(np.float32)
