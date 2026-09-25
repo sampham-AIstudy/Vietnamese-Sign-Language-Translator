@@ -316,12 +316,7 @@ class VSLDataset(Dataset):
         if os.path.exists(p2):
             return p2
 
-        # 3. Check dry-run directory fallback: data/dry_run_extracted/split/safe_gloss/{video_id}.npz
-        p3 = os.path.join("data", "dry_run_extracted", split, safe_gloss, f"{video_id}.npz")
-        if os.path.exists(p3):
-            return p3
-
-        # 4. Auto-extract from raw video if enabled
+        # 3. Auto-extract from raw video if enabled
         if self.auto_extract and os.path.exists(raw_video_path):
             extractor = self._get_extractor()
             result = extractor.extract_from_video(raw_video_path)

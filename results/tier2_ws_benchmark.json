@@ -1,0 +1,13 @@
+{
+  "num_classes": 487,
+  "model_type": "ST-GCN",
+  "total_frames": 90,
+  "effective_fps": 12.14,
+  "mean_latency_ms": 82.34,
+  "min_latency_ms": 72.78,
+  "max_latency_ms": 160.85,
+  "p50_latency_ms": 83.22,
+  "p90_latency_ms": 90.09,
+  "p95_latency_ms": 92.32,
+  "p99_latency_ms": 105.53
+}

@@ -2,7 +2,7 @@
 Cut VSL-GH continuous sentences into isolated-sign segments using the dataset's own per-gloss
 time boundaries, in the project's 67-joint format (same as CleanHolisticExtractor output).
 
-- Conversion: convert_137_to_67(mode="semantic") (see LANDMARK_MAPPING_REPORT.md; "direct" mislabels joints).
+- Conversion: convert_137_to_67(mode="semantic") (see docs/audit/LANDMARK_MAPPING_REPORT.md; "direct" mislabels joints).
 - Missing landmarks: VSL-GH stores zeros -> NaN + visibility 0 (project convention, no zero-fill).
 - Frame geometry: 1080x1080 (width/height recorded so aspect correction can be applied).
 - Skips the two annotations this project wrote by hand (scripts/prepare_canonical_vsl_gh.py):

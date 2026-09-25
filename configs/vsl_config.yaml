@@ -6,7 +6,6 @@ dataset:
   raw_video_dir: "data/Dataset/Videos"
   label_csv_path: "data/Dataset/Labels/label.csv"
   splits_dir: "data/splits"
-  dry_run_dir: "data/dry_run_extracted"
   extracted_keypoints_dir: "data/extracted_keypoints"
   tier1_classes_path: "configs/tier1_classes.txt"
 

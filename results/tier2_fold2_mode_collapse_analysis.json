@@ -1,0 +1,83 @@
+{
+  "fold2_reproduced": {
+    "test_top1": 1.23,
+    "test_top5": 3.9,
+    "macro_f1": 0.1,
+    "unique_classes_predicted": 9,
+    "total_classes": 487,
+    "top5_predicted_pct": 91.58,
+    "top10_predicted_pct": 100.0,
+    "top15_predicted": [
+      {
+        "rank": 1,
+        "class_id": 366,
+        "class_name": "thương yêu",
+        "count": 304,
+        "pct": 62.42
+      },
+      {
+        "rank": 2,
+        "class_id": 10,
+        "class_name": "anh em",
+        "count": 44,
+        "pct": 9.03
+      },
+      {
+        "rank": 3,
+        "class_id": 80,
+        "class_name": "chị hai, chị cả",
+        "count": 43,
+        "pct": 8.83
+      },
+      {
+        "rank": 4,
+        "class_id": 358,
+        "class_name": "thích thú",
+        "count": 33,
+        "pct": 6.78
+      },
+      {
+        "rank": 5,
+        "class_id": 4,
+        "class_name": "12",
+        "count": 22,
+        "pct": 4.52
+      },
+      {
+        "rank": 6,
+        "class_id": 229,
+        "class_name": "môn kĩ thuật",
+        "count": 16,
+        "pct": 3.29
+      },
+      {
+        "rank": 7,
+        "class_id": 40,
+        "class_name": "bảng cộng",
+        "count": 12,
+        "pct": 2.46
+      },
+      {
+        "rank": 8,
+        "class_id": 88,
+        "class_name": "con chó",
+        "count": 9,
+        "pct": 1.85
+      },
+      {
+        "rank": 9,
+        "class_id": 413,
+        "class_name": "tưởng tượng",
+        "count": 4,
+        "pct": 0.82
+      }
+    ],
+    "collapse_status": "SEVERE MODE COLLAPSE"
+  },
+  "indomain_on_central_test": {
+    "test_top1": 81.72,
+    "test_top5": 94.25,
+    "macro_f1": 76.9,
+    "unique_classes_predicted": 409
+  }
+}

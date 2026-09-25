@@ -1,0 +1,109 @@
+{
+  "vslgh_total_sentences": 300,
+  "parallel_corpus_total_pairs": 9405,
+  "exact_vsl_source_overlap_count": 0,
+  "exact_vi_target_overlap_count": 0,
+  "exact_vsl_source_overlap_ratio": 0.0,
+  "exact_vi_target_overlap_ratio": 0.0,
+  "normalized_vsl_source_overlap_count": 5,
+  "normalized_vi_target_overlap_count": 9,
+  "normalized_vsl_source_overlap_ratio": 1.67,
+  "normalized_vi_target_overlap_ratio": 3.0,
+  "normalized_full_pair_overlap_count": 5,
+  "normalized_full_pair_overlap_ratio": 1.67,
+  "vsl_norm_overlap_samples": [
+    "tôi hiểu không",
+    "tôi tiêu chảy",
+    "tôi cảm thấy bình thường",
+    "tôi cận thị",
+    "tôi táo bón"
+  ],
+  "vi_norm_overlap_samples": [
+    "tôi bị cận thị",
+    "tôi bị tiêu chảy",
+    "tôi không hiểu",
+    "tôi bị đau ngực",
+    "tôi cảm thấy bình thường",
+    "tôi bị đau đầu",
+    "tôi bị đau răng",
+    "tôi bị táo bón",
+    "tôi muốn lấy cao răng"
+  ],
+  "overlapping_vslgh_sentences_summary": {
+    "total_overlapping_sentences": 9,
+    "samples": [
+      {
+        "sentence_id": "SENT036",
+        "vsl_raw": "TÔI HIỂU KHÔNG",
+        "vi_raw": "Tôi không hiểu.",
+        "vsl_norm_match": true,
+        "vi_norm_match": true,
+        "pair_norm_match": true
+      },
+      {
+        "sentence_id": "SENT089",
+        "vsl_raw": "TÔI CẢM-THẤY BÌNH-THƯỜNG",
+        "vi_raw": "Tôi cảm thấy bình thường.",
+        "vsl_norm_match": true,
+        "vi_norm_match": true,
+        "pair_norm_match": true
+      },
+      {
+        "sentence_id": "SENT101",
+        "vsl_raw": "TÔI ĐẦU-ĐAU",
+        "vi_raw": "Tôi bị đau đầu.",
+        "vsl_norm_match": false,
+        "vi_norm_match": true,
+        "pair_norm_match": false
+      },
+      {
+        "sentence_id": "SENT103",
+        "vsl_raw": "TÔI NGỰC-ĐAU",
+        "vi_raw": "Tôi bị đau ngực.",
+        "vsl_norm_match": false,
+        "vi_norm_match": true,
+        "pair_norm_match": false
+      },
+      {
+        "sentence_id": "SENT112",
+        "vsl_raw": "TÔI TÁO-BÓN",
+        "vi_raw": "Tôi bị táo bón.",
+        "vsl_norm_match": true,
+        "vi_norm_match": true,
+        "pair_norm_match": true
+      },
+      {
+        "sentence_id": "SENT113",
+        "vsl_raw": "TÔI TIÊU-CHẢY",
+        "vi_raw": "Tôi bị tiêu chảy.",
+        "vsl_norm_match": true,
+        "vi_norm_match": true,
+        "pair_norm_match": true
+      },
+      {
+        "sentence_id": "SENT141",
+        "vsl_raw": "TÔI CẬN-THỊ",
+        "vi_raw": "Tôi bị cận thị.",
+        "vsl_norm_match": true,
+        "vi_norm_match": true,
+        "pair_norm_match": true
+      },
+      {
+        "sentence_id": "SENT147",
+        "vsl_raw": "TÔI RĂNG ĐAU",
+        "vi_raw": "Tôi bị đau răng.",
+        "vsl_norm_match": false,
+        "vi_norm_match": true,
+        "pair_norm_match": false
+      },
+      {
+        "sentence_id": "SENT150",
+        "vsl_raw": "TÔI CẠO-RĂNG MUỐN",
+        "vi_raw": "Tôi muốn lấy cao răng.",
+        "vsl_norm_match": false,
+        "vi_norm_match": true,
+        "pair_norm_match": false
+      }
+    ]
+  }
+}

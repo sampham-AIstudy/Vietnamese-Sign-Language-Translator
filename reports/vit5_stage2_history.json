@@ -1,0 +1,59 @@
+{
+  "base_model": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\checkpoints\\vit5_stage1\\best_model",
+  "train_samples": 240,
+  "val_samples": 30,
+  "best_epoch": 2,
+  "best_val_loss": 1.3589,
+  "total_training_time_sec": 145.94,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.7178,
+      "val_loss": 1.613,
+      "lr": 1.6666666666666667e-05,
+      "epoch_time_sec": 21.38
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.9048,
+      "val_loss": 1.3589,
+      "lr": 2.491547947177429e-05,
+      "epoch_time_sec": 20.38
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.4601,
+      "val_loss": 1.5005,
+      "lr": 2.4246157759823855e-05,
+      "epoch_time_sec": 20.07
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.2724,
+      "val_loss": 1.7267,
+      "lr": 2.294359764266171e-05,
+      "epoch_time_sec": 20.3
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.1817,
+      "val_loss": 1.9036,
+      "lr": 2.1078020473359174e-05,
+      "epoch_time_sec": 20.13
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.1064,
+      "val_loss": 2.0549,
+      "lr": 1.8750000000000002e-05,
+      "epoch_time_sec": 20.31
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.0708,
+      "val_loss": 2.2146,
+      "lr": 1.608504040888863e-05,
+      "epoch_time_sec": 20.52
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "dataset_samples": 4200,
+  "frame_lengths": {
+    "min": 34,
+    "max": 523,
+    "mean": 108.67,
+    "median": 105.0,
+    "p90": 146.0,
+    "p95": 158.0,
+    "p99": 187.0,
+    "std": 29.08
+  },
+  "duration_seconds": {
+    "min": 0.87,
+    "max": 7.65,
+    "mean": 3.16,
+    "median": 3.08
+  },
+  "gloss_lengths": {
+    "min": 2,
+    "max": 8,
+    "mean": 3.99,
+    "median": 4.0,
+    "p90": 5.0,
+    "p95": 6.0,
+    "p99": 7.0
+  },
+  "repeated_gloss_statistics": {
+    "samples_with_adjacent_repeats": 0,
+    "percentage_with_adjacent_repeats": 0.0,
+    "max_repeated_run_length": 1,
+    "total_adjacent_repeat_instances": 0
+  },
+  "vocabulary_statistics": {
+    "unique_glosses_count": 370,
+    "rare_glosses_count_le_5": 3,
+    "rare_glosses_count_le_14": 220,
+    "top_10_frequent": [
+      {
+        "gloss": "TÔI",
+        "count": 3878
+      },
+      {
+        "gloss": "BÁC-SĨ",
+        "count": 363
+      },
+      {
+        "gloss": "CÓ-KHÔNG",
+        "count": 350
+      },
+      {
+        "gloss": "ĐAU",
+        "count": 350
+      },
+      {
+        "gloss": "KHÁM",
+        "count": 279
+      },
+      {
+        "gloss": "CẦN-KHÔNG",
+        "count": 262
+      },
+      {
+        "gloss": "PHẢI-KHÔNG",
+        "count": 238
+      },
+      {
+        "gloss": "CÓ",
+        "count": 231
+      },
+      {
+        "gloss": "RỒI",
+        "count": 209
+      },
+      {
+        "gloss": "KHÔNG",
+        "count": 196
+      }
+    ],
+    "bottom_10_rare": [
+      {
+        "gloss": "LỊCH-HẸN",
+        "count": 13
+      },
+      {
+        "gloss": "Ở-ĐÂY",
+        "count": 13
+      },
+      {
+        "gloss": "DÙNG",
+        "count": 13
+      },
+      {
+        "gloss": "HƠI HƠI",
+        "count": 13
+      },
+      {
+        "gloss": "NGỨA-NHIỀU",
+        "count": 13
+      },
+      {
+        "gloss": "THẬN",
+        "count": 13
+      },
+      {
+        "gloss": "NGAY",
+        "count": 12
+      },
+      {
+        "gloss": "Gloss",
+        "count": 2
+      },
+      {
+        "gloss": "ĐẺ",
+        "count": 1
+      },
+      {
+        "gloss": "MỀ-ĐÂY",
+        "count": 1
+      }
+    ]
+  },
+  "translation_word_counts": {
+    "min": 3,
+    "max": 13,
+    "mean": 6.2,
+    "median": 6.0,
+    "p90": 9.0,
+    "p95": 9.0
+  }
+}

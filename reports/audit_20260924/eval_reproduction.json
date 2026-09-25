@@ -1,0 +1,29 @@
+{
+  "level_2_rerun": {
+    "test_csv": "data/splits/folds/tier2_indomain_test.csv",
+    "total_evaluated": 487,
+    "top1_acc": 46.41,
+    "top5_acc": 60.78,
+    "reported_top1": 46.41,
+    "reported_top5": 60.78,
+    "diff_top1": -0.0,
+    "diff_top5": 0.0,
+    "dialect_breakdown": {
+      "B": {
+        "top1": 21.47,
+        "top5": 29.45,
+        "count": 163
+      },
+      "T": {
+        "top1": 61.73,
+        "top5": 82.72,
+        "count": 162
+      },
+      "N": {
+        "top1": 56.17,
+        "top5": 70.37,
+        "count": 162
+      }
+    }
+  }
+}

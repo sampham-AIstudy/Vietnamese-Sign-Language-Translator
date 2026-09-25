@@ -1,0 +1,39 @@
+# Transformer Configuration for VSLR Benchmark (Phase 7)
+experiment_name: "transformer_tier1"
+description: "Transformer Encoder with Temporal Multi-Head Attention and Masked Pooling on Tier 1 (50 classes)"
+
+model:
+  name: "TransformerModel"
+  num_joints: 67
+  coord_dim: 3
+  d_model: 128
+  nhead: 4
+  dim_feedforward: 256
+  num_layers: 2
+  dropout: 0.1
+  pos_encoding: "sinusoidal"  # Options: "sinusoidal", "learnable", "none"
+  pooling_type: "attention"   # Options: "attention", "mean"
+  norm_first: true
+
+data:
+  tier: "tier1"
+  num_classes: 50
+  sequence_length: 60
+  keypoints_dir: "data/extracted_keypoints"
+  splits_dir: "data/splits"
+
+training:
+  batch_size: 16
+  epochs: 100
+  lr: 0.0005
+  weight_decay: 0.0001
+  patience: 10
+  use_amp: true
+  max_grad_norm: 1.0
+  num_workers: 0
+
+output:
+  checkpoint_dir: "checkpoints"
+  checkpoint_file: "checkpoints/transformer_best.pt"
+  experiment_dir: "experiments/transformer"
+  history_file: "experiments/transformer/history.json"

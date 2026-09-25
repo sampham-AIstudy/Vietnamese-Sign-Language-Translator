@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "benchmark_timestamp": "2026-09-21 10:32:49",
+  "dataset_size": 4200,
+  "init_time_ms": 1092.39,
+  "first_sample_latency_ms": 3.78,
+  "avg_single_sample_latency_ms": 2.44,
+  "batch_10_latency_ms": 37.78,
+  "batch_10_throughput_samples_per_sec": 264.7,
+  "batch_32_latency_ms": 72.46,
+  "batch_32_throughput_samples_per_sec": 441.6,
+  "single_sample_with_velocity_latency_ms": 3.42,
+  "peak_ram_mb": 66.17,
+  "estimated_train_epoch_loading_sec": 8.19,
+  "direct_npy_loading_viable": true
+}

@@ -1,0 +1,298 @@
+{
+  "stage1_only": {
+    "model_label": "ViT5 (Stage 1 Only: Cleaned 10K)",
+    "model_path": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\checkpoints\\vit5_stage1\\best_model",
+    "held_out_unseen_sentences_30": {
+      "num_samples": 30,
+      "mode_a_oracle": {
+        "bleu": 16.58,
+        "bleu_1": 68.09,
+        "bleu_2": 28.29,
+        "bleu_3": 10.86,
+        "bleu_4": 4.14,
+        "rouge_1": 81.44,
+        "rouge_2": 53.66,
+        "rouge_l": 62.83,
+        "exact_match": 0.0
+      },
+      "mode_b_cslr": {
+        "bleu": 16.82,
+        "bleu_1": 63.89,
+        "bleu_2": 29.03,
+        "bleu_3": 12.82,
+        "bleu_4": 5.56,
+        "rouge_1": 73.49,
+        "rouge_2": 49.29,
+        "rouge_l": 59.45,
+        "exact_match": 0.0
+      },
+      "qualitative_examples": [
+        {
+          "sample_id": "SENT271_S06_R01_F",
+          "sentence_id": "SENT271",
+          "ref_gloss": "TÔI HIỂU RỒI",
+          "pred_cslr_gloss": "TÔI HIỂU RỒI",
+          "ground_truth_target": "Vâng, tôi hiểu rồi.",
+          "mode_a_output": "Tôi đã hiểu rồi.",
+          "mode_b_output": "Tôi đã hiểu rồi."
+        },
+        {
+          "sample_id": "SENT272_S06_R01_F",
+          "sentence_id": "SENT272",
+          "ref_gloss": "TÔI CẢM-ƠN BÁC-SĨ",
+          "pred_cslr_gloss": "TÔI CẢM-ƠN BÁC-SĨ",
+          "ground_truth_target": "Tôi cảm ơn bác sĩ.",
+          "mode_a_output": "tôi rất cảm ơn bác sĩ.",
+          "mode_b_output": "tôi rất cảm ơn bác sĩ."
+        },
+        {
+          "sample_id": "SENT273_S06_R01_F",
+          "sentence_id": "SENT273",
+          "ref_gloss": "ĐƠN TÔI THUỐC CÓ",
+          "pred_cslr_gloss": "ĐƠN THUỐC TÔI CÓ",
+          "ground_truth_target": "Đây là đơn thuốc của tôi.",
+          "mode_a_output": "đơn của tôi có thuốc.",
+          "mode_b_output": "đơn thuốc của tôi có."
+        },
+        {
+          "sample_id": "SENT274_S06_R01_F",
+          "sentence_id": "SENT274",
+          "ref_gloss": "TÔI MUA THUỐC SẼ",
+          "pred_cslr_gloss": "TÔI MUA THUỐC SẼ",
+          "ground_truth_target": "Tôi sẽ đi mua thuốc.",
+          "mode_a_output": "tôi sẽ mua thuốc này.",
+          "mode_b_output": "tôi sẽ mua thuốc này."
+        },
+        {
+          "sample_id": "SENT275_S06_R01_F",
+          "sentence_id": "SENT275",
+          "ref_gloss": "TÔI THẺ BẢO-HIỂM LẤY-THUỐC",
+          "pred_cslr_gloss": "TÔI THẺ BẢO-HIỂM LẤY-THUỐC",
+          "ground_truth_target": "Tôi lấy thuốc theo bảo hiểm.",
+          "mode_a_output": "tôi có thẻ bảo hiểm để lấy thuốc.",
+          "mode_b_output": "tôi có thẻ bảo hiểm để lấy thuốc."
+        }
+      ]
+    },
+    "full_s06_unseen_signer_300": {
+      "num_samples": 300,
+      "mode_a_oracle": {
+        "bleu": 21.61,
+        "bleu_1": 69.14,
+        "bleu_2": 30.45,
+        "bleu_3": 14.36,
+        "bleu_4": 7.51,
+        "rouge_1": 84.89,
+        "rouge_2": 60.44,
+        "rouge_l": 70.84,
+        "exact_match": 6.0
+      },
+      "mode_b_cslr": {
+        "bleu": 13.08,
+        "bleu_1": 52.21,
+        "bleu_2": 20.61,
+        "bleu_3": 8.8,
+        "bleu_4": 3.98,
+        "rouge_1": 66.69,
+        "rouge_2": 43.95,
+        "rouge_l": 57.91,
+        "exact_match": 2.33
+      },
+      "qualitative_examples": [
+        {
+          "sample_id": "SENT001_S06_R01_F",
+          "sentence_id": "SENT001",
+          "ref_gloss": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+          "pred_cslr_gloss": "TÔI SỨC-KHỎE CHƯA",
+          "ground_truth_target": "Tôi muốn đăng ký khám sức khỏe.",
+          "mode_a_output": "tôi đã đăng ký khám sức khỏe muốn.",
+          "mode_b_output": "tôi đã khỏe chưa?"
+        },
+        {
+          "sample_id": "SENT002_S06_R01_F",
+          "sentence_id": "SENT002",
+          "ref_gloss": "TÔI TUỔI 2 4",
+          "pred_cslr_gloss": "TÔI SÂU CẦN-KHÔNG",
+          "ground_truth_target": "Tôi 24 tuổi.",
+          "mode_a_output": "Tôi 2 4 tuổi.",
+          "mode_b_output": "tôi không sâu cần không?"
+        },
+        {
+          "sample_id": "SENT003_S06_R01_F",
+          "sentence_id": "SENT003",
+          "ref_gloss": "IX BÁC-SĨ TÊN GÌ",
+          "pred_cslr_gloss": "TÔI TRẢ CHO-TÔI CÓ-KHÔNG",
+          "ground_truth_target": "Bác sĩ tên là gì ạ.",
+          "mode_a_output": "ix, bác sĩ tên gì?",
+          "mode_b_output": "Tôi sẽ trả lại cho tôi có được không?"
+        },
+        {
+          "sample_id": "SENT004_S06_R01_F",
+          "sentence_id": "SENT004",
+          "ref_gloss": "TÔI NỮ",
+          "pred_cslr_gloss": "TÔI NỮ",
+          "ground_truth_target": "Tôi là nữ.",
+          "mode_a_output": "Tôi là nữ.",
+          "mode_b_output": "Tôi là nữ."
+        },
+        {
+          "sample_id": "SENT005_S06_R01_F",
+          "sentence_id": "SENT005",
+          "ref_gloss": "TÔI NAM",
+          "pred_cslr_gloss": "TÔI HỌNG NAM",
+          "ground_truth_target": "Tôi là nam.",
+          "mode_a_output": "Tôi là Nam.",
+          "mode_b_output": "tôi bị họng Nam."
+        }
+      ]
+    }
+  },
+  "stage1_plus_stage2": {
+    "model_label": "ViT5 (Stage 1 + Stage 2: 10K + VSL-GH)",
+    "model_path": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\checkpoints\\vit5_stage2\\best_model",
+    "held_out_unseen_sentences_30": {
+      "num_samples": 30,
+      "mode_a_oracle": {
+        "bleu": 27.87,
+        "bleu_1": 78.08,
+        "bleu_2": 45.5,
+        "bleu_3": 22.64,
+        "bleu_4": 11.63,
+        "rouge_1": 84.01,
+        "rouge_2": 64.49,
+        "rouge_l": 68.9,
+        "exact_match": 10.0
+      },
+      "mode_b_cslr": {
+        "bleu": 23.18,
+        "bleu_1": 71.15,
+        "bleu_2": 39.89,
+        "bleu_3": 19.59,
+        "bleu_4": 10.17,
+        "rouge_1": 75.7,
+        "rouge_2": 56.53,
+        "rouge_l": 63.93,
+        "exact_match": 10.0
+      },
+      "qualitative_examples": [
+        {
+          "sample_id": "SENT271_S06_R01_F",
+          "sentence_id": "SENT271",
+          "ref_gloss": "TÔI HIỂU RỒI",
+          "pred_cslr_gloss": "TÔI HIỂU RỒI",
+          "ground_truth_target": "Vâng, tôi hiểu rồi.",
+          "mode_a_output": "Tôi hiểu rồi.",
+          "mode_b_output": "Tôi hiểu rồi."
+        },
+        {
+          "sample_id": "SENT272_S06_R01_F",
+          "sentence_id": "SENT272",
+          "ref_gloss": "TÔI CẢM-ƠN BÁC-SĨ",
+          "pred_cslr_gloss": "TÔI CẢM-ƠN BÁC-SĨ",
+          "ground_truth_target": "Tôi cảm ơn bác sĩ.",
+          "mode_a_output": "Tôi cảm ơn bác sĩ.",
+          "mode_b_output": "Tôi cảm ơn bác sĩ."
+        },
+        {
+          "sample_id": "SENT273_S06_R01_F",
+          "sentence_id": "SENT273",
+          "ref_gloss": "ĐƠN TÔI THUỐC CÓ",
+          "pred_cslr_gloss": "ĐƠN THUỐC TÔI CÓ",
+          "ground_truth_target": "Đây là đơn thuốc của tôi.",
+          "mode_a_output": "Đơn của tôi có thuốc.",
+          "mode_b_output": "Đơn thuốc của tôi có."
+        },
+        {
+          "sample_id": "SENT274_S06_R01_F",
+          "sentence_id": "SENT274",
+          "ref_gloss": "TÔI MUA THUỐC SẼ",
+          "pred_cslr_gloss": "TÔI MUA THUỐC SẼ",
+          "ground_truth_target": "Tôi sẽ đi mua thuốc.",
+          "mode_a_output": "Tôi sẽ mua thuốc.",
+          "mode_b_output": "Tôi sẽ mua thuốc."
+        },
+        {
+          "sample_id": "SENT275_S06_R01_F",
+          "sentence_id": "SENT275",
+          "ref_gloss": "TÔI THẺ BẢO-HIỂM LẤY-THUỐC",
+          "pred_cslr_gloss": "TÔI THẺ BẢO-HIỂM LẤY-THUỐC",
+          "ground_truth_target": "Tôi lấy thuốc theo bảo hiểm.",
+          "mode_a_output": "Tôi lấy thẻ bảo hiểm để lấy thuốc.",
+          "mode_b_output": "Tôi lấy thẻ bảo hiểm để lấy thuốc."
+        }
+      ]
+    },
+    "full_s06_unseen_signer_300": {
+      "num_samples": 300,
+      "mode_a_oracle": {
+        "bleu": 58.09,
+        "bleu_1": 88.07,
+        "bleu_2": 67.7,
+        "bleu_3": 55.31,
+        "bleu_4": 47.23,
+        "rouge_1": 89.75,
+        "rouge_2": 78.91,
+        "rouge_l": 84.49,
+        "exact_match": 38.67
+      },
+      "mode_b_cslr": {
+        "bleu": 32.15,
+        "bleu_1": 65.74,
+        "bleu_2": 41.18,
+        "bleu_3": 29.43,
+        "bleu_4": 22.36,
+        "rouge_1": 69.19,
+        "rouge_2": 53.27,
+        "rouge_l": 64.47,
+        "exact_match": 16.67
+      },
+      "qualitative_examples": [
+        {
+          "sample_id": "SENT001_S06_R01_F",
+          "sentence_id": "SENT001",
+          "ref_gloss": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+          "pred_cslr_gloss": "TÔI SỨC-KHỎE CHƯA",
+          "ground_truth_target": "Tôi muốn đăng ký khám sức khỏe.",
+          "mode_a_output": "Tôi muốn đăng ký khám sức khỏe.",
+          "mode_b_output": "Tôi chưa có sức khỏe."
+        },
+        {
+          "sample_id": "SENT002_S06_R01_F",
+          "sentence_id": "SENT002",
+          "ref_gloss": "TÔI TUỔI 2 4",
+          "pred_cslr_gloss": "TÔI SÂU CẦN-KHÔNG",
+          "ground_truth_target": "Tôi 24 tuổi.",
+          "mode_a_output": "Tôi 24 tuổi.",
+          "mode_b_output": "Tôi có cần ăn sâu không?"
+        },
+        {
+          "sample_id": "SENT003_S06_R01_F",
+          "sentence_id": "SENT003",
+          "ref_gloss": "IX BÁC-SĨ TÊN GÌ",
+          "pred_cslr_gloss": "TÔI TRẢ CHO-TÔI CÓ-KHÔNG",
+          "ground_truth_target": "Bác sĩ tên là gì ạ.",
+          "mode_a_output": "Bác sĩ tên là gì ạ?",
+          "mode_b_output": "Tôi trả cho tôi có được không?"
+        },
+        {
+          "sample_id": "SENT004_S06_R01_F",
+          "sentence_id": "SENT004",
+          "ref_gloss": "TÔI NỮ",
+          "pred_cslr_gloss": "TÔI NỮ",
+          "ground_truth_target": "Tôi là nữ.",
+          "mode_a_output": "Tôi là nữ.",
+          "mode_b_output": "Tôi là nữ."
+        },
+        {
+          "sample_id": "SENT005_S06_R01_F",
+          "sentence_id": "SENT005",
+          "ref_gloss": "TÔI NAM",
+          "pred_cslr_gloss": "TÔI HỌNG NAM",
+          "ground_truth_target": "Tôi là nam.",
+          "mode_a_output": "Tôi là Nam.",
+          "mode_b_output": "Tôi bị viêm họng."
+        }
+      ]
+    }
+  }
+}

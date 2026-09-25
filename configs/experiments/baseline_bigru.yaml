@@ -1,0 +1,36 @@
+# Baseline BiGRU Configuration for VSLR Benchmark (Phase 5)
+experiment_name: "baseline_bigru_tier1"
+description: "Bidirectional GRU with masked spatial and temporal attention on Tier 1 (50 classes)"
+
+model:
+  name: "BaselineBiGRU"
+  num_joints: 67
+  coord_dim: 3
+  hidden_dim: 128
+  num_layers: 2
+  dropout: 0.3
+  bidirectional: true
+  pooling_type: "attention"  # Options: "attention", "mean"
+
+data:
+  tier: "tier1"
+  num_classes: 50
+  sequence_length: 60
+  keypoints_dir: "data/extracted_keypoints"
+  splits_dir: "data/splits"
+
+training:
+  batch_size: 16
+  epochs: 100
+  lr: 0.001
+  weight_decay: 0.0001
+  patience: 10
+  use_amp: true
+  max_grad_norm: 1.0
+  num_workers: 0
+
+output:
+  checkpoint_dir: "checkpoints"
+  checkpoint_file: "checkpoints/baseline_bigru.pt"
+  experiment_dir: "experiments/baseline"
+  history_file: "experiments/baseline/history.json"

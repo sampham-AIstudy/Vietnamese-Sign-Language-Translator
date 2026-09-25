@@ -1,0 +1,7380 @@
+[
+  {
+    "sample_id": "SENT050_S06_R01_F",
+    "frames": 132,
+    "ref_len": 2,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 1,
+    "cost": 3,
+    "wer": 150.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "WC",
+      "Ở-ĐÂU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "DỊ-ỨNG",
+      "KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT045_S06_R01_F",
+    "frames": 146,
+    "ref_len": 3,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 0,
+    "i": 1,
+    "cost": 4,
+    "wer": 133.33333333333331,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "KHÁM",
+      "CHI-PHÍ",
+      "BAO-NHIÊU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "LẤY",
+      "HÓA-ĐƠN",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT003_S06_R01_F",
+    "frames": 138,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 4,
+    "d": 0,
+    "i": 0,
+    "cost": 4,
+    "wer": 100.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "IX",
+      "BÁC-SĨ",
+      "TÊN",
+      "GÌ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TRẢ",
+      "CHO-TÔI",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT030_S06_R01_F",
+    "frames": 140,
+    "ref_len": 3,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 0,
+    "i": 1,
+    "cost": 3,
+    "wer": 100.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐÓNG-TIỀN",
+      "Ở-ĐÂU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TIẾP",
+      "THỨ-TỰ",
+      "ĐÂU"
+    ]
+  },
+  {
+    "sample_id": "SENT032_S06_R01_F",
+    "frames": 140,
+    "ref_len": 4,
+    "hyp_len": 5,
+    "s": 3,
+    "d": 0,
+    "i": 1,
+    "cost": 4,
+    "wer": 100.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NGỒI",
+      "LÂU",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "MŨI",
+      "HỌNG"
+    ]
+  },
+  {
+    "sample_id": "SENT039_S06_R01_F",
+    "frames": 122,
+    "ref_len": 3,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 0,
+    "i": 1,
+    "cost": 3,
+    "wer": 100.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "LƯỢT",
+      "KHI-NÀO"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KẾT-QUẢ",
+      "LẤY",
+      "Ở-ĐÂU"
+    ]
+  },
+  {
+    "sample_id": "SENT049_S06_R01_F",
+    "frames": 149,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 4,
+    "d": 0,
+    "i": 0,
+    "cost": 4,
+    "wer": 100.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "IX",
+      "BÁC-SĨ",
+      "TÊN",
+      "GÌ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "IX",
+      "CHO-TÔI",
+      "ĐƯỢC-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT055_S06_R01_F",
+    "frames": 88,
+    "ref_len": 3,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 0,
+    "i": 1,
+    "cost": 3,
+    "wer": 100.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "THÔNG-TIN",
+      "SAI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐỌC",
+      "CHỮ",
+      "KHÔNG-ĐƯỢC"
+    ]
+  },
+  {
+    "sample_id": "SENT072_S06_R01_F",
+    "frames": 94,
+    "ref_len": 3,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 0,
+    "i": 1,
+    "cost": 3,
+    "wer": 100.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NẶNG",
+      "55"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TUỔI",
+      "KHÁM",
+      "LẠI"
+    ]
+  },
+  {
+    "sample_id": "SENT105_S06_R01_F",
+    "frames": 69,
+    "ref_len": 2,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 0,
+    "i": 1,
+    "cost": 2,
+    "wer": 100.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "SỐT"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HO",
+      "RA-NƯỚC"
+    ]
+  },
+  {
+    "sample_id": "SENT108_S06_R01_F",
+    "frames": 89,
+    "ref_len": 2,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 0,
+    "i": 1,
+    "cost": 2,
+    "wer": 100.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NGỦ-KHÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "BỔI",
+      "CHƯA"
+    ]
+  },
+  {
+    "sample_id": "SENT150_S06_R01_F",
+    "frames": 69,
+    "ref_len": 2,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 0,
+    "i": 1,
+    "cost": 2,
+    "wer": 100.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "CẠO-RĂNG",
+      "MUỐN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CẠO-RĂNG",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT199_S06_R01_F",
+    "frames": 94,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 3,
+    "d": 0,
+    "i": 0,
+    "cost": 3,
+    "wer": 100.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "CÓ-PHẢI",
+      "THAI",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TÔI",
+      "SỢ-LẮM"
+    ]
+  },
+  {
+    "sample_id": "SENT010_S06_R01_F",
+    "frames": 214,
+    "ref_len": 6,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 2,
+    "i": 0,
+    "cost": 5,
+    "wer": 83.33333333333334,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐẶT",
+      "GÓI",
+      "KHÁM",
+      "CƠ-BẢN",
+      "MUỐN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "VIẾT",
+      "ĐẺ",
+      "VIỆC"
+    ]
+  },
+  {
+    "sample_id": "SENT019_S06_R01_F",
+    "frames": 127,
+    "ref_len": 6,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 2,
+    "i": 0,
+    "cost": 5,
+    "wer": 83.33333333333334,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "GIỜ",
+      "9",
+      "SÁNG",
+      "HẸN",
+      "CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NGỒI",
+      "HÀNG-NÀY",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT219_S06_R01_F",
+    "frames": 134,
+    "ref_len": 6,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 3,
+    "i": 0,
+    "cost": 5,
+    "wer": 83.33333333333334,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "TAI",
+      "TRÁI",
+      "NGHE",
+      "RÕ",
+      "KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "MẮT-TRÁI",
+      "CHE"
+    ]
+  },
+  {
+    "sample_id": "SENT021_S06_R01_F",
+    "frames": 164,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 1,
+    "i": 0,
+    "cost": 4,
+    "wer": 80.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "GIẤY",
+      "BIÊN-LAI",
+      "CẦM",
+      "ĐANG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KÝ-TÊN",
+      "LẤY",
+      "Ở-ĐÂU"
+    ]
+  },
+  {
+    "sample_id": "SENT022_S06_R01_F",
+    "frames": 131,
+    "ref_len": 5,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 2,
+    "i": 0,
+    "cost": 4,
+    "wer": 80.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "IX",
+      "BÁC-SĨ",
+      "GẶP",
+      "MUỐN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "PHẢI",
+      "MỜ"
+    ]
+  },
+  {
+    "sample_id": "SENT034_S06_R01_F",
+    "frames": 138,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 1,
+    "i": 0,
+    "cost": 4,
+    "wer": 80.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NỘP",
+      "GIẤY",
+      "KHÁC",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "GIÀY",
+      "CỞI",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT056_S06_R01_F",
+    "frames": 123,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 1,
+    "i": 0,
+    "cost": 4,
+    "wer": 80.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "THÔNG-TIN",
+      "SỬA",
+      "LẠI",
+      "MUỐN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐỌC",
+      "CHỮ",
+      "KHÔNG-ĐƯỢC"
+    ]
+  },
+  {
+    "sample_id": "SENT092_S06_R01_F",
+    "frames": 113,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 1,
+    "i": 0,
+    "cost": 4,
+    "wer": 80.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "MẠCH",
+      "ĐẬP",
+      "NHANH",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "LÂU",
+      "CHỜ",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT189_S06_R01_F",
+    "frames": 148,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 1,
+    "i": 0,
+    "cost": 4,
+    "wer": 80.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐAU",
+      "MỚI",
+      "CÓ",
+      "THỈNH-THOẢNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "THUỐC",
+      "RÕ",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT241_S06_R01_F",
+    "frames": 98,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 1,
+    "i": 0,
+    "cost": 4,
+    "wer": 80.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐO",
+      "TIM",
+      "ĐIỆN",
+      "XONG-RỒI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "LỊCH",
+      "TỔNG-QUÁT",
+      "MUỐN"
+    ]
+  },
+  {
+    "sample_id": "SENT287_S06_R01_F",
+    "frames": 108,
+    "ref_len": 5,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 2,
+    "i": 0,
+    "cost": 4,
+    "wer": 80.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "KHÁM",
+      "LẠI",
+      "KHI",
+      "NÀO"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "UỐNG",
+      "KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT002_S06_R01_F",
+    "frames": 186,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "TUỔI",
+      "2",
+      "4"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "SÂU",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT012_S06_R01_F",
+    "frames": 121,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 0,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "THẺ",
+      "CCCD",
+      "MANG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CHỜ",
+      "THẺ",
+      "ĐƯỢC-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT013_S06_R01_F",
+    "frames": 114,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NỘP",
+      "GIẤY",
+      "CẦN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐO",
+      "LOÃNG-XƯƠNG"
+    ]
+  },
+  {
+    "sample_id": "SENT018_S06_R01_F",
+    "frames": 116,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐẶT",
+      "LỊCH-HẸN",
+      "RỒI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "2",
+      "4"
+    ]
+  },
+  {
+    "sample_id": "SENT023_S06_R01_F",
+    "frames": 154,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 0,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "ĐÂY",
+      "ĐẾN",
+      "KHÁM",
+      "LẦN-ĐẦU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÔNG",
+      "CẦN"
+    ]
+  },
+  {
+    "sample_id": "SENT025_S06_R01_F",
+    "frames": 150,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 0,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "GIẤY",
+      "GIỚI-THIỆU",
+      "CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NGỒI",
+      "ĐÂY",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT028_S06_R01_F",
+    "frames": 136,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 0,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐÂY",
+      "NGỒI",
+      "ĐỢI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "LẤY",
+      "LẤY",
+      "Ở-ĐÂU"
+    ]
+  },
+  {
+    "sample_id": "SENT033_S06_R01_F",
+    "frames": 119,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HẸN",
+      "TRƯỚC",
+      "CHƯA"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "PHẢI",
+      "MỜ"
+    ]
+  },
+  {
+    "sample_id": "SENT037_S06_R01_F",
+    "frames": 131,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 0,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "IX",
+      "VIẾT",
+      "CÓ-THẾ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NGỒI",
+      "ĐIỆN",
+      "XONG-RỒI"
+    ]
+  },
+  {
+    "sample_id": "SENT038_S06_R01_F",
+    "frames": 159,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐỢI",
+      "ĐÂY",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HÓA-ĐƠN",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT041_S06_R01_F",
+    "frames": 110,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "VIẾT",
+      "ĐÂY",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HÓA-ĐƠN",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT042_S06_R01_F",
+    "frames": 115,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 0,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "KÝ-TÊN",
+      "CẦN",
+      "Ở-ĐÂU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TIẾP",
+      "LẤY",
+      "ĐÂU"
+    ]
+  },
+  {
+    "sample_id": "SENT046_S06_R01_F",
+    "frames": 147,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "TRẢ",
+      "THẺ",
+      "ĐƯỢC-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HÓA-ĐƠN",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT048_S06_R01_F",
+    "frames": 127,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "GẶP",
+      "BÁC-SĨ",
+      "NÀO"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "Y-TẾ",
+      "KHÔNG-CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT051_S06_R01_F",
+    "frames": 97,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NGỒI",
+      "ĐÂY",
+      "ĐÚNG-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NẰM",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT065_S06_R01_F",
+    "frames": 127,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 0,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HÓA-ĐƠN",
+      "LẤY",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐÓNG-TIỀN",
+      "DA",
+      "CẦN"
+    ]
+  },
+  {
+    "sample_id": "SENT066_S06_R01_F",
+    "frames": 129,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "LẤY",
+      "HÓA-ĐƠN",
+      "KHÔNG-CẦN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "BỔI",
+      "CHƯA"
+    ]
+  },
+  {
+    "sample_id": "SENT083_S06_R01_F",
+    "frames": 114,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 0,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "GIÀY",
+      "CỞI",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KẾT-QUẢ",
+      "KIÊNG",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT093_S06_R01_F",
+    "frames": 93,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 3,
+    "d": 0,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "MẠCH",
+      "ĐẬP",
+      "CHẬM",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KHÁM",
+      "HÔM-NAY",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT109_S06_R01_F",
+    "frames": 103,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĂN",
+      "VỊ",
+      "KHÔNG-NHẬN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CẠO-RĂNG",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT114_S06_R01_F",
+    "frames": 109,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "GẦN-ĐÂY",
+      "TÔI",
+      "XUỐNG",
+      "CÂN"
+    ],
+    "hyp_words": [
+      "NAY",
+      "TÔI",
+      "KHÓ-NGỦ"
+    ]
+  },
+  {
+    "sample_id": "SENT166_S06_R01_F",
+    "frames": 104,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "THUỐC",
+      "DỊ-ỨNG",
+      "KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐAU",
+      "HƠI HƠI"
+    ]
+  },
+  {
+    "sample_id": "SENT184_S06_R01_F",
+    "frames": 90,
+    "ref_len": 4,
+    "hyp_len": 2,
+    "s": 1,
+    "d": 2,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CẢM-THẤY",
+      "LO-LẮNG",
+      "NHIỀU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CẬN-THỊ"
+    ]
+  },
+  {
+    "sample_id": "SENT205_S06_R01_F",
+    "frames": 78,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CON",
+      "2",
+      "CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐAU",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT224_S06_R01_F",
+    "frames": 74,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HỌNG",
+      "AMIDAN",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "MŨI-NGHẸT",
+      "CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT231_S06_R01_F",
+    "frames": 75,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "MÁU",
+      "LẤY",
+      "RỒI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐỌC",
+      "SỖ-GÌ"
+    ]
+  },
+  {
+    "sample_id": "SENT276_S06_R01_F",
+    "frames": 77,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐÓNG-TIỀN",
+      "THÊM",
+      "CẦN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "PHẪU-THUẬT",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT288_S06_R01_F",
+    "frames": 73,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 75.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĂN",
+      "KIÊNG",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "VẾT-THƯƠNG",
+      "SƯNG"
+    ]
+  },
+  {
+    "sample_id": "SENT006_S06_R01_F",
+    "frames": 120,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐỘC-THÂN",
+      "CÒN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "GÃI",
+      "BÌNH-THƯỜNG"
+    ]
+  },
+  {
+    "sample_id": "SENT009_S06_R01_F",
+    "frames": 165,
+    "ref_len": 6,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 2,
+    "i": 0,
+    "cost": 4,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐIỆN-THOẠI",
+      "SỐ",
+      "1",
+      "2",
+      "3"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐIỆN-THOẠI",
+      "MUỐN",
+      "KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT011_S06_R01_F",
+    "frames": 121,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "GIÁO-VIÊN",
+      "LÀM"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NGHĨ",
+      "NẤM-DA"
+    ]
+  },
+  {
+    "sample_id": "SENT020_S06_R01_F",
+    "frames": 95,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐÓNG",
+      "TIỀN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TÉ",
+      "VỪA"
+    ]
+  },
+  {
+    "sample_id": "SENT027_S06_R01_F",
+    "frames": 120,
+    "ref_len": 6,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 2,
+    "i": 0,
+    "cost": 4,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "SỐ",
+      "THỨ-TỰ",
+      "1",
+      "0",
+      "5"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "SỐ",
+      "ĐIỆN",
+      "120"
+    ]
+  },
+  {
+    "sample_id": "SENT076_S06_R01_F",
+    "frames": 94,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "MẠCH",
+      "70"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "MẮT-TRÁI",
+      "CHE"
+    ]
+  },
+  {
+    "sample_id": "SENT077_S06_R01_F",
+    "frames": 89,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "BMI",
+      "BAO-NHIÊU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "VÉN-ÁO",
+      "ĐAU"
+    ]
+  },
+  {
+    "sample_id": "SENT078_S06_R01_F",
+    "frames": 93,
+    "ref_len": 3,
+    "hyp_len": 2,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "BMI",
+      "22"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "120"
+    ]
+  },
+  {
+    "sample_id": "SENT082_S06_R01_F",
+    "frames": 104,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐỨNG",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KHÁM",
+      "SỖ-GÌ"
+    ]
+  },
+  {
+    "sample_id": "SENT096_S06_R01_F",
+    "frames": 109,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "BÉO-PHÌ",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐÂY",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT111_S06_R01_F",
+    "frames": 91,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CẢM-THẤY",
+      "NÔN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "VIÊM-XOANG",
+      "GIÚP"
+    ]
+  },
+  {
+    "sample_id": "SENT147_S06_R01_F",
+    "frames": 81,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "RĂNG",
+      "ĐAU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "MẮT",
+      "MỜ"
+    ]
+  },
+  {
+    "sample_id": "SENT148_S06_R01_F",
+    "frames": 88,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "RĂNG",
+      "SÂU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NHỎ",
+      "KHÔNG-THẤY"
+    ]
+  },
+  {
+    "sample_id": "SENT152_S06_R01_F",
+    "frames": 132,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NGAY ĐÂY",
+      "ĐAU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "LƯNG",
+      "ÂM-Ỉ"
+    ]
+  },
+  {
+    "sample_id": "SENT154_S06_R01_F",
+    "frames": 80,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐAU",
+      "HƠI HƠI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "VỊ",
+      "KHÔNG-NHẬN"
+    ]
+  },
+  {
+    "sample_id": "SENT158_S06_R01_F",
+    "frames": 126,
+    "ref_len": 3,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 1,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "NAY",
+      "TÔI",
+      "KHÓ-NGỦ"
+    ],
+    "hyp_words": [
+      "NAY",
+      "TÔI",
+      "ĂN",
+      "CHƯA"
+    ]
+  },
+  {
+    "sample_id": "SENT167_S06_R01_F",
+    "frames": 103,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "DỊ-ỨNG",
+      "KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HÚT-THUỐC",
+      "KHÔNG-CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT169_S06_R01_F",
+    "frames": 74,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "MŨI-NGHẸT",
+      "CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CẠO-RĂNG",
+      "MUỐN"
+    ]
+  },
+  {
+    "sample_id": "SENT209_S06_R01_F",
+    "frames": 90,
+    "ref_len": 3,
+    "hyp_len": 2,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "MẮT",
+      "MỜ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CẬN-THỊ"
+    ]
+  },
+  {
+    "sample_id": "SENT214_S06_R01_F",
+    "frames": 70,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "MẮT-TRÁI",
+      "CHE"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HỌNG",
+      "ĐAU"
+    ]
+  },
+  {
+    "sample_id": "SENT215_S06_R01_F",
+    "frames": 78,
+    "ref_len": 3,
+    "hyp_len": 2,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐỌC",
+      "SỖ-GÌ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐAU"
+    ]
+  },
+  {
+    "sample_id": "SENT230_S06_R01_F",
+    "frames": 86,
+    "ref_len": 3,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 1,
+    "cost": 2,
+    "wer": 66.66666666666666,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "RĂNG",
+      "Ê-BUỐT"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "RĂNG",
+      "TRÁM",
+      "MUỐN"
+    ]
+  },
+  {
+    "sample_id": "SENT001_S06_R01_F",
+    "frames": 151,
+    "ref_len": 5,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 2,
+    "i": 0,
+    "cost": 3,
+    "wer": 60.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐĂNG-KÝ",
+      "KHÁM",
+      "SỨC-KHỎE",
+      "MUỐN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "SỨC-KHỎE",
+      "CHƯA"
+    ]
+  },
+  {
+    "sample_id": "SENT017_S06_R01_F",
+    "frames": 135,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 60.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "KHÁM",
+      "GÓI",
+      "CƠ-BẢN",
+      "MUỐN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KHÁM",
+      "CHỮ",
+      "KHÔNG-THẤY"
+    ]
+  },
+  {
+    "sample_id": "SENT052_S06_R01_F",
+    "frames": 136,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 60.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NỘP",
+      "HỒ-SƠ",
+      "QUẦY",
+      "ĐÂU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NỘP",
+      "BỚT",
+      "LỠ-MẤT"
+    ]
+  },
+  {
+    "sample_id": "SENT136_S06_R01_F",
+    "frames": 105,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 60.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NGHĨ",
+      "TÔI",
+      "THAI",
+      "CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NGHĨ",
+      "SÂU",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT192_S06_R01_F",
+    "frames": 146,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 60.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "NGÃ",
+      "KHI",
+      "NÀO"
+    ],
+    "hyp_words": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "ĐAU",
+      "ĐÂU"
+    ]
+  },
+  {
+    "sample_id": "SENT260_S06_R01_F",
+    "frames": 118,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 60.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NƯỚC-TIỂU",
+      "MẪU",
+      "BAO-NHIÊU",
+      "CẦN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẾN",
+      "THÊM",
+      "CẦN"
+    ]
+  },
+  {
+    "sample_id": "SENT268_S06_R01_F",
+    "frames": 93,
+    "ref_len": 5,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 2,
+    "i": 0,
+    "cost": 3,
+    "wer": 60.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "TẤT-CẢ",
+      "XONG",
+      "RỒI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CẢM-ƠN",
+      "RỒI"
+    ]
+  },
+  {
+    "sample_id": "SENT005_S06_R01_F",
+    "frames": 103,
+    "ref_len": 2,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 1,
+    "cost": 1,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NAM"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HỌNG",
+      "NAM"
+    ]
+  },
+  {
+    "sample_id": "SENT014_S06_R01_F",
+    "frames": 165,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "BẢO-HIỂM",
+      "Y-TẾ",
+      "CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "Y-TẾ",
+      "XONG-RỒI"
+    ]
+  },
+  {
+    "sample_id": "SENT044_S06_R01_F",
+    "frames": 148,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐẶT",
+      "LỊCH",
+      "CHƯA"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "BẢO-HIỂM",
+      "CHƯA"
+    ]
+  },
+  {
+    "sample_id": "SENT058_S06_R01_F",
+    "frames": 120,
+    "ref_len": 6,
+    "hyp_len": 5,
+    "s": 2,
+    "d": 1,
+    "i": 0,
+    "cost": 3,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "NHÀ",
+      "IX",
+      "TÔI",
+      "CÙNG",
+      "VÀO",
+      "ĐƯỢC-KHÔNG"
+    ],
+    "hyp_words": [
+      "NHÀ",
+      "HÔM-QUA",
+      "TÔI",
+      "VÀO",
+      "KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT064_S06_R01_F",
+    "frames": 105,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "XIN",
+      "VIẾT",
+      "GIÚP"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "VIÊM-XOANG",
+      "GIÚP"
+    ]
+  },
+  {
+    "sample_id": "SENT068_S06_R01_F",
+    "frames": 119,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "LƯỢT",
+      "SẮP",
+      "CHƯA"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TÁO-BÓN",
+      "CHƯA"
+    ]
+  },
+  {
+    "sample_id": "SENT075_S06_R01_F",
+    "frames": 107,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "MẠCH",
+      "ĐO",
+      "CẦN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐO",
+      "ĐO",
+      "LOÃNG-XƯƠNG"
+    ]
+  },
+  {
+    "sample_id": "SENT081_S06_R01_F",
+    "frames": 150,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ÁO-KHOÁC",
+      "CỞI",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "CỞI",
+      "LẦN-ĐẦU"
+    ]
+  },
+  {
+    "sample_id": "SENT088_S06_R01_F",
+    "frames": 114,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "BÌNH-THƯỜNG",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "120"
+    ]
+  },
+  {
+    "sample_id": "SENT094_S06_R01_F",
+    "frames": 104,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "MẮT",
+      "ĐO",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "RĂNG",
+      "NHỔ",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT095_S06_R01_F",
+    "frames": 92,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "BMI",
+      "TỐT",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TỐT",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT106_S06_R01_F",
+    "frames": 76,
+    "ref_len": 2,
+    "hyp_len": 2,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "SỐT"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẦU-ĐAU"
+    ]
+  },
+  {
+    "sample_id": "SENT110_S06_R01_F",
+    "frames": 105,
+    "ref_len": 2,
+    "hyp_len": 2,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CHÓNG-MẶT"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NAM"
+    ]
+  },
+  {
+    "sample_id": "SENT113_S06_R01_F",
+    "frames": 82,
+    "ref_len": 2,
+    "hyp_len": 2,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "TIÊU-CHẢY"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TÁO-BÓN"
+    ]
+  },
+  {
+    "sample_id": "SENT127_S06_R01_F",
+    "frames": 94,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "BIA-RƯỢU",
+      "UỐNG",
+      "CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "UỐNG",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT163_S06_R01_F",
+    "frames": 137,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "LÚC",
+      "ĐÓI",
+      "ĐAU-BỤNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "LÚC",
+      "ĐAU"
+    ]
+  },
+  {
+    "sample_id": "SENT165_S06_R01_F",
+    "frames": 133,
+    "ref_len": 6,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 2,
+    "i": 0,
+    "cost": 3,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "BÁC-SĨ",
+      "HỎI",
+      "THUỐC-UỐNG",
+      "GÌ",
+      "ĐANG"
+    ],
+    "hyp_words": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "GÌ",
+      "ĐANG"
+    ]
+  },
+  {
+    "sample_id": "SENT170_S06_R01_F",
+    "frames": 99,
+    "ref_len": 2,
+    "hyp_len": 2,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "KHAN-HO"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "BỤNG-ĐAU"
+    ]
+  },
+  {
+    "sample_id": "SENT174_S06_R01_F",
+    "frames": 93,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "RƯỢU-BIA",
+      "UỐNG",
+      "ÍT"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐO",
+      "UỐNG",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT187_S06_R01_F",
+    "frames": 173,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "ĐAU",
+      "BAO-LÂU"
+    ],
+    "hyp_words": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "CON",
+      "CÓ-CHƯA"
+    ]
+  },
+  {
+    "sample_id": "SENT207_S06_R01_F",
+    "frames": 104,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "KHÁM",
+      "THÊM",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KHÁM",
+      "LẤY",
+      "CẦN"
+    ]
+  },
+  {
+    "sample_id": "SENT229_S06_R01_F",
+    "frames": 94,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "RĂNG",
+      "TRÁM",
+      "MUỐN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "RĂNG",
+      "Ê-BUỐT"
+    ]
+  },
+  {
+    "sample_id": "SENT232_S06_R01_F",
+    "frames": 84,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NƯỚC-TIỂU",
+      "VÀO-BÌNH",
+      "RỒI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NƯỚC-TIỂU",
+      "LẤY",
+      "SỖ-GÌ"
+    ]
+  },
+  {
+    "sample_id": "SENT235_S06_R01_F",
+    "frames": 92,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "MÁU",
+      "CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐEO-KÍNH",
+      "CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT245_S06_R01_F",
+    "frames": 93,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "TỔNG-QUÁT",
+      "MUỐN"
+    ],
+    "hyp_words": [
+      "BÁC-SĨ",
+      "XÉT-NGHIỆM",
+      "ĂN",
+      "MUỐN"
+    ]
+  },
+  {
+    "sample_id": "SENT252_S06_R01_F",
+    "frames": 97,
+    "ref_len": 6,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 2,
+    "i": 0,
+    "cost": 3,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐẾN",
+      "XÉT-NGHIỆM",
+      "ĂN",
+      "KHÔNG",
+      "CẦN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẾN",
+      "BÁC-SĨ",
+      "CẦN"
+    ]
+  },
+  {
+    "sample_id": "SENT265_S06_R01_F",
+    "frames": 104,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CHỜ",
+      "KẾT-QUẢ",
+      "BAO-LÂU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NHIỀU",
+      "BAO-LÂU"
+    ]
+  },
+  {
+    "sample_id": "SENT273_S06_R01_F",
+    "frames": 114,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "ĐƠN",
+      "TÔI",
+      "THUỐC",
+      "CÓ"
+    ],
+    "hyp_words": [
+      "ĐƠN",
+      "THUỐC",
+      "TÔI",
+      "CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT286_S06_R01_F",
+    "frames": 78,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "THUỐC",
+      "NÀY",
+      "ẢNH-HƯỞNG",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "THUỐC",
+      "NÀY",
+      "TRÁM",
+      "MUỐN"
+    ]
+  },
+  {
+    "sample_id": "SENT293_S06_R01_F",
+    "frames": 77,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 50.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NGHỈ",
+      "NHIỀU",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NGHỈ",
+      "GÌ",
+      "CUỐI-CÙNG"
+    ]
+  },
+  {
+    "sample_id": "SENT029_S06_R01_F",
+    "frames": 132,
+    "ref_len": 7,
+    "hyp_len": 5,
+    "s": 1,
+    "d": 2,
+    "i": 0,
+    "cost": 3,
+    "wer": 42.857142857142854,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "PHÒNG",
+      "SỐ",
+      "2",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "LẠI",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT264_S06_R01_F",
+    "frames": 148,
+    "ref_len": 7,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 3,
+    "i": 0,
+    "cost": 3,
+    "wer": 42.857142857142854,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NƯỚC",
+      "UỐNG",
+      "NHIỀU",
+      "KHI",
+      "SIÊU-ÂM",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NƯỚC",
+      "SIÊU-ÂM",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT040_S06_R01_F",
+    "frames": 121,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 40.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "VIẾT",
+      "GIẤY",
+      "NÀO",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "VIẾT",
+      "DA",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT061_S06_R01_F",
+    "frames": 110,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 40.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NÀY",
+      "PHÒNG",
+      "CHỜ",
+      "ĐÚNG-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NÀY",
+      "PHÒNG",
+      "VÉN-ÁO",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT228_S06_R01_F",
+    "frames": 97,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 40.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "RĂNG",
+      "NHỔ",
+      "MUỐN",
+      "KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĂN",
+      "MUỐN",
+      "KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT257_S06_R01_F",
+    "frames": 122,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 40.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "LẤY",
+      "MÁU",
+      "TAY",
+      "NÀO"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KẾT-QUẢ",
+      "TAY",
+      "NÀO"
+    ]
+  },
+  {
+    "sample_id": "SENT294_S06_R01_F",
+    "frames": 90,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 2,
+    "d": 0,
+    "i": 0,
+    "cost": 2,
+    "wer": 40.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "HỎI",
+      "BÁC-SĨ",
+      "LÂY",
+      "BỆNH",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "HỎI",
+      "BÁC-SĨ",
+      "TÔI",
+      "LÂY",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT016_S06_R01_F",
+    "frames": 213,
+    "ref_len": 8,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 3,
+    "i": 0,
+    "cost": 3,
+    "wer": 37.5,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "ĐỂ",
+      "ĐĂNG-KÝ",
+      "THẺ",
+      "LÁI-XE",
+      "THI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "LÁI-XE",
+      "THI"
+    ]
+  },
+  {
+    "sample_id": "SENT007_S06_R01_F",
+    "frames": 112,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CON",
+      "2"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CON",
+      "CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT036_S06_R01_F",
+    "frames": 105,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HIỂU",
+      "KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HIỂU",
+      "RỒI"
+    ]
+  },
+  {
+    "sample_id": "SENT047_S06_R01_F",
+    "frames": 134,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "TIỀN",
+      "KHÔNG-CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐI",
+      "KHÔNG-CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT063_S06_R01_F",
+    "frames": 72,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NGHE",
+      "KHÔNG-ĐƯỢC"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NGHE",
+      "KHÔNG-CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT100_S06_R01_F",
+    "frames": 96,
+    "ref_len": 3,
+    "hyp_len": 2,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NAY",
+      "TĂNG-CÂN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TĂNG-CÂN"
+    ]
+  },
+  {
+    "sample_id": "SENT104_S06_R01_F",
+    "frames": 110,
+    "ref_len": 3,
+    "hyp_len": 2,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "LƯNG",
+      "ĐAU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐAU"
+    ]
+  },
+  {
+    "sample_id": "SENT119_S06_R01_F",
+    "frames": 95,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "TIỂU-ĐƯỜNG",
+      "BỆNH"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TIỂU-ĐƯỜNG",
+      "NẤM-DA"
+    ]
+  },
+  {
+    "sample_id": "SENT122_S06_R01_F",
+    "frames": 103,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "TÊ-TAY",
+      "BỆNH"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "Ù",
+      "BỆNH"
+    ]
+  },
+  {
+    "sample_id": "SENT132_S06_R01_F",
+    "frames": 140,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "DA",
+      "NỔI-MẪN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "DA",
+      "NGỨA-NHIỀU"
+    ]
+  },
+  {
+    "sample_id": "SENT134_S06_R01_F",
+    "frames": 97,
+    "ref_len": 3,
+    "hyp_len": 2,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NGHĨ",
+      "NẤM-DA"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NẤM-DA"
+    ]
+  },
+  {
+    "sample_id": "SENT142_S06_R01_F",
+    "frames": 71,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐEO-KÍNH",
+      "CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐEO-KÍNH",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT156_S06_R01_F",
+    "frames": 88,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NHÓI",
+      "ĐAU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CON",
+      "ĐAU"
+    ]
+  },
+  {
+    "sample_id": "SENT159_S06_R01_F",
+    "frames": 121,
+    "ref_len": 6,
+    "hyp_len": 5,
+    "s": 1,
+    "d": 1,
+    "i": 0,
+    "cost": 2,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "BÁC-SĨ",
+      "HỎI",
+      "TÔI",
+      "ĐAU",
+      "KHI",
+      "NÀO"
+    ],
+    "hyp_words": [
+      "BÁC-SĨ",
+      "HỎI",
+      "TÔI",
+      "ĐAU",
+      "ĐÂU"
+    ]
+  },
+  {
+    "sample_id": "SENT168_S06_R01_F",
+    "frames": 67,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "MŨI-SỔ",
+      "CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CẠO-RĂNG",
+      "CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT177_S06_R01_F",
+    "frames": 109,
+    "ref_len": 6,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 2,
+    "i": 0,
+    "cost": 2,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "THUỐC",
+      "UỐNG",
+      "RỒI",
+      "BỚT",
+      "KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "THUỐC",
+      "BỚT",
+      "KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT197_S06_R01_F",
+    "frames": 82,
+    "ref_len": 3,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 1,
+    "cost": 1,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CỞI-ÁO",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NGHỈ",
+      "CỞI-ÁO",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT223_S06_R01_F",
+    "frames": 76,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HỌNG",
+      "ĐAU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "MIỆNG-HÁ",
+      "ĐAU"
+    ]
+  },
+  {
+    "sample_id": "SENT261_S06_R01_F",
+    "frames": 138,
+    "ref_len": 6,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 2,
+    "i": 0,
+    "cost": 2,
+    "wer": 33.33333333333333,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ÁO-CỞI",
+      "KHI",
+      "CHỤP",
+      "X-QUANG",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ÁO-CỞI",
+      "X-QUANG",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT091_S06_R01_F",
+    "frames": 148,
+    "ref_len": 7,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 2,
+    "i": 0,
+    "cost": 2,
+    "wer": 28.57142857142857,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "IX",
+      "BÁC-SĨ",
+      "TÔI",
+      "GIÚP",
+      "ĐO",
+      "LẠI",
+      "ĐƯỢC-KHÔNG"
+    ],
+    "hyp_words": [
+      "IX",
+      "BÁC-SĨ",
+      "TÔI",
+      "LẠI",
+      "ĐƯỢC-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT024_S06_R01_F",
+    "frames": 123,
+    "ref_len": 4,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 1,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "LẠI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "KHÁM",
+      "LẠI"
+    ]
+  },
+  {
+    "sample_id": "SENT057_S06_R01_F",
+    "frames": 122,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "HÔM-NAY",
+      "TÔI",
+      "MỘT-MÌNH",
+      "ĐI"
+    ],
+    "hyp_words": [
+      "HÔM-NAY",
+      "TÔI",
+      "MỘT-MÌNH",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT059_S06_R01_F",
+    "frames": 121,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐỌC",
+      "CHỮ",
+      "KHÔNG-ĐƯỢC"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CHỮ",
+      "CHỮ",
+      "KHÔNG-ĐƯỢC"
+    ]
+  },
+  {
+    "sample_id": "SENT079_S06_R01_F",
+    "frames": 102,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "THỊ-LỰC",
+      "ĐO",
+      "RỒI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "THỊ-LỰC",
+      "NHIỀU",
+      "RỒI"
+    ]
+  },
+  {
+    "sample_id": "SENT080_S06_R01_F",
+    "frames": 124,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "ĐO",
+      "RỒI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "ĐO",
+      "KHÔNG-CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT084_S06_R01_F",
+    "frames": 122,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HÍT-THỞ",
+      "SÂU",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐO",
+      "SÂU",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT086_S06_R01_F",
+    "frames": 136,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "CAO",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "ĐO",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT087_S06_R01_F",
+    "frames": 112,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "THẤP",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "TIỀN-SỬ",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT099_S06_R01_F",
+    "frames": 93,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "TIẾP",
+      "ĐI",
+      "ĐÂU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "LƯỢT",
+      "ĐI",
+      "ĐÂU"
+    ]
+  },
+  {
+    "sample_id": "SENT121_S06_R01_F",
+    "frames": 102,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "KHỚP-GỐI",
+      "CHÂN",
+      "ĐAU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KHỚP-GỐI",
+      "CHÂN",
+      "MUỐN"
+    ]
+  },
+  {
+    "sample_id": "SENT123_S06_R01_F",
+    "frames": 80,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "PHẪU-THUẬT",
+      "TỪNG",
+      "RỒI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "MÁU",
+      "TỪNG",
+      "RỒI"
+    ]
+  },
+  {
+    "sample_id": "SENT124_S06_R01_F",
+    "frames": 126,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "THỪA-RUỘT",
+      "PHẪU-THUẬT",
+      "NĂM-NGOÁI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "THỪA-RUỘT",
+      "SAU",
+      "NĂM-NGOÁI"
+    ]
+  },
+  {
+    "sample_id": "SENT140_S06_R01_F",
+    "frames": 141,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "MẮT",
+      "PHẢI",
+      "MỜ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "MẮT",
+      "ĐO",
+      "MỜ"
+    ]
+  },
+  {
+    "sample_id": "SENT160_S06_R01_F",
+    "frames": 98,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐAU",
+      "3-NGÀY",
+      "RỒI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "THUỐC",
+      "3-NGÀY",
+      "RỒI"
+    ]
+  },
+  {
+    "sample_id": "SENT161_S06_R01_F",
+    "frames": 84,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐAU",
+      "MỚI",
+      "HÔM-QUA"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "MỚI",
+      "HÔM-QUA"
+    ]
+  },
+  {
+    "sample_id": "SENT164_S06_R01_F",
+    "frames": 75,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĂN",
+      "MUỐN",
+      "KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "MUỐN",
+      "KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT176_S06_R01_F",
+    "frames": 110,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "GIA-ĐÌNH",
+      "BỆNH-GÌ",
+      "KHÔNG-CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐÓNG-TIỀN",
+      "BỆNH-GÌ",
+      "KHÔNG-CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT186_S06_R01_F",
+    "frames": 108,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "LIỆU",
+      "TRẦM-CẢM",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "LIỆU",
+      "TRẦM-CẢM",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT191_S06_R01_F",
+    "frames": 111,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "VẾT-THƯƠNG",
+      "SÂU",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "VẾT-THƯƠNG",
+      "SÂU",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT208_S06_R01_F",
+    "frames": 125,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "KHÍ-HƯ",
+      "RA",
+      "BẤT-THƯỜNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĂN",
+      "RA",
+      "BẤT-THƯỜNG"
+    ]
+  },
+  {
+    "sample_id": "SENT211_S06_R01_F",
+    "frames": 87,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐỌC",
+      "HÀNG-NÀY",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "HÀNG-NÀY",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT227_S06_R01_F",
+    "frames": 79,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "RĂNG",
+      "NHỔ",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "RĂNG",
+      "NHỔ",
+      "MUỐN"
+    ]
+  },
+  {
+    "sample_id": "SENT233_S06_R01_F",
+    "frames": 113,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "NỘI-SOI",
+      "GÂY-MÊ",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "GÂY-MÊ",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT236_S06_R01_F",
+    "frames": 95,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "SINH-HÓA",
+      "CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐỌC",
+      "SINH-HÓA",
+      "CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT237_S06_R01_F",
+    "frames": 84,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CHỤP",
+      "X-QUANG",
+      "RỒI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "X-QUANG",
+      "RỒI"
+    ]
+  },
+  {
+    "sample_id": "SENT239_S06_R01_F",
+    "frames": 93,
+    "ref_len": 4,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 25.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CHỈ-ĐỊNH",
+      "SIÊU-ẨM",
+      "BỤNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "SIÊU-ẨM",
+      "BỤNG"
+    ]
+  },
+  {
+    "sample_id": "SENT026_S06_R01_F",
+    "frames": 156,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "SỐ",
+      "THỨ-TỰ",
+      "NHẬN",
+      "RỒI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "SỐ",
+      "NHẬN",
+      "RỒI"
+    ]
+  },
+  {
+    "sample_id": "SENT031_S06_R01_F",
+    "frames": 109,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "PHÒNG",
+      "SỐ-MẤY"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "ĐÂY",
+      "SỐ-MẤY"
+    ]
+  },
+  {
+    "sample_id": "SENT035_S06_R01_F",
+    "frames": 169,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "Ở-ĐÂY",
+      "TÔI",
+      "BẢO-HIỂM",
+      "Y-TẾ",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "Ở-ĐÂY",
+      "TÔI",
+      "Y-TẾ",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT062_S06_R01_F",
+    "frames": 115,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "VÀO",
+      "KHÁM",
+      "NGAY",
+      "ĐƯỢC-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "VÀO",
+      "KHÁM",
+      "NGAY",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT071_S06_R01_F",
+    "frames": 118,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CAO",
+      "1",
+      "MÉT",
+      "60"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CAO",
+      "MÉT",
+      "60"
+    ]
+  },
+  {
+    "sample_id": "SENT098_S06_R01_F",
+    "frames": 141,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐO",
+      "HẾT",
+      "XONG",
+      "CHƯA"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐO",
+      "XONG",
+      "CHƯA"
+    ]
+  },
+  {
+    "sample_id": "SENT117_S06_R01_F",
+    "frames": 149,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "BỆNH",
+      "TIM",
+      "TIỀN-SỬ",
+      "CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "BỆNH",
+      "TIỀN-SỬ",
+      "CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT138_S06_R01_F",
+    "frames": 117,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐAU-BỤNG",
+      "KHI",
+      "KINH-NGUYỆT",
+      "CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐAU-BỤNG",
+      "KINH-NGUYỆT",
+      "CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT162_S06_R01_F",
+    "frames": 115,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĂN",
+      "XONG",
+      "MỚI",
+      "ĐAU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĂN",
+      "MỚI",
+      "ĐAU"
+    ]
+  },
+  {
+    "sample_id": "SENT188_S06_R01_F",
+    "frames": 135,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "ĐAU",
+      "THƯỜNG-XUYÊN",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "THƯỜNG-XUYÊN",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT220_S06_R01_F",
+    "frames": 104,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "TAI",
+      "PHẢI",
+      "NGHE",
+      "BÌNH-THƯỜNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TAI",
+      "NGHE",
+      "BÌNH-THƯỜNG"
+    ]
+  },
+  {
+    "sample_id": "SENT238_S06_R01_F",
+    "frames": 136,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "BÁC-SĨ",
+      "CHỈ-ĐỊNH",
+      "CHỤP",
+      "X-QUANG",
+      "PHỔI"
+    ],
+    "hyp_words": [
+      "BÁC-SĨ",
+      "CHỈ-ĐỊNH",
+      "X-QUANG",
+      "PHỔI"
+    ]
+  },
+  {
+    "sample_id": "SENT258_S06_R01_F",
+    "frames": 94,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 1,
+    "d": 0,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NƯỚC-TIỂU",
+      "MẪU",
+      "LẤY",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NƯỚC-TIỂU",
+      "MẪU",
+      "LẤY",
+      "CẦN"
+    ]
+  },
+  {
+    "sample_id": "SENT279_S06_R01_F",
+    "frames": 92,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "XIN",
+      "GIẤY-PHÉP",
+      "ỐM",
+      "CẦN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "XIN",
+      "ỐM",
+      "CẦN"
+    ]
+  },
+  {
+    "sample_id": "SENT291_S06_R01_F",
+    "frames": 119,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "BÁC-SĨ",
+      "GIẢI-THÍCH",
+      "CHO-TÔI",
+      "ĐƯỢC-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "BÁC-SĨ",
+      "CHO-TÔI",
+      "ĐƯỢC-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT292_S06_R01_F",
+    "frames": 154,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "THUỐC-UỐNG",
+      "NÀY",
+      "UỐNG",
+      "BAO-LÂU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "THUỐC-UỐNG",
+      "UỐNG",
+      "BAO-LÂU"
+    ]
+  },
+  {
+    "sample_id": "SENT299_S06_R01_F",
+    "frames": 157,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "HỎI",
+      "RƯỢU-BIA",
+      "THỨC-KHUYA",
+      "ÍT",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "HỎI",
+      "RƯỢU-BIA",
+      "ÍT",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT300_S06_R01_F",
+    "frames": 108,
+    "ref_len": 5,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 20.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "HỎI",
+      "BÁC-SĨ",
+      "BỆNH",
+      "ĐÁNG-LO",
+      "KHÔNG"
+    ],
+    "hyp_words": [
+      "HỎI",
+      "BÁC-SĨ",
+      "ĐÁNG-LO",
+      "KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT015_S06_R01_F",
+    "frames": 144,
+    "ref_len": 6,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 16.666666666666664,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "ĐỂ",
+      "XIN",
+      "VIỆC"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "XIN",
+      "VIỆC"
+    ]
+  },
+  {
+    "sample_id": "SENT143_S06_R01_F",
+    "frames": 146,
+    "ref_len": 6,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 16.666666666666664,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "TAI",
+      "MŨI",
+      "HỌNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "MŨI",
+      "HỌNG"
+    ]
+  },
+  {
+    "sample_id": "SENT175_S06_R01_F",
+    "frames": 137,
+    "ref_len": 6,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 16.666666666666664,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "BÁC-SĨ",
+      "HỎI",
+      "GIA-ĐÌNH",
+      "TÔI",
+      "BỆNH-GÌ",
+      "KHÔNG"
+    ],
+    "hyp_words": [
+      "BÁC-SĨ",
+      "HỎI",
+      "GIA-ĐÌNH",
+      "BỆNH-GÌ",
+      "KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT180_S06_R01_F",
+    "frames": 139,
+    "ref_len": 6,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 16.666666666666664,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "BÁC-SĨ",
+      "XEM",
+      "TÔI",
+      "ẤN",
+      "ĐAU",
+      "KHÔNG"
+    ],
+    "hyp_words": [
+      "BÁC-SĨ",
+      "XEM",
+      "TÔI",
+      "ĐAU",
+      "KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT262_S06_R01_F",
+    "frames": 113,
+    "ref_len": 6,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 16.666666666666664,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "ĐEO-TAY",
+      "VÒNG",
+      "KIM-LOẠI",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "ĐEO-TAY",
+      "KIM-LOẠI",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT285_S06_R01_F",
+    "frames": 109,
+    "ref_len": 6,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 1,
+    "i": 0,
+    "cost": 1,
+    "wer": 16.666666666666664,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "KHI",
+      "SAU",
+      "ĂN",
+      "TÔI",
+      "THUỐC-UỐNG",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "KHI",
+      "SAU",
+      "ĂN",
+      "THUỐC-UỐNG",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT004_S06_R01_F",
+    "frames": 108,
+    "ref_len": 2,
+    "hyp_len": 2,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NỮ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NỮ"
+    ]
+  },
+  {
+    "sample_id": "SENT008_S06_R01_F",
+    "frames": 132,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "QUÊ-QUÁN",
+      "SÀI-GÒN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "QUÊ-QUÁN",
+      "SÀI-GÒN"
+    ]
+  },
+  {
+    "sample_id": "SENT043_S06_R01_F",
+    "frames": 177,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "BẢO-HIỂM",
+      "Y-TẾ",
+      "KHÔNG-CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "BẢO-HIỂM",
+      "Y-TẾ",
+      "KHÔNG-CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT053_S06_R01_F",
+    "frames": 79,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NỘP",
+      "RỒI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NỘP",
+      "RỒI"
+    ]
+  },
+  {
+    "sample_id": "SENT054_S06_R01_F",
+    "frames": 118,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "LÂU",
+      "CHỜ",
+      "TẠI-SAO"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "LÂU",
+      "CHỜ",
+      "TẠI-SAO"
+    ]
+  },
+  {
+    "sample_id": "SENT060_S06_R01_F",
+    "frames": 86,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "SỐ",
+      "THỨ-TỰ",
+      "LỠ-MẤT"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "SỐ",
+      "THỨ-TỰ",
+      "LỠ-MẤT"
+    ]
+  },
+  {
+    "sample_id": "SENT067_S06_R01_F",
+    "frames": 112,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐỢI",
+      "BAO-LÂU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐỢI",
+      "BAO-LÂU"
+    ]
+  },
+  {
+    "sample_id": "SENT069_S06_R01_F",
+    "frames": 105,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐO",
+      "CHIỀU-CAO",
+      "CẦN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐO",
+      "CHIỀU-CAO",
+      "CẦN"
+    ]
+  },
+  {
+    "sample_id": "SENT070_S06_R01_F",
+    "frames": 103,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐO",
+      "CÂN-NẶNG",
+      "CẦN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐO",
+      "CÂN-NẶNG",
+      "CẦN"
+    ]
+  },
+  {
+    "sample_id": "SENT073_S06_R01_F",
+    "frames": 132,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "ĐO",
+      "CẦN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "ĐO",
+      "CẦN"
+    ]
+  },
+  {
+    "sample_id": "SENT074_S06_R01_F",
+    "frames": 107,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "120"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "120"
+    ]
+  },
+  {
+    "sample_id": "SENT085_S06_R01_F",
+    "frames": 106,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NÍN-THỞ",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NÍN-THỞ",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT089_S06_R01_F",
+    "frames": 103,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CẢM-THẤY",
+      "BÌNH-THƯỜNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CẢM-THẤY",
+      "BÌNH-THƯỜNG"
+    ]
+  },
+  {
+    "sample_id": "SENT090_S06_R01_F",
+    "frames": 107,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CẢM-THẤY",
+      "HỒI-HỘP"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CẢM-THẤY",
+      "HỒI-HỘP"
+    ]
+  },
+  {
+    "sample_id": "SENT097_S06_R01_F",
+    "frames": 119,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "SỨC-KHỎE",
+      "YẾU",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "SỨC-KHỎE",
+      "YẾU",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT101_S06_R01_F",
+    "frames": 70,
+    "ref_len": 2,
+    "hyp_len": 2,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐẦU-ĐAU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẦU-ĐAU"
+    ]
+  },
+  {
+    "sample_id": "SENT102_S06_R01_F",
+    "frames": 87,
+    "ref_len": 2,
+    "hyp_len": 2,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "BỤNG-ĐAU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "BỤNG-ĐAU"
+    ]
+  },
+  {
+    "sample_id": "SENT103_S06_R01_F",
+    "frames": 76,
+    "ref_len": 2,
+    "hyp_len": 2,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NGỰC-ĐAU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NGỰC-ĐAU"
+    ]
+  },
+  {
+    "sample_id": "SENT107_S06_R01_F",
+    "frames": 77,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CẢM-THẤY",
+      "MỆT"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CẢM-THẤY",
+      "MỆT"
+    ]
+  },
+  {
+    "sample_id": "SENT112_S06_R01_F",
+    "frames": 78,
+    "ref_len": 2,
+    "hyp_len": 2,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "TÁO-BÓN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TÁO-BÓN"
+    ]
+  },
+  {
+    "sample_id": "SENT115_S06_R01_F",
+    "frames": 157,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CẢM-THẤY",
+      "THỞ-KHÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CẢM-THẤY",
+      "THỞ-KHÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT116_S06_R01_F",
+    "frames": 128,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐI",
+      "TIỂU",
+      "ĐÊM"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐI",
+      "TIỂU",
+      "ĐÊM"
+    ]
+  },
+  {
+    "sample_id": "SENT118_S06_R01_F",
+    "frames": 132,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "CAO",
+      "BỆNH"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "CAO",
+      "BỆNH"
+    ]
+  },
+  {
+    "sample_id": "SENT120_S06_R01_F",
+    "frames": 104,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HEN-SUYỄN",
+      "BỆNH"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HEN-SUYỄN",
+      "BỆNH"
+    ]
+  },
+  {
+    "sample_id": "SENT125_S06_R01_F",
+    "frames": 108,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "THUỐC",
+      "UỐNG",
+      "MỖI-NGÀY"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "THUỐC",
+      "UỐNG",
+      "MỖI-NGÀY"
+    ]
+  },
+  {
+    "sample_id": "SENT126_S06_R01_F",
+    "frames": 80,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HÚT-THUỐC",
+      "CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HÚT-THUỐC",
+      "CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT128_S06_R01_F",
+    "frames": 100,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "THUỐC",
+      "DỊ-ỨNG",
+      "BỆNH"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "THUỐC",
+      "DỊ-ỨNG",
+      "BỆNH"
+    ]
+  },
+  {
+    "sample_id": "SENT129_S06_R01_F",
+    "frames": 130,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HẢI-SẢN",
+      "DỊ-ỨNG",
+      "BỆNH"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HẢI-SẢN",
+      "DỊ-ỨNG",
+      "BỆNH"
+    ]
+  },
+  {
+    "sample_id": "SENT130_S06_R01_F",
+    "frames": 82,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "TÉ",
+      "VỪA"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TÉ",
+      "VỪA"
+    ]
+  },
+  {
+    "sample_id": "SENT131_S06_R01_F",
+    "frames": 76,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "VẾT-THƯƠNG",
+      "SƯNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "VẾT-THƯƠNG",
+      "SƯNG"
+    ]
+  },
+  {
+    "sample_id": "SENT133_S06_R01_F",
+    "frames": 110,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "MỤN",
+      "NHIỀU",
+      "GẦN-ĐÂY"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "MỤN",
+      "NHIỀU",
+      "GẦN-ĐÂY"
+    ]
+  },
+  {
+    "sample_id": "SENT135_S06_R01_F",
+    "frames": 135,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "PHỤ-KHOA",
+      "NỮ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "PHỤ-KHOA",
+      "NỮ"
+    ]
+  },
+  {
+    "sample_id": "SENT137_S06_R01_F",
+    "frames": 76,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "KINH-NGUYỆT",
+      "ĐỀU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KINH-NGUYỆT",
+      "ĐỀU"
+    ]
+  },
+  {
+    "sample_id": "SENT139_S06_R01_F",
+    "frames": 111,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "MẮT"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "MẮT"
+    ]
+  },
+  {
+    "sample_id": "SENT141_S06_R01_F",
+    "frames": 71,
+    "ref_len": 2,
+    "hyp_len": 2,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CẬN-THỊ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CẬN-THỊ"
+    ]
+  },
+  {
+    "sample_id": "SENT144_S06_R01_F",
+    "frames": 94,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "TAI",
+      "Ù",
+      "BỆNH"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TAI",
+      "Ù",
+      "BỆNH"
+    ]
+  },
+  {
+    "sample_id": "SENT145_S06_R01_F",
+    "frames": 92,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "VIÊM-XOANG",
+      "BỆNH"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "VIÊM-XOANG",
+      "BỆNH"
+    ]
+  },
+  {
+    "sample_id": "SENT146_S06_R01_F",
+    "frames": 89,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "RĂNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "RĂNG"
+    ]
+  },
+  {
+    "sample_id": "SENT149_S06_R01_F",
+    "frames": 84,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CHÂN-RĂNG",
+      "CHẢY-MÁU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CHÂN-RĂNG",
+      "CHẢY-MÁU"
+    ]
+  },
+  {
+    "sample_id": "SENT151_S06_R01_F",
+    "frames": 101,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "BÁC-SĨ",
+      "HỎI",
+      "TÔI",
+      "ĐAU",
+      "ĐÂU"
+    ],
+    "hyp_words": [
+      "BÁC-SĨ",
+      "HỎI",
+      "TÔI",
+      "ĐAU",
+      "ĐÂU"
+    ]
+  },
+  {
+    "sample_id": "SENT153_S06_R01_F",
+    "frames": 60,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐAU",
+      "LẮM"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐAU",
+      "LẮM"
+    ]
+  },
+  {
+    "sample_id": "SENT155_S06_R01_F",
+    "frames": 163,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐAU",
+      "ÂM-Ỉ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐAU",
+      "ÂM-Ỉ"
+    ]
+  },
+  {
+    "sample_id": "SENT157_S06_R01_F",
+    "frames": 99,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "QUẶN-THẮT",
+      "ĐAU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "QUẶN-THẮT",
+      "ĐAU"
+    ]
+  },
+  {
+    "sample_id": "SENT171_S06_R01_F",
+    "frames": 71,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HO",
+      "RA-NƯỚC"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HO",
+      "RA-NƯỚC"
+    ]
+  },
+  {
+    "sample_id": "SENT172_S06_R01_F",
+    "frames": 134,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CẢM-THẤY",
+      "THỞ-KHÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CẢM-THẤY",
+      "THỞ-KHÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT173_S06_R01_F",
+    "frames": 74,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HÚT-THUỐC",
+      "KHÔNG-CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HÚT-THUỐC",
+      "KHÔNG-CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT178_S06_R01_F",
+    "frames": 76,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NẰM",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NẰM",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT179_S06_R01_F",
+    "frames": 80,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "VÉN-ÁO",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "VÉN-ÁO",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT181_S06_R01_F",
+    "frames": 103,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ẤN",
+      "ĐAU",
+      "LẮM"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ẤN",
+      "ĐAU",
+      "LẮM"
+    ]
+  },
+  {
+    "sample_id": "SENT182_S06_R01_F",
+    "frames": 146,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CHỖ-KHÁC",
+      "ĐAU",
+      "KHÔNG-CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CHỖ-KHÁC",
+      "ĐAU",
+      "KHÔNG-CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT183_S06_R01_F",
+    "frames": 84,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HAY-QUÊN",
+      "NHIỀU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HAY-QUÊN",
+      "NHIỀU"
+    ]
+  },
+  {
+    "sample_id": "SENT185_S06_R01_F",
+    "frames": 97,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CẢM-THẤY",
+      "BUỒN",
+      "NHIỀU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CẢM-THẤY",
+      "BUỒN",
+      "NHIỀU"
+    ]
+  },
+  {
+    "sample_id": "SENT190_S06_R01_F",
+    "frames": 143,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "TIỂU",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "TIỂU",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT193_S06_R01_F",
+    "frames": 96,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "DA",
+      "NGỨA-NHIỀU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "DA",
+      "NGỨA-NHIỀU"
+    ]
+  },
+  {
+    "sample_id": "SENT194_S06_R01_F",
+    "frames": 108,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "MỀ-ĐAY",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "MỀ-ĐAY",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT195_S06_R01_F",
+    "frames": 109,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "GÃI",
+      "SUỐT"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "GÃI",
+      "SUỐT"
+    ]
+  },
+  {
+    "sample_id": "SENT196_S06_R01_F",
+    "frames": 111,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "THUỐC",
+      "BỔI",
+      "CHƯA"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "THUỐC",
+      "BỔI",
+      "CHƯA"
+    ]
+  },
+  {
+    "sample_id": "SENT198_S06_R01_F",
+    "frames": 86,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NƯỚC-SÔI",
+      "PHỎNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NƯỚC-SÔI",
+      "PHỎNG"
+    ]
+  },
+  {
+    "sample_id": "SENT200_S06_R01_F",
+    "frames": 72,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "THAI",
+      "KHÔNG-CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "THAI",
+      "KHÔNG-CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT201_S06_R01_F",
+    "frames": 133,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "KINH-NGUYỆT",
+      "ĐỀU",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "KINH-NGUYỆT",
+      "ĐỀU",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT202_S06_R01_F",
+    "frames": 94,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "KINH-NGUYỆT",
+      "ĐỀU",
+      "KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KINH-NGUYỆT",
+      "ĐỀU",
+      "KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT203_S06_R01_F",
+    "frames": 63,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "KINH",
+      "HẾT"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KINH",
+      "HẾT"
+    ]
+  },
+  {
+    "sample_id": "SENT204_S06_R01_F",
+    "frames": 100,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "CON",
+      "CÓ-CHƯA"
+    ],
+    "hyp_words": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "CON",
+      "CÓ-CHƯA"
+    ]
+  },
+  {
+    "sample_id": "SENT206_S06_R01_F",
+    "frames": 72,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CON",
+      "CHƯA-CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CON",
+      "CHƯA-CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT210_S06_R01_F",
+    "frames": 105,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NHÌN",
+      "RÕ",
+      "KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NHÌN",
+      "RÕ",
+      "KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT212_S06_R01_F",
+    "frames": 108,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CHỮ",
+      "NHỎ",
+      "KHÔNG-THẤY"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CHỮ",
+      "NHỎ",
+      "KHÔNG-THẤY"
+    ]
+  },
+  {
+    "sample_id": "SENT213_S06_R01_F",
+    "frames": 72,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "THẤY",
+      "KHÔNG-CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "THẤY",
+      "KHÔNG-CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT216_S06_R01_F",
+    "frames": 74,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐEO-KÍNH",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐEO-KÍNH",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT217_S06_R01_F",
+    "frames": 87,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "KÍNH",
+      "BỎ-RA",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KÍNH",
+      "BỎ-RA",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT218_S06_R01_F",
+    "frames": 91,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "MẮT",
+      "ĐỎ",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "MẮT",
+      "ĐỎ",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT221_S06_R01_F",
+    "frames": 93,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "TAI-Ù",
+      "LẮM"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TAI-Ù",
+      "LẮM"
+    ]
+  },
+  {
+    "sample_id": "SENT222_S06_R01_F",
+    "frames": 78,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "MIỆNG-HÁ",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "MIỆNG-HÁ",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT225_S06_R01_F",
+    "frames": 87,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "KHÁM",
+      "RĂNG",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KHÁM",
+      "RĂNG",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT226_S06_R01_F",
+    "frames": 109,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "RĂNG",
+      "SÂU",
+      "NẶNG",
+      "LẮM"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "RĂNG",
+      "SÂU",
+      "NẶNG",
+      "LẮM"
+    ]
+  },
+  {
+    "sample_id": "SENT234_S06_R01_F",
+    "frames": 115,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "NƯỚC-TIỂU",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "NƯỚC-TIỂU",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT240_S06_R01_F",
+    "frames": 107,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CHỈ-ĐỊNH",
+      "SIÊU-ÂM",
+      "TIM"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CHỈ-ĐỊNH",
+      "SIÊU-ÂM",
+      "TIM"
+    ]
+  },
+  {
+    "sample_id": "SENT242_S06_R01_F",
+    "frames": 105,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "SOI-NỘI",
+      "DẠ-DÀY",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "SOI-NỘI",
+      "DẠ-DÀY",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT243_S06_R01_F",
+    "frames": 85,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐO",
+      "LOÃNG-XƯƠNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐO",
+      "LOÃNG-XƯƠNG"
+    ]
+  },
+  {
+    "sample_id": "SENT244_S06_R01_F",
+    "frames": 125,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "GAN",
+      "CHỨC-NĂNG",
+      "CẦN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "GAN",
+      "CHỨC-NĂNG",
+      "CẦN"
+    ]
+  },
+  {
+    "sample_id": "SENT246_S06_R01_F",
+    "frames": 104,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "TỔNG-QUÁT",
+      "MUỐN"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "TỔNG-QUÁT",
+      "MUỐN"
+    ]
+  },
+  {
+    "sample_id": "SENT247_S06_R01_F",
+    "frames": 79,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TỐI",
+      "HÔM-QUA",
+      "TÔI",
+      "ĂN",
+      "KHÔNG"
+    ],
+    "hyp_words": [
+      "TỐI",
+      "HÔM-QUA",
+      "TÔI",
+      "ĂN",
+      "KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT248_S06_R01_F",
+    "frames": 71,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NƯỚC",
+      "UỐNG",
+      "NHIỀU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NƯỚC",
+      "UỐNG",
+      "NHIỀU"
+    ]
+  },
+  {
+    "sample_id": "SENT249_S06_R01_F",
+    "frames": 114,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "TAY-TRÁI",
+      "MÁU",
+      "LẤY",
+      "Y-TÁ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "TAY-TRÁI",
+      "MÁU",
+      "LẤY",
+      "Y-TÁ"
+    ]
+  },
+  {
+    "sample_id": "SENT250_S06_R01_F",
+    "frames": 106,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NỘP",
+      "BÁC-SĨ",
+      "KẾT-QUẢ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NỘP",
+      "BÁC-SĨ",
+      "KẾT-QUẢ"
+    ]
+  },
+  {
+    "sample_id": "SENT251_S06_R01_F",
+    "frames": 122,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐẾN",
+      "PHÒNG",
+      "XÉT-NGHIỆM",
+      "Ở-ĐÂU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐẾN",
+      "PHÒNG",
+      "XÉT-NGHIỆM",
+      "Ở-ĐÂU"
+    ]
+  },
+  {
+    "sample_id": "SENT253_S06_R01_F",
+    "frames": 117,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "SÁNG",
+      "NAY",
+      "TÔI",
+      "ĂN",
+      "RỒI"
+    ],
+    "hyp_words": [
+      "SÁNG",
+      "NAY",
+      "TÔI",
+      "ĂN",
+      "RỒI"
+    ]
+  },
+  {
+    "sample_id": "SENT254_S06_R01_F",
+    "frames": 52,
+    "ref_len": 2,
+    "hyp_len": 2,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "SAO-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "SAO-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT255_S06_R01_F",
+    "frames": 81,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "LẤY",
+      "MÁU",
+      "CÓ",
+      "ĐAU-KHÔNG"
+    ],
+    "hyp_words": [
+      "LẤY",
+      "MÁU",
+      "CÓ",
+      "ĐAU-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT256_S06_R01_F",
+    "frames": 89,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "LẤY",
+      "MÁU",
+      "TÔI",
+      "SỢ-LẮM"
+    ],
+    "hyp_words": [
+      "LẤY",
+      "MÁU",
+      "TÔI",
+      "SỢ-LẮM"
+    ]
+  },
+  {
+    "sample_id": "SENT259_S06_R01_F",
+    "frames": 91,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "NƯỚC-TIỂU",
+      "MẪU",
+      "LẤY",
+      "Ở-ĐÂU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "NƯỚC-TIỂU",
+      "MẪU",
+      "LẤY",
+      "Ở-ĐÂU"
+    ]
+  },
+  {
+    "sample_id": "SENT263_S06_R01_F",
+    "frames": 89,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĐEO-TAY",
+      "VÒNG",
+      "KIM-LOẠI",
+      "KHÔNG-CÓ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĐEO-TAY",
+      "VÒNG",
+      "KIM-LOẠI",
+      "KHÔNG-CÓ"
+    ]
+  },
+  {
+    "sample_id": "SENT266_S06_R01_F",
+    "frames": 103,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "KẾT-QUẢ",
+      "LẤY",
+      "Ở-ĐÂU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KẾT-QUẢ",
+      "LẤY",
+      "Ở-ĐÂU"
+    ]
+  },
+  {
+    "sample_id": "SENT267_S06_R01_F",
+    "frames": 69,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "KẾT-QUẢ",
+      "HÔM-NAY",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "KẾT-QUẢ",
+      "HÔM-NAY",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT269_S06_R01_F",
+    "frames": 105,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "PHÒNG",
+      "BÁC-SĨ",
+      "QUAY-LẠI",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "PHÒNG",
+      "BÁC-SĨ",
+      "QUAY-LẠI",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT270_S06_R01_F",
+    "frames": 84,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "SÁNG",
+      "NAY",
+      "TÔI",
+      "ĂN",
+      "CHƯA"
+    ],
+    "hyp_words": [
+      "SÁNG",
+      "NAY",
+      "TÔI",
+      "ĂN",
+      "CHƯA"
+    ]
+  },
+  {
+    "sample_id": "SENT271_S06_R01_F",
+    "frames": 55,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "HIỂU",
+      "RỒI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "HIỂU",
+      "RỒI"
+    ]
+  },
+  {
+    "sample_id": "SENT272_S06_R01_F",
+    "frames": 65,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "CẢM-ƠN",
+      "BÁC-SĨ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "CẢM-ƠN",
+      "BÁC-SĨ"
+    ]
+  },
+  {
+    "sample_id": "SENT274_S06_R01_F",
+    "frames": 67,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "MUA",
+      "THUỐC",
+      "SẼ"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "MUA",
+      "THUỐC",
+      "SẼ"
+    ]
+  },
+  {
+    "sample_id": "SENT275_S06_R01_F",
+    "frames": 113,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "THẺ",
+      "BẢO-HIỂM",
+      "LẤY-THUỐC"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "THẺ",
+      "BẢO-HIỂM",
+      "LẤY-THUỐC"
+    ]
+  },
+  {
+    "sample_id": "SENT277_S06_R01_F",
+    "frames": 94,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "KHÁM",
+      "KỲ",
+      "SAU",
+      "LẠI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KHÁM",
+      "KỲ",
+      "SAU",
+      "LẠI"
+    ]
+  },
+  {
+    "sample_id": "SENT278_S06_R01_F",
+    "frames": 77,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "LỊCH",
+      "KHÁM",
+      "LẠI"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "LỊCH",
+      "KHÁM",
+      "LẠI"
+    ]
+  },
+  {
+    "sample_id": "SENT280_S06_R01_F",
+    "frames": 78,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.013,
+    "rh_missing_ratio": 0.013,
+    "ref_words": [
+      "TÔI",
+      "BÁC-SĨ",
+      "CHÀO"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "BÁC-SĨ",
+      "CHÀO"
+    ]
+  },
+  {
+    "sample_id": "SENT281_S06_R01_F",
+    "frames": 73,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "BỆNH",
+      "GÌ",
+      "CUỐI-CÙNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "BỆNH",
+      "GÌ",
+      "CUỐI-CÙNG"
+    ]
+  },
+  {
+    "sample_id": "SENT282_S06_R01_F",
+    "frames": 63,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "BỆNH",
+      "NGHIÊM-TRỌNG",
+      "CÓ-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "BỆNH",
+      "NGHIÊM-TRỌNG",
+      "CÓ-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT283_S06_R01_F",
+    "frames": 104,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "1-NGÀY",
+      "TÔI",
+      "THUỐC-UỐNG",
+      "MẤY-LẦN"
+    ],
+    "hyp_words": [
+      "1-NGÀY",
+      "TÔI",
+      "THUỐC-UỐNG",
+      "MẤY-LẦN"
+    ]
+  },
+  {
+    "sample_id": "SENT284_S06_R01_F",
+    "frames": 102,
+    "ref_len": 6,
+    "hyp_len": 6,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "KHI",
+      "TRƯỚC",
+      "ĂN",
+      "TÔI",
+      "THUỐC-UỐNG",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "KHI",
+      "TRƯỚC",
+      "ĂN",
+      "TÔI",
+      "THUỐC-UỐNG",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT289_S06_R01_F",
+    "frames": 57,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "PHẪU-THUẬT",
+      "CẦN-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "PHẪU-THUẬT",
+      "CẦN-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT290_S06_R01_F",
+    "frames": 122,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "KẾT-QUẢ",
+      "XEM",
+      "KHÔNG-HIỂU"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "KẾT-QUẢ",
+      "XEM",
+      "KHÔNG-HIỂU"
+    ]
+  },
+  {
+    "sample_id": "SENT295_S06_R01_F",
+    "frames": 102,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "HỎI",
+      "THUỐC-UỐNG",
+      "KHÔNG-CẦN",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "HỎI",
+      "THUỐC-UỐNG",
+      "KHÔNG-CẦN",
+      "PHẢI-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT296_S06_R01_F",
+    "frames": 89,
+    "ref_len": 4,
+    "hyp_len": 4,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "HỎI",
+      "LỐI-SỐNG",
+      "THAY-ĐỔI",
+      "ĐÚNG-KHÔNG"
+    ],
+    "hyp_words": [
+      "HỎI",
+      "LỐI-SỐNG",
+      "THAY-ĐỔI",
+      "ĐÚNG-KHÔNG"
+    ]
+  },
+  {
+    "sample_id": "SENT297_S06_R01_F",
+    "frames": 87,
+    "ref_len": 3,
+    "hyp_len": 3,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "HỎI",
+      "THỂ-DỤC",
+      "GÌ"
+    ],
+    "hyp_words": [
+      "HỎI",
+      "THỂ-DỤC",
+      "GÌ"
+    ]
+  },
+  {
+    "sample_id": "SENT298_S06_R01_F",
+    "frames": 86,
+    "ref_len": 5,
+    "hyp_len": 5,
+    "s": 0,
+    "d": 0,
+    "i": 0,
+    "cost": 0,
+    "wer": 0.0,
+    "lh_missing_ratio": 0.0,
+    "rh_missing_ratio": 0.0,
+    "ref_words": [
+      "TÔI",
+      "ĂN",
+      "MẶN",
+      "KHÔNG-ĐƯỢC",
+      "PHẢI-KHÔNG"
+    ],
+    "hyp_words": [
+      "TÔI",
+      "ĂN",
+      "MẶN",
+      "KHÔNG-ĐƯỢC",
+      "PHẢI-KHÔNG"
+    ]
+  }
+]

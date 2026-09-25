@@ -1,0 +1,24 @@
+{
+  "model": "STGCNModel",
+  "num_classes": 50,
+  "best_epoch": 26,
+  "validation_metrics": {
+    "val_loss": 3.2647,
+    "val_top1": 44.0
+  },
+  "test_metrics": {
+    "test_loss": 3.3375,
+    "test_top1": 30.0,
+    "test_top5": 52.0,
+    "macro_f1": 21.37,
+    "macro_precision": 18.17,
+    "macro_recall": 30.0,
+    "total_test_samples": 50
+  },
+  "artifacts": {
+    "checkpoint": "checkpoints/stgcn_best.pt",
+    "classification_report": "experiments/stgcn\\classification_report.csv",
+    "confusion_matrix": "experiments/stgcn\\confusion_matrix.png",
+    "training_curve": "experiments/stgcn\\training_curve.png"
+  }
+}

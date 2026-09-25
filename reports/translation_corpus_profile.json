@@ -1,0 +1,300 @@
+{
+  "file": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\external\\parallel_text\\vie_vsl_10k.jsonl",
+  "total_pairs": 9405,
+  "unique_vsl_sequences": 9249,
+  "unique_vi_sequences": 9388,
+  "exact_duplicate_pairs": 0,
+  "duplicate_vsl_sources_count": 156,
+  "duplicate_vi_targets_count": 17,
+  "one_to_many_vsl_count": 140,
+  "many_to_one_vi_count": 17,
+  "vsl_length_words": {
+    "min": 1,
+    "max": 27,
+    "mean": 7.53,
+    "median": 7.0,
+    "p90": 12.0,
+    "p95": 14.0,
+    "p99": 18.0
+  },
+  "vi_length_words": {
+    "min": 2,
+    "max": 42,
+    "mean": 8.88,
+    "median": 8.0,
+    "p90": 14.0,
+    "p95": 17.0,
+    "p99": 21.0
+  },
+  "vsl_length_chars": {
+    "min": 1,
+    "max": 125,
+    "mean": 29.41,
+    "median": 26.0,
+    "p90": 50.0,
+    "p95": 60.0,
+    "p99": 78.0
+  },
+  "vi_length_chars": {
+    "min": 3,
+    "max": 172,
+    "mean": 34.05,
+    "median": 30.0,
+    "p90": 57.0,
+    "p95": 68.0,
+    "p99": 89.0
+  },
+  "vsl_vocab_size_tokens": 3764,
+  "vi_vocab_size_tokens": 3774,
+  "vsl_top_20_tokens": [
+    [
+      ".",
+      6330
+    ],
+    [
+      "tôi",
+      2836
+    ],
+    [
+      "?",
+      2166
+    ],
+    [
+      "không",
+      1885
+    ],
+    [
+      "bạn",
+      1715
+    ],
+    [
+      "có",
+      1579
+    ],
+    [
+      "Tôi",
+      1166
+    ],
+    [
+      "một",
+      983
+    ],
+    [
+      "cho",
+      659
+    ],
+    [
+      "ở",
+      647
+    ],
+    [
+      "thể",
+      643
+    ],
+    [
+      "Bạn",
+      618
+    ],
+    [
+      "được",
+      542
+    ],
+    [
+      "đi",
+      512
+    ],
+    [
+      "đó",
+      486
+    ],
+    [
+      "nó",
+      478
+    ],
+    [
+      "làm",
+      452
+    ],
+    [
+      "anh",
+      425
+    ],
+    [
+      "phải",
+      402
+    ],
+    [
+      "đến",
+      402
+    ]
+  ],
+  "vi_top_20_tokens": [
+    [
+      ".",
+      7139
+    ],
+    [
+      "tôi",
+      2849
+    ],
+    [
+      "?",
+      2174
+    ],
+    [
+      "không",
+      1967
+    ],
+    [
+      "bạn",
+      1724
+    ],
+    [
+      "có",
+      1634
+    ],
+    [
+      "Tôi",
+      1168
+    ],
+    [
+      "của",
+      1046
+    ],
+    [
+      ",",
+      1001
+    ],
+    [
+      "một",
+      986
+    ],
+    [
+      "đã",
+      985
+    ],
+    [
+      "là",
+      981
+    ],
+    [
+      "ấy",
+      712
+    ],
+    [
+      "sẽ",
+      701
+    ],
+    [
+      "cho",
+      666
+    ],
+    [
+      "thể",
+      659
+    ],
+    [
+      "ở",
+      657
+    ],
+    [
+      "Bạn",
+      616
+    ],
+    [
+      "được",
+      555
+    ],
+    [
+      "này",
+      549
+    ]
+  ],
+  "vsl_rare_tokens": {
+    "freq_1": 1469,
+    "freq_le_5": 2532,
+    "freq_1_ratio": 39.03,
+    "freq_le_5_ratio": 67.27
+  },
+  "vi_rare_tokens": {
+    "freq_1": 1442,
+    "freq_le_5": 2499,
+    "freq_1_ratio": 38.21,
+    "freq_le_5_ratio": 66.22
+  },
+  "one_to_many_examples": [
+    {
+      "vsl": "Tôi đi học .",
+      "vi_options": [
+        "Tôi đi học .",
+        "Tôi sẽ đi học ."
+      ]
+    },
+    {
+      "vsl": "Nhanh lên .",
+      "vi_options": [
+        "Nhanh lên nào !",
+        "Nhanh lên .",
+        "Nhanh lên nào ."
+      ]
+    },
+    {
+      "vsl": "Tôi thử .",
+      "vi_options": [
+        "Tôi sẽ thử lại .",
+        "Tôi sẽ thử ."
+      ]
+    },
+    {
+      "vsl": "đây .",
+      "vi_options": [
+        "Lại đây nào .",
+        "Lại đây ."
+      ]
+    },
+    {
+      "vsl": "Tôi cười .",
+      "vi_options": [
+        "Tôi cười .",
+        "Tôi đã cười ."
+      ]
+    }
+  ],
+  "many_to_one_examples": [
+    {
+      "vi": "Bạn bao nhiêu tuổi ?",
+      "vsl_options": [
+        "Bạn tuổi mấy ?",
+        "Bạn tuổi bao nhiêu?"
+      ]
+    },
+    {
+      "vi": "Lại đây nào .",
+      "vsl_options": [
+        "đây .",
+        "Lại đây ."
+      ]
+    },
+    {
+      "vi": "Lại đây .",
+      "vsl_options": [
+        "đây .",
+        "Lại đây ."
+      ]
+    },
+    {
+      "vi": "Lại đây đi .",
+      "vsl_options": [
+        "đây đi .",
+        "Lại đây ."
+      ]
+    },
+    {
+      "vi": "Nói thật đi .",
+      "vsl_options": [
+        "Nói thật.",
+        "Nói thật đi ."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "total_valid_videos": 4362,
+  "total_glosses": 3314,
+  "avg_videos_per_gloss": 1.32,
+  "median_videos_per_gloss": 1.0,
+  "min_videos_per_gloss": 1,
+  "max_videos_per_gloss": 6,
+  "num_glosses_with_ge_2": 551,
+  "num_glosses_with_ge_3": 489,
+  "num_glosses_with_ge_5": 1,
+  "num_glosses_with_ge_10": 0,
+  "num_glosses_with_ge_20": 0,
+  "top_10_glosses": [
+    {
+      "gloss": "thương yêu",
+      "video_count": 6
+    },
+    {
+      "gloss": "thành lập",
+      "video_count": 4
+    },
+    {
+      "gloss": "đặc biệt",
+      "video_count": 4
+    },
+    {
+      "gloss": "thường xuyên",
+      "video_count": 4
+    },
+    {
+      "gloss": "môn kĩ thuật",
+      "video_count": 4
+    },
+    {
+      "gloss": "tưởng tượng",
+      "video_count": 4
+    },
+    {
+      "gloss": "chăm sóc sức khỏe",
+      "video_count": 3
+    },
+    {
+      "gloss": "chăn (cái chăn)",
+      "video_count": 3
+    },
+    {
+      "gloss": "chăn nuôi",
+      "video_count": 3
+    },
+    {
+      "gloss": "đèn báo giao thông",
+      "video_count": 3
+    }
+  ],
+  "bottom_10_glosses": [
+    {
+      "gloss": "chen lấn",
+      "video_count": 1
+    },
+    {
+      "gloss": "chi hội",
+      "video_count": 1
+    },
+    {
+      "gloss": "2",
+      "video_count": 1
+    },
+    {
+      "gloss": "2 < 5 (toán học)",
+      "video_count": 1
+    },
+    {
+      "gloss": "2 < 6 (toán học)",
+      "video_count": 1
+    },
+    {
+      "gloss": "chi tiết",
+      "video_count": 1
+    },
+    {
+      "gloss": "3",
+      "video_count": 1
+    },
+    {
+      "gloss": "chi-lê (nước chi-lê)",
+      "video_count": 1
+    },
+    {
+      "gloss": "4",
+      "video_count": 1
+    },
+    {
+      "gloss": "1",
+      "video_count": 1
+    }
+  ],
+  "recommendation": "Extremely high class imbalance and sparsity. A closed-set classification across all 3314 glosses is mathematically invalid because the vast majority of glosses have <= 2 samples (insufficient for train/val/test split). Recommendation: Select glosses with >= 3 samples (num_glosses=489) or top 40-50 classes for closed-set benchmark."
+}

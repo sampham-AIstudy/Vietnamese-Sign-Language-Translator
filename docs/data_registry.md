@@ -30,8 +30,9 @@ Last Updated: **2026-09-24** (audit round 3 corrections)
   - Isolated sign only; cannot be used for continuous sentence translation without synthetic chaining.
 - **How to Regenerate**:
   ```powershell
-  .\.venv\Scripts\python.exe scripts/create_video_splits.py
-  .\.venv\Scripts\python.exe scripts/check_data_leakage.py
+  .\.venv\Scripts\python.exe scripts/build_recording_groups.py
+  .\.venv\Scripts\python.exe scripts/create_grouped_splits.py --tier tier2
+  .\.venv\Scripts\python.exe scripts/build_unified_manifest.py
   ```
 - **Active / Archive Status**: **Active** (Production baseline for ST-GCN isolated recognition).
 
@@ -47,7 +48,7 @@ Last Updated: **2026-09-24** (audit round 3 corrections)
 - **Samples**:
   - Exactly 4,200 frontal video recordings (300 unique sentences $\times$ 14 repetitions across 6 signers).
   - Exactly 4,200 frontal keypoint sequences in `data/external/vsl_gh/keypoints_frontal/`.
-  - 1,830 lateral (side-view) keypoint sequences archived in `docs/provenance/archive/vsl_gh_side_view/`.
+  - 1,830 lateral (side-view) keypoint sequences exist upstream (not kept locally; re-clone upstream if needed).
 - **Signers**: 6 independent signers (S01, S02, S03, S04, S05, S06).
 - **Views**: Dual-camera (Frontal `_F` active in production; Lateral `_S` archived).
 - **Feature Shape**:
@@ -67,7 +68,7 @@ Last Updated: **2026-09-24** (audit round 3 corrections)
   ```powershell
   .\.venv\Scripts\python.exe scripts/prepare_canonical_vsl_gh.py
   ```
-- **Active / Archive Status**: **Active** (`data/external/vsl_gh/`); Side-view keypoints archived (`docs/provenance/archive/vsl_gh_side_view/`).
+- **Active / Archive Status**: **Active** (`data/external/vsl_gh/`); side-view keypoints not kept (available upstream).
 
 ---
 
@@ -97,7 +98,7 @@ Last Updated: **2026-09-24** (audit round 3 corrections)
   ```powershell
   .\.venv\Scripts\python.exe scripts/prepare_canonical_translation.py
   ```
-- **Active / Archive Status**: **Active** (`data/external/parallel_text/vie_vsl_10k.jsonl`); Lexicon archived (`docs/provenance/archive/VSL-Lexicon.rar`).
+- **Active / Archive Status**: **Active** (`data/external/parallel_text/vie_vsl_10k.jsonl`); Lexicon available upstream (`VSL-Lexicon.rar` in the upstream repo).
 
 ---
 
@@ -119,5 +120,5 @@ Last Updated: **2026-09-24** (audit round 3 corrections)
 - **Known Limitations**:
   - Raw video data (>84,000 videos) is hosted on Google Drive and is neither checked in nor imported into the active VSLT pipeline.
   - Video models require heavy 3D-CNN / Vision Transformer infrastructure (I3D, SlowFast, VideoMAE) incompatible with edge MediaPipe skeleton inference.
-- **How to Regenerate**: Upstream configs and split definitions are preserved under `clone/Multi-VSL_WACV_2025/`.
+- **How to Regenerate**: not kept locally (only split CSVs were ever available; the public Drive link holds ~50 demo videos). Re-clone upstream if needed.
 - **Active / Archive Status**: **Reference Only** (Configs and split labels retained; 11.94 GB checkpoints and 795 MB demo videos deleted).

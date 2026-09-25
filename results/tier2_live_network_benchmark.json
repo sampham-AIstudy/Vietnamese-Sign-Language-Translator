@@ -1,0 +1,14 @@
+{
+  "benchmark_type": "real_network_websocket_port_8000",
+  "num_classes": 487,
+  "model_type": "ST-GCN",
+  "total_frames": 90,
+  "effective_fps": 11.35,
+  "mean_latency_ms": 88.08,
+  "min_latency_ms": 74.67,
+  "max_latency_ms": 148.2,
+  "p50_latency_ms": 82.89,
+  "p90_latency_ms": 100.05,
+  "p95_latency_ms": 101.86,
+  "p99_latency_ms": 115.45
+}

@@ -48,7 +48,7 @@ Toàn bộ mô hình được đánh giá trên tập **Test Set (50 mẫu độ
 > **CẤP ĐỘ 1 (FINGERSPELLING) — CHƯA CÓ DỮ LIỆU THẬT, CHƯA CÓ MÔ HÌNH** (đính chính 24/09/2026):
 > - **Loại bỏ ASL:** Đã xóa bỏ hoàn toàn bộ dữ liệu ASL 29 ký tự tiếng Mỹ và loại bỏ chỉ số PoC cũ (98.06% ASL) khỏi toàn bộ tài liệu chính thức.
 > - **Đính chính:** Phiên bản trước ghi đây là "dữ liệu VSL thật của 15 người" — **SAI**. Thực tế bộ `data/vsl_alphabet_pilot` (1.875 clip, "15 signers") là **dữ liệu tổng hợp**: sinh bởi `scripts/record_vsl_alphabet.py` từ dáng tay viết cứng + nhiễu Gauss, không có người quay, không chạy MediaPipe; "signer" chỉ khác `hand_scale`. Không được dùng để train/đánh giá (có chốt chặn `DO_NOT_TRAIN_SYNTHETIC.md`). Chi tiết: `reports/alphabet_run_2026-09-24/DATA_INTEGRITY_STOP.md`.
-> - **Pipeline (dùng lại khi có dữ liệu thật):** Đã kiểm thử module chuẩn hóa lòng bàn tay (`tests/test_alphabet_preprocessing.py` PASS), 2 kiến trúc baseline (Static MLP 63 dims và Temporal BiGRU 30 frames), script đóng gói cloud và notebook `vsl_alphabet_cloud_training.ipynb`.
+> - **Dữ liệu thật (25/09/2026):** bộ Kaggle `hauuto/vietnamese-sign-language-alphabet` — 4 người, 29 chữ cái + 5 dấu thanh. BiGRU trên người chưa gặp (leave-one-signer-out): **75.1% ± 8.7** (chữ cái 84.4%, dấu thanh 35.0%); test ngoài trên chữ cái QIPEDC: **60.9%**. Chi tiết: `reports/alphabet_real_run_2026-09-25/`. Pipeline: `scripts/train_alphabet_real.py`, kernel `kaggle/vsl-train-alphabet`.
 
 > [!NOTE]
 > **CẤP ĐỘ 2 (TỪ RỜI - 487 LỚP) & CẤP ĐỘ 3 (DỊCH CÂU) — THỐNG KÊ BOOTSTRAP 95% CI**:
@@ -129,8 +129,12 @@ Project/
 │   ├── transformer/                    # Transformer training curve, confusion matrix, report
 │   └── ensemble/                       # Ensemble confusion matrix, benchmark JSON
 ├── scripts/                            # Verification & benchmark scripts
+│   ├── smoke_test_phase6.py            # ST-GCN train/checkpoint smoke test
 │   ├── smoke_test_phase10.py           # Phase 10 Realtime pipeline test
 │   ├── smoke_test_phase12.py           # Phase 12 FastAPI WebSocket test
+│   ├── build_unified_manifest.py       # Dialect-agnostic, leakage-free splits (876 classes)
+│   ├── train_unified.py                # Cloud training of the unified recogniser
+│   ├── train_alphabet_real.py          # Level 1 (letters + tone marks) LOSO training
 │   ├── benchmark_onnx.py               # Phase 13 ONNX benchmark script
 │   └── generate_slide_images.py        # Phase 14 Slide snapshot generator
 ├── src/                                # Core Deep Learning Source Code
@@ -142,6 +146,7 @@ Project/
 │   ├── report_figures/                 # All 7 confusion matrices & training curves
 │   ├── slide_images/                   # Demo HUD slides for presentation
 │   └── benchmark_tables.csv            # Summary benchmark spreadsheet
+├── kaggle/                             # Kaggle kernel specs (extract + train), see docs/cloud_training.md
 ├── realtime_demo.py                    # Standalone Desktop Realtime Demo with Pillow HUD
 ├── train.py                            # Model training script with AMP & Early Stopping
 └── evaluate_test.py                    # Independent Test Set evaluation script
@@ -239,13 +244,12 @@ npm run dev
 ### 5.8. Huấn Luyện Tăng Tốc Trên Cloud GPU (Google Colab / Kaggle)
 Để tận dụng GPU miễn phí (Tesla T4 / P100) trên Cloud và giữ máy cá nhân cho các tác vụ nhẹ (trích xuất MediaPipe, webcam demo, fullstack app):
 
-1. **Đóng gói dữ liệu đã trích xuất tại máy cá nhân** (~187 MB, không chứa video thô):
+Toàn bộ trích xuất landmark và huấn luyện chạy bằng **Kaggle kernel** trong thư mục `kaggle/` (dữ liệu QIPEDC, VSL-GH, bộ chữ cái đều được tải trực tiếp trên cloud — không upload từ máy):
 ```powershell
-.\.venv\Scripts\python.exe scripts/package_cloud_data.py
+cd kaggle\vsl-train-unified
+..\..\.venv\Scripts\kaggle.exe kernels push -p . --accelerator NvidiaTeslaT4
 ```
-2. **Mở notebook huấn luyện:**
-   - Sử dụng file [`vsl_cloud_training.ipynb`](./vsl_cloud_training.ipynb) trên **Google Colab** (chọn T4 GPU) hoặc **Kaggle** (chọn GPU T4 x2 / P100).
-   - Chi tiết hướng dẫn tải dữ liệu, chạy huấn luyện, xuất ONNX và tải checkpoint về máy: xem tài liệu [docs/cloud_training.md](./docs/cloud_training.md).
+Chi tiết pipeline, cách chia dữ liệu và Colab: xem [docs/cloud_training.md](./docs/cloud_training.md).
 
 ---
 

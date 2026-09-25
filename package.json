@@ -1,0 +1,16 @@
+{
+  "name": "vietnamese-sign-language-translator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vietnamese Sign Language Translator - Fullstack AI System",
+  "scripts": {
+    "dev:backend": ".\\.venv\\Scripts\\uvicorn.exe backend.main:app --host 127.0.0.1 --port 8000 --reload",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "preview:frontend": "npm --prefix frontend run preview",
+    "dev": "concurrently -k -n \"BACKEND,FRONTEND\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "start": "npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

@@ -1,7 +1,0 @@
-{
-  "title": "VSL Alphabet Cloud Data (private)",
-  "id": "phmvnsm33/vsl-alphabet-cloud-data",
-  "subtitle": "VSL fingerspelling landmarks, signer-disjoint splits and training code",
-  "description": "Private. MediaPipe hand landmarks (.npz, 1875 clips, 15 signers, 25 classes), signer-disjoint splits (train 10 / val S02,S12 / test S03,S14,S15), configs/alphabet_level1.yaml and src modules. No videos. Built by scripts/package_alphabet_cloud_data.py.",
-  "licenses": [{"name": "other"}]
-}

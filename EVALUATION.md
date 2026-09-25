@@ -46,7 +46,7 @@ Tổng số video thực tế thu thập được cho 50 lớp: **158 video**.
 2. **Chuyển giao dứt điểm Cấp độ 1 (Fingerspelling) sang Bảng chữ cái VSL Pilot:**
    - **Loại bỏ ASL:** Bộ dữ liệu `data/asl_alphabet_train` (ASL Alphabet Mỹ - 29 ký hiệu A-Z) và chỉ số PoC cũ (98.06% ASL) đã bị loại bỏ hoàn toàn khỏi các báo cáo chính thức của dự án để đảm bảo tính liêm chính học thuật.
    - **ĐÍNH CHÍNH (24/09/2026):** Phiên bản trước ghi dự án "đã thu thập 1.875 clip VSL thật từ 15 người" — **SAI**. Thực tế bộ `data/vsl_alphabet_pilot` (1.875 clip, "15 signers") là **dữ liệu tổng hợp**: sinh bởi `scripts/record_vsl_alphabet.py` từ dáng tay viết cứng + nhiễu Gauss, không có người quay, không chạy MediaPipe; "signer" chỉ khác `hand_scale`. Cấp 1 hiện **không có dữ liệu thật và không có số liệu đánh giá nào**. Chi tiết: `reports/alphabet_run_2026-09-24/DATA_INTEGRITY_STOP.md`.
-   - **Pipeline chuẩn hóa:** Đã thiết lập module tiền xử lý tọa độ tương đối theo lòng bàn tay (`src/data/alphabet_preprocessing.py`), kiểm thử tự động đạt 100% (`tests/test_alphabet_preprocessing.py`), và đóng gói notebook cloud `vsl_alphabet_cloud_training.ipynb`.
+   - **Pipeline chuẩn hóa:** Đã thiết lập module tiền xử lý tọa độ tương đối theo lòng bàn tay (`src/data/alphabet_preprocessing.py`), kiểm thử tự động đạt 100% (`tests/test_alphabet_preprocessing.py`). Kết quả trên dữ liệu thật (hauuto, 25/09/2026): xem `reports/alphabet_real_run_2026-09-25/`.
 
 ---
 

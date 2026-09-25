@@ -1,0 +1,35 @@
+# ST-GCN Configuration for VSLR Benchmark (Phase 6)
+experiment_name: "stgcn_tier1"
+description: "Spatial-Temporal Graph Convolutional Network with anatomical 67-joint topology on Tier 1 (50 classes)"
+
+model:
+  name: "STGCNModel"
+  num_joints: 67
+  in_channels: 3
+  channel_dims: [64, 64, 128]
+  graph_strategy: "spatial"
+  dropout: 0.25
+  temporal_kernel_size: 9
+
+data:
+  tier: "tier1"
+  num_classes: 50
+  sequence_length: 60
+  keypoints_dir: "data/extracted_keypoints"
+  splits_dir: "data/splits"
+
+training:
+  batch_size: 16
+  epochs: 100
+  lr: 0.001
+  weight_decay: 0.0001
+  patience: 10
+  use_amp: true
+  max_grad_norm: 1.0
+  num_workers: 0
+
+output:
+  checkpoint_dir: "checkpoints"
+  checkpoint_file: "checkpoints/stgcn_best.pt"
+  experiment_dir: "experiments/stgcn"
+  history_file: "experiments/stgcn/history.json"

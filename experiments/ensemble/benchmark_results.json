@@ -1,0 +1,46 @@
+{
+  "model": "VSLREnsemble (ST-GCN + Transformer)",
+  "num_classes": 50,
+  "combination_mode": "weighted",
+  "weights": {
+    "stgcn": 0.1,
+    "transformer": 0.9
+  },
+  "validation_metrics": {
+    "val_top1": 44.0,
+    "val_top5": 56.0,
+    "val_macro_f1": 36.8,
+    "val_loss": 2.8745
+  },
+  "test_metrics_average_50_50": {
+    "test_loss": 3.1133,
+    "test_top1": 22.0,
+    "test_top5": 50.0,
+    "macro_f1": 17.67,
+    "macro_precision": 15.67,
+    "macro_recall": 22.0
+  },
+  "test_metrics_weighted": {
+    "test_loss": 3.4752,
+    "test_top1": 26.0,
+    "test_top5": 46.0,
+    "macro_f1": 19.33,
+    "macro_precision": 16.33,
+    "macro_recall": 26.0
+  },
+  "final_chosen_test_metrics": {
+    "test_loss": 3.4752,
+    "test_top1": 26.0,
+    "test_top5": 46.0,
+    "macro_f1": 19.33,
+    "macro_precision": 16.33,
+    "macro_recall": 26.0,
+    "total_test_samples": 50
+  },
+  "artifacts": {
+    "stgcn_checkpoint": "checkpoints/stgcn_best.pt",
+    "transformer_checkpoint": "checkpoints/transformer_best.pt",
+    "classification_report": "experiments/ensemble\\classification_report.csv",
+    "confusion_matrix": "experiments/ensemble\\confusion_matrix.png"
+  }
+}

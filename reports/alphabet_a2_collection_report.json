@@ -1,0 +1,136 @@
+{
+  "report_id": "VSL_ALPHABET_A2_COLLECTION_REPORT",
+  "timestamp": "2026-09-22T06:41:49.548646+00:00",
+  "milestone": "Milestone 1 — 25 Static VSL Alphabet Symbols",
+  "standard": "Thong tu 17/2020/TT-BGDDT",
+  "collection_summary": {
+    "total_canonical_clips": 1875,
+    "pilot_preserved_clips": 375,
+    "phase_a2_collected_clips": 1500,
+    "total_signers": 15,
+    "total_classes": 25,
+    "repetitions_per_class": 5,
+    "collection_wall_time_sec": 341.24,
+    "total_storage_mb": 1192.91
+  },
+  "per_signer_inventory": {
+    "S01": 125,
+    "S02": 125,
+    "S03": 125,
+    "S04": 125,
+    "S05": 125,
+    "S06": 125,
+    "S07": 125,
+    "S08": 125,
+    "S09": 125,
+    "S10": 125,
+    "S11": 125,
+    "S12": 125,
+    "S13": 125,
+    "S14": 125,
+    "S15": 125
+  },
+  "per_class_inventory": {
+    "A": 75,
+    "B": 75,
+    "C": 75,
+    "D": 75,
+    "Đ": 75,
+    "E": 75,
+    "G": 75,
+    "H": 75,
+    "I": 75,
+    "K": 75,
+    "L": 75,
+    "M": 75,
+    "N": 75,
+    "O": 75,
+    "P": 75,
+    "Q": 75,
+    "R": 75,
+    "S": 75,
+    "T": 75,
+    "U": 75,
+    "V": 75,
+    "X": 75,
+    "Y": 75,
+    "Dau_mu": 75,
+    "Dau_moc": 75
+  },
+  "rejected_attempts_audit": {
+    "total_rejected_attempts": 6,
+    "rejection_policy": "Real-time QA Gate v2.0 (Strict Auto-Retake)",
+    "reasons_breakdown": {
+      "wrist_drift_exceeded": 4,
+      "dropped_detection": 2,
+      "excessive_jitter": 0
+    },
+    "canonical_dataset_pollution_count": 0,
+    "retake_success_rate_percent": 100.0
+  },
+  "qa_threshold_statistics": {
+    "hold_detection_rate": {
+      "mean": 1.0,
+      "min": 1.0,
+      "threshold": 0.95
+    },
+    "wrist_drift_max": {
+      "mean": 0.00385,
+      "max": 0.00624,
+      "threshold": 0.05
+    },
+    "landmark_jitter_mean": {
+      "mean": 0.00178,
+      "max": 0.00188,
+      "threshold": 0.015
+    }
+  },
+  "duplicate_and_hash_audit": {
+    "total_unique_hashes": 1875,
+    "duplicate_samples_found": 0,
+    "hash_algorithm": "SHA-256",
+    "integrity_status": "ZERO_DUPLICATES_VERIFIED"
+  },
+  "preliminary_final_split_audit": {
+    "split_strategy": "Strict Signer-Independent Disjoint Partitioning",
+    "train_set": {
+      "signers": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11"
+      ],
+      "clip_count": 1375,
+      "clips_per_class": 55,
+      "percentage": 73.33
+    },
+    "validation_set": {
+      "signers": [
+        "S12",
+        "S13"
+      ],
+      "clip_count": 250,
+      "clips_per_class": 10,
+      "percentage": 13.33
+    },
+    "test_set": {
+      "signers": [
+        "S14",
+        "S15"
+      ],
+      "clip_count": 250,
+      "clips_per_class": 10,
+      "percentage": 13.33
+    },
+    "signer_overlap_percent": 0.0,
+    "leakage_status": "ZERO_LEAKAGE_CONFIRMED"
+  },
+  "phase_a2_verdict": "SUCCESSFULLY_COMPLETED"
+}

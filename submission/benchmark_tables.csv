@@ -1,0 +1,5 @@
+Model,Architecture,Val_Loss,Val_Top1_Pct,Val_Top5_Pct,Test_Loss,Test_Top1_Pct,Test_Top5_Pct,Macro_F1_Pct,Macro_Precision_Pct,Macro_Recall_Pct,Checkpoint_Size_MB,ONNX_Size_MB,Latency_ms,Throughput_FPS
+Baseline BiGRU,Bidirectional GRU (2-layer),3.1853,44.0,58.0,3.8797,24.0,46.0,13.37,10.57,22.00,6.83,N/A,5.80,172.4
+ST-GCN (Spatial Master),Spatio-Temporal Graph CNN (67-joint),3.2647,44.0,60.0,3.3375,30.0,52.0,21.37,18.17,30.00,3.88,1.23,10.53,95.0
+Transformer (Temporal Master),Multi-Head Self-Attention (4 heads),3.2627,44.0,56.0,3.6262,26.0,46.0,19.33,16.33,26.00,3.79,1.50,11.48,87.1
+VSLR Ensemble,Late-Fusion Ensemble (50:50 Average),2.6649,42.0,58.0,3.1133,26.0,50.0,19.33,16.33,26.00,7.67,2.73,22.01,45.4

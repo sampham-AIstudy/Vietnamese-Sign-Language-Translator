@@ -1,0 +1,32 @@
+{
+  "model_name": "VietAI/vit5-base",
+  "dataset": "vie_vsl_10k_cleaned.jsonl",
+  "train_samples": 6426,
+  "val_samples": 714,
+  "total_epochs": 3,
+  "best_val_loss": 0.52,
+  "total_training_time_sec": 1293.08,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 1.3013,
+      "val_loss": 0.578,
+      "lr": 4.2132647280182e-05,
+      "epoch_time_sec": 421.69
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.4552,
+      "val_loss": 0.52,
+      "lr": 1.5083251087290507e-05,
+      "epoch_time_sec": 411.1
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.2971,
+      "val_loss": 0.5488,
+      "lr": 0.0,
+      "epoch_time_sec": 458.13
+    }
+  ]
+}

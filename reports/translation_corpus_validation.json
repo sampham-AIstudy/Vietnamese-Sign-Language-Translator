@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "dataset": "Vie-VSL Parallel Text 10k",
+  "source_files": [
+    "clone\\Parallel-Corpus-Vie-VSL\\VSL10k.txt",
+    "clone\\Parallel-Corpus-Vie-VSL\\Vie10k.txt"
+  ],
+  "original_pairs_count": 10000,
+  "duplicate_pairs_count": 595,
+  "final_canonical_pairs_count": 9405,
+  "vsl_unique_tokens": 3764,
+  "vie_unique_tokens": 3774,
+  "unicode_normalization": "NFC",
+  "schema": {
+    "id": "PAR_10K_XXXXX",
+    "vsl": "Sign language gloss / token order",
+    "vi": "Spoken Vietnamese natural sentence"
+  },
+  "sample_head": [
+    {
+      "id": "PAR_10K_00001",
+      "vsl": "Tôi tuổi 19 .",
+      "vi": "Tôi 19 tuổi ."
+    },
+    {
+      "id": "PAR_10K_00002",
+      "vsl": "Bạn tên gì ?",
+      "vi": "Bạn tên gì ?"
+    },
+    {
+      "id": "PAR_10K_00003",
+      "vsl": "Biết bơi ai ?",
+      "vi": "Ai biết bơi ?"
+    }
+  ],
+  "sample_tail": [
+    {
+      "id": "PAR_10K_09403",
+      "vsl": "Rush li dị .",
+      "vi": "Rush đã li dị ."
+    },
+    {
+      "id": "PAR_10K_09404",
+      "vsl": "Tôi rất ngạc nhiên trước sự điên rồ họ .",
+      "vi": "Tôi rất ngạc nhiên trước sự điên rồ của họ ."
+    },
+    {
+      "id": "PAR_10K_09405",
+      "vsl": "bác tôi người sống ở chicago",
+      "vi": "bác tôi người mà sống ở chicago ."
+    }
+  ]
+}

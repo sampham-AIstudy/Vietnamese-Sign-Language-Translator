@@ -1,0 +1,5880 @@
+[
+  {
+    "sample_id": "SENT001_S06_R01_F",
+    "sentence_id": "SENT001",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐĂNG-KÝ",
+      "KHÁM",
+      "SỨC-KHỎE",
+      "MUỐN"
+    ],
+    "ref_gloss_str": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+    "pred_gloss_list": [
+      "TÔI",
+      "SỨC-KHỎE",
+      "CHƯA"
+    ],
+    "pred_gloss_str": "TÔI SỨC-KHỎE CHƯA",
+    "translation": "Tôi muốn đăng ký khám sức khỏe."
+  },
+  {
+    "sample_id": "SENT002_S06_R01_F",
+    "sentence_id": "SENT002",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "TUỔI",
+      "2",
+      "4"
+    ],
+    "ref_gloss_str": "TÔI TUỔI 2 4",
+    "pred_gloss_list": [
+      "TÔI",
+      "SÂU",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI SÂU CẦN-KHÔNG",
+    "translation": "Tôi 24 tuổi."
+  },
+  {
+    "sample_id": "SENT003_S06_R01_F",
+    "sentence_id": "SENT003",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "IX",
+      "BÁC-SĨ",
+      "TÊN",
+      "GÌ"
+    ],
+    "ref_gloss_str": "IX BÁC-SĨ TÊN GÌ",
+    "pred_gloss_list": [
+      "TÔI",
+      "TRẢ",
+      "CHO-TÔI",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI TRẢ CHO-TÔI CÓ-KHÔNG",
+    "translation": "Bác sĩ tên là gì ạ."
+  },
+  {
+    "sample_id": "SENT004_S06_R01_F",
+    "sentence_id": "SENT004",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NỮ"
+    ],
+    "ref_gloss_str": "TÔI NỮ",
+    "pred_gloss_list": [
+      "TÔI",
+      "NỮ"
+    ],
+    "pred_gloss_str": "TÔI NỮ",
+    "translation": "Tôi là nữ."
+  },
+  {
+    "sample_id": "SENT005_S06_R01_F",
+    "sentence_id": "SENT005",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NAM"
+    ],
+    "ref_gloss_str": "TÔI NAM",
+    "pred_gloss_list": [
+      "TÔI",
+      "HỌNG",
+      "NAM"
+    ],
+    "pred_gloss_str": "TÔI HỌNG NAM",
+    "translation": "Tôi là nam."
+  },
+  {
+    "sample_id": "SENT006_S06_R01_F",
+    "sentence_id": "SENT006",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐỘC-THÂN",
+      "CÒN"
+    ],
+    "ref_gloss_str": "TÔI ĐỘC-THÂN CÒN",
+    "pred_gloss_list": [
+      "TÔI",
+      "GÃI",
+      "BÌNH-THƯỜNG"
+    ],
+    "pred_gloss_str": "TÔI GÃI BÌNH-THƯỜNG",
+    "translation": "Tôi còn độc thân."
+  },
+  {
+    "sample_id": "SENT007_S06_R01_F",
+    "sentence_id": "SENT007",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CON",
+      "2"
+    ],
+    "ref_gloss_str": "TÔI CON 2",
+    "pred_gloss_list": [
+      "TÔI",
+      "CON",
+      "CÓ"
+    ],
+    "pred_gloss_str": "TÔI CON CÓ",
+    "translation": "Tôi có 2 đứa con."
+  },
+  {
+    "sample_id": "SENT008_S06_R01_F",
+    "sentence_id": "SENT008",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "QUÊ-QUÁN",
+      "SÀI-GÒN"
+    ],
+    "ref_gloss_str": "TÔI QUÊ-QUÁN SÀI-GÒN",
+    "pred_gloss_list": [
+      "TÔI",
+      "QUÊ-QUÁN",
+      "SÀI-GÒN"
+    ],
+    "pred_gloss_str": "TÔI QUÊ-QUÁN SÀI-GÒN",
+    "translation": "Quê quán tôi ở Sài Gòn."
+  },
+  {
+    "sample_id": "SENT009_S06_R01_F",
+    "sentence_id": "SENT009",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐIỆN-THOẠI",
+      "SỐ",
+      "1",
+      "2",
+      "3"
+    ],
+    "ref_gloss_str": "TÔI ĐIỆN-THOẠI SỐ 1 2 3",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐIỆN-THOẠI",
+      "MUỐN",
+      "KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI ĐIỆN-THOẠI MUỐN KHÔNG",
+    "translation": "Số điện thoại của tôi là 123."
+  },
+  {
+    "sample_id": "SENT010_S06_R01_F",
+    "sentence_id": "SENT010",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐẶT",
+      "GÓI",
+      "KHÁM",
+      "CƠ-BẢN",
+      "MUỐN"
+    ],
+    "ref_gloss_str": "TÔI ĐẶT GÓI KHÁM CƠ-BẢN MUỐN",
+    "pred_gloss_list": [
+      "TÔI",
+      "VIẾT",
+      "ĐẺ",
+      "VIỆC"
+    ],
+    "pred_gloss_str": "TÔI VIẾT ĐẺ VIỆC",
+    "translation": "Tôi muốn đặt gói khám sức khỏe cơ bản."
+  },
+  {
+    "sample_id": "SENT011_S06_R01_F",
+    "sentence_id": "SENT011",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "GIÁO-VIÊN",
+      "LÀM"
+    ],
+    "ref_gloss_str": "TÔI GIÁO-VIÊN LÀM",
+    "pred_gloss_list": [
+      "TÔI",
+      "NGHĨ",
+      "NẤM-DA"
+    ],
+    "pred_gloss_str": "TÔI NGHĨ NẤM-DA",
+    "translation": "Tôi làm nghề giáo viên."
+  },
+  {
+    "sample_id": "SENT012_S06_R01_F",
+    "sentence_id": "SENT012",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "THẺ",
+      "CCCD",
+      "MANG"
+    ],
+    "ref_gloss_str": "TÔI THẺ CCCD MANG",
+    "pred_gloss_list": [
+      "TÔI",
+      "CHỜ",
+      "THẺ",
+      "ĐƯỢC-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI CHỜ THẺ ĐƯỢC-KHÔNG",
+    "translation": "Tôi có mang theo căn cước công dân."
+  },
+  {
+    "sample_id": "SENT013_S06_R01_F",
+    "sentence_id": "SENT013",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NỘP",
+      "GIẤY",
+      "CẦN"
+    ],
+    "ref_gloss_str": "TÔI NỘP GIẤY CẦN",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐO",
+      "LOÃNG-XƯƠNG"
+    ],
+    "pred_gloss_str": "TÔI ĐO LOÃNG-XƯƠNG",
+    "translation": "Tôi cần nộp giấy tờ."
+  },
+  {
+    "sample_id": "SENT014_S06_R01_F",
+    "sentence_id": "SENT014",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "BẢO-HIỂM",
+      "Y-TẾ",
+      "CÓ"
+    ],
+    "ref_gloss_str": "TÔI BẢO-HIỂM Y-TẾ CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "Y-TẾ",
+      "XONG-RỒI"
+    ],
+    "pred_gloss_str": "TÔI Y-TẾ XONG-RỒI",
+    "translation": "Tôi có bảo hiểm y tế."
+  },
+  {
+    "sample_id": "SENT015_S06_R01_F",
+    "sentence_id": "SENT015",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "ĐỂ",
+      "XIN",
+      "VIỆC"
+    ],
+    "ref_gloss_str": "TÔI ĐẾN KHÁM ĐỂ XIN VIỆC",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "XIN",
+      "VIỆC"
+    ],
+    "pred_gloss_str": "TÔI ĐẾN KHÁM XIN VIỆC",
+    "translation": "Tôi đến khám để đi xin việc."
+  },
+  {
+    "sample_id": "SENT016_S06_R01_F",
+    "sentence_id": "SENT016",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "ĐỂ",
+      "ĐĂNG-KÝ",
+      "THẺ",
+      "LÁI-XE",
+      "THI"
+    ],
+    "ref_gloss_str": "TÔI ĐẾN KHÁM ĐỂ ĐĂNG-KÝ THẺ LÁI-XE THI",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "LÁI-XE",
+      "THI"
+    ],
+    "pred_gloss_str": "TÔI ĐẾN KHÁM LÁI-XE THI",
+    "translation": "Tôi đến khám để đăng ký thi bằng lái xe."
+  },
+  {
+    "sample_id": "SENT017_S06_R01_F",
+    "sentence_id": "SENT017",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "KHÁM",
+      "GÓI",
+      "CƠ-BẢN",
+      "MUỐN"
+    ],
+    "ref_gloss_str": "TÔI KHÁM GÓI CƠ-BẢN MUỐN",
+    "pred_gloss_list": [
+      "TÔI",
+      "KHÁM",
+      "CHỮ",
+      "KHÔNG-THẤY"
+    ],
+    "pred_gloss_str": "TÔI KHÁM CHỮ KHÔNG-THẤY",
+    "translation": "Tôi muốn khám gói cơ bản."
+  },
+  {
+    "sample_id": "SENT018_S06_R01_F",
+    "sentence_id": "SENT018",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐẶT",
+      "LỊCH-HẸN",
+      "RỒI"
+    ],
+    "ref_gloss_str": "TÔI ĐẶT LỊCH-HẸN RỒI",
+    "pred_gloss_list": [
+      "TÔI",
+      "2",
+      "4"
+    ],
+    "pred_gloss_str": "TÔI 2 4",
+    "translation": "Tôi có đặt lịch hẹn rồi."
+  },
+  {
+    "sample_id": "SENT019_S06_R01_F",
+    "sentence_id": "SENT019",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "GIỜ",
+      "9",
+      "SÁNG",
+      "HẸN",
+      "CÓ"
+    ],
+    "ref_gloss_str": "TÔI GIỜ 9 SÁNG HẸN CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "NGỒI",
+      "HÀNG-NÀY",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI NGỒI HÀNG-NÀY PHẢI-KHÔNG",
+    "translation": "Tôi có hẹn lúc 9 giờ sáng."
+  },
+  {
+    "sample_id": "SENT020_S06_R01_F",
+    "sentence_id": "SENT020",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐÓNG",
+      "TIỀN"
+    ],
+    "ref_gloss_str": "TÔI ĐÓNG TIỀN",
+    "pred_gloss_list": [
+      "TÔI",
+      "TÉ",
+      "VỪA"
+    ],
+    "pred_gloss_str": "TÔI TÉ VỪA",
+    "translation": "Tôi đóng tiền rồi."
+  },
+  {
+    "sample_id": "SENT021_S06_R01_F",
+    "sentence_id": "SENT021",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "GIẤY",
+      "BIÊN-LAI",
+      "CẦM",
+      "ĐANG"
+    ],
+    "ref_gloss_str": "TÔI GIẤY BIÊN-LAI CẦM ĐANG",
+    "pred_gloss_list": [
+      "TÔI",
+      "KÝ-TÊN",
+      "LẤY",
+      "Ở-ĐÂU"
+    ],
+    "pred_gloss_str": "TÔI KÝ-TÊN LẤY Ở-ĐÂU",
+    "translation": "Tôi đang cầm biên lai."
+  },
+  {
+    "sample_id": "SENT022_S06_R01_F",
+    "sentence_id": "SENT022",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "IX",
+      "BÁC-SĨ",
+      "GẶP",
+      "MUỐN"
+    ],
+    "ref_gloss_str": "TÔI IX BÁC-SĨ GẶP MUỐN",
+    "pred_gloss_list": [
+      "TÔI",
+      "PHẢI",
+      "MỜ"
+    ],
+    "pred_gloss_str": "TÔI PHẢI MỜ",
+    "translation": "Tôi muốn gặp bác sĩ."
+  },
+  {
+    "sample_id": "SENT023_S06_R01_F",
+    "sentence_id": "SENT023",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "ĐÂY",
+      "ĐẾN",
+      "KHÁM",
+      "LẦN-ĐẦU"
+    ],
+    "ref_gloss_str": "ĐÂY ĐẾN KHÁM LẦN-ĐẦU",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÔNG",
+      "CẦN"
+    ],
+    "pred_gloss_str": "TÔI ĐẾN KHÔNG CẦN",
+    "translation": "Đây là lần đầu tôi đến khám."
+  },
+  {
+    "sample_id": "SENT024_S06_R01_F",
+    "sentence_id": "SENT024",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "LẠI"
+    ],
+    "ref_gloss_str": "TÔI ĐẾN KHÁM LẠI",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "KHÁM",
+      "LẠI"
+    ],
+    "pred_gloss_str": "TÔI ĐẾN KHÁM KHÁM LẠI",
+    "translation": "Tôi đến tái khám."
+  },
+  {
+    "sample_id": "SENT025_S06_R01_F",
+    "sentence_id": "SENT025",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "GIẤY",
+      "GIỚI-THIỆU",
+      "CÓ"
+    ],
+    "ref_gloss_str": "TÔI GIẤY GIỚI-THIỆU CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "NGỒI",
+      "ĐÂY",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI NGỒI ĐÂY CÓ-KHÔNG",
+    "translation": "Tôi có mang theo giấy giới thiệu."
+  },
+  {
+    "sample_id": "SENT026_S06_R01_F",
+    "sentence_id": "SENT026",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "SỐ",
+      "THỨ-TỰ",
+      "NHẬN",
+      "RỒI"
+    ],
+    "ref_gloss_str": "TÔI SỐ THỨ-TỰ NHẬN RỒI",
+    "pred_gloss_list": [
+      "TÔI",
+      "SỐ",
+      "NHẬN",
+      "RỒI"
+    ],
+    "pred_gloss_str": "TÔI SỐ NHẬN RỒI",
+    "translation": "Tôi đã nhận được số thứ tự rồi."
+  },
+  {
+    "sample_id": "SENT027_S06_R01_F",
+    "sentence_id": "SENT027",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "SỐ",
+      "THỨ-TỰ",
+      "1",
+      "0",
+      "5"
+    ],
+    "ref_gloss_str": "TÔI SỐ THỨ-TỰ 1 0 5",
+    "pred_gloss_list": [
+      "TÔI",
+      "SỐ",
+      "ĐIỆN",
+      "120"
+    ],
+    "pred_gloss_str": "TÔI SỐ ĐIỆN 120",
+    "translation": "Số thứ tự của tôi là 105."
+  },
+  {
+    "sample_id": "SENT028_S06_R01_F",
+    "sentence_id": "SENT028",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐÂY",
+      "NGỒI",
+      "ĐỢI"
+    ],
+    "ref_gloss_str": "TÔI ĐÂY NGỒI ĐỢI",
+    "pred_gloss_list": [
+      "TÔI",
+      "LẤY",
+      "LẤY",
+      "Ở-ĐÂU"
+    ],
+    "pred_gloss_str": "TÔI LẤY LẤY Ở-ĐÂU",
+    "translation": "Tôi sẽ ngồi đây đợi."
+  },
+  {
+    "sample_id": "SENT029_S06_R01_F",
+    "sentence_id": "SENT029",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "PHÒNG",
+      "SỐ",
+      "2",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI ĐẾN KHÁM PHÒNG SỐ 2 PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "LẠI",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI ĐẾN KHÁM LẠI PHẢI-KHÔNG",
+    "translation": "Tôi đến khám ở phòng số 2 phải không?"
+  },
+  {
+    "sample_id": "SENT030_S06_R01_F",
+    "sentence_id": "SENT030",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐÓNG-TIỀN",
+      "Ở-ĐÂU"
+    ],
+    "ref_gloss_str": "TÔI ĐÓNG-TIỀN Ở-ĐÂU",
+    "pred_gloss_list": [
+      "TÔI",
+      "TIẾP",
+      "THỨ-TỰ",
+      "ĐÂU"
+    ],
+    "pred_gloss_str": "TÔI TIẾP THỨ-TỰ ĐÂU",
+    "translation": "Tôi đóng tiền ở đâu ạ?"
+  },
+  {
+    "sample_id": "SENT031_S06_R01_F",
+    "sentence_id": "SENT031",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "PHÒNG",
+      "SỐ-MẤY"
+    ],
+    "ref_gloss_str": "TÔI ĐẾN KHÁM PHÒNG SỐ-MẤY",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "ĐÂY",
+      "SỐ-MẤY"
+    ],
+    "pred_gloss_str": "TÔI ĐẾN KHÁM ĐÂY SỐ-MẤY",
+    "translation": "Tôi khám ở phòng số mấy?"
+  },
+  {
+    "sample_id": "SENT032_S06_R01_F",
+    "sentence_id": "SENT032",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NGỒI",
+      "LÂU",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI NGỒI LÂU PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "MŨI",
+      "HỌNG"
+    ],
+    "pred_gloss_str": "TÔI ĐẾN KHÁM MŨI HỌNG",
+    "translation": "Tôi có phải chờ lâu không?"
+  },
+  {
+    "sample_id": "SENT033_S06_R01_F",
+    "sentence_id": "SENT033",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HẸN",
+      "TRƯỚC",
+      "CHƯA"
+    ],
+    "ref_gloss_str": "TÔI HẸN TRƯỚC CHƯA",
+    "pred_gloss_list": [
+      "TÔI",
+      "PHẢI",
+      "MỜ"
+    ],
+    "pred_gloss_str": "TÔI PHẢI MỜ",
+    "translation": "Tôi chưa hẹn trước."
+  },
+  {
+    "sample_id": "SENT034_S06_R01_F",
+    "sentence_id": "SENT034",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NỘP",
+      "GIẤY",
+      "KHÁC",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI NỘP GIẤY KHÁC CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "GIÀY",
+      "CỞI",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI GIÀY CỞI PHẢI-KHÔNG",
+    "translation": "Tôi có cần nộp giấy tờ gì không?"
+  },
+  {
+    "sample_id": "SENT035_S06_R01_F",
+    "sentence_id": "SENT035",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "Ở-ĐÂY",
+      "TÔI",
+      "BẢO-HIỂM",
+      "Y-TẾ",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "Ở-ĐÂY TÔI BẢO-HIỂM Y-TẾ CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "Ở-ĐÂY",
+      "TÔI",
+      "Y-TẾ",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "Ở-ĐÂY TÔI Y-TẾ CÓ-KHÔNG",
+    "translation": "Ở đây có dùng được bảo hiểm y tế không?"
+  },
+  {
+    "sample_id": "SENT036_S06_R01_F",
+    "sentence_id": "SENT036",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HIỂU",
+      "KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI HIỂU KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "HIỂU",
+      "RỒI"
+    ],
+    "pred_gloss_str": "TÔI HIỂU RỒI",
+    "translation": "Tôi không hiểu."
+  },
+  {
+    "sample_id": "SENT037_S06_R01_F",
+    "sentence_id": "SENT037",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "IX",
+      "VIẾT",
+      "CÓ-THẾ"
+    ],
+    "ref_gloss_str": "TÔI IX VIẾT CÓ-THẾ",
+    "pred_gloss_list": [
+      "TÔI",
+      "NGỒI",
+      "ĐIỆN",
+      "XONG-RỒI"
+    ],
+    "pred_gloss_str": "TÔI NGỒI ĐIỆN XONG-RỒI",
+    "translation": "Bác sĩ có thể viết ra giấy được không?"
+  },
+  {
+    "sample_id": "SENT038_S06_R01_F",
+    "sentence_id": "SENT038",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐỢI",
+      "ĐÂY",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI ĐỢI ĐÂY PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "HÓA-ĐƠN",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI HÓA-ĐƠN CẦN-KHÔNG",
+    "translation": "Tôi đợi ở đây phải không ạ?"
+  },
+  {
+    "sample_id": "SENT039_S06_R01_F",
+    "sentence_id": "SENT039",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "LƯỢT",
+      "KHI-NÀO"
+    ],
+    "ref_gloss_str": "TÔI LƯỢT KHI-NÀO",
+    "pred_gloss_list": [
+      "TÔI",
+      "KẾT-QUẢ",
+      "LẤY",
+      "Ở-ĐÂU"
+    ],
+    "pred_gloss_str": "TÔI KẾT-QUẢ LẤY Ở-ĐÂU",
+    "translation": "Khi nào thì tới lượt tôi?"
+  },
+  {
+    "sample_id": "SENT040_S06_R01_F",
+    "sentence_id": "SENT040",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "VIẾT",
+      "GIẤY",
+      "NÀO",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI VIẾT GIẤY NÀO CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "VIẾT",
+      "DA",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI VIẾT DA CẦN-KHÔNG",
+    "translation": "Tôi có cần điền vào mẫu giấy nào không?"
+  },
+  {
+    "sample_id": "SENT041_S06_R01_F",
+    "sentence_id": "SENT041",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "VIẾT",
+      "ĐÂY",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI VIẾT ĐÂY PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "HÓA-ĐƠN",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI HÓA-ĐƠN CẦN-KHÔNG",
+    "translation": "Tôi viết vào đây phải không?"
+  },
+  {
+    "sample_id": "SENT042_S06_R01_F",
+    "sentence_id": "SENT042",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "KÝ-TÊN",
+      "CẦN",
+      "Ở-ĐÂU"
+    ],
+    "ref_gloss_str": "TÔI KÝ-TÊN CẦN Ở-ĐÂU",
+    "pred_gloss_list": [
+      "TÔI",
+      "TIẾP",
+      "LẤY",
+      "ĐÂU"
+    ],
+    "pred_gloss_str": "TÔI TIẾP LẤY ĐÂU",
+    "translation": "Tôi có cần ký tên ở đâu không?"
+  },
+  {
+    "sample_id": "SENT043_S06_R01_F",
+    "sentence_id": "SENT043",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "BẢO-HIỂM",
+      "Y-TẾ",
+      "KHÔNG-CÓ"
+    ],
+    "ref_gloss_str": "TÔI BẢO-HIỂM Y-TẾ KHÔNG-CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "BẢO-HIỂM",
+      "Y-TẾ",
+      "KHÔNG-CÓ"
+    ],
+    "pred_gloss_str": "TÔI BẢO-HIỂM Y-TẾ KHÔNG-CÓ",
+    "translation": "Tôi không có bảo hiểm y tế."
+  },
+  {
+    "sample_id": "SENT044_S06_R01_F",
+    "sentence_id": "SENT044",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐẶT",
+      "LỊCH",
+      "CHƯA"
+    ],
+    "ref_gloss_str": "TÔI ĐẶT LỊCH CHƯA",
+    "pred_gloss_list": [
+      "TÔI",
+      "BẢO-HIỂM",
+      "CHƯA"
+    ],
+    "pred_gloss_str": "TÔI BẢO-HIỂM CHƯA",
+    "translation": "Tôi chưa đặt lịch hẹn."
+  },
+  {
+    "sample_id": "SENT045_S06_R01_F",
+    "sentence_id": "SENT045",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "KHÁM",
+      "CHI-PHÍ",
+      "BAO-NHIÊU"
+    ],
+    "ref_gloss_str": "KHÁM CHI-PHÍ BAO-NHIÊU",
+    "pred_gloss_list": [
+      "TÔI",
+      "LẤY",
+      "HÓA-ĐƠN",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI LẤY HÓA-ĐƠN CẦN-KHÔNG",
+    "translation": "Chi phí khám là bao nhiêu tiền ạ?"
+  },
+  {
+    "sample_id": "SENT046_S06_R01_F",
+    "sentence_id": "SENT046",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "TRẢ",
+      "THẺ",
+      "ĐƯỢC-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI TRẢ THẺ ĐƯỢC-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "HÓA-ĐƠN",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI HÓA-ĐƠN CẦN-KHÔNG",
+    "translation": "Tôi trả bằng thẻ được không?"
+  },
+  {
+    "sample_id": "SENT047_S06_R01_F",
+    "sentence_id": "SENT047",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "TIỀN",
+      "KHÔNG-CÓ"
+    ],
+    "ref_gloss_str": "TÔI TIỀN KHÔNG-CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐI",
+      "KHÔNG-CÓ"
+    ],
+    "pred_gloss_str": "TÔI ĐI KHÔNG-CÓ",
+    "translation": "Tôi không mang tiền mặt."
+  },
+  {
+    "sample_id": "SENT048_S06_R01_F",
+    "sentence_id": "SENT048",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "GẶP",
+      "BÁC-SĨ",
+      "NÀO"
+    ],
+    "ref_gloss_str": "TÔI GẶP BÁC-SĨ NÀO",
+    "pred_gloss_list": [
+      "TÔI",
+      "Y-TẾ",
+      "KHÔNG-CÓ"
+    ],
+    "pred_gloss_str": "TÔI Y-TẾ KHÔNG-CÓ",
+    "translation": "Tôi sẽ gặp bác sĩ nào ạ?"
+  },
+  {
+    "sample_id": "SENT049_S06_R01_F",
+    "sentence_id": "SENT049",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "IX",
+      "BÁC-SĨ",
+      "TÊN",
+      "GÌ"
+    ],
+    "ref_gloss_str": "IX BÁC-SĨ TÊN GÌ",
+    "pred_gloss_list": [
+      "TÔI",
+      "IX",
+      "CHO-TÔI",
+      "ĐƯỢC-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI IX CHO-TÔI ĐƯỢC-KHÔNG",
+    "translation": "Bác sĩ tên là gì ạ?"
+  },
+  {
+    "sample_id": "SENT050_S06_R01_F",
+    "sentence_id": "SENT050",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "WC",
+      "Ở-ĐÂU"
+    ],
+    "ref_gloss_str": "WC Ở-ĐÂU",
+    "pred_gloss_list": [
+      "TÔI",
+      "DỊ-ỨNG",
+      "KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI DỊ-ỨNG KHÔNG",
+    "translation": "Nhà vệ sinh ở đâu ạ?"
+  },
+  {
+    "sample_id": "SENT051_S06_R01_F",
+    "sentence_id": "SENT051",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NGỒI",
+      "ĐÂY",
+      "ĐÚNG-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI NGỒI ĐÂY ĐÚNG-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "NẰM",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI NẰM CẦN-KHÔNG",
+    "translation": "Tôi ngồi ở đây đúng không?"
+  },
+  {
+    "sample_id": "SENT052_S06_R01_F",
+    "sentence_id": "SENT052",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NỘP",
+      "HỒ-SƠ",
+      "QUẦY",
+      "ĐÂU"
+    ],
+    "ref_gloss_str": "TÔI NỘP HỒ-SƠ QUẦY ĐÂU",
+    "pred_gloss_list": [
+      "TÔI",
+      "NỘP",
+      "BỚT",
+      "LỠ-MẤT"
+    ],
+    "pred_gloss_str": "TÔI NỘP BỚT LỠ-MẤT",
+    "translation": "Tôi nộp hồ sơ ở quầy nào?"
+  },
+  {
+    "sample_id": "SENT053_S06_R01_F",
+    "sentence_id": "SENT053",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NỘP",
+      "RỒI"
+    ],
+    "ref_gloss_str": "TÔI NỘP RỒI",
+    "pred_gloss_list": [
+      "TÔI",
+      "NỘP",
+      "RỒI"
+    ],
+    "pred_gloss_str": "TÔI NỘP RỒI",
+    "translation": "Tôi  nộp rồi!"
+  },
+  {
+    "sample_id": "SENT054_S06_R01_F",
+    "sentence_id": "SENT054",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "LÂU",
+      "CHỜ",
+      "TẠI-SAO"
+    ],
+    "ref_gloss_str": "TÔI LÂU CHỜ TẠI-SAO",
+    "pred_gloss_list": [
+      "TÔI",
+      "LÂU",
+      "CHỜ",
+      "TẠI-SAO"
+    ],
+    "pred_gloss_str": "TÔI LÂU CHỜ TẠI-SAO",
+    "translation": "Tại sao tôi phải chờ lâu vậy?"
+  },
+  {
+    "sample_id": "SENT055_S06_R01_F",
+    "sentence_id": "SENT055",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "THÔNG-TIN",
+      "SAI"
+    ],
+    "ref_gloss_str": "TÔI THÔNG-TIN SAI",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐỌC",
+      "CHỮ",
+      "KHÔNG-ĐƯỢC"
+    ],
+    "pred_gloss_str": "TÔI ĐỌC CHỮ KHÔNG-ĐƯỢC",
+    "translation": "Thông tin của tôi bị sai."
+  },
+  {
+    "sample_id": "SENT056_S06_R01_F",
+    "sentence_id": "SENT056",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "THÔNG-TIN",
+      "SỬA",
+      "LẠI",
+      "MUỐN"
+    ],
+    "ref_gloss_str": "TÔI THÔNG-TIN SỬA LẠI MUỐN",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐỌC",
+      "CHỮ",
+      "KHÔNG-ĐƯỢC"
+    ],
+    "pred_gloss_str": "TÔI ĐỌC CHỮ KHÔNG-ĐƯỢC",
+    "translation": "Tôi muốn sửa lại thông tin."
+  },
+  {
+    "sample_id": "SENT057_S06_R01_F",
+    "sentence_id": "SENT057",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "HÔM-NAY",
+      "TÔI",
+      "MỘT-MÌNH",
+      "ĐI"
+    ],
+    "ref_gloss_str": "HÔM-NAY TÔI MỘT-MÌNH ĐI",
+    "pred_gloss_list": [
+      "HÔM-NAY",
+      "TÔI",
+      "MỘT-MÌNH",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "HÔM-NAY TÔI MỘT-MÌNH PHẢI-KHÔNG",
+    "translation": "Hôm nay tôi đi một mình."
+  },
+  {
+    "sample_id": "SENT058_S06_R01_F",
+    "sentence_id": "SENT058",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "NHÀ",
+      "IX",
+      "TÔI",
+      "CÙNG",
+      "VÀO",
+      "ĐƯỢC-KHÔNG"
+    ],
+    "ref_gloss_str": "NHÀ IX TÔI CÙNG VÀO ĐƯỢC-KHÔNG",
+    "pred_gloss_list": [
+      "NHÀ",
+      "HÔM-QUA",
+      "TÔI",
+      "VÀO",
+      "KHÔNG"
+    ],
+    "pred_gloss_str": "NHÀ HÔM-QUA TÔI VÀO KHÔNG",
+    "translation": "Người nhà vào cùng tôi được không?"
+  },
+  {
+    "sample_id": "SENT059_S06_R01_F",
+    "sentence_id": "SENT059",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐỌC",
+      "CHỮ",
+      "KHÔNG-ĐƯỢC"
+    ],
+    "ref_gloss_str": "TÔI ĐỌC CHỮ KHÔNG-ĐƯỢC",
+    "pred_gloss_list": [
+      "TÔI",
+      "CHỮ",
+      "CHỮ",
+      "KHÔNG-ĐƯỢC"
+    ],
+    "pred_gloss_str": "TÔI CHỮ CHỮ KHÔNG-ĐƯỢC",
+    "translation": "Tôi không đọc được chữ."
+  },
+  {
+    "sample_id": "SENT060_S06_R01_F",
+    "sentence_id": "SENT060",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "SỐ",
+      "THỨ-TỰ",
+      "LỠ-MẤT"
+    ],
+    "ref_gloss_str": "TÔI SỐ THỨ-TỰ LỠ-MẤT",
+    "pred_gloss_list": [
+      "TÔI",
+      "SỐ",
+      "THỨ-TỰ",
+      "LỠ-MẤT"
+    ],
+    "pred_gloss_str": "TÔI SỐ THỨ-TỰ LỠ-MẤT",
+    "translation": "Tôi bị lỡ mất số thứ tự rồi!"
+  },
+  {
+    "sample_id": "SENT061_S06_R01_F",
+    "sentence_id": "SENT061",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NÀY",
+      "PHÒNG",
+      "CHỜ",
+      "ĐÚNG-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI NÀY PHÒNG CHỜ ĐÚNG-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "NÀY",
+      "PHÒNG",
+      "VÉN-ÁO",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI NÀY PHÒNG VÉN-ÁO PHẢI-KHÔNG",
+    "translation": "Tôi chờ ở phòng này đúng không ạ?"
+  },
+  {
+    "sample_id": "SENT062_S06_R01_F",
+    "sentence_id": "SENT062",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "VÀO",
+      "KHÁM",
+      "NGAY",
+      "ĐƯỢC-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI VÀO KHÁM NGAY ĐƯỢC-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "VÀO",
+      "KHÁM",
+      "NGAY",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI VÀO KHÁM NGAY PHẢI-KHÔNG",
+    "translation": "Tôi vào khám ngay được không?"
+  },
+  {
+    "sample_id": "SENT063_S06_R01_F",
+    "sentence_id": "SENT063",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NGHE",
+      "KHÔNG-ĐƯỢC"
+    ],
+    "ref_gloss_str": "TÔI NGHE KHÔNG-ĐƯỢC",
+    "pred_gloss_list": [
+      "TÔI",
+      "NGHE",
+      "KHÔNG-CÓ"
+    ],
+    "pred_gloss_str": "TÔI NGHE KHÔNG-CÓ",
+    "translation": "Tôi không nghe được."
+  },
+  {
+    "sample_id": "SENT064_S06_R01_F",
+    "sentence_id": "SENT064",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "XIN",
+      "VIẾT",
+      "GIÚP"
+    ],
+    "ref_gloss_str": "TÔI XIN VIẾT GIÚP",
+    "pred_gloss_list": [
+      "TÔI",
+      "VIÊM-XOANG",
+      "GIÚP"
+    ],
+    "pred_gloss_str": "TÔI VIÊM-XOANG GIÚP",
+    "translation": "Xin viết ra giấy giúp tôi."
+  },
+  {
+    "sample_id": "SENT065_S06_R01_F",
+    "sentence_id": "SENT065",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HÓA-ĐƠN",
+      "LẤY",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI HÓA-ĐƠN LẤY CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐÓNG-TIỀN",
+      "DA",
+      "CẦN"
+    ],
+    "pred_gloss_str": "TÔI ĐÓNG-TIỀN DA CẦN",
+    "translation": "Tôi có cần lấy hóa đơn không?"
+  },
+  {
+    "sample_id": "SENT066_S06_R01_F",
+    "sentence_id": "SENT066",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "LẤY",
+      "HÓA-ĐƠN",
+      "KHÔNG-CẦN"
+    ],
+    "ref_gloss_str": "TÔI LẤY HÓA-ĐƠN KHÔNG-CẦN",
+    "pred_gloss_list": [
+      "TÔI",
+      "BỔI",
+      "CHƯA"
+    ],
+    "pred_gloss_str": "TÔI BỔI CHƯA",
+    "translation": "Tôi không cần lấy hóa đơn."
+  },
+  {
+    "sample_id": "SENT067_S06_R01_F",
+    "sentence_id": "SENT067",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐỢI",
+      "BAO-LÂU"
+    ],
+    "ref_gloss_str": "TÔI ĐỢI BAO-LÂU",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐỢI",
+      "BAO-LÂU"
+    ],
+    "pred_gloss_str": "TÔI ĐỢI BAO-LÂU",
+    "translation": "Tôi đợi bao lâu rồi?"
+  },
+  {
+    "sample_id": "SENT068_S06_R01_F",
+    "sentence_id": "SENT068",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "LƯỢT",
+      "SẮP",
+      "CHƯA"
+    ],
+    "ref_gloss_str": "TÔI LƯỢT SẮP CHƯA",
+    "pred_gloss_list": [
+      "TÔI",
+      "TÁO-BÓN",
+      "CHƯA"
+    ],
+    "pred_gloss_str": "TÔI TÁO-BÓN CHƯA",
+    "translation": "Sắp đến lượt tôi chưa ạ?"
+  },
+  {
+    "sample_id": "SENT069_S06_R01_F",
+    "sentence_id": "SENT069",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐO",
+      "CHIỀU-CAO",
+      "CẦN"
+    ],
+    "ref_gloss_str": "TÔI ĐO CHIỀU-CAO CẦN",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐO",
+      "CHIỀU-CAO",
+      "CẦN"
+    ],
+    "pred_gloss_str": "TÔI ĐO CHIỀU-CAO CẦN",
+    "translation": "Tôi cần đo chiều cao."
+  },
+  {
+    "sample_id": "SENT070_S06_R01_F",
+    "sentence_id": "SENT070",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐO",
+      "CÂN-NẶNG",
+      "CẦN"
+    ],
+    "ref_gloss_str": "TÔI ĐO CÂN-NẶNG CẦN",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐO",
+      "CÂN-NẶNG",
+      "CẦN"
+    ],
+    "pred_gloss_str": "TÔI ĐO CÂN-NẶNG CẦN",
+    "translation": "Tôi cần đo chiều cao."
+  },
+  {
+    "sample_id": "SENT071_S06_R01_F",
+    "sentence_id": "SENT071",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CAO",
+      "1",
+      "MÉT",
+      "60"
+    ],
+    "ref_gloss_str": "TÔI CAO 1 MÉT 60",
+    "pred_gloss_list": [
+      "TÔI",
+      "CAO",
+      "MÉT",
+      "60"
+    ],
+    "pred_gloss_str": "TÔI CAO MÉT 60",
+    "translation": "Tôi cao 1 mét 60."
+  },
+  {
+    "sample_id": "SENT072_S06_R01_F",
+    "sentence_id": "SENT072",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NẶNG",
+      "55"
+    ],
+    "ref_gloss_str": "TÔI NẶNG 55",
+    "pred_gloss_list": [
+      "TÔI",
+      "TUỔI",
+      "KHÁM",
+      "LẠI"
+    ],
+    "pred_gloss_str": "TÔI TUỔI KHÁM LẠI",
+    "translation": "Tôi nặng 55 cân."
+  },
+  {
+    "sample_id": "SENT073_S06_R01_F",
+    "sentence_id": "SENT073",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "ĐO",
+      "CẦN"
+    ],
+    "ref_gloss_str": "TÔI HUYẾT-ÁP ĐO CẦN",
+    "pred_gloss_list": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "ĐO",
+      "CẦN"
+    ],
+    "pred_gloss_str": "TÔI HUYẾT-ÁP ĐO CẦN",
+    "translation": "Tôi cần đo huyết áp."
+  },
+  {
+    "sample_id": "SENT074_S06_R01_F",
+    "sentence_id": "SENT074",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "120"
+    ],
+    "ref_gloss_str": "TÔI HUYẾT-ÁP 120",
+    "pred_gloss_list": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "120"
+    ],
+    "pred_gloss_str": "TÔI HUYẾT-ÁP 120",
+    "translation": "Huyết áp của tôi là 120."
+  },
+  {
+    "sample_id": "SENT075_S06_R01_F",
+    "sentence_id": "SENT075",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "MẠCH",
+      "ĐO",
+      "CẦN"
+    ],
+    "ref_gloss_str": "TÔI MẠCH ĐO CẦN",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐO",
+      "ĐO",
+      "LOÃNG-XƯƠNG"
+    ],
+    "pred_gloss_str": "TÔI ĐO ĐO LOÃNG-XƯƠNG",
+    "translation": "Tôi cần đo mạch."
+  },
+  {
+    "sample_id": "SENT076_S06_R01_F",
+    "sentence_id": "SENT076",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "MẠCH",
+      "70"
+    ],
+    "ref_gloss_str": "TÔI MẠCH 70",
+    "pred_gloss_list": [
+      "TÔI",
+      "MẮT-TRÁI",
+      "CHE"
+    ],
+    "pred_gloss_str": "TÔI MẮT-TRÁI CHE",
+    "translation": "Mạch của tôi là 70."
+  },
+  {
+    "sample_id": "SENT077_S06_R01_F",
+    "sentence_id": "SENT077",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "BMI",
+      "BAO-NHIÊU"
+    ],
+    "ref_gloss_str": "TÔI BMI BAO-NHIÊU",
+    "pred_gloss_list": [
+      "TÔI",
+      "VÉN-ÁO",
+      "ĐAU"
+    ],
+    "pred_gloss_str": "TÔI VÉN-ÁO ĐAU",
+    "translation": "Chỉ số BMI của tôi là bao nhiêu?"
+  },
+  {
+    "sample_id": "SENT078_S06_R01_F",
+    "sentence_id": "SENT078",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "BMI",
+      "22"
+    ],
+    "ref_gloss_str": "TÔI BMI 22",
+    "pred_gloss_list": [
+      "TÔI",
+      "120"
+    ],
+    "pred_gloss_str": "TÔI 120",
+    "translation": "Chỉ số BMI của tôi là 22."
+  },
+  {
+    "sample_id": "SENT079_S06_R01_F",
+    "sentence_id": "SENT079",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "THỊ-LỰC",
+      "ĐO",
+      "RỒI"
+    ],
+    "ref_gloss_str": "TÔI THỊ-LỰC ĐO RỒI",
+    "pred_gloss_list": [
+      "TÔI",
+      "THỊ-LỰC",
+      "NHIỀU",
+      "RỒI"
+    ],
+    "pred_gloss_str": "TÔI THỊ-LỰC NHIỀU RỒI",
+    "translation": "Tôi đo thị lực xong rồi."
+  },
+  {
+    "sample_id": "SENT080_S06_R01_F",
+    "sentence_id": "SENT080",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "ĐO",
+      "RỒI"
+    ],
+    "ref_gloss_str": "TÔI HUYẾT-ÁP ĐO RỒI",
+    "pred_gloss_list": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "ĐO",
+      "KHÔNG-CÓ"
+    ],
+    "pred_gloss_str": "TÔI HUYẾT-ÁP ĐO KHÔNG-CÓ",
+    "translation": "Tôi đo huyết áp xong rồi."
+  },
+  {
+    "sample_id": "SENT081_S06_R01_F",
+    "sentence_id": "SENT081",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ÁO-KHOÁC",
+      "CỞI",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI ÁO-KHOÁC CỞI CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "CỞI",
+      "LẦN-ĐẦU"
+    ],
+    "pred_gloss_str": "TÔI HUYẾT-ÁP CỞI LẦN-ĐẦU",
+    "translation": "Tôi có cần cởi áo khoác không?"
+  },
+  {
+    "sample_id": "SENT082_S06_R01_F",
+    "sentence_id": "SENT082",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐỨNG",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI ĐỨNG PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "KHÁM",
+      "SỖ-GÌ"
+    ],
+    "pred_gloss_str": "TÔI KHÁM SỖ-GÌ",
+    "translation": "Tôi đứng lên phải không?"
+  },
+  {
+    "sample_id": "SENT083_S06_R01_F",
+    "sentence_id": "SENT083",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "GIÀY",
+      "CỞI",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI GIÀY CỞI PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "KẾT-QUẢ",
+      "KIÊNG",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI KẾT-QUẢ KIÊNG CẦN-KHÔNG",
+    "translation": "Tôi có cần cởi giày ra không?"
+  },
+  {
+    "sample_id": "SENT084_S06_R01_F",
+    "sentence_id": "SENT084",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HÍT-THỞ",
+      "SÂU",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI HÍT-THỞ SÂU CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐO",
+      "SÂU",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI ĐO SÂU CẦN-KHÔNG",
+    "translation": "Tôi có cần hít thở sâu không?"
+  },
+  {
+    "sample_id": "SENT085_S06_R01_F",
+    "sentence_id": "SENT085",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NÍN-THỞ",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI NÍN-THỞ CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "NÍN-THỞ",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI NÍN-THỞ CẦN-KHÔNG",
+    "translation": "Tôi có cần nín thở không?"
+  },
+  {
+    "sample_id": "SENT086_S06_R01_F",
+    "sentence_id": "SENT086",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "CAO",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI HUYẾT-ÁP CAO CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "ĐO",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI HUYẾT-ÁP ĐO CÓ-KHÔNG",
+    "translation": "Huyết áp của tôi có cao không?"
+  },
+  {
+    "sample_id": "SENT087_S06_R01_F",
+    "sentence_id": "SENT087",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "THẤP",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI HUYẾT-ÁP THẤP CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "TIỀN-SỬ",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI HUYẾT-ÁP TIỀN-SỬ CÓ-KHÔNG",
+    "translation": "Huyết áp của tôi có thấp không?"
+  },
+  {
+    "sample_id": "SENT088_S06_R01_F",
+    "sentence_id": "SENT088",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "BÌNH-THƯỜNG",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI HUYẾT-ÁP BÌNH-THƯỜNG CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "120"
+    ],
+    "pred_gloss_str": "TÔI HUYẾT-ÁP 120",
+    "translation": "Huyết áp của tôi có bình thường không?"
+  },
+  {
+    "sample_id": "SENT089_S06_R01_F",
+    "sentence_id": "SENT089",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CẢM-THẤY",
+      "BÌNH-THƯỜNG"
+    ],
+    "ref_gloss_str": "TÔI CẢM-THẤY BÌNH-THƯỜNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "CẢM-THẤY",
+      "BÌNH-THƯỜNG"
+    ],
+    "pred_gloss_str": "TÔI CẢM-THẤY BÌNH-THƯỜNG",
+    "translation": "Tôi cảm thấy bình thường."
+  },
+  {
+    "sample_id": "SENT090_S06_R01_F",
+    "sentence_id": "SENT090",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CẢM-THẤY",
+      "HỒI-HỘP"
+    ],
+    "ref_gloss_str": "TÔI CẢM-THẤY HỒI-HỘP",
+    "pred_gloss_list": [
+      "TÔI",
+      "CẢM-THẤY",
+      "HỒI-HỘP"
+    ],
+    "pred_gloss_str": "TÔI CẢM-THẤY HỒI-HỘP",
+    "translation": "Tôi cảm thấy bình thường."
+  },
+  {
+    "sample_id": "SENT091_S06_R01_F",
+    "sentence_id": "SENT091",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "IX",
+      "BÁC-SĨ",
+      "TÔI",
+      "GIÚP",
+      "ĐO",
+      "LẠI",
+      "ĐƯỢC-KHÔNG"
+    ],
+    "ref_gloss_str": "IX BÁC-SĨ TÔI GIÚP ĐO LẠI ĐƯỢC-KHÔNG",
+    "pred_gloss_list": [
+      "IX",
+      "BÁC-SĨ",
+      "TÔI",
+      "LẠI",
+      "ĐƯỢC-KHÔNG"
+    ],
+    "pred_gloss_str": "IX BÁC-SĨ TÔI LẠI ĐƯỢC-KHÔNG",
+    "translation": "Bác sĩ đo lại giúp tôi được không?"
+  },
+  {
+    "sample_id": "SENT092_S06_R01_F",
+    "sentence_id": "SENT092",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "MẠCH",
+      "ĐẬP",
+      "NHANH",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI MẠCH ĐẬP NHANH CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "LÂU",
+      "CHỜ",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI LÂU CHỜ PHẢI-KHÔNG",
+    "translation": "Mạch của tôi có đập nhanh không?"
+  },
+  {
+    "sample_id": "SENT093_S06_R01_F",
+    "sentence_id": "SENT093",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "MẠCH",
+      "ĐẬP",
+      "CHẬM",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "MẠCH ĐẬP CHẬM CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "KHÁM",
+      "HÔM-NAY",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI KHÁM HÔM-NAY CÓ-KHÔNG",
+    "translation": "Mạch của tôi có đập chậm không?"
+  },
+  {
+    "sample_id": "SENT094_S06_R01_F",
+    "sentence_id": "SENT094",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "MẮT",
+      "ĐO",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI MẮT ĐO CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "RĂNG",
+      "NHỔ",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI RĂNG NHỔ CẦN-KHÔNG",
+    "translation": "Tôi có cần đo mắt không?"
+  },
+  {
+    "sample_id": "SENT095_S06_R01_F",
+    "sentence_id": "SENT095",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "BMI",
+      "TỐT",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI BMI TỐT CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "TỐT",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI TỐT CẦN-KHÔNG",
+    "translation": "Chỉ số BMI của tôi có tốt không?"
+  },
+  {
+    "sample_id": "SENT096_S06_R01_F",
+    "sentence_id": "SENT096",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "BÉO-PHÌ",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI BÉO-PHÌ CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐÂY",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI ĐÂY CẦN-KHÔNG",
+    "translation": "Tôi có bị béo phì không?"
+  },
+  {
+    "sample_id": "SENT097_S06_R01_F",
+    "sentence_id": "SENT097",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "SỨC-KHỎE",
+      "YẾU",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI SỨC-KHỎE YẾU CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "SỨC-KHỎE",
+      "YẾU",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI SỨC-KHỎE YẾU CÓ-KHÔNG",
+    "translation": "Tôi có bị suy dinh dưỡng không?"
+  },
+  {
+    "sample_id": "SENT098_S06_R01_F",
+    "sentence_id": "SENT098",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐO",
+      "HẾT",
+      "XONG",
+      "CHƯA"
+    ],
+    "ref_gloss_str": "TÔI ĐO HẾT XONG CHƯA",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐO",
+      "XONG",
+      "CHƯA"
+    ],
+    "pred_gloss_str": "TÔI ĐO XONG CHƯA",
+    "translation": "Tôi đo xong hết chưa ạ?"
+  },
+  {
+    "sample_id": "SENT099_S06_R01_F",
+    "sentence_id": "SENT099",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "TIẾP",
+      "ĐI",
+      "ĐÂU"
+    ],
+    "ref_gloss_str": "TÔI TIẾP ĐI ĐÂU",
+    "pred_gloss_list": [
+      "TÔI",
+      "LƯỢT",
+      "ĐI",
+      "ĐÂU"
+    ],
+    "pred_gloss_str": "TÔI LƯỢT ĐI ĐÂU",
+    "translation": "Tiếp theo tôi đi đâu ạ?"
+  },
+  {
+    "sample_id": "SENT100_S06_R01_F",
+    "sentence_id": "SENT100",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NAY",
+      "TĂNG-CÂN"
+    ],
+    "ref_gloss_str": "TÔI NAY TĂNG-CÂN",
+    "pred_gloss_list": [
+      "TÔI",
+      "TĂNG-CÂN"
+    ],
+    "pred_gloss_str": "TÔI TĂNG-CÂN",
+    "translation": "Dạo này tôi bị tăng cân."
+  },
+  {
+    "sample_id": "SENT101_S06_R01_F",
+    "sentence_id": "SENT101",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐẦU-ĐAU"
+    ],
+    "ref_gloss_str": "TÔI ĐẦU-ĐAU",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẦU-ĐAU"
+    ],
+    "pred_gloss_str": "TÔI ĐẦU-ĐAU",
+    "translation": "Tôi bị đau đầu."
+  },
+  {
+    "sample_id": "SENT102_S06_R01_F",
+    "sentence_id": "SENT102",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "BỤNG-ĐAU"
+    ],
+    "ref_gloss_str": "TÔI BỤNG-ĐAU",
+    "pred_gloss_list": [
+      "TÔI",
+      "BỤNG-ĐAU"
+    ],
+    "pred_gloss_str": "TÔI BỤNG-ĐAU",
+    "translation": "Tôi bị đau bụng."
+  },
+  {
+    "sample_id": "SENT103_S06_R01_F",
+    "sentence_id": "SENT103",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NGỰC-ĐAU"
+    ],
+    "ref_gloss_str": "TÔI NGỰC-ĐAU",
+    "pred_gloss_list": [
+      "TÔI",
+      "NGỰC-ĐAU"
+    ],
+    "pred_gloss_str": "TÔI NGỰC-ĐAU",
+    "translation": "Tôi bị đau ngực."
+  },
+  {
+    "sample_id": "SENT104_S06_R01_F",
+    "sentence_id": "SENT104",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "LƯNG",
+      "ĐAU"
+    ],
+    "ref_gloss_str": "TÔI LƯNG ĐAU",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐAU"
+    ],
+    "pred_gloss_str": "TÔI ĐAU",
+    "translation": "Tôi bị đau lưng."
+  },
+  {
+    "sample_id": "SENT105_S06_R01_F",
+    "sentence_id": "SENT105",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "SỐT"
+    ],
+    "ref_gloss_str": "TÔI SỐT",
+    "pred_gloss_list": [
+      "TÔI",
+      "HO",
+      "RA-NƯỚC"
+    ],
+    "pred_gloss_str": "TÔI HO RA-NƯỚC",
+    "translation": "Tôi bị sốt."
+  },
+  {
+    "sample_id": "SENT106_S06_R01_F",
+    "sentence_id": "SENT106",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "SỐT"
+    ],
+    "ref_gloss_str": "TÔI SỐT",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẦU-ĐAU"
+    ],
+    "pred_gloss_str": "TÔI ĐẦU-ĐAU",
+    "translation": "Tôi bị sốt."
+  },
+  {
+    "sample_id": "SENT107_S06_R01_F",
+    "sentence_id": "SENT107",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CẢM-THẤY",
+      "MỆT"
+    ],
+    "ref_gloss_str": "TÔI CẢM-THẤY MỆT",
+    "pred_gloss_list": [
+      "TÔI",
+      "CẢM-THẤY",
+      "MỆT"
+    ],
+    "pred_gloss_str": "TÔI CẢM-THẤY MỆT",
+    "translation": "Tôi cảm thấy mệt."
+  },
+  {
+    "sample_id": "SENT108_S06_R01_F",
+    "sentence_id": "SENT108",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NGỦ-KHÓ"
+    ],
+    "ref_gloss_str": "TÔI NGỦ-KHÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "BỔI",
+      "CHƯA"
+    ],
+    "pred_gloss_str": "TÔI BỔI CHƯA",
+    "translation": "Tôi bị khó ngủ."
+  },
+  {
+    "sample_id": "SENT109_S06_R01_F",
+    "sentence_id": "SENT109",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĂN",
+      "VỊ",
+      "KHÔNG-NHẬN"
+    ],
+    "ref_gloss_str": "TÔI ĂN VỊ KHÔNG-NHẬN",
+    "pred_gloss_list": [
+      "TÔI",
+      "CẠO-RĂNG",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI CẠO-RĂNG PHẢI-KHÔNG",
+    "translation": "Tôi ăn không cảm nhận được vị."
+  },
+  {
+    "sample_id": "SENT110_S06_R01_F",
+    "sentence_id": "SENT110",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CHÓNG-MẶT"
+    ],
+    "ref_gloss_str": "TÔI CHÓNG-MẶT",
+    "pred_gloss_list": [
+      "TÔI",
+      "NAM"
+    ],
+    "pred_gloss_str": "TÔI NAM",
+    "translation": "Tôi bị chóng mặt."
+  },
+  {
+    "sample_id": "SENT111_S06_R01_F",
+    "sentence_id": "SENT111",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CẢM-THẤY",
+      "NÔN"
+    ],
+    "ref_gloss_str": "TÔI CẢM-THẤY NÔN",
+    "pred_gloss_list": [
+      "TÔI",
+      "VIÊM-XOANG",
+      "GIÚP"
+    ],
+    "pred_gloss_str": "TÔI VIÊM-XOANG GIÚP",
+    "translation": "Tôi cảm thấy buồn nôn."
+  },
+  {
+    "sample_id": "SENT112_S06_R01_F",
+    "sentence_id": "SENT112",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "TÁO-BÓN"
+    ],
+    "ref_gloss_str": "TÔI TÁO-BÓN",
+    "pred_gloss_list": [
+      "TÔI",
+      "TÁO-BÓN"
+    ],
+    "pred_gloss_str": "TÔI TÁO-BÓN",
+    "translation": "Tôi bị táo bón."
+  },
+  {
+    "sample_id": "SENT113_S06_R01_F",
+    "sentence_id": "SENT113",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "TIÊU-CHẢY"
+    ],
+    "ref_gloss_str": "TÔI TIÊU-CHẢY",
+    "pred_gloss_list": [
+      "TÔI",
+      "TÁO-BÓN"
+    ],
+    "pred_gloss_str": "TÔI TÁO-BÓN",
+    "translation": "Tôi bị tiêu chảy."
+  },
+  {
+    "sample_id": "SENT114_S06_R01_F",
+    "sentence_id": "SENT114",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "GẦN-ĐÂY",
+      "TÔI",
+      "XUỐNG",
+      "CÂN"
+    ],
+    "ref_gloss_str": "GẦN-ĐÂY TÔI XUỐNG CÂN",
+    "pred_gloss_list": [
+      "NAY",
+      "TÔI",
+      "KHÓ-NGỦ"
+    ],
+    "pred_gloss_str": "NAY TÔI KHÓ-NGỦ",
+    "translation": "Gần đây tôi bị sụt cân."
+  },
+  {
+    "sample_id": "SENT115_S06_R01_F",
+    "sentence_id": "SENT115",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CẢM-THẤY",
+      "THỞ-KHÓ"
+    ],
+    "ref_gloss_str": "TÔI CẢM-THẤY THỞ-KHÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "CẢM-THẤY",
+      "THỞ-KHÓ"
+    ],
+    "pred_gloss_str": "TÔI CẢM-THẤY THỞ-KHÓ",
+    "translation": "Tôi cảm thấy khó thở."
+  },
+  {
+    "sample_id": "SENT116_S06_R01_F",
+    "sentence_id": "SENT116",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐI",
+      "TIỂU",
+      "ĐÊM"
+    ],
+    "ref_gloss_str": "TÔI ĐI TIỂU ĐÊM",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐI",
+      "TIỂU",
+      "ĐÊM"
+    ],
+    "pred_gloss_str": "TÔI ĐI TIỂU ĐÊM",
+    "translation": "Tôi hay đi tiểu đêm."
+  },
+  {
+    "sample_id": "SENT117_S06_R01_F",
+    "sentence_id": "SENT117",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "BỆNH",
+      "TIM",
+      "TIỀN-SỬ",
+      "CÓ"
+    ],
+    "ref_gloss_str": "TÔI BỆNH TIM TIỀN-SỬ CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "BỆNH",
+      "TIỀN-SỬ",
+      "CÓ"
+    ],
+    "pred_gloss_str": "TÔI BỆNH TIỀN-SỬ CÓ",
+    "translation": "Tôi có tiền sử bệnh tim."
+  },
+  {
+    "sample_id": "SENT118_S06_R01_F",
+    "sentence_id": "SENT118",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "CAO",
+      "BỆNH"
+    ],
+    "ref_gloss_str": "TÔI HUYẾT-ÁP CAO BỆNH",
+    "pred_gloss_list": [
+      "TÔI",
+      "HUYẾT-ÁP",
+      "CAO",
+      "BỆNH"
+    ],
+    "pred_gloss_str": "TÔI HUYẾT-ÁP CAO BỆNH",
+    "translation": "Tôi bị cao huyết áp."
+  },
+  {
+    "sample_id": "SENT119_S06_R01_F",
+    "sentence_id": "SENT119",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "TIỂU-ĐƯỜNG",
+      "BỆNH"
+    ],
+    "ref_gloss_str": "TÔI TIỂU-ĐƯỜNG BỆNH",
+    "pred_gloss_list": [
+      "TÔI",
+      "TIỂU-ĐƯỜNG",
+      "NẤM-DA"
+    ],
+    "pred_gloss_str": "TÔI TIỂU-ĐƯỜNG NẤM-DA",
+    "translation": "Tôi bị bệnh tiểu đường."
+  },
+  {
+    "sample_id": "SENT120_S06_R01_F",
+    "sentence_id": "SENT120",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HEN-SUYỄN",
+      "BỆNH"
+    ],
+    "ref_gloss_str": "TÔI HEN-SUYỄN BỆNH",
+    "pred_gloss_list": [
+      "TÔI",
+      "HEN-SUYỄN",
+      "BỆNH"
+    ],
+    "pred_gloss_str": "TÔI HEN-SUYỄN BỆNH",
+    "translation": "Tôi bị hen suyễn."
+  },
+  {
+    "sample_id": "SENT121_S06_R01_F",
+    "sentence_id": "SENT121",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "KHỚP-GỐI",
+      "CHÂN",
+      "ĐAU"
+    ],
+    "ref_gloss_str": "TÔI KHỚP-GỐI CHÂN ĐAU",
+    "pred_gloss_list": [
+      "TÔI",
+      "KHỚP-GỐI",
+      "CHÂN",
+      "MUỐN"
+    ],
+    "pred_gloss_str": "TÔI KHỚP-GỐI CHÂN MUỐN",
+    "translation": "Tôi bị đau khớp gối."
+  },
+  {
+    "sample_id": "SENT122_S06_R01_F",
+    "sentence_id": "SENT122",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "TÊ-TAY",
+      "BỆNH"
+    ],
+    "ref_gloss_str": "TÔI TÊ-TAY BỆNH",
+    "pred_gloss_list": [
+      "TÔI",
+      "Ù",
+      "BỆNH"
+    ],
+    "pred_gloss_str": "TÔI Ù BỆNH",
+    "translation": "Tôi bị tê tay."
+  },
+  {
+    "sample_id": "SENT123_S06_R01_F",
+    "sentence_id": "SENT123",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "PHẪU-THUẬT",
+      "TỪNG",
+      "RỒI"
+    ],
+    "ref_gloss_str": "TÔI PHẪU-THUẬT TỪNG RỒI",
+    "pred_gloss_list": [
+      "TÔI",
+      "MÁU",
+      "TỪNG",
+      "RỒI"
+    ],
+    "pred_gloss_str": "TÔI MÁU TỪNG RỒI",
+    "translation": "Tôi đã từng phẫu thuật."
+  },
+  {
+    "sample_id": "SENT124_S06_R01_F",
+    "sentence_id": "SENT124",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "THỪA-RUỘT",
+      "PHẪU-THUẬT",
+      "NĂM-NGOÁI"
+    ],
+    "ref_gloss_str": "TÔI THỪA-RUỘT PHẪU-THUẬT NĂM-NGOÁI",
+    "pred_gloss_list": [
+      "TÔI",
+      "THỪA-RUỘT",
+      "SAU",
+      "NĂM-NGOÁI"
+    ],
+    "pred_gloss_str": "TÔI THỪA-RUỘT SAU NĂM-NGOÁI",
+    "translation": "Tôi đã phẫu thuật ruột thừa vào năm ngoái."
+  },
+  {
+    "sample_id": "SENT125_S06_R01_F",
+    "sentence_id": "SENT125",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "THUỐC",
+      "UỐNG",
+      "MỖI-NGÀY"
+    ],
+    "ref_gloss_str": "TÔI THUỐC UỐNG MỖI-NGÀY",
+    "pred_gloss_list": [
+      "TÔI",
+      "THUỐC",
+      "UỐNG",
+      "MỖI-NGÀY"
+    ],
+    "pred_gloss_str": "TÔI THUỐC UỐNG MỖI-NGÀY",
+    "translation": "Tôi uống thuốc hàng ngày."
+  },
+  {
+    "sample_id": "SENT126_S06_R01_F",
+    "sentence_id": "SENT126",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HÚT-THUỐC",
+      "CÓ"
+    ],
+    "ref_gloss_str": "TÔI HÚT-THUỐC CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "HÚT-THUỐC",
+      "CÓ"
+    ],
+    "pred_gloss_str": "TÔI HÚT-THUỐC CÓ",
+    "translation": "Tôi có hút thuốc."
+  },
+  {
+    "sample_id": "SENT127_S06_R01_F",
+    "sentence_id": "SENT127",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "BIA-RƯỢU",
+      "UỐNG",
+      "CÓ"
+    ],
+    "ref_gloss_str": "TÔI BIA-RƯỢU UỐNG CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "UỐNG",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI UỐNG PHẢI-KHÔNG",
+    "translation": "Tôi có uống rượu bia."
+  },
+  {
+    "sample_id": "SENT128_S06_R01_F",
+    "sentence_id": "SENT128",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "THUỐC",
+      "DỊ-ỨNG",
+      "BỆNH"
+    ],
+    "ref_gloss_str": "TÔI THUỐC DỊ-ỨNG BỆNH",
+    "pred_gloss_list": [
+      "TÔI",
+      "THUỐC",
+      "DỊ-ỨNG",
+      "BỆNH"
+    ],
+    "pred_gloss_str": "TÔI THUỐC DỊ-ỨNG BỆNH",
+    "translation": "Tôi bị dị ứng thuốc."
+  },
+  {
+    "sample_id": "SENT129_S06_R01_F",
+    "sentence_id": "SENT129",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HẢI-SẢN",
+      "DỊ-ỨNG",
+      "BỆNH"
+    ],
+    "ref_gloss_str": "TÔI HẢI-SẢN DỊ-ỨNG BỆNH",
+    "pred_gloss_list": [
+      "TÔI",
+      "HẢI-SẢN",
+      "DỊ-ỨNG",
+      "BỆNH"
+    ],
+    "pred_gloss_str": "TÔI HẢI-SẢN DỊ-ỨNG BỆNH",
+    "translation": "Tôi bị dị ứng với hải sản."
+  },
+  {
+    "sample_id": "SENT130_S06_R01_F",
+    "sentence_id": "SENT130",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "TÉ",
+      "VỪA"
+    ],
+    "ref_gloss_str": "TÔI TÉ VỪA",
+    "pred_gloss_list": [
+      "TÔI",
+      "TÉ",
+      "VỪA"
+    ],
+    "pred_gloss_str": "TÔI TÉ VỪA",
+    "translation": "Tôi vừa bị té ngã."
+  },
+  {
+    "sample_id": "SENT131_S06_R01_F",
+    "sentence_id": "SENT131",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "VẾT-THƯƠNG",
+      "SƯNG"
+    ],
+    "ref_gloss_str": "TÔI VẾT-THƯƠNG SƯNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "VẾT-THƯƠNG",
+      "SƯNG"
+    ],
+    "pred_gloss_str": "TÔI VẾT-THƯƠNG SƯNG",
+    "translation": "Vết thương của tôi đang bị sưng."
+  },
+  {
+    "sample_id": "SENT132_S06_R01_F",
+    "sentence_id": "SENT132",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "DA",
+      "NỔI-MẪN"
+    ],
+    "ref_gloss_str": "TÔI DA NỔI-MẪN",
+    "pred_gloss_list": [
+      "TÔI",
+      "DA",
+      "NGỨA-NHIỀU"
+    ],
+    "pred_gloss_str": "TÔI DA NGỨA-NHIỀU",
+    "translation": "Da tôi bị nổi mẩn."
+  },
+  {
+    "sample_id": "SENT133_S06_R01_F",
+    "sentence_id": "SENT133",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "MỤN",
+      "NHIỀU",
+      "GẦN-ĐÂY"
+    ],
+    "ref_gloss_str": "TÔI MỤN NHIỀU GẦN-ĐÂY",
+    "pred_gloss_list": [
+      "TÔI",
+      "MỤN",
+      "NHIỀU",
+      "GẦN-ĐÂY"
+    ],
+    "pred_gloss_str": "TÔI MỤN NHIỀU GẦN-ĐÂY",
+    "translation": "Gần đây tôi bị nổi mụn nhiều."
+  },
+  {
+    "sample_id": "SENT134_S06_R01_F",
+    "sentence_id": "SENT134",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NGHĨ",
+      "NẤM-DA"
+    ],
+    "ref_gloss_str": "TÔI NGHĨ NẤM-DA",
+    "pred_gloss_list": [
+      "TÔI",
+      "NẤM-DA"
+    ],
+    "pred_gloss_str": "TÔI NẤM-DA",
+    "translation": "Tôi nghĩ tôi bị nấm da."
+  },
+  {
+    "sample_id": "SENT135_S06_R01_F",
+    "sentence_id": "SENT135",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "PHỤ-KHOA",
+      "NỮ"
+    ],
+    "ref_gloss_str": "TÔI ĐẾN KHÁM PHỤ-KHOA NỮ",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "PHỤ-KHOA",
+      "NỮ"
+    ],
+    "pred_gloss_str": "TÔI ĐẾN KHÁM PHỤ-KHOA NỮ",
+    "translation": "Tôi đến khám phụ khoa."
+  },
+  {
+    "sample_id": "SENT136_S06_R01_F",
+    "sentence_id": "SENT136",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NGHĨ",
+      "TÔI",
+      "THAI",
+      "CÓ"
+    ],
+    "ref_gloss_str": "TÔI NGHĨ TÔI THAI CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "NGHĨ",
+      "SÂU",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI NGHĨ SÂU CÓ-KHÔNG",
+    "translation": "Tôi nghĩ là tôi có thai."
+  },
+  {
+    "sample_id": "SENT137_S06_R01_F",
+    "sentence_id": "SENT137",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "KINH-NGUYỆT",
+      "ĐỀU"
+    ],
+    "ref_gloss_str": "TÔI KINH-NGUYỆT ĐỀU",
+    "pred_gloss_list": [
+      "TÔI",
+      "KINH-NGUYỆT",
+      "ĐỀU"
+    ],
+    "pred_gloss_str": "TÔI KINH-NGUYỆT ĐỀU",
+    "translation": "Kinh nguyệt của tôi đều."
+  },
+  {
+    "sample_id": "SENT138_S06_R01_F",
+    "sentence_id": "SENT138",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐAU-BỤNG",
+      "KHI",
+      "KINH-NGUYỆT",
+      "CÓ"
+    ],
+    "ref_gloss_str": "TÔI ĐAU-BỤNG KHI KINH-NGUYỆT CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐAU-BỤNG",
+      "KINH-NGUYỆT",
+      "CÓ"
+    ],
+    "pred_gloss_str": "TÔI ĐAU-BỤNG KINH-NGUYỆT CÓ",
+    "translation": "Tôi bị đau bụng khi tới kỳ kinh."
+  },
+  {
+    "sample_id": "SENT139_S06_R01_F",
+    "sentence_id": "SENT139",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "MẮT"
+    ],
+    "ref_gloss_str": "TÔI ĐẾN KHÁM MẮT",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "MẮT"
+    ],
+    "pred_gloss_str": "TÔI ĐẾN KHÁM MẮT",
+    "translation": "Tôi đến khám mắt."
+  },
+  {
+    "sample_id": "SENT140_S06_R01_F",
+    "sentence_id": "SENT140",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "MẮT",
+      "PHẢI",
+      "MỜ"
+    ],
+    "ref_gloss_str": "TÔI MẮT PHẢI MỜ",
+    "pred_gloss_list": [
+      "TÔI",
+      "MẮT",
+      "ĐO",
+      "MỜ"
+    ],
+    "pred_gloss_str": "TÔI MẮT ĐO MỜ",
+    "translation": "Mắt phải của tôi bị mờ."
+  },
+  {
+    "sample_id": "SENT141_S06_R01_F",
+    "sentence_id": "SENT141",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CẬN-THỊ"
+    ],
+    "ref_gloss_str": "TÔI CẬN-THỊ",
+    "pred_gloss_list": [
+      "TÔI",
+      "CẬN-THỊ"
+    ],
+    "pred_gloss_str": "TÔI CẬN-THỊ",
+    "translation": "Tôi bị cận thị."
+  },
+  {
+    "sample_id": "SENT142_S06_R01_F",
+    "sentence_id": "SENT142",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐEO-KÍNH",
+      "CÓ"
+    ],
+    "ref_gloss_str": "TÔI ĐEO-KÍNH CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐEO-KÍNH",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI ĐEO-KÍNH PHẢI-KHÔNG",
+    "translation": "Tôi có đeo kính."
+  },
+  {
+    "sample_id": "SENT143_S06_R01_F",
+    "sentence_id": "SENT143",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "TAI",
+      "MŨI",
+      "HỌNG"
+    ],
+    "ref_gloss_str": "TÔI ĐẾN KHÁM TAI MŨI HỌNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "MŨI",
+      "HỌNG"
+    ],
+    "pred_gloss_str": "TÔI ĐẾN KHÁM MŨI HỌNG",
+    "translation": "Tôi đến khám tai mũi họng."
+  },
+  {
+    "sample_id": "SENT144_S06_R01_F",
+    "sentence_id": "SENT144",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "TAI",
+      "Ù",
+      "BỆNH"
+    ],
+    "ref_gloss_str": "TÔI TAI Ù BỆNH",
+    "pred_gloss_list": [
+      "TÔI",
+      "TAI",
+      "Ù",
+      "BỆNH"
+    ],
+    "pred_gloss_str": "TÔI TAI Ù BỆNH",
+    "translation": "Tôi bị ù tai."
+  },
+  {
+    "sample_id": "SENT145_S06_R01_F",
+    "sentence_id": "SENT145",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "VIÊM-XOANG",
+      "BỆNH"
+    ],
+    "ref_gloss_str": "TÔI VIÊM-XOANG BỆNH",
+    "pred_gloss_list": [
+      "TÔI",
+      "VIÊM-XOANG",
+      "BỆNH"
+    ],
+    "pred_gloss_str": "TÔI VIÊM-XOANG BỆNH",
+    "translation": "Tôi bị viêm xoang."
+  },
+  {
+    "sample_id": "SENT146_S06_R01_F",
+    "sentence_id": "SENT146",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "RĂNG"
+    ],
+    "ref_gloss_str": "TÔI ĐẾN KHÁM RĂNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "KHÁM",
+      "RĂNG"
+    ],
+    "pred_gloss_str": "TÔI ĐẾN KHÁM RĂNG",
+    "translation": "Tôi đến khám răng."
+  },
+  {
+    "sample_id": "SENT147_S06_R01_F",
+    "sentence_id": "SENT147",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "RĂNG",
+      "ĐAU"
+    ],
+    "ref_gloss_str": "TÔI RĂNG ĐAU",
+    "pred_gloss_list": [
+      "TÔI",
+      "MẮT",
+      "MỜ"
+    ],
+    "pred_gloss_str": "TÔI MẮT MỜ",
+    "translation": "Tôi bị đau răng."
+  },
+  {
+    "sample_id": "SENT148_S06_R01_F",
+    "sentence_id": "SENT148",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "RĂNG",
+      "SÂU"
+    ],
+    "ref_gloss_str": "TÔI RĂNG SÂU",
+    "pred_gloss_list": [
+      "TÔI",
+      "NHỎ",
+      "KHÔNG-THẤY"
+    ],
+    "pred_gloss_str": "TÔI NHỎ KHÔNG-THẤY",
+    "translation": "Tôi bị sâu răng."
+  },
+  {
+    "sample_id": "SENT149_S06_R01_F",
+    "sentence_id": "SENT149",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CHÂN-RĂNG",
+      "CHẢY-MÁU"
+    ],
+    "ref_gloss_str": "TÔI CHÂN-RĂNG CHẢY-MÁU",
+    "pred_gloss_list": [
+      "TÔI",
+      "CHÂN-RĂNG",
+      "CHẢY-MÁU"
+    ],
+    "pred_gloss_str": "TÔI CHÂN-RĂNG CHẢY-MÁU",
+    "translation": "Tôi bị chảy máu chân răng."
+  },
+  {
+    "sample_id": "SENT150_S06_R01_F",
+    "sentence_id": "SENT150",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "CẠO-RĂNG",
+      "MUỐN"
+    ],
+    "ref_gloss_str": "CẠO-RĂNG MUỐN",
+    "pred_gloss_list": [
+      "TÔI",
+      "CẠO-RĂNG",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI CẠO-RĂNG PHẢI-KHÔNG",
+    "translation": "Tôi muốn lấy cao răng."
+  },
+  {
+    "sample_id": "SENT151_S06_R01_F",
+    "sentence_id": "SENT151",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI",
+      "TÔI",
+      "ĐAU",
+      "ĐÂU"
+    ],
+    "ref_gloss_str": "BÁC-SĨ HỎI TÔI ĐAU ĐÂU",
+    "pred_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI",
+      "TÔI",
+      "ĐAU",
+      "ĐÂU"
+    ],
+    "pred_gloss_str": "BÁC-SĨ HỎI TÔI ĐAU ĐÂU",
+    "translation": "Bác sĩ hỏi tôi đau ở đâu hả?"
+  },
+  {
+    "sample_id": "SENT152_S06_R01_F",
+    "sentence_id": "SENT152",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NGAY ĐÂY",
+      "ĐAU"
+    ],
+    "ref_gloss_str": "TÔI NGAY ĐÂY ĐAU",
+    "pred_gloss_list": [
+      "TÔI",
+      "LƯNG",
+      "ÂM-Ỉ"
+    ],
+    "pred_gloss_str": "TÔI LƯNG ÂM-Ỉ",
+    "translation": "Tôi đau ở ngay đây."
+  },
+  {
+    "sample_id": "SENT153_S06_R01_F",
+    "sentence_id": "SENT153",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐAU",
+      "LẮM"
+    ],
+    "ref_gloss_str": "TÔI ĐAU LẮM",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐAU",
+      "LẮM"
+    ],
+    "pred_gloss_str": "TÔI ĐAU LẮM",
+    "translation": "Tôi đau lắm!"
+  },
+  {
+    "sample_id": "SENT154_S06_R01_F",
+    "sentence_id": "SENT154",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐAU",
+      "HƠI HƠI"
+    ],
+    "ref_gloss_str": "TÔI ĐAU HƠI HƠI",
+    "pred_gloss_list": [
+      "TÔI",
+      "VỊ",
+      "KHÔNG-NHẬN"
+    ],
+    "pred_gloss_str": "TÔI VỊ KHÔNG-NHẬN",
+    "translation": "Chỉ đau hơi hơi thôi."
+  },
+  {
+    "sample_id": "SENT155_S06_R01_F",
+    "sentence_id": "SENT155",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐAU",
+      "ÂM-Ỉ"
+    ],
+    "ref_gloss_str": "TÔI ĐAU ÂM-Ỉ",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐAU",
+      "ÂM-Ỉ"
+    ],
+    "pred_gloss_str": "TÔI ĐAU ÂM-Ỉ",
+    "translation": "Nó đau âm ỉ."
+  },
+  {
+    "sample_id": "SENT156_S06_R01_F",
+    "sentence_id": "SENT156",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NHÓI",
+      "ĐAU"
+    ],
+    "ref_gloss_str": "TÔI NHÓI ĐAU",
+    "pred_gloss_list": [
+      "TÔI",
+      "CON",
+      "ĐAU"
+    ],
+    "pred_gloss_str": "TÔI CON ĐAU",
+    "translation": "Nó đau nhói."
+  },
+  {
+    "sample_id": "SENT157_S06_R01_F",
+    "sentence_id": "SENT157",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "QUẶN-THẮT",
+      "ĐAU"
+    ],
+    "ref_gloss_str": "TÔI QUẶN-THẮT ĐAU",
+    "pred_gloss_list": [
+      "TÔI",
+      "QUẶN-THẮT",
+      "ĐAU"
+    ],
+    "pred_gloss_str": "TÔI QUẶN-THẮT ĐAU",
+    "translation": "Nó đau quặn thắt."
+  },
+  {
+    "sample_id": "SENT158_S06_R01_F",
+    "sentence_id": "SENT158",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "NAY",
+      "TÔI",
+      "KHÓ-NGỦ"
+    ],
+    "ref_gloss_str": "NAY TÔI KHÓ-NGỦ",
+    "pred_gloss_list": [
+      "NAY",
+      "TÔI",
+      "ĂN",
+      "CHƯA"
+    ],
+    "pred_gloss_str": "NAY TÔI ĂN CHƯA",
+    "translation": "Tôi dạo này mất ngủ."
+  },
+  {
+    "sample_id": "SENT159_S06_R01_F",
+    "sentence_id": "SENT159",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI",
+      "TÔI",
+      "ĐAU",
+      "KHI",
+      "NÀO"
+    ],
+    "ref_gloss_str": "BÁC-SĨ HỎI TÔI ĐAU KHI NÀO",
+    "pred_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI",
+      "TÔI",
+      "ĐAU",
+      "ĐÂU"
+    ],
+    "pred_gloss_str": "BÁC-SĨ HỎI TÔI ĐAU ĐÂU",
+    "translation": "Bác sĩ hỏi tôi đau khi nào hả?"
+  },
+  {
+    "sample_id": "SENT160_S06_R01_F",
+    "sentence_id": "SENT160",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐAU",
+      "3-NGÀY",
+      "RỒI"
+    ],
+    "ref_gloss_str": "TÔI ĐAU 3-NGÀY RỒI",
+    "pred_gloss_list": [
+      "TÔI",
+      "THUỐC",
+      "3-NGÀY",
+      "RỒI"
+    ],
+    "pred_gloss_str": "TÔI THUỐC 3-NGÀY RỒI",
+    "translation": "Tôi đau ba ngày rồi."
+  },
+  {
+    "sample_id": "SENT161_S06_R01_F",
+    "sentence_id": "SENT161",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐAU",
+      "MỚI",
+      "HÔM-QUA"
+    ],
+    "ref_gloss_str": "TÔI ĐAU MỚI HÔM-QUA",
+    "pred_gloss_list": [
+      "TÔI",
+      "MỚI",
+      "HÔM-QUA"
+    ],
+    "pred_gloss_str": "TÔI MỚI HÔM-QUA",
+    "translation": "Tôi mới bị đau từ hôm qua."
+  },
+  {
+    "sample_id": "SENT162_S06_R01_F",
+    "sentence_id": "SENT162",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĂN",
+      "XONG",
+      "MỚI",
+      "ĐAU"
+    ],
+    "ref_gloss_str": "TÔI ĂN XONG MỚI ĐAU",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĂN",
+      "MỚI",
+      "ĐAU"
+    ],
+    "pred_gloss_str": "TÔI ĂN MỚI ĐAU",
+    "translation": "Cứ ăn xong là tôi bị đau."
+  },
+  {
+    "sample_id": "SENT163_S06_R01_F",
+    "sentence_id": "SENT163",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "LÚC",
+      "ĐÓI",
+      "ĐAU-BỤNG"
+    ],
+    "ref_gloss_str": "TÔI LÚC ĐÓI ĐAU-BỤNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "LÚC",
+      "ĐAU"
+    ],
+    "pred_gloss_str": "TÔI LÚC ĐAU",
+    "translation": "Lúc đói tôi cũng đau bụng"
+  },
+  {
+    "sample_id": "SENT164_S06_R01_F",
+    "sentence_id": "SENT164",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĂN",
+      "MUỐN",
+      "KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI ĂN MUỐN KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "MUỐN",
+      "KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI MUỐN KHÔNG",
+    "translation": "Tôi không muốn ăn."
+  },
+  {
+    "sample_id": "SENT165_S06_R01_F",
+    "sentence_id": "SENT165",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "BÁC-SĨ",
+      "HỎI",
+      "THUỐC-UỐNG",
+      "GÌ",
+      "ĐANG"
+    ],
+    "ref_gloss_str": "TÔI BÁC-SĨ HỎI THUỐC-UỐNG GÌ ĐANG",
+    "pred_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "GÌ",
+      "ĐANG"
+    ],
+    "pred_gloss_str": "BÁC-SĨ HỎI-TÔI GÌ ĐANG",
+    "translation": "Bác sĩ hỏi tôi đang uống thuốc gì hả?"
+  },
+  {
+    "sample_id": "SENT166_S06_R01_F",
+    "sentence_id": "SENT166",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "THUỐC",
+      "DỊ-ỨNG",
+      "KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI THUỐC DỊ-ỨNG KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐAU",
+      "HƠI HƠI"
+    ],
+    "pred_gloss_str": "TÔI ĐAU HƠI HƠI",
+    "translation": "Tôi có bị dị ứng thuốc không?"
+  },
+  {
+    "sample_id": "SENT167_S06_R01_F",
+    "sentence_id": "SENT167",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "DỊ-ỨNG",
+      "KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI DỊ-ỨNG KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "HÚT-THUỐC",
+      "KHÔNG-CÓ"
+    ],
+    "pred_gloss_str": "TÔI HÚT-THUỐC KHÔNG-CÓ",
+    "translation": "Tôi không bị dị ứng."
+  },
+  {
+    "sample_id": "SENT168_S06_R01_F",
+    "sentence_id": "SENT168",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "MŨI-SỔ",
+      "CÓ"
+    ],
+    "ref_gloss_str": "TÔI MŨI-SỔ CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "CẠO-RĂNG",
+      "CÓ"
+    ],
+    "pred_gloss_str": "TÔI CẠO-RĂNG CÓ",
+    "translation": "Tôi bị sổ mũi."
+  },
+  {
+    "sample_id": "SENT169_S06_R01_F",
+    "sentence_id": "SENT169",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "MŨI-NGHẸT",
+      "CÓ"
+    ],
+    "ref_gloss_str": "TÔI MŨI-NGHẸT CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "CẠO-RĂNG",
+      "MUỐN"
+    ],
+    "pred_gloss_str": "TÔI CẠO-RĂNG MUỐN",
+    "translation": "Tôi bị nghẹt mũi."
+  },
+  {
+    "sample_id": "SENT170_S06_R01_F",
+    "sentence_id": "SENT170",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "KHAN-HO"
+    ],
+    "ref_gloss_str": "TÔI KHAN-HO",
+    "pred_gloss_list": [
+      "TÔI",
+      "BỤNG-ĐAU"
+    ],
+    "pred_gloss_str": "TÔI BỤNG-ĐAU",
+    "translation": "Tôi bị ho khan."
+  },
+  {
+    "sample_id": "SENT171_S06_R01_F",
+    "sentence_id": "SENT171",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HO",
+      "RA-NƯỚC"
+    ],
+    "ref_gloss_str": "TÔI HO RA-NƯỚC",
+    "pred_gloss_list": [
+      "TÔI",
+      "HO",
+      "RA-NƯỚC"
+    ],
+    "pred_gloss_str": "TÔI HO RA-NƯỚC",
+    "translation": "Tôi ho có đờm."
+  },
+  {
+    "sample_id": "SENT172_S06_R01_F",
+    "sentence_id": "SENT172",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CẢM-THẤY",
+      "THỞ-KHÓ"
+    ],
+    "ref_gloss_str": "TÔI CẢM-THẤY THỞ-KHÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "CẢM-THẤY",
+      "THỞ-KHÓ"
+    ],
+    "pred_gloss_str": "TÔI CẢM-THẤY THỞ-KHÓ",
+    "translation": "Tôi thấy khó thở lắm."
+  },
+  {
+    "sample_id": "SENT173_S06_R01_F",
+    "sentence_id": "SENT173",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HÚT-THUỐC",
+      "KHÔNG-CÓ"
+    ],
+    "ref_gloss_str": "TÔI HÚT-THUỐC KHÔNG-CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "HÚT-THUỐC",
+      "KHÔNG-CÓ"
+    ],
+    "pred_gloss_str": "TÔI HÚT-THUỐC KHÔNG-CÓ",
+    "translation": "Tôi không hút thuốc lá."
+  },
+  {
+    "sample_id": "SENT174_S06_R01_F",
+    "sentence_id": "SENT174",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "RƯỢU-BIA",
+      "UỐNG",
+      "ÍT"
+    ],
+    "ref_gloss_str": "TÔI RƯỢU-BIA UỐNG ÍT",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐO",
+      "UỐNG",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI ĐO UỐNG PHẢI-KHÔNG",
+    "translation": "Tôi uống ít rượu bia."
+  },
+  {
+    "sample_id": "SENT175_S06_R01_F",
+    "sentence_id": "SENT175",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI",
+      "GIA-ĐÌNH",
+      "TÔI",
+      "BỆNH-GÌ",
+      "KHÔNG"
+    ],
+    "ref_gloss_str": "BÁC-SĨ HỎI GIA-ĐÌNH TÔI BỆNH-GÌ KHÔNG",
+    "pred_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI",
+      "GIA-ĐÌNH",
+      "BỆNH-GÌ",
+      "KHÔNG"
+    ],
+    "pred_gloss_str": "BÁC-SĨ HỎI GIA-ĐÌNH BỆNH-GÌ KHÔNG",
+    "translation": "Bác sĩ hỏi gia đình tôi có ai bị bệnh này không hả?"
+  },
+  {
+    "sample_id": "SENT176_S06_R01_F",
+    "sentence_id": "SENT176",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "GIA-ĐÌNH",
+      "BỆNH-GÌ",
+      "KHÔNG-CÓ"
+    ],
+    "ref_gloss_str": "TÔI GIA-ĐÌNH BỆNH-GÌ KHÔNG-CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐÓNG-TIỀN",
+      "BỆNH-GÌ",
+      "KHÔNG-CÓ"
+    ],
+    "pred_gloss_str": "TÔI ĐÓNG-TIỀN BỆNH-GÌ KHÔNG-CÓ",
+    "translation": "Gia đình tôi không ai bị bệnh này."
+  },
+  {
+    "sample_id": "SENT177_S06_R01_F",
+    "sentence_id": "SENT177",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "THUỐC",
+      "UỐNG",
+      "RỒI",
+      "BỚT",
+      "KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI THUỐC UỐNG RỒI BỚT KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "THUỐC",
+      "BỚT",
+      "KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI THUỐC BỚT KHÔNG",
+    "translation": "Tôi uống thuốc rồi mà không đỡ."
+  },
+  {
+    "sample_id": "SENT178_S06_R01_F",
+    "sentence_id": "SENT178",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NẰM",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI NẰM CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "NẰM",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI NẰM CẦN-KHÔNG",
+    "translation": "Tôi có cần nằm xuống không?"
+  },
+  {
+    "sample_id": "SENT179_S06_R01_F",
+    "sentence_id": "SENT179",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "VÉN-ÁO",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI VÉN-ÁO PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "VÉN-ÁO",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI VÉN-ÁO PHẢI-KHÔNG",
+    "translation": "Tôi vén áo lên phải không?"
+  },
+  {
+    "sample_id": "SENT180_S06_R01_F",
+    "sentence_id": "SENT180",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "BÁC-SĨ",
+      "XEM",
+      "TÔI",
+      "ẤN",
+      "ĐAU",
+      "KHÔNG"
+    ],
+    "ref_gloss_str": "BÁC-SĨ XEM TÔI ẤN ĐAU KHÔNG",
+    "pred_gloss_list": [
+      "BÁC-SĨ",
+      "XEM",
+      "TÔI",
+      "ĐAU",
+      "KHÔNG"
+    ],
+    "pred_gloss_str": "BÁC-SĨ XEM TÔI ĐAU KHÔNG",
+    "translation": "Bác sĩ ấn vào xem tôi có đau không."
+  },
+  {
+    "sample_id": "SENT181_S06_R01_F",
+    "sentence_id": "SENT181",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ẤN",
+      "ĐAU",
+      "LẮM"
+    ],
+    "ref_gloss_str": "TÔI ẤN ĐAU LẮM",
+    "pred_gloss_list": [
+      "TÔI",
+      "ẤN",
+      "ĐAU",
+      "LẮM"
+    ],
+    "pred_gloss_str": "TÔI ẤN ĐAU LẮM",
+    "translation": "Ấn vào đây tôi đau lắm!"
+  },
+  {
+    "sample_id": "SENT182_S06_R01_F",
+    "sentence_id": "SENT182",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CHỖ-KHÁC",
+      "ĐAU",
+      "KHÔNG-CÓ"
+    ],
+    "ref_gloss_str": "TÔI CHỖ-KHÁC ĐAU KHÔNG-CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "CHỖ-KHÁC",
+      "ĐAU",
+      "KHÔNG-CÓ"
+    ],
+    "pred_gloss_str": "TÔI CHỖ-KHÁC ĐAU KHÔNG-CÓ",
+    "translation": "Chỗ khác thì không đau."
+  },
+  {
+    "sample_id": "SENT183_S06_R01_F",
+    "sentence_id": "SENT183",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HAY-QUÊN",
+      "NHIỀU"
+    ],
+    "ref_gloss_str": "TÔI HAY-QUÊN NHIỀU",
+    "pred_gloss_list": [
+      "TÔI",
+      "HAY-QUÊN",
+      "NHIỀU"
+    ],
+    "pred_gloss_str": "TÔI HAY-QUÊN NHIỀU",
+    "translation": "Tôi dạo này hay quên."
+  },
+  {
+    "sample_id": "SENT184_S06_R01_F",
+    "sentence_id": "SENT184",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CẢM-THẤY",
+      "LO-LẮNG",
+      "NHIỀU"
+    ],
+    "ref_gloss_str": "TÔI CẢM-THẤY LO-LẮNG NHIỀU",
+    "pred_gloss_list": [
+      "TÔI",
+      "CẬN-THỊ"
+    ],
+    "pred_gloss_str": "TÔI CẬN-THỊ",
+    "translation": "Tôi hay cảm thấy lo lắng."
+  },
+  {
+    "sample_id": "SENT185_S06_R01_F",
+    "sentence_id": "SENT185",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CẢM-THẤY",
+      "BUỒN",
+      "NHIỀU"
+    ],
+    "ref_gloss_str": "TÔI CẢM-THẤY BUỒN NHIỀU",
+    "pred_gloss_list": [
+      "TÔI",
+      "CẢM-THẤY",
+      "BUỒN",
+      "NHIỀU"
+    ],
+    "pred_gloss_str": "TÔI CẢM-THẤY BUỒN NHIỀU",
+    "translation": "Tôi hay cảm thấy buồn."
+  },
+  {
+    "sample_id": "SENT186_S06_R01_F",
+    "sentence_id": "SENT186",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "LIỆU",
+      "TRẦM-CẢM",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI LIỆU TRẦM-CẢM CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "LIỆU",
+      "TRẦM-CẢM",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI LIỆU TRẦM-CẢM PHẢI-KHÔNG",
+    "translation": "Liệu tôi có bị trầm cảm không?"
+  },
+  {
+    "sample_id": "SENT187_S06_R01_F",
+    "sentence_id": "SENT187",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "ĐAU",
+      "BAO-LÂU"
+    ],
+    "ref_gloss_str": "BÁC-SĨ HỎI-TÔI ĐAU BAO-LÂU",
+    "pred_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "CON",
+      "CÓ-CHƯA"
+    ],
+    "pred_gloss_str": "BÁC-SĨ HỎI-TÔI CON CÓ-CHƯA",
+    "translation": "Bác sĩ hỏi tôi bị đau bao lâu rồi hả?"
+  },
+  {
+    "sample_id": "SENT188_S06_R01_F",
+    "sentence_id": "SENT188",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "ĐAU",
+      "THƯỜNG-XUYÊN",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "BÁC-SĨ HỎI-TÔI ĐAU THƯỜNG-XUYÊN CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "THƯỜNG-XUYÊN",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "BÁC-SĨ HỎI-TÔI THƯỜNG-XUYÊN CÓ-KHÔNG",
+    "translation": "Bác sĩ hỏi tôi có đau thường xuyên không hả?"
+  },
+  {
+    "sample_id": "SENT189_S06_R01_F",
+    "sentence_id": "SENT189",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐAU",
+      "MỚI",
+      "CÓ",
+      "THỈNH-THOẢNG"
+    ],
+    "ref_gloss_str": "TÔI ĐAU MỚI CÓ THỈNH-THOẢNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "THUỐC",
+      "RÕ",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI THUỐC RÕ PHẢI-KHÔNG",
+    "translation": "Chỉ thỉnh thoảng mới đau thôi."
+  },
+  {
+    "sample_id": "SENT190_S06_R01_F",
+    "sentence_id": "SENT190",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "TIỂU",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "BÁC-SĨ HỎI-TÔI TIỂU ĐAU CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "TIỂU",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "BÁC-SĨ HỎI-TÔI TIỂU ĐAU CÓ-KHÔNG",
+    "translation": "Bác sĩ hỏi tôi có bị tiểu buốt không hả?"
+  },
+  {
+    "sample_id": "SENT191_S06_R01_F",
+    "sentence_id": "SENT191",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "VẾT-THƯƠNG",
+      "SÂU",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI VẾT-THƯƠNG SÂU CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "VẾT-THƯƠNG",
+      "SÂU",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI VẾT-THƯƠNG SÂU PHẢI-KHÔNG",
+    "translation": "Vết thương của tôi có sâu không?"
+  },
+  {
+    "sample_id": "SENT192_S06_R01_F",
+    "sentence_id": "SENT192",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "NGÃ",
+      "KHI",
+      "NÀO"
+    ],
+    "ref_gloss_str": "BÁC-SĨ HỎI-TÔI NGÃ KHI NÀO",
+    "pred_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "ĐAU",
+      "ĐÂU"
+    ],
+    "pred_gloss_str": "BÁC-SĨ HỎI-TÔI ĐAU ĐÂU",
+    "translation": "Bác sĩ hỏi tôi bị ngã khi nào hả?"
+  },
+  {
+    "sample_id": "SENT193_S06_R01_F",
+    "sentence_id": "SENT193",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "DA",
+      "NGỨA-NHIỀU"
+    ],
+    "ref_gloss_str": "TÔI DA NGỨA-NHIỀU",
+    "pred_gloss_list": [
+      "TÔI",
+      "DA",
+      "NGỨA-NHIỀU"
+    ],
+    "pred_gloss_str": "TÔI DA NGỨA-NHIỀU",
+    "translation": "Da tôi bị ngứa lắm."
+  },
+  {
+    "sample_id": "SENT194_S06_R01_F",
+    "sentence_id": "SENT194",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "MỀ-ĐAY",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI MỀ-ĐAY CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "MỀ-ĐAY",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI MỀ-ĐAY CÓ-KHÔNG",
+    "translation": "Tôi có bị nổi mề đay không?"
+  },
+  {
+    "sample_id": "SENT195_S06_R01_F",
+    "sentence_id": "SENT195",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "GÃI",
+      "SUỐT"
+    ],
+    "ref_gloss_str": "TÔI GÃI SUỐT",
+    "pred_gloss_list": [
+      "TÔI",
+      "GÃI",
+      "SUỐT"
+    ],
+    "pred_gloss_str": "TÔI GÃI SUỐT",
+    "translation": "Tôi gãi suốt."
+  },
+  {
+    "sample_id": "SENT196_S06_R01_F",
+    "sentence_id": "SENT196",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "THUỐC",
+      "BỔI",
+      "CHƯA"
+    ],
+    "ref_gloss_str": "TÔI THUỐC BỔI CHƯA",
+    "pred_gloss_list": [
+      "TÔI",
+      "THUỐC",
+      "BỔI",
+      "CHƯA"
+    ],
+    "pred_gloss_str": "TÔI THUỐC BỔI CHƯA",
+    "translation": "Tôi chưa bôi thuốc gì cả."
+  },
+  {
+    "sample_id": "SENT197_S06_R01_F",
+    "sentence_id": "SENT197",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CỞI-ÁO",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI CỞI-ÁO CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "NGHỈ",
+      "CỞI-ÁO",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI NGHỈ CỞI-ÁO CẦN-KHÔNG",
+    "translation": "Tôi có cần cởi áo ra không?"
+  },
+  {
+    "sample_id": "SENT198_S06_R01_F",
+    "sentence_id": "SENT198",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NƯỚC-SÔI",
+      "PHỎNG"
+    ],
+    "ref_gloss_str": "TÔI NƯỚC-SÔI PHỎNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "NƯỚC-SÔI",
+      "PHỎNG"
+    ],
+    "pred_gloss_str": "TÔI NƯỚC-SÔI PHỎNG",
+    "translation": "Tôi bị phỏng nước sôi."
+  },
+  {
+    "sample_id": "SENT199_S06_R01_F",
+    "sentence_id": "SENT199",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "CÓ-PHẢI",
+      "THAI",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "CÓ-PHẢI THAI CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "TÔI",
+      "SỢ-LẮM"
+    ],
+    "pred_gloss_str": "TÔI TÔI SỢ-LẮM",
+    "translation": "Có phải tôi mang thai không?"
+  },
+  {
+    "sample_id": "SENT200_S06_R01_F",
+    "sentence_id": "SENT200",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "THAI",
+      "KHÔNG-CÓ"
+    ],
+    "ref_gloss_str": "TÔI THAI KHÔNG-CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "THAI",
+      "KHÔNG-CÓ"
+    ],
+    "pred_gloss_str": "TÔI THAI KHÔNG-CÓ",
+    "translation": "Tôi không mang thai."
+  },
+  {
+    "sample_id": "SENT201_S06_R01_F",
+    "sentence_id": "SENT201",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "KINH-NGUYỆT",
+      "ĐỀU",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "BÁC-SĨ HỎI-TÔI KINH-NGUYỆT ĐỀU CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "KINH-NGUYỆT",
+      "ĐỀU",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "BÁC-SĨ HỎI-TÔI KINH-NGUYỆT ĐỀU CÓ-KHÔNG",
+    "translation": "Bác sĩ hỏi kinh nguyệt của tôi có đều không hả?"
+  },
+  {
+    "sample_id": "SENT202_S06_R01_F",
+    "sentence_id": "SENT202",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "KINH-NGUYỆT",
+      "ĐỀU",
+      "KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI KINH-NGUYỆT ĐỀU KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "KINH-NGUYỆT",
+      "ĐỀU",
+      "KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI KINH-NGUYỆT ĐỀU KHÔNG",
+    "translation": "Kinh nguyệt của tôi không đều."
+  },
+  {
+    "sample_id": "SENT203_S06_R01_F",
+    "sentence_id": "SENT203",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "KINH",
+      "HẾT"
+    ],
+    "ref_gloss_str": "TÔI KINH HẾT",
+    "pred_gloss_list": [
+      "TÔI",
+      "KINH",
+      "HẾT"
+    ],
+    "pred_gloss_str": "TÔI KINH HẾT",
+    "translation": "Tôi mãn kinh rồi."
+  },
+  {
+    "sample_id": "SENT204_S06_R01_F",
+    "sentence_id": "SENT204",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "CON",
+      "CÓ-CHƯA"
+    ],
+    "ref_gloss_str": "BÁC-SĨ HỎI-TÔI CON CÓ-CHƯA",
+    "pred_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "CON",
+      "CÓ-CHƯA"
+    ],
+    "pred_gloss_str": "BÁC-SĨ HỎI-TÔI CON CÓ-CHƯA",
+    "translation": "Bác sĩ hỏi tôi có con chưa hả?"
+  },
+  {
+    "sample_id": "SENT205_S06_R01_F",
+    "sentence_id": "SENT205",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CON",
+      "2",
+      "CÓ"
+    ],
+    "ref_gloss_str": "TÔI CON 2 CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐAU",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI ĐAU PHẢI-KHÔNG",
+    "translation": "Tôi có hai con rồi."
+  },
+  {
+    "sample_id": "SENT206_S06_R01_F",
+    "sentence_id": "SENT206",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CON",
+      "CHƯA-CÓ"
+    ],
+    "ref_gloss_str": "TÔI CON CHƯA-CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "CON",
+      "CHƯA-CÓ"
+    ],
+    "pred_gloss_str": "TÔI CON CHƯA-CÓ",
+    "translation": "Tôi chưa có con."
+  },
+  {
+    "sample_id": "SENT207_S06_R01_F",
+    "sentence_id": "SENT207",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "KHÁM",
+      "THÊM",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI KHÁM THÊM CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "KHÁM",
+      "LẤY",
+      "CẦN"
+    ],
+    "pred_gloss_str": "TÔI KHÁM LẤY CẦN",
+    "translation": "Tôi có cần khám thêm gì không?"
+  },
+  {
+    "sample_id": "SENT208_S06_R01_F",
+    "sentence_id": "SENT208",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "KHÍ-HƯ",
+      "RA",
+      "BẤT-THƯỜNG"
+    ],
+    "ref_gloss_str": "TÔI KHÍ-HƯ RA BẤT-THƯỜNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĂN",
+      "RA",
+      "BẤT-THƯỜNG"
+    ],
+    "pred_gloss_str": "TÔI ĂN RA BẤT-THƯỜNG",
+    "translation": "Tôi bị ra khí hư bất thường."
+  },
+  {
+    "sample_id": "SENT209_S06_R01_F",
+    "sentence_id": "SENT209",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "MẮT",
+      "MỜ"
+    ],
+    "ref_gloss_str": "TÔI MẮT MỜ",
+    "pred_gloss_list": [
+      "TÔI",
+      "CẬN-THỊ"
+    ],
+    "pred_gloss_str": "TÔI CẬN-THỊ",
+    "translation": "Mắt tôi mờ lắm."
+  },
+  {
+    "sample_id": "SENT210_S06_R01_F",
+    "sentence_id": "SENT210",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NHÌN",
+      "RÕ",
+      "KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI NHÌN RÕ KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "NHÌN",
+      "RÕ",
+      "KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI NHÌN RÕ KHÔNG",
+    "translation": "Tôi nhìn không rõ."
+  },
+  {
+    "sample_id": "SENT211_S06_R01_F",
+    "sentence_id": "SENT211",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐỌC",
+      "HÀNG-NÀY",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI ĐỌC HÀNG-NÀY PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "HÀNG-NÀY",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI XÉT-NGHIỆM HÀNG-NÀY PHẢI-KHÔNG",
+    "translation": "Tôi đọc hàng này phải không?"
+  },
+  {
+    "sample_id": "SENT212_S06_R01_F",
+    "sentence_id": "SENT212",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CHỮ",
+      "NHỎ",
+      "KHÔNG-THẤY"
+    ],
+    "ref_gloss_str": "TÔI CHỮ NHỎ KHÔNG-THẤY",
+    "pred_gloss_list": [
+      "TÔI",
+      "CHỮ",
+      "NHỎ",
+      "KHÔNG-THẤY"
+    ],
+    "pred_gloss_str": "TÔI CHỮ NHỎ KHÔNG-THẤY",
+    "translation": "Chữ nhỏ quá, tôi không thấy."
+  },
+  {
+    "sample_id": "SENT213_S06_R01_F",
+    "sentence_id": "SENT213",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "THẤY",
+      "KHÔNG-CÓ"
+    ],
+    "ref_gloss_str": "TÔI THẤY KHÔNG-CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "THẤY",
+      "KHÔNG-CÓ"
+    ],
+    "pred_gloss_str": "TÔI THẤY KHÔNG-CÓ",
+    "translation": "Tôi không thấy gì cả."
+  },
+  {
+    "sample_id": "SENT214_S06_R01_F",
+    "sentence_id": "SENT214",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "MẮT-TRÁI",
+      "CHE"
+    ],
+    "ref_gloss_str": "TÔI MẮT-TRÁI CHE",
+    "pred_gloss_list": [
+      "TÔI",
+      "HỌNG",
+      "ĐAU"
+    ],
+    "pred_gloss_str": "TÔI HỌNG ĐAU",
+    "translation": "Tôi che mắt trái lại phải không?"
+  },
+  {
+    "sample_id": "SENT215_S06_R01_F",
+    "sentence_id": "SENT215",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐỌC",
+      "SỖ-GÌ"
+    ],
+    "ref_gloss_str": "TÔI ĐỌC SỖ-GÌ",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐAU"
+    ],
+    "pred_gloss_str": "TÔI ĐAU",
+    "translation": "Tôi đọc số gì đây ạ?"
+  },
+  {
+    "sample_id": "SENT216_S06_R01_F",
+    "sentence_id": "SENT216",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐEO-KÍNH",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI ĐEO-KÍNH PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐEO-KÍNH",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI ĐEO-KÍNH PHẢI-KHÔNG",
+    "translation": "Tôi đeo kính vào nhé?"
+  },
+  {
+    "sample_id": "SENT217_S06_R01_F",
+    "sentence_id": "SENT217",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "KÍNH",
+      "BỎ-RA",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI KÍNH BỎ-RA PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "KÍNH",
+      "BỎ-RA",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI KÍNH BỎ-RA PHẢI-KHÔNG",
+    "translation": "Tôi bỏ kính ra phải không?"
+  },
+  {
+    "sample_id": "SENT218_S06_R01_F",
+    "sentence_id": "SENT218",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "MẮT",
+      "ĐỎ",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI MẮT ĐỎ ĐAU CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "MẮT",
+      "ĐỎ",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI MẮT ĐỎ ĐAU CÓ-KHÔNG",
+    "translation": "Tôi có bị đau mắt đỏ không?"
+  },
+  {
+    "sample_id": "SENT219_S06_R01_F",
+    "sentence_id": "SENT219",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "TAI",
+      "TRÁI",
+      "NGHE",
+      "RÕ",
+      "KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI TAI TRÁI NGHE RÕ KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "MẮT-TRÁI",
+      "CHE"
+    ],
+    "pred_gloss_str": "TÔI MẮT-TRÁI CHE",
+    "translation": "Tai trái tôi nghe không rõ."
+  },
+  {
+    "sample_id": "SENT220_S06_R01_F",
+    "sentence_id": "SENT220",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "TAI",
+      "PHẢI",
+      "NGHE",
+      "BÌNH-THƯỜNG"
+    ],
+    "ref_gloss_str": "TÔI TAI PHẢI NGHE BÌNH-THƯỜNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "TAI",
+      "NGHE",
+      "BÌNH-THƯỜNG"
+    ],
+    "pred_gloss_str": "TÔI TAI NGHE BÌNH-THƯỜNG",
+    "translation": "Tai phải của tôi bình thường."
+  },
+  {
+    "sample_id": "SENT221_S06_R01_F",
+    "sentence_id": "SENT221",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "TAI-Ù",
+      "LẮM"
+    ],
+    "ref_gloss_str": "TÔI TAI-Ù LẮM",
+    "pred_gloss_list": [
+      "TÔI",
+      "TAI-Ù",
+      "LẮM"
+    ],
+    "pred_gloss_str": "TÔI TAI-Ù LẮM",
+    "translation": "Tôi bị ù tai lắm."
+  },
+  {
+    "sample_id": "SENT222_S06_R01_F",
+    "sentence_id": "SENT222",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "MIỆNG-HÁ",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI MIỆNG-HÁ PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "MIỆNG-HÁ",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI MIỆNG-HÁ PHẢI-KHÔNG",
+    "translation": "Tôi há miệng ra phải không?"
+  },
+  {
+    "sample_id": "SENT223_S06_R01_F",
+    "sentence_id": "SENT223",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HỌNG",
+      "ĐAU"
+    ],
+    "ref_gloss_str": "TÔI HỌNG ĐAU",
+    "pred_gloss_list": [
+      "TÔI",
+      "MIỆNG-HÁ",
+      "ĐAU"
+    ],
+    "pred_gloss_str": "TÔI MIỆNG-HÁ ĐAU",
+    "translation": "Họng của tôi đau."
+  },
+  {
+    "sample_id": "SENT224_S06_R01_F",
+    "sentence_id": "SENT224",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HỌNG",
+      "AMIDAN",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI HỌNG AMIDAN CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "MŨI-NGHẸT",
+      "CÓ"
+    ],
+    "pred_gloss_str": "TÔI MŨI-NGHẸT CÓ",
+    "translation": "Tôi có bị viêm amidan không?"
+  },
+  {
+    "sample_id": "SENT225_S06_R01_F",
+    "sentence_id": "SENT225",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "KHÁM",
+      "RĂNG",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI KHÁM RĂNG ĐAU CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "KHÁM",
+      "RĂNG",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI KHÁM RĂNG ĐAU CÓ-KHÔNG",
+    "translation": "Khám răng có đau không ạ?"
+  },
+  {
+    "sample_id": "SENT226_S06_R01_F",
+    "sentence_id": "SENT226",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "RĂNG",
+      "SÂU",
+      "NẶNG",
+      "LẮM"
+    ],
+    "ref_gloss_str": "TÔI RĂNG SÂU NẶNG LẮM",
+    "pred_gloss_list": [
+      "TÔI",
+      "RĂNG",
+      "SÂU",
+      "NẶNG",
+      "LẮM"
+    ],
+    "pred_gloss_str": "TÔI RĂNG SÂU NẶNG LẮM",
+    "translation": "Răng của tôi bị sâu nặng lắm."
+  },
+  {
+    "sample_id": "SENT227_S06_R01_F",
+    "sentence_id": "SENT227",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "RĂNG",
+      "NHỔ",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI RĂNG NHỔ CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "RĂNG",
+      "NHỔ",
+      "MUỐN"
+    ],
+    "pred_gloss_str": "TÔI RĂNG NHỔ MUỐN",
+    "translation": "Tôi có cần nhổ cái răng này không?"
+  },
+  {
+    "sample_id": "SENT228_S06_R01_F",
+    "sentence_id": "SENT228",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "RĂNG",
+      "NHỔ",
+      "MUỐN",
+      "KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI RĂNG NHỔ MUỐN KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĂN",
+      "MUỐN",
+      "KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI ĂN MUỐN KHÔNG",
+    "translation": "Tôi không muốn nhổ răng."
+  },
+  {
+    "sample_id": "SENT229_S06_R01_F",
+    "sentence_id": "SENT229",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "RĂNG",
+      "TRÁM",
+      "MUỐN"
+    ],
+    "ref_gloss_str": "TÔI RĂNG TRÁM MUỐN",
+    "pred_gloss_list": [
+      "TÔI",
+      "RĂNG",
+      "Ê-BUỐT"
+    ],
+    "pred_gloss_str": "TÔI RĂNG Ê-BUỐT",
+    "translation": "Tôi muốn trám cái răng này."
+  },
+  {
+    "sample_id": "SENT230_S06_R01_F",
+    "sentence_id": "SENT230",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "RĂNG",
+      "Ê-BUỐT"
+    ],
+    "ref_gloss_str": "TÔI RĂNG Ê-BUỐT",
+    "pred_gloss_list": [
+      "TÔI",
+      "RĂNG",
+      "TRÁM",
+      "MUỐN"
+    ],
+    "pred_gloss_str": "TÔI RĂNG TRÁM MUỐN",
+    "translation": "Răng tôi bị ê buốt."
+  },
+  {
+    "sample_id": "SENT231_S06_R01_F",
+    "sentence_id": "SENT231",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "MÁU",
+      "LẤY",
+      "RỒI"
+    ],
+    "ref_gloss_str": "TÔI MÁU LẤY RỒI",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐỌC",
+      "SỖ-GÌ"
+    ],
+    "pred_gloss_str": "TÔI ĐỌC SỖ-GÌ",
+    "translation": "Tôi lấy máu xong rồi."
+  },
+  {
+    "sample_id": "SENT232_S06_R01_F",
+    "sentence_id": "SENT232",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NƯỚC-TIỂU",
+      "VÀO-BÌNH",
+      "RỒI"
+    ],
+    "ref_gloss_str": "TÔI NƯỚC-TIỂU VÀO-BÌNH RỒI",
+    "pred_gloss_list": [
+      "TÔI",
+      "NƯỚC-TIỂU",
+      "LẤY",
+      "SỖ-GÌ"
+    ],
+    "pred_gloss_str": "TÔI NƯỚC-TIỂU LẤY SỖ-GÌ",
+    "translation": "Tôi lấy nước tiểu xong rồi."
+  },
+  {
+    "sample_id": "SENT233_S06_R01_F",
+    "sentence_id": "SENT233",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "NỘI-SOI",
+      "GÂY-MÊ",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "NỘI-SOI GÂY-MÊ ĐAU CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "GÂY-MÊ",
+      "ĐAU",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI GÂY-MÊ ĐAU CÓ-KHÔNG",
+    "translation": "Nội soi có gây mê có đau không bác sĩ?"
+  },
+  {
+    "sample_id": "SENT234_S06_R01_F",
+    "sentence_id": "SENT234",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "NƯỚC-TIỂU",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI XÉT-NGHIỆM NƯỚC-TIỂU CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "NƯỚC-TIỂU",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI XÉT-NGHIỆM NƯỚC-TIỂU CẦN-KHÔNG",
+    "translation": "Tôi cần đi xét nghiệm nước tiểu."
+  },
+  {
+    "sample_id": "SENT235_S06_R01_F",
+    "sentence_id": "SENT235",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "MÁU",
+      "CÓ"
+    ],
+    "ref_gloss_str": "TÔI XÉT-NGHIỆM MÁU CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐEO-KÍNH",
+      "CÓ"
+    ],
+    "pred_gloss_str": "TÔI ĐEO-KÍNH CÓ",
+    "translation": "Tôi có làm xét nghiệm huyết học."
+  },
+  {
+    "sample_id": "SENT236_S06_R01_F",
+    "sentence_id": "SENT236",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "SINH-HÓA",
+      "CÓ"
+    ],
+    "ref_gloss_str": "TÔI XÉT-NGHIỆM SINH-HÓA CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐỌC",
+      "SINH-HÓA",
+      "CÓ"
+    ],
+    "pred_gloss_str": "TÔI ĐỌC SINH-HÓA CÓ",
+    "translation": "Tôi có làm xét nghiệm sinh hóa."
+  },
+  {
+    "sample_id": "SENT237_S06_R01_F",
+    "sentence_id": "SENT237",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CHỤP",
+      "X-QUANG",
+      "RỒI"
+    ],
+    "ref_gloss_str": "TÔI CHỤP X-QUANG RỒI",
+    "pred_gloss_list": [
+      "TÔI",
+      "X-QUANG",
+      "RỒI"
+    ],
+    "pred_gloss_str": "TÔI X-QUANG RỒI",
+    "translation": "Tôi chụp X-quang xong rồi."
+  },
+  {
+    "sample_id": "SENT238_S06_R01_F",
+    "sentence_id": "SENT238",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "BÁC-SĨ",
+      "CHỈ-ĐỊNH",
+      "CHỤP",
+      "X-QUANG",
+      "PHỔI"
+    ],
+    "ref_gloss_str": "BÁC-SĨ CHỈ-ĐỊNH CHỤP X-QUANG PHỔI",
+    "pred_gloss_list": [
+      "BÁC-SĨ",
+      "CHỈ-ĐỊNH",
+      "X-QUANG",
+      "PHỔI"
+    ],
+    "pred_gloss_str": "BÁC-SĨ CHỈ-ĐỊNH X-QUANG PHỔI",
+    "translation": "Bác sĩ chỉ định tôi chụp X-quang phổi."
+  },
+  {
+    "sample_id": "SENT239_S06_R01_F",
+    "sentence_id": "SENT239",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CHỈ-ĐỊNH",
+      "SIÊU-ẨM",
+      "BỤNG"
+    ],
+    "ref_gloss_str": "TÔI CHỈ-ĐỊNH SIÊU-ẨM BỤNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "SIÊU-ẨM",
+      "BỤNG"
+    ],
+    "pred_gloss_str": "TÔI SIÊU-ẨM BỤNG",
+    "translation": "Tôi được chỉ định siêu âm bụng."
+  },
+  {
+    "sample_id": "SENT240_S06_R01_F",
+    "sentence_id": "SENT240",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CHỈ-ĐỊNH",
+      "SIÊU-ÂM",
+      "TIM"
+    ],
+    "ref_gloss_str": "TÔI CHỈ-ĐỊNH SIÊU-ÂM TIM",
+    "pred_gloss_list": [
+      "TÔI",
+      "CHỈ-ĐỊNH",
+      "SIÊU-ÂM",
+      "TIM"
+    ],
+    "pred_gloss_str": "TÔI CHỈ-ĐỊNH SIÊU-ÂM TIM",
+    "translation": "Tôi được chỉ định siêu âm tim."
+  },
+  {
+    "sample_id": "SENT241_S06_R01_F",
+    "sentence_id": "SENT241",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐO",
+      "TIM",
+      "ĐIỆN",
+      "XONG-RỒI"
+    ],
+    "ref_gloss_str": "TÔI ĐO TIM ĐIỆN XONG-RỒI",
+    "pred_gloss_list": [
+      "TÔI",
+      "LỊCH",
+      "TỔNG-QUÁT",
+      "MUỐN"
+    ],
+    "pred_gloss_str": "TÔI LỊCH TỔNG-QUÁT MUỐN",
+    "translation": "Tôi đo điện tim xong rồi."
+  },
+  {
+    "sample_id": "SENT242_S06_R01_F",
+    "sentence_id": "SENT242",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "SOI-NỘI",
+      "DẠ-DÀY",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI SOI-NỘI DẠ-DÀY CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "SOI-NỘI",
+      "DẠ-DÀY",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI SOI-NỘI DẠ-DÀY CẦN-KHÔNG",
+    "translation": "Tôi cần đi nội soi dạ dày."
+  },
+  {
+    "sample_id": "SENT243_S06_R01_F",
+    "sentence_id": "SENT243",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐO",
+      "LOÃNG-XƯƠNG"
+    ],
+    "ref_gloss_str": "TÔI ĐO LOÃNG-XƯƠNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐO",
+      "LOÃNG-XƯƠNG"
+    ],
+    "pred_gloss_str": "TÔI ĐO LOÃNG-XƯƠNG",
+    "translation": "Tôi cần đi đo loãng xương."
+  },
+  {
+    "sample_id": "SENT244_S06_R01_F",
+    "sentence_id": "SENT244",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "GAN",
+      "CHỨC-NĂNG",
+      "CẦN"
+    ],
+    "ref_gloss_str": "TÔI XÉT-NGHIỆM GAN CHỨC-NĂNG CẦN",
+    "pred_gloss_list": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "GAN",
+      "CHỨC-NĂNG",
+      "CẦN"
+    ],
+    "pred_gloss_str": "TÔI XÉT-NGHIỆM GAN CHỨC-NĂNG CẦN",
+    "translation": "Tôi cần xét nghiệm chức năng gan."
+  },
+  {
+    "sample_id": "SENT245_S06_R01_F",
+    "sentence_id": "SENT245",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "TỔNG-QUÁT",
+      "MUỐN"
+    ],
+    "ref_gloss_str": "TÔI XÉT-NGHIỆM TỔNG-QUÁT MUỐN",
+    "pred_gloss_list": [
+      "BÁC-SĨ",
+      "XÉT-NGHIỆM",
+      "ĂN",
+      "MUỐN"
+    ],
+    "pred_gloss_str": "BÁC-SĨ XÉT-NGHIỆM ĂN MUỐN",
+    "translation": "Tôi muốn làm xét nghiệm tổng quát."
+  },
+  {
+    "sample_id": "SENT246_S06_R01_F",
+    "sentence_id": "SENT246",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "TỔNG-QUÁT",
+      "MUỐN"
+    ],
+    "ref_gloss_str": "TÔI XÉT-NGHIỆM TỔNG-QUÁT MUỐN",
+    "pred_gloss_list": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "TỔNG-QUÁT",
+      "MUỐN"
+    ],
+    "pred_gloss_str": "TÔI XÉT-NGHIỆM TỔNG-QUÁT MUỐN",
+    "translation": "Tôi muốn làm xét nghiệm tổng quát."
+  },
+  {
+    "sample_id": "SENT247_S06_R01_F",
+    "sentence_id": "SENT247",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TỐI",
+      "HÔM-QUA",
+      "TÔI",
+      "ĂN",
+      "KHÔNG"
+    ],
+    "ref_gloss_str": "TỐI HÔM-QUA TÔI ĂN KHÔNG",
+    "pred_gloss_list": [
+      "TỐI",
+      "HÔM-QUA",
+      "TÔI",
+      "ĂN",
+      "KHÔNG"
+    ],
+    "pred_gloss_str": "TỐI HÔM-QUA TÔI ĂN KHÔNG",
+    "translation": "Tôi đã nhịn ăn từ tối hôm qua."
+  },
+  {
+    "sample_id": "SENT248_S06_R01_F",
+    "sentence_id": "SENT248",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NƯỚC",
+      "UỐNG",
+      "NHIỀU"
+    ],
+    "ref_gloss_str": "TÔI NƯỚC UỐNG NHIỀU",
+    "pred_gloss_list": [
+      "TÔI",
+      "NƯỚC",
+      "UỐNG",
+      "NHIỀU"
+    ],
+    "pred_gloss_str": "TÔI NƯỚC UỐNG NHIỀU",
+    "translation": "Tôi đã uống nhiều nước rồi."
+  },
+  {
+    "sample_id": "SENT249_S06_R01_F",
+    "sentence_id": "SENT249",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "TAY-TRÁI",
+      "MÁU",
+      "LẤY",
+      "Y-TÁ"
+    ],
+    "ref_gloss_str": "TÔI TAY-TRÁI MÁU LẤY Y-TÁ",
+    "pred_gloss_list": [
+      "TÔI",
+      "TAY-TRÁI",
+      "MÁU",
+      "LẤY",
+      "Y-TÁ"
+    ],
+    "pred_gloss_str": "TÔI TAY-TRÁI MÁU LẤY Y-TÁ",
+    "translation": "Y tá đã lấy máu ở tay trái của tôi."
+  },
+  {
+    "sample_id": "SENT250_S06_R01_F",
+    "sentence_id": "SENT250",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NỘP",
+      "BÁC-SĨ",
+      "KẾT-QUẢ"
+    ],
+    "ref_gloss_str": "TÔI NỘP BÁC-SĨ KẾT-QUẢ",
+    "pred_gloss_list": [
+      "TÔI",
+      "NỘP",
+      "BÁC-SĨ",
+      "KẾT-QUẢ"
+    ],
+    "pred_gloss_str": "TÔI NỘP BÁC-SĨ KẾT-QUẢ",
+    "translation": "Tôi sẽ nộp kết quả này cho bác sĩ."
+  },
+  {
+    "sample_id": "SENT251_S06_R01_F",
+    "sentence_id": "SENT251",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "PHÒNG",
+      "XÉT-NGHIỆM",
+      "Ở-ĐÂU"
+    ],
+    "ref_gloss_str": "TÔI ĐẾN PHÒNG XÉT-NGHIỆM Ở-ĐÂU",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "PHÒNG",
+      "XÉT-NGHIỆM",
+      "Ở-ĐÂU"
+    ],
+    "pred_gloss_str": "TÔI ĐẾN PHÒNG XÉT-NGHIỆM Ở-ĐÂU",
+    "translation": "Tôi đi đến phòng xét nghiệm ở đâu ạ?"
+  },
+  {
+    "sample_id": "SENT252_S06_R01_F",
+    "sentence_id": "SENT252",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "XÉT-NGHIỆM",
+      "ĂN",
+      "KHÔNG",
+      "CẦN"
+    ],
+    "ref_gloss_str": "TÔI ĐẾN XÉT-NGHIỆM ĂN KHÔNG CẦN",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "BÁC-SĨ",
+      "CẦN"
+    ],
+    "pred_gloss_str": "TÔI ĐẾN BÁC-SĨ CẦN",
+    "translation": "Tôi có cần nhịn ăn để xét nghiệm không?"
+  },
+  {
+    "sample_id": "SENT253_S06_R01_F",
+    "sentence_id": "SENT253",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "SÁNG",
+      "NAY",
+      "TÔI",
+      "ĂN",
+      "RỒI"
+    ],
+    "ref_gloss_str": "SÁNG NAY TÔI ĂN RỒI",
+    "pred_gloss_list": [
+      "SÁNG",
+      "NAY",
+      "TÔI",
+      "ĂN",
+      "RỒI"
+    ],
+    "pred_gloss_str": "SÁNG NAY TÔI ĂN RỒI",
+    "translation": "Sáng nay tôi lỡ ăn sáng mất rồi."
+  },
+  {
+    "sample_id": "SENT254_S06_R01_F",
+    "sentence_id": "SENT254",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "SAO-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI SAO-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "SAO-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI SAO-KHÔNG",
+    "translation": "Như vậy có sao không ạ?"
+  },
+  {
+    "sample_id": "SENT255_S06_R01_F",
+    "sentence_id": "SENT255",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "LẤY",
+      "MÁU",
+      "CÓ",
+      "ĐAU-KHÔNG"
+    ],
+    "ref_gloss_str": "LẤY MÁU CÓ ĐAU-KHÔNG",
+    "pred_gloss_list": [
+      "LẤY",
+      "MÁU",
+      "CÓ",
+      "ĐAU-KHÔNG"
+    ],
+    "pred_gloss_str": "LẤY MÁU CÓ ĐAU-KHÔNG",
+    "translation": "Lấy máu có đau không?"
+  },
+  {
+    "sample_id": "SENT256_S06_R01_F",
+    "sentence_id": "SENT256",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "LẤY",
+      "MÁU",
+      "TÔI",
+      "SỢ-LẮM"
+    ],
+    "ref_gloss_str": "LẤY MÁU TÔI SỢ-LẮM",
+    "pred_gloss_list": [
+      "LẤY",
+      "MÁU",
+      "TÔI",
+      "SỢ-LẮM"
+    ],
+    "pred_gloss_str": "LẤY MÁU TÔI SỢ-LẮM",
+    "translation": "Tôi sợ lấy máu lắm."
+  },
+  {
+    "sample_id": "SENT257_S06_R01_F",
+    "sentence_id": "SENT257",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "LẤY",
+      "MÁU",
+      "TAY",
+      "NÀO"
+    ],
+    "ref_gloss_str": "TÔI LẤY MÁU TAY NÀO",
+    "pred_gloss_list": [
+      "TÔI",
+      "KẾT-QUẢ",
+      "TAY",
+      "NÀO"
+    ],
+    "pred_gloss_str": "TÔI KẾT-QUẢ TAY NÀO",
+    "translation": "Tôi sẽ được lấy máu ở tay nào?"
+  },
+  {
+    "sample_id": "SENT258_S06_R01_F",
+    "sentence_id": "SENT258",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NƯỚC-TIỂU",
+      "MẪU",
+      "LẤY",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI NƯỚC-TIỂU MẪU LẤY CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "NƯỚC-TIỂU",
+      "MẪU",
+      "LẤY",
+      "CẦN"
+    ],
+    "pred_gloss_str": "TÔI NƯỚC-TIỂU MẪU LẤY CẦN",
+    "translation": "Tôi có cần lấy mẫu nước tiểu không?"
+  },
+  {
+    "sample_id": "SENT259_S06_R01_F",
+    "sentence_id": "SENT259",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NƯỚC-TIỂU",
+      "MẪU",
+      "LẤY",
+      "Ở-ĐÂU"
+    ],
+    "ref_gloss_str": "TÔI NƯỚC-TIỂU MẪU LẤY Ở-ĐÂU",
+    "pred_gloss_list": [
+      "TÔI",
+      "NƯỚC-TIỂU",
+      "MẪU",
+      "LẤY",
+      "Ở-ĐÂU"
+    ],
+    "pred_gloss_str": "TÔI NƯỚC-TIỂU MẪU LẤY Ở-ĐÂU",
+    "translation": "Tôi lấy mẫu nước tiểu ở đâu?"
+  },
+  {
+    "sample_id": "SENT260_S06_R01_F",
+    "sentence_id": "SENT260",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NƯỚC-TIỂU",
+      "MẪU",
+      "BAO-NHIÊU",
+      "CẦN"
+    ],
+    "ref_gloss_str": "TÔI NƯỚC-TIỂU MẪU BAO-NHIÊU CẦN",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐẾN",
+      "THÊM",
+      "CẦN"
+    ],
+    "pred_gloss_str": "TÔI ĐẾN THÊM CẦN",
+    "translation": "Tôi cần lấy bao nhiêu nước tiểu?"
+  },
+  {
+    "sample_id": "SENT261_S06_R01_F",
+    "sentence_id": "SENT261",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ÁO-CỞI",
+      "KHI",
+      "CHỤP",
+      "X-QUANG",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI ÁO-CỞI KHI CHỤP X-QUANG CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "ÁO-CỞI",
+      "X-QUANG",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI ÁO-CỞI X-QUANG CẦN-KHÔNG",
+    "translation": "Khi chụp X-quang tôi có cần cởi áo không?"
+  },
+  {
+    "sample_id": "SENT262_S06_R01_F",
+    "sentence_id": "SENT262",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "ĐEO-TAY",
+      "VÒNG",
+      "KIM-LOẠI",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "BÁC-SĨ HỎI-TÔI ĐEO-TAY VÒNG KIM-LOẠI CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "BÁC-SĨ",
+      "HỎI-TÔI",
+      "ĐEO-TAY",
+      "KIM-LOẠI",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "BÁC-SĨ HỎI-TÔI ĐEO-TAY KIM-LOẠI CÓ-KHÔNG",
+    "translation": "Bác sĩ hỏi tôi có đeo đồ kim loại không hả?"
+  },
+  {
+    "sample_id": "SENT263_S06_R01_F",
+    "sentence_id": "SENT263",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐEO-TAY",
+      "VÒNG",
+      "KIM-LOẠI",
+      "KHÔNG-CÓ"
+    ],
+    "ref_gloss_str": "TÔI ĐEO-TAY VÒNG KIM-LOẠI KHÔNG-CÓ",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĐEO-TAY",
+      "VÒNG",
+      "KIM-LOẠI",
+      "KHÔNG-CÓ"
+    ],
+    "pred_gloss_str": "TÔI ĐEO-TAY VÒNG KIM-LOẠI KHÔNG-CÓ",
+    "translation": "Tôi không đeo gì bằng kim loại cả."
+  },
+  {
+    "sample_id": "SENT264_S06_R01_F",
+    "sentence_id": "SENT264",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NƯỚC",
+      "UỐNG",
+      "NHIỀU",
+      "KHI",
+      "SIÊU-ÂM",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI NƯỚC UỐNG NHIỀU KHI SIÊU-ÂM CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "NƯỚC",
+      "SIÊU-ÂM",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI NƯỚC SIÊU-ÂM CẦN-KHÔNG",
+    "translation": "Tôi có cần uống nhiều nước trước khi siêu âm không?"
+  },
+  {
+    "sample_id": "SENT265_S06_R01_F",
+    "sentence_id": "SENT265",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CHỜ",
+      "KẾT-QUẢ",
+      "BAO-LÂU"
+    ],
+    "ref_gloss_str": "TÔI CHỜ KẾT-QUẢ BAO-LÂU",
+    "pred_gloss_list": [
+      "TÔI",
+      "NHIỀU",
+      "BAO-LÂU"
+    ],
+    "pred_gloss_str": "TÔI NHIỀU BAO-LÂU",
+    "translation": "Tôi phải chờ kết quả trong bao lâu?"
+  },
+  {
+    "sample_id": "SENT266_S06_R01_F",
+    "sentence_id": "SENT266",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "KẾT-QUẢ",
+      "LẤY",
+      "Ở-ĐÂU"
+    ],
+    "ref_gloss_str": "TÔI KẾT-QUẢ LẤY Ở-ĐÂU",
+    "pred_gloss_list": [
+      "TÔI",
+      "KẾT-QUẢ",
+      "LẤY",
+      "Ở-ĐÂU"
+    ],
+    "pred_gloss_str": "TÔI KẾT-QUẢ LẤY Ở-ĐÂU",
+    "translation": "Tôi lấy kết quả ở đâu ạ?"
+  },
+  {
+    "sample_id": "SENT267_S06_R01_F",
+    "sentence_id": "SENT267",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "KẾT-QUẢ",
+      "HÔM-NAY",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "KẾT-QUẢ HÔM-NAY CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "KẾT-QUẢ",
+      "HÔM-NAY",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "KẾT-QUẢ HÔM-NAY CÓ-KHÔNG",
+    "translation": "Hôm nay có kết quả ngay không?"
+  },
+  {
+    "sample_id": "SENT268_S06_R01_F",
+    "sentence_id": "SENT268",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "XÉT-NGHIỆM",
+      "TẤT-CẢ",
+      "XONG",
+      "RỒI"
+    ],
+    "ref_gloss_str": "TÔI XÉT-NGHIỆM TẤT-CẢ XONG RỒI",
+    "pred_gloss_list": [
+      "TÔI",
+      "CẢM-ƠN",
+      "RỒI"
+    ],
+    "pred_gloss_str": "TÔI CẢM-ƠN RỒI",
+    "translation": "Tôi làm xong hết các xét nghiệm rồi."
+  },
+  {
+    "sample_id": "SENT269_S06_R01_F",
+    "sentence_id": "SENT269",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "PHÒNG",
+      "BÁC-SĨ",
+      "QUAY-LẠI",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI PHÒNG BÁC-SĨ QUAY-LẠI PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "PHÒNG",
+      "BÁC-SĨ",
+      "QUAY-LẠI",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI PHÒNG BÁC-SĨ QUAY-LẠI PHẢI-KHÔNG",
+    "translation": "Bây giờ tôi quay lại phòng bác sĩ phải không?"
+  },
+  {
+    "sample_id": "SENT270_S06_R01_F",
+    "sentence_id": "SENT270",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "SÁNG",
+      "NAY",
+      "TÔI",
+      "ĂN",
+      "CHƯA"
+    ],
+    "ref_gloss_str": "SÁNG NAY TÔI ĂN CHƯA",
+    "pred_gloss_list": [
+      "SÁNG",
+      "NAY",
+      "TÔI",
+      "ĂN",
+      "CHƯA"
+    ],
+    "pred_gloss_str": "SÁNG NAY TÔI ĂN CHƯA",
+    "translation": "Sáng nay tôi chưa ăn gì."
+  },
+  {
+    "sample_id": "SENT271_S06_R01_F",
+    "sentence_id": "SENT271",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "HIỂU",
+      "RỒI"
+    ],
+    "ref_gloss_str": "TÔI HIỂU RỒI",
+    "pred_gloss_list": [
+      "TÔI",
+      "HIỂU",
+      "RỒI"
+    ],
+    "pred_gloss_str": "TÔI HIỂU RỒI",
+    "translation": "Vâng, tôi hiểu rồi."
+  },
+  {
+    "sample_id": "SENT272_S06_R01_F",
+    "sentence_id": "SENT272",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "CẢM-ƠN",
+      "BÁC-SĨ"
+    ],
+    "ref_gloss_str": "TÔI CẢM-ƠN BÁC-SĨ",
+    "pred_gloss_list": [
+      "TÔI",
+      "CẢM-ƠN",
+      "BÁC-SĨ"
+    ],
+    "pred_gloss_str": "TÔI CẢM-ƠN BÁC-SĨ",
+    "translation": "Tôi cảm ơn bác sĩ."
+  },
+  {
+    "sample_id": "SENT273_S06_R01_F",
+    "sentence_id": "SENT273",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "ĐƠN",
+      "TÔI",
+      "THUỐC",
+      "CÓ"
+    ],
+    "ref_gloss_str": "ĐƠN TÔI THUỐC CÓ",
+    "pred_gloss_list": [
+      "ĐƠN",
+      "THUỐC",
+      "TÔI",
+      "CÓ"
+    ],
+    "pred_gloss_str": "ĐƠN THUỐC TÔI CÓ",
+    "translation": "Đây là đơn thuốc của tôi."
+  },
+  {
+    "sample_id": "SENT274_S06_R01_F",
+    "sentence_id": "SENT274",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "MUA",
+      "THUỐC",
+      "SẼ"
+    ],
+    "ref_gloss_str": "TÔI MUA THUỐC SẼ",
+    "pred_gloss_list": [
+      "TÔI",
+      "MUA",
+      "THUỐC",
+      "SẼ"
+    ],
+    "pred_gloss_str": "TÔI MUA THUỐC SẼ",
+    "translation": "Tôi sẽ đi mua thuốc."
+  },
+  {
+    "sample_id": "SENT275_S06_R01_F",
+    "sentence_id": "SENT275",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "THẺ",
+      "BẢO-HIỂM",
+      "LẤY-THUỐC"
+    ],
+    "ref_gloss_str": "TÔI THẺ BẢO-HIỂM LẤY-THUỐC",
+    "pred_gloss_list": [
+      "TÔI",
+      "THẺ",
+      "BẢO-HIỂM",
+      "LẤY-THUỐC"
+    ],
+    "pred_gloss_str": "TÔI THẺ BẢO-HIỂM LẤY-THUỐC",
+    "translation": "Tôi lấy thuốc theo bảo hiểm."
+  },
+  {
+    "sample_id": "SENT276_S06_R01_F",
+    "sentence_id": "SENT276",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĐÓNG-TIỀN",
+      "THÊM",
+      "CẦN"
+    ],
+    "ref_gloss_str": "TÔI ĐÓNG-TIỀN THÊM CẦN",
+    "pred_gloss_list": [
+      "TÔI",
+      "PHẪU-THUẬT",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI PHẪU-THUẬT CẦN-KHÔNG",
+    "translation": "Tôi cần đóng thêm tiền."
+  },
+  {
+    "sample_id": "SENT277_S06_R01_F",
+    "sentence_id": "SENT277",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "KHÁM",
+      "KỲ",
+      "SAU",
+      "LẠI"
+    ],
+    "ref_gloss_str": "TÔI KHÁM KỲ SAU LẠI",
+    "pred_gloss_list": [
+      "TÔI",
+      "KHÁM",
+      "KỲ",
+      "SAU",
+      "LẠI"
+    ],
+    "pred_gloss_str": "TÔI KHÁM KỲ SAU LẠI",
+    "translation": "Tôi sẽ tái khám vào kỳ sau."
+  },
+  {
+    "sample_id": "SENT278_S06_R01_F",
+    "sentence_id": "SENT278",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "LỊCH",
+      "KHÁM",
+      "LẠI"
+    ],
+    "ref_gloss_str": "TÔI LỊCH KHÁM LẠI",
+    "pred_gloss_list": [
+      "TÔI",
+      "LỊCH",
+      "KHÁM",
+      "LẠI"
+    ],
+    "pred_gloss_str": "TÔI LỊCH KHÁM LẠI",
+    "translation": "Tôi có lịch tái khám."
+  },
+  {
+    "sample_id": "SENT279_S06_R01_F",
+    "sentence_id": "SENT279",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "XIN",
+      "GIẤY-PHÉP",
+      "ỐM",
+      "CẦN"
+    ],
+    "ref_gloss_str": "TÔI XIN GIẤY-PHÉP ỐM CẦN",
+    "pred_gloss_list": [
+      "TÔI",
+      "XIN",
+      "ỐM",
+      "CẦN"
+    ],
+    "pred_gloss_str": "TÔI XIN ỐM CẦN",
+    "translation": "Tôi cần xin giấy nghỉ ốm."
+  },
+  {
+    "sample_id": "SENT280_S06_R01_F",
+    "sentence_id": "SENT280",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "BÁC-SĨ",
+      "CHÀO"
+    ],
+    "ref_gloss_str": "TÔI BÁC-SĨ CHÀO",
+    "pred_gloss_list": [
+      "TÔI",
+      "BÁC-SĨ",
+      "CHÀO"
+    ],
+    "pred_gloss_str": "TÔI BÁC-SĨ CHÀO",
+    "translation": "Tôi chào bác sĩ."
+  },
+  {
+    "sample_id": "SENT281_S06_R01_F",
+    "sentence_id": "SENT281",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "BỆNH",
+      "GÌ",
+      "CUỐI-CÙNG"
+    ],
+    "ref_gloss_str": "TÔI BỆNH GÌ CUỐI-CÙNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "BỆNH",
+      "GÌ",
+      "CUỐI-CÙNG"
+    ],
+    "pred_gloss_str": "TÔI BỆNH GÌ CUỐI-CÙNG",
+    "translation": "Vậy cuối cùng là tôi bị bệnh gì?"
+  },
+  {
+    "sample_id": "SENT282_S06_R01_F",
+    "sentence_id": "SENT282",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "BỆNH",
+      "NGHIÊM-TRỌNG",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI BỆNH NGHIÊM-TRỌNG CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "BỆNH",
+      "NGHIÊM-TRỌNG",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI BỆNH NGHIÊM-TRỌNG CÓ-KHÔNG",
+    "translation": "Bệnh của tôi có nghiêm trọng không?"
+  },
+  {
+    "sample_id": "SENT283_S06_R01_F",
+    "sentence_id": "SENT283",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "1-NGÀY",
+      "TÔI",
+      "THUỐC-UỐNG",
+      "MẤY-LẦN"
+    ],
+    "ref_gloss_str": "1-NGÀY TÔI THUỐC-UỐNG MẤY-LẦN",
+    "pred_gloss_list": [
+      "1-NGÀY",
+      "TÔI",
+      "THUỐC-UỐNG",
+      "MẤY-LẦN"
+    ],
+    "pred_gloss_str": "1-NGÀY TÔI THUỐC-UỐNG MẤY-LẦN",
+    "translation": "Thuốc này tôi uống mấy lần một ngày?"
+  },
+  {
+    "sample_id": "SENT284_S06_R01_F",
+    "sentence_id": "SENT284",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "KHI",
+      "TRƯỚC",
+      "ĂN",
+      "TÔI",
+      "THUỐC-UỐNG",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "KHI TRƯỚC ĂN TÔI THUỐC-UỐNG PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "KHI",
+      "TRƯỚC",
+      "ĂN",
+      "TÔI",
+      "THUỐC-UỐNG",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "KHI TRƯỚC ĂN TÔI THUỐC-UỐNG PHẢI-KHÔNG",
+    "translation": "Tôi uống thuốc này trước khi ăn phải không?"
+  },
+  {
+    "sample_id": "SENT285_S06_R01_F",
+    "sentence_id": "SENT285",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "KHI",
+      "SAU",
+      "ĂN",
+      "TÔI",
+      "THUỐC-UỐNG",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "KHI SAU ĂN TÔI THUỐC-UỐNG PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "KHI",
+      "SAU",
+      "ĂN",
+      "THUỐC-UỐNG",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "KHI SAU ĂN THUỐC-UỐNG PHẢI-KHÔNG",
+    "translation": "Tôi uống thuốc này sau khi ăn phải không?"
+  },
+  {
+    "sample_id": "SENT286_S06_R01_F",
+    "sentence_id": "SENT286",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "THUỐC",
+      "NÀY",
+      "ẢNH-HƯỞNG",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "THUỐC NÀY ẢNH-HƯỞNG CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "THUỐC",
+      "NÀY",
+      "TRÁM",
+      "MUỐN"
+    ],
+    "pred_gloss_str": "THUỐC NÀY TRÁM MUỐN",
+    "translation": "Thuốc này có tác dụng phụ gì không?"
+  },
+  {
+    "sample_id": "SENT287_S06_R01_F",
+    "sentence_id": "SENT287",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "KHÁM",
+      "LẠI",
+      "KHI",
+      "NÀO"
+    ],
+    "ref_gloss_str": "TÔI KHÁM LẠI KHI NÀO",
+    "pred_gloss_list": [
+      "TÔI",
+      "UỐNG",
+      "KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI UỐNG KHÔNG",
+    "translation": "Khi nào tôi cần tái khám?"
+  },
+  {
+    "sample_id": "SENT288_S06_R01_F",
+    "sentence_id": "SENT288",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĂN",
+      "KIÊNG",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI ĂN KIÊNG CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "VẾT-THƯƠNG",
+      "SƯNG"
+    ],
+    "pred_gloss_str": "TÔI VẾT-THƯƠNG SƯNG",
+    "translation": "Tôi có cần phải ăn kiêng gì không?"
+  },
+  {
+    "sample_id": "SENT289_S06_R01_F",
+    "sentence_id": "SENT289",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "PHẪU-THUẬT",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI PHẪU-THUẬT CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "PHẪU-THUẬT",
+      "CẦN-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI PHẪU-THUẬT CẦN-KHÔNG",
+    "translation": "Tôi có cần phẫu thuật không?"
+  },
+  {
+    "sample_id": "SENT290_S06_R01_F",
+    "sentence_id": "SENT290",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "KẾT-QUẢ",
+      "XEM",
+      "KHÔNG-HIỂU"
+    ],
+    "ref_gloss_str": "TÔI KẾT-QUẢ XEM KHÔNG-HIỂU",
+    "pred_gloss_list": [
+      "TÔI",
+      "KẾT-QUẢ",
+      "XEM",
+      "KHÔNG-HIỂU"
+    ],
+    "pred_gloss_str": "TÔI KẾT-QUẢ XEM KHÔNG-HIỂU",
+    "translation": "Tôi xem kết quả mà không hiểu gì."
+  },
+  {
+    "sample_id": "SENT291_S06_R01_F",
+    "sentence_id": "SENT291",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "BÁC-SĨ",
+      "GIẢI-THÍCH",
+      "CHO-TÔI",
+      "ĐƯỢC-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI BÁC-SĨ GIẢI-THÍCH CHO-TÔI ĐƯỢC-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "BÁC-SĨ",
+      "CHO-TÔI",
+      "ĐƯỢC-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI BÁC-SĨ CHO-TÔI ĐƯỢC-KHÔNG",
+    "translation": "Bác sĩ giải thích lại cho tôi được không?"
+  },
+  {
+    "sample_id": "SENT292_S06_R01_F",
+    "sentence_id": "SENT292",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "THUỐC-UỐNG",
+      "NÀY",
+      "UỐNG",
+      "BAO-LÂU"
+    ],
+    "ref_gloss_str": "TÔI THUỐC-UỐNG NÀY UỐNG BAO-LÂU",
+    "pred_gloss_list": [
+      "TÔI",
+      "THUỐC-UỐNG",
+      "UỐNG",
+      "BAO-LÂU"
+    ],
+    "pred_gloss_str": "TÔI THUỐC-UỐNG UỐNG BAO-LÂU",
+    "translation": "Tôi phải uống thuốc này trong bao lâu?"
+  },
+  {
+    "sample_id": "SENT293_S06_R01_F",
+    "sentence_id": "SENT293",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "NGHỈ",
+      "NHIỀU",
+      "CẦN-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI NGHỈ NHIỀU CẦN-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "NGHỈ",
+      "GÌ",
+      "CUỐI-CÙNG"
+    ],
+    "pred_gloss_str": "TÔI NGHỈ GÌ CUỐI-CÙNG",
+    "translation": "Tôi có cần nghỉ ngơi nhiều không?"
+  },
+  {
+    "sample_id": "SENT294_S06_R01_F",
+    "sentence_id": "SENT294",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "HỎI",
+      "BÁC-SĨ",
+      "LÂY",
+      "BỆNH",
+      "CÓ-KHÔNG"
+    ],
+    "ref_gloss_str": "HỎI BÁC-SĨ LÂY BỆNH CÓ-KHÔNG",
+    "pred_gloss_list": [
+      "HỎI",
+      "BÁC-SĨ",
+      "TÔI",
+      "LÂY",
+      "CÓ-KHÔNG"
+    ],
+    "pred_gloss_str": "HỎI BÁC-SĨ TÔI LÂY CÓ-KHÔNG",
+    "translation": "Bệnh này có lây không bác sĩ?"
+  },
+  {
+    "sample_id": "SENT295_S06_R01_F",
+    "sentence_id": "SENT295",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "HỎI",
+      "THUỐC-UỐNG",
+      "KHÔNG-CẦN",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "HỎI THUỐC-UỐNG KHÔNG-CẦN PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "HỎI",
+      "THUỐC-UỐNG",
+      "KHÔNG-CẦN",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "HỎI THUỐC-UỐNG KHÔNG-CẦN PHẢI-KHÔNG",
+    "translation": "Vậy là tôi không cần uống thuốc phải không?"
+  },
+  {
+    "sample_id": "SENT296_S06_R01_F",
+    "sentence_id": "SENT296",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "HỎI",
+      "LỐI-SỐNG",
+      "THAY-ĐỔI",
+      "ĐÚNG-KHÔNG"
+    ],
+    "ref_gloss_str": "HỎI LỐI-SỐNG THAY-ĐỔI ĐÚNG-KHÔNG",
+    "pred_gloss_list": [
+      "HỎI",
+      "LỐI-SỐNG",
+      "THAY-ĐỔI",
+      "ĐÚNG-KHÔNG"
+    ],
+    "pred_gloss_str": "HỎI LỐI-SỐNG THAY-ĐỔI ĐÚNG-KHÔNG",
+    "translation": "Tôi chỉ cần thay đổi lối sống thôi đúng không?"
+  },
+  {
+    "sample_id": "SENT297_S06_R01_F",
+    "sentence_id": "SENT297",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "HỎI",
+      "THỂ-DỤC",
+      "GÌ"
+    ],
+    "ref_gloss_str": "HỎI THỂ-DỤC GÌ",
+    "pred_gloss_list": [
+      "HỎI",
+      "THỂ-DỤC",
+      "GÌ"
+    ],
+    "pred_gloss_str": "HỎI THỂ-DỤC GÌ",
+    "translation": "Tôi nên tập thể dục môn gì?"
+  },
+  {
+    "sample_id": "SENT298_S06_R01_F",
+    "sentence_id": "SENT298",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "TÔI",
+      "ĂN",
+      "MẶN",
+      "KHÔNG-ĐƯỢC",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "TÔI ĂN MẶN KHÔNG-ĐƯỢC PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "TÔI",
+      "ĂN",
+      "MẶN",
+      "KHÔNG-ĐƯỢC",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "TÔI ĂN MẶN KHÔNG-ĐƯỢC PHẢI-KHÔNG",
+    "translation": "Tôi không được ăn mặn phải không?"
+  },
+  {
+    "sample_id": "SENT299_S06_R01_F",
+    "sentence_id": "SENT299",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "HỎI",
+      "RƯỢU-BIA",
+      "THỨC-KHUYA",
+      "ÍT",
+      "PHẢI-KHÔNG"
+    ],
+    "ref_gloss_str": "HỎI RƯỢU-BIA THỨC-KHUYA ÍT PHẢI-KHÔNG",
+    "pred_gloss_list": [
+      "HỎI",
+      "RƯỢU-BIA",
+      "ÍT",
+      "PHẢI-KHÔNG"
+    ],
+    "pred_gloss_str": "HỎI RƯỢU-BIA ÍT PHẢI-KHÔNG",
+    "translation": "Tôi sẽ hạn chế rượu bia và thức khuya?"
+  },
+  {
+    "sample_id": "SENT300_S06_R01_F",
+    "sentence_id": "SENT300",
+    "signer_id": "S06",
+    "ref_gloss_list": [
+      "HỎI",
+      "BÁC-SĨ",
+      "BỆNH",
+      "ĐÁNG-LO",
+      "KHÔNG"
+    ],
+    "ref_gloss_str": "HỎI BÁC-SĨ BỆNH ĐÁNG-LO KHÔNG",
+    "pred_gloss_list": [
+      "HỎI",
+      "BÁC-SĨ",
+      "ĐÁNG-LO",
+      "KHÔNG"
+    ],
+    "pred_gloss_str": "HỎI BÁC-SĨ ĐÁNG-LO KHÔNG",
+    "translation": "Bệnh này không đáng lo phải không bác sĩ?"
+  }
+]

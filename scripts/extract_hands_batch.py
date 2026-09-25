@@ -3,7 +3,7 @@ Batch MediaPipe Hands extraction for Level 1 (fingerspelling letters + tone mark
 
 Matches the backend's hand pipeline (mediapipe.solutions.hands, max_num_hands=1,
 model_complexity=1, mediapipe 0.10.14). Video mode with a fresh tracker per clip.
-Output format is the one src/data/alphabet_dataset.py reads:
+Output format is the one scripts/train_alphabet_real.py reads:
   raw_landmarks [T,21,3] float32 (MediaPipe image coords, zeros where no hand),
   detected_mask [T], handedness_label [T] ('Left'/'Right'/''), handedness_score [T],
   metadata JSON (sample_id, symbol, signer_id, source, width, height, fps, mediapipe_version).

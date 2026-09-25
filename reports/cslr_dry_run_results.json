@@ -1,0 +1,205 @@
+{
+  "device": "cuda",
+  "gpu_name": "NVIDIA GeForce RTX 3050 Laptop GPU",
+  "dataset": {
+    "canonical_path": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\external\\vsl_gh\\dataset_canonical.json",
+    "vocab_size": 372,
+    "test_split_count": 300
+  },
+  "model_architecture": {
+    "name": "STGCNBiGRU_CSLR",
+    "num_joints": 67,
+    "temporal_downsample": 2,
+    "hidden_size": 256,
+    "num_gru_layers": 2,
+    "total_parameters": 2325847,
+    "trainable_parameters": 2325847,
+    "parameter_size_mb": 8.87,
+    "pretrained_transfer": {
+      "checkpoint_path": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\checkpoints\\stgcn_best.pt",
+      "transferred_keys_count": 62,
+      "skipped_keys_count": 3,
+      "transferred_params": 352207,
+      "total_params": 2325847,
+      "trainable_params": 2325847,
+      "backbone_frozen": false
+    }
+  },
+  "test_cases": [
+    {
+      "case": "batch_1",
+      "input_shape": [
+        1,
+        151,
+        67,
+        3
+      ],
+      "output_shape": [
+        76,
+        1,
+        372
+      ],
+      "input_frame_length": 151,
+      "output_frame_length": 76,
+      "target_gloss_count": 5,
+      "ctc_loss": 84.63504791259766,
+      "is_finite": true,
+      "reference_glosses": [
+        "297",
+        "352",
+        "122",
+        "255",
+        "163"
+      ],
+      "predicted_glosses": [
+        "148",
+        "14",
+        "254",
+        "14",
+        "217",
+        "305",
+        "14"
+      ],
+      "wer": {
+        "wer": 140.0,
+        "substitutions": 5,
+        "deletions": 0,
+        "insertions": 2,
+        "sub_rate": 100.0,
+        "del_rate": 0.0,
+        "ins_rate": 40.0,
+        "total_ref_words": 5,
+        "total_hyp_words": 7
+      }
+    },
+    {
+      "case": "batch_2_variable_length",
+      "input_shape": [
+        2,
+        186,
+        67,
+        3
+      ],
+      "output_shape": [
+        93,
+        2,
+        372
+      ],
+      "input_lengths": [
+        151,
+        186
+      ],
+      "output_lengths": [
+        76,
+        93
+      ],
+      "target_lengths": [
+        5,
+        4
+      ],
+      "ctc_loss": 107.96437072753906,
+      "is_finite": true,
+      "wer": {
+        "wer": 144.44,
+        "substitutions": 9,
+        "deletions": 0,
+        "insertions": 4,
+        "sub_rate": 100.0,
+        "del_rate": 0.0,
+        "ins_rate": 44.44,
+        "total_ref_words": 9,
+        "total_hyp_words": 13
+      }
+    },
+    {
+      "case": "batch_4_variable_length",
+      "input_shape": [
+        4,
+        186,
+        67,
+        3
+      ],
+      "output_shape": [
+        93,
+        4,
+        372
+      ],
+      "input_lengths": [
+        151,
+        186,
+        138,
+        108
+      ],
+      "output_lengths": [
+        76,
+        93,
+        69,
+        54
+      ],
+      "target_lengths": [
+        5,
+        4,
+        4,
+        2
+      ],
+      "ctc_loss": 116.38927459716797,
+      "is_finite": true,
+      "wer": {
+        "wer": 160.0,
+        "substitutions": 15,
+        "deletions": 0,
+        "insertions": 9,
+        "sub_rate": 100.0,
+        "del_rate": 0.0,
+        "ins_rate": 60.0,
+        "total_ref_words": 15,
+        "total_hyp_words": 24
+      }
+    },
+    {
+      "case": "longest_sequence_SENT020_S01_R03_F",
+      "sample_id": "SENT020_S01_R03_F",
+      "input_shape": [
+        1,
+        523,
+        67,
+        3
+      ],
+      "output_shape": [
+        262,
+        1,
+        372
+      ],
+      "input_length": 523,
+      "output_length": 262,
+      "target_length": 4,
+      "ctc_loss": 381.30810546875,
+      "is_finite": true,
+      "latency_ms": 87.43,
+      "peak_gpu_mem_mb": 166.26,
+      "wer": {
+        "wer": 500.0,
+        "substitutions": 4,
+        "deletions": 0,
+        "insertions": 16,
+        "sub_rate": 100.0,
+        "del_rate": 0.0,
+        "ins_rate": 400.0,
+        "total_ref_words": 4,
+        "total_hyp_words": 20
+      }
+    }
+  ],
+  "benchmark": {
+    "test_sequence_frames": 151,
+    "model_forward_latency_ms": 17.48,
+    "min_latency_ms": 15.8,
+    "max_latency_ms": 23.85,
+    "theoretical_sequence_fps": 57.19,
+    "per_frame_latency_ms": 0.116,
+    "landmark_frame_throughput_fps": 8636.4,
+    "notes": "FPS is calculated as 1000 / latency_ms (sequence-level). Streaming real-time FPS depends on camera acquisition rate."
+  },
+  "status": "PASS",
+  "dry_run_success": true
+}

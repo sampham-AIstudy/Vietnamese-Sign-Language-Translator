@@ -1,0 +1,168 @@
+{
+  "tier2_classes": 487,
+  "cross_dialect_3fold": {
+    "fold1_test_south": {
+      "fold": "tier2_cd_fold1_test_N",
+      "best_epoch": 3,
+      "val_loss": 6.5867,
+      "val_top1": 0.68,
+      "test_loss": 5.4847,
+      "test_top1": 6.57,
+      "test_top5": 17.66,
+      "macro_f1": 2.68,
+      "train_time_s": 995.2
+    },
+    "fold2_test_central": {
+      "fold": "tier2_cd_fold2_test_T",
+      "best_epoch": 1,
+      "val_loss": 6.6042,
+      "val_top1": 0.0,
+      "test_loss": 6.0999,
+      "test_top1": 0.82,
+      "test_top5": 3.29,
+      "macro_f1": 0.07,
+      "train_time_s": 673.2
+    },
+    "fold3_test_north": {
+      "fold": "tier2_cd_fold3_test_B",
+      "best_epoch": 33,
+      "val_loss": 4.4431,
+      "val_top1": 49.66,
+      "test_loss": 6.7493,
+      "test_top1": 20.53,
+      "test_top5": 30.18,
+      "macro_f1": 13.3,
+      "train_time_s": 1823.9
+    },
+    "mean_top1": 9.31,
+    "std_top1": 8.28,
+    "mean_top5": 17.04,
+    "std_top5": 10.99,
+    "mean_f1": 5.35,
+    "std_f1": 5.72
+  },
+  "in_domain": {
+    "fold": "tier2_indomain",
+    "best_epoch": 29,
+    "val_loss": 4.2961,
+    "val_top1": 50.31,
+    "test_loss": 4.4782,
+    "test_top1": 46.41,
+    "test_top5": 60.78,
+    "macro_f1": 38.22,
+    "train_time_s": 1672.9
+  },
+  "top_15_confused_pairs": [
+    {
+      "true_class": "11",
+      "pred_class": "dấu huyền",
+      "count": 1,
+      "true_idx": 3,
+      "pred_idx": 131
+    },
+    {
+      "true_class": "12",
+      "pred_class": "dấu ngã",
+      "count": 1,
+      "true_idx": 4,
+      "pred_idx": 133
+    },
+    {
+      "true_class": "23",
+      "pred_class": "h",
+      "count": 1,
+      "true_idx": 5,
+      "pred_idx": 155
+    },
+    {
+      "true_class": "6",
+      "pred_class": "dấu huyền",
+      "count": 1,
+      "true_idx": 6,
+      "pred_idx": 131
+    },
+    {
+      "true_class": "anh dũng",
+      "pred_class": "tờ báo",
+      "count": 1,
+      "true_idx": 9,
+      "pred_idx": 419
+    },
+    {
+      "true_class": "anh hai, anh cả",
+      "pred_class": "cô giáo",
+      "count": 1,
+      "true_idx": 11,
+      "pred_idx": 111
+    },
+    {
+      "true_class": "anh ruột",
+      "pred_class": "bài thơ",
+      "count": 1,
+      "true_idx": 12,
+      "pred_idx": 23
+    },
+    {
+      "true_class": "bra-xin (nước bra-xin)",
+      "pred_class": "anh em",
+      "count": 1,
+      "true_idx": 16,
+      "pred_idx": 10
+    },
+    {
+      "true_class": "buông màn",
+      "pred_class": "văn nghệ",
+      "count": 1,
+      "true_idx": 18,
+      "pred_idx": 434
+    },
+    {
+      "true_class": "buổi tối",
+      "pred_class": "ân hận",
+      "count": 1,
+      "true_idx": 21,
+      "pred_idx": 457
+    },
+    {
+      "true_class": "bán hàng",
+      "pred_class": "bánh cuốn",
+      "count": 1,
+      "true_idx": 24,
+      "pred_idx": 25
+    },
+    {
+      "true_class": "báo (con báo)",
+      "pred_class": "huyện",
+      "count": 1,
+      "true_idx": 27,
+      "pred_idx": 165
+    },
+    {
+      "true_class": "bìa vở",
+      "pred_class": "bán hàng",
+      "count": 1,
+      "true_idx": 29,
+      "pred_idx": 24
+    },
+    {
+      "true_class": "bón phân",
+      "pred_class": "trụi lá",
+      "count": 1,
+      "true_idx": 33,
+      "pred_idx": 398
+    },
+    {
+      "true_class": "bông hoa",
+      "pred_class": "anh rể",
+      "count": 1,
+      "true_idx": 34,
+      "pred_idx": 13
+    }
+  ],
+  "anh_cluster_analysis": {
+    "total_anh_classes": 6,
+    "total_anh_eval": 6,
+    "anh_confusions_within": 0,
+    "anh_confusions_outside": 3
+  }
+}

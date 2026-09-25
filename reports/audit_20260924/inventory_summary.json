@@ -1,0 +1,93 @@
+{
+  "level_1": {
+    "source": "data/vsl_alphabet_pilot",
+    "video_count": 1875,
+    "landmarks_npz_count": 1875,
+    "metadata_json_count": 1875,
+    "num_signers": 15,
+    "signers": [
+      "S01",
+      "S02",
+      "S03",
+      "S04",
+      "S05",
+      "S06",
+      "S07",
+      "S08",
+      "S09",
+      "S10",
+      "S11",
+      "S12",
+      "S13",
+      "S14",
+      "S15"
+    ],
+    "num_classes": 24,
+    "classes": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "Dau",
+      "E",
+      "G",
+      "H",
+      "I",
+      "K",
+      "L",
+      "M",
+      "N",
+      "O",
+      "P",
+      "Q",
+      "R",
+      "S",
+      "T",
+      "U",
+      "V",
+      "X",
+      "Y",
+      "Đ"
+    ],
+    "has_trained_checkpoint": false,
+    "is_real_vsl": true,
+    "old_asl_deleted": true
+  },
+  "level_2": {
+    "total_videos_disk": 4362,
+    "total_labels_csv": 4362,
+    "hcmue_videos_disk": 435,
+    "extracted_keypoints_disk": 1469,
+    "unique_glosses_raw": 3315,
+    "region_counts": {
+      "Other": 2759,
+      "Nam (N)": 547,
+      "Bắc (B)": 534,
+      "Trung (T)": 522
+    },
+    "classes_with_less_than_3_samples": 2826,
+    "avg_samples_per_class": 1.32,
+    "tier1_classes_count": 50,
+    "tier2_classes_config_count": 487,
+    "tier2_all_csv_classes_count": 489,
+    "tier2_classes_discrepancy": [
+      "chiếu",
+      "bắt đền"
+    ],
+    "tier2_checkpoint_exists": true
+  },
+  "level_3": {
+    "cslr_keypoints_count": 4200,
+    "cslr_canonical_entries": 4200,
+    "cslr_signers_count": 1,
+    "cslr_signers": [
+      ""
+    ],
+    "cslr_unique_sentences": 300,
+    "raw_10k_pairs": 9405,
+    "clean_10k_pairs": 7140,
+    "cslr_checkpoint_exists": true,
+    "vit5_stage1_exists": true,
+    "vit5_stage2_exists": true
+  }
+}

@@ -1,0 +1,902 @@
+[
+  {
+    "sentence_id": "SENT001",
+    "vsl_gh_gloss": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+    "vsl_gh_vi_translation": "Tôi muốn đăng ký khám sức khỏe.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "297 255 45",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT004",
+    "vsl_gh_gloss": "TÔI NỮ",
+    "vsl_gh_vi_translation": "Tôi là nữ.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "297 218",
+    "category": "UNMATCHED VSL SYNTAX"
+  },
+  {
+    "sentence_id": "SENT007",
+    "vsl_gh_gloss": "TÔI CON 2",
+    "vsl_gh_vi_translation": "Tôi có 2 đứa con.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "297 55 60",
+    "category": "UNMATCHED VSL SYNTAX"
+  },
+  {
+    "sentence_id": "SENT010",
+    "vsl_gh_gloss": "TÔI ĐẶT KHÁM SỨC-KHỎE GÓI CƠ-BẢN MUỐN",
+    "vsl_gh_vi_translation": "Tôi muốn đặt gói khám sức khỏe cơ bản.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "297 307 358 308",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT013",
+    "vsl_gh_gloss": "TÔI NỘP GIẤY CẦN",
+    "vsl_gh_vi_translation": "Tôi cần nộp giấy tờ.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "UNMATCHED VSL SYNTAX"
+  },
+  {
+    "sentence_id": "SENT016",
+    "vsl_gh_gloss": "TÔI ĐẾN KHÁM ĐỂ ĐĂNG-KÝ THẺ LÁI-XE THI",
+    "vsl_gh_vi_translation": "Tôi đến khám để đăng ký thi bằng lái xe.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT019",
+    "vsl_gh_gloss": "TÔI HẸN GIỜ 9 SÁNG CÓ",
+    "vsl_gh_vi_translation": "Tôi có hẹn lúc 9 giờ sáng.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "UNMATCHED VSL SYNTAX"
+  },
+  {
+    "sentence_id": "SENT022",
+    "vsl_gh_gloss": "TÔI IX BÁC-SĨ GẶP MUỐN",
+    "vsl_gh_vi_translation": "Tôi muốn gặp bác sĩ.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT025",
+    "vsl_gh_gloss": "TÔI GIẤY GIỚI-THIỆU MANG CÓ",
+    "vsl_gh_vi_translation": "Tôi có mang theo giấy giới thiệu.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT028",
+    "vsl_gh_gloss": "TÔI NGỒI ĐỢI ĐÂY",
+    "vsl_gh_vi_translation": "Tôi sẽ ngồi đây đợi.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "UNMATCHED VSL SYNTAX"
+  },
+  {
+    "sentence_id": "SENT031",
+    "vsl_gh_gloss": "TÔI ĐẾN KHÁM PHÒNG SỐ-MẤY",
+    "vsl_gh_vi_translation": "Tôi khám ở phòng số mấy?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT034",
+    "vsl_gh_gloss": "TÔI NỘP GIẤY KHÁC CẦN-KHÔNG",
+    "vsl_gh_vi_translation": "Tôi có cần nộp giấy tờ gì không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT037",
+    "vsl_gh_gloss": "BÁC-SĨ IX VIẾT GIẤY CÓ-THẾ",
+    "vsl_gh_vi_translation": "Bác sĩ có thể viết ra giấy được không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT040",
+    "vsl_gh_gloss": "TÔI VIẾT GIẤY NÀO CẦN-KHÔNG",
+    "vsl_gh_vi_translation": "Tôi có cần điền vào mẫu giấy nào không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT043",
+    "vsl_gh_gloss": "TÔI BẢO-HIỂM Y-TẾ KHÔNG-CÓ",
+    "vsl_gh_vi_translation": "Tôi không có bảo hiểm y tế.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT046",
+    "vsl_gh_gloss": "TÔI TRẢ THẺ ĐƯỢC-KHÔNG",
+    "vsl_gh_vi_translation": "Tôi trả bằng thẻ được không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT049",
+    "vsl_gh_gloss": "IX BÁC-SĨ TÊN GÌ",
+    "vsl_gh_vi_translation": "Bác sĩ tên là gì ạ?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT052",
+    "vsl_gh_gloss": "TÔI NỘP HỒ-SƠ QUẦY ĐÂU",
+    "vsl_gh_vi_translation": "Tôi nộp hồ sơ ở quầy nào?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT055",
+    "vsl_gh_gloss": "TÔI THÔNG-TIN SAI",
+    "vsl_gh_vi_translation": "Thông tin của tôi bị sai.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT058",
+    "vsl_gh_gloss": "NHÀ IX CÙNG TÔI VÀO ĐƯỢC-KHÔNG",
+    "vsl_gh_vi_translation": "Người nhà vào cùng tôi được không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT061",
+    "vsl_gh_gloss": "TÔI NÀY PHÒNG CHỜ ĐÚNG-KHÔNG",
+    "vsl_gh_vi_translation": "Tôi chờ ở phòng này đúng không ạ?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT064",
+    "vsl_gh_gloss": "TÔI XIN VIẾT GIÚP",
+    "vsl_gh_vi_translation": "Xin viết ra giấy giúp tôi.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "UNMATCHED VSL SYNTAX"
+  },
+  {
+    "sentence_id": "SENT067",
+    "vsl_gh_gloss": "TÔI ĐỢI BAO-LÂU",
+    "vsl_gh_vi_translation": "Tôi đợi bao lâu rồi?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT070",
+    "vsl_gh_gloss": "TÔI ĐO CÂN-NẶNG CẦN",
+    "vsl_gh_vi_translation": "Tôi cần đo cân nặng.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT073",
+    "vsl_gh_gloss": "TÔI HUYẾT-ÁP ĐO CẦN",
+    "vsl_gh_vi_translation": "Tôi cần đo huyết áp.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT076",
+    "vsl_gh_gloss": "TÔI MẠCH 70",
+    "vsl_gh_vi_translation": "Mạch của tôi là 70.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "UNMATCHED VSL SYNTAX"
+  },
+  {
+    "sentence_id": "SENT079",
+    "vsl_gh_gloss": "TÔI THỊ-LỰC ĐO RỒI",
+    "vsl_gh_vi_translation": "Tôi đo thị lực xong rồi.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT082",
+    "vsl_gh_gloss": "TÔI ĐỨNG PHẢI-KHÔNG",
+    "vsl_gh_vi_translation": "Tôi đứng lên phải không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT085",
+    "vsl_gh_gloss": "TÔI NÍN-THỞ CẦN-KHÔNG",
+    "vsl_gh_vi_translation": "Tôi có cần nín thở không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT088",
+    "vsl_gh_gloss": "TÔI HUYẾT-ÁP BÌNH-THƯỜNG CÓ-KHÔNG",
+    "vsl_gh_vi_translation": "Huyết áp của tôi có bình thường không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT091",
+    "vsl_gh_gloss": "IX BÁC-SĨ TÔI GIÚP ĐO LẠI ĐƯỢC-KHÔNG",
+    "vsl_gh_vi_translation": "Bác sĩ đo lại giúp tôi được không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT094",
+    "vsl_gh_gloss": "TÔI MẮT ĐO CẦN-KHÔNG",
+    "vsl_gh_vi_translation": "Tôi có cần đo mắt không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT097",
+    "vsl_gh_gloss": "TÔI SỨC-KHỎE YẾU CÓ-KHÔNG",
+    "vsl_gh_vi_translation": "Tôi có bị suy dinh dưỡng không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT100",
+    "vsl_gh_gloss": "TÔI NAY TĂNG-CÂN",
+    "vsl_gh_vi_translation": "Dạo này tôi bị tăng cân.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT103",
+    "vsl_gh_gloss": "TÔI NGỰC-ĐAU",
+    "vsl_gh_vi_translation": "Tôi bị đau ngực.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT106",
+    "vsl_gh_gloss": "TÔI SỐT",
+    "vsl_gh_vi_translation": "Tôi bị sốt.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT109",
+    "vsl_gh_gloss": "TÔI ĂN VỊ KHÔNG-NHẬN",
+    "vsl_gh_vi_translation": "Tôi ăn không cảm nhận được vị.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT112",
+    "vsl_gh_gloss": "TÔI TÁO-BÓN",
+    "vsl_gh_vi_translation": "Tôi bị táo bón.",
+    "parallel_corpus_vsl_matched": "tôi táo bón .",
+    "parallel_corpus_vi_matched": "tôi bị táo bón .",
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND MISMATCH"
+  },
+  {
+    "sentence_id": "SENT115",
+    "vsl_gh_gloss": "TÔI CẢM-THẤY THỞ-KHÓ",
+    "vsl_gh_vi_translation": "Tôi cảm thấy khó thở.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT118",
+    "vsl_gh_gloss": "TÔI HUYẾT-ÁP CAO BỆNH",
+    "vsl_gh_vi_translation": "Tôi bị cao huyết áp.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT121",
+    "vsl_gh_gloss": "TÔI KHỚP-GỐI CHÂN ĐAU",
+    "vsl_gh_vi_translation": "Tôi bị đau khớp gối.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT124",
+    "vsl_gh_gloss": "TÔI THỪA-RUỘT PHẪU-THUẬT NĂM-NGOÁI",
+    "vsl_gh_vi_translation": "Tôi đã phẫu thuật ruột thừa vào năm ngoái.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT127",
+    "vsl_gh_gloss": "TÔI BIA-RƯỢU UỐNG CÓ",
+    "vsl_gh_vi_translation": "Tôi có uống rượu bia.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT130",
+    "vsl_gh_gloss": "TÔI TÉ VỪA",
+    "vsl_gh_vi_translation": "Tôi vừa bị té ngã.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "UNMATCHED VSL SYNTAX"
+  },
+  {
+    "sentence_id": "SENT133",
+    "vsl_gh_gloss": "TÔI MỤN NHIỀU GẦN-ĐÂY",
+    "vsl_gh_vi_translation": "Gần đây tôi bị nổi mụn nhiều.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT136",
+    "vsl_gh_gloss": "TÔI NGHĨ TÔI THAI CÓ",
+    "vsl_gh_vi_translation": "Tôi nghĩ là tôi có thai.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "UNMATCHED VSL SYNTAX"
+  },
+  {
+    "sentence_id": "SENT139",
+    "vsl_gh_gloss": "TÔI ĐẾN KHÁM MẮT",
+    "vsl_gh_vi_translation": "Tôi đến khám mắt.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT142",
+    "vsl_gh_gloss": "TÔI ĐEO-KÍNH CÓ",
+    "vsl_gh_vi_translation": "Tôi có đeo kính.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT145",
+    "vsl_gh_gloss": "TÔI VIÊM-XOANG BỆNH",
+    "vsl_gh_vi_translation": "Tôi bị viêm xoang.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT148",
+    "vsl_gh_gloss": "TÔI RĂNG SÂU",
+    "vsl_gh_vi_translation": "Tôi bị sâu răng.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "UNMATCHED VSL SYNTAX"
+  },
+  {
+    "sentence_id": "SENT151",
+    "vsl_gh_gloss": "BÁC-SĨ HỎI TÔI ĐAU ĐÂU",
+    "vsl_gh_vi_translation": "Bác sĩ hỏi tôi đau ở đâu hả?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT154",
+    "vsl_gh_gloss": "TÔI ĐAU HƠI HƠI",
+    "vsl_gh_vi_translation": "Chỉ đau hơi hơi thôi.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT157",
+    "vsl_gh_gloss": "TÔI QUẶN-THẮT ĐAU",
+    "vsl_gh_vi_translation": "Nó đau quặn thắt.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT160",
+    "vsl_gh_gloss": "TÔI ĐAU 3-NGÀY RỒI",
+    "vsl_gh_vi_translation": "Tôi đau ba ngày rồi.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT163",
+    "vsl_gh_gloss": "TÔI LÚC ĐÓI ĐAU-BỤNG",
+    "vsl_gh_vi_translation": "Lúc đói tôi cũng đau bụng",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT166",
+    "vsl_gh_gloss": "TÔI THUỐC DỊ-ỨNG KHÔNG",
+    "vsl_gh_vi_translation": "Tôi có bị dị ứng thuốc không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT169",
+    "vsl_gh_gloss": "TÔI MŨI-NGHẸT CÓ",
+    "vsl_gh_vi_translation": "Tôi bị nghẹt mũi.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT172",
+    "vsl_gh_gloss": "TÔI CẢM-THẤY THỞ-KHÓ",
+    "vsl_gh_vi_translation": "Tôi thấy khó thở lắm.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT175",
+    "vsl_gh_gloss": "BÁC-SĨ HỎI GIA-ĐÌNH TÔI BỆNH-GÌ KHÔNG",
+    "vsl_gh_vi_translation": "Bác sĩ hỏi gia đình tôi có ai bị bệnh này không hả?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT178",
+    "vsl_gh_gloss": "TÔI NẰM CẦN-KHÔNG",
+    "vsl_gh_vi_translation": "Tôi có cần nằm xuống không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT181",
+    "vsl_gh_gloss": "TÔI ẤN ĐAU LẮM",
+    "vsl_gh_vi_translation": "Ấn vào đây tôi đau lắm!",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT184",
+    "vsl_gh_gloss": "TÔI CẢM-THẤY LO-LẮNG NHIỀU",
+    "vsl_gh_vi_translation": "Tôi hay cảm thấy lo lắng.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT187",
+    "vsl_gh_gloss": "BÁC-SĨ HỎI-TÔI ĐAU BAO-LÂU",
+    "vsl_gh_vi_translation": "Bác sĩ hỏi tôi bị đau bao lâu rồi hả?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT190",
+    "vsl_gh_gloss": "BÁC-SĨ HỎI-TÔI TIỂU ĐAU CÓ-KHÔNG",
+    "vsl_gh_vi_translation": "Bác sĩ hỏi tôi có bị tiểu buốt không hả?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT193",
+    "vsl_gh_gloss": "TÔI DA NGỨA-NHIỀU",
+    "vsl_gh_vi_translation": "Da tôi bị ngứa lắm.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT196",
+    "vsl_gh_gloss": "TÔI THUỐC BỔI CHƯA",
+    "vsl_gh_vi_translation": "Tôi chưa bôi thuốc gì cả.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT199",
+    "vsl_gh_gloss": "CÓ-PHẢI THAI CÓ-KHÔNG",
+    "vsl_gh_vi_translation": "Có phải tôi mang thai không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT202",
+    "vsl_gh_gloss": "TÔI KINH-NGUYỆT ĐỀU KHÔNG",
+    "vsl_gh_vi_translation": "Kinh nguyệt của tôi không đều.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT205",
+    "vsl_gh_gloss": "TÔI CON 2 CÓ",
+    "vsl_gh_vi_translation": "Tôi có hai con rồi.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "UNMATCHED VSL SYNTAX"
+  },
+  {
+    "sentence_id": "SENT208",
+    "vsl_gh_gloss": "TÔI KHÍ-HƯ RA BẤT-THƯỜNG",
+    "vsl_gh_vi_translation": "Tôi bị ra khí hư bất thường.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT211",
+    "vsl_gh_gloss": "TÔI ĐỌC HÀNG-NÀY PHẢI-KHÔNG",
+    "vsl_gh_vi_translation": "Tôi đọc hàng này phải không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT214",
+    "vsl_gh_gloss": "TÔI MẮT-TRÁI CHE",
+    "vsl_gh_vi_translation": "Tôi che mắt trái lại phải không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT217",
+    "vsl_gh_gloss": "TÔI KÍNH BỎ-RA PHẢI-KHÔNG",
+    "vsl_gh_vi_translation": "Tôi bỏ kính ra phải không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT220",
+    "vsl_gh_gloss": "TÔI TAI PHẢI NGHE BÌNH-THƯỜNG",
+    "vsl_gh_vi_translation": "Tai phải của tôi bình thường.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT223",
+    "vsl_gh_gloss": "TÔI HỌNG ĐAU",
+    "vsl_gh_vi_translation": "Họng của tôi đau.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT226",
+    "vsl_gh_gloss": "TÔI RĂNG SÂU NẶNG LẮM",
+    "vsl_gh_vi_translation": "Răng của tôi bị sâu nặng lắm.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "UNMATCHED VSL SYNTAX"
+  },
+  {
+    "sentence_id": "SENT229",
+    "vsl_gh_gloss": "TÔI RĂNG Ê-BUỐT",
+    "vsl_gh_vi_translation": "Răng tôi bị ê buốt.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT232",
+    "vsl_gh_gloss": "TÔI NƯỚC-TIỂU VÀO-BÌNH RỒI",
+    "vsl_gh_vi_translation": "Tôi lấy nước tiểu xong rồi.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT235",
+    "vsl_gh_gloss": "TÔI XÉT-NGHIỆM MÁU CÓ",
+    "vsl_gh_vi_translation": "Tôi có làm xét nghiệm huyết học.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT238",
+    "vsl_gh_gloss": "BÁC-SĨ CHỈ-ĐỊNH CHỤP X-QUANG PHỔI",
+    "vsl_gh_vi_translation": "Bác sĩ chỉ định tôi chụp X-quang phổi.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT241",
+    "vsl_gh_gloss": "TÔI ĐO TIM ĐIỆN XONG-RỒI",
+    "vsl_gh_vi_translation": "Tôi đo điện tim xong rồi.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT244",
+    "vsl_gh_gloss": "TÔI XÉT-NGHIỆM GAN CHỨC-NĂNG CẦN",
+    "vsl_gh_vi_translation": "Tôi cần xét nghiệm chức năng gan.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT247",
+    "vsl_gh_gloss": "TỐI HÔM-QUA TÔI ĂN KHÔNG",
+    "vsl_gh_vi_translation": "Tôi đã nhịn ăn từ tối hôm qua.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT250",
+    "vsl_gh_gloss": "TÔI NỘP BÁC-SĨ KẾT-QUẢ",
+    "vsl_gh_vi_translation": "Tôi sẽ nộp kết quả này cho bác sĩ.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT253",
+    "vsl_gh_gloss": "SÁNG NAY TÔI ĂN RỒI",
+    "vsl_gh_vi_translation": "Sáng nay tôi lỡ ăn sáng mất rồi.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "UNMATCHED VSL SYNTAX"
+  },
+  {
+    "sentence_id": "SENT256",
+    "vsl_gh_gloss": "LẤY MÁU TÔI SỢ-LẮM",
+    "vsl_gh_vi_translation": "Tôi sợ lấy máu lắm.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT259",
+    "vsl_gh_gloss": "TÔI NƯỚC-TIỂU MẪU LẤY Ở-ĐÂU",
+    "vsl_gh_vi_translation": "Tôi lấy mẫu nước tiểu ở đâu?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT262",
+    "vsl_gh_gloss": "BÁC-SĨ HỎI-TÔI ĐEO-TAY VÒNG KIM-LOẠI CÓ-KHÔNG",
+    "vsl_gh_vi_translation": "Bác sĩ hỏi tôi có đeo đồ kim loại không hả?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT265",
+    "vsl_gh_gloss": "TÔI CHỜ KẾT-QUẢ BAO-LÂU",
+    "vsl_gh_vi_translation": "Tôi phải chờ kết quả trong bao lâu?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT268",
+    "vsl_gh_gloss": "TÔI XÉT-NGHIỆM TẤT-CẢ XONG RỒI",
+    "vsl_gh_vi_translation": "Tôi làm xong hết các xét nghiệm rồi.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT271",
+    "vsl_gh_gloss": "TÔI HIỂU RỒI",
+    "vsl_gh_vi_translation": "Vâng, tôi hiểu rồi.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "UNMATCHED VSL SYNTAX"
+  },
+  {
+    "sentence_id": "SENT274",
+    "vsl_gh_gloss": "TÔI MUA THUỐC SẼ",
+    "vsl_gh_vi_translation": "Tôi sẽ đi mua thuốc.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT277",
+    "vsl_gh_gloss": "TÔI KHÁM KỲ SAU LẠI",
+    "vsl_gh_vi_translation": "Tôi sẽ tái khám vào kỳ sau.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT280",
+    "vsl_gh_gloss": "TÔI BÁC-SĨ CHÀO",
+    "vsl_gh_vi_translation": "Tôi chào bác sĩ.",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT283",
+    "vsl_gh_gloss": "1-NGÀY TÔI THUỐC-UỐNG MẤY-LẦN",
+    "vsl_gh_vi_translation": "Thuốc này tôi uống mấy lần một ngày?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT286",
+    "vsl_gh_gloss": "THUỐC NÀY ẢNH-HƯỞNG CÓ-KHÔNG",
+    "vsl_gh_vi_translation": "Thuốc này có tác dụng phụ gì không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT289",
+    "vsl_gh_gloss": "TÔI PHẪU-THUẬT CẦN-KHÔNG",
+    "vsl_gh_vi_translation": "Tôi có cần phẫu thuật không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  },
+  {
+    "sentence_id": "SENT292",
+    "vsl_gh_gloss": "TÔI THUỐC-UỐNG NÀY UỐNG BAO-LÂU",
+    "vsl_gh_vi_translation": "Tôi phải uống thuốc này trong bao lâu?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT295",
+    "vsl_gh_gloss": "HỎI THUỐC-UỐNG KHÔNG-CẦN PHẢI-KHÔNG",
+    "vsl_gh_vi_translation": "Vậy là tôi không cần uống thuốc phải không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "DOMAIN SPECIFIC HEALTHCARE (NO PARALLEL MATCH)"
+  },
+  {
+    "sentence_id": "SENT298",
+    "vsl_gh_gloss": "TÔI ĂN MẶN KHÔNG-ĐƯỢC PHẢI-KHÔNG",
+    "vsl_gh_vi_translation": "Tôi không được ăn mặn phải không?",
+    "parallel_corpus_vsl_matched": null,
+    "parallel_corpus_vi_matched": null,
+    "cslr_prediction_sample": "<NOT_IN_S06_TEST>",
+    "category": "COMPOUND GLOSS NOT IN 10K"
+  }
+]

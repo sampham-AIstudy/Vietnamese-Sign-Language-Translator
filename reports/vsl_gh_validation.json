@@ -1,0 +1,90 @@
+{
+  "status": "PASS",
+  "dataset": "VSL-GH Frontal Canonical",
+  "total_samples": 4200,
+  "total_frontal_keypoints": 4200,
+  "total_annotations_in_canonical_dir": 4206,
+  "total_sentences": 300,
+  "sentence_range": "SENT001 - SENT300",
+  "samples_per_sentence": 14,
+  "signers_count": 6,
+  "signer_distribution": {
+    "S01": 900,
+    "S02": 900,
+    "S03": 900,
+    "S04": 900,
+    "S05": 300,
+    "S06": 300
+  },
+  "splits_distribution": {
+    "train": 3600,
+    "val": 300,
+    "test": 300
+  },
+  "empty_gloss_sequence_count": 0,
+  "missing_translation_count": 0,
+  "missing_keypoint_count": 0,
+  "keypoint_validation": {
+    "expected_shape": "[T, 411]",
+    "expected_dtype": "float32",
+    "corrupted_files": 0,
+    "shape_errors": 0,
+    "dtype_errors": 0,
+    "sample_checks": [
+      {
+        "id": "SENT001_S01_R01_F",
+        "shape": [
+          143,
+          411
+        ],
+        "dtype": "float32"
+      },
+      {
+        "id": "SENT001_S01_R02_F",
+        "shape": [
+          153,
+          411
+        ],
+        "dtype": "float32"
+      },
+      {
+        "id": "SENT001_S01_R03_F",
+        "shape": [
+          141,
+          411
+        ],
+        "dtype": "float32"
+      },
+      {
+        "id": "SENT001_S02_R01_F",
+        "shape": [
+          143,
+          411
+        ],
+        "dtype": "float32"
+      },
+      {
+        "id": "SENT001_S02_R02_F",
+        "shape": [
+          154,
+          411
+        ],
+        "dtype": "float32"
+      }
+    ]
+  },
+  "joint_conversion_to_67": {
+    "expected_target_shape": "[T, 67, 3]",
+    "components": {
+      "pose": "first 25 landmarks (dims 0..75) -> [T, 25, 3]",
+      "left_hand": "21 landmarks (dims 285..348) -> [T, 21, 3]",
+      "right_hand": "21 landmarks (dims 348..411) -> [T, 21, 3]"
+    },
+    "successful_conversions": 4200,
+    "conversion_rate": "100.0%"
+  },
+  "hash_verification": {
+    "frontal_keypoints_matched": 4200,
+    "annotations_matched": 4200
+  }
+}

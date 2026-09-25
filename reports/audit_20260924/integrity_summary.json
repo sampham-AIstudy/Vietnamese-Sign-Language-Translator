@@ -1,0 +1,98 @@
+{
+  "leakage": {
+    "level_2_video_leakage": {
+      "train_val": 0,
+      "train_test": 0,
+      "val_test": 0,
+      "same_concept_id_across_splits": false,
+      "note": "Train, Val, Test contain different dialects of the same concept (e.g. 0001B in train, 0001T in val, 0001N in test), making it in-domain across classes but cross-dialect per instance."
+    },
+    "level_3_cslr_standard_split": {
+      "signer_overlap": [],
+      "sentence_overlap": 300,
+      "is_sentence_held_out": false,
+      "is_signer_held_out": true,
+      "note": "Standard train/val/test splits sentences (300 sentences disjoint), BUT all 6 signers appear across train, val, and test!"
+    },
+    "level_3_loso_split": {
+      "is_signer_held_out": false,
+      "test_signer": [
+        "S06"
+      ]
+    }
+  },
+  "dialect_confounding": {
+    "indomain_train": {
+      "B": 488,
+      "Other": 7,
+      "N": 1,
+      "T": 1
+    },
+    "indomain_val": {
+      "T": 488,
+      "B": 1
+    },
+    "indomain_test": {
+      "N": 488,
+      "B": 1
+    },
+    "is_indomain_balanced": true,
+    "cross_dialect_folds": {},
+    "cross_dialect_confound_status": "Folds 0, 1, 2 in folds/ were designed as cross-dialect (100% single dialect per fold) to test generalization, NOT accidentally confounded."
+  },
+  "labels": {
+    "missing_videos_count": 0,
+    "orphan_videos_count": 0,
+    "duplicate_video_rows": 0,
+    "labels_with_whitespace": 0,
+    "unique_raw_labels": 3315,
+    "unique_normalized_labels": 3314
+  },
+  "keypoints_health": {
+    "level_1_shape": [
+      105,
+      21,
+      3
+    ],
+    "level_2_shape": [
+      133,
+      67,
+      3
+    ],
+    "level_2_seq_length": {
+      "min": 79,
+      "median": 117.0,
+      "max": 255
+    },
+    "level_3_shape": [
+      143,
+      411
+    ],
+    "level_3_seq_length": {
+      "min": 59,
+      "median": 104.0,
+      "max": 194
+    }
+  },
+  "feature_space_consistency": {
+    "stgcn_tier2_graph_nodes": 67,
+    "realtime_extractor_nodes": 67,
+    "matches_stgcn": true,
+    "vsl_gh_raw_dim": 411,
+    "vsl_gh_converted_shape": [
+      10,
+      67,
+      3
+    ],
+    "matches_cslr_input": true
+  },
+  "translation_corpus": {
+    "raw_10k_total": 9405,
+    "raw_10k_noop_count": 2204,
+    "raw_10k_noop_ratio": 0.2343,
+    "clean_10k_total": 7140,
+    "clean_10k_noop_count": 0,
+    "vsl_gh_unique_glosses": 370,
+    "vsl_gh_missing_from_10k_ratio": 0.0676
+  }
+}

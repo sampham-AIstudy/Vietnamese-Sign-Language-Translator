@@ -1,0 +1,187 @@
+{
+  "d1_extraction": [
+    {
+      "video": "D0001B.mp4",
+      "shape": [
+        130,
+        67,
+        3
+      ],
+      "vis_shape": [
+        130,
+        67
+      ],
+      "latency_ms": 15551.93,
+      "valid_shape": true
+    },
+    {
+      "video": "D0001N.mp4",
+      "shape": [
+        133,
+        67,
+        3
+      ],
+      "vis_shape": [
+        133,
+        67
+      ],
+      "latency_ms": 10960.33,
+      "valid_shape": true
+    }
+  ],
+  "d2_level2": [
+    {
+      "sample": "1.npz",
+      "top1": "địa chỉ",
+      "confidence": 0.5155,
+      "top5": [
+        {
+          "gloss": "địa chỉ",
+          "confidence": 0.5155
+        },
+        {
+          "gloss": "mùa xuân",
+          "confidence": 0.069
+        },
+        {
+          "gloss": "con ngựa",
+          "confidence": 0.027
+        }
+      ],
+      "latency_ms": 90.48
+    },
+    {
+      "sample": "1001.npz",
+      "top1": "muốn",
+      "confidence": 0.1007,
+      "top5": [
+        {
+          "gloss": "muốn",
+          "confidence": 0.1007
+        },
+        {
+          "gloss": "ai",
+          "confidence": 0.088
+        },
+        {
+          "gloss": "áo phông",
+          "confidence": 0.0549
+        }
+      ],
+      "latency_ms": 20.71
+    },
+    {
+      "sample": "1002.npz",
+      "top1": "bột màu",
+      "confidence": 0.0443,
+      "top5": [
+        {
+          "gloss": "bột màu",
+          "confidence": 0.0443
+        },
+        {
+          "gloss": "trúng tuyển",
+          "confidence": 0.0384
+        },
+        {
+          "gloss": "buổi trưa",
+          "confidence": 0.0348
+        }
+      ],
+      "latency_ms": 6.49
+    }
+  ],
+  "d3_cslr": [
+    {
+      "sample": "SENT001_S01_R01_F.npy",
+      "input_shape": [
+        143,
+        411
+      ],
+      "converted_shape": [
+        143,
+        67,
+        3
+      ],
+      "num_frames": 143,
+      "gloss_list": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "gloss_str": "TÔI DA CHƯA",
+      "latency_ms": 217.8
+    },
+    {
+      "sample": "SENT002_S01_R01_F.npy",
+      "input_shape": [
+        92,
+        411
+      ],
+      "converted_shape": [
+        92,
+        67,
+        3
+      ],
+      "num_frames": 92,
+      "gloss_list": [
+        "TÔI",
+        "DA",
+        "CHƯA"
+      ],
+      "gloss_str": "TÔI DA CHƯA",
+      "latency_ms": 48.7
+    }
+  ],
+  "d4_translation": {
+    "oracle": [
+      {
+        "input_gloss": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+        "translation": "Tôi muốn đăng ký khám sức khỏe.",
+        "latency_ms": 1150.84
+      },
+      {
+        "input_gloss": "BẠN TÊN GÌ",
+        "translation": "Bạn tên gì?",
+        "latency_ms": 479.22
+      }
+    ],
+    "cslr_predicted": [
+      {
+        "input_cslr_gloss": "TÔI DA CHƯA",
+        "translation": "Tôi chưa có da.",
+        "latency_ms": 558.31
+      },
+      {
+        "input_cslr_gloss": "TÔI DA CHƯA",
+        "translation": "Tôi chưa có da.",
+        "latency_ms": 619.74
+      }
+    ]
+  },
+  "d5_backend": {
+    "health_status_code": 200,
+    "health_json": {
+      "status": "ok",
+      "service": "vsl-backend",
+      "cuda_available": true,
+      "device": "cuda",
+      "hardware": "NVIDIA GeForce RTX 3050 Laptop GPU",
+      "model_loaded": true,
+      "model_type": "stgcn",
+      "num_classes": 487,
+      "timestamp": 1790223682.8375716
+    },
+    "classes_count": 487,
+    "dictionary_count": 4797,
+    "translate_status_code": 200,
+    "translate_result": "Tôi muốn học bài này.",
+    "websocket_status": "PASS"
+  },
+  "d7_latency": {
+    "mean_ms": 8.76,
+    "p50_ms": 8.15,
+    "p95_ms": 12.81,
+    "target_lt_150ms": true
+  }
+}

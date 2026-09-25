@@ -13,6 +13,5 @@ by `scripts/record_vsl_alphabet.py`, not recorded from people:
 Kept (not deleted) only as evidence for the audit trail:
 `reports/alphabet_run_2026-09-24/DATA_INTEGRITY_STOP.md`.
 
-This file is also a **guard**: `vsl_alphabet_cloud_training.ipynb` and
-`scripts/package_alphabet_cloud_data.py` refuse to run on any data directory that contains it.
-Real Level 1 data goes to `data/vsl_alphabet_real/` via `scripts/collect_alphabet_real.py`.
+The pilot notebook/packaging scripts that consumed this directory were removed (2026-09-25).
+Real Level 1 data: Kaggle `hauuto/vietnamese-sign-language-alphabet` via `scripts/train_alphabet_real.py`.

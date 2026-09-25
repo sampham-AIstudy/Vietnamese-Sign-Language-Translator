@@ -1,0 +1,47 @@
+sample_id,true,pred
+qipedc_D0489,a,â
+qipedc_D0490B,ă,dấu nặng
+qipedc_D0490N,ă,â
+qipedc_D0491B,â,â
+qipedc_D0491N,â,â
+qipedc_D0491T,â,â
+qipedc_D0493,c,c
+qipedc_D0494,d,d
+qipedc_D0495,đ,đ
+qipedc_D0496,e,ê
+qipedc_D0497B,ê,ê
+qipedc_D0497N,ê,ê
+qipedc_D0497T,ê,ê
+qipedc_D0498B,g,g
+qipedc_D0500B,h,h
+qipedc_D0500N,h,r
+qipedc_D0501,i,y
+qipedc_D0503,l,l
+qipedc_D0504,m,m
+qipedc_D0505,n,q
+qipedc_D0506,o,dấu huyền
+qipedc_D0507B,ô,ô
+qipedc_D0507N,ô,â
+qipedc_D0507T,ô,â
+qipedc_D0508N,ơ,ơ
+qipedc_D0509N,p,p
+qipedc_D0509T,p,p
+qipedc_D0510,q,q
+qipedc_D0511,r,v
+qipedc_D0512,s,a
+qipedc_D0513B,t,dấu nặng
+qipedc_D0513N,t,t
+qipedc_D0513T,t,t
+qipedc_D0514,u,v
+qipedc_D0515N,ư,ư
+qipedc_D0516,v,v
+qipedc_D0517B,x,dấu huyền
+qipedc_D0517T,x,x
+qipedc_D0518N,y,y
+qipedc_D0490T,ă,â
+qipedc_D0492,b,b
+qipedc_D0498N,g,g
+qipedc_D0500T,h,r
+qipedc_D0502,k,k
+qipedc_D0509B,p,dấu huyền
+qipedc_D0517N,x,x

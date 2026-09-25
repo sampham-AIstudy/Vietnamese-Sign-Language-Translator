@@ -1,0 +1,129 @@
+{
+  "analysis_type": "CTC Alignment Feasibility per Temporal Downsampling Stride",
+  "total_samples": 4200,
+  "stricter_rule_applied": "T_out >= L_target + adjacent_repeated_glosses",
+  "stride_evaluations": {
+    "stride_1": {
+      "stride": 1,
+      "feasible_samples": 4200,
+      "infeasible_samples": 0,
+      "feasibility_percentage": 100.0,
+      "margin_p1": 54.0,
+      "margin_p5": 65.0,
+      "margin_p50_median": 101.0,
+      "margin_p95": 152.0,
+      "worst_sample": {
+        "id": "SENT254_S02_R02_F",
+        "T_raw": 34,
+        "T_out": 34,
+        "L_target": 2,
+        "adjacent_repeats": 0,
+        "required_timesteps": 2,
+        "margin": 32,
+        "gloss_sequence": [
+          "TÔI",
+          "SAO-KHÔNG"
+        ]
+      }
+    },
+    "stride_2": {
+      "stride": 2,
+      "feasible_samples": 4200,
+      "infeasible_samples": 0,
+      "feasibility_percentage": 100.0,
+      "margin_p1": 25.0,
+      "margin_p5": 31.0,
+      "margin_p50_median": 48.0,
+      "margin_p95": 73.0,
+      "worst_sample": {
+        "id": "SENT254_S02_R02_F",
+        "T_raw": 34,
+        "T_out": 17,
+        "L_target": 2,
+        "adjacent_repeats": 0,
+        "required_timesteps": 2,
+        "margin": 15,
+        "gloss_sequence": [
+          "TÔI",
+          "SAO-KHÔNG"
+        ]
+      }
+    },
+    "stride_4": {
+      "stride": 4,
+      "feasible_samples": 4200,
+      "infeasible_samples": 0,
+      "feasibility_percentage": 100.0,
+      "margin_p1": 11.0,
+      "margin_p5": 14.0,
+      "margin_p50_median": 22.0,
+      "margin_p95": 34.0,
+      "worst_sample": {
+        "id": "SENT254_S02_R02_F",
+        "T_raw": 34,
+        "T_out": 8,
+        "L_target": 2,
+        "adjacent_repeats": 0,
+        "required_timesteps": 2,
+        "margin": 6,
+        "gloss_sequence": [
+          "TÔI",
+          "SAO-KHÔNG"
+        ]
+      }
+    },
+    "stride_8": {
+      "stride": 8,
+      "feasible_samples": 4200,
+      "infeasible_samples": 0,
+      "feasibility_percentage": 100.0,
+      "margin_p1": 4.0,
+      "margin_p5": 5.0,
+      "margin_p50_median": 9.0,
+      "margin_p95": 14.0,
+      "worst_sample": {
+        "id": "SENT142_S04_R03_F",
+        "T_raw": 40,
+        "T_out": 5,
+        "L_target": 3,
+        "adjacent_repeats": 0,
+        "required_timesteps": 3,
+        "margin": 2,
+        "gloss_sequence": [
+          "TÔI",
+          "ĐEO-KÍNH",
+          "CÓ"
+        ]
+      }
+    }
+  },
+  "boundary_analysis": {
+    "total_analyzed": 4200,
+    "lead_in_idle": {
+      "mean_frames": 0.18,
+      "median_frames": 0.0,
+      "max_frames": 78,
+      "mean_seconds": 0.006
+    },
+    "lead_out_idle": {
+      "mean_frames": 13.99,
+      "median_frames": 13.0,
+      "max_frames": 447,
+      "mean_seconds": 0.466
+    },
+    "inter_gloss_gaps": {
+      "total_gaps": 12550,
+      "mean_gap_frames": 0.0,
+      "median_gap_frames": 0.0,
+      "min_gap_frames": 0,
+      "max_gap_frames": 20,
+      "mean_gap_ms": 0.1,
+      "samples_with_overlapping_or_touching": 4199,
+      "percentage_overlapping_or_touching": 99.98
+    },
+    "boundary_recommendation": {
+      "idle_frames_treatment": "RETAIN in continuous raw sequence. Sign languages naturally transition from/to neutral rest position; removing initial/final idle frames harms realistic real-time streaming recognition.",
+      "auxiliary_boundary_supervision": "OPTIONAL in future phases. High percentage of zero/negative inter-gloss gaps (co-articulation) means discrete boundary classification has noisy ground truth. Primary CTC objective is self-sufficient."
+    }
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "device": "cuda",
+  "gpu_name": "NVIDIA GeForce RTX 3050 Laptop GPU",
+  "training_time": {
+    "total_training_time_sec": 2108.74,
+    "average_epoch_time_sec": 52.72,
+    "total_epochs_trained": 40,
+    "best_epoch": 31
+  },
+  "validation_s05": {
+    "best_val_wer": 30.48,
+    "final_val_loss": 1.4678,
+    "final_val_wer": 33.59
+  },
+  "test_s06": {
+    "loss": 1.6254,
+    "total_samples": 300,
+    "wer": 32.8,
+    "substitutions": 260,
+    "deletions": 115,
+    "insertions": 15,
+    "sub_rate": 21.87,
+    "del_rate": 9.67,
+    "ins_rate": 1.26,
+    "total_ref_words": 1189,
+    "total_hyp_words": 1089,
+    "source_wer": 32.8,
+    "reconstructed_wer": null,
+    "qualitative_examples": [
+      {
+        "sample_id": "SENT001_S06_R01_F",
+        "annotation_source": "source",
+        "reference": "297 352 122 255 163",
+        "prediction": "297 255 45"
+      },
+      {
+        "sample_id": "SENT002_S06_R01_F",
+        "annotation_source": "source",
+        "reference": "297 292 6 10",
+        "prediction": "297 246 72"
+      },
+      {
+        "sample_id": "SENT003_S06_R01_F",
+        "annotation_source": "source",
+        "reference": "117 23 296 93",
+        "prediction": "297 290 40 62"
+      },
+      {
+        "sample_id": "SENT004_S06_R01_F",
+        "annotation_source": "source",
+        "reference": "297 218",
+        "prediction": "297 218"
+      },
+      {
+        "sample_id": "SENT005_S06_R01_F",
+        "annotation_source": "source",
+        "reference": "297 183",
+        "prediction": "297 112 183"
+      },
+      {
+        "sample_id": "SENT006_S06_R01_F",
+        "annotation_source": "source",
+        "reference": "297 364 59",
+        "prediction": "297 92 25"
+      },
+      {
+        "sample_id": "SENT007_S06_R01_F",
+        "annotation_source": "source",
+        "reference": "297 55 6",
+        "prediction": "297 55 60"
+      },
+      {
+        "sample_id": "SENT008_S06_R01_F",
+        "annotation_source": "source",
+        "reference": "297 227 244",
+        "prediction": "297 227 244"
+      },
+      {
+        "sample_id": "SENT009_S06_R01_F",
+        "annotation_source": "source",
+        "reference": "297 342 250 3 6 8",
+        "prediction": "297 342 163 125"
+      },
+      {
+        "sample_id": "SENT010_S06_R01_F",
+        "annotation_source": "source",
+        "reference": "297 357 94 122 66 163",
+        "prediction": "297 307 358 308"
+      }
+    ]
+  },
+  "checkpoints": {
+    "stage1_best": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\checkpoints\\cslr_stage1_best.pt",
+    "global_best": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\checkpoints\\cslr_best.pt",
+    "latest": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\checkpoints\\cslr_latest.pt"
+  },
+  "config": {
+    "data_root": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\external\\vsl_gh",
+    "vocab_path": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\data\\external\\vsl_gh\\gloss_vocab_canonical.txt",
+    "pretrained_backbone": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\checkpoints\\stgcn_best.pt",
+    "checkpoint_dir": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\checkpoints",
+    "reports_dir": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\reports",
+    "batch_size": 8,
+    "total_epochs": 40,
+    "stage1_epochs": 10,
+    "stage1_lr": 0.001,
+    "stage2_backbone_lr": 0.0001,
+    "stage2_head_lr": 0.0005,
+    "hidden_size": 256,
+    "num_gru_layers": 2,
+    "dropout": 0.3,
+    "early_stopping_patience": 10,
+    "seed": 42
+  }
+}

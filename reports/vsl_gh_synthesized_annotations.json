@@ -1,0 +1,41 @@
+{
+  "status": "VERIFIED",
+  "total_samples": 4200,
+  "source_annotations_count": 4198,
+  "reconstructed_annotations_count": 2,
+  "reconstructed_samples": [
+    {
+      "id": "SENT236_S01_R03_F",
+      "sentence_id": "SENT236",
+      "signer_id": "S01",
+      "repetition": "R03",
+      "duration_sec": 3.9,
+      "gloss_sequence": [
+        "TÔI",
+        "XÉT-NGHIỆM",
+        "SINH-HÓA",
+        "CÓ"
+      ],
+      "translation": "Tôi có làm xét nghiệm sinh hóa.",
+      "annotation_source": "reconstructed"
+    },
+    {
+      "id": "SENT285_S04_R03_F",
+      "sentence_id": "SENT285",
+      "signer_id": "S04",
+      "repetition": "R03",
+      "duration_sec": 2.833,
+      "gloss_sequence": [
+        "KHI",
+        "SAU",
+        "ĂN",
+        "TÔI",
+        "THUỐC-UỐNG",
+        "PHẢI-KHÔNG"
+      ],
+      "translation": "Tôi uống thuốc này sau khi ăn phải không?",
+      "annotation_source": "reconstructed"
+    }
+  ],
+  "note": "These 2 samples were omitted from the upstream git commit and had their annotations canonically reconstructed from sister repetitions and exact .npy frame durations. They are marked with annotation_source = reconstructed to prevent silent equivalence with ground-truth source annotations."
+}

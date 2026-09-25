@@ -1,0 +1,70 @@
+{
+  "audit_version": "2.0.0",
+  "audit_timestamp": "2026-09-22T04:32:46.128273+00:00",
+  "milestone": "Milestone 1 — VSL Alphabet 25 Static Symbols",
+  "standard": "Thong tu 17/2020/TT-BGDDT",
+  "hardened_thresholds": {
+    "stability_threshold_max_drift": 0.05,
+    "min_hold_detection_rate": 0.95,
+    "max_landmark_jitter": 0.015,
+    "allowable_hold_duration_sec_range": [
+      1.9,
+      2.15
+    ]
+  },
+  "summary": {
+    "total_expected_clips": 375,
+    "total_recorded_clips": 375,
+    "successful_clips": 375,
+    "flagged_clips_count": 0,
+    "success_rate_percent": 100.0,
+    "storage_size_mb": 280.16
+  },
+  "hold_stability_gate": {
+    "mean_wrist_drift_max": 0.00379,
+    "worst_case_wrist_drift": 0.00573,
+    "mean_wrist_drift_avg": 0.00172,
+    "mean_landmark_jitter": 0.00177,
+    "worst_case_jitter": 0.00187,
+    "failed_stability_count": 0,
+    "excessive_jitter_count": 0,
+    "stability_gate_pass_rate": 100.0
+  },
+  "landmark_quality": {
+    "mean_hold_detection_rate": 1.0,
+    "min_hold_detection_rate": 1.0,
+    "missing_hands_count": 0,
+    "bad_landmarks_count": 0,
+    "handedness_distribution": {
+      "Right": 375,
+      "Left": 0
+    }
+  },
+  "duration_statistics": {
+    "mean_duration_sec": 3.5,
+    "mean_hold_duration_sec": 2.0,
+    "abnormal_duration_count": 0
+  },
+  "signer_independent_split": {
+    "strategy": "Disjoint Signer ID Partitioning",
+    "train_set": {
+      "signer": "S01",
+      "samples": 125,
+      "expected": 125
+    },
+    "validation_set": {
+      "signer": "S02",
+      "samples": 125,
+      "expected": 125
+    },
+    "test_set": {
+      "signer": "S03",
+      "samples": 125,
+      "expected": 125
+    },
+    "signer_overlap_percent": 0.0,
+    "data_leakage_status": "ZERO_LEAKAGE_CONFIRMED"
+  },
+  "flagged_samples": [],
+  "pilot_qa_verdict": "PASSED"
+}
