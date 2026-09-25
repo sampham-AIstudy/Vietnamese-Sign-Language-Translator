@@ -67,6 +67,37 @@ def materialise(manifest_dir, data_root, out_dir, skip_missing):
     return paths, dict(missing)
 
 
+VSLGH_TEST_ONLY = {"S06"}  # held out for the Level 2 -> Level 3 end-to-end evaluation
+
+
+def assert_split_integrity(paths):
+    """Hard FAIL (no silent skip) unless: every QIPEDC row has a recording_group and each group sits in
+    exactly one split; VSL-GH signers are disjoint across splits and S06 appears in test only."""
+    group_splits, signer_splits, problems = defaultdict(set), defaultdict(set), []
+    for split, path in paths.items():
+        with open(path, encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                if r["source"] == "qipedc":
+                    if not r["recording_group"].strip():
+                        problems.append(f"{split}: {r['video_id']} has no recording_group")
+                    group_splits[r["recording_group"]].add(split)
+                elif r["source"] == "vslgh":
+                    signer_splits[r["signer_id"]].add(split)
+    crossing = {g: sorted(s) for g, s in group_splits.items() if len(s) > 1}
+    if crossing:
+        problems.append(f"{len(crossing)} QIPEDC recording groups in more than one split, e.g. {list(crossing.items())[:5]}")
+    shared = {s: sorted(v) for s, v in signer_splits.items() if len(v) > 1}
+    if shared:
+        problems.append(f"VSL-GH signers in more than one split: {shared}")
+    leaked = {s: sorted(v) for s, v in signer_splits.items() if s in VSLGH_TEST_ONLY and v != {"test"}}
+    if leaked:
+        problems.append(f"held-out VSL-GH signer outside test: {leaked}")
+    if problems:
+        raise RuntimeError("split integrity FAIL: " + " | ".join(problems))
+    return {"status": "PASS", "qipedc_recording_groups": len(group_splits),
+            "vslgh_signers": {s: sorted(v) for s, v in sorted(signer_splits.items())}}
+
+
 @torch.no_grad()
 def predict_all(model, loader, device):
     model.eval()
@@ -112,6 +143,10 @@ def main():
     paths, missing = materialise(args.manifest_dir, args.data_root, args.out_dir, args.skip_missing)
     guard = validate_split_guards(paths["train"], paths["val"], paths["test"])
     print("split guards:", guard["status"], "| duplicate-recording check:", guard["duplicate_recording_check"], "| missing npz:", missing)
+    if str(guard["duplicate_recording_check"]).startswith("SKIPPED"):
+        raise RuntimeError("split integrity FAIL: duplicate-recording check was skipped (recording_groups.csv missing)")
+    integrity = assert_split_integrity(paths)
+    print("split integrity:", json.dumps(integrity), flush=True)
 
     common = dict(label_map=label_map, target_len=60, auto_extract=False, aspect_correct=True)
     train_ds = VSLDataset(paths["train"], augment=True, **common)
@@ -156,13 +191,18 @@ def main():
                "test_by_source": {s: summarise(logits[src == s], labels[src == s], len(classes)) for s in sorted(set(src))},
                "test_by_class_group": {g: summarise(logits[grp == g], labels[grp == g], len(classes)) for g in sorted(set(grp))},
                "train_samples_per_class_hist": dict(sorted(Counter(counts.values()).items())),
-               "missing_npz": missing, "smoke": bool(args.skip_missing or args.max_batches)}
+               "missing_npz": missing, "split_integrity": integrity, "smoke": bool(args.skip_missing or args.max_batches)}
     pred = logits.argmax(1)
+    # raw test logits so reports (groups, Top-5, CIs, model comparisons) are recomputed from files
+    np.savez_compressed(os.path.join(args.out_dir, "test_logits.npz"), logits=logits.astype(np.float16),
+                        labels=labels, video_ids=np.array([r["video_id"] for r in rows]))
     with open(os.path.join(args.out_dir, "test_predictions.csv"), "w", encoding="utf-8", newline="") as f:
-        w = csv.writer(f); w.writerow(["video_id", "source", "true", "pred", "confidence", "correct"])
+        w = csv.writer(f); w.writerow(["video_id", "source", "signer_id", "true", "pred", "confidence", "correct", "top5"])
         prob = torch.softmax(torch.tensor(logits), 1).numpy()
-        for r, t, p, pr in zip(rows, labels, pred, prob):
-            w.writerow([r["video_id"], r["source"], classes[t], classes[p], f"{pr[p]:.4f}", int(t == p)])
+        for r, t, p, pr, lg in zip(rows, labels, pred, prob, logits):
+            top5 = "|".join(classes[i] for i in np.argsort(-lg)[:5])
+            w.writerow([r["video_id"], r["source"], r.get("signer_id", ""), classes[t], classes[p], f"{pr[p]:.4f}",
+                        int(t == p), top5])
     per_class = defaultdict(lambda: [0, 0])
     for t, p in zip(labels, pred):
         per_class[classes[t]][0] += int(t == p); per_class[classes[t]][1] += 1
