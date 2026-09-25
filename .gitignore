@@ -62,3 +62,6 @@ access_token
 checkpoints/
 kaggle/**/*.zip
 kaggle/vsl-alphabet-level1-training/*.ipynb
+
+# Derived keypoints / segments (regenerate with scripts/export_vslgh_segments.py, extract_keypoints_batch.py)
+data/processed/
