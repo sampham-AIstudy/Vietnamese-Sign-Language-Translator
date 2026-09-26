@@ -1,0 +1,14 @@
+{
+  "id": "phmvnsm33/vsl-extract-qipedc360-s0",
+  "title": "vsl-extract-qipedc360-s0",
+  "code_file": "extract_qipedc360.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": true,
+  "dataset_sources": ["aresusayhi/vsl-vietnamese-sign-languages"],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
