@@ -54,7 +54,7 @@ export default function Dictionary() {
             <div>
               <h3 className="text-lg font-bold text-white">Tra Cứu Từ Điển & Phương Ngữ Ký Hiệu Việt Nam</h3>
               <p className="text-xs text-slate-400">
-                Bộ dữ liệu thực tế gồm <strong>4,362 video</strong> gán nhãn, phản ánh đặc thù phương ngữ 3 miền Bắc (B), Trung (T), Nam (N).
+                Kho dữ liệu đối chiếu gồm <strong>4,797 video</strong> (4,362 VSLR + 435 ĐH Sư Phạm TP.HCM), bao phủ 8 phương ngữ vùng miền.
               </p>
             </div>
           </div>
@@ -121,7 +121,12 @@ export default function Dictionary() {
               >
                 <div className="flex items-center justify-between text-[11px]">
                   <span className="px-1.5 py-0.5 rounded bg-slate-900 text-slate-400 font-mono">#{item.id}</span>
-                  <span className="text-brand-400 font-medium text-[10px]">{item.region}</span>
+                  <div className="flex items-center gap-1">
+                    {item.source === 'HCMUE Dictionary' && (
+                      <span className="px-1 py-0.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded text-[9px] font-medium">HCMUE</span>
+                    )}
+                    <span className="text-brand-400 font-medium text-[10px]">{item.region}</span>
+                  </div>
                 </div>
                 <h4 className="font-bold text-white text-sm group-hover:text-brand-300 transition-colors line-clamp-1">
                   {item.label}
@@ -154,7 +159,7 @@ export default function Dictionary() {
 
               <div className="rounded-xl overflow-hidden bg-black aspect-video flex items-center justify-center border border-slate-800">
                 <video
-                  src={`/videos/${activeVideo.video}`}
+                  src={activeVideo.video.startsWith('/') ? activeVideo.video : `/videos/${activeVideo.video}`}
                   controls
                   autoPlay
                   className="w-full h-full object-contain"

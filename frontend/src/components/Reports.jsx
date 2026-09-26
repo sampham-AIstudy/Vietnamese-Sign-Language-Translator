@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layers, Award, BarChart3, CheckCircle2, ShieldCheck, Cpu } from 'lucide-react';
+import { Layers, Award, BarChart3, CheckCircle2, ShieldCheck, Cpu, AlertTriangle } from 'lucide-react';
 
 export default function Reports() {
   return (
@@ -14,6 +14,20 @@ export default function Reports() {
             <h3 className="text-lg font-bold text-white">Kiến Trúc Hệ Thống & So Sánh Báo Cáo Cơ Sở</h3>
             <p className="text-xs text-slate-400">
               Tổng hợp phương pháp từ 2 bài báo nghiên cứu VSLR và kết quả thực nghiệm thực tế.
+            </p>
+          </div>
+        </div>
+
+        {/* Audit Warning Banner */}
+        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <div className="text-xs space-y-1">
+            <div className="font-semibold text-amber-200">
+              Lưu Ý Kiểm Toán Dữ Liệu Học Thuật
+            </div>
+            <p className="text-amber-300/80 leading-relaxed">
+              • <strong>Cấp độ 1 (Fingerspelling)</strong>: Chưa có mô hình. Mô hình ASL cũ đã loại (sai ngôn ngữ); bộ "VSL pilot" trong repo là dữ liệu tổng hợp, không dùng. Đang chuyển sang dữ liệu VSL quay thật.<br/>
+              • <strong>Cấp độ 2 (Word-Level)</strong>: 487 lớp có đủ 3 miền. Lưu ý (audit vòng 3): QIPEDC dùng lại cùng một bản quay cho nhiều miền; split cũ để bản trùng ở cả train và test, nay đã tách theo bản quay. 2.759 video "Other" (chủ yếu là 2.747 từ mới chỉ có 1 video) không thể đưa vào phân loại closed-set có giám sát vì thiếu mẫu Val/Test độc lập.
             </p>
           </div>
         </div>
@@ -34,7 +48,7 @@ export default function Reports() {
                 <td className="p-3.5 font-bold text-white">Phạm Vi Bài Toán</td>
                 <td className="p-3.5">Word-Level & Continuous SLR</td>
                 <td className="p-3.5">25 Ký tự bảng chữ cái tĩnh</td>
-                <td className="p-3.5 font-semibold text-brand-300">Dual-Level: Cả Chữ Cái & Từ Đơn VSL</td>
+                <td className="p-3.5 font-semibold text-brand-300">Dual-Level: Chữ Cái PoC & 487 Từ Đơn VSL</td>
               </tr>
               <tr className="hover:bg-slate-800/30">
                 <td className="p-3.5 font-bold text-white">Trích Xuất Đặc Trưng</td>
@@ -52,13 +66,18 @@ export default function Reports() {
                 <td className="p-3.5 font-bold text-white">Kiến Trúc Mô Hình</td>
                 <td className="p-3.5">BiLSTM / BiGRU / Transformer</td>
                 <td className="p-3.5">Multilayer Perceptron / CNN</td>
-                <td className="p-3.5 font-semibold text-brand-300">BiGRU + Attention & Spatio-Temporal Transformer</td>
+                <td className="p-3.5 font-semibold text-brand-300">ST-GCN, Transformer Encoder & BiGRU</td>
               </tr>
               <tr className="hover:bg-slate-800/30">
                 <td className="p-3.5 font-bold text-white">Độ Chính Xác Thực Nghiệm</td>
                 <td className="p-3.5">98.13% (Pham et al.), 92.47% (Cross-Attn)</td>
                 <td className="p-3.5">95.0% sau tiền xử lý</td>
-                <td className="p-3.5 font-bold text-emerald-400">99.87% Top-1, 100.00% Top-5 Test Acc</td>
+                <td className="p-3.5 font-bold text-emerald-400">
+                  Tier 2: 8.07% Top-1 trên clip chưa thấy (17.04% Top-5, 487 Lớp)<br/>
+                  (46.41% cũ do bản quay trùng train/test — không hợp lệ)<br/>
+                  Tier 1: chờ đánh giá lại trên split tách theo bản quay<br/>
+                  Fingerspelling: chưa có mô hình
+                </td>
               </tr>
             </tbody>
           </table>
