@@ -1,0 +1,722 @@
+video_id,source,signer_id,true,pred,confidence,correct,top5
+qipedc_D0001N,qipedc,,địa chỉ,con tôm,0.0420,0,con tôm|hoa|quả dừa xiêm|anh rể|dấu hỏi
+qipedc_D0001T,qipedc,,địa chỉ,con tôm,0.0393,0,con tôm|quả dừa xiêm|hoa|anh rể|dấu hỏi
+qipedc_D0005N,qipedc,,miến điện (nước mi an ma),trốn chạy,0.0935,0,trốn chạy|quê|ở ngoài|yêu cầu|trung thu
+qipedc_D0005T,qipedc,,miến điện (nước mi an ma),trốn chạy,0.1027,0,trốn chạy|quê|ở ngoài|yêu cầu|trung thu
+qipedc_D0019B,qipedc,,ghen tị,dấu hỏi,0.0359,0,dấu hỏi|nghe|bắp ngô|lễ halloween 31/10|thú y
+qipedc_D0020N,qipedc,,lung tung,chị họ,0.0157,0,chị họ|cái gương|giải thích|bru nây (nước bru nây)|sơ mi
+qipedc_D0024B,qipedc,,tham ăn,tham ăn,0.0230,1,tham ăn|răng|đợi|cửa hàng|sữa hộp
+qipedc_D0029B,qipedc,,thói quen,dấu ngã,0.0397,0,dấu ngã|ă|phấn (viết bảng)|héc tô mét vuông (hm2)|trước
+qipedc_D0031B,qipedc,,không nghe lời,tôi yêu bạn,0.0336,0,"tôi yêu bạn|răng|dấu sắc|anh hai, anh cả|sữa"
+qipedc_D0033N,qipedc,,không cho,trước,0.0297,0,trước|chị|xanh xao|tôi yêu bạn|nhầm
+qipedc_D0033T,qipedc,,không cho,trước,0.0296,0,trước|chị|xanh xao|tôi yêu bạn|nhầm
+qipedc_D0035B,qipedc,,không nên,gan,0.0163,0,gan|ga tàu|nên không?|lượm|dân tộc
+qipedc_D0040T,qipedc,,tết hàn thực,giấy ăn,0.0214,0,giấy ăn|môn kĩ thuật|bố dượng|ngày của mẹ|ngày người khuyết tật thế giới 3/12
+qipedc_D0042N,qipedc,,ngày quốc tế phụ nữ 8/3,trước,0.0343,0,trước|chị|xanh xao|tóc ngắn|dấu ngã
+qipedc_D0043N,qipedc,,ngày giải phóng thủ đô 10/10,lười học,0.0189,0,lười học|ngày giải phóng miền nam 30/4|nhầm|tham quan|ngày nhà giáo việt nam
+qipedc_D0044N,qipedc,,ngày giải phóng miền nam 30/4,ngày phụ nữ việt nam 20/10,0.0271,0,ngày phụ nữ việt nam 20/10|ngày giải phóng miền nam 30/4|rằm trung thu|ngày nhà giáo việt nam|rong chơi
+qipedc_D0045B,qipedc,,ngày người khuyết tật việt nam 18/4,bít tết (bò),0.0092,0,bít tết (bò)|hoa|bẫy chuột (hành động)|5000 (năm nghìn)|p
+qipedc_D0046N,qipedc,,ngày người khuyết tật thế giới 3/12,trước,0.0286,0,trước|đèo hải vân|tóc ngắn|xanh xao|ham chơi
+qipedc_D0048N,qipedc,,lễ halloween 31/10,mexico (nước mexico),0.0375,0,mexico (nước mexico)|ngày giải phóng miền nam 30/4|ngày nhà giáo việt nam|rằm trung thu|ngày phụ nữ việt nam 20/10
+qipedc_D0049T,qipedc,,ngày phụ nữ việt nam 20/10,ngày phụ nữ việt nam 20/10,0.0153,1,ngày phụ nữ việt nam 20/10|trường ptcs (cấp 2)|héc tô gam (hg)|ngày gia đình việt nam 28/6|ngày thương bình liệt sĩ 27/7
+qipedc_D0050N,qipedc,,ngày thương bình liệt sĩ 27/7,sữa hộp,0.0245,0,sữa hộp|răng|nhà trường|ngày thương bình liệt sĩ 27/7|con người
+qipedc_D0051B,qipedc,,ngày giỗ tổ hùng vương (âm lịch 10/3),thú y,0.0321,0,thú y|dấu hỏi|đeo kính|mã lai (nước ma lai xi a)|lễ halloween 31/10
+qipedc_D0051T,qipedc,,ngày giỗ tổ hùng vương (âm lịch 10/3),thú y,0.0297,0,thú y|dấu hỏi|đeo kính|mã lai (nước ma lai xi a)|lễ halloween 31/10
+qipedc_D0052B,qipedc,,ngày ngôn ngữ kí hiệu quốc tế 23/9,phấn (viết bảng),0.0079,0,phấn (viết bảng)|quả dừa xiêm|xem|không quen|bít tết (bò)
+qipedc_D0052T,qipedc,,ngày ngôn ngữ kí hiệu quốc tế 23/9,phấn (viết bảng),0.0082,0,phấn (viết bảng)|quả dừa xiêm|ngày thương bình liệt sĩ 27/7|không quen|xem
+qipedc_D0053B,qipedc,,tuần lễ người điếc thế giới,giấy ăn,0.0119,0,giấy ăn|môn kĩ thuật|bố dượng|ngày của mẹ|hỏi
+qipedc_D0053T,qipedc,,tuần lễ người điếc thế giới,giấy ăn,0.0122,0,giấy ăn|môn kĩ thuật|bố dượng|ngày của mẹ|hỏi
+qipedc_D0054N,qipedc,,ngày của mẹ,hỏi,0.0518,0,hỏi|lễ halloween 31/10|nghiêm khắc|ngày của cha|bắp ngô
+qipedc_D0055B,qipedc,,ngày của cha,hỏi,0.0322,0,hỏi|môn kĩ thuật|giấy ăn|nghiêm khắc|ngày của mẹ
+qipedc_D0055T,qipedc,,ngày của cha,hỏi,0.0329,0,hỏi|môn kĩ thuật|giấy ăn|nghiêm khắc|ngày của mẹ
+qipedc_D0056N,qipedc,,ngày gia đình việt nam 28/6,ngày thầy thuốc việt nam,0.0168,0,ngày thầy thuốc việt nam|anh rể|bông hoa|luật chơi|nghiêm khắc
+qipedc_D0057B,qipedc,,ngày thầy thuốc việt nam,con tôm,0.0300,0,con tôm|mùa xuân|ai|hoa|suýt
+qipedc_D0058N,qipedc,,ngày thành lập quân đội nhân dân việt nam,con lợn (con heo),0.0139,0,con lợn (con heo)|ngày thầy thuốc việt nam|bảng nhân|đèn báo giao thông|tự tin
+qipedc_D0060B,qipedc,,nhầm,thú y,0.0753,0,thú y|mã lai (nước ma lai xi a)|đen láy (như đen nhánh)|thông minh|nhật (nước nhật)
+qipedc_D0065B,qipedc,,mách,trước,0.0301,0,"trước|xanh xao|dấu ngã|phim truyện|anh hai, anh cả"
+qipedc_D0066N,qipedc,,vô duyên,hỏi,0.0628,0,hỏi|nghiêm khắc|bông hoa|bản đồ việt nam|nhiệt kế
+qipedc_D0066T,qipedc,,vô duyên,hỏi,0.0624,0,hỏi|nghiêm khắc|bông hoa|nhiệt kế|bản đồ việt nam
+qipedc_D0072B,qipedc,,suýt,môn kĩ thuật,0.0226,0,môn kĩ thuật|chính xác|giấy ăn|kém|hỏi
+qipedc_D0077B,qipedc,,bít tết (bò),bít tết (bò),0.0298,1,bít tết (bò)|ngày thành lập quân đội nhân dân việt nam|hoa|chính xác|bức tranh
+qipedc_D0080B,qipedc,,mỳ tôm,ngày thành lập quân đội nhân dân việt nam,0.0211,0,ngày thành lập quân đội nhân dân việt nam|nhập trường|bẫy chuột (hành động)|trúng tuyển|bột màu
+qipedc_D0082B,qipedc,,mỳ ý,bộ đội,0.0187,0,bộ đội|ngày thành lập quân đội nhân dân việt nam|bột màu|nhập ngũ|chữ
+qipedc_D0103N,qipedc,,từ chối,thú y,0.0300,0,thú y|lười học|ngày giải phóng miền nam 30/4|mã lai (nước ma lai xi a)|dấu hỏi
+qipedc_D0103T,qipedc,,từ chối,thú y,0.0301,0,thú y|ngày giải phóng miền nam 30/4|dấu hỏi|lười học|mã lai (nước ma lai xi a)
+qipedc_D0108N,qipedc,,thiệp sinh nhật,môn kĩ thuật,0.0123,0,môn kĩ thuật|giấy ăn|bố dượng|anh rể|quả dừa xiêm
+qipedc_D0108T,qipedc,,thiệp sinh nhật,môn kĩ thuật,0.0124,0,môn kĩ thuật|giấy ăn|bố dượng|anh rể|ngày của mẹ
+qipedc_D0109N,qipedc,,không quen,áo đồng phục,0.0152,0,áo đồng phục|chăn (cái chăn)|tham ăn|rượu|héc tô gam (hg)
+qipedc_D0111B,qipedc,,tương ớt,nhầm,0.0391,0,nhầm|sữa|rằm trung thu|tôi yêu bạn|tham quan
+qipedc_D0111T,qipedc,,tương ớt,nhầm,0.0399,0,nhầm|sữa|tôi yêu bạn|rằm trung thu|tham quan
+qipedc_D0119T,qipedc,,đúng không?,hoặc,0.0435,0,hoặc|gián tiếp|thường xuyên|đúng không?|g
+qipedc_D0120N,qipedc,,phải không?,cam pu chia (nước cam pu chia),0.0141,0,cam pu chia (nước cam pu chia)|ga tàu|nhưng|hàng ngày|bộ đội
+qipedc_D0122B,qipedc,,cần không?,gián tiếp,0.0636,0,gián tiếp|xì hơi (đánh rắm)|thường xuyên|hoặc|g
+qipedc_D0123B,qipedc,,nên không?,môn địa lý,0.0354,0,môn địa lý|ga tàu|gạo|nên không?|da trắng
+qipedc_D0128B,qipedc,,đẹp không? (người),xem,0.0195,0,xem|ê|t|xuất hiện|3
+qipedc_D0128T,qipedc,,đẹp không? (người),xem,0.0188,0,xem|ê|t|3|phấn (viết bảng)
+qipedc_D0129N,qipedc,,không đẹp,kẹo,0.0285,0,kẹo|kính|héc tô gam (hg)|rằm trung thu|nghỉ học
+qipedc_D0129T,qipedc,,không đẹp,kẹo,0.0288,0,kẹo|kính|héc tô gam (hg)|rằm trung thu|yếu
+qipedc_D0143N,qipedc,,"anh hai, anh cả",dấu sắc,0.0327,0,"dấu sắc|anh hai, anh cả|dấu ngã|chị hai, chị cả|chị"
+qipedc_D0144N,qipedc,,"chị hai, chị cả",dấu ngã,0.0363,0,dấu ngã|trước|phấn (viết bảng)|ă|dấu sắc
+qipedc_D0151B,qipedc,,ông bà,yếu,0.0326,0,yếu|ông bà|muốn|ân hận|em trai
+qipedc_D0151T,qipedc,,ông bà,ông bà,0.0330,1,ông bà|yếu|muốn|ân hận|em trai
+qipedc_D0152N,qipedc,,chị họ,cháu ngoại,0.0118,0,cháu ngoại|sơ mi|giấy ăn|tham dự|chị họ
+qipedc_D0153N,qipedc,,em họ,bắn bi,0.0155,0,bắn bi|rửa chân|dân tộc|quả nhãn|con kiến
+qipedc_D0154B,qipedc,,cháu họ,xã hội,0.0178,0,xã hội|con kiến|ví dụ|tác động|quả điều
+qipedc_D0155N,qipedc,,sống sót,môn địa lý,0.0394,0,môn địa lý|gạo|bánh cuốn|giấy nháp|quả dừa
+qipedc_D0156,qipedc,,thường xuyên,hàng ngày,0.0422,0,hàng ngày|cần không?|ra ngoài|hoặc|thường xuyên
+qipedc_D0157B,qipedc,,đi dạo,phải không?,0.0398,0,phải không?|ai|quả khế|xã hội|con ngựa
+qipedc_D0157T,qipedc,,đi dạo,phải không?,0.0406,0,phải không?|ai|quả khế|xã hội|ví dụ
+qipedc_D0159T,qipedc,,về 2,về 2,0.1292,1,về 2|mách|tưởng tượng|không cho|â
+qipedc_D0163N,qipedc,,hẹn,muốn,0.0285,0,muốn|không muốn|răng|nghỉ học|áo phông
+qipedc_D0163T,qipedc,,hẹn,muốn,0.0286,0,muốn|không muốn|răng|nghỉ học|áo phông
+qipedc_D0165N,qipedc,,hứa,cháu gái,0.0198,0,"cháu gái|sĩ diện|anh hai, anh cả|nghỉ học|thầy giáo"
+qipedc_D0165T,qipedc,,hứa,cháu gái,0.0195,0,"cháu gái|anh hai, anh cả|sĩ diện|nghỉ học|thầy giáo"
+qipedc_D0167B,qipedc,,lâu,tham ăn,0.0355,0,tham ăn|đặc biệt|áo đồng phục|không có|con người
+qipedc_D0168B,qipedc,,vẫn,ai,0.0620,0,ai|con tôm|quả khế|phải không?|p
+qipedc_D0169B,qipedc,,mỗi ngày,dấu ngã,0.0306,0,dấu ngã|héc tô mét vuông (hm2)|ê|ă|3
+qipedc_D0169N,qipedc,,mỗi ngày,dấu ngã,0.0308,0,dấu ngã|héc tô mét vuông (hm2)|ê|ă|3
+qipedc_D0170B,qipedc,,hàng ngày,mách,0.0187,0,mách|tưởng tượng|về 2|ra ngoài|mỗi ngày
+qipedc_D0182N,qipedc,,cung điện,dấu hỏi,0.0480,0,dấu hỏi|cung điện|điện thoại|nghe|sân trường
+qipedc_D0188B,qipedc,,hoặc,hoặc,0.1672,1,hoặc|nhưng|ra ngoài|con cọp|cam pu chia (nước cam pu chia)
+qipedc_D0189N,qipedc,,muốn không?,bánh cuốn,0.0223,0,bánh cuốn|ung thư|không muốn|giấy nháp|ngày thương bình liệt sĩ 27/7
+qipedc_D0189T,qipedc,,muốn không?,bánh cuốn,0.0218,0,bánh cuốn|ung thư|giấy nháp|không muốn|ngày thương bình liệt sĩ 27/7
+qipedc_D0190B,qipedc,,không muốn,tham ăn,0.0272,0,tham ăn|áo đồng phục|rượu|muốn|em trai
+qipedc_D0192B,qipedc,,xem,con tôm,0.0409,0,con tôm|dấu hỏi|anh rể|xem|trường ptcs (cấp 2)
+qipedc_D0195B,qipedc,,đẹp không?,ung thư,0.0216,0,ung thư|rượu|muốn|con voi|không muốn
+qipedc_D0195T,qipedc,,đẹp không?,rượu,0.0225,0,rượu|con voi|muốn|ung thư|héc tô gam (hg)
+qipedc_D0206N,qipedc,,thiếu thốn,cố gắng,0.0264,0,cố gắng|quả roi|cam pu chia (nước cam pu chia)|giấy|con ngựa
+qipedc_D0206T,qipedc,,thiếu thốn,cố gắng,0.0266,0,cố gắng|quả roi|cam pu chia (nước cam pu chia)|giấy|con ngựa
+qipedc_D0209B,qipedc,,dám làm,dấu sắc,0.0234,0,"dấu sắc|bút màu|đợi|anh hai, anh cả|đèo hải vân"
+qipedc_D0209T,qipedc,,dám làm,dấu sắc,0.0259,0,"dấu sắc|đợi|bút màu|anh hai, anh cả|đèo hải vân"
+qipedc_D0210B,qipedc,,không dám,dân tộc,0.0154,0,dân tộc|cố gắng|thừa|con ngựa|chức năng
+qipedc_D0213N,qipedc,,ung thư,bảng nhân,0.0388,0,bảng nhân|bông hoa|nhiệt kế|con lợn (con heo)|tự tin
+qipedc_D0214N,qipedc,,phó hiệu trưởng,ngày thương bình liệt sĩ 27/7,0.0144,0,ngày thương bình liệt sĩ 27/7|quận|xem|trắng muốt|người quen
+qipedc_D0214T,qipedc,,phó hiệu trưởng,ngày thương bình liệt sĩ 27/7,0.0141,0,ngày thương bình liệt sĩ 27/7|quận|xem|trắng muốt|người quen
+qipedc_D0223T,qipedc,,mã lai (nước ma lai xi a),thú y,0.0436,0,thú y|mã lai (nước ma lai xi a)|dấu hỏi|sốt|đèn điện
+qipedc_D0242B,qipedc,,nhưng,2,0.0372,0,2|x|xuất hiện|ê|p
+qipedc_D0242T,qipedc,,nhưng,2,0.0346,0,2|x|xuất hiện|ê|p
+qipedc_D0243B,qipedc,,hay là (hoặc là),liên hoan,0.0891,0,liên hoan|hay là (hoặc là)|ngồi|cố gắng|bảng đen
+qipedc_D0249B,qipedc,,chia đôi,ê,0.0387,0,ê|héc tô mét vuông (hm2)|xuất hiện|2|trông chờ
+qipedc_D0249T,qipedc,,chia đôi,ê,0.0392,0,ê|héc tô mét vuông (hm2)|xuất hiện|2|trông chờ
+qipedc_D0250B,qipedc,,chia ba,xem,0.0155,0,xem|dấu hỏi|héc tô mét vuông (hm2)|ngày thành lập quân đội nhân dân việt nam|trông chờ
+qipedc_D0250T,qipedc,,chia ba,xem,0.0153,0,xem|dấu hỏi|héc tô mét vuông (hm2)|xuất hiện|ê
+qipedc_D0255,qipedc,,giám sát,ví dụ,0.0315,0,ví dụ|ủy quyền|quả nhãn|ưu tiên|bông hoa
+qipedc_D0270B,qipedc,,lạnh lùng,nghỉ học,0.0957,0,nghỉ học|ngày phụ nữ việt nam 20/10|rằm trung thu|bón phân|kính
+qipedc_D0270T,qipedc,,lạnh lùng,nghỉ học,0.0953,0,nghỉ học|ngày phụ nữ việt nam 20/10|rằm trung thu|bón phân|kính
+qipedc_D0271N,qipedc,,dỗi,thích thú,0.1870,0,thích thú|con sư tử|áo phông|nghỉ học|không muốn
+qipedc_D0271T,qipedc,,dỗi,thích thú,0.1866,0,thích thú|con sư tử|áo phông|nghỉ học|không muốn
+qipedc_D0272B,qipedc,,liếc nhìn,bón phân,0.0416,0,bón phân|ngày giải phóng miền nam 30/4|kính|rằm trung thu|lười học
+qipedc_D0272T,qipedc,,liếc nhìn,ngày giải phóng miền nam 30/4,0.0414,0,ngày giải phóng miền nam 30/4|bón phân|kính|rằm trung thu|lười học
+qipedc_D0307N,qipedc,,công nghiệp,ra ngoài,0.0874,0,ra ngoài|bên cạnh|nằm|công viên|hoặc
+qipedc_D0307T,qipedc,,công nghiệp,ra ngoài,0.0918,0,ra ngoài|bên cạnh|nằm|công viên|hoặc
+qipedc_D0316,qipedc,,lượm,bánh cuốn,0.0717,0,bánh cuốn|con sư tử|ung thư|khổ|chặt
+qipedc_D0326N,qipedc,,vải lụa,trường mầm non,0.0120,0,trường mầm non|cửa hàng|họp|trường ptcs (cấp 2)|ngày phụ nữ việt nam 20/10
+qipedc_D0342N,qipedc,,ham chơi,mexico (nước mexico),0.0442,0,mexico (nước mexico)|chiếc gối|hi vọng|buổi đêm|con bò
+qipedc_D0346B,qipedc,,da trắng,lượm,0.0184,0,lượm|tim|rửa chân|màu trắng|bắn bi
+qipedc_D0347B,qipedc,,da ngăm (nước da ngăm đen),lượm,0.0681,0,lượm|gan|tiếc|sinh sản|ung thư
+qipedc_D0396N,qipedc,,nước ép trái cây,buổi sáng,0.0153,0,buổi sáng|đợi|đại diện|quân đội|buổi trưa
+qipedc_D0396T,qipedc,,nước ép trái cây,buổi sáng,0.0156,0,buổi sáng|đại diện|đợi|buổi trưa|quân đội
+qipedc_D0410N,qipedc,,một tiếng,không nghe lời,0.0315,0,x|không nghe lời|sống sót|ê|6
+qipedc_D0410T,qipedc,,một tiếng,x,0.0365,0,x|6|sống sót|không nghe lời|xì hơi (đánh rắm)
+qipedc_D0412,qipedc,,rửa chân,lấy,0.0397,0,lấy|tim|rửa chân|con kiến|nhiệt kế
+qipedc_D0413,qipedc,,rửa mặt,héc tô gam (hg),0.0293,0,héc tô gam (hg)|họp|kẹo|nghe|ân hận
+qipedc_D0414,qipedc,,đánh răng,kẹo,0.0600,0,kẹo|sữa|răng|héc tô gam (hg)|tôi yêu bạn
+qipedc_D0416N,qipedc,,tuần này,dép quai hậu,0.0110,0,dép quai hậu|chức năng|tuần sau|cố gắng|lĩnh vực
+qipedc_D0416T,qipedc,,tuần này,dép quai hậu,0.0104,0,dép quai hậu|tuần sau|chức năng|dân tộc|cố gắng
+qipedc_D0417B,qipedc,,tuần sau,anh ruột,0.0291,0,anh ruột|đèo hải vân|không đẹp|thầy giáo|nghỉ học
+qipedc_D0418B,qipedc,,tuần trước,đèo hải vân,0.0345,0,đèo hải vân|tóc ngắn|trước|buổi đêm|xanh xao
+qipedc_D0423B,qipedc,,sinh đôi,nên không?,0.0500,0,nên không?|thiếu thốn|ga tàu|gan|cần không?
+qipedc_D0423T,qipedc,,sinh đôi,nên không?,0.0458,0,nên không?|thiếu thốn|ga tàu|gan|cần không?
+qipedc_D0429N,qipedc,,tóc ngắn,không đẹp,0.1246,0,không đẹp|đèo hải vân|tóc ngắn|nghỉ học|dấu sắc
+qipedc_D0430B,qipedc,,tổng kết/bế giảng,cửa hàng,0.0154,0,cửa hàng|không có|miến điện (nước mi an ma)|cháu ngoại|tham ăn
+qipedc_D0430N,qipedc,,tổng kết/bế giảng,cửa hàng,0.0157,0,cửa hàng|không có|miến điện (nước mi an ma)|cháu ngoại|tham ăn
+qipedc_D0432B,qipedc,,tay chân sạch sẽ,con kiến,0.0109,0,con kiến|lấy|thi cử|nhiệt kế|dân tộc
+qipedc_D0432T,qipedc,,tay chân sạch sẽ,con kiến,0.0104,0,con kiến|lấy|thi cử|dân tộc|nhiệt kế
+qipedc_D0437N,qipedc,,đùa,môn địa lý,0.0083,0,môn địa lý|da trắng|bìa vở|quả khế|tô màu
+qipedc_D0437T,qipedc,,đùa,môn địa lý,0.0091,0,môn địa lý|da trắng|bìa vở|tô màu|quả khế
+qipedc_D0452N,qipedc,,họp nhóm,ví dụ,0.0245,0,ví dụ|con tôm|con kiến|họp nhóm|ai
+qipedc_D0464B,qipedc,,trẻ con/con nít,sữa hộp,0.0203,0,sữa hộp|quân đội|con người|đợi|tham ăn
+qipedc_D0470B,qipedc,,nhà văn hóa,cởi áo,0.0179,0,cởi áo|tự do|vui mừng|vui sướng|đèn báo giao thông
+qipedc_D0490B,qipedc,,ă,â,0.0828,0,â|dấu huyền|12|về 2|ê
+qipedc_D0491N,qipedc,,â,dấu ngã,0.0520,0,dấu ngã|ê|trước|phấn (viết bảng)|ă
+qipedc_D0491T,qipedc,,â,dấu ngã,0.0535,0,dấu ngã|trước|ê|phấn (viết bảng)|ă
+qipedc_D0497B,qipedc,,ê,â,0.0734,0,â|ông ngoại|12|về 2|dấu huyền
+qipedc_D0498N,qipedc,,g,p,0.0767,0,p|gián tiếp|2|xem|hoa
+qipedc_D0500N,qipedc,,h,2,0.0773,0,2|ê|t|hoa|p
+qipedc_D0507N,qipedc,,ô,2,0.0486,0,2|con tôm|dấu hỏi|ê|hoa
+qipedc_D0507T,qipedc,,ô,2,0.0473,0,2|con tôm|dấu hỏi|ê|hoa
+qipedc_D0509B,qipedc,,p,bẫy chuột (hành động),0.0588,0,bẫy chuột (hành động)|p|gián tiếp|hoặc|tìm hiểu
+qipedc_D0513T,qipedc,,t,h,0.0333,0,h|x|xuất hiện|xem|thìa
+qipedc_D0517N,qipedc,,x,con tôm,0.0717,0,con tôm|dấu hỏi|anh rể|xem|quả dừa xiêm
+qipedc_D0517T,qipedc,,x,dấu hỏi,0.0730,0,dấu hỏi|con tôm|anh rể|xem|quả dừa xiêm
+qipedc_D0524N,qipedc,,dấu huyền,h,0.0366,0,h|x|xuất hiện|thìa|2
+qipedc_D0525N,qipedc,,dấu sắc,x,0.0345,0,x|h|6|điện|ă
+qipedc_D0526B,qipedc,,dấu hỏi,răng,0.0364,0,răng|dấu ngã|tôi yêu bạn|sữa|3
+qipedc_D0527N,qipedc,,dấu ngã,dấu ngã,0.0433,1,dấu ngã|phấn (viết bảng)|héc tô mét vuông (hm2)|ê|ă
+qipedc_D0527T,qipedc,,dấu ngã,dấu ngã,0.0449,1,dấu ngã|phấn (viết bảng)|héc tô mét vuông (hm2)|ê|ă
+qipedc_D0535N,qipedc,,6,bẫy chuột (hành động),0.0360,0,bẫy chuột (hành động)|2|p|hoa|ê
+qipedc_D0535T,qipedc,,6,2,0.0436,0,2|p|bẫy chuột (hành động)|ê|hoa
+qipedc_D0540N,qipedc,,11,h,0.0460,0,h|2|hoa|con tôm|x
+qipedc_D0540T,qipedc,,11,h,0.0466,0,h|2|hoa|con tôm|x
+qipedc_D0541N,qipedc,,12,h,0.0373,0,h|2|xuất hiện|x|ê
+qipedc_D0541T,qipedc,,12,h,0.0355,0,h|2|xuất hiện|x|ê
+qipedc_D0542N,qipedc,,23,x,0.0399,0,x|ê|héc tô mét vuông (hm2)|xuất hiện|h
+qipedc_D0542T,qipedc,,23,x,0.0389,0,x|ê|héc tô mét vuông (hm2)|h|xuất hiện
+qipedc_D0549T,qipedc,,5000 (năm nghìn),5000 (năm nghìn),0.0376,1,5000 (năm nghìn)|không dám|kỉ niệm|quả dừa|ít
+qipedc_D0550B,qipedc,,10 000 (mười nghìn),ê,0.0498,0,ê|12|x|xì hơi (đánh rắm)|sống sót
+qipedc_D0551N,qipedc,,1 000 000 (một triệu),1 000 000 (một triệu),0.0230,1,1 000 000 (một triệu)|phấn (viết bảng)|đen láy (như đen nhánh)|1 000 000 000 (một tỉ)|xuất hiện
+qipedc_D0552N,qipedc,,1 000 000 000 (một tỉ),dấu hỏi,0.0351,0,dấu hỏi|nhầm|không hiểu|sữa|phim truyện
+qipedc_W00004B,qipedc,,ai,bạn,0.0242,0,bạn|x|g|giá trị|xem
+qipedc_W00009N,qipedc,,anh (nước anh),nghỉ học,0.0665,0,nghỉ học|không muốn|muốn|áo phông|răng
+qipedc_W00009T,qipedc,,anh (nước anh),nghỉ học,0.0607,0,nghỉ học|không muốn|muốn|áo phông|răng
+qipedc_W00012N,qipedc,,anh dũng,tờ giấy,0.0178,0,tờ giấy|kỉ niệm|trúng tuyển|quả roi|con cọp
+qipedc_W00012T,qipedc,,anh dũng,kỉ niệm,0.0188,0,kỉ niệm|tờ giấy|trúng tuyển|quả roi|ngũ quả
+qipedc_W00013N,qipedc,,anh em,cây phượng,0.1341,0,cây phượng|thân cây|họng|đồng phục|chặt
+qipedc_W00013T,qipedc,,anh em,cây phượng,0.1361,0,cây phượng|thân cây|họng|đồng phục|chặt
+qipedc_W00018N,qipedc,,anh rể,hỏi,0.0810,0,hỏi|nghiêm khắc|bông hoa|môn kĩ thuật|giấy ăn
+qipedc_W00018T,qipedc,,anh rể,hỏi,0.0784,0,hỏi|nghiêm khắc|bông hoa|môn kĩ thuật|giấy ăn
+qipedc_W00019N,qipedc,,anh ruột,khổ,0.0464,0,khổ|không muốn|con người|đồng phục|thích thú
+qipedc_W00019T,qipedc,,anh ruột,khổ,0.0455,0,khổ|con người|không muốn|đồng phục|muốn
+qipedc_W00032B,qipedc,,áo đồng phục,thích thú,0.0991,0,thích thú|đồng phục|cây phượng|con sư tử|áo phông
+qipedc_W00035T,qipedc,,áo phông,xà phòng,0.0576,0,xà phòng|không muốn|muốn|áo phông|thích thú
+qipedc_W00057B,qipedc,,ân hận,nghỉ học,0.1309,0,nghỉ học|áo phông|thích thú|con sư tử|đồng phục
+qipedc_W00075N,qipedc,,bài thơ,bón phân,0.1490,0,bón phân|xây|cây xanh tươi|chặt|thứ tự
+qipedc_W00075T,qipedc,,bài thơ,bón phân,0.1463,0,bón phân|xây|cây xanh tươi|chặt|thứ tự
+qipedc_W00086N,qipedc,,ban đêm,dấu hỏi,0.0165,0,dấu hỏi|sân trường|ngày giải phóng miền nam 30/4|mã lai (nước ma lai xi a)|lười học
+qipedc_W00086T,qipedc,,ban đêm,dấu hỏi,0.0171,0,dấu hỏi|sân trường|ngày giải phóng miền nam 30/4|mã lai (nước ma lai xi a)|lười học
+qipedc_W00099N,qipedc,,bản đồ việt nam,buổi đêm,0.0080,0,buổi đêm|bức tranh|tham quan|bít tết (bò)|đèn điện
+qipedc_W00099T,qipedc,,bản đồ việt nam,buổi đêm,0.0079,0,buổi đêm|bức tranh|bít tết (bò)|tham quan|bru nây (nước bru nây)
+qipedc_W00107N,qipedc,,bán hàng,quả roi,0.0181,0,quả roi|bánh cuốn|gạo|cam pu chia (nước cam pu chia)|sinh đẻ
+qipedc_W00107T,qipedc,,bán hàng,bánh cuốn,0.0166,0,bánh cuốn|quả roi|cam pu chia (nước cam pu chia)|gạo|sinh đẻ
+qipedc_W00110B,qipedc,,bạn,thi cử,0.0172,0,thi cử|đau bụng|áo đồng phục|siêu âm|tham ăn
+qipedc_W00111N,qipedc,,bạn gái,trước,0.0276,0,trước|xanh xao|nhầm|phim truyện|chị
+qipedc_W00111T,qipedc,,bạn gái,trước,0.0271,0,trước|xanh xao|nhầm|phim truyện|chị
+qipedc_W00112N,qipedc,,bạn trai,dấu hỏi,0.0496,0,dấu hỏi|kẹo|điện thoại|sữa|lạnh lùng
+qipedc_W00112T,qipedc,,bạn trai,dấu hỏi,0.0535,0,dấu hỏi|kẹo|điện thoại|sữa|lạnh lùng
+qipedc_W00119N,qipedc,,bảng cộng,bảng nhân,0.0436,0,bảng nhân|kiểm tra|quả điều|nhiệt kế|xây
+qipedc_W00121N,qipedc,,bảng đen,mexico (nước mexico),0.0985,0,mexico (nước mexico)|rong chơi|chiếc gối|hi vọng|ham chơi
+qipedc_W00124B,qipedc,,bảng nhân,bảng cộng,0.1011,0,bảng cộng|tham dự|cái gương|cháu ngoại|liên hoan
+qipedc_W00124T,qipedc,,bảng nhân,bảng cộng,0.3437,0,bảng cộng|tham dự|câu thơ|liên hoan|tay trái
+qipedc_W00126N,qipedc,,bảng trừ,bảng nhân,0.0470,0,bảng nhân|nhiệt kế|kiểm tra|quả điều|xây
+qipedc_W00129B,qipedc,,bánh cuốn,chả cá,0.0124,0,chả cá|quả khế|liên quan|chức năng|con ngựa
+qipedc_W00137N,qipedc,,bánh mì,cây phượng,0.0725,0,cây phượng|bón phân|ngày phụ nữ việt nam 20/10|thân cây|chặt
+qipedc_W00137T,qipedc,,bánh mì,cây phượng,0.0761,0,cây phượng|bón phân|ngày phụ nữ việt nam 20/10|chặt|thân cây
+qipedc_W00145B,qipedc,,bao giờ?,x,0.0264,0,x|6|dấu sắc|ă|sống sót
+qipedc_W00145T,qipedc,,bao giờ?,x,0.0251,0,x|6|sống sót|ă|liếc nhìn
+qipedc_W00159N,qipedc,,bảo vệ môi trường,gián tiếp,0.0079,0,gián tiếp|liên hoan|tờ báo|khác|người quen
+qipedc_W00159T,qipedc,,bảo vệ môi trường,gián tiếp,0.0075,0,gián tiếp|liên hoan|tờ báo|khác|vẫn
+qipedc_W00160N,qipedc,,báo (con báo),quả nhãn,0.0382,0,quả nhãn|ủy quyền|tham dự|bắn bi|bảng cộng
+qipedc_W00160T,qipedc,,báo (con báo),quả nhãn,0.0388,0,quả nhãn|ủy quyền|tham dự|bắn bi|bảng cộng
+qipedc_W00175N,qipedc,,xì hơi (đánh rắm),phi líp pin (nước phi líp pin),0.0118,0,phi líp pin (nước phi líp pin)|nên không?|phải không?|ga tàu|sinh đôi
+qipedc_W00186B,qipedc,,bắn bi,mùa xuân,0.0722,0,mùa xuân|ai|ví dụ|bụi phấn|con tôm
+qipedc_W00196B,qipedc,,bắp ngô,ân hận,0.0697,0,ân hận|yếu|kẹo|ông bà|héc tô gam (hg)
+qipedc_W00198,qipedc,,bắt đền,đau bụng,0.0359,0,đau bụng|khổ|tàu hoả|siêu âm|thẻ
+qipedc_W00214B,qipedc,,bẫy chuột (hành động),ví dụ,0.0291,0,ví dụ|nhiệt kế|bông hoa|ưu tiên|quả nhãn
+qipedc_W00216N,qipedc,,bẻ ngô,bón phân,0.0266,0,bón phân|ngày giải phóng miền nam 30/4|con lợn (con heo)|lười học|chặt
+qipedc_W00216T,qipedc,,bẻ ngô,con lợn (con heo),0.0255,0,con lợn (con heo)|ngày giải phóng miền nam 30/4|bón phân|lười học|yếu
+qipedc_W00220B,qipedc,,bé trai,muốn,0.0427,0,muốn|xà phòng|em trai|con người|không muốn
+qipedc_W00220T,qipedc,,bé trai,muốn,0.0450,0,muốn|xà phòng|em trai|không muốn|con người
+qipedc_W00236N,qipedc,,bên cạnh,thú y,0.0942,0,thú y|nghé|con bò|mã lai (nước ma lai xi a)|thông minh
+qipedc_W00255B,qipedc,,bìa vở,phải không?,0.0369,0,phải không?|xã hội|quả khế|ví dụ|nhân (toán học)
+qipedc_W00274B,qipedc,,bình an,hay là (hoặc là),0.0099,0,hay là (hoặc là)|phản bội|môn địa lý|da trắng|liên hoan
+qipedc_W00274T,qipedc,,bình an,hay là (hoặc là),0.0097,0,hay là (hoặc là)|phản bội|môn địa lý|da trắng|trẻ con/con nít
+qipedc_W00286N,qipedc,,bình thường,phấn (viết bảng),0.0257,0,phấn (viết bảng)|â|dấu huyền|chữ|ă
+qipedc_W00286T,qipedc,,bình thường,phấn (viết bảng),0.0264,0,phấn (viết bảng)|â|dấu huyền|chữ|dấu ngã
+qipedc_W00304N,qipedc,,bón phân,lễ halloween 31/10,0.0181,0,lễ halloween 31/10|ngày giải phóng miền nam 30/4|tưới cây|tết âm|hỏi
+qipedc_W00304T,qipedc,,bón phân,lễ halloween 31/10,0.0179,0,lễ halloween 31/10|tưới cây|ngày giải phóng miền nam 30/4|hỏi|tết âm
+qipedc_W00326B,qipedc,,bố dượng,dấu sắc,0.1342,0,"dấu sắc|liếc nhìn|dấu ngã|đợi|anh hai, anh cả"
+qipedc_W00328B,qipedc,,bộ đội,ân hận,0.0215,0,ân hận|yếu|ngày phụ nữ việt nam 20/10|trường ptcs (cấp 2)|héc tô gam (hg)
+qipedc_W00336B,qipedc,,bông hoa,đúng không?,0.0153,0,đúng không?|con tôm|hoa|phi líp pin (nước phi líp pin)|quận
+qipedc_W00337B,qipedc,,bốt cảnh sát,kẹo,0.0324,0,kẹo|sữa|nhầm|héc tô gam (hg)|rằm trung thu
+qipedc_W00338N,qipedc,,bốt điện,con tôm,0.0214,0,con tôm|anh rể|ngày thầy thuốc việt nam|vải lụa|suýt
+qipedc_W00338T,qipedc,,bốt điện,con tôm,0.0229,0,con tôm|anh rể|ngày thầy thuốc việt nam|ví dụ|suýt
+qipedc_W00341N,qipedc,,bột màu,giấy ăn,0.0321,0,giấy ăn|môn kĩ thuật|con voi|ân hận|giấy nháp
+qipedc_W00341T,qipedc,,bột màu,giấy ăn,0.0324,0,giấy ăn|môn kĩ thuật|con voi|ân hận|giấy nháp
+qipedc_W00355N,qipedc,,bra xin (nước bra xin),bảng nhân,0.0414,0,bảng nhân|bông hoa|tự tin|con lợn (con heo)|nhiệt kế
+qipedc_W00355T,qipedc,,bra xin (nước bra xin),bảng nhân,0.0426,0,bảng nhân|tự tin|bông hoa|con lợn (con heo)|nhiệt kế
+qipedc_W00356B,qipedc,,bru nây (nước bru nây),môn kĩ thuật,0.0205,0,môn kĩ thuật|giấy ăn|ngày giải phóng miền nam 30/4|bông hoa|nghiêm khắc
+qipedc_W00357N,qipedc,,cỏ,sữa hộp,0.0201,0,sữa hộp|muốn|áo đồng phục|ngày thương bình liệt sĩ 27/7|thi cử
+qipedc_W00357T,qipedc,,cỏ,sữa hộp,0.0202,0,sữa hộp|muốn|áo đồng phục|ngày thương bình liệt sĩ 27/7|vấn đề
+qipedc_W00359N,qipedc,,bụi phấn,quả khế,0.0275,0,quả khế|liên quan|ai|quả dừa|con ngựa
+qipedc_W00367B,qipedc,,buổi đêm,con mèo,0.0107,0,con mèo|lễ halloween 31/10|màn|bức tranh|ngày giải phóng thủ đô 10/10
+qipedc_W00368N,qipedc,,buổi sáng,hi vọng,0.0307,0,hi vọng|mexico (nước mexico)|con bò|chùa|sáng
+qipedc_W00368T,qipedc,,buổi sáng,hi vọng,0.0306,0,hi vọng|mexico (nước mexico)|con bò|chùa|sáng
+qipedc_W00369B,qipedc,,buổi tối,nhầm,0.0275,0,nhầm|sữa|răng|tôi yêu bạn|tham quan
+qipedc_W00370T,qipedc,,buổi trưa,tre,0.0561,0,tre|đại diện|buổi sáng|buổi trưa|liên bang nga (nước nga)
+qipedc_W00374B,qipedc,,buông màn,từ trái nghĩa,0.0183,0,từ trái nghĩa|liên lạc|không dám|đo|thế nào?
+qipedc_W00383T,qipedc,,bút màu,kẹo,0.0618,0,kẹo|sữa|héc tô gam (hg)|răng|dấu hỏi
+qipedc_W00386N,qipedc,,bức tranh,liên lạc,0.0294,0,liên lạc|tự vệ|đo|mùa xuân|hoa sen
+qipedc_W00398N,qipedc,,cá kho,ngày thành lập quân đội nhân dân việt nam,0.0130,0,ngày thành lập quân đội nhân dân việt nam|héc tô gam (hg)|cây ngô|dấu hỏi|điện
+qipedc_W00404B,qipedc,,cái gương,tôi yêu bạn,0.0312,0,"tôi yêu bạn|chị|anh hai, anh cả|răng|xanh xao"
+qipedc_W00407N,qipedc,,cam pu chia (nước cam pu chia),nghỉ học,0.2092,0,nghỉ học|con sư tử|áo phông|thích thú|không muốn
+qipedc_W00444B,qipedc,,câu thơ,ngày thầy thuốc việt nam,0.0190,0,ngày thầy thuốc việt nam|quả điều|bông hoa|nhiệt kế|quả nhãn
+qipedc_W00456N,qipedc,,cây ăn quả,cây ngô,0.0777,0,cây ngô|tre|lễ nô en|đại diện|công viên
+qipedc_W00456T,qipedc,,cây ăn quả,cây ngô,0.0772,0,cây ngô|tre|lễ nô en|đại diện|công viên
+qipedc_W00457T,qipedc,,cây bàng,công viên,0.0930,0,công viên|trúng tuyển|tuần|đèn pin|con cọp
+qipedc_W00459N,qipedc,,cây cổ thụ,lười học,0.0262,0,lười học|nghiêm khắc|tết âm|bông hoa|hỏi
+qipedc_W00459T,qipedc,,cây cổ thụ,lười học,0.0266,0,lười học|nghiêm khắc|tết âm|bông hoa|hỏi
+qipedc_W00469B,qipedc,,cây ngô,nghỉ học,0.0359,0,nghỉ học|héc tô gam (hg)|không đẹp|tre|tóc ngắn
+qipedc_W00470B,qipedc,,cây phượng,cây xanh tươi,0.0449,0,cây xanh tươi|tham dự|cây bàng|cây thân gỗ|cây cổ thụ
+qipedc_W00474N,qipedc,,cây thân gỗ,cây thân gỗ,0.0304,1,cây thân gỗ|hỏi|lười học|tưới cây|tết âm
+qipedc_W00474T,qipedc,,cây thân gỗ,cây thân gỗ,0.0302,1,cây thân gỗ|hỏi|lười học|tưới cây|cây bàng
+qipedc_W00484N,qipedc,,chả cá,chả cá,0.0266,1,chả cá|nguy hiểm|gạo|ngày người khuyết tật thế giới 3/12|môn địa lý
+qipedc_W00493B,qipedc,,chảo,ở ngoài,0.1326,0,ở ngoài|yêu cầu|chảo|trốn chạy|trung thu
+qipedc_W00495N,qipedc,,cháu gái,cháu ngoại,0.0169,0,cháu ngoại|lười học|bức tranh|chia đôi|con mèo
+qipedc_W00495T,qipedc,,cháu gái,cháu ngoại,0.0184,0,cháu ngoại|lười học|bức tranh|bru nây (nước bru nây)|chia đôi
+qipedc_W00496T,qipedc,,cháu ngoại,dép quai hậu,0.0092,0,dép quai hậu|từ trái nghĩa|bẫy chuột (hành động)|không dám|vẫn
+qipedc_W00497T,qipedc,,cháu nội,5000 (năm nghìn),0.0223,0,5000 (năm nghìn)|chả cá|kỉ niệm|nhưng|không dám
+qipedc_W00498N,qipedc,,cháu trai,cháu ngoại,0.0349,0,cháu ngoại|tự tin|con voi|bảng nhân|cửa hàng
+qipedc_W00508B,qipedc,,chăm sóc sức khỏe,nghiêm khắc,0.0211,0,nghiêm khắc|hỏi|dấu hỏi|bông hoa|bắp ngô
+qipedc_W00509B,qipedc,,chăn (cái chăn),chặt,0.0582,0,chặt|con sư tử|bón phân|nghỉ học|mexico (nước mexico)
+qipedc_W00510T,qipedc,,chăn nuôi,thừa,0.0196,0,thừa|ví dụ|chức năng|lĩnh vực|liên quan
+qipedc_W00513N,qipedc,,chặt,mexico (nước mexico),0.0540,0,mexico (nước mexico)|bón phân|chặt|ngày giải phóng miền nam 30/4|tổng thống
+qipedc_W00513T,qipedc,,chặt,mexico (nước mexico),0.0518,0,mexico (nước mexico)|bón phân|chặt|ngày giải phóng miền nam 30/4|tổng thống
+qipedc_W00516B,qipedc,,châm cứu,nhầm,0.0453,0,nhầm|nghỉ học|sữa|tôi yêu bạn|chị
+qipedc_W00570N,qipedc,,chị,kẹo,0.0621,0,kẹo|héc tô gam (hg)|sữa|nghe|dấu hỏi
+qipedc_W00571N,qipedc,,chị chồng,dấu ngã,0.0122,0,dấu ngã|3|xem|chị|chữ
+qipedc_W00575B,qipedc,,chia,xem,0.0269,0,xem|con tôm|dấu hỏi|hoa|2
+qipedc_W00584N,qipedc,,chiếc gối,không đẹp,0.0202,0,không đẹp|tham quan|đèo hải vân|tóc ngắn|nghỉ học
+qipedc_W00598,qipedc,,chiếu,sinh sản,0.0979,0,sinh sản|sinh đẻ|quả roi|cố gắng|chính xác
+qipedc_W00617B,qipedc,,chính phủ,nhầm,0.0501,0,nhầm|sữa|tôi yêu bạn|kẹo|xanh xao
+qipedc_W00620B,qipedc,,chính xác,giấy ăn,0.0113,0,giấy ăn|5000 (năm nghìn)|bố dượng|chính xác|thế nào?
+qipedc_W00633B,qipedc,,chống đối,đèo hải vân,0.0289,0,"đèo hải vân|tóc ngắn|không đẹp|sĩ diện|anh hai, anh cả"
+qipedc_W00633T,qipedc,,chống đối,đèo hải vân,0.0261,0,"đèo hải vân|tóc ngắn|anh hai, anh cả|sĩ diện|ham chơi"
+qipedc_W00638N,qipedc,,luân phiên,hi vọng,0.0484,0,hi vọng|vui sướng|vui chơi|tấm vải|vui mừng
+qipedc_W00649N,qipedc,,chủ tịch,nghé,0.0542,0,nghé|con bò|thú y|chùa|màn
+qipedc_W00649T,qipedc,,chủ tịch,nghé,0.0529,0,nghé|con bò|thú y|chùa|màn
+qipedc_W00655T,qipedc,,chùa,lễ halloween 31/10,0.0137,0,lễ halloween 31/10|ngày của cha|đèn điện|dấu hỏi|lễ hội hóa trang
+qipedc_W00662N,qipedc,,chuẩn bị,giá trị,0.0141,0,giá trị|bộ đội|chữ|hàng ngày|ngày thành lập quân đội nhân dân việt nam
+qipedc_W00662T,qipedc,,chuẩn bị,giá trị,0.0137,0,giá trị|bộ đội|chữ|sống sót|hàng ngày
+qipedc_W00663N,qipedc,,chúc mừng,ga tàu,0.0088,0,ga tàu|toa xe|lái tàu hỏa|dân tộc|sữa hộp
+qipedc_W00663T,qipedc,,chúc mừng,ga tàu,0.0079,0,lái tàu hỏa|ga tàu|toa xe|dân tộc|sữa hộp
+qipedc_W00664B,qipedc,,chúc tết,ngày thành lập quân đội nhân dân việt nam,0.0126,0,ngày thành lập quân đội nhân dân việt nam|bít tết (bò)|bộ đội|tờ báo|bẫy chuột (hành động)
+qipedc_W00665N,qipedc,,chúc thọ,tự tin,0.0157,0,tự tin|yếu|muốn|ghen tị|em trai
+qipedc_W00665T,qipedc,,chúc thọ,ghen tị,0.0233,0,ghen tị|tự tin|giới thiệu|yếu|con lợn (con heo)
+qipedc_W00691N,qipedc,,chuyên gia,xây,0.0729,0,xây|màu trắng|cây phượng|bảng trừ|thân cây
+qipedc_W00691T,qipedc,,chuyên gia,xây,0.0648,0,xây|màu trắng|bảng trừ|câu thơ|cây phượng
+qipedc_W00708B,qipedc,,chữa bài,mùa xuân,0.0294,0,mùa xuân|ai|bụi phấn|quả khế|ví dụ
+qipedc_W00708T,qipedc,,chữa bài,ai,0.0265,0,ai|mùa xuân|quả khế|ví dụ|liên quan
+qipedc_W00734B,qipedc,,con bê,hi vọng,0.0293,0,hi vọng|bức tranh|bảng đen|vui chơi|vui mừng
+qipedc_W00735B,qipedc,,con bò,hi vọng,0.0405,0,hi vọng|vui chơi|tấm vải|vui sướng|màn
+qipedc_W00737B,qipedc,,con cá,thi cử,0.0481,0,thi cử|siêu âm|đau bụng|áo đồng phục|con người
+qipedc_W00737T,qipedc,,con cá,thi cử,0.0473,0,thi cử|siêu âm|đau bụng|con người|áo đồng phục
+qipedc_W00739N,qipedc,,con chó,con bò,0.1607,0,con bò|nghé|mexico (nước mexico)|tổng thống|thú y
+qipedc_W00739T,qipedc,,con chó,con bò,0.1649,0,con bò|nghé|mexico (nước mexico)|tổng thống|thú y
+qipedc_W00742N,qipedc,,con chuột,hỏi,0.0844,0,hỏi|nghiêm khắc|lễ halloween 31/10|nghe|bắp ngô
+qipedc_W00742T,qipedc,,con chuột,hỏi,0.0886,0,hỏi|nghiêm khắc|lễ halloween 31/10|nghe|bắp ngô
+qipedc_W00747B,qipedc,,con cọp,sinh sản,0.0839,0,sinh sản|sinh đẻ|quả roi|no|bắn bi
+qipedc_W00758T,qipedc,,con ếch,lấy,0.0278,0,lấy|rửa chân|dân tộc|bảng cộng|tham dự
+qipedc_W00768N,qipedc,,con kiến,yếu,0.0442,0,yếu|kẹo|ân hận|héc tô gam (hg)|nghe
+qipedc_W00770B,qipedc,,con lợn (con heo),muốn,0.0499,0,muốn|ông bà|xà phòng|không muốn|vết thương
+qipedc_W00772B,qipedc,,con mèo,lễ halloween 31/10,0.0220,0,lễ halloween 31/10|cửa hàng|luật chơi|bức tranh|rong chơi
+qipedc_W00773N,qipedc,,con muỗi,nên không?,0.0121,0,nên không?|công viên|gạo|cam pu chia (nước cam pu chia)|tuần
+qipedc_W00777N,qipedc,,con người,con người,0.0364,1,con người|thi cử|đau bụng|đặc biệt|siêu âm
+qipedc_W00778B,qipedc,,con ngựa,rửa chân,0.0405,0,rửa chân|bảng cộng|tham dự|bắn bi|lấy
+qipedc_W00780N,qipedc,,con nuôi,đợi,0.0161,0,đợi|sữa hộp|hàng ngày|quân đội|bra xin (nước bra xin)
+qipedc_W00794T,qipedc,,con sư tử,mexico (nước mexico),0.0676,0,mexico (nước mexico)|chiếc gối|hi vọng|tổng thống|buổi đêm
+qipedc_W00797B,qipedc,,con tôm,con tôm,0.0610,1,con tôm|2|hoa|xem|h
+qipedc_W00803N,qipedc,,con voi,hỏi,0.1103,0,hỏi|nghiêm khắc|lễ halloween 31/10|bắp ngô|bông hoa
+qipedc_W00812N,qipedc,,cô giáo,thú y,0.0252,0,thú y|nhầm|mã lai (nước ma lai xi a)|không hiểu|tham quan
+qipedc_W00820B,qipedc,,cố gắng,gan,0.0771,0,gan|lượm|nên không?|tuần sau|bụng
+qipedc_W00850B,qipedc,,công viên,đại diện,0.0176,0,đại diện|mới|cởi áo|lễ nô en|xe khách
+qipedc_W00857B,qipedc,,cộng (toán học),nhà văn hóa,0.0159,0,nhà văn hóa|phải không?|vấn đề|sữa hộp|trắng muốt
+qipedc_W00857T,qipedc,,cộng (toán học),nhà văn hóa,0.0155,0,nhà văn hóa|phải không?|vấn đề|sữa hộp|trắng muốt
+qipedc_W00863N,qipedc,,cột điện,môn kĩ thuật,0.0274,0,môn kĩ thuật|giấy ăn|con voi|chính xác|giấy nháp
+qipedc_W00863T,qipedc,,cột điện,môn kĩ thuật,0.0273,0,môn kĩ thuật|con voi|giấy ăn|chính xác|giấy nháp
+qipedc_W00868N,qipedc,,cơ hội,môn địa lý,0.0184,0,môn địa lý|kỉ niệm|bụi phấn|gạo|quả dừa
+qipedc_W00868T,qipedc,,cơ hội,môn địa lý,0.0158,0,môn địa lý|gạo|kỉ niệm|bụi phấn|chia
+qipedc_W00885N,qipedc,,cơm bình dân,xem,0.0128,0,xem|p|hoa|2|gián tiếp
+qipedc_W00935N,qipedc,,cửa hàng,môn kĩ thuật,0.0207,0,môn kĩ thuật|họp|con voi|nghe|giấy ăn
+qipedc_W00943N,qipedc,,cướp,hoặc,0.0277,0,hoặc|nhưng|cam pu chia (nước cam pu chia)|gián tiếp|thường xuyên
+qipedc_W00943T,qipedc,,cướp,hoặc,0.0278,0,hoặc|nhưng|cam pu chia (nước cam pu chia)|gián tiếp|thường xuyên
+qipedc_W00988B,qipedc,,dân tộc,bạn,0.0222,0,bạn|tô màu|dân tộc|sữa hộp|quân đội
+qipedc_W00989N,qipedc,,dân tộc thiểu số,chức năng,0.0149,0,chức năng|bụi phấn|ủy quyền|quả khế|con ngựa
+qipedc_W00989T,qipedc,,dân tộc thiểu số,chức năng,0.0140,0,chức năng|ai|con ngựa|quả khế|ủy quyền
+qipedc_W01016N,qipedc,,dây điện,liên lạc,0.0136,0,liên lạc|đo|không dám|đèn điện|từ trái nghĩa
+qipedc_W01016T,qipedc,,dây điện,liên lạc,0.0134,0,liên lạc|đo|không dám|đèn điện|từ trái nghĩa
+qipedc_W01022N,qipedc,,dép quai hậu,thừa,0.0225,0,thừa|chức năng|quả khế|con ngựa|lĩnh vực
+qipedc_W01032B,qipedc,,di truyền,ví dụ,0.0133,0,ví dụ|từ trái nghĩa|đo|luật chơi|bông hoa
+qipedc_W01033N,qipedc,,dịch vụ,môn kĩ thuật,0.0289,0,môn kĩ thuật|sân trường|nghe|dấu hỏi|nghiêm khắc
+qipedc_W01075B,qipedc,,nhà nước,kẹo,0.0248,0,kẹo|héc tô gam (hg)|yếu|chăn (cái chăn)|dấu hỏi
+qipedc_W01082B,qipedc,,đại diện,dấu hỏi,0.0330,0,dấu hỏi|phim truyện|ê|điện|xem
+qipedc_W01082T,qipedc,,đại diện,dấu hỏi,0.0325,0,dấu hỏi|phim truyện|ê|điện|xem
+qipedc_W01122,qipedc,,đặc biệt,cố gắng,0.0101,0,cố gắng|chức năng|quả dừa|môn kĩ thuật|con ngựa
+qipedc_W01153B,qipedc,,đen láy (như đen nhánh),nhầm,0.0934,0,nhầm|sữa|tham quan|không hiểu|rằm trung thu
+qipedc_W01154B,qipedc,,đèn báo giao thông,đại diện,0.0262,0,đại diện|công viên|ra ngoài|lễ nô en|tre
+qipedc_W01155B,qipedc,,đèn điện,nhật (nước nhật),0.0315,0,nhật (nước nhật)|đen láy (như đen nhánh)|mỗi ngày|thú y|phim truyện
+qipedc_W01159T,qipedc,,đèn pin,ở ngoài,0.4242,0,ở ngoài|chảo|yêu cầu|trốn chạy|trung thu
+qipedc_W01161B,qipedc,,đèn vàng,lễ halloween 31/10,0.0360,0,lễ halloween 31/10|phấn (viết bảng)|thơm|luật chơi|bức tranh
+qipedc_W01162T,qipedc,,đèn xanh,tưởng tượng,0.0185,0,tưởng tượng|thông minh|suy nghĩ|mỗi ngày|ý nghĩa
+qipedc_W01165B,qipedc,,đèo hải vân,cần không?,0.0220,0,cần không?|thường xuyên|hoặc|gián tiếp|hàng ngày
+qipedc_W01177N,qipedc,,đề nghị,trốn chạy,0.0933,0,trốn chạy|yêu cầu|ở ngoài|trung thu|chảo
+qipedc_W01177T,qipedc,,đề nghị,trốn chạy,0.0882,0,trốn chạy|ở ngoài|yêu cầu|trung thu|trong ngoài
+qipedc_W01205N,qipedc,,điện,con voi,0.0163,0,con voi|ân hận|trường ptcs (cấp 2)|phải không?|áo đồng phục
+qipedc_W01205T,qipedc,,điện,con voi,0.0166,0,con voi|ân hận|trường ptcs (cấp 2)|phải không?|áo đồng phục
+qipedc_W01211N,qipedc,,quả điều,ân hận,0.0448,0,ân hận|muốn|ông bà|yếu|tiếng anh
+qipedc_W01212N,qipedc,,điều phối,quả roi,0.0425,0,quả roi|cam pu chia (nước cam pu chia)|cố gắng|nhưng|giấy
+qipedc_W01213B,qipedc,,điều hòa,nghỉ học,0.0357,0,nghỉ học|đèo hải vân|chặt|không đẹp|tóc ngắn
+qipedc_W01259T,qipedc,,nhập ngũ,ga tàu,0.0156,0,ga tàu|phải không?|bình an|trung quốc (nước trung quốc)|bạn
+qipedc_W01294N,qipedc,,đồng phục,thi cử,0.0320,0,thi cử|xà phòng|vấn đề|áo đồng phục|ngày thương bình liệt sĩ 27/7
+qipedc_W01294T,qipedc,,đồng phục,thi cử,0.0311,0,thi cử|xà phòng|vấn đề|áo đồng phục|ngày thương bình liệt sĩ 27/7
+qipedc_W01301,qipedc,,tác động,tác động,0.0194,1,tác động|phải không?|con kiến|ghen tị|thi cử
+qipedc_W01304N,qipedc,,đợi,dấu sắc,0.0489,0,dấu sắc|đặc biệt|đợi|hàng ngày|bạn
+qipedc_W01348N,qipedc,,e thẹn,môn kĩ thuật,0.0260,0,môn kĩ thuật|giấy ăn|nghiêm khắc|hỏi|sân trường
+qipedc_W01351T,qipedc,,em rể,phải không?,0.0195,0,phải không?|tác động|quả khế|con kiến|quận
+qipedc_W01352N,qipedc,,em trai,yếu,0.0342,0,yếu|ân hận|con lợn (con heo)|tự tin|tiếng anh
+qipedc_W01352T,qipedc,,em trai,yếu,0.0341,0,yếu|ân hận|tiếng anh|con lợn (con heo)|tự tin
+qipedc_W01364B,qipedc,,ga tàu,sữa hộp,0.0231,0,sữa hộp|răng|kẹo|muốn|yếu
+qipedc_W01384B,qipedc,,gạo,môn địa lý,0.0208,0,môn địa lý|quả roi|gạo|con ếch|kỉ niệm
+qipedc_W01403B,qipedc,,gầy (miền nam: ốm),sinh sản,0.1561,0,sinh sản|sinh đẻ|gan|cố gắng|lượm
+qipedc_W01430N,qipedc,,giao thông,ra ngoài,0.0337,0,ra ngoài|tờ báo|hoặc|nằm|công viên
+qipedc_W01433B,qipedc,,giá trị,lễ halloween 31/10,0.0286,0,lễ halloween 31/10|hỏi|liên lạc|thơm|nghiêm khắc
+qipedc_W01434N,qipedc,,giá trị phần trăm,x,0.0165,0,x|không có|h|tham ăn|sống sót
+qipedc_W01434T,qipedc,,giá trị phần trăm,x,0.0160,0,x|không có|tham ăn|sống sót|anh em
+qipedc_W01447B,qipedc,,gián tiếp,hoặc,0.0378,0,hoặc|ra ngoài|cần không?|hàng ngày|phương tiện giao thông
+qipedc_W01453N,qipedc,,giao tiếp,chị họ,0.0158,0,chị họ|dân tộc|hứa|sinh đôi|nên không?
+qipedc_W01453T,qipedc,,giao tiếp,chức năng,0.0188,0,chức năng|quả roi|loài vật|sinh sản|bắn bi
+qipedc_W01470N,qipedc,,giấy,gạo,0.0158,0,gạo|môn địa lý|bắn bi|chả cá|chức năng
+qipedc_W01470T,qipedc,,giấy,gạo,0.0148,0,gạo|bắn bi|chức năng|môn địa lý|lĩnh vực
+qipedc_W01471B,qipedc,,giấy ăn,ân hận,0.0243,0,ân hận|con voi|môn kĩ thuật|giấy ăn|yếu
+qipedc_W01472N,qipedc,,giấy màu,giấy ăn,0.0287,0,giấy ăn|héc tô gam (hg)|môn kĩ thuật|con voi|ân hận
+qipedc_W01472T,qipedc,,giấy màu,giấy ăn,0.0297,0,giấy ăn|môn kĩ thuật|héc tô gam (hg)|con voi|ân hận
+qipedc_W01473B,qipedc,,giấy nháp,ân hận,0.0203,0,ân hận|héc tô gam (hg)|trường ptcs (cấp 2)|quận|giấy nháp
+qipedc_W01497N,qipedc,,giúp đỡ,tuần sau,0.0207,0,tuần sau|phó hiệu trưởng|vào|toa xe|cần không?
+qipedc_W01497T,qipedc,,giúp đỡ,phó hiệu trưởng,0.0213,0,phó hiệu trưởng|tuần sau|vào|tàu hoả|cần không?
+qipedc_W01516N,qipedc,,gỗ,ga tàu,0.0158,0,ga tàu|toa xe|người quen|sữa hộp|xe khách
+qipedc_W01557N,qipedc,,hành quân,cái gương,0.0266,0,cái gương|giải thích|trong ngoài|trăng|tham dự
+qipedc_W01576B,qipedc,,héc tô gam (hg),dấu ngã,0.0504,0,dấu ngã|ă|héc tô mét vuông (hm2)|3|tai
+qipedc_W01577N,qipedc,,héc tô mét (hm),con tôm,0.0874,0,con tôm|hoa|xem|suýt|bắp ngô
+qipedc_W01577T,qipedc,,héc tô mét (hm),con tôm,0.0913,0,con tôm|hoa|xem|suýt|bắp ngô
+qipedc_W01578N,qipedc,,héc tô mét vuông (hm2),2,0.0340,0,2|bẫy chuột (hành động)|h|ê|hoa
+qipedc_W01578T,qipedc,,héc tô mét vuông (hm2),2,0.0342,0,2|bẫy chuột (hành động)|hoa|h|con tôm
+qipedc_W01582N,qipedc,,hệ thống,tết âm,0.0141,0,tết âm|ngày giải phóng miền nam 30/4|đèn điện|hỏi|lười học
+qipedc_W01582T,qipedc,,hệ thống,tết âm,0.0142,0,tết âm|ngày giải phóng miền nam 30/4|hỏi|đèn điện|ngày giải phóng thủ đô 10/10
+qipedc_W01583B,qipedc,,hi sinh,ga tàu,0.0103,0,ga tàu|tô màu|người quen|phi líp pin (nước phi líp pin)|nhận
+qipedc_W01584N,qipedc,,hi vọng,ghen tị,0.0399,0,ghen tị|muốn|ông bà|thân cây|em trai
+qipedc_W01591N,qipedc,,hiểu,thú y,0.0754,0,thú y|dấu hỏi|thơm|bắp ngô|mã lai (nước ma lai xi a)
+qipedc_W01591T,qipedc,,hiểu,thú y,0.0787,0,thú y|dấu hỏi|thơm|bắp ngô|lễ halloween 31/10
+qipedc_W01619N,qipedc,,hoa,hỏi,0.0954,0,hỏi|nghiêm khắc|bông hoa|môn kĩ thuật|lễ halloween 31/10
+qipedc_W01629T,qipedc,,hoa sen,kinh nghiệm,0.0175,0,kinh nghiệm|bụi phấn|mùa xuân|ngắt hoa|tết trung thu
+qipedc_W01655N,qipedc,,hoạt hình,nghỉ học,0.0587,0,nghỉ học|không muốn|muốn|ông bà|họng
+qipedc_W01655T,qipedc,,hoạt hình,không muốn,0.0590,0,không muốn|nghỉ học|muốn|ông bà|họng
+qipedc_W01672B,qipedc,,hỏi,con tôm,0.0650,0,con tôm|hoa|xem|p|2
+qipedc_W01675B,qipedc,,hỏng,cửa hàng,0.0226,0,cửa hàng|phở|sữa hộp|tự tin|dây điện
+qipedc_W01675T,qipedc,,hỏng,cửa hàng,0.0228,0,cửa hàng|phở|sữa hộp|dây điện|tự tin
+qipedc_W01677N,qipedc,,họp,con tôm,0.0229,0,con tôm|hoa|quả dừa xiêm|xem|suýt
+qipedc_W01690B,qipedc,,hồi hộp,ghen tị,0.1195,0,ghen tị|thi cử|khó khăn|em rể|đau bụng
+qipedc_W01690T,qipedc,,hồi hộp,ghen tị,0.1190,0,ghen tị|thi cử|khó khăn|em rể|đau bụng
+qipedc_W01692T,qipedc,,hối hận,nghe,0.0413,0,nghe|kẹo|kính|yếu|sân trường
+qipedc_W01696N,qipedc,,hội thảo,dấu hỏi,0.0316,0,dấu hỏi|sân trường|nghe|héc tô gam (hg)|môn kĩ thuật
+qipedc_W01721T,qipedc,,huyện,quả roi,0.0245,0,quả roi|cố gắng|bắn bi|thừa|chức năng
+qipedc_W01738N,qipedc,,kém,hoặc,0.0538,0,hoặc|gián tiếp|ra ngoài|nhưng|tờ báo
+qipedc_W01743B,qipedc,,kẹo,yếu,0.0310,0,yếu|chăn (cái chăn)|kẹo|họp|tự tin
+qipedc_W01754N,qipedc,,kết quả,gạo,0.0233,0,gạo|môn địa lý|quả khế|cam pu chia (nước cam pu chia)|cá kho
+qipedc_W01754T,qipedc,,kết quả,gạo,0.0233,0,gạo|môn địa lý|quả khế|cam pu chia (nước cam pu chia)|cá kho
+qipedc_W01803B,qipedc,,khó khăn,con tôm,0.0321,0,con tôm|ai|mắng|ví dụ|anh rể
+qipedc_W01824T,qipedc,,khỏi bệnh,dân tộc,0.0106,0,dân tộc|chị họ|nên không?|hứa|tuần sau
+qipedc_W01840B,qipedc,,không hiểu,trước,0.0334,0,trước|dấu ngã|xanh xao|nhầm|phim truyện
+qipedc_W01842N,qipedc,,khổ,con người,0.0283,0,con người|xà phòng|khổ|em trai|muốn
+qipedc_W01866N,qipedc,,kỉ niệm,trúng tuyển,0.0307,0,trúng tuyển|gói|kỉ niệm|5000 (năm nghìn)|bẫy chuột (hành động)
+qipedc_W01866T,qipedc,,kỉ niệm,trúng tuyển,0.0296,0,trúng tuyển|gói|5000 (năm nghìn)|kỉ niệm|bẫy chuột (hành động)
+qipedc_W01872N,qipedc,,kí tên,nhập ngũ,0.0117,0,nhập ngũ|bột màu|bít tết (bò)|máy in|bớt
+qipedc_W01872T,qipedc,,kí tên,nhập ngũ,0.0117,0,nhập ngũ|bột màu|bít tết (bò)|máy in|bớt
+qipedc_W01878B,qipedc,,kiểm tra,con tôm,0.0732,0,con tôm|anh rể|quả dừa xiêm|ai|địa chỉ
+qipedc_W01898N,qipedc,,kinh nghiệm,ê,0.0304,0,ê|đen láy (như đen nhánh)|ă|trước|x
+qipedc_W01898T,qipedc,,kinh nghiệm,ê,0.0306,0,ê|đen láy (như đen nhánh)|trước|ă|nhật (nước nhật)
+qipedc_W01911B,qipedc,,là gì?,con tôm,0.0782,0,con tôm|quả dừa xiêm|ai|phải không?|anh rể
+qipedc_W01912N,qipedc,,lá cây,thừa,0.0159,0,thừa|con ngựa|bắn bi|chức năng|lĩnh vực
+qipedc_W01920B,qipedc,,lái tàu hỏa,thi cử,0.0452,0,thi cử|đau bụng|đặc biệt|siêu âm|trung quốc (nước trung quốc)
+qipedc_W01924,qipedc,,làm bài tập,cởi áo,0.0390,0,cởi áo|rong chơi|mexico (nước mexico)|hi vọng|chiếc gối
+qipedc_W01945B,qipedc,,lào (nước lào),mexico (nước mexico),0.0353,0,mexico (nước mexico)|tham quan|con bò|y tế|thú y
+qipedc_W01945T,qipedc,,lào (nước lào),mexico (nước mexico),0.0362,0,mexico (nước mexico)|tham quan|con bò|y tế|ngày giải phóng miền nam 30/4
+qipedc_W01977B,qipedc,,lễ bế giảng,sơ mi,0.0070,0,sơ mi|dân tộc|nhiệt kế|cháu ngoại|con voi
+qipedc_W01978B,qipedc,,lễ hội,gạo,0.0200,0,gạo|quả dừa|gói|ngày người khuyết tật thế giới 3/12|bụi phấn
+qipedc_W01978T,qipedc,,lễ hội,gạo,0.0196,0,gạo|quả dừa|ngày người khuyết tật thế giới 3/12|gói|chả cá
+qipedc_W01979N,qipedc,,lễ nô en,con tôm,0.0182,0,con tôm|mùa xuân|suýt|tự vệ|liên lạc
+qipedc_W01982N,qipedc,,lễ hội hóa trang,phấn (viết bảng),0.0122,0,phấn (viết bảng)|ngày giỗ tổ hùng vương (âm lịch 10/3)|1 000 000 000 (một tỉ)|đen láy (như đen nhánh)|thú y
+qipedc_W01996N,qipedc,,liên bang nga (nước nga),ghen tị,0.0800,0,ghen tị|thân cây|một mình|kiểm tra|tim
+qipedc_W01998N,qipedc,,liên hoan,hay là (hoặc là),0.0581,0,hay là (hoặc là)|liên hoan|ngồi|vắng|là gì?
+qipedc_W02000N,qipedc,,liên lạc,bảng cộng,0.0996,0,bảng cộng|tham dự|câu thơ|xây|rửa chân
+qipedc_W02001N,qipedc,,liên quan,mùa xuân,0.0372,0,mùa xuân|hỏi|bụi phấn|con tôm|môn kĩ thuật
+qipedc_W02001T,qipedc,,liên quan,mùa xuân,0.0381,0,mùa xuân|hỏi|bụi phấn|con tôm|môn kĩ thuật
+qipedc_W02012B,qipedc,,lĩnh vực,quả khế,0.0236,0,quả khế|ai|giám sát|chả cá|liên quan
+qipedc_W02024N,qipedc,,loài vật,thú y,0.0520,0,thú y|mã lai (nước ma lai xi a)|nhật (nước nhật)|đen láy (như đen nhánh)|thông minh
+qipedc_W02024T,qipedc,,loài vật,thú y,0.0442,0,thú y|nhật (nước nhật)|mã lai (nước ma lai xi a)|đen láy (như đen nhánh)|thông minh
+qipedc_W02064N,qipedc,,luật chơi,lễ halloween 31/10,0.0198,0,lễ halloween 31/10|màn|tưới cây|hỏi|ngày giải phóng miền nam 30/4
+qipedc_W02066B,qipedc,,lúc nào,nguy hiểm,0.0100,0,nguy hiểm|từ trái nghĩa|thế nào?|chả cá|quả nhãn
+qipedc_W02078N,qipedc,,lười,đèn báo giao thông,0.0321,0,đèn báo giao thông|cởi áo|toa xe|tự do|nguy hiểm
+qipedc_W02078T,qipedc,,lười,đèn báo giao thông,0.0316,0,đèn báo giao thông|cởi áo|toa xe|tự do|nguy hiểm
+qipedc_W02079B,qipedc,,lười học,cháu ngoại,0.0193,0,cháu ngoại|cửa hàng|phở|dân tộc|nghệ thuật
+qipedc_W02120T,qipedc,,màn,cởi áo,0.0272,0,cởi áo|toa xe|phó hiệu trưởng|trong ngoài|vui mừng
+qipedc_W02137B,qipedc,,màu nâu,ê,0.0369,0,ê|p|2|gián tiếp|bẫy chuột (hành động)
+qipedc_W02140N,qipedc,,màu trắng,héc tô gam (hg),0.0380,0,héc tô gam (hg)|kẹo|răng|yếu|chăn (cái chăn)
+qipedc_W02140T,qipedc,,màu trắng,héc tô gam (hg),0.0415,0,héc tô gam (hg)|kẹo|răng|nghỉ học|yếu
+qipedc_W02142B,qipedc,,màu xanh da trời,dấu hỏi,0.0568,0,dấu hỏi|ê|đen láy (như đen nhánh)|thơm|cung điện
+qipedc_W02143N,qipedc,,màu xanh lá cây,môn kĩ thuật,0.0137,0,môn kĩ thuật|ưu tiên|giấy ăn|bông hoa|bức tranh
+qipedc_W02148N,qipedc,,máy in,gián tiếp,0.0136,0,gián tiếp|tờ báo|bẫy chuột (hành động)|thường xuyên|vẫn
+qipedc_W02148T,qipedc,,máy in,gián tiếp,0.0140,0,gián tiếp|tờ báo|thường xuyên|bẫy chuột (hành động)|vẫn
+qipedc_W02164B,qipedc,,mắng,dấu hỏi,0.0299,0,dấu hỏi|thú y|đen láy (như đen nhánh)|màu nâu|nhật (nước nhật)
+qipedc_W02178N,qipedc,,mâm ngũ quả,trúng tuyển,0.0175,0,trúng tuyển|bên cạnh|công viên|vắng|gói
+qipedc_W02178T,qipedc,,mâm ngũ quả,bên cạnh,0.0159,0,bên cạnh|trúng tuyển|công viên|vắng|gói
+qipedc_W02187T,qipedc,,mật khẩu,trung thu,0.0334,0,trung thu|giải thích|bảo hiểm|cái gương|trăng
+qipedc_W02200B,qipedc,,mexico (nước mexico),mexico (nước mexico),0.0386,1,mexico (nước mexico)|tổng thống|ngày giải phóng miền nam 30/4|màn|nghé
+qipedc_W02221B,qipedc,,muốn,con tôm,0.0515,0,con tôm|dấu hỏi|bắp ngô|xem|hỏi
+qipedc_W02239B,qipedc,,môn đạo đức,bảng nhân,0.0302,0,bảng nhân|quả điều|tim|ghen tị|kiểm tra
+qipedc_W02239T,qipedc,,môn đạo đức,bảng nhân,0.0304,0,bảng nhân|tim|quả điều|ghen tị|con kiến
+qipedc_W02243B,qipedc,,môn kĩ thuật,ví dụ,0.0954,0,ví dụ|xã hội|con kiến|họp nhóm|thừa
+qipedc_W02244N,qipedc,,môn lịch sử,môn kĩ thuật,0.0313,0,môn kĩ thuật|con voi|giấy ăn|nghe|ân hận
+qipedc_W02244T,qipedc,,môn lịch sử,con voi,0.0309,0,con voi|môn kĩ thuật|giấy ăn|ân hận|nghe
+qipedc_W02264N,qipedc,,mới,sinh sản,0.0243,0,sinh sản|quả nhãn|báo (con báo)|là gì?|ủy quyền
+qipedc_W02264T,qipedc,,mới,sinh sản,0.0275,0,sinh sản|quả nhãn|báo (con báo)|là gì?|bắn bi
+qipedc_W02270N,qipedc,,mùa hè,thú y,0.0731,0,thú y|thông minh|mã lai (nước ma lai xi a)|nghé|đeo kính
+qipedc_W02272B,qipedc,,mùa xuân,chả cá,0.0192,0,chả cá|ví dụ|ấn|lĩnh vực|liên quan
+qipedc_W02292B,qipedc,,nạp điện,mùa xuân,0.0137,0,mùa xuân|con tôm|ít|quả khế|suýt
+qipedc_W02328T,qipedc,,ngày nhà giáo việt nam,ngày giải phóng miền nam 30/4,0.0237,0,ngày giải phóng miền nam 30/4|ngày nhà giáo việt nam|mexico (nước mexico)|ngày phụ nữ việt nam 20/10|héc tô gam (hg)
+qipedc_W02329N,qipedc,,ngày tháng,con kiến,0.0267,0,con kiến|xã hội|người lái xe (ô tô)|dân tộc|dép quai hậu
+qipedc_W02336N,qipedc,,ngày nay,liên hoan,0.0546,0,liên hoan|hay là (hoặc là)|công viên|hoặc|tờ báo
+qipedc_W02337N,qipedc,,ngày quốc tế lao động,1 000 000 (một triệu),0.0078,0,1 000 000 (một triệu)|vì sao?|ngày giỗ tổ hùng vương (âm lịch 10/3)|ngày giải phóng thủ đô 10/10|tuần lễ người điếc thế giới
+qipedc_W02338B,qipedc,,ngày sinh,nên không?,0.0280,0,nên không?|ga tàu|thiếu thốn|đại diện|lễ nô en
+qipedc_W02345B,qipedc,,ngắt hoa,mùa xuân,0.0276,0,mùa xuân|bụi phấn|ai|5000 (năm nghìn)|không dám
+qipedc_W02354B,qipedc,,nghé,bức tranh,0.0165,0,bức tranh|luật chơi|màn|lễ hội hóa trang|ngày giải phóng miền nam 30/4
+qipedc_W02357N,qipedc,,nghệ thuật,hỏi,0.0499,0,hỏi|nghiêm khắc|môn kĩ thuật|nghe|sân trường
+qipedc_W02357T,qipedc,,nghệ thuật,hỏi,0.0462,0,hỏi|nghiêm khắc|môn kĩ thuật|nghe|giấy ăn
+qipedc_W02359N,qipedc,,nghi ngờ,dấu hỏi,0.0574,0,dấu hỏi|điện thoại|nhầm|sữa|nghe
+qipedc_W02359T,qipedc,,nghi ngờ,dấu hỏi,0.0580,0,dấu hỏi|điện thoại|nhầm|sữa|nghe
+qipedc_W02360B,qipedc,,nghỉ hè,răng,0.0519,0,răng|dấu sắc|sữa hộp|bra xin (nước bra xin)|đợi
+qipedc_W02361N,qipedc,,nghỉ học,bảng đen,0.0101,0,bảng đen|đèn điện|chúc tết|bức tranh|lúc nào
+qipedc_W02373N,qipedc,,nghiêm khắc,chính xác,0.0364,0,chính xác|môn kĩ thuật|giấy ăn|con voi|chức năng
+qipedc_W02373T,qipedc,,nghiêm khắc,chính xác,0.0335,0,chính xác|môn kĩ thuật|giấy ăn|con voi|chức năng
+qipedc_W02394N,qipedc,,ngọn cây,xây,0.0916,0,xây|bón phân|cây phượng|cây xanh tươi|bảng nhân
+qipedc_W02394T,qipedc,,ngọn cây,xây,0.0974,0,xây|bón phân|cây xanh tươi|cây phượng|bảng nhân
+qipedc_W02400B,qipedc,,ngồi,phải không?,0.0125,0,phải không?|tô màu|cố gắng|bít tết (bò)|con ngựa
+qipedc_W02400T,qipedc,,ngồi,phải không?,0.0120,0,phải không?|tô màu|cố gắng|bít tết (bò)|con ngựa
+qipedc_W02402N,qipedc,,ngũ quả,thú y,0.0165,0,thú y|nghé|thông minh|chúc tết|đèn điện
+qipedc_W02402T,qipedc,,ngũ quả,thú y,0.0160,0,thú y|nghé|thông minh|chúc tết|đèn điện
+qipedc_W02405B,qipedc,,nguy hiểm,nghiêm khắc,0.0640,0,nghiêm khắc|hỏi|bông hoa|môn kĩ thuật|giấy ăn
+qipedc_W02430N,qipedc,,người lái xe (ô tô),dân tộc,0.0095,0,dân tộc|người quen|toa xe|con kiến|dây điện
+qipedc_W02430T,qipedc,,người lái xe (ô tô),dân tộc,0.0096,0,dân tộc|con kiến|người quen|toa xe|lái tàu hỏa
+qipedc_W02435B,qipedc,,người quen,trường ptcs (cấp 2),0.0271,0,trường ptcs (cấp 2)|ngày thầy thuốc việt nam|yếu|quận|bông hoa
+qipedc_W02437B,qipedc,,người xấu,yếu,0.0246,0,yếu|trường ptcs (cấp 2)|muốn|giới thiệu|ghen tị
+qipedc_W02438T,qipedc,,người xưa,vào,0.0254,0,vào|không cho|mách|suy nghĩ|đèn vàng
+qipedc_W02439N,qipedc,,người yêu,ê,0.0282,0,ê|đen láy (như đen nhánh)|màu nâu|nhật (nước nhật)|1 000 000 000 (một tỉ)
+qipedc_W02455B,qipedc,,nhà trường,hi vọng,0.0379,0,hi vọng|màn|chùa|vui chơi|lễ halloween 31/10
+qipedc_W02461N,qipedc,,nhãn vở,sinh đôi,0.0149,0,sinh đôi|dân tộc|lượm|thi cử|áo đồng phục
+qipedc_W02473N,qipedc,,nhân (toán học),con tôm,0.0211,0,con tôm|ai|mùa xuân|quả dừa xiêm|môn kĩ thuật
+qipedc_W02473T,qipedc,,nhân (toán học),con tôm,0.0213,0,con tôm|ai|mùa xuân|quả dừa xiêm|quả khế
+qipedc_W02479N,qipedc,,nhân hậu,thi cử,0.0538,0,thi cử|ghen tị|trung quốc (nước trung quốc)|đau bụng|áo đồng phục
+qipedc_W02479T,qipedc,,nhân hậu,thi cử,0.0512,0,thi cử|ghen tị|trung quốc (nước trung quốc)|đau bụng|áo đồng phục
+qipedc_W02490B,qipedc,,nhập trường,anh rể,0.0257,0,anh rể|con tôm|ví dụ|ngày thầy thuốc việt nam|quả dừa xiêm
+qipedc_W02492B,qipedc,,nhật (nước nhật),liên hoan,0.0339,0,liên hoan|dép quai hậu|hay là (hoặc là)|từ trái nghĩa|bức tranh
+qipedc_W02492T,qipedc,,nhật (nước nhật),liên hoan,0.0334,0,liên hoan|dép quai hậu|hay là (hoặc là)|từ trái nghĩa|bức tranh
+qipedc_W02497N,qipedc,,nhiệt kế,quận,0.0315,0,quận|ngày thương bình liệt sĩ 27/7|trường ptcs (cấp 2)|trắng muốt|quả dừa xiêm
+qipedc_W02520B,qipedc,,no,gan,0.1718,0,gan|lượm|bụng|sinh sản|cố gắng
+qipedc_W02540N,qipedc,,nội dung,dấu hỏi,0.0238,0,dấu hỏi|con tôm|xem|sân trường|môn kĩ thuật
+qipedc_W02540T,qipedc,,nội dung,dấu hỏi,0.0239,0,dấu hỏi|con tôm|xem|sân trường|cung điện
+qipedc_W02555N,qipedc,,nước việt nam,cây phượng,0.0629,0,cây phượng|thân cây|kiểm tra|ngày gia đình việt nam 28/6|họng
+qipedc_W02555T,qipedc,,nước việt nam,cây phượng,0.0675,0,cây phượng|thân cây|kiểm tra|họng|ngày gia đình việt nam 28/6
+qipedc_W02575N,qipedc,,ông ngoại,dấu hỏi,0.0539,0,dấu hỏi|nghe|kẹo|điện thoại|sân trường
+qipedc_W02576B,qipedc,,ông nội,x,0.0276,0,x|ê|2|1 000 000 (một triệu)|sống sót
+qipedc_W02580B,qipedc,,ở ngoài,hoặc,0.0343,0,hoặc|ra ngoài|gián tiếp|tờ báo|thường xuyên
+qipedc_W02589B,qipedc,,phá,ai,0.0390,0,ai|ví dụ|phải không?|con tôm|quả khế
+qipedc_W02597B,qipedc,,phản bội,lễ halloween 31/10,0.0184,0,lễ halloween 31/10|cái gương|nghiêm khắc|hỏi|lười học
+qipedc_W02630N,qipedc,,phấn (viết bảng),phải không?,0.0228,0,phải không?|xã hội|tác động|họp nhóm|con kiến
+qipedc_W02651B,qipedc,,phiên dịch,mùa xuân,0.0706,0,mùa xuân|bụi phấn|ai|chức năng|quả khế
+qipedc_W02651T,qipedc,,phiên dịch,mùa xuân,0.0692,0,mùa xuân|bụi phấn|ai|quả khế|chức năng
+qipedc_W02654N,qipedc,,phi líp pin (nước phi líp pin),hi vọng,0.0631,0,hi vọng|rong chơi|cởi áo|chiếc gối|mexico (nước mexico)
+qipedc_W02656T,qipedc,,phim hoạt hình,kính,0.0227,0,kính|nghe|kẹo|héc tô gam (hg)|yếu
+qipedc_W02658B,qipedc,,phim truyện,dấu sắc,0.0366,0,dấu sắc|6|x|ă|liếc nhìn
+qipedc_W02658T,qipedc,,phim truyện,dấu sắc,0.0458,0,dấu sắc|6|x|ă|dấu ngã
+qipedc_W02696B,qipedc,,phở,ung thư,0.0218,0,ung thư|giấy nháp|bánh cuốn|ga tàu|cột điện
+qipedc_W02697N,qipedc,,phở cuốn,quả dừa,0.0123,0,quả dừa|quả dừa xiêm|tô màu|quyển vở|họp nhóm
+qipedc_W02697T,qipedc,,phở cuốn,quả dừa,0.0128,0,quả dừa|quả dừa xiêm|tô màu|quyển vở|họp nhóm
+qipedc_W02716B,qipedc,,phương tiện giao thông,ga tàu,0.0288,0,ga tàu|môn địa lý|giao thông|toa xe|da trắng
+qipedc_W02716T,qipedc,,phương tiện giao thông,ga tàu,0.0280,0,ga tàu|môn địa lý|giao thông|toa xe|dân tộc
+qipedc_W02724N,qipedc,,quả bưởi,nghé,0.0605,0,nghé|thú y|con bò|chùa|màn
+qipedc_W02724T,qipedc,,quả bưởi,thú y,0.0569,0,thú y|nghé|con bò|chùa|lễ halloween 31/10
+qipedc_W02731B,qipedc,,quả dưa hấu,rằm trung thu,0.0190,0,rằm trung thu|ngày phụ nữ việt nam 20/10|yếu|kẹo|họp
+qipedc_W02731T,qipedc,,quả dưa hấu,rằm trung thu,0.0197,0,rằm trung thu|kẹo|yếu|ngày phụ nữ việt nam 20/10|họp
+qipedc_W02732B,qipedc,,quả dừa,đèo hải vân,0.0680,0,đèo hải vân|con sư tử|tóc ngắn|cây ăn quả|không đẹp
+qipedc_W02733B,qipedc,,quả dừa xiêm,nghỉ học,0.0942,0,nghỉ học|tóc ngắn|không đẹp|đèo hải vân|áo phông
+qipedc_W02737B,qipedc,,quả đu đủ,xây,0.0788,0,xây|bảng nhân|kiểm tra|bảng trừ|thân cây
+qipedc_W02742B,qipedc,,quả khế,ân hận,0.0257,0,ân hận|yếu|tự tin|môn kĩ thuật|con voi
+qipedc_W02748B,qipedc,,quả nhãn,bản đồ việt nam,0.0444,0,bản đồ việt nam|tham dự|bảng cộng|cây xanh tươi|ủy quyền
+qipedc_W02754B,qipedc,,quả roi,dép quai hậu,0.0139,0,dép quai hậu|thừa|lĩnh vực|ấn|cố gắng
+qipedc_W02757N,qipedc,,quả táo,cây phượng,0.1009,0,cây phượng|thân cây|trung thu|đồng phục|màu trắng
+qipedc_W02784B,qipedc,,quân đội,răng,0.0173,0,răng|dấu hỏi|sữa hộp|nhà trường|xem
+qipedc_W02787N,qipedc,,quần bò,cây ngô,0.0271,0,cây ngô|phim truyện|bắp ngô|ngày thành lập quân đội nhân dân việt nam|bru nây (nước bru nây)
+qipedc_W02787T,qipedc,,quần bò,cây ngô,0.0358,0,cây ngô|phim truyện|ngày thành lập quân đội nhân dân việt nam|bắp ngô|bru nây (nước bru nây)
+qipedc_W02790B,qipedc,,quận,gạo,0.0175,0,gạo|môn địa lý|phi líp pin (nước phi líp pin)|cam pu chia (nước cam pu chia)|nên không?
+qipedc_W02797B,qipedc,,quê,hoặc,0.0380,0,hoặc|nên không?|thường xuyên|hàng ngày|cần không?
+qipedc_W02813B,qipedc,,quyền lợi,dấu sắc,0.0840,0,dấu sắc|đợi|liếc nhìn|hàng ngày|không đẹp
+qipedc_W02813T,qipedc,,quyền lợi,dấu sắc,0.0809,0,dấu sắc|đợi|liếc nhìn|hàng ngày|không đẹp
+qipedc_W02814B,qipedc,,quyết định,bánh cuốn,0.0150,0,bánh cuốn|quả dừa|quả roi|cam pu chia (nước cam pu chia)|giấy
+qipedc_W02814T,qipedc,,quyết định,bánh cuốn,0.0151,0,bánh cuốn|quả dừa|quả roi|cam pu chia (nước cam pu chia)|giấy
+qipedc_W02818N,qipedc,,quyển vở,trung thu,0.0178,0,trung thu|rửa chân|tiếc|bắn bi|màu trắng
+qipedc_W02818T,qipedc,,quyển vở,rửa chân,0.0162,0,rửa chân|trung thu|màu trắng|tham dự|bắn bi
+qipedc_W02820N,qipedc,,quyết tâm,mỗi ngày,0.0149,0,mỗi ngày|nhật (nước nhật)|tưởng tượng|mách|chuyên gia
+qipedc_W02820T,qipedc,,quyết tâm,tưởng tượng,0.0177,0,tưởng tượng|mỗi ngày|nhật (nước nhật)|mách|ý nghĩa
+qipedc_W02825B,qipedc,,ra ngoài,ra ngoài,0.0853,1,ra ngoài|về 2|nằm|không cho|mách
+qipedc_W02847N,qipedc,,rằm trung thu,môn địa lý,0.0168,0,môn địa lý|chia|trọc đầu|giấy nháp|quả dừa
+qipedc_W02847T,qipedc,,rằm trung thu,môn địa lý,0.0165,0,môn địa lý|chia|trọc đầu|giấy nháp|quận
+qipedc_W02868N,qipedc,,rong chơi,mexico (nước mexico),0.0319,0,mexico (nước mexico)|hi vọng|con bò|vui chơi|tưởng tượng
+qipedc_W02897B,qipedc,,rưỡi,bản đồ việt nam,0.0206,0,bản đồ việt nam|cây xanh tươi|ủy quyền|quả nhãn|hỏi
+qipedc_W02897T,qipedc,,rưỡi,bản đồ việt nam,0.0200,0,bản đồ việt nam|cây xanh tươi|bông hoa|quả nhãn|ngày thầy thuốc việt nam
+qipedc_W02898B,qipedc,,rượu,dấu hỏi,0.0396,0,dấu hỏi|sữa|kẹo|điện thoại|lạnh lùng
+qipedc_W02931N,qipedc,,sắp xếp,hay là (hoặc là),0.0127,0,hay là (hoặc là)|công viên|ngồi|gạo|ngày sinh
+qipedc_W02931T,qipedc,,sắp xếp,hay là (hoặc là),0.0098,0,hay là (hoặc là)|công viên|liên hoan|trúng tuyển|gạo
+qipedc_W02932T,qipedc,,sắt,muốn,0.0359,0,muốn|ông bà|tiếng anh|em trai|ghen tị
+qipedc_W02940N,qipedc,,sân trường,ngày thành lập quân đội nhân dân việt nam,0.0090,0,ngày thành lập quân đội nhân dân việt nam|phấn (viết bảng)|chữ|đèn vàng|không quen
+qipedc_W02940T,qipedc,,sân trường,phấn (viết bảng),0.0091,0,phấn (viết bảng)|mỳ ý|xem|chữ|ngày thành lập quân đội nhân dân việt nam
+qipedc_W02947N,qipedc,,sĩ diện,tưởng tượng,0.0621,0,tưởng tượng|ý nghĩa|trước|không cho|mách
+qipedc_W02953B,qipedc,,sinh đẻ,nên không?,0.0680,0,nên không?|gan|lượm|trung quốc (nước trung quốc)|tuần sau
+qipedc_W02956B,qipedc,,sinh sản,nên không?,0.1045,0,nên không?|gan|lượm|thiếu thốn|trung quốc (nước trung quốc)
+qipedc_W03011B,qipedc,,sơ mi,con người,0.0457,0,con người|đau bụng|thẻ|siêu âm|thành lập
+qipedc_W03025T,qipedc,,suy nghĩ,dấu ngã,0.0393,0,dấu ngã|phim truyện|ê|ă|trước
+qipedc_W03036N,qipedc,,sữa bò,thú y,0.0233,0,thú y|con bò|nghé|con mèo|đeo kính
+qipedc_W03036T,qipedc,,sữa bò,thú y,0.0263,0,thú y|nghé|con bò|con mèo|đeo kính
+qipedc_W03037N,qipedc,,sữa bột,chính xác,0.0137,0,chính xác|chức năng|quả khế|thừa|con ngựa
+qipedc_W03037T,qipedc,,sữa bột,chức năng,0.0141,0,chức năng|chính xác|quả khế|thừa|con ngựa
+qipedc_W03038N,qipedc,,sữa dê,bắp ngô,0.0132,0,bắp ngô|đèn điện|chính xác|bẫy chuột (hành động)|thú y
+qipedc_W03038T,qipedc,,sữa dê,chính xác,0.0140,0,chính xác|đèn điện|bẫy chuột (hành động)|bắp ngô|thú y
+qipedc_W03040N,qipedc,,sữa hộp,con người,0.0193,0,con người|muốn|sữa hộp|thói quen|không muốn
+qipedc_W03042N,qipedc,,sữa,con ngựa,0.0121,0,con ngựa|xe cảnh sát|chính xác|phải không?|cố gắng
+qipedc_W03071N,qipedc,,tái phạm,quận,0.0128,0,quận|con tôm|phi líp pin (nước phi líp pin)|ai|áo đồng phục
+qipedc_W03071T,qipedc,,tái phạm,áo đồng phục,0.0154,0,áo đồng phục|quận|phi líp pin (nước phi líp pin)|chị họ|h
+qipedc_W03085N,qipedc,,tàu hoả,tàu hoả,0.0205,1,tàu hoả|toa xe|trong ngoài|phó hiệu trưởng|giao thông
+qipedc_W03105B,qipedc,,tấm vải,vui sướng,0.0585,0,vui sướng|vui mừng|liên hoan|bảng đen|lễ halloween 31/10
+qipedc_W03105T,qipedc,,tấm vải,vui sướng,0.0551,0,vui sướng|vui mừng|liên hoan|bảng đen|lễ halloween 31/10
+qipedc_W03129T,qipedc,,tên là gì?,quả roi,0.0300,0,quả roi|sinh sản|sinh đẻ|loài vật|chức năng
+qipedc_W03131N,qipedc,,tết âm,môn kĩ thuật,0.0150,0,môn kĩ thuật|ngày giải phóng miền nam 30/4|giấy ăn|bón phân|cây cổ thụ
+qipedc_W03132N,qipedc,,tết dương,ngày giải phóng miền nam 30/4,0.0220,0,ngày giải phóng miền nam 30/4|hỏi|môn kĩ thuật|nghiêm khắc|bón phân
+qipedc_W03134B,qipedc,,tết trung thu,nghỉ học,0.0347,0,nghỉ học|rằm trung thu|con sư tử|họp|sức khỏe
+qipedc_W03138T,qipedc,,tha thứ,hoặc,0.0813,0,hoặc|gián tiếp|công viên|ra ngoài|tờ báo
+qipedc_W03148N,qipedc,,thái độ,ga tàu,0.0175,0,ga tàu|nên không?|thi cử|trung quốc (nước trung quốc)|dân tộc
+qipedc_W03148T,qipedc,,thái độ,nên không?,0.0190,0,nên không?|ga tàu|trung quốc (nước trung quốc)|cột điện|buông màn
+qipedc_W03153B,qipedc,,tham dự,bón phân,0.0212,0,bón phân|ngày giải phóng miền nam 30/4|xây|lười học|cây thân gỗ
+qipedc_W03156B,qipedc,,tham quan,bức tranh,0.0128,0,bức tranh|mỳ tôm|lễ halloween 31/10|luật chơi|phấn (viết bảng)
+qipedc_W03167N,qipedc,,tháng,bảng cộng,0.0963,0,bảng cộng|câu thơ|quả đu đủ|tay trái|yêu cầu
+qipedc_W03167T,qipedc,,tháng,bảng cộng,0.1124,0,bảng cộng|câu thơ|quả đu đủ|tay trái|vui sướng
+qipedc_W03175N,qipedc,,thành lập,tre,0.0141,0,tre|bộ đội|chữ|đèo hải vân|buổi đêm
+qipedc_W03197B,qipedc,,thăm hỏi,áo đồng phục,0.0263,0,áo đồng phục|bạn|vấn đề|sữa hộp|tô màu
+qipedc_W03197T,qipedc,,thăm hỏi,áo đồng phục,0.0257,0,áo đồng phục|bạn|vấn đề|sữa hộp|tô màu
+qipedc_W03204N,qipedc,,thân cây,cây phượng,0.0533,0,cây phượng|thân cây|bón phân|xây|kiểm tra
+qipedc_W03204T,qipedc,,thân cây,cây phượng,0.0572,0,cây phượng|thân cây|bón phân|xây|kiểm tra
+qipedc_W03222N,qipedc,,thầy cô,sữa,0.0514,0,sữa|nhầm|dấu hỏi|kẹo|điện thoại
+qipedc_W03222T,qipedc,,thầy cô,sữa,0.0453,0,sữa|dấu hỏi|nhầm|kẹo|điện thoại
+qipedc_W03224B,qipedc,,thầy giáo,x,0.0227,0,x|6|sống sót|ă|dấu huyền
+qipedc_W03239B,qipedc,,thế nào?,dép quai hậu,0.0208,0,dép quai hậu|cố gắng|xã hội|từ trái nghĩa|thừa
+qipedc_W03242B,qipedc,,thêu,kỉ niệm,0.0143,0,kỉ niệm|5000 (năm nghìn)|tờ giấy|không dám|bít tết (bò)
+qipedc_W03243N,qipedc,,thi cử,con người,0.0376,0,con người|lâu|người quen|thi cử|ghen tị
+qipedc_W03251N,qipedc,,thìa,dấu sắc,0.0710,0,dấu sắc|hàng ngày|chữ|phấn (viết bảng)|dấu ngã
+qipedc_W03251T,qipedc,,thìa,dấu sắc,0.0678,0,dấu sắc|hàng ngày|chữ|phấn (viết bảng)|dấu ngã
+qipedc_W03252B,qipedc,,thích thú,con người,0.0517,0,con người|xà phòng|khổ|thích thú|thẻ
+qipedc_W03265N,qipedc,,thiết kế,bụi phấn,0.0553,0,bụi phấn|hỏi|mùa xuân|liên lạc|ít
+qipedc_W03288B,qipedc,,thông minh,nhầm,0.0267,0,nhầm|nhật (nước nhật)|phim truyện|không hiểu|đen láy (như đen nhánh)
+qipedc_W03292B,qipedc,,thông tin,trường ptcs (cấp 2),0.0193,0,trường ptcs (cấp 2)|quả dừa xiêm|muốn không?|héc tô gam (hg)|xem
+qipedc_W03314B,qipedc,,thơm,dấu ngã,0.0428,0,dấu ngã|dấu sắc|ă|phấn (viết bảng)|6
+qipedc_W03320T,qipedc,,thủ công,anh rể,0.0336,0,anh rể|con tôm|quả dừa xiêm|ngày thầy thuốc việt nam|môn kĩ thuật
+qipedc_W03321N,qipedc,,thủ tướng,mách,0.0277,0,mách|về 2|dấu huyền|không nghe lời|â
+qipedc_W03321T,qipedc,,thủ tướng,mách,0.0277,0,mách|về 2|dấu huyền|không nghe lời|â
+qipedc_W03323N,qipedc,,thú dữ,dấu hỏi,0.0454,0,dấu hỏi|nhầm|nghe|điện thoại|sữa
+qipedc_W03323T,qipedc,,thú dữ,dấu hỏi,0.0426,0,dấu hỏi|nhầm|điện thoại|nghe|sữa
+qipedc_W03324B,qipedc,,thú y,dấu hỏi,0.0153,0,dấu hỏi|thú y|đen láy (như đen nhánh)|cung điện|bức tranh
+qipedc_W03327N,qipedc,,ngữ pháp,vui sướng,0.1306,0,vui sướng|liên hoan|vui mừng|cởi áo|vui chơi
+qipedc_W03327T,qipedc,,ngữ pháp,vui sướng,0.1322,0,vui sướng|liên hoan|vui mừng|cởi áo|vui chơi
+qipedc_W03329B,qipedc,,thuê,quận,0.0285,0,quận|bánh cuốn|quả dừa|trường ptcs (cấp 2)|ngày thương bình liệt sĩ 27/7
+qipedc_W03329T,qipedc,,thuê,quận,0.0301,0,quận|bánh cuốn|trường ptcs (cấp 2)|ngày thương bình liệt sĩ 27/7|quả dừa
+qipedc_W03339N,qipedc,,thuỷ điện,môn kĩ thuật,0.0167,0,môn kĩ thuật|con voi|giấy ăn|trường ptcs (cấp 2)|ân hận
+qipedc_W03339T,qipedc,,thuỷ điện,trường ptcs (cấp 2),0.0154,0,trường ptcs (cấp 2)|yếu|ân hận|môn kĩ thuật|con voi
+qipedc_W03345B,qipedc,,thủy điện hòa bình,bức tranh,0.0120,0,bức tranh|trẻ con/con nít|bảng đen|cháu ngoại|thủy điện hòa bình
+qipedc_W03359B,qipedc,,thừa,chả cá,0.0121,0,chả cá|giám sát|gạo|5000 (năm nghìn)|quả khế
+qipedc_W03361T,qipedc,,thừa thiên – huế,mỗi ngày,0.0250,0,mỗi ngày|ý nghĩa|trước|tưởng tượng|mách
+qipedc_W03373B,qipedc,,thương yêu,con người,0.0586,0,con người|lâu|anh dũng|người quen|phó hiệu trưởng
+qipedc_W03373T,qipedc,,thương yêu,con người,0.0577,0,con người|lâu|anh dũng|phó hiệu trưởng|người quen
+qipedc_W03392N,qipedc,,tiếc,chăn (cái chăn),0.0106,0,chăn (cái chăn)|tham ăn|sữa hộp|héc tô gam (hg)|nhà trường
+qipedc_W03409N,qipedc,,tiếng anh,dấu hỏi,0.0335,0,dấu hỏi|kẹo|sữa|héc tô gam (hg)|răng
+qipedc_W03409T,qipedc,,tiếng anh,sữa,0.0321,0,sữa|kẹo|héc tô gam (hg)|dấu hỏi|răng
+qipedc_W03421N,qipedc,,tiếp tục,nhưng,0.0281,0,nhưng|giám sát|cam pu chia (nước cam pu chia)|chả cá|cá kho
+qipedc_W03421T,qipedc,,tiếp tục,nhưng,0.0285,0,nhưng|giám sát|cam pu chia (nước cam pu chia)|chả cá|cá kho
+qipedc_W03422T,qipedc,,tiết kiệm,bảng nhân,0.0399,0,bảng nhân|kiểm tra|xây|tham dự|rửa chân
+qipedc_W03433B,qipedc,,tìm hiểu,nhầm,0.0569,0,nhầm|sữa|dấu hỏi|điện thoại|phim truyện
+qipedc_W03433T,qipedc,,tìm hiểu,nhầm,0.0590,0,nhầm|sữa|dấu hỏi|điện thoại|phim truyện
+qipedc_W03471N,qipedc,,toa xe,toa xe,0.0305,1,toa xe|ga tàu|thành lập|con người|siêu âm
+qipedc_W03471T,qipedc,,toa xe,toa xe,0.0331,1,toa xe|ga tàu|thành lập|siêu âm|trung quốc (nước trung quốc)
+qipedc_W03472N,qipedc,,toà án,cây phượng,0.1308,0,cây phượng|chặt|thân cây|bón phân|xây
+qipedc_W03472T,qipedc,,toà án,cây phượng,0.1266,0,cây phượng|chặt|thân cây|bón phân|xây
+qipedc_W03486N,qipedc,,tô màu,con sư tử,0.0281,0,con sư tử|bánh cuốn|ung thư|họng|thích thú
+qipedc_W03486T,qipedc,,tô màu,ung thư,0.0270,0,ung thư|con sư tử|họng|bánh cuốn|muốn
+qipedc_W03501,qipedc,,tôn trọng,con tôm,0.0249,0,con tôm|xem|trường ptcs (cấp 2)|dấu hỏi|môn kĩ thuật
+qipedc_W03505B,qipedc,,tổng thống,xanh xao,0.0511,0,xanh xao|nhầm|tham quan|trước|chị
+qipedc_W03508B,qipedc,,tờ báo,liên hoan,0.0896,0,liên hoan|vui sướng|bảng đen|khác|lúc nào
+qipedc_W03509B,qipedc,,tờ giấy,5000 (năm nghìn),0.0280,0,5000 (năm nghìn)|không dám|bụi phấn|mùa xuân|chức năng
+qipedc_W03550B,qipedc,,trăng,5000 (năm nghìn),0.0229,0,5000 (năm nghìn)|ít|con tôm|bẫy chuột (hành động)|mùa xuân
+qipedc_W03552B,qipedc,,trắng muốt,cây phượng,0.1390,0,cây phượng|chặt|đồng phục|thích thú|thân cây
+qipedc_W03571B,qipedc,,tre,cây phượng,0.0693,0,cây phượng|thân cây|kiểm tra|xây|bón phân
+qipedc_W03602B,qipedc,,trọc đầu,nhầm,0.0703,0,nhầm|tham quan|xanh xao|nghỉ học|mexico (nước mexico)
+qipedc_W03611B,qipedc,,trong ngoài,gián tiếp,0.0191,0,gián tiếp|người quen|tờ báo|thường xuyên|lào (nước lào)
+qipedc_W03619B,qipedc,,trốn chạy,hoặc,0.0171,0,hoặc|tờ báo|ga tàu|phương tiện giao thông|ra ngoài
+qipedc_W03620N,qipedc,,trông chờ,mexico (nước mexico),0.0987,0,mexico (nước mexico)|bón phân|ngày giải phóng miền nam 30/4|ngày phụ nữ việt nam 20/10|chặt
+qipedc_W03620T,qipedc,,trông chờ,mexico (nước mexico),0.1054,0,mexico (nước mexico)|bón phân|ngày giải phóng miền nam 30/4|chặt|ngày phụ nữ việt nam 20/10
+qipedc_W03622N,qipedc,,trông nom,ngày thầy thuốc việt nam,0.0142,0,ngày thầy thuốc việt nam|liên lạc|hoa sen|xe cứu hỏa|tự vệ
+qipedc_W03622T,qipedc,,trông nom,ngày thầy thuốc việt nam,0.0140,0,ngày thầy thuốc việt nam|liên lạc|hoa sen|tự vệ|từ trái nghĩa
+qipedc_W03636N,qipedc,,trụi lá,câu thơ,0.1090,0,câu thơ|quả đu đủ|thứ tự|cây xanh tươi|quê
+qipedc_W03636T,qipedc,,trụi lá,câu thơ,0.1096,0,câu thơ|quả đu đủ|thứ tự|cây xanh tươi|quê
+qipedc_W03642B,qipedc,,trung quốc (nước trung quốc),khổ,0.1052,0,khổ|thích thú|con người|thẻ|không muốn
+qipedc_W03642T,qipedc,,trung quốc (nước trung quốc),khổ,0.1033,0,khổ|thích thú|con người|thẻ|không muốn
+qipedc_W03645B,qipedc,,trung thu,nghỉ học,0.0323,0,nghỉ học|rằm trung thu|họp|con sư tử|sức khỏe
+qipedc_W03649B,qipedc,,trúng tuyển,gạo,0.0282,0,gạo|chả cá|môn địa lý|kỉ niệm|quả roi
+qipedc_W03659T,qipedc,,trứng,bánh cuốn,0.0156,0,bánh cuốn|quả roi|quả dừa|loài vật|cam pu chia (nước cam pu chia)
+qipedc_W03669N,qipedc,,trước,nhầm,0.0357,0,nhầm|xanh xao|nghỉ học|tham quan|tóc ngắn
+qipedc_W03673B,qipedc,,trường mầm non,trường mầm non,0.0121,1,trường mầm non|ngày giải phóng thủ đô 10/10|mexico (nước mexico)|luật chơi|lễ hội hóa trang
+qipedc_W03674B,qipedc,,trường ptcs (cấp 2),xem,0.0133,0,xem|ngày thầy thuốc việt nam|trường ptcs (cấp 2)|anh rể|dấu hỏi
+qipedc_W03675N,qipedc,,trường thpt ( cấp 3),trường ptcs (cấp 2),0.0202,0,trường ptcs (cấp 2)|anh rể|dấu hỏi|quả dừa xiêm|xem
+qipedc_W03675T,qipedc,,trường thpt ( cấp 3),trường ptcs (cấp 2),0.0205,0,trường ptcs (cấp 2)|anh rể|dấu hỏi|quả dừa xiêm|xem
+qipedc_W03685B,qipedc,,tuần,bạn,0.0197,0,bạn|x|lái tàu hỏa|g|hàng ngày
+qipedc_W03714B,qipedc,,từ trái nghĩa,toa xe,0.0595,0,toa xe|ga tàu|lái tàu hỏa|người quen|thi cử
+qipedc_W03717N,qipedc,,tự do,bảng nhân,0.0533,0,bảng nhân|kiểm tra|nhiệt kế|quả điều|tim
+qipedc_W03717T,qipedc,,tự do,bảng nhân,0.0537,0,bảng nhân|kiểm tra|nhiệt kế|quả điều|tim
+qipedc_W03719N,qipedc,,tự lập,ê,0.0225,0,ê|dấu ngã|héc tô mét vuông (hm2)|dấu hỏi|phim truyện
+qipedc_W03720B,qipedc,,tự tin,môn kĩ thuật,0.0145,0,môn kĩ thuật|con voi|giấy nháp|giấy ăn|bảng nhân
+qipedc_W03722N,qipedc,,tự vệ,dép quai hậu,0.0104,0,dép quai hậu|từ trái nghĩa|con kiến|bức tranh|ví dụ
+qipedc_W03727N,qipedc,,tưới cây,chặt,0.0256,0,chặt|ngày giải phóng miền nam 30/4|mexico (nước mexico)|bón phân|trọc đầu
+qipedc_W03727T,qipedc,,tưới cây,chặt,0.0249,0,chặt|ngày giải phóng miền nam 30/4|bón phân|mexico (nước mexico)|trọc đầu
+qipedc_W03732N,qipedc,,tưởng tượng,tưởng tượng,0.1034,1,tưởng tượng|ý nghĩa|mỗi ngày|mách|con bò
+qipedc_W03751N,qipedc,,ủy quyền,trọc đầu,0.0116,0,trọc đầu|kỉ niệm|không dám|quả dừa|bít tết (bò)
+qipedc_W03758B,qipedc,,ưu tiên,ví dụ,0.0551,0,ví dụ|thừa|ưu tiên|ủy quyền|quả nhãn
+qipedc_W03782B,qipedc,,vào mùa,ngày thầy thuốc việt nam,0.0159,0,ngày thầy thuốc việt nam|nhiệt kế|bông hoa|lễ hội hóa trang|ngày của cha
+qipedc_W03793B,qipedc,,văn nghệ,ví dụ,0.0227,0,ví dụ|từ trái nghĩa|thừa|dép quai hậu|bức tranh
+qipedc_W03793T,qipedc,,văn nghệ,ví dụ,0.0224,0,ví dụ|từ trái nghĩa|thừa|dép quai hậu|bức tranh
+qipedc_W03795T,qipedc,,vắng,dân tộc,0.0186,0,dân tộc|cố gắng|dép quai hậu|thừa|tuần sau
+qipedc_W03799N,qipedc,,vấn đề,phải không?,0.0158,0,phải không?|quả dừa xiêm|con tôm|hoa|họp nhóm
+qipedc_W03799T,qipedc,,vấn đề,quả dừa xiêm,0.0160,0,quả dừa xiêm|phải không?|con tôm|hoa|họp nhóm
+qipedc_W03809B,qipedc,,vật nuôi,con ngựa,0.0152,0,con ngựa|bắn bi|chức năng|thừa|quả roi
+qipedc_W03825N,qipedc,,vì sao?,cam pu chia (nước cam pu chia),0.0233,0,cam pu chia (nước cam pu chia)|quả khế|5000 (năm nghìn)|ai|giấy
+qipedc_W03825T,qipedc,,vì sao?,cam pu chia (nước cam pu chia),0.0234,0,cam pu chia (nước cam pu chia)|5000 (năm nghìn)|quả khế|ai|giấy
+qipedc_W03828N,qipedc,,ví dụ,con lợn (con heo),0.0284,0,con lợn (con heo)|ân hận|yếu|e thẹn|tự tin
+qipedc_W03888N,qipedc,,vui chơi,hi vọng,0.0595,0,hi vọng|con bò|nghé|chùa|vui chơi
+qipedc_W03889N,qipedc,,vui mừng,hi vọng,0.0534,0,hi vọng|vui sướng|vui chơi|bảng đen|tấm vải
+qipedc_W03890N,qipedc,,vui sướng,vui sướng,0.0537,1,vui sướng|hi vọng|con bò|nghé|bảng đen
+qipedc_W03930N,qipedc,,xà phòng,trứng,0.1270,0,trứng|trúng tuyển|tìm hiểu|thông minh|nghé
+qipedc_W03931N,qipedc,,xà phòng giặt,chính xác,0.0119,0,chính xác|bít tết (bò)|ngày thành lập quân đội nhân dân việt nam|nhưng|không cần
+qipedc_W03931T,qipedc,,xà phòng giặt,chính xác,0.0144,0,chính xác|quả roi|cam pu chia (nước cam pu chia)|bít tết (bò)|nhưng
+qipedc_W03935N,qipedc,,xã hội,kỉ niệm,0.0720,0,kỉ niệm|bụi phấn|là gì?|gói|kinh nghiệm
+qipedc_W03935T,qipedc,,xã hội,kỉ niệm,0.0756,0,kỉ niệm|bụi phấn|là gì?|gói|kinh nghiệm
+qipedc_W03938B,qipedc,,xanh xao,kẹo,0.0693,0,kẹo|héc tô gam (hg)|sữa|răng|tôi yêu bạn
+qipedc_W03945N,qipedc,,cây xanh tươi,cây xanh tươi,0.0605,1,cây xanh tươi|thứ tự|câu thơ|xây|bón phân
+qipedc_W03945T,qipedc,,cây xanh tươi,cây xanh tươi,0.0609,1,cây xanh tươi|thứ tự|câu thơ|xây|quả đu đủ
+qipedc_W03956B,qipedc,,xây,nhà văn hóa,0.0170,0,nhà văn hóa|phải không?|nhận|lào (nước lào)|phi líp pin (nước phi líp pin)
+qipedc_W03962N,qipedc,,xe cảnh sát,nên không?,0.0201,0,nên không?|cố gắng|tuần sau|ga tàu|gan
+qipedc_W03962T,qipedc,,xe cảnh sát,nên không?,0.0209,0,nên không?|cố gắng|tuần sau|gan|ga tàu
+qipedc_W03964N,qipedc,,xe cứu hỏa,yêu cầu,0.0488,0,yêu cầu|ở ngoài|trung thu|trốn chạy|giải thích
+qipedc_W03967B,qipedc,,xe khách,ví dụ,0.0311,0,ví dụ|thừa|phải không?|quả khế|con ngựa
+qipedc_W04010N,qipedc,,xuất hiện,dấu hỏi,0.0315,0,dấu hỏi|xem|bắp ngô|thơm|xuất hiện
+qipedc_W04010T,qipedc,,xuất hiện,dấu hỏi,0.0316,0,dấu hỏi|xem|bắp ngô|thơm|xuất hiện
+qipedc_W04025B,qipedc,,xưa,chảo,0.4107,0,chảo|ở ngoài|trốn chạy|yêu cầu|trung thu
+qipedc_W04038B,qipedc,,ý nghĩa,nhầm,0.0642,0,nhầm|sữa|dấu hỏi|phim truyện|tôi yêu bạn
+qipedc_W04056B,qipedc,,tôi yêu bạn,p,0.0139,0,p|xem|ê|gián tiếp|2
+qipedc_W04056T,qipedc,,tôi yêu bạn,p,0.0134,0,p|xem|gián tiếp|xuất hiện|ê
+qipedc_W04057B,qipedc,,yêu cầu,bụi phấn,0.1050,0,bụi phấn|mùa xuân|ủy quyền|chức năng|ngắt hoa
+qipedc_W04058N,qipedc,,yêu mến (yêu quí),trúng tuyển,0.0280,0,trúng tuyển|bẫy chuột (hành động)|nhưng|giám sát|công viên
+qipedc_W04058T,qipedc,,yêu mến (yêu quí),trúng tuyển,0.0287,0,trúng tuyển|bẫy chuột (hành động)|nhưng|giám sát|công viên
+qipedc_W04059B,qipedc,,yếu,quả roi,0.0257,0,quả roi|cố gắng|dép quai hậu|hay là (hoặc là)|liên hoan
+qipedc_W04066B,qipedc,,môn địa lý,giám sát,0.0234,0,giám sát|chả cá|trông nom|mùa xuân|ngày người khuyết tật thế giới 3/12

@@ -1,0 +1,1912 @@
+video_id,source,signer_id,true,pred,confidence,correct,top5
+qipedc_D0001N,qipedc,,địa chỉ,địa chỉ,0.1623,1,địa chỉ|mùa xuân|thừa|quả dừa xiêm|nội dung
+qipedc_D0001T,qipedc,,địa chỉ,địa chỉ,0.1607,1,địa chỉ|mùa xuân|thừa|quả dừa xiêm|quyển vở
+qipedc_D0005N,qipedc,,miến điện (nước mi an ma),miến điện (nước mi an ma),0.8157,1,miến điện (nước mi an ma)|bru nây (nước bru nây)|quê|trốn chạy|tham quan
+qipedc_D0005T,qipedc,,miến điện (nước mi an ma),miến điện (nước mi an ma),0.8143,1,miến điện (nước mi an ma)|bru nây (nước bru nây)|trốn chạy|quê|âm ỉ
+qipedc_D0019B,qipedc,,ghen tị,nhầm,0.2305,0,nhầm|hoa|mã lai (nước ma lai xi a)|rượu|héc tô gam (hg)
+qipedc_D0020N,qipedc,,lung tung,hứa,0.5671,0,hứa|chăn nuôi|chúc thọ|em họ|cái gương
+qipedc_D0024B,qipedc,,tham ăn,tham ăn,0.8229,1,tham ăn|phở|chính phủ|chị|ngày ngôn ngữ kí hiệu quốc tế 23/9
+qipedc_D0029B,qipedc,,thói quen,mách,0.1441,0,mách|hút thuốc|trường thpt ( cấp 3)|dấu ngã|cô giáo
+qipedc_D0031B,qipedc,,không nghe lời,mắt,0.0961,0,mắt|nhầm|liên bang nga (nước nga)|héc tô gam (hg)|ông bà
+qipedc_D0033N,qipedc,,không cho,không hiểu,0.3085,0,không hiểu|chữa bài|chào|ngọn cây|tổng thống
+qipedc_D0033T,qipedc,,không cho,không hiểu,0.3079,0,không hiểu|chữa bài|ngọn cây|chào|hiểu
+qipedc_D0035B,qipedc,,không nên,không nên,0.1596,1,không nên|mới|tiếc|no|giao thông
+qipedc_D0040T,qipedc,,tết hàn thực,kinh nghiệm,0.2299,0,kinh nghiệm|kỉ niệm|tết hàn thực|mật khẩu|nạp điện
+qipedc_D0042N,qipedc,,ngày quốc tế phụ nữ 8/3,ngày quốc tế phụ nữ 8/3,0.5719,1,ngày quốc tế phụ nữ 8/3|sĩ diện|tương ớt|đèo hải vân|ham chơi
+qipedc_D0043N,qipedc,,ngày giải phóng thủ đô 10/10,ngày giải phóng thủ đô 10/10,0.7933,1,ngày giải phóng thủ đô 10/10|trốn chạy|quê|ngày quốc tế lao động|ngày giỗ tổ hùng vương (âm lịch 10/3)
+qipedc_D0044N,qipedc,,ngày giải phóng miền nam 30/4,ngày giải phóng miền nam 30/4,0.8041,1,ngày giải phóng miền nam 30/4|rằm trung thu|lễ bế giảng|ngày gia đình việt nam 28/6|cửa hàng
+qipedc_D0045B,qipedc,,ngày người khuyết tật việt nam 18/4,ngày người khuyết tật thế giới 3/12,0.4406,0,ngày người khuyết tật thế giới 3/12|cỏ|ngày thành lập quân đội nhân dân việt nam|ngày ngôn ngữ kí hiệu quốc tế 23/9|môn lịch sử
+qipedc_D0046N,qipedc,,ngày người khuyết tật thế giới 3/12,ngày quốc tế phụ nữ 8/3,0.6599,0,ngày quốc tế phụ nữ 8/3|ngày của cha|ngày người khuyết tật việt nam 18/4|ngày giỗ tổ hùng vương (âm lịch 10/3)|tuần lễ người điếc thế giới
+qipedc_D0048N,qipedc,,lễ halloween 31/10,xong,0.0821,0,xong|ngày giải phóng miền nam 30/4|lễ bế giảng|năm ngoái|ngày phụ nữ việt nam 20/10
+qipedc_D0049T,qipedc,,ngày phụ nữ việt nam 20/10,ngày người khuyết tật việt nam 18/4,0.6819,0,ngày người khuyết tật việt nam 18/4|ngày phụ nữ việt nam 20/10|ngày nhà giáo việt nam|ngày ngôn ngữ kí hiệu quốc tế 23/9|ngày thương bình liệt sĩ 27/7
+qipedc_D0050N,qipedc,,ngày thương bình liệt sĩ 27/7,nghỉ học,0.0957,0,nghỉ học|ngày thương bình liệt sĩ 27/7|chính phủ|không quen|thủy điện hòa bình
+qipedc_D0051B,qipedc,,ngày giỗ tổ hùng vương (âm lịch 10/3),ngày giỗ tổ hùng vương (âm lịch 10/3),0.7519,1,ngày giỗ tổ hùng vương (âm lịch 10/3)|lễ halloween 31/10|ngày giải phóng thủ đô 10/10|chiều cao|lung tung
+qipedc_D0051T,qipedc,,ngày giỗ tổ hùng vương (âm lịch 10/3),ngày giỗ tổ hùng vương (âm lịch 10/3),0.7137,1,ngày giỗ tổ hùng vương (âm lịch 10/3)|lễ halloween 31/10|ngày giải phóng thủ đô 10/10|chiều cao|da ngăm (nước da ngăm đen)
+qipedc_D0052B,qipedc,,ngày ngôn ngữ kí hiệu quốc tế 23/9,ngày quốc tế phụ nữ 8/3,0.3038,0,ngày quốc tế phụ nữ 8/3|ngày người khuyết tật thế giới 3/12|cân|ngày ngôn ngữ kí hiệu quốc tế 23/9|tờ giấy
+qipedc_D0052T,qipedc,,ngày ngôn ngữ kí hiệu quốc tế 23/9,ngày quốc tế phụ nữ 8/3,0.2974,0,ngày quốc tế phụ nữ 8/3|ngày người khuyết tật thế giới 3/12|cân|ngày ngôn ngữ kí hiệu quốc tế 23/9|thêu
+qipedc_D0053B,qipedc,,tuần lễ người điếc thế giới,ngày ngôn ngữ kí hiệu quốc tế 23/9,0.6709,0,ngày ngôn ngữ kí hiệu quốc tế 23/9|ngày người khuyết tật thế giới 3/12|môn lịch sử|thiệp sinh nhật|ngày quốc tế lao động
+qipedc_D0053T,qipedc,,tuần lễ người điếc thế giới,ngày ngôn ngữ kí hiệu quốc tế 23/9,0.5100,0,ngày ngôn ngữ kí hiệu quốc tế 23/9|ngày người khuyết tật thế giới 3/12|thiệp sinh nhật|môn lịch sử|ông ngoại
+qipedc_D0054N,qipedc,,ngày của mẹ,ngày của cha,0.9928,0,ngày của cha|ngày của mẹ|hoa sen|ngày thầy thuốc việt nam|ngày giỗ tổ hùng vương (âm lịch 10/3)
+qipedc_D0055B,qipedc,,ngày của cha,ngày của mẹ,0.9359,0,ngày của mẹ|ngày của cha|hứa|giấy ăn|nghiêm khắc
+qipedc_D0055T,qipedc,,ngày của cha,ngày của mẹ,0.9311,0,ngày của mẹ|ngày của cha|hứa|giấy ăn|suýt
+qipedc_D0056N,qipedc,,ngày gia đình việt nam 28/6,ngày giỗ tổ hùng vương (âm lịch 10/3),0.0750,0,ngày giỗ tổ hùng vương (âm lịch 10/3)|táo bón|lễ halloween 31/10|trường thpt ( cấp 3)|kết quả
+qipedc_D0057B,qipedc,,ngày thầy thuốc việt nam,trông nom,0.0533,0,trông nom|ngày người khuyết tật thế giới 3/12|mỳ ý|bệnh gì|nhân (toán học)
+qipedc_D0058N,qipedc,,ngày thành lập quân đội nhân dân việt nam,ngày thầy thuốc việt nam,0.4847,0,ngày thầy thuốc việt nam|ngày nhà giáo việt nam|ngày người khuyết tật việt nam 18/4|cái gương|chúc tết
+qipedc_D0060B,qipedc,,nhầm,màu nâu,0.1488,0,màu nâu|thú y|suy nghĩ|liên lạc|thương yêu
+qipedc_D0065B,qipedc,,mách,liếc nhìn,0.1235,0,liếc nhìn|bài thơ|cơm bình dân|sĩ diện|bốt điện
+qipedc_D0066N,qipedc,,vô duyên,bông hoa,0.9297,0,bông hoa|ân hận|hối hận|bố dượng|giấy ăn
+qipedc_D0066T,qipedc,,vô duyên,bông hoa,0.9299,0,bông hoa|ân hận|hối hận|bố dượng|giấy ăn
+qipedc_D0072B,qipedc,,suýt,cuối cùng,0.1058,0,cuối cùng|không được|rượu|vô duyên|chính xác
+qipedc_D0077B,qipedc,,bít tết (bò),bít tết (bò),0.3793,1,bít tết (bò)|kí tên|chiều cao|đeo tay|dám làm
+qipedc_D0080B,qipedc,,mỳ tôm,gói,0.1201,0,gói|thương yêu|đề nghị|kí tên|kinh nghiệm
+qipedc_D0082B,qipedc,,mỳ ý,ngũ quả,0.0803,0,ngũ quả|cột điện|chúc mừng|ngủ khó|kinh nghiệm
+qipedc_D0103N,qipedc,,từ chối,mã lai (nước ma lai xi a),0.4279,0,mã lai (nước ma lai xi a)|kính|con lợn (con heo)|tha thứ|giấy nháp
+qipedc_D0103T,qipedc,,từ chối,kính,0.4389,0,kính|mã lai (nước ma lai xi a)|con lợn (con heo)|tha thứ|đeo kính
+qipedc_D0108N,qipedc,,thiệp sinh nhật,thiệp sinh nhật,0.3497,1,thiệp sinh nhật|gói|cởi áo|ngày gia đình việt nam 28/6|tất cả
+qipedc_D0108T,qipedc,,thiệp sinh nhật,thiệp sinh nhật,0.3766,1,thiệp sinh nhật|gói|cởi áo|tiền sử|ngày gia đình việt nam 28/6
+qipedc_D0109N,qipedc,,không quen,soi nội,0.0937,0,soi nội|thầy giáo|nội soi|nghệ thuật|sâu
+qipedc_D0111B,qipedc,,tương ớt,môn lịch sử,0.0815,0,môn lịch sử|chiều cao|đơn|suy nghĩ|thêm
+qipedc_D0111T,qipedc,,tương ớt,môn lịch sử,0.0817,0,môn lịch sử|chiều cao|suy nghĩ|đơn|thêm
+qipedc_D0119T,qipedc,,đúng không?,đúng không?,0.6889,1,đúng không?|được không|đúng không|nên không?|toà án
+qipedc_D0120N,qipedc,,phải không?,quận,0.1060,0,quận|trắng muốt|đau không|đau|da trắng
+qipedc_D0122B,qipedc,,cần không?,p,0.5942,0,p|xì hơi (đánh rắm)|hoặc|g|x
+qipedc_D0123B,qipedc,,nên không?,nên không?,0.0578,1,nên không?|tiết kiệm|tim|đăng ký|gạo
+qipedc_D0128B,qipedc,,đẹp không? (người),đẹp không? (người),0.7093,1,đẹp không? (người)|xuất hiện|đúng không?|được không|muốn không?
+qipedc_D0128T,qipedc,,đẹp không? (người),đẹp không? (người),0.6897,1,đẹp không? (người)|xuất hiện|đúng không?|được không|muốn không?
+qipedc_D0129N,qipedc,,không đẹp,nhân hậu,0.2378,0,nhân hậu|yêu mến (yêu quí)|lạnh lùng|nước việt nam|ê buốt
+qipedc_D0129T,qipedc,,không đẹp,nhân hậu,0.1955,0,nhân hậu|yêu mến (yêu quí)|lạnh lùng|nước việt nam|quả dừa
+qipedc_D0143N,qipedc,,"anh hai, anh cả","anh hai, anh cả",0.7400,1,"anh hai, anh cả|sống sót|nhầm|dám làm|nghĩ"
+qipedc_D0144N,qipedc,,"chị hai, chị cả",sữa bột,0.1227,0,"sữa bột|chị hai, chị cả|vì sao?|sữa dê|hoạt hình"
+qipedc_D0151B,qipedc,,ông bà,ông bà,0.8028,1,ông bà|tiếng anh|chính phủ|vô duyên|sắt
+qipedc_D0151T,qipedc,,ông bà,ông bà,0.8048,1,ông bà|chính phủ|tiếng anh|vô duyên|sắt
+qipedc_D0152N,qipedc,,chị họ,chị họ,0.9868,1,chị họ|em họ|thủy điện hòa bình|liên lạc|rửa chân
+qipedc_D0153N,qipedc,,em họ,em họ,0.6270,1,em họ|cháu họ|rửa chân|chị họ|hi sinh
+qipedc_D0154B,qipedc,,cháu họ,em họ,0.8284,0,em họ|cháu họ|rửa chân|ngữ pháp|thủ công
+qipedc_D0155N,qipedc,,sống sót,chúc mừng,0.1200,0,chúc mừng|thiếu thốn|giúp đỡ|giấy ăn|kiêng
+qipedc_D0156,qipedc,,thường xuyên,hàng ngày,0.9752,0,hàng ngày|liên hoan|suốt|ngày sinh|người xưa
+qipedc_D0157B,qipedc,,đi dạo,đi dạo,0.1999,1,đi dạo|chặt|giao tiếp|toa xe|xe cứu hỏa
+qipedc_D0157T,qipedc,,đi dạo,đi dạo,0.2023,1,đi dạo|giao tiếp|chặt|toa xe|xe cứu hỏa
+qipedc_D0159T,qipedc,,về 2,về 2,0.9907,1,về 2|mách|anh (nước anh)|chuyên gia|khác
+qipedc_D0163N,qipedc,,hẹn,cửa hàng,0.2348,0,cửa hàng|mắt|quyết tâm|yếu|con người
+qipedc_D0163T,qipedc,,hẹn,cửa hàng,0.2159,0,cửa hàng|mắt|quyết tâm|yếu|con người
+qipedc_D0165N,qipedc,,hứa,"anh hai, anh cả",0.3375,0,"anh hai, anh cả|nghĩ|quyết tâm|bài thơ|cửa hàng"
+qipedc_D0165T,qipedc,,hứa,"anh hai, anh cả",0.3301,0,"anh hai, anh cả|nghĩ|quyết tâm|bài thơ|cửa hàng"
+qipedc_D0167B,qipedc,,lâu,đau,0.0670,0,đau|anh em|khổ|lưng|rõ
+qipedc_D0168B,qipedc,,vẫn,đề nghị,0.1957,0,đề nghị|ai|phải không?|ít|nhưng
+qipedc_D0169B,qipedc,,mỗi ngày,mỳ tôm,0.8056,0,"mỳ tôm|nhổ|chị hai, chị cả|mắt|mỗi ngày"
+qipedc_D0169N,qipedc,,mỗi ngày,mỳ tôm,0.8022,0,"mỳ tôm|nhổ|chị hai, chị cả|mắt|mỗi ngày"
+qipedc_D0170B,qipedc,,hàng ngày,ê buốt,0.4924,0,ê buốt|đùa|không nghe lời|đều|cô giáo
+qipedc_D0182N,qipedc,,cung điện,cung điện,0.5025,1,cung điện|lễ hội|kính|nhà trường|tha thứ
+qipedc_D0188B,qipedc,,hoặc,hoặc,0.2622,1,hoặc|hơi hơi|nhưng|con chó|gần đây
+qipedc_D0189N,qipedc,,muốn không?,đẹp không?,0.6959,0,đẹp không?|muốn|tiền sử|rồi|mệt
+qipedc_D0189T,qipedc,,muốn không?,đẹp không?,0.6753,0,đẹp không?|muốn|tiền sử|rồi|mệt
+qipedc_D0190B,qipedc,,không muốn,buổi trưa,0.2229,0,buổi trưa|chị|3|miến điện (nước mi an ma)|không có
+qipedc_D0192B,qipedc,,xem,xem,0.6461,1,xem|hỏi|thấy|bông hoa|anh rể
+qipedc_D0195B,qipedc,,đẹp không?,muốn không?,0.1705,0,muốn không?|nghi ngờ|con voi|hành quân|buổi trưa
+qipedc_D0195T,qipedc,,đẹp không?,muốn không?,0.1898,0,muốn không?|con voi|nghi ngờ|buổi trưa|hành quân
+qipedc_D0206N,qipedc,,thiếu thốn,quả khế,0.1853,0,quả khế|toà án|con chó|dép quai hậu|thường xuyên
+qipedc_D0206T,qipedc,,thiếu thốn,quả khế,0.1941,0,quả khế|toà án|con chó|dép quai hậu|hoặc
+qipedc_D0209B,qipedc,,dám làm,bút màu,0.0801,0,bút màu|quần bò|không đẹp|23|dám làm
+qipedc_D0209T,qipedc,,dám làm,bút màu,0.0795,0,bút màu|quần bò|không đẹp|23|chữa bài
+qipedc_D0210B,qipedc,,không dám,không dám,0.1118,1,không dám|đợi|mấy lần|lười|thai
+qipedc_D0213N,qipedc,,ung thư,rửa mặt,0.2252,0,rửa mặt|nhiệt kế|di truyền|ngày của cha|họp
+qipedc_D0214N,qipedc,,phó hiệu trưởng,quầy,0.1575,0,quầy|tết hàn thực|bác sĩ|tàu hoả|chia
+qipedc_D0214T,qipedc,,phó hiệu trưởng,quầy,0.1422,0,quầy|tết hàn thực|bác sĩ|sữa hộp|tàu hoả
+qipedc_D0223T,qipedc,,mã lai (nước ma lai xi a),mã lai (nước ma lai xi a),0.9687,1,mã lai (nước ma lai xi a)|xưa|thơm|suy nghĩ|thị lực
+qipedc_D0242B,qipedc,,nhưng,1,0.3441,0,1|x|liên lạc|h|con tôm
+qipedc_D0242T,qipedc,,nhưng,1,0.3261,0,1|x|liên lạc|h|con tôm
+qipedc_D0243B,qipedc,,hay là (hoặc là),bán hàng,0.2122,0,bán hàng|ngày nay|hay là (hoặc là)|sinh sản|ở đây
+qipedc_D0249B,qipedc,,chia đôi,héc tô mét vuông (hm2),0.1876,0,héc tô mét vuông (hm2)|bẫy chuột (hành động)|đèn vàng|x|mỳ tôm
+qipedc_D0249T,qipedc,,chia đôi,héc tô mét vuông (hm2),0.2265,0,héc tô mét vuông (hm2)|bẫy chuột (hành động)|đèn vàng|x|sữa bột
+qipedc_D0250B,qipedc,,chia ba,mỳ ý,0.1291,0,mỳ ý|mỳ tôm|đèn vàng|môn lịch sử|rưỡi
+qipedc_D0250T,qipedc,,chia ba,mỳ ý,0.1711,0,mỳ ý|đèn vàng|ngày quốc tế phụ nữ 8/3|mỳ tôm|chia ba
+qipedc_D0255,qipedc,,giám sát,hội thảo,0.1042,0,hội thảo|quả điều|bắp ngô|dép quai hậu|giá trị
+qipedc_D0270B,qipedc,,lạnh lùng,họp,0.3399,0,họp|trụi lá|nhân hậu|tóc ngắn|con lợn (con heo)
+qipedc_D0270T,qipedc,,lạnh lùng,họp,0.3308,0,họp|trụi lá|nhân hậu|tóc ngắn|con lợn (con heo)
+qipedc_D0271N,qipedc,,dỗi,hồi hộp,0.1465,0,hồi hộp|khổ|thích thú|tim|không muốn
+qipedc_D0271T,qipedc,,dỗi,hồi hộp,0.1463,0,hồi hộp|khổ|tim|thích thú|không muốn
+qipedc_D0272B,qipedc,,liếc nhìn,tham quan,0.2587,0,tham quan|trụi lá|kính|e thẹn|con lợn (con heo)
+qipedc_D0272T,qipedc,,liếc nhìn,tham quan,0.2453,0,tham quan|trụi lá|e thẹn|kính|con lợn (con heo)
+qipedc_D0307N,qipedc,,công nghiệp,nằm,0.1785,0,nằm|đèo hải vân|chống đối|phương tiện giao thông|suốt
+qipedc_D0307T,qipedc,,công nghiệp,nằm,0.1348,0,nằm|đèo hải vân|suốt|phương tiện giao thông|chống đối
+qipedc_D0316,qipedc,,lượm,hồi hộp,0.2009,0,hồi hộp|tiểu|đẹp không?|không muốn|bảng trừ
+qipedc_D0326N,qipedc,,vải lụa,vải lụa,0.5052,1,vải lụa|buổi tối|ban đêm|bảo vệ môi trường|gần đây
+qipedc_D0342N,qipedc,,ham chơi,rong chơi,0.4125,0,"rong chơi|ham chơi|tổng thống|chị hai, chị cả|họp"
+qipedc_D0346B,qipedc,,da trắng,hội thảo,0.2493,0,hội thảo|bắt đền|thành lập|vào mùa|phở cuốn
+qipedc_D0347B,qipedc,,da ngăm (nước da ngăm đen),phỏng,0.1421,0,phỏng|nên không?|không cần|một tiếng|không nên
+qipedc_D0396N,qipedc,,nước ép trái cây,buổi trưa,0.0680,0,buổi trưa|tre|hít thở|không cần|cần
+qipedc_D0396T,qipedc,,nước ép trái cây,buổi trưa,0.0711,0,buổi trưa|tre|không cần|hít thở|cần
+qipedc_D0410N,qipedc,,một tiếng,về 2,0.1440,0,về 2|11|chuyên gia|x|h
+qipedc_D0410T,qipedc,,một tiếng,về 2,0.2235,0,về 2|chuyên gia|x|11|mách
+qipedc_D0412,qipedc,,rửa chân,rửa chân,0.8311,1,rửa chân|lười|cháu họ|khan ho|tôi
+qipedc_D0413,qipedc,,rửa mặt,họp,0.2580,0,họp|quả dưa hấu|nam|táo bón|hành quân
+qipedc_D0414,qipedc,,đánh răng,điện thoại,0.2136,0,điện thoại|phim truyện|rượu|bắp ngô|chính phủ
+qipedc_D0416N,qipedc,,tuần này,tuần sau,0.0907,0,tuần sau|tuần này|tăng cân|thêu|suốt
+qipedc_D0416T,qipedc,,tuần này,tuần sau,0.0872,0,tuần sau|tăng cân|tuần này|thêu|ngày nay
+qipedc_D0417B,qipedc,,tuần sau,tuần sau,0.2487,1,tuần sau|tuần này|tiền|liên bang nga (nước nga)|suốt
+qipedc_D0418B,qipedc,,tuần trước,mexico (nước mexico),0.6980,0,mexico (nước mexico)|tuần này|ông ngoại|không đẹp|mỗi ngày
+qipedc_D0423B,qipedc,,sinh đôi,sinh đôi,0.0523,1,sinh đôi|bìa vở|sưng|lào (nước lào)|quặn thắt
+qipedc_D0423T,qipedc,,sinh đôi,bìa vở,0.0419,0,bìa vở|sinh đôi|lào (nước lào)|một tiếng|không nên
+qipedc_D0429N,qipedc,,tóc ngắn,không đẹp,0.1943,0,không đẹp|tóc ngắn|nhầm|buổi trưa|tre
+qipedc_D0430B,qipedc,,tổng kết/bế giảng,tham ăn,0.4229,0,tham ăn|sắp xếp|dân tộc|cởi áo|tàu hoả
+qipedc_D0430N,qipedc,,tổng kết/bế giảng,tham ăn,0.4307,0,tham ăn|sắp xếp|dân tộc|tàu hoả|cởi áo
+qipedc_D0432B,qipedc,,tay chân sạch sẽ,em họ,0.2720,0,em họ|tay chân sạch sẽ|trong ngoài|con ngựa|dân tộc
+qipedc_D0432T,qipedc,,tay chân sạch sẽ,em họ,0.2024,0,em họ|tay chân sạch sẽ|trong ngoài|dân tộc|lung tung
+qipedc_D0437N,qipedc,,đùa,đăng ký,0.2232,0,đăng ký|nên không?|giúp đỡ|việc|kết quả
+qipedc_D0437T,qipedc,,đùa,đăng ký,0.1657,0,đăng ký|nên không?|đặt|giúp đỡ|kết quả
+qipedc_D0452N,qipedc,,họp nhóm,họp nhóm,0.1071,1,họp nhóm|cộng (toán học)|cùng|thăm hỏi|luật chơi
+qipedc_D0464B,qipedc,,trẻ con/con nít,rượu,0.1421,0,rượu|chị họ|mắng|chuẩn bị|thủy điện hòa bình
+qipedc_D0470B,qipedc,,nhà văn hóa,đèn báo giao thông,0.5086,0,đèn báo giao thông|nguy hiểm|công viên|hoa sen|họp
+qipedc_D0490B,qipedc,,ă,â,0.0922,0,â|sữa bột|6|vui chơi|ô
+qipedc_D0491N,qipedc,,â,ê,0.7822,0,ê|ă|mỳ ý|â|6
+qipedc_D0491T,qipedc,,â,ê,0.7819,0,ê|ă|mỳ ý|â|6
+qipedc_D0497B,qipedc,,ê,ô,0.9449,0,ô|héc tô mét (hm)|â|12|ra ngoài
+qipedc_D0498N,qipedc,,g,p,0.2226,0,p|hoặc|ai|x|đúng không?
+qipedc_D0500N,qipedc,,h,1,0.2208,0,1|h|ê|con tôm|t
+qipedc_D0507N,qipedc,,ô,ê,0.6921,0,ê|con tôm|mách|dấu hỏi|h
+qipedc_D0507T,qipedc,,ô,ê,0.7041,0,ê|con tôm|mách|dấu hỏi|h
+qipedc_D0509B,qipedc,,p,lá cây,0.0822,0,lá cây|tốt|không dám|thìa|x
+qipedc_D0513T,qipedc,,t,h,0.8988,0,h|héc tô mét vuông (hm2)|6|mỳ ý|quả dừa xiêm
+qipedc_D0517N,qipedc,,x,con tôm,0.6712,0,con tôm|9|liên lạc|không thấy|h
+qipedc_D0517T,qipedc,,x,con tôm,0.6636,0,con tôm|9|không thấy|liên lạc|nghiêm khắc
+qipedc_D0524N,qipedc,,dấu huyền,hỏi tôi,0.1584,0,hỏi tôi|chúc tết|x|trong ngoài|liên hoan
+qipedc_D0525N,qipedc,,dấu sắc,6,0.1455,0,6|x|bốt cảnh sát|bru nây (nước bru nây)|ngày thành lập quân đội nhân dân việt nam
+qipedc_D0526B,qipedc,,dấu hỏi,uống,0.2138,0,uống|dấu hỏi|ê|phấn (viết bảng)|dấu ngã
+qipedc_D0527N,qipedc,,dấu ngã,mách,0.2666,0,mách|mỳ ý|ă|dấu hỏi|dấu ngã
+qipedc_D0527T,qipedc,,dấu ngã,mách,0.2522,0,mách|mỳ ý|ă|dấu hỏi|dấu ngã
+qipedc_D0535N,qipedc,,6,1,0.2070,0,1|ê|2|h|t
+qipedc_D0535T,qipedc,,6,1,0.2558,0,1|ê|2|h|t
+qipedc_D0540N,qipedc,,11,x,0.5225,0,x|tấm vải|h|xong rồi|bốt điện
+qipedc_D0540T,qipedc,,11,x,0.5067,0,x|tấm vải|h|xong rồi|bốt điện
+qipedc_D0541N,qipedc,,12,tấm vải,0.5607,0,tấm vải|lễ halloween 31/10|héc tô mét vuông (hm2)|bốt điện|1 000 000 000 (một tỉ)
+qipedc_D0541T,qipedc,,12,tấm vải,0.5972,0,tấm vải|lễ halloween 31/10|héc tô mét vuông (hm2)|bốt điện|bốt cảnh sát
+qipedc_D0542N,qipedc,,23,héc tô mét vuông (hm2),0.6687,0,héc tô mét vuông (hm2)|bốt điện|vẫn|lễ halloween 31/10|tấm vải
+qipedc_D0542T,qipedc,,23,héc tô mét vuông (hm2),0.6652,0,héc tô mét vuông (hm2)|bốt điện|vẫn|1 000 000 000 (một tỉ)|lễ halloween 31/10
+qipedc_D0549T,qipedc,,5000 (năm nghìn),5000 (năm nghìn),0.9825,1,5000 (năm nghìn)|10 000 (mười nghìn)|quyết định|kỉ niệm|kinh nghiệm
+qipedc_D0550B,qipedc,,10 000 (mười nghìn),từ trái nghĩa,0.2844,0,từ trái nghĩa|x|11|hoặc|p
+qipedc_D0551N,qipedc,,1 000 000 (một triệu),1 000 000 (một triệu),0.9463,1,1 000 000 (một triệu)|cơm bình dân|ê buốt|công viên|chùa
+qipedc_D0552N,qipedc,,1 000 000 000 (một tỉ),1 000 000 000 (một tỉ),0.9850,1,1 000 000 000 (một tỉ)|dấu hỏi|tuần lễ người điếc thế giới|tương ớt|ngày thành lập quân đội nhân dân việt nam
+qipedc_W00004B,qipedc,,ai,đúng không?,0.1896,0,đúng không?|p|ai|phải không?|văn nghệ
+qipedc_W00009N,qipedc,,anh (nước anh),họng,0.3516,0,họng|bạn trai|cháu ngoại|rong chơi|con người
+qipedc_W00009T,qipedc,,anh (nước anh),họng,0.4056,0,họng|2|rong chơi|cháu ngoại|bạn trai
+qipedc_W00012N,qipedc,,anh dũng,khỏi bệnh,0.1173,0,khỏi bệnh|kỳ|ngũ quả|mua|tờ giấy
+qipedc_W00012T,qipedc,,anh dũng,khỏi bệnh,0.1136,0,khỏi bệnh|kỳ|ngũ quả|mua|tờ giấy
+qipedc_W00013N,qipedc,,anh em,kiểm tra,0.4980,0,kiểm tra|trường mầm non|muốn|bảng trừ|đẹp không?
+qipedc_W00013T,qipedc,,anh em,kiểm tra,0.5155,0,kiểm tra|trường mầm non|muốn|đẹp không?|lười học
+qipedc_W00018N,qipedc,,anh rể,nghiêm khắc,0.4451,0,nghiêm khắc|môn đạo đức|ưu tiên|suýt|ngày của mẹ
+qipedc_W00018T,qipedc,,anh rể,nghiêm khắc,0.4540,0,nghiêm khắc|môn đạo đức|suýt|ưu tiên|ngày của mẹ
+qipedc_W00019N,qipedc,,anh ruột,đau,0.1166,0,đau|anh ruột|bẻ ngô|tên|liên bang nga (nước nga)
+qipedc_W00019T,qipedc,,anh ruột,đau,0.1222,0,đau|anh ruột|tên|bẻ ngô|liên bang nga (nước nga)
+qipedc_W00032B,qipedc,,áo đồng phục,đồng phục,0.9679,0,đồng phục|châm cứu|xe khách|ngày người khuyết tật việt nam 18/4|phụ khoa
+qipedc_W00035T,qipedc,,áo phông,ung thư,0.0775,0,ung thư|thuỷ điện|bảng nhân|mệt|cửa hàng
+qipedc_W00057B,qipedc,,ân hận,tiểu,0.2277,0,tiểu|không muốn|bánh cuốn|thích thú|hồi hộp
+qipedc_W00075N,qipedc,,bài thơ,tết âm,0.1774,0,tết âm|trụi lá|thân cây|gầy (miền nam: ốm)|bệnh
+qipedc_W00075T,qipedc,,bài thơ,tết âm,0.1661,0,tết âm|trụi lá|gầy (miền nam: ốm)|thân cây|xây
+qipedc_W00086N,qipedc,,ban đêm,buổi đêm,0.6109,0,buổi đêm|ban đêm|yêu mến (yêu quí)|nhân hậu|nghé
+qipedc_W00086T,qipedc,,ban đêm,buổi đêm,0.6071,0,buổi đêm|ban đêm|nhân hậu|yêu mến (yêu quí)|nghé
+qipedc_W00099N,qipedc,,bản đồ việt nam,nước việt nam,0.2705,0,nước việt nam|bra xin (nước bra xin)|chỉ định|rồi|tiền sử
+qipedc_W00099T,qipedc,,bản đồ việt nam,nước việt nam,0.2891,0,nước việt nam|bra xin (nước bra xin)|chỉ định|rồi|tiền sử
+qipedc_W00107N,qipedc,,bán hàng,bớt,0.1935,0,bớt|chi phí|ngũ quả|nhói|cần không?
+qipedc_W00107T,qipedc,,bán hàng,bớt,0.2348,0,bớt|chi phí|nhói|ngũ quả|cần không?
+qipedc_W00110B,qipedc,,bạn,tham ăn,0.1719,0,tham ăn|dân tộc|tàu hoả|ngày ngôn ngữ kí hiệu quốc tế 23/9|gãi
+qipedc_W00111N,qipedc,,bạn gái,không hiểu,0.1444,0,không hiểu|t|xưa|con mèo|hiểu
+qipedc_W00111T,qipedc,,bạn gái,không hiểu,0.1341,0,không hiểu|t|con mèo|xưa|hiểu
+qipedc_W00112N,qipedc,,bạn trai,ân hận,0.0300,0,ân hận|nhà nước|chính phủ|nghỉ học|bố dượng
+qipedc_W00112T,qipedc,,bạn trai,ân hận,0.0337,0,ân hận|nhà nước|xưa|héc tô gam (hg)|chính phủ
+qipedc_W00119N,qipedc,,bảng cộng,bảng nhân,0.9426,0,bảng nhân|con kiến|đăng ký|vào mùa|quả điều
+qipedc_W00121N,qipedc,,bảng đen,tóc ngắn,0.3567,0,tóc ngắn|xanh xao|hi vọng|con mèo|gầy (miền nam: ốm)
+qipedc_W00124B,qipedc,,bảng nhân,bảng cộng,0.7047,0,bảng cộng|công nghiệp|trong ngoài|bảng trừ|rửa chân
+qipedc_W00124T,qipedc,,bảng nhân,bảng cộng,0.9229,0,bảng cộng|công nghiệp|rửa chân|màu trắng|thể dục
+qipedc_W00126N,qipedc,,bảng trừ,bảng nhân,0.0592,0,bảng nhân|ưu tiên|di truyền|ủy quyền|quyển vở
+qipedc_W00129B,qipedc,,bánh cuốn,lĩnh vực,0.0487,0,lĩnh vực|nay|bột màu|tờ giấy|bài thơ
+qipedc_W00137N,qipedc,,bánh mì,thân cây,0.3514,0,thân cây|bón phân|gầy (miền nam: ốm)|chặt|tóc ngắn
+qipedc_W00137T,qipedc,,bánh mì,thân cây,0.3244,0,thân cây|bón phân|chặt|gầy (miền nam: ốm)|ghen tị
+qipedc_W00145B,qipedc,,bao giờ?,quyền lợi,0.4811,0,quyền lợi|muốn không?|phim hoạt hình|bút màu|văn nghệ
+qipedc_W00145T,qipedc,,bao giờ?,quyền lợi,0.5160,0,quyền lợi|muốn không?|phim hoạt hình|4|quyết định
+qipedc_W00159N,qipedc,,bảo vệ môi trường,phản bội,0.1585,0,phản bội|xe cứu hỏa|phương tiện giao thông|bình an|giao tiếp
+qipedc_W00159T,qipedc,,bảo vệ môi trường,phản bội,0.1603,0,phản bội|xe cứu hỏa|phương tiện giao thông|bình an|giao tiếp
+qipedc_W00160N,qipedc,,báo (con báo),báo (con báo),0.1387,1,báo (con báo)|ngứa nhiều|công nghiệp|bảng cộng|bắn bi
+qipedc_W00160T,qipedc,,báo (con báo),báo (con báo),0.1418,1,báo (con báo)|ngứa nhiều|công nghiệp|bảng cộng|bắn bi
+qipedc_W00175N,qipedc,,xì hơi (đánh rắm),lái tàu hỏa,0.0836,0,lái tàu hỏa|việc|xã hội|xà phòng giặt|thương yêu
+qipedc_W00186B,qipedc,,bắn bi,huyện,0.1844,0,huyện|ít|ai|hẹn|4
+qipedc_W00196B,qipedc,,bắp ngô,ân hận,0.9479,0,ân hận|hối hận|tiếng anh|vô duyên|quả dưa hấu
+qipedc_W00198,qipedc,,bắt đền,bắt đền,0.2952,1,bắt đền|người yêu|đồng phục|vào mùa|người xấu
+qipedc_W00214B,qipedc,,bẫy chuột (hành động),gần đây,0.0385,0,gần đây|bảng trừ|công nghiệp|ân hận|cháu ngoại
+qipedc_W00216N,qipedc,,bẻ ngô,thân cây,0.1513,0,thân cây|bón phân|bẻ ngô|kẹo|nghi ngờ
+qipedc_W00216T,qipedc,,bẻ ngô,thân cây,0.1569,0,thân cây|bón phân|bẻ ngô|kẹo|nghi ngờ
+qipedc_W00220B,qipedc,,bé trai,chính phủ,0.2256,0,chính phủ|tôi|vết thương|bé trai|ông bà
+qipedc_W00220T,qipedc,,bé trai,tôi,0.2708,0,tôi|chính phủ|vết thương|bé trai|ông bà
+qipedc_W00236N,qipedc,,bên cạnh,tham quan,0.1346,0,tham quan|chữa bài|nghé|màu xanh da trời|cần
+qipedc_W00255B,qipedc,,bìa vở,nhãn vở,0.4778,0,nhãn vở|huyện|con ếch|ví dụ|bìa vở
+qipedc_W00274B,qipedc,,bình an,tay,0.1851,0,tay|cháu họ|nhiều|chuẩn bị|nguy hiểm
+qipedc_W00274T,qipedc,,bình an,tay,0.1615,0,tay|cháu họ|nhiều|chuẩn bị|nguy hiểm
+qipedc_W00286N,qipedc,,bình thường,bình thường,0.9200,1,bình thường|phấn (viết bảng)|không|anh dũng|chữ
+qipedc_W00286T,qipedc,,bình thường,bình thường,0.9164,1,bình thường|phấn (viết bảng)|không|anh dũng|chữ
+qipedc_W00304N,qipedc,,bón phân,tưới cây,0.1278,0,tưới cây|chặt|tết âm|trụi lá|bón phân
+qipedc_W00304T,qipedc,,bón phân,tưới cây,0.1373,0,tưới cây|chặt|tết âm|trụi lá|hi vọng
+qipedc_W00326B,qipedc,,bố dượng,cửa hàng,0.1294,0,"cửa hàng|mắt|anh hai, anh cả|dấu huyền|quyền lợi"
+qipedc_W00328B,qipedc,,bộ đội,mật khẩu,0.3405,0,mật khẩu|5000 (năm nghìn)|tự tin|nghi ngờ|huyện
+qipedc_W00336B,qipedc,,bông hoa,hoa,0.3948,0,hoa|4|gián tiếp|suýt|quyền lợi
+qipedc_W00337B,qipedc,,bốt cảnh sát,rằm trung thu,0.1101,0,rằm trung thu|tay chân sạch sẽ|chị họ|hành quân|tham quan
+qipedc_W00338N,qipedc,,bốt điện,giá trị phần trăm,0.0583,0,giá trị phần trăm|bốt điện|hỏi tôi|thái độ|bệnh gì
+qipedc_W00338T,qipedc,,bốt điện,giá trị phần trăm,0.0669,0,giá trị phần trăm|bốt điện|thái độ|hỏi tôi|bệnh gì
+qipedc_W00341N,qipedc,,bột màu,môn đạo đức,0.7156,0,môn đạo đức|cơ hội|môn kĩ thuật|giấy nháp|cháu ngoại
+qipedc_W00341T,qipedc,,bột màu,môn đạo đức,0.7369,0,môn đạo đức|cơ hội|giấy nháp|môn kĩ thuật|cháu ngoại
+qipedc_W00355N,qipedc,,bra xin (nước bra xin),tôi,0.2317,0,tôi|tay|hội thảo|tự tin|tết âm
+qipedc_W00355T,qipedc,,bra xin (nước bra xin),tôi,0.2254,0,tôi|tay|hội thảo|tự tin|tết âm
+qipedc_W00356B,qipedc,,bru nây (nước bru nây),trẻ con/con nít,0.0797,0,trẻ con/con nít|dây điện|quả dưa hấu|tháng|sân trường
+qipedc_W00357N,qipedc,,cỏ,lấy,0.1993,0,lấy|tác động|mỳ tôm|địa chỉ|thi cử
+qipedc_W00357T,qipedc,,cỏ,lấy,0.1839,0,lấy|tác động|mỳ tôm|địa chỉ|thi cử
+qipedc_W00359N,qipedc,,bụi phấn,nhân (toán học),0.1867,0,nhân (toán học)|bụi phấn|mùa xuân|vấn đề|tác động
+qipedc_W00367B,qipedc,,buổi đêm,đêm,0.3441,0,đêm|ban đêm|tối|lại|yêu mến (yêu quí)
+qipedc_W00368N,qipedc,,buổi sáng,sáng,0.8512,0,sáng|năm ngoái|lễ hội|cởi|cởi áo
+qipedc_W00368T,qipedc,,buổi sáng,sáng,0.8546,0,sáng|năm ngoái|lễ hội|cởi|cởi áo
+qipedc_W00369B,qipedc,,buổi tối,lạnh lùng,0.1345,0,lạnh lùng|buổi đêm|ban đêm|xanh xao|nhập ngũ
+qipedc_W00370T,qipedc,,buổi trưa,buổi trưa,0.6075,1,buổi trưa|tre|nhầm|cây ngô|tóc ngắn
+qipedc_W00374B,qipedc,,buông màn,di truyền,0.0644,0,di truyền|liên lạc|màn|còn|trường thpt ( cấp 3)
+qipedc_W00383T,qipedc,,bút màu,uống,0.1336,0,uống|không thấy|dấu hỏi|nghiêm khắc|môn đạo đức
+qipedc_W00386N,qipedc,,bức tranh,lung tung,0.2846,0,lung tung|liên lạc|thế nào?|tấm vải|con bê
+qipedc_W00398N,qipedc,,cá kho,cần không,0.1428,0,cần không|bình an|chống đối|đại diện|phương tiện giao thông
+qipedc_W00404B,qipedc,,cái gương,nhầm,0.2242,0,nhầm|quyền lợi|hi vọng|giáo viên|sốt
+qipedc_W00407N,qipedc,,cam pu chia (nước cam pu chia),họng,0.2991,0,họng|rong chơi|buổi sáng|cháu ngoại|bạn trai
+qipedc_W00444B,qipedc,,câu thơ,ủy quyền,0.1249,0,ủy quyền|di truyền|lĩnh vực|quả điều|cây cổ thụ
+qipedc_W00456N,qipedc,,cây ăn quả,tre,0.2640,0,tre|cây ngô|xưa|mã lai (nước ma lai xi a)|buổi trưa
+qipedc_W00456T,qipedc,,cây ăn quả,tre,0.2613,0,tre|cây ngô|xưa|mã lai (nước ma lai xi a)|buổi trưa
+qipedc_W00457T,qipedc,,cây bàng,chuyên gia,0.0578,0,chuyên gia|phỏng|lễ nô en|con cá|công viên
+qipedc_W00459N,qipedc,,cây cổ thụ,quả dưa hấu,0.0962,0,quả dưa hấu|tai|thừa|nghe|mắt trái
+qipedc_W00459T,qipedc,,cây cổ thụ,quả dưa hấu,0.0964,0,quả dưa hấu|tai|thừa|mắt trái|nghe
+qipedc_W00469B,qipedc,,cây ngô,cây ngô,0.1416,1,cây ngô|cần|họp|nhà trường|buổi trưa
+qipedc_W00470B,qipedc,,cây phượng,cây bàng,0.1844,0,cây bàng|tưới cây|cây thân gỗ|cây xanh tươi|ưu tiên
+qipedc_W00474N,qipedc,,cây thân gỗ,tưới cây,0.0513,0,tưới cây|hi vọng|thừa|xây|nhầm
+qipedc_W00474T,qipedc,,cây thân gỗ,tưới cây,0.0519,0,tưới cây|hi vọng|thừa|xây|nhầm
+qipedc_W00484N,qipedc,,chả cá,đơn,0.4393,0,đơn|thay đổi|chả cá|kết quả|cơ bản
+qipedc_W00493B,qipedc,,chảo,trong ngoài,0.1873,0,trong ngoài|vật nuôi|ở ngoài|yêu cầu|trung thu
+qipedc_W00495N,qipedc,,cháu gái,cháu ngoại,0.7113,0,cháu ngoại|da ngăm (nước da ngăm đen)|không hiểu|công nghiệp|suy nghĩ
+qipedc_W00495T,qipedc,,cháu gái,cháu ngoại,0.7130,0,cháu ngoại|da ngăm (nước da ngăm đen)|không hiểu|công nghiệp|suy nghĩ
+qipedc_W00496T,qipedc,,cháu ngoại,tờ giấy,0.1252,0,tờ giấy|giấy màu|phấn (viết bảng)|ix|là gì?
+qipedc_W00497T,qipedc,,cháu nội,có,0.5092,0,có|con cọp|giấy màu|giá trị phần trăm|hoặc
+qipedc_W00498N,qipedc,,cháu trai,cháu ngoại,0.4554,0,cháu ngoại|ân hận|công nghiệp|hối hận|phở
+qipedc_W00508B,qipedc,,chăm sóc sức khỏe,thêu,0.2220,0,thêu|bảo vệ môi trường|lung tung|liên hoan|lễ bế giảng
+qipedc_W00509B,qipedc,,chăn (cái chăn),sức khỏe,0.1102,0,sức khỏe|con sư tử|mệt|đây|vui mừng
+qipedc_W00510T,qipedc,,chăn nuôi,nhân (toán học),0.1091,0,nhân (toán học)|thủ công|xe cảnh sát|kí tên|tác động
+qipedc_W00513N,qipedc,,chặt,chặt,0.7602,1,chặt|xây|bón phân|hi vọng|tưới cây
+qipedc_W00513T,qipedc,,chặt,chặt,0.8242,1,chặt|xây|bón phân|hi vọng|trụi lá
+qipedc_W00516B,qipedc,,châm cứu,sức khỏe,0.2965,0,sức khỏe|tre|héc tô gam (hg)|khí hư|nghỉ học
+qipedc_W00570N,qipedc,,chị,đánh răng,0.2757,0,đánh răng|nhầm|rượu|ân hận|quả dưa hấu
+qipedc_W00571N,qipedc,,chị chồng,chị chồng,0.7608,1,chị chồng|chị|sữa bột|ngày ngôn ngữ kí hiệu quốc tế 23/9|ngày thành lập quân đội nhân dân việt nam
+qipedc_W00575B,qipedc,,chia,nghĩ,0.0459,0,nghĩ|cuối cùng|5|10 000 (mười nghìn)|che
+qipedc_W00584N,qipedc,,chiếc gối,không đẹp,0.4110,0,không đẹp|chị|buổi trưa|bra xin (nước bra xin)|tay chân sạch sẽ
+qipedc_W00598,qipedc,,chiếu,no,0.4143,0,no|quả roi|tiết kiệm|mới|kinh nghiệm
+qipedc_W00617B,qipedc,,chính phủ,không hiểu,0.1852,0,không hiểu|hiểu|tham quan|tai|sữa
+qipedc_W00620B,qipedc,,chính xác,trông nom,0.0832,0,trông nom|ngày người khuyết tật thế giới 3/12|chính xác|cung điện|mỳ ý
+qipedc_W00633B,qipedc,,chống đối,nhà trường,0.1355,0,nhà trường|phó hiệu trưởng|đèn báo giao thông|không quen|thương yêu
+qipedc_W00633T,qipedc,,chống đối,nhà trường,0.1061,0,nhà trường|phó hiệu trưởng|không quen|đèn báo giao thông|người xưa
+qipedc_W00638N,qipedc,,luân phiên,con mèo,0.2128,0,con mèo|thừa thiên – huế|nghé|hi vọng|nay
+qipedc_W00649N,qipedc,,chủ tịch,con mèo,0.2000,0,con mèo|con bê|tấm vải|nghé|thừa thiên – huế
+qipedc_W00649T,qipedc,,chủ tịch,con mèo,0.1876,0,con mèo|con bê|tấm vải|nghé|thừa thiên – huế
+qipedc_W00655T,qipedc,,chùa,điều hòa,0.1417,0,điều hòa|bảo vệ môi trường|vải lụa|thiệp sinh nhật|xưa
+qipedc_W00662N,qipedc,,chuẩn bị,đợi,0.1601,0,đợi|xin|thương yêu|quả bưởi|quả dừa xiêm
+qipedc_W00662T,qipedc,,chuẩn bị,đợi,0.1328,0,đợi|xin|thương yêu|quả bưởi|công viên
+qipedc_W00663N,qipedc,,chúc mừng,cùng,0.6697,0,cùng|dị ứng|khám|lấy thuốc|ảnh hưởng
+qipedc_W00663T,qipedc,,chúc mừng,cùng,0.6795,0,cùng|dị ứng|khám|ảnh hưởng|lấy thuốc
+qipedc_W00664B,qipedc,,chúc tết,kết quả,0.1168,0,"kết quả|chống đối|loãng xương|anh hai, anh cả|tờ giấy"
+qipedc_W00665N,qipedc,,chúc thọ,thái độ,0.1293,0,thái độ|chúc thọ|ngày thầy thuốc việt nam|tiếng anh|sơ mi
+qipedc_W00665T,qipedc,,chúc thọ,ngày thầy thuốc việt nam,0.1770,0,ngày thầy thuốc việt nam|tiếng anh|sơ mi|chúc thọ|khó khăn
+qipedc_W00691N,qipedc,,chuyên gia,bảng trừ,0.1294,0,bảng trừ|người yêu|rửa chân|bẻ ngô|sắt
+qipedc_W00691T,qipedc,,chuyên gia,bảng trừ,0.1270,0,bảng trừ|người yêu|rửa chân|thương yêu|yếu
+qipedc_W00708B,qipedc,,chữa bài,táo bón,0.0588,0,táo bón|mùa xuân|nguy hiểm|ủy quyền|máy in
+qipedc_W00708T,qipedc,,chữa bài,nguy hiểm,0.0516,0,nguy hiểm|mùa xuân|quyển vở|táo bón|cháu họ
+qipedc_W00734B,qipedc,,con bê,sữa bò,0.0890,0,sữa bò|hi vọng|bảng đen|nay|bốt điện
+qipedc_W00735B,qipedc,,con bò,sữa bò,0.2053,0,sữa bò|tấm vải|hi vọng|con bê|bốt điện
+qipedc_W00737B,qipedc,,con cá,phụ khoa,0.3145,0,phụ khoa|giao thông|con chuột|giao tiếp|khan ho
+qipedc_W00737T,qipedc,,con cá,phụ khoa,0.3370,0,phụ khoa|giao thông|con chuột|khan ho|giao tiếp
+qipedc_W00739N,qipedc,,con chó,con bò,0.1525,0,con bò|chữa bài|tham quan|tổng thống|tóc ngắn
+qipedc_W00739T,qipedc,,con chó,con bò,0.1731,0,con bò|tham quan|chữa bài|tổng thống|tóc ngắn
+qipedc_W00742N,qipedc,,con chuột,nghiêm khắc,0.6671,0,nghiêm khắc|môn đạo đức|rượu|cung điện|màu nâu
+qipedc_W00742T,qipedc,,con chuột,nghiêm khắc,0.6504,0,nghiêm khắc|môn đạo đức|cung điện|rượu|màu nâu
+qipedc_W00747B,qipedc,,con cọp,báo (con báo),0.1375,0,báo (con báo)|chiếu|con chó|màu xanh lá cây|đau
+qipedc_W00758T,qipedc,,con ếch,bệnh gì,0.5250,0,bệnh gì|tay|tổng quát|nạp điện|ngứa nhiều
+qipedc_W00768N,qipedc,,con kiến,kẹo,0.4154,0,kẹo|tiếng anh|bắp ngô|sơ mi|rượu
+qipedc_W00770B,qipedc,,con lợn (con heo),gỗ,0.0925,0,gỗ|tiếng anh|con lợn (con heo)|điện thoại|thuỷ điện
+qipedc_W00772B,qipedc,,con mèo,hi vọng,0.0865,0,hi vọng|cửa hàng|dây điện|vui mừng|văn nghệ
+qipedc_W00773N,qipedc,,con muỗi,con cá,0.0836,0,con cá|lào (nước lào)|xe cảnh sát|con chuột|tay
+qipedc_W00777N,qipedc,,con người,người quen,0.4608,0,người quen|đặc biệt|người lái xe (ô tô)|giấy|con người
+qipedc_W00778B,qipedc,,con ngựa,chiếu,0.4189,0,chiếu|hay là (hoặc là)|rửa chân|tuần này|ngày nay
+qipedc_W00780N,qipedc,,con nuôi,bộ đội,0.0591,0,bộ đội|buổi đêm|hoạt hình|con nuôi|cần
+qipedc_W00794T,qipedc,,con sư tử,mexico (nước mexico),0.1191,0,mexico (nước mexico)|bảng đen|chùa|chiếc gối|ham chơi
+qipedc_W00797B,qipedc,,con tôm,9,0.3803,0,9|con tôm|x|liên lạc|lấy
+qipedc_W00803N,qipedc,,con voi,bắp ngô,0.1119,0,bắp ngô|thêu|tấm vải|ông ngoại|xì hơi (đánh rắm)
+qipedc_W00812N,qipedc,,cô giáo,không hiểu,0.7033,0,không hiểu|chữa bài|xưa|suy nghĩ|tổng thống
+qipedc_W00820B,qipedc,,cố gắng,điều phối,0.6242,0,điều phối|quả roi|dịch vụ|đâu|cố gắng
+qipedc_W00850B,qipedc,,công viên,công viên,0.2278,1,công viên|đèn báo giao thông|buổi đêm|thiết kế|sắp xếp
+qipedc_W00857B,qipedc,,cộng (toán học),nhân (toán học),0.1111,0,nhân (toán học)|vấn đề|rưỡi|bao giờ?|nhà văn hóa
+qipedc_W00857T,qipedc,,cộng (toán học),nhân (toán học),0.1057,0,nhân (toán học)|vấn đề|rưỡi|bao giờ?|nhà văn hóa
+qipedc_W00863N,qipedc,,cột điện,ngủ khó,0.0672,0,ngủ khó|đèn điện|mua|loài vật|con ếch
+qipedc_W00863T,qipedc,,cột điện,ngủ khó,0.0695,0,ngủ khó|đèn điện|mua|loài vật|con ếch
+qipedc_W00868N,qipedc,,cơ hội,hội thảo,0.1528,0,hội thảo|vào bình|tái phạm|bánh cuốn|nay
+qipedc_W00868T,qipedc,,cơ hội,hội thảo,0.1025,0,hội thảo|vào bình|tái phạm|chia|màu xanh lá cây
+qipedc_W00885N,qipedc,,cơm bình dân,hỏi tôi,0.3412,0,hỏi tôi|thuốc uống|hàng ngày|âm ỉ|đề nghị
+qipedc_W00935N,qipedc,,cửa hàng,họp,0.2462,0,họp|quả dừa xiêm|nhiệt kế|hành quân|xin
+qipedc_W00943N,qipedc,,cướp,cá kho,0.1787,0,cá kho|vừa|loài vật|nước việt nam|gián tiếp
+qipedc_W00943T,qipedc,,cướp,vừa,0.1768,0,vừa|cá kho|loài vật|lấy|nước việt nam
+qipedc_W00988B,qipedc,,dân tộc,tuần sau,0.2842,0,tuần sau|dân tộc thiểu số|tuần trước|môn lịch sử|phi líp pin (nước phi líp pin)
+qipedc_W00989N,qipedc,,dân tộc thiểu số,vật nuôi,0.0891,0,vật nuôi|tuần|tờ giấy|áo khoác|thiệp sinh nhật
+qipedc_W00989T,qipedc,,dân tộc thiểu số,vật nuôi,0.1174,0,vật nuôi|tuần|tờ giấy|thiệp sinh nhật|áo khoác
+qipedc_W01016N,qipedc,,dây điện,giá trị,0.0468,0,giá trị|luật chơi|không|không có|dân tộc
+qipedc_W01016T,qipedc,,dây điện,giá trị,0.0450,0,giá trị|không|luật chơi|không có|dân tộc
+qipedc_W01022N,qipedc,,dép quai hậu,bắn bi,0.0629,0,bắn bi|hội thảo|tô màu|dép quai hậu|con ngựa
+qipedc_W01032B,qipedc,,di truyền,trường thpt ( cấp 3),0.0956,0,trường thpt ( cấp 3)|phim hoạt hình|liên lạc|đợi|không dám
+qipedc_W01033N,qipedc,,dịch vụ,nội dung,0.4574,0,nội dung|giới thiệu|môn kĩ thuật|quả dừa xiêm|họp
+qipedc_W01075B,qipedc,,nhà nước,kẹo,0.1688,0,kẹo|sơ mi|sữa hộp|đánh răng|thú dữ
+qipedc_W01082B,qipedc,,đại diện,đẹp không? (người),0.5254,0,đẹp không? (người)|tự lập|xuất hiện|lạnh lùng|ký tên
+qipedc_W01082T,qipedc,,đại diện,đẹp không? (người),0.5065,0,đẹp không? (người)|tự lập|xuất hiện|lạnh lùng|ký tên
+qipedc_W01122,qipedc,,đặc biệt,tô màu,0.1866,0,tô màu|đăng ký|đặt|màu xanh lá cây|có chưa
+qipedc_W01153B,qipedc,,đen láy (như đen nhánh),nội soi,0.2433,0,nội soi|tre|phim truyện|chị|nghỉ học
+qipedc_W01154B,qipedc,,đèn báo giao thông,cần,0.1318,0,cần|cần không|buổi trưa|đại diện|chống đối
+qipedc_W01155B,qipedc,,đèn điện,phim hoạt hình,0.0945,0,phim hoạt hình|thủ tướng|mỗi ngày|không nghe lời|ê buốt
+qipedc_W01159T,qipedc,,đèn pin,chảo,0.8719,0,chảo|trung thu|yêu cầu|trong ngoài|ở ngoài
+qipedc_W01161B,qipedc,,đèn vàng,đèn vàng,0.2741,1,đèn vàng|mỳ ý|phấn (viết bảng)|giá trị phần trăm|vẫn
+qipedc_W01162T,qipedc,,đèn xanh,đèn vàng,0.1619,0,đèn vàng|ngày quốc tế phụ nữ 8/3|tuần lễ người điếc thế giới|1 000 000 000 (một tỉ)|mexico (nước mexico)
+qipedc_W01165B,qipedc,,đèo hải vân,lái tàu hỏa,0.1736,0,lái tàu hỏa|tiếp tục|lượt|giá trị|không quen
+qipedc_W01177N,qipedc,,đề nghị,trốn chạy,0.2599,0,trốn chạy|ở ngoài|yêu cầu|trong ngoài|chảo
+qipedc_W01177T,qipedc,,đề nghị,yêu cầu,0.3807,0,yêu cầu|ở ngoài|trốn chạy|trong ngoài|ngày ngôn ngữ kí hiệu quốc tế 23/9
+qipedc_W01205N,qipedc,,điện,phải không,0.4927,0,phải không|vết thương|không|10 000 (mười nghìn)|mắng
+qipedc_W01205T,qipedc,,điện,phải không,0.4852,0,phải không|vết thương|không|10 000 (mười nghìn)|mắng
+qipedc_W01211N,qipedc,,quả điều,rượu,0.2866,0,rượu|nghiêm khắc|gỗ|con lợn (con heo)|uống
+qipedc_W01212N,qipedc,,điều phối,kết quả,0.6765,0,kết quả|bớt|dịch vụ|hóa đơn|cam pu chia (nước cam pu chia)
+qipedc_W01213B,qipedc,,điều hòa,hôm qua,0.3373,0,hôm qua|mexico (nước mexico)|năm ngoái|đèo hải vân|gầy (miền nam: ốm)
+qipedc_W01259T,qipedc,,nhập ngũ,siêu ẩm,0.0372,0,siêu ẩm|giám sát|nhập trường|ngày người khuyết tật thế giới 3/12|tờ báo
+qipedc_W01294N,qipedc,,đồng phục,áo đồng phục,0.7135,0,áo đồng phục|vấn đề|chăn (cái chăn)|lười|thành lập
+qipedc_W01294T,qipedc,,đồng phục,áo đồng phục,0.7143,0,áo đồng phục|vấn đề|chăn (cái chăn)|lười|con nuôi
+qipedc_W01301,qipedc,,tác động,tác động,0.7317,1,tác động|vấn đề|xã hội|ga tàu|phở cuốn
+qipedc_W01304N,qipedc,,đợi,đợi,0.2781,1,đợi|héc tô mét vuông (hm2)|hoạt hình|phiên dịch|bộ đội
+qipedc_W01348N,qipedc,,e thẹn,quả dừa xiêm,0.0539,0,quả dừa xiêm|rửa mặt|ngày của cha|hoa sen|ngọn cây
+qipedc_W01351T,qipedc,,em rể,anh rể,0.2804,0,anh rể|liên quan|trông nom|một mình|màu trắng
+qipedc_W01352N,qipedc,,em trai,ân hận,0.3593,0,ân hận|hối hận|bé trai|cháu ngoại|vẫn
+qipedc_W01352T,qipedc,,em trai,ân hận,0.2909,0,ân hận|hối hận|bé trai|vẫn|cháu ngoại
+qipedc_W01364B,qipedc,,ga tàu,chị họ,0.0323,0,chị họ|dị ứng|tham ăn|thủy điện hòa bình|khó khăn
+qipedc_W01384B,qipedc,,gạo,chả cá,0.4316,0,chả cá|mâm ngũ quả|hải sản|kinh nghiệm|quả roi
+qipedc_W01403B,qipedc,,gầy (miền nam: ốm),gần đây,0.2411,0,gần đây|hôm nay|nay|ở đây|đang
+qipedc_W01430N,qipedc,,giao thông,gần đây,0.1905,0,gần đây|ra ngoài|phương tiện giao thông|thay đổi|bình an
+qipedc_W01433B,qipedc,,giá trị,giá trị phần trăm,0.1222,0,giá trị phần trăm|màn|liên lạc|con mèo|rưỡi
+qipedc_W01434N,qipedc,,giá trị phần trăm,mỳ ý,0.5079,0,mỳ ý|sơ mi|áo đồng phục|tham ăn|chính phủ
+qipedc_W01434T,qipedc,,giá trị phần trăm,mỳ ý,0.5257,0,mỳ ý|sơ mi|giá trị|vẫn|áo đồng phục
+qipedc_W01447B,qipedc,,gián tiếp,rõ,0.1390,0,rõ|gián tiếp|người xấu|bất thường|làm bài tập
+qipedc_W01453N,qipedc,,giao tiếp,hứa,0.3231,0,hứa|0|liên quan|từ chối|trung thu
+qipedc_W01453T,qipedc,,giao tiếp,đâu,0.2485,0,đâu|hóa đơn|tuổi|làm|liên quan
+qipedc_W01470N,qipedc,,giấy,chúc mừng,0.1204,0,chúc mừng|gạo|tiết kiệm|ở đây|kí tên
+qipedc_W01470T,qipedc,,giấy,chúc mừng,0.1163,0,chúc mừng|gạo|tiết kiệm|ở đây|kí tên
+qipedc_W01471B,qipedc,,giấy ăn,giấy ăn,0.5813,1,giấy ăn|giấy nháp|ân hận|lấy thuốc|hối hận
+qipedc_W01472N,qipedc,,giấy màu,môn đạo đức,0.3749,0,môn đạo đức|giấy nháp|giấy ăn|cơ hội|ngày ngôn ngữ kí hiệu quốc tế 23/9
+qipedc_W01472T,qipedc,,giấy màu,môn đạo đức,0.3956,0,môn đạo đức|giấy nháp|cơ hội|giấy ăn|ngày ngôn ngữ kí hiệu quốc tế 23/9
+qipedc_W01473B,qipedc,,giấy nháp,giấy nháp,0.5849,1,giấy nháp|cơ hội|giấy ăn|cháu ngoại|đèn xanh
+qipedc_W01497N,qipedc,,giúp đỡ,giúp,0.1758,0,giúp|phó hiệu trưởng|thương yêu|hải sản|không quen
+qipedc_W01497T,qipedc,,giúp đỡ,phó hiệu trưởng,0.1104,0,phó hiệu trưởng|thương yêu|giúp|hải sản|không quen
+qipedc_W01516N,qipedc,,gỗ,giao thông,0.0804,0,giao thông|công viên|toa xe|phương tiện giao thông|nên không?
+qipedc_W01557N,qipedc,,hành quân,trong ngoài,0.1266,0,trong ngoài|vật nuôi|ở ngoài|yêu cầu|hứa
+qipedc_W01576B,qipedc,,héc tô gam (hg),héc tô mét vuông (hm2),0.1876,0,héc tô mét vuông (hm2)|hoạt hình|nghĩ|đúng không?|mỳ tôm
+qipedc_W01577N,qipedc,,héc tô mét (hm),p,0.1688,0,p|héc tô mét (hm)|bắp ngô|mét|con tôm
+qipedc_W01577T,qipedc,,héc tô mét (hm),p,0.2110,0,p|héc tô mét (hm)|bắp ngô|mét|lấy
+qipedc_W01578N,qipedc,,héc tô mét vuông (hm2),x,0.1375,0,x|xem|chia đôi|héc tô mét vuông (hm2)|giám sát
+qipedc_W01578T,qipedc,,héc tô mét vuông (hm2),x,0.1159,0,x|xem|chia đôi|giám sát|tấm vải
+qipedc_W01582N,qipedc,,hệ thống,bẻ ngô,0.0568,0,bẻ ngô|trẻ con/con nít|thú y|chị họ|lúc nào
+qipedc_W01582T,qipedc,,hệ thống,bẻ ngô,0.0570,0,bẻ ngô|thú y|chị họ|tết âm|trẻ con/con nít
+qipedc_W01583B,qipedc,,hi sinh,vẫn,0.6621,0,vẫn|thiết kế|ngũ quả|bài thơ|sống sót
+qipedc_W01584N,qipedc,,hi vọng,tôi,0.1108,0,tôi|một mình|ngữ pháp|rửa chân|kiểm tra
+qipedc_W01591N,qipedc,,hiểu,thơm,0.6034,0,thơm|mã lai (nước ma lai xi a)|lấy thuốc|hoa|xưa
+qipedc_W01591T,qipedc,,hiểu,thơm,0.6101,0,thơm|mã lai (nước ma lai xi a)|lấy thuốc|hoa|lá cây
+qipedc_W01619N,qipedc,,hoa,bông hoa,0.9589,0,bông hoa|hối hận|thông minh|giấy ăn|hoa
+qipedc_W01629T,qipedc,,hoa sen,hoa sen,0.5690,1,hoa sen|quả bưởi|bán hàng|đăng ký|tiền sử
+qipedc_W01655N,qipedc,,hoạt hình,họng,0.2444,0,họng|ân hận|tiếng anh|đánh răng|chính phủ
+qipedc_W01655T,qipedc,,hoạt hình,ân hận,0.3084,0,ân hận|họng|tiếng anh|chính phủ|đánh răng
+qipedc_W01672B,qipedc,,hỏi,có không,0.6334,0,có không|phải không|từ trái nghĩa|héc tô mét (hm)|có
+qipedc_W01675B,qipedc,,hỏng,cửa hàng,0.2412,0,cửa hàng|dây điện|lần đầu|thuỷ điện|che
+qipedc_W01675T,qipedc,,hỏng,cửa hàng,0.2174,0,cửa hàng|dây điện|lần đầu|thuỷ điện|che
+qipedc_W01677N,qipedc,,họp,cùng,0.4188,0,cùng|cộng (toán học)|dị ứng|lái tàu hỏa|bẫy chuột (hành động)
+qipedc_W01690B,qipedc,,hồi hộp,khan ho,0.2597,0,khan ho|tôi|gần đây|cháu họ|rửa chân
+qipedc_W01690T,qipedc,,hồi hộp,khan ho,0.2491,0,khan ho|tôi|gần đây|cháu họ|rửa chân
+qipedc_W01692T,qipedc,,hối hận,muốn không?,0.5580,0,muốn không?|chị|loãng xương|hành quân|nghỉ học
+qipedc_W01696N,qipedc,,hội thảo,quả dưa hấu,0.1975,0,quả dưa hấu|gia đình|cuối cùng|môn kĩ thuật|rằm trung thu
+qipedc_W01721T,qipedc,,huyện,huyện,0.2232,1,huyện|lĩnh vực|mâm ngũ quả|dịch vụ|xà phòng giặt
+qipedc_W01738N,qipedc,,kém,có,0.0994,0,có|thầy giáo|con cọp|thế nào?|kém
+qipedc_W01743B,qipedc,,kẹo,chăn (cái chăn),0.3147,0,chăn (cái chăn)|sơ mi|liên lạc|thủy điện hòa bình|rửa chân
+qipedc_W01754N,qipedc,,kết quả,gạo,0.1664,0,gạo|kí tên|mùa hè|chúc mừng|xà phòng giặt
+qipedc_W01754T,qipedc,,kết quả,gạo,0.1635,0,gạo|kí tên|mùa hè|chúc mừng|xà phòng giặt
+qipedc_W01803B,qipedc,,khó khăn,trông nom,0.4540,0,trông nom|anh rể|vẫn|mắng|con ếch
+qipedc_W01824T,qipedc,,khỏi bệnh,ở đây,0.1903,0,ở đây|liên hoan|khỏi bệnh|hứa|cột điện
+qipedc_W01840B,qipedc,,không hiểu,nghĩ,0.7774,0,nghĩ|phim truyện|mỳ tôm|nhầm|đen láy (như đen nhánh)
+qipedc_W01842N,qipedc,,khổ,khổ,0.2361,1,khổ|đồng phục|chặt|bánh mì|cướp
+qipedc_W01866N,qipedc,,kỉ niệm,đặt,0.5235,0,đặt|kỉ niệm|chúc mừng|tết hàn thực|ngủ khó
+qipedc_W01866T,qipedc,,kỉ niệm,đặt,0.4718,0,đặt|kỉ niệm|chúc mừng|tết hàn thực|ngủ khó
+qipedc_W01872N,qipedc,,kí tên,kí tên,0.2827,1,kí tên|ký tên|kỳ|đóng tiền|đo
+qipedc_W01872T,qipedc,,kí tên,kí tên,0.2794,1,kí tên|ký tên|kỳ|đóng tiền|bột màu
+qipedc_W01878B,qipedc,,kiểm tra,phải không?,0.2239,0,phải không?|hỏi|bắp ngô|ai|huyện
+qipedc_W01898N,qipedc,,kinh nghiệm,chị,0.3144,0,chị|mỗi ngày|sữa bột|suốt|mỳ tôm
+qipedc_W01898T,qipedc,,kinh nghiệm,chị,0.3011,0,chị|mỗi ngày|sữa bột|mỳ tôm|suốt
+qipedc_W01911B,qipedc,,là gì?,con tôm,0.4278,0,con tôm|1|mắng|anh rể|2
+qipedc_W01912N,qipedc,,lá cây,huyện,0.0600,0,huyện|kí tên|mâm ngũ quả|có chưa|lĩnh vực
+qipedc_W01920B,qipedc,,lái tàu hỏa,thi cử,0.1544,0,thi cử|lái tàu hỏa|thương yêu|dân tộc|họp nhóm
+qipedc_W01924,qipedc,,làm bài tập,vui mừng,0.3889,0,vui mừng|chức năng|trái|ung thư|vui chơi
+qipedc_W01945B,qipedc,,lào (nước lào),thủ tướng,0.7237,0,thủ tướng|hiểu|đầu đau|nghĩ|nhầm
+qipedc_W01945T,qipedc,,lào (nước lào),thủ tướng,0.6437,0,thủ tướng|hiểu|đầu đau|nghĩ|nhầm
+qipedc_W01977B,qipedc,,lễ bế giảng,lễ bế giảng,0.7069,1,lễ bế giảng|ngày ngôn ngữ kí hiệu quốc tế 23/9|cởi áo|lễ halloween 31/10|thiệp sinh nhật
+qipedc_W01978B,qipedc,,lễ hội,ngày của mẹ,0.0703,0,ngày của mẹ|cá kho|hứa|gói|nhân (toán học)
+qipedc_W01978T,qipedc,,lễ hội,ngày của mẹ,0.0689,0,ngày của mẹ|cá kho|hứa|gói|môn kĩ thuật
+qipedc_W01979N,qipedc,,lễ nô en,còn,0.2725,0,còn|xe cứu hỏa|ngày thầy thuốc việt nam|thiệp sinh nhật|lễ bế giảng
+qipedc_W01982N,qipedc,,lễ hội hóa trang,sáng,0.1186,0,sáng|ngày giỗ tổ hùng vương (âm lịch 10/3)|cung điện|phấn (viết bảng)|thiết kế
+qipedc_W01996N,qipedc,,liên bang nga (nước nga),màu trắng,0.1635,0,màu trắng|thương yêu|rửa chân|người yêu|hi sinh
+qipedc_W01998N,qipedc,,liên hoan,lắm,0.2075,0,lắm|là gì?|hôm nay|nhiều|ở đây
+qipedc_W02000N,qipedc,,liên lạc,không được,0.2562,0,không được|tham dự|con lợn (con heo)|ngữ pháp|áo cởi
+qipedc_W02001N,qipedc,,liên quan,thường xuyên,0.0594,0,thường xuyên|nhân hậu|quả dừa xiêm|ngắt hoa|nguy hiểm
+qipedc_W02001T,qipedc,,liên quan,thường xuyên,0.0575,0,thường xuyên|quả dừa xiêm|nhân hậu|ngắt hoa|trông nom
+qipedc_W02012B,qipedc,,lĩnh vực,kết quả,0.0552,0,kết quả|thủ công|quyển vở|nguy hiểm|thông tin
+qipedc_W02024N,qipedc,,loài vật,màu nâu,0.3311,0,màu nâu|con bê|nhật (nước nhật)|suy nghĩ|màu xanh da trời
+qipedc_W02024T,qipedc,,loài vật,con bê,0.3190,0,con bê|màu nâu|suy nghĩ|nhật (nước nhật)|màu xanh da trời
+qipedc_W02064N,qipedc,,luật chơi,luật chơi,0.1358,1,luật chơi|vào mùa|tổng thống|buổi tối|thăm hỏi
+qipedc_W02066B,qipedc,,lúc nào,lúc nào,0.4092,1,lúc nào|quyển vở|di truyền|nào|từ trái nghĩa
+qipedc_W02078N,qipedc,,lười,nguy hiểm,0.1607,0,nguy hiểm|đèn báo giao thông|thương yêu|quả bưởi|công viên
+qipedc_W02078T,qipedc,,lười,nguy hiểm,0.1537,0,nguy hiểm|đèn báo giao thông|thương yêu|quả bưởi|công viên
+qipedc_W02079B,qipedc,,lười học,lười,0.1814,0,lười|rửa chân|tuần này|nghỉ học|thành lập
+qipedc_W02120T,qipedc,,màn,dép quai hậu,0.0451,0,dép quai hậu|bmi|giao thông|gãi|phản bội
+qipedc_W02137B,qipedc,,màu nâu,con tôm,0.2206,0,con tôm|ê|x|hoạt hình|1
+qipedc_W02140N,qipedc,,màu trắng,cần không?,0.2590,0,cần không?|thương yêu|quyền lợi|thuỷ điện|trắng muốt
+qipedc_W02140T,qipedc,,màu trắng,cần không?,0.2020,0,cần không?|quyền lợi|thuỷ điện|bốt điện|thương yêu
+qipedc_W02142B,qipedc,,màu xanh da trời,mách,0.5843,0,mách|ê|màu xanh da trời|mỳ ý|màu nâu
+qipedc_W02143N,qipedc,,màu xanh lá cây,màu xanh lá cây,0.4388,1,màu xanh lá cây|hội thảo|buổi tối|thầy giáo|tô màu
+qipedc_W02148N,qipedc,,máy in,quả bưởi,0.1283,0,quả bưởi|máy in|loãng xương|đề nghị|bảo vệ môi trường
+qipedc_W02148T,qipedc,,máy in,quả bưởi,0.1308,0,quả bưởi|máy in|loãng xương|đề nghị|quả dừa xiêm
+qipedc_W02164B,qipedc,,mắng,t,0.5332,0,t|chữa bài|hoạt hình|phim hoạt hình|suy nghĩ
+qipedc_W02178N,qipedc,,mâm ngũ quả,chưa,0.0743,0,chưa|tết hàn thực|gói|kinh nghiệm|tiền sử
+qipedc_W02178T,qipedc,,mâm ngũ quả,chưa,0.0669,0,chưa|tết hàn thực|kinh nghiệm|gói|tiền sử
+qipedc_W02187T,qipedc,,mật khẩu,vật nuôi,0.1774,0,vật nuôi|yêu cầu|ngày thầy thuốc việt nam|giải thích|trong ngoài
+qipedc_W02200B,qipedc,,mexico (nước mexico),mexico (nước mexico),0.7559,1,mexico (nước mexico)|ngày giải phóng miền nam 30/4|lễ hội|màn|xanh xao
+qipedc_W02221B,qipedc,,muốn,xem,0.7970,0,xem|vô duyên|muốn không?|thấy|rượu
+qipedc_W02239B,qipedc,,môn đạo đức,ngứa nhiều,0.6284,0,ngứa nhiều|xà phòng giặt|chia|vật nuôi|bắn bi
+qipedc_W02239T,qipedc,,môn đạo đức,ngứa nhiều,0.6798,0,ngứa nhiều|xà phòng giặt|chia|vật nuôi|tàu hoả
+qipedc_W02243B,qipedc,,môn kĩ thuật,nội dung,0.2046,0,nội dung|ví dụ|nhà văn hóa|thừa|môn kĩ thuật
+qipedc_W02244N,qipedc,,môn lịch sử,thú dữ,0.2932,0,thú dữ|môn đạo đức|rượu|môn kĩ thuật|cháu ngoại
+qipedc_W02244T,qipedc,,môn lịch sử,thú dữ,0.2975,0,thú dữ|môn đạo đức|rượu|môn kĩ thuật|cháu ngoại
+qipedc_W02264N,qipedc,,mới,rồi,0.2240,0,rồi|cuối cùng|trẻ con/con nít|nặng|nôn
+qipedc_W02264T,qipedc,,mới,rồi,0.2505,0,rồi|cuối cùng|trẻ con/con nít|nặng|nôn
+qipedc_W02270N,qipedc,,mùa hè,t,0.4137,0,t|con mèo|suy nghĩ|nghé|4
+qipedc_W02272B,qipedc,,mùa xuân,tờ giấy,0.2398,0,tờ giấy|đơn|kết quả|mua|giấy phép
+qipedc_W02292B,qipedc,,nạp điện,nạp điện,0.1484,1,nạp điện|thiệp sinh nhật|chả cá|mùa hè|tưới cây
+qipedc_W02328T,qipedc,,ngày nhà giáo việt nam,ngày nhà giáo việt nam,0.2156,1,ngày nhà giáo việt nam|ngày người khuyết tật việt nam 18/4|dỗi|giấy nháp|bẻ ngô
+qipedc_W02329N,qipedc,,ngày tháng,quả nhãn,0.1403,0,quả nhãn|con kiến|bảng nhân|hội thảo|ngày nay
+qipedc_W02336N,qipedc,,ngày nay,ngày nay,0.9962,1,ngày nay|ngày sinh|liên hoan|hơi hơi|ở đây
+qipedc_W02337N,qipedc,,ngày quốc tế lao động,ngày quốc tế lao động,0.2335,1,ngày quốc tế lao động|ngày quốc tế phụ nữ 8/3|môn lịch sử|ngày giỗ tổ hùng vương (âm lịch 10/3)|người xưa
+qipedc_W02338B,qipedc,,ngày sinh,không nên,0.1161,0,không nên|ngày tháng|phỏng|bắt đền|sâu
+qipedc_W02345B,qipedc,,ngắt hoa,ngắt hoa,0.1718,1,ngắt hoa|không cần|mật khẩu|nhãn vở|quả dừa
+qipedc_W02354B,qipedc,,nghé,thể dục,0.0483,0,thể dục|luật chơi|con mèo|không có|bức tranh
+qipedc_W02357N,qipedc,,nghệ thuật,rửa mặt,0.5998,0,rửa mặt|họp|nội dung|môn kĩ thuật|quả dưa hấu
+qipedc_W02357T,qipedc,,nghệ thuật,rửa mặt,0.6290,0,rửa mặt|họp|nội dung|môn kĩ thuật|quả dưa hấu
+qipedc_W02359N,qipedc,,nghi ngờ,hối hận,0.1981,0,hối hận|đánh răng|héc tô gam (hg)|xưa|kẹo
+qipedc_W02359T,qipedc,,nghi ngờ,hối hận,0.2117,0,hối hận|đánh răng|héc tô gam (hg)|xưa|kẹo
+qipedc_W02360B,qipedc,,nghỉ hè,xà phòng,0.2714,0,"xà phòng|quân đội|mỳ tôm|đúng không?|chị hai, chị cả"
+qipedc_W02361N,qipedc,,nghỉ học,phòng,0.0828,0,phòng|lúc nào|chị họ|là gì?|nghi ngờ
+qipedc_W02373N,qipedc,,nghiêm khắc,chính xác,0.8627,0,chính xác|kiêng|không cần|sữa bột|đập
+qipedc_W02373T,qipedc,,nghiêm khắc,chính xác,0.8569,0,chính xác|kiêng|không cần|sữa bột|môn kĩ thuật
+qipedc_W02394N,qipedc,,ngọn cây,tham dự,0.2125,0,tham dự|tết âm|trụi lá|quê|bảng trừ
+qipedc_W02394T,qipedc,,ngọn cây,tham dự,0.2179,0,tham dự|tết âm|trụi lá|quê|bảng trừ
+qipedc_W02400B,qipedc,,ngồi,trọc đầu,0.0951,0,trọc đầu|nhãn vở|quả khế|xe cảnh sát|mật khẩu
+qipedc_W02400T,qipedc,,ngồi,trọc đầu,0.0937,0,trọc đầu|quả khế|nhãn vở|xe cảnh sát|lào (nước lào)
+qipedc_W02402N,qipedc,,ngũ quả,chiều cao,0.1299,0,chiều cao|da ngăm (nước da ngăm đen)|xuống|bốt cảnh sát|chia đôi
+qipedc_W02402T,qipedc,,ngũ quả,chiều cao,0.1167,0,chiều cao|da ngăm (nước da ngăm đen)|xuống|bốt cảnh sát|chia đôi
+qipedc_W02405B,qipedc,,nguy hiểm,ngày của cha,0.0855,0,ngày của cha|nghiêm khắc|ít|e thẹn|bông hoa
+qipedc_W02430N,qipedc,,người lái xe (ô tô),người lái xe (ô tô),0.2319,1,người lái xe (ô tô)|người quen|từ trái nghĩa|khi nào|di truyền
+qipedc_W02430T,qipedc,,người lái xe (ô tô),người lái xe (ô tô),0.2282,1,người lái xe (ô tô)|người quen|khi nào|từ trái nghĩa|quyết tâm
+qipedc_W02435B,qipedc,,người quen,thấy,0.2875,0,thấy|anh rể|nhìn|một mình|môn kĩ thuật
+qipedc_W02437B,qipedc,,người xấu,anh rể,0.2400,0,anh rể|một mình|hẹn|sống sót|gỗ
+qipedc_W02438T,qipedc,,người xưa,vẫn,0.2194,0,vẫn|người xưa|tàu hoả|không quen|môn lịch sử
+qipedc_W02439N,qipedc,,người yêu,xưa,0.4293,0,xưa|suy nghĩ|không hiểu|sốt|đầu đau
+qipedc_W02455B,qipedc,,nhà trường,chùa,0.1798,0,chùa|văn nghệ|màn|phim hoạt hình|con mèo
+qipedc_W02461N,qipedc,,nhãn vở,bìa vở,0.0901,0,bìa vở|từ chối|hứa|chăn nuôi|áo đồng phục
+qipedc_W02473N,qipedc,,nhân (toán học),đến,0.0700,0,đến|bệnh|quả dừa xiêm|thường xuyên|bẫy chuột (hành động)
+qipedc_W02473T,qipedc,,nhân (toán học),đến,0.0682,0,đến|bệnh|quả dừa xiêm|thường xuyên|bẫy chuột (hành động)
+qipedc_W02479N,qipedc,,nhân hậu,tôi,0.4457,0,tôi|cháu họ|hi sinh|chúc mừng|lưng
+qipedc_W02479T,qipedc,,nhân hậu,tôi,0.4138,0,tôi|cháu họ|hi sinh|gần đây|chúc mừng
+qipedc_W02490B,qipedc,,nhập trường,nhập trường,0.1301,1,nhập trường|thiệp sinh nhật|anh rể|mật khẩu|họp nhóm
+qipedc_W02492B,qipedc,,nhật (nước nhật),tự do,0.1193,0,tự do|kí tên|từ trái nghĩa|dép quai hậu|ngữ pháp
+qipedc_W02492T,qipedc,,nhật (nước nhật),tự do,0.1013,0,tự do|từ trái nghĩa|kí tên|khác|dép quai hậu
+qipedc_W02497N,qipedc,,nhiệt kế,nhân (toán học),0.2300,0,nhân (toán học)|sơ mi|vấn đề|rưỡi|tác động
+qipedc_W02520B,qipedc,,no,tôi,0.3226,0,tôi|khan ho|ra nước|gần đây|lào (nước lào)
+qipedc_W02540N,qipedc,,nội dung,quả dừa xiêm,0.2274,0,quả dừa xiêm|môn kĩ thuật|nội dung|giới thiệu|bao lâu
+qipedc_W02540T,qipedc,,nội dung,quả dừa xiêm,0.2247,0,quả dừa xiêm|môn kĩ thuật|nội dung|giới thiệu|bao lâu
+qipedc_W02555N,qipedc,,nước việt nam,dỗi,0.3653,0,dỗi|bẻ ngô|bánh mì|lười học|ngày phụ nữ việt nam 20/10
+qipedc_W02555T,qipedc,,nước việt nam,dỗi,0.2648,0,dỗi|bẻ ngô|bánh mì|ngày người khuyết tật việt nam 18/4|lười học
+qipedc_W02575N,qipedc,,ông ngoại,yếu,0.2063,0,"yếu|rượu|anh rể|ông ngoại|anh hai, anh cả"
+qipedc_W02576B,qipedc,,ông nội,ông ngoại,0.3178,0,ông ngoại|vẫn|người quen|ông nội|trường thpt ( cấp 3)
+qipedc_W02580B,qipedc,,ở ngoài,dân tộc thiểu số,0.1569,0,dân tộc thiểu số|nằm|ra ngoài|cần không?|thi
+qipedc_W02589B,qipedc,,phá,quả khế,0.2922,0,quả khế|con tôm|vật nuôi|cá kho|anh rể
+qipedc_W02597B,qipedc,,phản bội,thái độ,0.7858,0,thái độ|chị họ|ngày thầy thuốc việt nam|ngày của cha|lung tung
+qipedc_W02630N,qipedc,,phấn (viết bảng),tác động,0.3007,0,tác động|vấn đề|quả điều|xã hội|no
+qipedc_W02651B,qipedc,,phiên dịch,thông tin,0.1166,0,thông tin|mật khẩu|bao giờ?|huyện|quả dừa xiêm
+qipedc_W02651T,qipedc,,phiên dịch,thông tin,0.1309,0,thông tin|mật khẩu|bao giờ?|quả dừa xiêm|huyện
+qipedc_W02654N,qipedc,,phi líp pin (nước phi líp pin),hi vọng,0.3628,0,hi vọng|vui chơi|vui mừng|chức năng|23
+qipedc_W02656T,qipedc,,phim hoạt hình,ông bà,0.0772,0,ông bà|vết thương|chính phủ|chị họ|nhà nước
+qipedc_W02658B,qipedc,,phim truyện,quyền lợi,0.1280,0,quyền lợi|cần không?|bốt điện|sốt|đầu đau
+qipedc_W02658T,qipedc,,phim truyện,bốt điện,0.1642,0,bốt điện|cần không?|sốt|quyền lợi|đầu đau
+qipedc_W02696B,qipedc,,phở,cột điện,0.0751,0,cột điện|thiếu thốn|chi phí|mới|khỏi bệnh
+qipedc_W02697N,qipedc,,phở cuốn,phở,0.0856,0,phở|quả dừa|táo bón|phim hoạt hình|tên là gì?
+qipedc_W02697T,qipedc,,phở cuốn,phở,0.0817,0,phở|quả dừa|táo bón|phim hoạt hình|sắp
+qipedc_W02716B,qipedc,,phương tiện giao thông,xã hội,0.0944,0,xã hội|phương tiện giao thông|bình an|giao thông|kết quả
+qipedc_W02716T,qipedc,,phương tiện giao thông,xã hội,0.0869,0,xã hội|giao thông|phương tiện giao thông|kết quả|giao tiếp
+qipedc_W02724N,qipedc,,quả bưởi,con bê,0.2527,0,con bê|lo lắng|thừa thiên – huế|chuyên gia|quê
+qipedc_W02724T,qipedc,,quả bưởi,con bê,0.2559,0,con bê|lo lắng|quê|thừa thiên – huế|chuyên gia
+qipedc_W02731B,qipedc,,quả dưa hấu,vết thương,0.1368,0,vết thương|kẹo|đặt|ngày phụ nữ việt nam 20/10|dỗi
+qipedc_W02731T,qipedc,,quả dưa hấu,kẹo,0.1523,0,kẹo|vết thương|đặt|ngày phụ nữ việt nam 20/10|bẻ ngô
+qipedc_W02732B,qipedc,,quả dừa,tiền sử,0.2326,0,tiền sử|trọc đầu|đèo hải vân|năm ngoái|hành quân
+qipedc_W02733B,qipedc,,quả dừa xiêm,con sư tử,0.1335,0,con sư tử|quả dừa xiêm|hành quân|họp|buổi đêm
+qipedc_W02737B,qipedc,,quả đu đủ,tham dự,0.1358,0,tham dự|phim hoạt hình|tết dương|quả điều|câu thơ
+qipedc_W02742B,qipedc,,quả khế,vô duyên,0.0987,0,vô duyên|quả dưa hấu|nội dung|bảng nhân|thủy điện hòa bình
+qipedc_W02748B,qipedc,,quả nhãn,tưới cây,0.0911,0,tưới cây|tết dương|tết âm|hội thảo|tham dự
+qipedc_W02754B,qipedc,,quả roi,cháu họ,0.0829,0,cháu họ|việc|giúp đỡ|giải thích|tiếp tục
+qipedc_W02757N,qipedc,,quả táo,người yêu,0.1172,0,người yêu|phụ khoa|tiểu|đồng phục|ngày người khuyết tật việt nam 18/4
+qipedc_W02784B,qipedc,,quân đội,bra xin (nước bra xin),0.1577,0,bra xin (nước bra xin)|hành quân|đèn điện|dấu hỏi|kém
+qipedc_W02787N,qipedc,,quần bò,nhầm,0.1688,0,nhầm|thương yêu|rượu|quyền lợi|mỳ tôm
+qipedc_W02787T,qipedc,,quần bò,nhầm,0.1613,0,nhầm|thương yêu|rượu|quyền lợi|mỳ tôm
+qipedc_W02790B,qipedc,,quận,cỏ,0.1777,0,cỏ|thiếu thốn|chúc mừng|phi líp pin (nước phi líp pin)|giúp đỡ
+qipedc_W02797B,qipedc,,quê,hoặc,0.0627,0,hoặc|hay là (hoặc là)|xì hơi (đánh rắm)|cam pu chia (nước cam pu chia)|loài vật
+qipedc_W02813B,qipedc,,quyền lợi,điện thoại,0.3924,0,"điện thoại|anh hai, anh cả|cửa hàng|không đẹp|liên bang nga (nước nga)"
+qipedc_W02813T,qipedc,,quyền lợi,điện thoại,0.4311,0,"điện thoại|anh hai, anh cả|cửa hàng|không đẹp|nội soi"
+qipedc_W02814B,qipedc,,quyết định,trọc đầu,0.1092,0,trọc đầu|màu xanh lá cây|quả dừa|không nên|quả roi
+qipedc_W02814T,qipedc,,quyết định,trọc đầu,0.0992,0,trọc đầu|màu xanh lá cây|quả dừa|không nên|quả roi
+qipedc_W02818N,qipedc,,quyển vở,ủy quyền,0.2603,0,ủy quyền|bảng trừ|rửa chân|thuê|sắt
+qipedc_W02818T,qipedc,,quyển vở,ủy quyền,0.2886,0,ủy quyền|thuê|rửa chân|bảng trừ|em họ
+qipedc_W02820N,qipedc,,quyết tâm,cao,0.0681,0,cao|chiều cao|120|xuống|suy nghĩ
+qipedc_W02820T,qipedc,,quyết tâm,cao,0.1224,0,cao|màu xanh da trời|nhật (nước nhật)|mách|120
+qipedc_W02825B,qipedc,,ra ngoài,rõ,0.1283,0,rõ|không cho|có phải|bất thường|quyết tâm
+qipedc_W02847N,qipedc,,rằm trung thu,thiệp sinh nhật,0.1021,0,thiệp sinh nhật|lịch hẹn|phải không?|nghi ngờ|con ngựa
+qipedc_W02847T,qipedc,,rằm trung thu,thiệp sinh nhật,0.0838,0,thiệp sinh nhật|lịch hẹn|phải không?|nghi ngờ|chiếc gối
+qipedc_W02868N,qipedc,,rong chơi,ham chơi,0.1636,0,ham chơi|màn|hi vọng|tấm vải|mách
+qipedc_W02897B,qipedc,,rưỡi,sân trường,0.0987,0,sân trường|di truyền|phim hoạt hình|cây cổ thụ|trường thpt ( cấp 3)
+qipedc_W02897T,qipedc,,rưỡi,sân trường,0.0908,0,sân trường|di truyền|phim hoạt hình|cây cổ thụ|trường thpt ( cấp 3)
+qipedc_W02898B,qipedc,,rượu,vẫn,0.1200,0,vẫn|sống sót|héc tô mét vuông (hm2)|đèn vàng|nghiêm trọng
+qipedc_W02931N,qipedc,,sắp xếp,chuẩn bị,0.1643,0,chuẩn bị|công viên|cộng (toán học)|xe cứu hỏa|trường thpt ( cấp 3)
+qipedc_W02931T,qipedc,,sắp xếp,chuẩn bị,0.1613,0,chuẩn bị|công viên|cộng (toán học)|xe cứu hỏa|tự vệ
+qipedc_W02932T,qipedc,,sắt,bắp ngô,0.1731,0,bắp ngô|tiếng anh|em rể|gỗ|phi líp pin (nước phi líp pin)
+qipedc_W02940N,qipedc,,sân trường,bảo vệ môi trường,0.2710,0,bảo vệ môi trường|thương yêu|nhập trường|nhà trường|không quen
+qipedc_W02940T,qipedc,,sân trường,bảo vệ môi trường,0.2395,0,bảo vệ môi trường|thương yêu|nhập trường|nhà trường|lái tàu hỏa
+qipedc_W02947N,qipedc,,sĩ diện,ý nghĩa,0.2041,0,ý nghĩa|chào|mách|hoạt hình|ê
+qipedc_W02953B,qipedc,,sinh đẻ,quặn thắt,0.0632,0,quặn thắt|phẫu thuật|bìa vở|không nên|phi líp pin (nước phi líp pin)
+qipedc_W02956B,qipedc,,sinh sản,quặn thắt,0.1355,0,quặn thắt|một tiếng|không nên|bao lâu|nên không?
+qipedc_W03011B,qipedc,,sơ mi,phổi,0.6327,0,phổi|mệt|dây điện|thành lập|lười
+qipedc_W03025T,qipedc,,suy nghĩ,thủ tướng,0.1331,0,thủ tướng|mỳ tôm|héc tô mét vuông (hm2)|nhầm|thừa thiên – huế
+qipedc_W03036N,qipedc,,sữa bò,ngày giải phóng thủ đô 10/10,0.0719,0,ngày giải phóng thủ đô 10/10|bít tết (bò)|con bò|dám làm|da ngăm (nước da ngăm đen)
+qipedc_W03036T,qipedc,,sữa bò,con bò,0.0844,0,"con bò|ngày giải phóng thủ đô 10/10|bít tết (bò)|dám làm|anh hai, anh cả"
+qipedc_W03037N,qipedc,,sữa bột,huyện,0.1063,0,huyện|con ngựa|chức năng|kí tên|thiệp sinh nhật
+qipedc_W03037T,qipedc,,sữa bột,huyện,0.0972,0,huyện|con ngựa|kí tên|chức năng|thiệp sinh nhật
+qipedc_W03038N,qipedc,,sữa dê,chiều cao,0.7454,0,chiều cao|sữa dê|ngày giải phóng thủ đô 10/10|sơ mi|màu xanh da trời
+qipedc_W03038T,qipedc,,sữa dê,chiều cao,0.6519,0,chiều cao|sữa dê|ngày giải phóng thủ đô 10/10|con ngựa|tuần
+qipedc_W03040N,qipedc,,sữa hộp,thương yêu,0.3138,0,thương yêu|sữa hộp|chính phủ|gần đây|tác động
+qipedc_W03042N,qipedc,,sữa,mùa hè,0.0440,0,mùa hè|phi líp pin (nước phi líp pin)|xe cảnh sát|tiếp|no
+qipedc_W03071N,qipedc,,tái phạm,quận,0.0529,0,quận|ông nội|rượu|lễ bế giảng|mắt
+qipedc_W03071T,qipedc,,tái phạm,rõ,0.1369,0,rõ|anh em|lễ bế giảng|trong ngoài|người yêu
+qipedc_W03085N,qipedc,,tàu hoả,tàu hoả,0.4597,1,tàu hoả|gãi|thái độ|em họ|toa xe
+qipedc_W03105B,qipedc,,tấm vải,bốt điện,0.2180,0,bốt điện|lễ halloween 31/10|vui sướng|tấm vải|bức tranh
+qipedc_W03105T,qipedc,,tấm vải,vui sướng,0.1948,0,vui sướng|bốt điện|lễ halloween 31/10|tấm vải|bức tranh
+qipedc_W03129T,qipedc,,tên là gì?,có chưa,0.0880,0,có chưa|ở đây|sinh sản|đang|giúp đỡ
+qipedc_W03131N,qipedc,,tết âm,ngày giải phóng miền nam 30/4,0.1651,0,ngày giải phóng miền nam 30/4|bón phân|chặt|tổng quát|mexico (nước mexico)
+qipedc_W03132N,qipedc,,tết dương,ngày giải phóng miền nam 30/4,0.1111,0,ngày giải phóng miền nam 30/4|trụi lá|ung thư|bón phân|họp
+qipedc_W03134B,qipedc,,tết trung thu,rằm trung thu,0.5399,0,rằm trung thu|sức khỏe|hành quân|con sư tử|rong chơi
+qipedc_W03138T,qipedc,,tha thứ,không cần,0.0808,0,không cần|con cọp|mùa hè|công viên|tết hàn thực
+qipedc_W03148N,qipedc,,thái độ,tôi,0.0851,0,tôi|con muỗi|xe cảnh sát|thái độ|lái tàu hỏa
+qipedc_W03148T,qipedc,,thái độ,tôi,0.0775,0,tôi|con muỗi|giao thông|thái độ|lái tàu hỏa
+qipedc_W03153B,qipedc,,tham dự,tham dự,0.1247,1,tham dự|ban đêm|vào mùa|hội thảo|bón phân
+qipedc_W03156B,qipedc,,tham quan,phở,0.0855,0,phở|sắp xếp|cây cổ thụ|quả dưa hấu|phim hoạt hình
+qipedc_W03167N,qipedc,,tháng,bảng cộng,0.7933,0,bảng cộng|công nghiệp|ngồi|đây|rửa chân
+qipedc_W03167T,qipedc,,tháng,bảng cộng,0.7799,0,bảng cộng|công nghiệp|ngồi|rửa chân|ở đây
+qipedc_W03175N,qipedc,,thành lập,không quen,0.0666,0,không quen|nhà|phó hiệu trưởng|đèn báo giao thông|tóc ngắn
+qipedc_W03197B,qipedc,,thăm hỏi,áo đồng phục,0.1901,0,áo đồng phục|tiếp tục|sơ mi|vấn đề|chăn (cái chăn)
+qipedc_W03197T,qipedc,,thăm hỏi,áo đồng phục,0.1758,0,áo đồng phục|tiếp tục|sơ mi|vấn đề|chăn (cái chăn)
+qipedc_W03204N,qipedc,,thân cây,gầy (miền nam: ốm),0.2354,0,gầy (miền nam: ốm)|thân cây|người yêu|bẻ ngô|bảng trừ
+qipedc_W03204T,qipedc,,thân cây,thân cây,0.3172,1,thân cây|gầy (miền nam: ốm)|bẻ ngô|bón phân|ông bà
+qipedc_W03214,qipedc,,thận,thừa ruột,0.1534,0,thừa ruột|thìa|g|nghiêm trọng|đau bụng
+qipedc_W03222N,qipedc,,thầy cô,đập,0.1547,0,đập|kẹo|chỉ định|chị|âm ỉ
+qipedc_W03222T,qipedc,,thầy cô,đập,0.1468,0,đập|kẹo|chỉ định|âm ỉ|cơ hội
+qipedc_W03224B,qipedc,,thầy giáo,thầy cô,0.7765,0,thầy cô|mách|1 ngày|suốt|vẫn
+qipedc_W03239B,qipedc,,thế nào?,bán hàng,0.2476,0,bán hàng|ở đây|ngày nay|chiếu|em họ
+qipedc_W03242B,qipedc,,thêu,thêu,0.1550,1,thêu|không có|vui sướng|suốt|mấy lần
+qipedc_W03243N,qipedc,,thi cử,bạn,0.2558,0,bạn|tàu hoả|thi|cởi áo|dân tộc
+qipedc_W03251N,qipedc,,thìa,thìa,0.2266,1,thìa|thói quen|suốt|sau|xì hơi (đánh rắm)
+qipedc_W03251T,qipedc,,thìa,thìa,0.2194,1,thìa|thói quen|suốt|xì hơi (đánh rắm)|mỗi ngày
+qipedc_W03252B,qipedc,,thích thú,thích thú,0.1198,1,thích thú|lối sống|đơn|em rể|cháu nội
+qipedc_W03265N,qipedc,,thiết kế,mờ,0.0973,0,mờ|quả dừa xiêm|cận thị|xưa|suýt
+qipedc_W03288B,qipedc,,thông minh,chuyên gia,0.2924,0,chuyên gia|nhật (nước nhật)|ý nghĩa|quả táo|kẹo
+qipedc_W03292B,qipedc,,thông tin,thông tin,0.2927,1,thông tin|con nuôi|quả dừa xiêm|nhập ngũ|sửa
+qipedc_W03314B,qipedc,,thơm,dấu huyền,0.5191,0,dấu huyền|dấu ngã|mỳ tôm|nhầm|quyết tâm
+qipedc_W03320T,qipedc,,thủ công,mùa xuân,0.0682,0,mùa xuân|nhà văn hóa|viêm xoang|quả điều|bao nhiêu
+qipedc_W03321N,qipedc,,thủ tướng,mỗi ngày,0.1350,0,mỗi ngày|suốt|đầu đau|vui mừng|mỳ tôm
+qipedc_W03321T,qipedc,,thủ tướng,mỗi ngày,0.1435,0,mỗi ngày|suốt|vui mừng|đầu đau|mỳ tôm
+qipedc_W03323N,qipedc,,thú dữ,nghỉ học,0.0670,0,nghỉ học|1 ngày|cây ngô|dấu hỏi|thú y
+qipedc_W03323T,qipedc,,thú dữ,nghỉ học,0.0673,0,nghỉ học|1 ngày|cây ngô|dấu hỏi|kém
+qipedc_W03324B,qipedc,,thú y,màu nâu,0.1703,0,màu nâu|suy nghĩ|bít tết (bò)|mỳ ý|môn đạo đức
+qipedc_W03327N,qipedc,,ngữ pháp,vui mừng,0.4241,0,vui mừng|vui chơi|hi vọng|ngữ pháp|sức khỏe
+qipedc_W03327T,qipedc,,ngữ pháp,vui mừng,0.4213,0,vui mừng|vui chơi|hi vọng|ngữ pháp|quần bò
+qipedc_W03329B,qipedc,,thuê,trọc đầu,0.1483,0,trọc đầu|quyết định|kém|muốn không?|bra xin (nước bra xin)
+qipedc_W03329T,qipedc,,thuê,trọc đầu,0.1746,0,trọc đầu|quyết định|muốn không?|kém|quả dừa
+qipedc_W03339N,qipedc,,thuỷ điện,thủy điện hòa bình,0.3764,0,thủy điện hòa bình|liên lạc|nhà văn hóa|cận thị|nội dung
+qipedc_W03339T,qipedc,,thuỷ điện,thủy điện hòa bình,0.3997,0,thủy điện hòa bình|liên lạc|nhà văn hóa|thuỷ điện|cận thị
+qipedc_W03345B,qipedc,,thủy điện hòa bình,thủy điện hòa bình,0.8789,1,thủy điện hòa bình|chiếu|chuẩn bị|nhập trường|trẻ con/con nít
+qipedc_W03359B,qipedc,,thừa,tờ giấy,0.1223,0,tờ giấy|kiêng|lĩnh vực|ngũ quả|quyển vở
+qipedc_W03361T,qipedc,,thừa thiên – huế,ê,0.1321,0,ê|120|y tế|1|suy nghĩ
+qipedc_W03373B,qipedc,,thương yêu,thương yêu,0.9716,1,thương yêu|chính phủ|tác động|ga tàu|lái tàu hỏa
+qipedc_W03373T,qipedc,,thương yêu,thương yêu,0.9714,1,thương yêu|chính phủ|tác động|lái tàu hỏa|xe khách
+qipedc_W03392N,qipedc,,tiếc,ít,0.1415,0,ít|héc tô mét vuông (hm2)|chúc tết|bảo vệ môi trường|10 000 (mười nghìn)
+qipedc_W03409N,qipedc,,tiếng anh,rượu,0.1476,0,rượu|nghiêm khắc|dấu hỏi|mỳ ý|con tôm
+qipedc_W03409T,qipedc,,tiếng anh,rượu,0.1656,0,rượu|nghiêm khắc|dấu hỏi|mỳ ý|mách
+qipedc_W03421N,qipedc,,tiếp tục,huyện,0.0895,0,huyện|bao giờ?|mùa hè|xã hội|lào (nước lào)
+qipedc_W03421T,qipedc,,tiếp tục,huyện,0.0887,0,huyện|bao giờ?|xã hội|lào (nước lào)|mùa hè
+qipedc_W03422T,qipedc,,tiết kiệm,ưu tiên,0.0925,0,ưu tiên|kiểm tra|ngứa nhiều|bảng cộng|luân phiên
+qipedc_W03433B,qipedc,,tìm hiểu,xưa,0.3472,0,"xưa|suy nghĩ|chị hai, chị cả|tóc ngắn|chào"
+qipedc_W03433T,qipedc,,tìm hiểu,xưa,0.3229,0,"xưa|suy nghĩ|chị hai, chị cả|tóc ngắn|đánh răng"
+qipedc_W03471N,qipedc,,toa xe,toa xe,0.8899,1,toa xe|gãi|thở khó|một tiếng|phản bội
+qipedc_W03471T,qipedc,,toa xe,toa xe,0.8992,1,toa xe|gãi|một tiếng|thở khó|phản bội
+qipedc_W03472N,qipedc,,toà án,thân cây,0.6588,0,thân cây|xây|gầy (miền nam: ốm)|bảng nhân|chặt
+qipedc_W03472T,qipedc,,toà án,thân cây,0.6801,0,thân cây|xây|bảng nhân|gầy (miền nam: ốm)|chặt
+qipedc_W03486N,qipedc,,tô màu,tô màu,0.1067,1,tô màu|màu xanh lá cây|thế nào?|sữa bột|chị họ
+qipedc_W03486T,qipedc,,tô màu,tô màu,0.0945,1,tô màu|màu xanh lá cây|ngay|thế nào?|hay là (hoặc là)
+qipedc_W03501,qipedc,,tôn trọng,giải thích,0.3369,0,giải thích|phải không|ra|thủy điện hòa bình|10 000 (mười nghìn)
+qipedc_W03505B,qipedc,,tổng thống,tóc ngắn,0.3872,0,tóc ngắn|xanh xao|nghé|chữa bài|t
+qipedc_W03508B,qipedc,,tờ báo,ngữ pháp,0.0561,0,ngữ pháp|lắm|khác|cửa hàng|hệ thống
+qipedc_W03509B,qipedc,,tờ giấy,tờ giấy,0.1034,1,tờ giấy|đọc|bớt|lĩnh vực|nộp
+qipedc_W03550B,qipedc,,trăng,ít,0.1261,0,ít|thế nào?|h|dấu hỏi|kém
+qipedc_W03552B,qipedc,,trắng muốt,chỗ khác,0.0747,0,chỗ khác|xe khách|bạn trai|70|vào mùa
+qipedc_W03571B,qipedc,,tre,cây phượng,0.2551,0,cây phượng|xây|gầy (miền nam: ốm)|quả dưa hấu|thân cây
+qipedc_W03602B,qipedc,,trọc đầu,hiểu,0.4200,0,hiểu|không hiểu|nhầm|tóc ngắn|tham quan
+qipedc_W03611B,qipedc,,trong ngoài,thi,0.2215,0,thi|ra ngoài|dân tộc thiểu số|da trắng|cần không?
+qipedc_W03619B,qipedc,,trốn chạy,lào (nước lào),0.0978,0,lào (nước lào)|ra ngoài|tuần|phi líp pin (nước phi líp pin)|hải sản
+qipedc_W03620N,qipedc,,trông chờ,lạnh lùng,0.1199,0,lạnh lùng|gây mê|tham quan|tết âm|nhân hậu
+qipedc_W03620T,qipedc,,trông chờ,lạnh lùng,0.1169,0,lạnh lùng|gây mê|tham quan|miến điện (nước mi an ma)|nhân hậu
+qipedc_W03622N,qipedc,,trông nom,tự lập,0.1245,0,tự lập|chăm sóc sức khỏe|sân trường|chúc tết|cơm bình dân
+qipedc_W03622T,qipedc,,trông nom,tự lập,0.1218,0,tự lập|chăm sóc sức khỏe|sân trường|chúc tết|cơm bình dân
+qipedc_W03636N,qipedc,,trụi lá,quê,0.8224,0,quê|thứ tự|quả đu đủ|cái gương|trụi lá
+qipedc_W03636T,qipedc,,trụi lá,quê,0.8427,0,quê|thứ tự|quả đu đủ|cái gương|trụi lá
+qipedc_W03642B,qipedc,,trung quốc (nước trung quốc),chỗ khác,0.3520,0,chỗ khác|mề đay|con người|đồng phục|tiếc
+qipedc_W03642T,qipedc,,trung quốc (nước trung quốc),chỗ khác,0.3440,0,chỗ khác|mề đay|con người|đồng phục|bạn trai
+qipedc_W03645B,qipedc,,trung thu,rằm trung thu,0.5443,0,rằm trung thu|sức khỏe|hành quân|con sư tử|rong chơi
+qipedc_W03649B,qipedc,,trúng tuyển,gạo,0.6132,0,gạo|hóa đơn|giúp đỡ|đăng ký|đặt
+qipedc_W03659T,qipedc,,trứng,gì,0.1333,0,gì|hỏng|nôn|thủy điện hòa bình|nhập trường
+qipedc_W03669N,qipedc,,trước,tóc ngắn,0.4341,0,tóc ngắn|chữa bài|xanh xao|tham quan|cháu gái
+qipedc_W03673B,qipedc,,trường mầm non,trường thpt ( cấp 3),0.6492,0,trường thpt ( cấp 3)|lễ nô en|thiệp sinh nhật|xe cứu hỏa|chia đôi
+qipedc_W03674B,qipedc,,trường ptcs (cấp 2),trường thpt ( cấp 3),0.9094,0,trường thpt ( cấp 3)|chia đôi|trường ptcs (cấp 2)|liên lạc|lung tung
+qipedc_W03675N,qipedc,,trường thpt ( cấp 3),trường ptcs (cấp 2),0.9561,0,trường ptcs (cấp 2)|quả dừa xiêm|trường thpt ( cấp 3)|mỳ ý|trường mầm non
+qipedc_W03675T,qipedc,,trường thpt ( cấp 3),trường ptcs (cấp 2),0.9515,0,trường ptcs (cấp 2)|trường thpt ( cấp 3)|quả dừa xiêm|mỳ ý|trường mầm non
+qipedc_W03685B,qipedc,,tuần,sống sót,0.0958,0,sống sót|quyết tâm|đúng không?|người lái xe (ô tô)|con người
+qipedc_W03714B,qipedc,,từ trái nghĩa,tôi,0.1465,0,tôi|ga tàu|thương yêu|vấn đề|tác động
+qipedc_W03717N,qipedc,,tự do,độc thân,0.2164,0,độc thân|ông ngoại|tết trung thu|hỏi|yếu
+qipedc_W03717T,qipedc,,tự do,độc thân,0.2091,0,độc thân|ông ngoại|tết trung thu|yếu|hỏi
+qipedc_W03719N,qipedc,,tự lập,ă,0.1625,0,ă|xong rồi|phải không|ngày thành lập quân đội nhân dân việt nam|kim loại
+qipedc_W03720B,qipedc,,tự tin,từ chối,0.3212,0,từ chối|té|tự tin|nghi ngờ|mật khẩu
+qipedc_W03722N,qipedc,,tự vệ,thái độ,0.2489,0,thái độ|tổng quát|nước ép trái cây|quả bưởi|chuẩn bị
+qipedc_W03727N,qipedc,,tưới cây,chặt,0.2881,0,chặt|xây|mùa hè|bón phân|gầy (miền nam: ốm)
+qipedc_W03727T,qipedc,,tưới cây,chặt,0.2901,0,chặt|mùa hè|xây|gầy (miền nam: ốm)|tóc ngắn
+qipedc_W03732N,qipedc,,tưởng tượng,tưởng tượng,0.2114,1,tưởng tượng|chào|tóc ngắn|màu xanh da trời|chuyên gia
+qipedc_W03751N,qipedc,,ủy quyền,tô màu,0.1431,0,tô màu|chúc mừng|chưa có|liệu|hóa đơn
+qipedc_W03758B,qipedc,,ưu tiên,giới thiệu,0.1630,0,giới thiệu|quyển vở|thừa|bán hàng|di truyền
+qipedc_W03782B,qipedc,,vào mùa,ngày thầy thuốc việt nam,0.4640,0,ngày thầy thuốc việt nam|vào mùa|ngày nhà giáo việt nam|tổng quát|xe cứu hỏa
+qipedc_W03793B,qipedc,,văn nghệ,đợi,0.2656,0,đợi|chờ|thủy điện hòa bình|quyển vở|bảo hiểm
+qipedc_W03793T,qipedc,,văn nghệ,đợi,0.2583,0,đợi|chờ|thủy điện hòa bình|quyển vở|bảo hiểm
+qipedc_W03795T,qipedc,,vắng,dân tộc,0.1312,0,dân tộc|phá|nạp điện|lung tung|thi cử
+qipedc_W03799N,qipedc,,vấn đề,thường xuyên,0.5482,0,thường xuyên|quả dừa xiêm|đợi|nhập ngũ|thông tin
+qipedc_W03799T,qipedc,,vấn đề,thường xuyên,0.5407,0,thường xuyên|quả dừa xiêm|đợi|nhập ngũ|thông tin
+qipedc_W03809B,qipedc,,vật nuôi,đeo tay,0.0395,0,đeo tay|ra ngoài|tuần trước|một tiếng|cần không?
+qipedc_W03825N,qipedc,,vì sao?,nhưng,0.2126,0,nhưng|ai|huyện|sinh đôi|gián tiếp
+qipedc_W03825T,qipedc,,vì sao?,nhưng,0.2124,0,nhưng|ai|huyện|sinh đôi|dịch vụ
+qipedc_W03828N,qipedc,,ví dụ,vào mùa,0.1962,0,vào mùa|con lợn (con heo)|kẹo|quả nhãn|tham dự
+qipedc_W03888N,qipedc,,vui chơi,con mèo,0.1686,0,con mèo|nghé|hi vọng|xanh xao|tóc ngắn
+qipedc_W03889N,qipedc,,vui mừng,tăng cân,0.1915,0,tăng cân|nghé|nay|con mèo|thừa thiên – huế
+qipedc_W03890N,qipedc,,vui sướng,tăng cân,0.3539,0,tăng cân|nghé|con bê|nay|quê
+qipedc_W03930N,qipedc,,xà phòng,trứng,0.7812,0,trứng|chiều cao|chuyên gia|tìm hiểu|mỗi ngày
+qipedc_W03931N,qipedc,,xà phòng giặt,tô màu,0.0722,0,tô màu|kỉ niệm|màu xanh lá cây|xà phòng giặt|thầy giáo
+qipedc_W03931T,qipedc,,xà phòng giặt,kỉ niệm,0.0619,0,kỉ niệm|xà phòng giặt|tô màu|quả roi|màu xanh lá cây
+qipedc_W03935N,qipedc,,xã hội,chả cá,0.0867,0,chả cá|quả bưởi|kinh nghiệm|ngắt hoa|ấn
+qipedc_W03935T,qipedc,,xã hội,chả cá,0.1843,0,chả cá|kinh nghiệm|kỉ niệm|ấn|mới
+qipedc_W03938B,qipedc,,xanh xao,quả dưa hấu,0.3499,0,quả dưa hấu|đánh răng|ân hận|nhầm|hối hận
+qipedc_W03945N,qipedc,,cây xanh tươi,cây xanh tươi,0.1281,1,cây xanh tươi|cây thân gỗ|thể dục|xây|câu thơ
+qipedc_W03945T,qipedc,,cây xanh tươi,cây xanh tươi,0.1408,1,cây xanh tươi|cây thân gỗ|thể dục|xây|câu thơ
+qipedc_W03956B,qipedc,,xây,phi líp pin (nước phi líp pin),0.0560,0,phi líp pin (nước phi líp pin)|máy in|chống đối|bạn|tôi
+qipedc_W03962N,qipedc,,xe cảnh sát,lào (nước lào),0.1662,0,lào (nước lào)|tuần|quả khế|sưng|loài vật
+qipedc_W03962T,qipedc,,xe cảnh sát,lào (nước lào),0.1944,0,lào (nước lào)|tuần|quả khế|sưng|nhãn vở
+qipedc_W03964N,qipedc,,xe cứu hỏa,vật nuôi,0.8202,0,vật nuôi|ở ngoài|trong ngoài|giải thích|yêu cầu
+qipedc_W03967B,qipedc,,xe khách,thông tin,0.1566,0,thông tin|quả khế|xe cảnh sát|nhân (toán học)|đến
+qipedc_W04010N,qipedc,,xuất hiện,chỉ định,0.7188,0,chỉ định|vào mùa|quả táo|quay lại|mẫu
+qipedc_W04010T,qipedc,,xuất hiện,chỉ định,0.7263,0,chỉ định|vào mùa|quả táo|quay lại|mẫu
+qipedc_W04025B,qipedc,,xưa,trốn chạy,0.8777,0,trốn chạy|quả đu đủ|miến điện (nước mi an ma)|trăng|quê
+qipedc_W04038B,qipedc,,ý nghĩa,sữa,0.4781,0,sữa|màu nâu|ê|t|thừa thiên – huế
+qipedc_W04056B,qipedc,,tôi yêu bạn,vẫn,0.1221,0,vẫn|bột màu|héc tô mét vuông (hm2)|1 ngày|sống sót
+qipedc_W04056T,qipedc,,tôi yêu bạn,vẫn,0.1256,0,vẫn|bột màu|héc tô mét vuông (hm2)|sống sót|1 ngày
+qipedc_W04057B,qipedc,,yêu cầu,máy in,0.0977,0,máy in|thừa|thuốc|tiết kiệm|nước
+qipedc_W04058N,qipedc,,yêu mến (yêu quí),tiền sử,0.1005,0,tiền sử|mờ|không cần|bra xin (nước bra xin)|màu xanh lá cây
+qipedc_W04058T,qipedc,,yêu mến (yêu quí),tiền sử,0.0806,0,tiền sử|mờ|không cần|bra xin (nước bra xin)|màu xanh lá cây
+qipedc_W04059B,qipedc,,yếu,từ trái nghĩa,0.1120,0,từ trái nghĩa|hôm nay|cố gắng|bảng trừ|có
+qipedc_W04066B,qipedc,,môn địa lý,phẫu thuật,0.2582,0,phẫu thuật|lượt|nhân (toán học)|khác|liên quan
+vslgh_SENT001_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8949,1,tôi|gần đây|giấy|họng|vết thương
+vslgh_SENT001_S06_R01_F_g01,vslgh,S06,đăng ký,đăng ký,0.5568,1,đăng ký|ngã|khó ngủ|đặt|làm
+vslgh_SENT001_S06_R01_F_g02,vslgh,S06,khám,khám,0.8493,1,khám|hôm nay|thay đổi|đây|yếu
+vslgh_SENT001_S06_R01_F_g03,vslgh,S06,sức khỏe,sức khỏe,0.9048,1,sức khỏe|thể dục|chụp|chức năng|khám
+vslgh_SENT001_S06_R01_F_g04,vslgh,S06,muốn,muốn,0.9736,1,muốn|tim|bạn trai|nam|bảng trừ
+vslgh_SENT002_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9383,1,tôi|giấy|vết thương|gần đây|khan ho
+vslgh_SENT002_S06_R01_F_g01,vslgh,S06,tuổi,rượu bia,0.2157,0,rượu bia|tuổi|trám|kết quả|nước tiểu
+vslgh_SENT002_S06_R01_F_g02,vslgh,S06,2,2,0.6925,1,2|bệnh|đo|0|vào
+vslgh_SENT002_S06_R01_F_g03,vslgh,S06,4,5,0.9132,0,5|4|giấy|wc|không có
+vslgh_SENT003_S06_R01_F_g00,vslgh,S06,ix,ix,0.9140,1,ix|thuốc uống|có|nộp|hỏi tôi
+vslgh_SENT003_S06_R01_F_g01,vslgh,S06,bác sĩ,bác sĩ,0.4913,1,bác sĩ|xét nghiệm|xem|thú y|lo lắng
+vslgh_SENT003_S06_R01_F_g02,vslgh,S06,tên,tên,0.7555,1,tên|có|chân|tôi|ix
+vslgh_SENT003_S06_R01_F_g03,vslgh,S06,gì,gì,0.9402,1,gì|rồi|đau|có không|có
+vslgh_SENT004_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6845,1,tôi|hỏi|ix|thuốc|có phải
+vslgh_SENT004_S06_R01_F_g01,vslgh,S06,nữ,nữ,0.9983,1,nữ|sữa|có thế|dấu sắc|tai
+vslgh_SENT005_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9408,1,tôi|ở đây|gần đây|ix|thuốc
+vslgh_SENT005_S06_R01_F_g01,vslgh,S06,nam,nam,0.8467,1,nam|bé trai|quả dưa hấu|ân hận|tiêu chảy
+vslgh_SENT006_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9512,1,tôi|ở đây|kết quả|giấy|thừa
+vslgh_SENT006_S06_R01_F_g01,vslgh,S06,độc thân,còn,0.4520,0,còn|một mình|lượt|độc thân|ông ngoại
+vslgh_SENT006_S06_R01_F_g02,vslgh,S06,còn,còn,0.4215,1,còn|120|bình thường|chóng mặt|bất thường
+vslgh_SENT007_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9580,1,tôi|gần đây|nay|ở đây|giấy
+vslgh_SENT007_S06_R01_F_g01,vslgh,S06,con,con,0.8533,1,con|tôi|hải sản|lịch|đeo tay
+vslgh_SENT007_S06_R01_F_g02,vslgh,S06,2,2,0.1837,1,2|còn|22|3|120
+vslgh_SENT008_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9002,1,tôi|ix|hỏi|có phải|nhà
+vslgh_SENT008_S06_R01_F_g01,vslgh,S06,quê quán,quê quán,0.2899,1,quê quán|sữa bò|nghé|nữ|ă
+vslgh_SENT008_S06_R01_F_g02,vslgh,S06,sài gòn,sài gòn,0.4686,1,sài gòn|đầu đau|bệnh|sân trường|bất thường
+vslgh_SENT009_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7347,1,tôi|đơn|họng|hỏi|thuốc
+vslgh_SENT009_S06_R01_F_g01,vslgh,S06,điện thoại,nghĩ,0.2187,0,nghĩ|điện thoại|khí hư|phải|thương yêu
+vslgh_SENT009_S06_R01_F_g02,vslgh,S06,số,số,0.8052,1,số|thuốc|tiền|thuốc uống|tê tay
+vslgh_SENT009_S06_R01_F_g03,vslgh,S06,1,đều,0.6023,0,đều|bệnh gì|không được|120|ra
+vslgh_SENT009_S06_R01_F_g04,vslgh,S06,2,2,0.5910,1,2|dị ứng|120|22|1
+vslgh_SENT009_S06_R01_F_g05,vslgh,S06,3,3,0.2186,1,3|5|không nhận|4|bao nhiêu
+vslgh_SENT010_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9306,1,tôi|vết thương|tim|thuốc|có phải
+vslgh_SENT010_S06_R01_F_g01,vslgh,S06,đặt,đặt,0.8318,1,đặt|đăng ký|ngủ khó|hóa đơn|chi phí
+vslgh_SENT010_S06_R01_F_g02,vslgh,S06,gói,hết,0.3862,0,hết|gói|mới|tất cả|xong
+vslgh_SENT010_S06_R01_F_g03,vslgh,S06,khám,khám,0.9192,1,khám|chi phí|đến|huyết áp|mang
+vslgh_SENT010_S06_R01_F_g04,vslgh,S06,cơ bản,cơ bản,0.7065,1,cơ bản|hải sản|sâu|thiết kế|thi
+vslgh_SENT010_S06_R01_F_g05,vslgh,S06,muốn,muốn,0.4438,1,muốn|điện|có|nam|họng
+vslgh_SENT011_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9564,1,tôi|giấy|họng|gần đây|đơn
+vslgh_SENT011_S06_R01_F_g01,vslgh,S06,giáo viên,giáo viên,0.6680,1,giáo viên|hiểu|nghe|không|tai ù
+vslgh_SENT011_S06_R01_F_g02,vslgh,S06,làm,làm,0.2115,1,làm|thứ tự|vấn đề|bố dượng|trám
+vslgh_SENT012_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9687,1,tôi|giấy|gần đây|kết quả|ở đây
+vslgh_SENT012_S06_R01_F_g01,vslgh,S06,thẻ,thẻ,0.4145,1,thẻ|khác|bệnh gì|nhanh|nhiều
+vslgh_SENT012_S06_R01_F_g02,vslgh,S06,cccd,cccd,0.9430,1,cccd|ngã|khi|tô màu|giải thích
+vslgh_SENT012_S06_R01_F_g03,vslgh,S06,mang,mang,0.9251,1,mang|lây|bảng đen|nhận|đói
+vslgh_SENT013_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8676,1,tôi|giấy|gần đây|đen láy (như đen nhánh)|kết quả
+vslgh_SENT013_S06_R01_F_g01,vslgh,S06,nộp,nộp,0.7789,1,nộp|ix|cân nặng|trả|để
+vslgh_SENT013_S06_R01_F_g02,vslgh,S06,giấy,giấy,0.9230,1,giấy|đăng ký|kiêng|bớt|sắp
+vslgh_SENT013_S06_R01_F_g03,vslgh,S06,cần,cần,0.5520,1,cần|cần không|loãng xương|lấy thuốc|không cần
+vslgh_SENT014_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9361,1,tôi|giấy|khan ho|thừa|vết thương
+vslgh_SENT014_S06_R01_F_g01,vslgh,S06,bảo hiểm,bảo hiểm,0.9487,1,bảo hiểm|lượt|tự vệ|còn|đơn
+vslgh_SENT014_S06_R01_F_g02,vslgh,S06,y tế,y tế,0.5581,1,y tế|đáng lo|chóng mặt|120|khác
+vslgh_SENT014_S06_R01_F_g03,vslgh,S06,có,có,0.6777,1,có|có không|không|phải không|héc tô mét (hm)
+vslgh_SENT015_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8906,1,tôi|giấy|vết thương|thừa|gần đây
+vslgh_SENT015_S06_R01_F_g01,vslgh,S06,đến,đến,0.5424,1,đến|gặp|khám|sức khỏe|lo lắng
+vslgh_SENT015_S06_R01_F_g02,vslgh,S06,khám,khám,0.3153,1,khám|đây|mắt|siêu âm|tôi
+vslgh_SENT015_S06_R01_F_g03,vslgh,S06,để,để,0.9741,1,để|mới|nhà|xin|nộp
+vslgh_SENT015_S06_R01_F_g04,vslgh,S06,xin,xin,0.9843,1,xin|mũi nghẹt|bao lâu|đăng ký|quả bưởi
+vslgh_SENT015_S06_R01_F_g05,vslgh,S06,việc,việc,0.8700,1,việc|xong|làm|kết quả|cùng
+vslgh_SENT016_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8802,1,tôi|giấy|họng|giấy phép|thừa
+vslgh_SENT016_S06_R01_F_g01,vslgh,S06,đến,đến,0.8421,1,đến|khám|gặp|tôi|mắt
+vslgh_SENT016_S06_R01_F_g02,vslgh,S06,khám,khám,0.9607,1,khám|siêu âm|đúng không|lấy thuốc|trước
+vslgh_SENT016_S06_R01_F_g03,vslgh,S06,để,để,0.9162,1,để|mới|nộp|thêm|ngủ khó
+vslgh_SENT016_S06_R01_F_g04,vslgh,S06,đăng ký,đăng ký,0.8955,1,đăng ký|đóng tiền|kết quả|đặt|tất cả
+vslgh_SENT016_S06_R01_F_g05,vslgh,S06,thẻ,thẻ,0.4321,1,thẻ|khác|quê quán|bệnh gì|đáng lo
+vslgh_SENT016_S06_R01_F_g06,vslgh,S06,lái xe,có,0.2901,0,có|lái xe|x quang|vui chơi|bỏ ra
+vslgh_SENT016_S06_R01_F_g07,vslgh,S06,thi,thi,0.9744,1,thi|con muỗi|âm ỉ|ngày người khuyết tật thế giới 3/12|tiêu chảy
+vslgh_SENT017_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9171,1,tôi|ở đây|khan ho|gần đây|giấy
+vslgh_SENT017_S06_R01_F_g01,vslgh,S06,khám,khám,0.9377,1,khám|tê tay|đến|chỗ khác|thay đổi
+vslgh_SENT017_S06_R01_F_g02,vslgh,S06,gói,gói,0.9238,1,gói|tất cả|thi|hết|nôn
+vslgh_SENT017_S06_R01_F_g03,vslgh,S06,cơ bản,cơ bản,0.9576,1,cơ bản|thi|con muỗi|âm ỉ|thiết kế
+vslgh_SENT017_S06_R01_F_g04,vslgh,S06,muốn,muốn,0.8301,1,muốn|nam|bạn trai|héc tô gam (hg)|họng
+vslgh_SENT018_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9434,1,tôi|thuốc|hỏi|ix|thừa
+vslgh_SENT018_S06_R01_F_g01,vslgh,S06,đặt,đặt,0.9737,1,đặt|đăng ký|để|viết|chi phí
+vslgh_SENT018_S06_R01_F_g02,vslgh,S06,lịch hẹn,lịch hẹn,0.2351,1,lịch hẹn|rằm trung thu|gia đình|lễ hội|môn lịch sử
+vslgh_SENT018_S06_R01_F_g03,vslgh,S06,rồi,rồi,0.9973,1,rồi|gì|xong|đau|tiền sử
+vslgh_SENT019_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6916,1,tôi|hỏi|ix|bác sĩ|vết thương
+vslgh_SENT019_S06_R01_F_g01,vslgh,S06,giờ,giờ,0.7861,1,giờ|vòng|bao lâu|đeo tay|chân
+vslgh_SENT019_S06_R01_F_g02,vslgh,S06,9,9,0.9374,1,9|giờ|đăng ký|vòng|1
+vslgh_SENT019_S06_R01_F_g03,vslgh,S06,sáng,sáng,0.8891,1,sáng|đo|thể dục|gói|hết
+vslgh_SENT019_S06_R01_F_g04,vslgh,S06,hẹn,phải,0.2038,0,phải|không được|mắt|rõ|cởi
+vslgh_SENT019_S06_R01_F_g05,vslgh,S06,có,rồi,0.9890,0,rồi|đau|gì|xong|tiền sử
+vslgh_SENT020_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8672,1,tôi|gần đây|vết thương|giấy|bác sĩ
+vslgh_SENT020_S06_R01_F_g01,vslgh,S06,đóng,đóng tiền,0.8361,0,đóng tiền|đăng ký|đóng|mua|đặt
+vslgh_SENT020_S06_R01_F_g02,vslgh,S06,tiền,tiền,0.2105,1,tiền|nào|đang|mua|sỗ gì
+vslgh_SENT021_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9795,1,tôi|hỏi|kết quả|ix|thừa
+vslgh_SENT021_S06_R01_F_g01,vslgh,S06,giấy,giấy,0.7108,1,giấy|kiêng|để|kết quả|giấy phép
+vslgh_SENT021_S06_R01_F_g02,vslgh,S06,biên lai,biên lai,0.1504,1,biên lai|lấy|bệnh|khác|từng
+vslgh_SENT021_S06_R01_F_g03,vslgh,S06,cầm,cầm,0.6264,1,cầm|nào|tiền|trả|uống
+vslgh_SENT021_S06_R01_F_g04,vslgh,S06,đang,đang,0.2977,1,đang|bán hàng|ngay|số mấy|sỗ gì
+vslgh_SENT022_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9379,1,tôi|ở đây|giấy|thuốc|gần đây
+vslgh_SENT022_S06_R01_F_g01,vslgh,S06,ix,ix,0.8213,1,ix|trả|có phải|lấy|hỏi
+vslgh_SENT022_S06_R01_F_g02,vslgh,S06,bác sĩ,bác sĩ,0.8877,1,bác sĩ|xem|xét nghiệm|kính|đeo kính
+vslgh_SENT022_S06_R01_F_g03,vslgh,S06,gặp,gặp,0.9481,1,gặp|thứ tự|1|việc|đến
+vslgh_SENT022_S06_R01_F_g04,vslgh,S06,muốn,muốn,0.8727,1,muốn|bạn trai|nam|điện|tim
+vslgh_SENT023_S06_R01_F_g00,vslgh,S06,đây,hôm nay,0.2087,0,hôm nay|cân|đây|bán hàng|chờ
+vslgh_SENT023_S06_R01_F_g01,vslgh,S06,đến,gặp,0.7649,0,gặp|đến|lượt|giày|cùng
+vslgh_SENT023_S06_R01_F_g02,vslgh,S06,khám,khám,0.1185,1,khám|bác sĩ|phòng|lúc nào|xét nghiệm
+vslgh_SENT023_S06_R01_F_g03,vslgh,S06,lần đầu,sai,0.1551,0,sai|thông tin|kim loại|rượu bia|lần đầu
+vslgh_SENT024_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9254,1,tôi|ix|ở đây|kết quả|gần đây
+vslgh_SENT024_S06_R01_F_g01,vslgh,S06,đến,gặp,0.7225,0,gặp|đến|bệnh|cầm|bệnh gì
+vslgh_SENT024_S06_R01_F_g02,vslgh,S06,khám,khám,0.7820,1,khám|nào|đến|cho tôi|máu
+vslgh_SENT024_S06_R01_F_g03,vslgh,S06,lại,lại,0.7451,1,lại|chỉ định|vào mùa|nhận|buổi tối
+vslgh_SENT025_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9192,1,tôi|ở đây|gần đây|giấy|bác sĩ
+vslgh_SENT025_S06_R01_F_g01,vslgh,S06,giấy,giấy,0.5825,1,giấy|kiêng|nộp|đặt|viết
+vslgh_SENT025_S06_R01_F_g02,vslgh,S06,giới thiệu,giới thiệu,0.8926,1,giới thiệu|đăng ký|khi|tự vệ|thêu
+vslgh_SENT025_S06_R01_F_g03,vslgh,S06,có,có,0.6401,1,có|có không|bao lâu|phải không|cần không
+vslgh_SENT026_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8405,1,tôi|họng|giấy|ở đây|nộp
+vslgh_SENT026_S06_R01_F_g01,vslgh,S06,số,số,0.7351,1,số|tiền|thuốc|thuốc uống|uống
+vslgh_SENT026_S06_R01_F_g02,vslgh,S06,thứ tự,thứ tự,0.6329,1,thứ tự|lượt|làm|trám|kết quả
+vslgh_SENT026_S06_R01_F_g03,vslgh,S06,nhận,nhận,0.9463,1,nhận|lấy|xong|mang|lái xe
+vslgh_SENT026_S06_R01_F_g04,vslgh,S06,rồi,rồi,0.4904,1,rồi|gì|đau|có|nôn
+vslgh_SENT027_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8731,1,tôi|gần đây|giấy|thuốc|ở đây
+vslgh_SENT027_S06_R01_F_g01,vslgh,S06,số,số,0.9124,1,số|tiền|thuốc|sỗ gì|này
+vslgh_SENT027_S06_R01_F_g02,vslgh,S06,thứ tự,thứ tự,0.7361,1,thứ tự|lượt|trám|rượu bia|đến
+vslgh_SENT027_S06_R01_F_g03,vslgh,S06,1,y tế,0.1036,0,y tế|dị ứng|2|thường xuyên|xem
+vslgh_SENT027_S06_R01_F_g04,vslgh,S06,0,0,0.3756,1,0|thức khuya|không|5|amidan
+vslgh_SENT027_S06_R01_F_g05,vslgh,S06,5,5,0.9796,1,5|4|3|lá cây|wc
+vslgh_SENT028_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9626,1,tôi|gần đây|vết thương|ở đây|ix
+vslgh_SENT028_S06_R01_F_g01,vslgh,S06,đây,nặng,0.5744,0,nặng|cân|nay|đây|đang
+vslgh_SENT028_S06_R01_F_g02,vslgh,S06,ngồi,ngồi,0.7100,1,ngồi|ký tên|không cần|thẻ|bệnh
+vslgh_SENT028_S06_R01_F_g03,vslgh,S06,đợi,đợi,0.4194,1,đợi|không có|chờ|ở đâu|là gì?
+vslgh_SENT029_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9137,1,tôi|giấy|vết thương|thừa|ix
+vslgh_SENT029_S06_R01_F_g01,vslgh,S06,đến,đến,0.7515,1,đến|gặp|thứ tự|cuối cùng|đặt
+vslgh_SENT029_S06_R01_F_g02,vslgh,S06,khám,khám,0.5971,1,khám|siêu âm|tôi|ốm|trước
+vslgh_SENT029_S06_R01_F_g03,vslgh,S06,phòng,phòng,0.9662,1,phòng|quầy|nghỉ|phụ khoa|tổng quát
+vslgh_SENT029_S06_R01_F_g04,vslgh,S06,số,số,0.9417,1,số|số mấy|đây|thuốc|đúng không
+vslgh_SENT029_S06_R01_F_g05,vslgh,S06,2,đỏ,0.0941,0,đỏ|vết thương|miệng há|phải không|tai
+vslgh_SENT029_S06_R01_F_g06,vslgh,S06,phải không,đặt,0.3233,0,đặt|phải không|kém|giờ|được không
+vslgh_SENT030_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8253,1,tôi|ix|nay|ở đây|hỏi
+vslgh_SENT030_S06_R01_F_g01,vslgh,S06,đóng tiền,đóng tiền,0.8364,1,đóng tiền|mua|trả|tiền|cầm
+vslgh_SENT030_S06_R01_F_g02,vslgh,S06,ở đâu,ở đâu,0.5302,1,ở đâu|đâu|cầm|lần đầu|nào
+vslgh_SENT031_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8940,1,tôi|giấy|ở đây|ix|họng
+vslgh_SENT031_S06_R01_F_g01,vslgh,S06,đến,đến,0.8872,1,đến|gặp|thứ tự|khám|bệnh
+vslgh_SENT031_S06_R01_F_g02,vslgh,S06,khám,khám,0.2382,1,khám|phòng|thai|siêu âm|kính
+vslgh_SENT031_S06_R01_F_g03,vslgh,S06,phòng,phòng,0.9930,1,phòng|quầy|nghỉ|chậm|cởi
+vslgh_SENT031_S06_R01_F_g04,vslgh,S06,số mấy,số mấy,0.3227,1,số mấy|không có|cân|đang|bao nhiêu
+vslgh_SENT032_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7283,1,tôi|đơn|chả cá|da|thuốc
+vslgh_SENT032_S06_R01_F_g01,vslgh,S06,ngồi,ngồi,0.3911,1,ngồi|da|kim loại|báo (con báo)|trám
+vslgh_SENT032_S06_R01_F_g02,vslgh,S06,lâu,lâu,0.8121,1,lâu|đợi|khám|muốn|có thế
+vslgh_SENT032_S06_R01_F_g03,vslgh,S06,phải không,đặt,0.6818,0,đặt|phải không|vết thương|giờ|giải thích
+vslgh_SENT033_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7022,1,tôi|nộp|thuốc|họng|ở đây
+vslgh_SENT033_S06_R01_F_g01,vslgh,S06,hẹn,hẹn,0.4287,1,hẹn|hiểu|hải sản|amidan|họng
+vslgh_SENT033_S06_R01_F_g02,vslgh,S06,trước,trước,0.9975,1,trước|sẽ|23|nghe|đây
+vslgh_SENT033_S06_R01_F_g03,vslgh,S06,chưa,chưa,0.5627,1,chưa|không được|mờ|táo bón|có chưa
+vslgh_SENT034_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8475,1,tôi|gần đây|giấy|ở đây|thừa
+vslgh_SENT034_S06_R01_F_g01,vslgh,S06,nộp,nộp,0.8540,1,nộp|để|ix|cân nặng|xong
+vslgh_SENT034_S06_R01_F_g02,vslgh,S06,giấy,giấy,0.8957,1,giấy|đăng ký|kiêng|kết quả|bớt
+vslgh_SENT034_S06_R01_F_g03,vslgh,S06,khác,khác,0.8648,1,khác|thẻ|còn|bệnh gì|không có
+vslgh_SENT034_S06_R01_F_g04,vslgh,S06,cần không,không,0.1836,0,không|gì|ít|không nhận|có
+vslgh_SENT035_S06_R01_F_g00,vslgh,S06,ở đây,hôm nay,0.3706,0,hôm nay|nộp|nay|gần đây|cân
+vslgh_SENT035_S06_R01_F_g01,vslgh,S06,tôi,tôi,0.7376,1,tôi|nay|gần đây|lâu|khan ho
+vslgh_SENT035_S06_R01_F_g02,vslgh,S06,bảo hiểm,bảo hiểm,0.9730,1,bảo hiểm|mờ|đơn|lịch|xin
+vslgh_SENT035_S06_R01_F_g03,vslgh,S06,y tế,y tế,0.8301,1,y tế|xem|y tá|bảo hiểm|chóng mặt
+vslgh_SENT035_S06_R01_F_g04,vslgh,S06,có không,có,0.7170,0,có|có không|không|phải không|cần không
+vslgh_SENT036_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6666,1,tôi|thuốc|nộp|họng|giấy phép
+vslgh_SENT036_S06_R01_F_g01,vslgh,S06,hiểu,hiểu,0.4886,1,hiểu|thuốc|sốt|hút thuốc|đầu đau
+vslgh_SENT036_S06_R01_F_g02,vslgh,S06,không,nghe,0.7982,0,nghe|không|trái|phải|rồi
+vslgh_SENT037_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9051,1,tôi|giấy|gần đây|họng|khan ho
+vslgh_SENT037_S06_R01_F_g01,vslgh,S06,ix,ix,0.8691,1,ix|nộp|có|thuốc uống|thuốc
+vslgh_SENT037_S06_R01_F_g02,vslgh,S06,viết,viết,0.9744,1,viết|kỳ|ký tên|gạo|đều
+vslgh_SENT037_S06_R01_F_g03,vslgh,S06,có thế,có thế,0.2255,1,có thế|cần không|cần|5|lấy thuốc
+vslgh_SENT038_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9426,1,tôi|kết quả|ở đây|thừa|giấy
+vslgh_SENT038_S06_R01_F_g01,vslgh,S06,đợi,đợi,0.8311,1,đợi|chờ|không có|nặng|gì
+vslgh_SENT038_S06_R01_F_g02,vslgh,S06,đây,ngồi,0.2678,0,ngồi|đây|có|đợi|trám
+vslgh_SENT038_S06_R01_F_g03,vslgh,S06,phải không,phải không,0.8892,1,phải không|cần không|có|không|đây
+vslgh_SENT039_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8914,1,tôi|vết thương|gần đây|giấy|ở đây
+vslgh_SENT039_S06_R01_F_g01,vslgh,S06,lượt,lượt,0.9324,1,lượt|đến|kết quả|thứ tự|gặp
+vslgh_SENT039_S06_R01_F_g02,vslgh,S06,khi nào,khi nào,0.4046,1,khi nào|giải thích|đâu|ở đâu|khi
+vslgh_SENT040_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8820,1,tôi|giấy|vết thương|đơn|nộp
+vslgh_SENT040_S06_R01_F_g01,vslgh,S06,viết,viết,0.3727,1,viết|đều|ký tên|kiêng|phòng
+vslgh_SENT040_S06_R01_F_g02,vslgh,S06,giấy,giấy,0.7049,1,giấy|kiêng|giấy phép|nộp|đăng ký
+vslgh_SENT040_S06_R01_F_g03,vslgh,S06,nào,nào,0.7954,1,nào|kiêng|tôi|ix|tay
+vslgh_SENT040_S06_R01_F_g04,vslgh,S06,cần không,cần,0.7244,0,cần|cần không|xe khách|loãng xương|chống đối
+vslgh_SENT041_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8728,1,tôi|giấy|gần đây|vết thương|thừa
+vslgh_SENT041_S06_R01_F_g01,vslgh,S06,viết,viết,0.1738,1,viết|ký tên|đọc|chi phí|đều
+vslgh_SENT041_S06_R01_F_g02,vslgh,S06,đây,đây,0.4324,1,đây|đứng|thẻ|ngã|chia
+vslgh_SENT041_S06_R01_F_g03,vslgh,S06,phải không,phải không,0.7237,1,phải không|đúng không|có|được không|hàng này
+vslgh_SENT042_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8334,1,tôi|gần đây|ở đây|giấy|vết thương
+vslgh_SENT042_S06_R01_F_g01,vslgh,S06,ký tên,ký tên,0.8909,1,ký tên|viết|đọc|liệu|thở khó
+vslgh_SENT042_S06_R01_F_g02,vslgh,S06,cần,cần,0.8057,1,cần|giấy|cần không|viết|ký tên
+vslgh_SENT042_S06_R01_F_g03,vslgh,S06,ở đâu,ở đâu,0.8650,1,ở đâu|đâu|gì|không có|cố gắng
+vslgh_SENT043_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9553,1,tôi|giấy|kết quả|khan ho|thừa
+vslgh_SENT043_S06_R01_F_g01,vslgh,S06,bảo hiểm,bảo hiểm,0.9223,1,bảo hiểm|lịch|đơn|đọc|thẻ
+vslgh_SENT043_S06_R01_F_g02,vslgh,S06,y tế,y tế,0.9505,1,y tế|1|gặp|xem|hồ sơ
+vslgh_SENT043_S06_R01_F_g03,vslgh,S06,không có,không có,0.9361,1,không có|chờ|không được|mờ|là gì?
+vslgh_SENT044_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7966,1,tôi|ix|bác sĩ|hỏi|vết thương
+vslgh_SENT044_S06_R01_F_g01,vslgh,S06,đặt,đặt,0.6522,1,đặt|đăng ký|thứ tự|lượt|gói
+vslgh_SENT044_S06_R01_F_g02,vslgh,S06,lịch,bảo hiểm,0.7322,0,bảo hiểm|lịch|đơn|còn|bệnh gì
+vslgh_SENT044_S06_R01_F_g03,vslgh,S06,chưa,chưa,0.5307,1,chưa|mờ|không có|không được|đọc
+vslgh_SENT045_S06_R01_F_g00,vslgh,S06,khám,khám,0.9731,1,khám|tê tay|thay đổi|nghỉ hè|tham quan
+vslgh_SENT045_S06_R01_F_g01,vslgh,S06,chi phí,chi phí,0.2438,1,chi phí|té|mẫu|khi|ngã
+vslgh_SENT045_S06_R01_F_g02,vslgh,S06,bao nhiêu,sỗ gì,0.1736,0,sỗ gì|bao nhiêu|số mấy|lấy thuốc|không cần
+vslgh_SENT046_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8430,1,tôi|giấy|tim|ở đây|thuốc
+vslgh_SENT046_S06_R01_F_g01,vslgh,S06,trả,trả,0.4712,1,trả|tiền|cầm|đóng tiền|số
+vslgh_SENT046_S06_R01_F_g02,vslgh,S06,thẻ,thẻ,0.8327,1,thẻ|đọc|khi|xem|nộp
+vslgh_SENT046_S06_R01_F_g03,vslgh,S06,được không,sai,0.1402,0,sai|xuất hiện|cuối cùng|đánh răng|được không
+vslgh_SENT047_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9262,1,tôi|giấy|họng|đơn|thừa
+vslgh_SENT047_S06_R01_F_g01,vslgh,S06,tiền,sau,0.3708,0,sau|thừa ruột|tiền|ngay đây|nước
+vslgh_SENT047_S06_R01_F_g02,vslgh,S06,không có,không có,0.8968,1,không có|lỡ mất|cân|số mấy|là gì?
+vslgh_SENT048_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9589,1,tôi|giấy|vết thương|thừa|bác sĩ
+vslgh_SENT048_S06_R01_F_g01,vslgh,S06,gặp,gặp,0.7062,1,gặp|đến|bảo hiểm|lượt|vết thương
+vslgh_SENT048_S06_R01_F_g02,vslgh,S06,bác sĩ,bác sĩ,0.5458,1,bác sĩ|xem|thẻ|đeo kính|9
+vslgh_SENT048_S06_R01_F_g03,vslgh,S06,nào,tên,0.1762,0,tên|ở đâu|xem|phải không|nào
+vslgh_SENT049_S06_R01_F_g00,vslgh,S06,ix,đau,0.4590,0,đau|ix|hỏi|chúc mừng|bố dượng
+vslgh_SENT049_S06_R01_F_g01,vslgh,S06,bác sĩ,bác sĩ,0.9094,1,bác sĩ|xem|đeo kính|kính|lo lắng
+vslgh_SENT049_S06_R01_F_g02,vslgh,S06,tên,tên,0.6145,1,tên|có|chân|trám|xem
+vslgh_SENT049_S06_R01_F_g03,vslgh,S06,gì,gì,0.6859,1,gì|có|đau|có không|không
+vslgh_SENT050_S06_R01_F_g00,vslgh,S06,wc,bình thường,0.5373,0,bình thường|1 000 000 (một triệu)|cơm bình dân|công viên|55
+vslgh_SENT050_S06_R01_F_g01,vslgh,S06,ở đâu,ở đâu,0.3491,1,ở đâu|này|đâu|không có|lại
+vslgh_SENT051_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9832,1,tôi|ix|vết thương|giấy|gần đây
+vslgh_SENT051_S06_R01_F_g01,vslgh,S06,ngồi,ngồi,0.8220,1,ngồi|trám|thẻ|hẹn|đợi
+vslgh_SENT051_S06_R01_F_g02,vslgh,S06,đây,hôm nay,0.2646,0,hôm nay|nặng|gì|cầm|tiền
+vslgh_SENT051_S06_R01_F_g03,vslgh,S06,đúng không,sai,0.2757,0,sai|được không|xuất hiện|đúng không?|phải không
+vslgh_SENT052_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9219,1,tôi|ix|hỏi|nay|nhà
+vslgh_SENT052_S06_R01_F_g01,vslgh,S06,nộp,ix,0.6405,0,ix|nộp|nằm|nặng|rồi
+vslgh_SENT052_S06_R01_F_g02,vslgh,S06,hồ sơ,hồ sơ,0.6979,1,hồ sơ|dị ứng|đến|phải không|y tế
+vslgh_SENT052_S06_R01_F_g03,vslgh,S06,quầy,phòng,0.8746,0,phòng|quầy|nghỉ|tất cả|nào
+vslgh_SENT052_S06_R01_F_g04,vslgh,S06,đâu,ở đâu,0.1756,0,ở đâu|đâu|cuối cùng|từ trái nghĩa|thế nào?
+vslgh_SENT053_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9100,1,tôi|ix|nay|gần đây|hỏi
+vslgh_SENT053_S06_R01_F_g01,vslgh,S06,nộp,nộp,0.9964,1,nộp|để|ix|liệu|sáng
+vslgh_SENT053_S06_R01_F_g02,vslgh,S06,rồi,rồi,0.9699,1,rồi|gì|nay|hết|lắm
+vslgh_SENT054_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9151,1,tôi|đơn|mới|ấn|thuốc
+vslgh_SENT054_S06_R01_F_g01,vslgh,S06,lâu,khám,0.1129,0,khám|lâu|nghỉ|chỗ khác|huyết áp
+vslgh_SENT054_S06_R01_F_g02,vslgh,S06,chờ,chờ,0.5733,1,chờ|đợi|nhiều|nước sôi|không có
+vslgh_SENT054_S06_R01_F_g03,vslgh,S06,tại sao,nào,0.3840,0,nào|khi nào|được không|đúng không|đang
+vslgh_SENT055_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7460,1,tôi|ix|nay|nhà|hỏi
+vslgh_SENT055_S06_R01_F_g01,vslgh,S06,thông tin,thông tin,0.6123,1,thông tin|thường xuyên|không|hồ sơ|nước sôi
+vslgh_SENT055_S06_R01_F_g02,vslgh,S06,sai,sai,0.7563,1,sai|xem|hối hận|vô duyên|ân hận
+vslgh_SENT056_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9540,1,tôi|ix|gần đây|nay|hôm nay
+vslgh_SENT056_S06_R01_F_g01,vslgh,S06,thông tin,thông tin,0.8031,1,thông tin|thường xuyên|chữ|chờ|đợi
+vslgh_SENT056_S06_R01_F_g02,vslgh,S06,sửa,sửa,0.4315,1,sửa|giày|số|máu|nhiều
+vslgh_SENT056_S06_R01_F_g03,vslgh,S06,lại,lại,0.5475,1,lại|này|x quang|chân|quay lại
+vslgh_SENT056_S06_R01_F_g04,vslgh,S06,muốn,muốn,0.7403,1,muốn|điện|có|nam|tim
+vslgh_SENT057_S06_R01_F_g00,vslgh,S06,hôm nay,nộp,0.0725,0,nộp|hoa|nay|hôm nay|không dám
+vslgh_SENT057_S06_R01_F_g01,vslgh,S06,tôi,tôi,0.5409,1,tôi|khan ho|ở đây|đau|thuốc
+vslgh_SENT057_S06_R01_F_g02,vslgh,S06,một mình,một mình,0.5478,1,một mình|độc thân|lượt|đều|khác
+vslgh_SENT057_S06_R01_F_g03,vslgh,S06,đi,trăng,0.0648,0,trăng|chỉ định|xe cứu hỏa|vào|nổi mẫn
+vslgh_SENT058_S06_R01_F_g00,vslgh,S06,nhà,mụn,0.1399,0,mụn|tối|chụp|nhà|lịch hẹn
+vslgh_SENT058_S06_R01_F_g01,vslgh,S06,ix,rồi,0.0977,0,rồi|x quang|chức năng|sức khỏe|ix
+vslgh_SENT058_S06_R01_F_g02,vslgh,S06,tôi,tôi,0.8151,1,tôi|đau|ix|y tế|xong
+vslgh_SENT058_S06_R01_F_g03,vslgh,S06,cùng,cùng,0.3624,1,cùng|đều|khám|nhiều|yếu
+vslgh_SENT058_S06_R01_F_g04,vslgh,S06,vào,hỏi tôi,0.1191,0,hỏi tôi|quay lại|vào|yếu|cháu ngoại
+vslgh_SENT058_S06_R01_F_g05,vslgh,S06,được không,được không,0.4410,1,được không|thuốc uống|ít|người lái xe (ô tô)|việc
+vslgh_SENT059_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9667,1,tôi|ix|nay|gần đây|hỏi
+vslgh_SENT059_S06_R01_F_g01,vslgh,S06,đọc,đọc,0.8828,1,đọc|ký tên|nộp|xem|liệu
+vslgh_SENT059_S06_R01_F_g02,vslgh,S06,chữ,chữ,0.6191,1,chữ|nhiều|giấy|chưa|mờ
+vslgh_SENT059_S06_R01_F_g03,vslgh,S06,không được,không được,0.9910,1,không được|không thấy|tiếng anh|sai|yếu
+vslgh_SENT060_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7486,1,tôi|ix|nay|nộp|thuốc
+vslgh_SENT060_S06_R01_F_g01,vslgh,S06,số,số,0.7568,1,số|thuốc uống|ăn|uống|thuốc
+vslgh_SENT060_S06_R01_F_g02,vslgh,S06,thứ tự,thứ tự,0.5527,1,thứ tự|xét nghiệm|lượt|tất cả|gặp
+vslgh_SENT060_S06_R01_F_g03,vslgh,S06,lỡ mất,lỡ mất,0.1367,1,lỡ mất|gì|nào|nhanh|áo cởi
+vslgh_SENT061_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6575,1,tôi|đơn|ix|nộp|tối
+vslgh_SENT061_S06_R01_F_g01,vslgh,S06,này,chỉ định,0.1670,0,chỉ định|vào|hải sản|này|phẫu thuật
+vslgh_SENT061_S06_R01_F_g02,vslgh,S06,phòng,phòng,0.9334,1,phòng|nghỉ|quầy|nào|gói
+vslgh_SENT061_S06_R01_F_g03,vslgh,S06,chờ,khác,0.2202,0,khác|nhiều|chờ|đợi|không có
+vslgh_SENT061_S06_R01_F_g04,vslgh,S06,đúng không,đúng không,0.2989,1,đúng không|được không|phải không|ở đâu|cuối cùng
+vslgh_SENT062_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7651,1,tôi|hỏi|ix|ở đây|đơn
+vslgh_SENT062_S06_R01_F_g01,vslgh,S06,vào,chỉ định,0.5661,0,chỉ định|vào|này|quay lại|lại
+vslgh_SENT062_S06_R01_F_g02,vslgh,S06,khám,khám,0.7357,1,khám|siêu âm|yếu|đến|hẹn
+vslgh_SENT062_S06_R01_F_g03,vslgh,S06,ngay,ngay,0.1364,1,ngay|mấy lần|tiền|cân|mua
+vslgh_SENT062_S06_R01_F_g04,vslgh,S06,được không,được không,0.2048,1,được không|sai|xuất hiện|phải không|cuối cùng
+vslgh_SENT063_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8079,1,tôi|ix|nay|gần đây|hỏi
+vslgh_SENT063_S06_R01_F_g01,vslgh,S06,nghe,nghe,0.9398,1,nghe|chụp|quê quán|tai|uống
+vslgh_SENT063_S06_R01_F_g02,vslgh,S06,không được,không được,0.9465,1,không được|không có|lỡ mất|gì|không hiểu
+vslgh_SENT064_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.4589,1,tôi|nộp|nhà|hít thở|ix
+vslgh_SENT064_S06_R01_F_g01,vslgh,S06,xin,họp,0.1548,0,họp|tiền sử|loãng xương|đăng ký|xin
+vslgh_SENT064_S06_R01_F_g02,vslgh,S06,viết,viết,0.1159,1,viết|tất cả|phòng|giúp|xét nghiệm
+vslgh_SENT064_S06_R01_F_g03,vslgh,S06,giúp,giúp,0.9089,1,giúp|chưa|chảy máu|chào|tay
+vslgh_SENT065_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9348,1,tôi|ix|gần đây|vết thương|ở đây
+vslgh_SENT065_S06_R01_F_g01,vslgh,S06,hóa đơn,hóa đơn,0.4005,1,hóa đơn|kết quả|táo bón|lượt|đặt
+vslgh_SENT065_S06_R01_F_g02,vslgh,S06,lấy,kết quả,0.2669,0,kết quả|giấy|cần|hải sản|bình an
+vslgh_SENT065_S06_R01_F_g03,vslgh,S06,cần không,cần,0.7288,0,cần|cần không|loãng xương|không cần|chống đối
+vslgh_SENT066_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8811,1,tôi|đơn|ở đây|giấy|kết quả
+vslgh_SENT066_S06_R01_F_g01,vslgh,S06,lấy,lấy,0.7754,1,lấy|mang|kết quả|nhận|lây
+vslgh_SENT066_S06_R01_F_g02,vslgh,S06,hóa đơn,hóa đơn,0.3514,1,hóa đơn|kết quả|táo bón|giấy|đặt
+vslgh_SENT066_S06_R01_F_g03,vslgh,S06,không cần,không cần,0.4910,1,không cần|nguy hiểm|con ếch|chưa|nạp điện
+vslgh_SENT067_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8388,1,tôi|đơn|lâu|chả cá|hải sản
+vslgh_SENT067_S06_R01_F_g01,vslgh,S06,đợi,đợi,0.7433,1,đợi|nghỉ|bảo hiểm|lịch|chờ
+vslgh_SENT067_S06_R01_F_g02,vslgh,S06,bao lâu,bao lâu,0.9787,1,bao lâu|chưa|nội dung|bảo hiểm|bao giờ?
+vslgh_SENT068_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9371,1,tôi|gần đây|ix|nay|ở đây
+vslgh_SENT068_S06_R01_F_g01,vslgh,S06,lượt,lượt,0.9775,1,lượt|khác|xe cứu hỏa|bệnh gì|thay đổi
+vslgh_SENT068_S06_R01_F_g02,vslgh,S06,sắp,tối,0.0568,0,tối|x quang|tất cả|gói|sinh hóa
+vslgh_SENT068_S06_R01_F_g03,vslgh,S06,chưa,thừa,0.2007,0,thừa|chưa|không được|5|bụi phấn
+vslgh_SENT069_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7818,1,tôi|ix|hỏi|nay|có phải
+vslgh_SENT069_S06_R01_F_g01,vslgh,S06,đo,đo,0.9754,1,đo|tăng cân|cao|có chưa|chiều cao
+vslgh_SENT069_S06_R01_F_g02,vslgh,S06,chiều cao,chiều cao,0.3133,1,chiều cao|cao|gây mê|không|đo
+vslgh_SENT069_S06_R01_F_g03,vslgh,S06,cần,cần,0.9265,1,cần|cần không|loãng xương|không cần|thi
+vslgh_SENT070_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9236,1,tôi|ix|gần đây|ở đây|kết quả
+vslgh_SENT070_S06_R01_F_g01,vslgh,S06,đo,đo,0.9886,1,đo|cao|chiều cao|đeo kính|có chưa
+vslgh_SENT070_S06_R01_F_g02,vslgh,S06,cân nặng,cân nặng,0.9329,1,cân nặng|nay|thứ tự|thẻ|nộp
+vslgh_SENT070_S06_R01_F_g03,vslgh,S06,cần,cần không,0.5166,0,cần không|cần|lấy thuốc|loãng xương|bao lâu
+vslgh_SENT071_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9086,1,tôi|gần đây|giấy|ở đây|đặt
+vslgh_SENT071_S06_R01_F_g01,vslgh,S06,cao,cao,0.9414,1,cao|xuống|gây mê|chiều cao|thể dục
+vslgh_SENT071_S06_R01_F_g02,vslgh,S06,1,1,0.5268,1,1|xem|mét|9|70
+vslgh_SENT071_S06_R01_F_g03,vslgh,S06,mét,mét,0.6289,1,mét|đọc|xem|bác sĩ|60
+vslgh_SENT071_S06_R01_F_g04,vslgh,S06,60,60,0.8075,1,60|chưa|120|2|thi
+vslgh_SENT072_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9167,1,tôi|thuốc|ix|nộp|sáng
+vslgh_SENT072_S06_R01_F_g01,vslgh,S06,nặng,nặng,0.4466,1,nặng|nôn|đợi|hỏi tôi|cân
+vslgh_SENT072_S06_R01_F_g02,vslgh,S06,55,55,0.8539,1,55|bình thường|mờ|công viên|22
+vslgh_SENT073_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9675,1,tôi|thuốc|sáng|đơn|hỏi
+vslgh_SENT073_S06_R01_F_g01,vslgh,S06,huyết áp,huyết áp,0.9863,1,huyết áp|tuổi|mề đay|cccd|gói
+vslgh_SENT073_S06_R01_F_g02,vslgh,S06,đo,đo,0.9810,1,đo|chiều cao|có thế|kính|lịch
+vslgh_SENT073_S06_R01_F_g03,vslgh,S06,cần,cần,0.9393,1,cần|cần không|không cần|loãng xương|nhân hậu
+vslgh_SENT074_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9100,1,tôi|thuốc|sáng|họng|khan ho
+vslgh_SENT074_S06_R01_F_g01,vslgh,S06,huyết áp,huyết áp,0.8546,1,huyết áp|da|ấn|tuổi|mề đay
+vslgh_SENT074_S06_R01_F_g02,vslgh,S06,120,120,0.9139,1,120|1|2|liên quan|60
+vslgh_SENT075_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8669,1,tôi|giấy|gần đây|khan ho|đặt
+vslgh_SENT075_S06_R01_F_g01,vslgh,S06,mạch,mạch,0.7083,1,mạch|tim|tê tay|dạ dày|đo
+vslgh_SENT075_S06_R01_F_g02,vslgh,S06,đo,đo,0.8001,1,đo|đeo kính|thuốc|thẻ|kính
+vslgh_SENT075_S06_R01_F_g03,vslgh,S06,cần,cần,0.7479,1,cần|cần không|lấy thuốc|loãng xương|không cần
+vslgh_SENT076_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8516,1,tôi|giấy|khan ho|gần đây|nộp
+vslgh_SENT076_S06_R01_F_g01,vslgh,S06,mạch,mạch,0.5546,1,mạch|tim|tê tay|trả|đóng
+vslgh_SENT076_S06_R01_F_g02,vslgh,S06,70,70,0.6274,1,70|60|điện|vừa|y tá
+vslgh_SENT077_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8857,1,tôi|gần đây|khan ho|giấy|ở đây
+vslgh_SENT077_S06_R01_F_g01,vslgh,S06,bmi,bmi,0.7461,1,bmi|béo phì|phòng|ở đây|nay
+vslgh_SENT077_S06_R01_F_g02,vslgh,S06,bao nhiêu,số mấy,0.9695,0,số mấy|bao nhiêu|4|áo khoác|bông hoa
+vslgh_SENT078_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9039,1,tôi|gần đây|khan ho|giấy|vết thương
+vslgh_SENT078_S06_R01_F_g01,vslgh,S06,bmi,bmi,0.9027,1,bmi|béo phì|ở đây|phòng|nay
+vslgh_SENT078_S06_R01_F_g02,vslgh,S06,22,22,0.3491,1,22|120|còn|công viên|khác
+vslgh_SENT079_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8982,1,tôi|vết thương|gần đây|ix|bác sĩ
+vslgh_SENT079_S06_R01_F_g01,vslgh,S06,thị lực,thị lực,0.6817,1,thị lực|cận thị|đeo kính|chụp|lo lắng
+vslgh_SENT079_S06_R01_F_g02,vslgh,S06,đo,đo,0.8427,1,đo|cân nặng|chiều cao|lịch|3 ngày
+vslgh_SENT079_S06_R01_F_g03,vslgh,S06,rồi,rồi,0.5588,1,rồi|không có|gì|nay|hết
+vslgh_SENT080_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9575,1,tôi|thuốc|ix|hỏi|sáng
+vslgh_SENT080_S06_R01_F_g01,vslgh,S06,huyết áp,huyết áp,0.9263,1,huyết áp|tuổi|lấy|da|mề đay
+vslgh_SENT080_S06_R01_F_g02,vslgh,S06,đo,đo,0.9055,1,đo|đeo kính|lịch hẹn|lịch|kính
+vslgh_SENT080_S06_R01_F_g03,vslgh,S06,rồi,rồi,0.4432,1,rồi|không có|gì|hết|cân nặng
+vslgh_SENT081_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9791,1,tôi|ix|gần đây|vết thương|hỏi
+vslgh_SENT081_S06_R01_F_g01,vslgh,S06,áo khoác,áo khoác,0.7687,1,áo khoác|tiểu đường|ấn|bổi|đợi
+vslgh_SENT081_S06_R01_F_g02,vslgh,S06,cởi,cởi,0.8968,1,cởi|cởi áo|áo cởi|hẹn|sức khỏe
+vslgh_SENT081_S06_R01_F_g03,vslgh,S06,cần không,cần không,0.7074,1,cần không|cần|không cần|thi|bức tranh
+vslgh_SENT082_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6433,1,tôi|vết thương|khan ho|giấy|đặt
+vslgh_SENT082_S06_R01_F_g01,vslgh,S06,đứng,sâu,0.2039,0,sâu|đứng|đọc|liệu|chữ
+vslgh_SENT082_S06_R01_F_g02,vslgh,S06,phải không,phải không,0.5740,1,phải không|có|tại sao|không được|đặt
+vslgh_SENT083_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9034,1,tôi|gần đây|đặt|ix|vết thương
+vslgh_SENT083_S06_R01_F_g01,vslgh,S06,giày,giày,0.2362,1,giày|đọc|trám|bệnh|có chưa
+vslgh_SENT083_S06_R01_F_g02,vslgh,S06,cởi,cởi,0.9298,1,cởi|lấy thuốc|dị ứng|cao|sinh hóa
+vslgh_SENT083_S06_R01_F_g03,vslgh,S06,phải không,phải không,0.8231,1,phải không|được không|đúng không|không|tại sao
+vslgh_SENT084_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7604,1,tôi|nộp|giấy|họng|tim
+vslgh_SENT084_S06_R01_F_g01,vslgh,S06,hít thở,hít thở,0.4412,1,hít thở|thuốc uống|nộp|nhà|thuốc
+vslgh_SENT084_S06_R01_F_g02,vslgh,S06,sâu,sâu,0.7936,1,sâu|này|liệu|soi nội|cởi
+vslgh_SENT084_S06_R01_F_g03,vslgh,S06,cần không,cần,0.7597,0,cần|cần không|loãng xương|lấy thuốc|chậm
+vslgh_SENT085_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9148,1,tôi|giấy|gần đây|ở đây|vòng
+vslgh_SENT085_S06_R01_F_g01,vslgh,S06,nín thở,nín thở,0.9524,1,nín thở|mũi sổ|thuốc uống|nghiêm trọng|thơm
+vslgh_SENT085_S06_R01_F_g02,vslgh,S06,cần không,cần,0.7966,0,cần|cần không|lấy thuốc|loãng xương|chống đối
+vslgh_SENT086_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8436,1,tôi|giấy|khan ho|gần đây|nội soi
+vslgh_SENT086_S06_R01_F_g01,vslgh,S06,huyết áp,huyết áp,0.9328,1,huyết áp|gói|lấy|tuổi|da
+vslgh_SENT086_S06_R01_F_g02,vslgh,S06,cao,cao,0.8982,1,cao|thấp|cơ bản|sửa|thường xuyên
+vslgh_SENT086_S06_R01_F_g03,vslgh,S06,có không,có,0.5938,0,có|có không|phải không|không|gì
+vslgh_SENT087_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9710,1,tôi|ix|gần đây|thuốc|đơn
+vslgh_SENT087_S06_R01_F_g01,vslgh,S06,huyết áp,huyết áp,0.6523,1,huyết áp|lấy|đến|trả|bệnh
+vslgh_SENT087_S06_R01_F_g02,vslgh,S06,thấp,thấp,0.2528,1,thấp|chụp|cơ bản|viêm xoang|hỏi
+vslgh_SENT087_S06_R01_F_g03,vslgh,S06,có không,có,0.7327,0,có|có không|phải không|không|cần không
+vslgh_SENT088_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9731,1,tôi|gần đây|ix|giấy|tim
+vslgh_SENT088_S06_R01_F_g01,vslgh,S06,huyết áp,huyết áp,0.7474,1,huyết áp|tuổi|bia rượu|ấn|lấy
+vslgh_SENT088_S06_R01_F_g02,vslgh,S06,bình thường,bình thường,0.1478,1,bình thường|không|muốn|lâu|ấn
+vslgh_SENT088_S06_R01_F_g03,vslgh,S06,có không,có,0.4510,0,có|có không|phải không|không|cần không
+vslgh_SENT089_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9065,1,tôi|gần đây|nội soi|giấy|bác sĩ
+vslgh_SENT089_S06_R01_F_g01,vslgh,S06,cảm thấy,giấy phép,0.1509,0,giấy phép|cảm thấy|họng|đơn|tim
+vslgh_SENT089_S06_R01_F_g02,vslgh,S06,bình thường,bình thường,0.9018,1,bình thường|còn|120|họng|1 000 000 (một triệu)
+vslgh_SENT090_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9290,1,tôi|giấy|đơn|nội soi|gần đây
+vslgh_SENT090_S06_R01_F_g01,vslgh,S06,cảm thấy,tôi,0.2730,0,tôi|cảm thấy|đóng|thuốc|tim
+vslgh_SENT090_S06_R01_F_g02,vslgh,S06,hồi hộp,hồi hộp,0.8826,1,hồi hộp|sợ lắm|tim|giúp|ủy quyền
+vslgh_SENT091_S06_R01_F_g00,vslgh,S06,ix,ix,0.9993,1,ix|bác sĩ|tôi|nhà|tối
+vslgh_SENT091_S06_R01_F_g01,vslgh,S06,bác sĩ,bác sĩ,0.9772,1,bác sĩ|xem|đeo kính|thú y|đen láy (như đen nhánh)
+vslgh_SENT091_S06_R01_F_g02,vslgh,S06,tôi,tôi,0.9196,1,tôi|ix|đau|y tế|hỏi tôi
+vslgh_SENT091_S06_R01_F_g03,vslgh,S06,giúp,máu,0.3772,0,máu|táo bón|giúp|thay đổi|xét nghiệm
+vslgh_SENT091_S06_R01_F_g04,vslgh,S06,đo,đo,0.2899,1,đo|báo (con báo)|giải thích|cơ hội|hỏi tôi
+vslgh_SENT091_S06_R01_F_g05,vslgh,S06,lại,lại,0.2874,1,lại|quay lại|được không|hàng này|chỉ định
+vslgh_SENT091_S06_R01_F_g06,vslgh,S06,được không,được không,0.8715,1,được không|phải không|thuốc uống|sao không|đúng không
+vslgh_SENT092_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9255,1,tôi|gần đây|giấy|ở đây|khan ho
+vslgh_SENT092_S06_R01_F_g01,vslgh,S06,mạch,mạch,0.7933,1,mạch|tim|này|đo|tôi
+vslgh_SENT092_S06_R01_F_g02,vslgh,S06,đập,đặt,0.2604,0,đặt|kết quả|nộp|đăng ký|để
+vslgh_SENT092_S06_R01_F_g03,vslgh,S06,nhanh,nhanh,0.5487,1,nhanh|hôm nay|máu|tê tay|nặng
+vslgh_SENT092_S06_R01_F_g04,vslgh,S06,có không,có,0.6335,0,có|có không|phải không|vừa|đây
+vslgh_SENT093_S06_R01_F_g00,vslgh,S06,mạch,tim,0.5562,0,tim|mạch|hồi hộp|dạ dày|máu
+vslgh_SENT093_S06_R01_F_g01,vslgh,S06,đập,đặt,0.2594,0,đặt|đăng ký|đóng tiền|đóng|viết
+vslgh_SENT093_S06_R01_F_g02,vslgh,S06,chậm,chậm,0.8504,1,chậm|đợi|chuẩn bị|còn|cơ bản
+vslgh_SENT093_S06_R01_F_g03,vslgh,S06,có không,có không,0.8134,1,có không|có|cần không|không|phải không
+vslgh_SENT094_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9294,1,tôi|thuốc|gần đây|ix|sáng
+vslgh_SENT094_S06_R01_F_g01,vslgh,S06,mắt,mắt,0.8069,1,mắt|gia đình|uống|yếu|cửa hàng
+vslgh_SENT094_S06_R01_F_g02,vslgh,S06,đo,đo,0.8995,1,đo|cân nặng|thẻ|đeo kính|liệu
+vslgh_SENT094_S06_R01_F_g03,vslgh,S06,cần không,cần,0.8415,0,cần|cần không|hết|loãng xương|không cần
+vslgh_SENT095_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7863,1,tôi|khan ho|gần đây|đặt|sâu
+vslgh_SENT095_S06_R01_F_g01,vslgh,S06,bmi,bmi,0.4126,1,bmi|phòng|nay|hôm nay|béo phì
+vslgh_SENT095_S06_R01_F_g02,vslgh,S06,tốt,tốt,0.4598,1,tốt|số|đây|đúng không|hồ sơ
+vslgh_SENT095_S06_R01_F_g03,vslgh,S06,có không,có không,0.6269,1,có không|có|phải không|không|cần không
+vslgh_SENT096_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8648,1,tôi|gần đây|giấy|kết quả|ix
+vslgh_SENT096_S06_R01_F_g01,vslgh,S06,béo phì,bmi,0.7142,0,bmi|nay|béo phì|ở đây|tôi
+vslgh_SENT096_S06_R01_F_g02,vslgh,S06,có không,bệnh gì,0.1422,0,bệnh gì|bệnh|nạp điện|tự lập|đi dạo
+vslgh_SENT097_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8126,1,tôi|gần đây|ở đây|ix|nộp
+vslgh_SENT097_S06_R01_F_g01,vslgh,S06,sức khỏe,sức khỏe,0.9640,1,sức khỏe|thể dục|chụp|đến|nghé
+vslgh_SENT097_S06_R01_F_g02,vslgh,S06,yếu,yếu,0.9869,1,yếu|khám|hỏi tôi|nào|có
+vslgh_SENT097_S06_R01_F_g03,vslgh,S06,có không,có không,0.5693,1,có không|có|không|phải không|cần không
+vslgh_SENT098_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9202,1,tôi|ix|vết thương|ở đây|giấy
+vslgh_SENT098_S06_R01_F_g01,vslgh,S06,đo,đo,0.9680,1,đo|điện|wc|kính|lịch hẹn
+vslgh_SENT098_S06_R01_F_g02,vslgh,S06,hết,gói,0.3560,0,gói|hết|tất cả|để|đóng tiền
+vslgh_SENT098_S06_R01_F_g03,vslgh,S06,xong,xong,0.1339,1,xong|kết quả|giấy|thay đổi|nộp
+vslgh_SENT098_S06_R01_F_g04,vslgh,S06,chưa,chưa,0.3320,1,chưa|táo bón|có chưa|ngắt hoa|bụi phấn
+vslgh_SENT099_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9258,1,tôi|ix|gần đây|vết thương|nay
+vslgh_SENT099_S06_R01_F_g01,vslgh,S06,tiếp,tiếp,0.7771,1,tiếp|giấy|nộp|kết quả|xin
+vslgh_SENT099_S06_R01_F_g02,vslgh,S06,đi,đi,0.3752,1,đi|đây|có không|đau|lấy
+vslgh_SENT099_S06_R01_F_g03,vslgh,S06,đâu,đâu,0.3975,1,đâu|ở đâu|rượu bia|cố gắng|đến
+vslgh_SENT100_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9609,1,tôi|ấn|thuốc|gần đây|nay
+vslgh_SENT100_S06_R01_F_g01,vslgh,S06,nay,nặng,0.3350,0,nặng|cân|nay|nôn|tăng cân
+vslgh_SENT100_S06_R01_F_g02,vslgh,S06,tăng cân,tăng cân,0.9969,1,tăng cân|hôm qua|y tá|chiều cao|xưa
+vslgh_SENT101_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8014,1,tôi|giấy phép|thuốc|họng|nộp
+vslgh_SENT101_S06_R01_F_g01,vslgh,S06,đầu đau,đầu đau,0.8735,1,đầu đau|sốt|ốm|đau|mũi sổ
+vslgh_SENT102_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6229,1,tôi|họng|ở đây|gần đây|khan ho
+vslgh_SENT102_S06_R01_F_g01,vslgh,S06,bụng đau,cccd,0.0783,0,cccd|nấm da|sài gòn|phản bội|phụ khoa
+vslgh_SENT103_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9444,1,tôi|gần đây|thuốc|lâu|ở đây
+vslgh_SENT103_S06_R01_F_g01,vslgh,S06,ngực đau,ngực đau,0.5197,1,ngực đau|hồi hộp|sợ lắm|hen suyễn|muốn
+vslgh_SENT104_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.5430,1,tôi|khan ho|họng|gần đây|thuốc
+vslgh_SENT104_S06_R01_F_g01,vslgh,S06,lưng,lưng,0.8580,1,lưng|thừa ruột|tiền|sau|ngay đây
+vslgh_SENT104_S06_R01_F_g02,vslgh,S06,đau,đau,0.1085,1,đau|ê buốt|không nhận|nghi ngờ|văn nghệ
+vslgh_SENT105_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9479,1,tôi|gần đây|giấy|vết thương|khi
+vslgh_SENT105_S06_R01_F_g01,vslgh,S06,sốt,thở khó,0.4228,0,thở khó|ho|em rể|năm ngoái|độc thân
+vslgh_SENT106_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6236,1,tôi|thuốc|giấy phép|nội soi|hít thở
+vslgh_SENT106_S06_R01_F_g01,vslgh,S06,sốt,sốt,0.5933,1,sốt|thuốc|hay quên|thuốc uống|mã lai (nước ma lai xi a)
+vslgh_SENT107_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8782,1,tôi|gần đây|giấy|đặt|bác sĩ
+vslgh_SENT107_S06_R01_F_g01,vslgh,S06,cảm thấy,cảm thấy,0.5597,1,cảm thấy|tôi|lâu|bia rượu|lối sống
+vslgh_SENT107_S06_R01_F_g02,vslgh,S06,mệt,mệt,0.9590,1,mệt|muốn|nghệ thuật|sắp|ung thư
+vslgh_SENT108_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8726,1,tôi|gần đây|họng|bác sĩ|giấy
+vslgh_SENT108_S06_R01_F_g01,vslgh,S06,ngủ khó,ngủ khó,0.2028,1,ngủ khó|chóng mặt|khó ngủ|chưa|nạp điện
+vslgh_SENT109_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9205,1,tôi|gần đây|giấy|đặt|ở đây
+vslgh_SENT109_S06_R01_F_g01,vslgh,S06,ăn,ăn,0.9517,1,ăn|nín thở|sai|mũi nghẹt|nam
+vslgh_SENT109_S06_R01_F_g02,vslgh,S06,vị,vị,0.9421,1,vị|mắt|mặn|ăn|thức khuya
+vslgh_SENT109_S06_R01_F_g03,vslgh,S06,không nhận,đau,0.2581,0,đau|táo bón|trắng muốt|chưa|không nhận
+vslgh_SENT110_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9221,1,tôi|gần đây|nay|ở đây|ix
+vslgh_SENT110_S06_R01_F_g01,vslgh,S06,chóng mặt,chóng mặt,0.3407,1,chóng mặt|120|tiêu chảy|đều|hỏi
+vslgh_SENT111_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8893,1,tôi|gần đây|giấy|bác sĩ|đến
+vslgh_SENT111_S06_R01_F_g01,vslgh,S06,cảm thấy,tôi,0.5474,0,tôi|cảm thấy|đến|vết thương|lâu
+vslgh_SENT111_S06_R01_F_g02,vslgh,S06,nôn,nôn,0.6420,1,nôn|táo bón|đau|mới|bệnh
+vslgh_SENT112_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6237,1,tôi|này|vết thương|sâu|mạch
+vslgh_SENT112_S06_R01_F_g01,vslgh,S06,táo bón,táo bón,0.6778,1,táo bón|loãng xương|đăng ký|phòng|xét nghiệm
+vslgh_SENT113_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.4713,1,tôi|nghe|sâu|răng|này
+vslgh_SENT113_S06_R01_F_g01,vslgh,S06,tiêu chảy,tiêu chảy,0.5568,1,tiêu chảy|xét nghiệm|táo bón|hải sản|thi
+vslgh_SENT114_S06_R01_F_g00,vslgh,S06,gần đây,hôm nay,0.5978,0,hôm nay|nay|gần đây|đây|ở đây
+vslgh_SENT114_S06_R01_F_g01,vslgh,S06,tôi,tôi,0.2701,1,tôi|xem|tai|lâu|giấy phép
+vslgh_SENT114_S06_R01_F_g02,vslgh,S06,xuống,xuống,0.8942,1,xuống|này|đọc|soi nội|xem
+vslgh_SENT114_S06_R01_F_g03,vslgh,S06,cân,cân,0.9102,1,cân|chưa|nôn|ngã|cccd
+vslgh_SENT115_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8969,1,tôi|giấy|gần đây|khan ho|họng
+vslgh_SENT115_S06_R01_F_g01,vslgh,S06,cảm thấy,cảm thấy,0.8753,1,cảm thấy|tôi|thở khó|ho|bia rượu
+vslgh_SENT115_S06_R01_F_g02,vslgh,S06,thở khó,thở khó,0.9818,1,thở khó|toa xe|thi cử|bạn|khó khăn
+vslgh_SENT116_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9005,1,tôi|giấy|gần đây|ở đây|khan ho
+vslgh_SENT116_S06_R01_F_g01,vslgh,S06,đi,đi,0.2146,1,đi|hẹn|cởi áo|lấy|độc thân
+vslgh_SENT116_S06_R01_F_g02,vslgh,S06,tiểu,tiểu,0.8560,1,tiểu|hôm qua|đập|cho tôi|tiểu đường
+vslgh_SENT116_S06_R01_F_g03,vslgh,S06,đêm,đêm,0.5903,1,đêm|ban đêm|tối|lại|nước tiểu
+vslgh_SENT117_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8717,1,tôi|đặt|gần đây|giấy|vết thương
+vslgh_SENT117_S06_R01_F_g01,vslgh,S06,bệnh,bệnh,0.9382,1,bệnh|bệnh gì|ấn|đến|đợi
+vslgh_SENT117_S06_R01_F_g02,vslgh,S06,tim,tim,0.6049,1,tim|mạch|số|trả|máu
+vslgh_SENT117_S06_R01_F_g03,vslgh,S06,tiền sử,tiền sử,0.9477,1,tiền sử|mờ|ngày quốc tế lao động|đơn|đèo hải vân
+vslgh_SENT117_S06_R01_F_g04,vslgh,S06,có,có,0.8097,1,có|có không|phải không|không|cần không
+vslgh_SENT118_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.4895,1,tôi|khan ho|đặt|gần đây|đến
+vslgh_SENT118_S06_R01_F_g01,vslgh,S06,huyết áp,huyết áp,0.8683,1,huyết áp|bia rượu|tuổi|ấn|lần đầu
+vslgh_SENT118_S06_R01_F_g02,vslgh,S06,cao,cao,0.9351,1,cao|đo|thể dục|bia rượu|ấn
+vslgh_SENT118_S06_R01_F_g03,vslgh,S06,bệnh,bệnh,0.9655,1,bệnh|bệnh gì|ấn|giúp|chưa
+vslgh_SENT119_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.1608,1,tôi|họng|hồi hộp|mạch|muốn
+vslgh_SENT119_S06_R01_F_g01,vslgh,S06,tiểu đường,tiểu đường,0.8547,1,tiểu đường|tiểu|hàng ngày|nước tiểu|người xưa
+vslgh_SENT119_S06_R01_F_g02,vslgh,S06,bệnh,bệnh,0.7212,1,bệnh|khó ngủ|giải thích|ấn|bệnh gì
+vslgh_SENT120_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.5483,1,tôi|họng|đặt|nộp|giấy
+vslgh_SENT120_S06_R01_F_g01,vslgh,S06,hen suyễn,hen suyễn,0.7400,1,hen suyễn|điện|nam|bệnh|sợ lắm
+vslgh_SENT120_S06_R01_F_g02,vslgh,S06,bệnh,bệnh,0.9561,1,bệnh|bệnh gì|ấn|ở đâu|dịch vụ
+vslgh_SENT121_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9080,1,tôi|gần đây|vết thương|đặt|giấy
+vslgh_SENT121_S06_R01_F_g01,vslgh,S06,khớp gối,khớp gối,0.5837,1,khớp gối|chân|trám|rửa chân|lười
+vslgh_SENT121_S06_R01_F_g02,vslgh,S06,chân,chân,0.4764,1,chân|tên|khớp gối|cơ bản|xét nghiệm
+vslgh_SENT121_S06_R01_F_g03,vslgh,S06,đau,xem,0.5862,0,xem|hỏi tôi|lấy thuốc|hỏi|không thấy
+vslgh_SENT122_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8366,1,tôi|gần đây|đặt|giấy|họng
+vslgh_SENT122_S06_R01_F_g01,vslgh,S06,tê tay,số,0.3345,0,số|thuốc uống|thuốc|tiền|tê tay
+vslgh_SENT122_S06_R01_F_g02,vslgh,S06,bệnh,bệnh,0.9779,1,bệnh|bệnh gì|hen suyễn|thứ tự|không
+vslgh_SENT123_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.4865,1,tôi|cảm thấy|nghe|ho|nhổ
+vslgh_SENT123_S06_R01_F_g01,vslgh,S06,phẫu thuật,thẻ,0.2766,0,thẻ|phòng|phẫu thuật|dép quai hậu|ngồi
+vslgh_SENT123_S06_R01_F_g02,vslgh,S06,từng,từng,0.5232,1,từng|lần đầu|xong|biên lai|cầm
+vslgh_SENT123_S06_R01_F_g03,vslgh,S06,rồi,rồi,0.9608,1,rồi|gì|đau|nôn|hết
+vslgh_SENT124_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9194,1,tôi|khan ho|gần đây|giấy|kết quả
+vslgh_SENT124_S06_R01_F_g01,vslgh,S06,thừa ruột,thừa ruột,0.8587,1,thừa ruột|áo khoác|lưng|ngay đây|gãi
+vslgh_SENT124_S06_R01_F_g02,vslgh,S06,phẫu thuật,năm ngoái,0.1205,0,năm ngoái|tiêu chảy|toa xe|sinh hóa|con ngựa
+vslgh_SENT124_S06_R01_F_g03,vslgh,S06,năm ngoái,hôm qua,0.8065,0,hôm qua|năm ngoái|cởi|giấy màu|rồi
+vslgh_SENT125_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9299,1,tôi|giấy|gần đây|họng|giấy phép
+vslgh_SENT125_S06_R01_F_g01,vslgh,S06,thuốc,thuốc,0.8823,1,thuốc|hiểu|thuốc uống|nước sôi|uống
+vslgh_SENT125_S06_R01_F_g02,vslgh,S06,uống,uống,0.9532,1,uống|nước sôi|thuốc uống|thuốc|nước
+vslgh_SENT125_S06_R01_F_g03,vslgh,S06,mỗi ngày,mỗi ngày,0.9319,1,mỗi ngày|đen láy (như đen nhánh)|y tá|nhiều|quyết tâm
+vslgh_SENT126_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8185,1,tôi|họng|thuốc|gần đây|giấy phép
+vslgh_SENT126_S06_R01_F_g01,vslgh,S06,hút thuốc,hút thuốc,0.4346,1,hút thuốc|nhìn|thấy|mũi sổ|mũi nghẹt
+vslgh_SENT126_S06_R01_F_g02,vslgh,S06,có,có,0.6113,1,có|có không|phải không|cần không|không
+vslgh_SENT127_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.4403,1,tôi|ho|giấy|khan ho|vết thương
+vslgh_SENT127_S06_R01_F_g01,vslgh,S06,bia rượu,bia rượu,0.3275,1,bia rượu|tiểu đường|rượu bia|có chưa|cao
+vslgh_SENT127_S06_R01_F_g02,vslgh,S06,uống,uống,0.2612,1,uống|60|y tế|không|nữ
+vslgh_SENT127_S06_R01_F_g03,vslgh,S06,có,có,0.6952,1,có|không|có không|cần không|phải không
+vslgh_SENT128_S06_R01_F_g00,vslgh,S06,tôi,thuốc,0.6842,0,thuốc|thuốc uống|hút thuốc|nước sôi|uống
+vslgh_SENT128_S06_R01_F_g01,vslgh,S06,thuốc,dị ứng,0.5262,0,dị ứng|2|22|xem|120
+vslgh_SENT128_S06_R01_F_g02,vslgh,S06,dị ứng,bệnh,0.9595,0,bệnh|bệnh gì|thứ tự|ở đâu|không
+vslgh_SENT128_S06_R01_F_g03,vslgh,S06,bệnh,bệnh,0.3046,1,bệnh|chưa|có chưa|sợ lắm|phỏng
+vslgh_SENT129_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.4806,1,tôi|khan ho|ra nước|sâu|kính
+vslgh_SENT129_S06_R01_F_g01,vslgh,S06,hải sản,hải sản,0.3213,1,hải sản|phẫu thuật|nghỉ|bmi|giúp
+vslgh_SENT129_S06_R01_F_g02,vslgh,S06,dị ứng,kết quả,0.1460,0,kết quả|dị ứng|bệnh gì|cơ hội|120
+vslgh_SENT129_S06_R01_F_g03,vslgh,S06,bệnh,bệnh,0.9522,1,bệnh|không|bệnh gì|ngồi|ấn
+vslgh_SENT130_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8273,1,tôi|gần đây|đặt|giấy|tiếp
+vslgh_SENT130_S06_R01_F_g01,vslgh,S06,té,té,0.4284,1,té|khác|ngồi|ngã|rượu bia
+vslgh_SENT130_S06_R01_F_g02,vslgh,S06,vừa,vừa,0.9828,1,vừa|có thế|60|không|tay
+vslgh_SENT131_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9464,1,tôi|gần đây|giấy|đặt|họng
+vslgh_SENT131_S06_R01_F_g01,vslgh,S06,vết thương,vết thương,0.9667,1,vết thương|nghĩ|soi nội|mắt|tôi
+vslgh_SENT131_S06_R01_F_g02,vslgh,S06,sưng,sưng,0.4801,1,sưng|có chưa|bao lâu|phỏng|chưa
+vslgh_SENT132_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.3222,1,tôi|khan ho|ho|họng|giấy
+vslgh_SENT132_S06_R01_F_g01,vslgh,S06,da,da,0.8737,1,da|ăn|tôi|đau|số
+vslgh_SENT132_S06_R01_F_g02,vslgh,S06,nổi mẫn,da,0.1258,0,da|nấm da|nổi mẫn|tuổi|huyết áp
+vslgh_SENT133_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6569,1,tôi|vết thương|đặt|thuốc uống|đến
+vslgh_SENT133_S06_R01_F_g01,vslgh,S06,mụn,mụn,0.7070,1,mụn|cảm ơn|ăn|ngày giải phóng miền nam 30/4|tên
+vslgh_SENT133_S06_R01_F_g02,vslgh,S06,nhiều,nhiều,0.9285,1,nhiều|nặng|gì|này|thẻ
+vslgh_SENT133_S06_R01_F_g03,vslgh,S06,gần đây,gần đây,0.9619,1,gần đây|giúp|mới|khám|đến
+vslgh_SENT134_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.4523,1,tôi|vết thương|nghĩ|đặt|gần đây
+vslgh_SENT134_S06_R01_F_g01,vslgh,S06,nghĩ,nghĩ,0.9380,1,nghĩ|kinh|soi nội|nghe|nín thở
+vslgh_SENT134_S06_R01_F_g02,vslgh,S06,nấm da,nấm da,0.9258,1,nấm da|nổi mẫn|được không|sài gòn|làm
+vslgh_SENT135_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.5613,1,tôi|nghe|gần đây|vết thương|đến
+vslgh_SENT135_S06_R01_F_g01,vslgh,S06,đến,đến,0.4916,1,đến|khám|trám|sức khỏe|xe khách
+vslgh_SENT135_S06_R01_F_g02,vslgh,S06,khám,khám,0.4329,1,khám|siêu âm|phòng|chỗ khác|phụ khoa
+vslgh_SENT135_S06_R01_F_g03,vslgh,S06,phụ khoa,phụ khoa,0.9557,1,phụ khoa|tổng quát|nữ|phòng|sinh hóa
+vslgh_SENT135_S06_R01_F_g04,vslgh,S06,nữ,nữ,0.9986,1,nữ|sữa|dấu sắc|có thế|tôi yêu bạn
+vslgh_SENT136_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.5933,1,tôi|vết thương|nghĩ|nội soi|giấy phép
+vslgh_SENT136_S06_R01_F_g01,vslgh,S06,nghĩ,nghĩ,0.5127,1,nghĩ|tai|soi nội|mắt trái|đầu đau
+vslgh_SENT136_S06_R01_F_g02,vslgh,S06,tôi,tôi,0.9811,1,tôi|vết thương|đau|đặt|ix
+vslgh_SENT136_S06_R01_F_g03,vslgh,S06,thai,thai,0.7773,1,thai|nôn|cơ bản|phòng|nặng
+vslgh_SENT136_S06_R01_F_g04,vslgh,S06,có,có,0.6936,1,có|phải không|có không|không|đau
+vslgh_SENT137_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.3943,1,tôi|vết thương|họng|đặt|giấy phép
+vslgh_SENT137_S06_R01_F_g01,vslgh,S06,kinh nguyệt,kinh nguyệt,0.9101,1,kinh nguyệt|kinh|tai|nữ|khí hư
+vslgh_SENT137_S06_R01_F_g02,vslgh,S06,đều,đều,0.9950,1,đều|1 000 000 (một triệu)|120|ê buốt|cơm bình dân
+vslgh_SENT138_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.3237,1,tôi|khan ho|ho|giấy|ra nước
+vslgh_SENT138_S06_R01_F_g01,vslgh,S06,đau bụng,đau bụng,0.4259,1,đau bụng|bụng đau|siêu âm|bia rượu|buồn
+vslgh_SENT138_S06_R01_F_g02,vslgh,S06,khi,khi,0.7053,1,khi|không được|bác sĩ|xem|lúc
+vslgh_SENT138_S06_R01_F_g03,vslgh,S06,kinh nguyệt,kinh nguyệt,0.9006,1,kinh nguyệt|y tế|không hiểu|cho tôi|sau
+vslgh_SENT138_S06_R01_F_g04,vslgh,S06,có,có,0.6667,1,có|có không|không|phải không|cần không
+vslgh_SENT139_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.5239,1,tôi|khan ho|đặt|ho|giấy
+vslgh_SENT139_S06_R01_F_g01,vslgh,S06,đến,đến,0.5067,1,đến|mắt|khám|gia đình|trám
+vslgh_SENT139_S06_R01_F_g02,vslgh,S06,khám,khám,0.1083,1,khám|siêu âm|rồi|tổng quát|đây
+vslgh_SENT139_S06_R01_F_g03,vslgh,S06,mắt,mắt,0.9813,1,mắt|răng|chân răng|tai|đánh răng
+vslgh_SENT140_S06_R01_F_g00,vslgh,S06,tôi,thuốc,0.1558,0,thuốc|tôi|hay quên|xong|thuốc uống
+vslgh_SENT140_S06_R01_F_g01,vslgh,S06,mắt,xong,0.6917,0,xong|mắt|kinh|hay quên|từng
+vslgh_SENT140_S06_R01_F_g02,vslgh,S06,phải,phải,0.6737,1,phải|mắt|tai|trái|nghe
+vslgh_SENT140_S06_R01_F_g03,vslgh,S06,mờ,mờ,0.9804,1,mờ|cơm bình dân|55|công viên|ngọn cây
+vslgh_SENT141_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.4456,1,tôi|vết thương|nghĩ|mắt|ho
+vslgh_SENT141_S06_R01_F_g01,vslgh,S06,cận thị,cận thị,0.9878,1,cận thị|sỗ gì|mắt trái|liên lạc|mỳ tôm
+vslgh_SENT142_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.3158,1,tôi|vết thương|đến|con|nghe
+vslgh_SENT142_S06_R01_F_g01,vslgh,S06,đeo kính,đeo kính,0.9282,1,đeo kính|lo lắng|con bê|viêm xoang|thừa thiên – huế
+vslgh_SENT142_S06_R01_F_g02,vslgh,S06,có,có,0.5612,1,có|có không|phải không|không|gì
+vslgh_SENT143_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8789,1,tôi|gần đây|đến|ix|vết thương
+vslgh_SENT143_S06_R01_F_g01,vslgh,S06,đến,đến,0.8790,1,đến|khám|trám|không dám|hôm nay
+vslgh_SENT143_S06_R01_F_g02,vslgh,S06,khám,khám,0.4248,1,khám|siêu âm|đây|tổng quát|đợi
+vslgh_SENT143_S06_R01_F_g03,vslgh,S06,tai,tai,0.5271,1,tai|mắt|kinh nguyệt|nghĩ|răng
+vslgh_SENT143_S06_R01_F_g04,vslgh,S06,mũi,mũi,0.9969,1,mũi|răng|sai|mắt|cạo răng
+vslgh_SENT143_S06_R01_F_g05,vslgh,S06,họng,họng,0.9680,1,họng|cạo răng|mũi|phổi|sai
+vslgh_SENT144_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7318,1,tôi|vết thương|nội soi|nghĩ|bác sĩ
+vslgh_SENT144_S06_R01_F_g01,vslgh,S06,tai,hiểu,0.5264,0,hiểu|tai|nghe|viêm xoang|miệng há
+vslgh_SENT144_S06_R01_F_g02,vslgh,S06,ù,ù,0.3330,1,ù|22|120|tai ù|đều
+vslgh_SENT144_S06_R01_F_g03,vslgh,S06,bệnh,bệnh,0.9705,1,bệnh|bệnh gì|không|quặn thắt|ngồi
+vslgh_SENT145_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.5841,1,tôi|vết thương|gần đây|đặt|đến
+vslgh_SENT145_S06_R01_F_g01,vslgh,S06,viêm xoang,viêm xoang,0.9157,1,viêm xoang|thẻ|lấy|tai|mắt trái
+vslgh_SENT145_S06_R01_F_g02,vslgh,S06,bệnh,bệnh,0.9878,1,bệnh|việc|bệnh gì|phải không|giải thích
+vslgh_SENT146_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8452,1,tôi|gần đây|đến|vết thương|ix
+vslgh_SENT146_S06_R01_F_g01,vslgh,S06,đến,đến,0.9379,1,đến|trám|khám|tôi|hôm nay
+vslgh_SENT146_S06_R01_F_g02,vslgh,S06,khám,khám,0.6926,1,khám|siêu âm|yếu|không hiểu|phổi
+vslgh_SENT146_S06_R01_F_g03,vslgh,S06,răng,mắt,0.8762,0,mắt|răng|đánh răng|chân răng|quân đội
+vslgh_SENT147_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.3394,1,tôi|họng|mắt|răng|thấy
+vslgh_SENT147_S06_R01_F_g01,vslgh,S06,răng,răng,0.3949,1,răng|mắt|chân răng|miệng há|xét nghiệm
+vslgh_SENT147_S06_R01_F_g02,vslgh,S06,đau,mờ,0.1705,0,mờ|3|đăng ký|xin|đèn báo giao thông
+vslgh_SENT148_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8180,1,tôi|gần đây|đặt|giấy|họng
+vslgh_SENT148_S06_R01_F_g01,vslgh,S06,răng,răng,0.2687,1,răng|mắt|cạo răng|hút thuốc|họng
+vslgh_SENT148_S06_R01_F_g02,vslgh,S06,sâu,sâu,0.8069,1,sâu|chỉ định|nấm da|quả nhãn|vào mùa
+vslgh_SENT149_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8636,1,tôi|họng|gần đây|vết thương|đặt
+vslgh_SENT149_S06_R01_F_g01,vslgh,S06,chân răng,chân răng,0.7720,1,chân răng|mắt|răng|thấy|mắt trái
+vslgh_SENT149_S06_R01_F_g02,vslgh,S06,chảy máu,chảy máu,0.9837,1,chảy máu|máu|mờ|nôn|táo bón
+vslgh_SENT150_S06_R01_F_g00,vslgh,S06,cạo răng,cạo răng,0.3468,1,cạo răng|mũi|mắt|họng|đánh răng
+vslgh_SENT150_S06_R01_F_g01,vslgh,S06,muốn,muốn,0.9603,1,muốn|nam|ăn|đau|đỏ
+vslgh_SENT151_S06_R01_F_g00,vslgh,S06,bác sĩ,bác sĩ,0.4200,1,bác sĩ|xem|tên|hàng này|hỏi tôi
+vslgh_SENT151_S06_R01_F_g01,vslgh,S06,hỏi,hỏi,0.3300,1,hỏi|hỏi tôi|không được|nào|không cần
+vslgh_SENT151_S06_R01_F_g02,vslgh,S06,tôi,tôi,0.8149,1,tôi|nộp|đau|giấy|giấy phép
+vslgh_SENT151_S06_R01_F_g03,vslgh,S06,đau,đau,0.8824,1,đau|hít thở|mũi sổ|hút thuốc|nam
+vslgh_SENT151_S06_R01_F_g04,vslgh,S06,đâu,ở đâu,0.6309,0,ở đâu|đâu|tiếp tục|cố gắng|gì
+vslgh_SENT152_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8921,1,tôi|họng|gần đây|đập|đặt
+vslgh_SENT152_S06_R01_F_g01,vslgh,S06,ngay đây,ngay đây,0.9505,1,ngay đây|rõ|bảo vệ môi trường|thi|hỏi tôi
+vslgh_SENT152_S06_R01_F_g02,vslgh,S06,đau,bông hoa,0.2931,0,bông hoa|mũi sổ|đau|bụi phấn|lấy thuốc
+vslgh_SENT153_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7671,1,tôi|gần đây|đặt|vết thương|họng
+vslgh_SENT153_S06_R01_F_g01,vslgh,S06,đau,đau,0.9008,1,đau|thuốc uống|hít thở|ix|nộp
+vslgh_SENT153_S06_R01_F_g02,vslgh,S06,lắm,lắm,0.5518,1,lắm|nhiều|nặng|ở đâu|lỡ mất
+vslgh_SENT154_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8078,1,tôi|gần đây|đặt|giấy|vết thương
+vslgh_SENT154_S06_R01_F_g01,vslgh,S06,đau,đau,0.6350,1,đau|mũi sổ|thuốc uống|nộp|đầu đau
+vslgh_SENT154_S06_R01_F_g02,vslgh,S06,hơi hơi,ít,0.5255,0,ít|ê buốt|thỉnh thoảng|hơi hơi|bình thường
+vslgh_SENT155_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8222,1,tôi|gần đây|đặt|bác sĩ|họng
+vslgh_SENT155_S06_R01_F_g01,vslgh,S06,đau,đau,0.9354,1,đau|mũi sổ|xong|ê buốt|không
+vslgh_SENT155_S06_R01_F_g02,vslgh,S06,âm ỉ,âm ỉ,0.9898,1,âm ỉ|con muỗi|phỏng|tổng quát|chỉ định
+vslgh_SENT156_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9059,1,tôi|đặt|gần đây|giấy|kết quả
+vslgh_SENT156_S06_R01_F_g01,vslgh,S06,nhói,nhói,0.6136,1,nhói|ngực đau|nước tiểu|con|tay trái
+vslgh_SENT156_S06_R01_F_g02,vslgh,S06,đau,đau,0.8360,1,đau|nôn|mũi sổ|xong|táo bón
+vslgh_SENT157_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8440,1,tôi|gần đây|khan ho|thuốc|ở đây
+vslgh_SENT157_S06_R01_F_g01,vslgh,S06,quặn thắt,quặn thắt,0.8397,1,quặn thắt|quân đội|bmi|mua|một tiếng
+vslgh_SENT157_S06_R01_F_g02,vslgh,S06,đau,đau,0.7023,1,đau|mũi sổ|ngắt hoa|trắng muốt|nghi ngờ
+vslgh_SENT158_S06_R01_F_g00,vslgh,S06,nay,hôm nay,0.5402,0,hôm nay|gần đây|đây|nay|ở đây
+vslgh_SENT158_S06_R01_F_g01,vslgh,S06,tôi,tôi,0.9765,1,tôi|ấn|gần đây|khám|mới
+vslgh_SENT158_S06_R01_F_g02,vslgh,S06,khó ngủ,khó ngủ,0.2313,1,khó ngủ|chưa|ngủ khó|táo bón|nôn
+vslgh_SENT159_S06_R01_F_g00,vslgh,S06,bác sĩ,bác sĩ,0.8979,1,bác sĩ|thú y|xem|đeo kính|lo lắng
+vslgh_SENT159_S06_R01_F_g01,vslgh,S06,hỏi,hỏi,0.8048,1,hỏi|hỏi tôi|xem|không được|không cần
+vslgh_SENT159_S06_R01_F_g02,vslgh,S06,tôi,tôi,0.6477,1,tôi|thuốc|nộp|giấy phép|giấy
+vslgh_SENT159_S06_R01_F_g03,vslgh,S06,đau,đau,0.9608,1,đau|xong|thuốc uống|ix|hít thở
+vslgh_SENT159_S06_R01_F_g04,vslgh,S06,khi,khi,0.8561,1,khi|không được|thẻ|lúc|khi nào
+vslgh_SENT159_S06_R01_F_g05,vslgh,S06,nào,ở đâu,0.4646,0,ở đâu|nào|đâu|khi nào|được không
+vslgh_SENT160_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8337,1,tôi|gần đây|họng|nội soi|vết thương
+vslgh_SENT160_S06_R01_F_g01,vslgh,S06,đau,đau,0.9752,1,đau|mũi sổ|mới|xong|hít thở
+vslgh_SENT160_S06_R01_F_g02,vslgh,S06,3 ngày,3 ngày,0.9297,1,3 ngày|đầu đau|âm ỉ|xuống|hỏi tôi
+vslgh_SENT160_S06_R01_F_g03,vslgh,S06,rồi,rồi,0.9885,1,rồi|đau|gì|không nhận|vị
+vslgh_SENT161_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8772,1,tôi|gần đây|vết thương|thuốc|bác sĩ
+vslgh_SENT161_S06_R01_F_g01,vslgh,S06,đau,đau,0.8697,1,đau|thuốc uống|xong|hít thở|mũi sổ
+vslgh_SENT161_S06_R01_F_g02,vslgh,S06,mới,mới,0.9594,1,mới|cân nặng|nộp|để|xong
+vslgh_SENT161_S06_R01_F_g03,vslgh,S06,hôm qua,hôm qua,0.9356,1,hôm qua|mắt|rồi|héc tô gam (hg)|năm ngoái
+vslgh_SENT162_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7303,1,tôi|đặt|gần đây|giấy|nội soi
+vslgh_SENT162_S06_R01_F_g01,vslgh,S06,ăn,ăn,0.8944,1,ăn|cảm ơn|thuốc uống|uống|vị
+vslgh_SENT162_S06_R01_F_g02,vslgh,S06,xong,xong,0.8566,1,xong|đau|mới|nặng|ix
+vslgh_SENT162_S06_R01_F_g03,vslgh,S06,mới,mới,0.9240,1,mới|máu|giúp|giấy|chảy máu
+vslgh_SENT162_S06_R01_F_g04,vslgh,S06,đau,đau,0.2312,1,đau|mới|ra nước|nào|tôi
+vslgh_SENT163_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8855,1,tôi|gần đây|đặt|vết thương|đến
+vslgh_SENT163_S06_R01_F_g01,vslgh,S06,lúc,lúc,0.9519,1,lúc|khi|cccd|khi nào|di truyền
+vslgh_SENT163_S06_R01_F_g02,vslgh,S06,đói,đói,0.8365,1,đói|tiểu|kinh nguyệt|cho tôi|ngực đau
+vslgh_SENT163_S06_R01_F_g03,vslgh,S06,đau bụng,đau,0.3365,0,đau|mũi sổ|đau không|đau bụng|chúc mừng
+vslgh_SENT164_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8522,1,tôi|gần đây|đặt|giấy|thuốc
+vslgh_SENT164_S06_R01_F_g01,vslgh,S06,ăn,ăn,0.9568,1,ăn|nam|gia đình|số|khí hư
+vslgh_SENT164_S06_R01_F_g02,vslgh,S06,muốn,muốn,0.8229,1,muốn|ăn|ngày phụ nữ việt nam 20/10|nam|lễ hội
+vslgh_SENT164_S06_R01_F_g03,vslgh,S06,không,không,0.9619,1,không|không có|bình thường|có thế|đại diện
+vslgh_SENT165_S06_R01_F_g00,vslgh,S06,tôi,bác sĩ,0.3951,0,bác sĩ|ix|hỏi|tôi|sáng
+vslgh_SENT165_S06_R01_F_g01,vslgh,S06,bác sĩ,bác sĩ,0.9727,1,bác sĩ|xem|thú y|đeo kính|lo lắng
+vslgh_SENT165_S06_R01_F_g02,vslgh,S06,hỏi,hỏi tôi,0.9719,0,hỏi tôi|hỏi|trả|rõ|âm ỉ
+vslgh_SENT165_S06_R01_F_g03,vslgh,S06,thuốc uống,thuốc uống,0.6499,1,thuốc uống|uống|thuốc|nước|ăn
+vslgh_SENT165_S06_R01_F_g04,vslgh,S06,gì,gì,0.9180,1,gì|đợi|đau|đây|không có
+vslgh_SENT165_S06_R01_F_g05,vslgh,S06,đang,đang,0.4619,1,đang|nào|gì|cân|đây
+vslgh_SENT166_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8303,1,tôi|gần đây|thuốc|giấy|vết thương
+vslgh_SENT166_S06_R01_F_g01,vslgh,S06,thuốc,thuốc,0.3046,1,thuốc|ăn|uống|thuốc uống|mặn
+vslgh_SENT166_S06_R01_F_g02,vslgh,S06,dị ứng,hồ sơ,0.0855,0,hồ sơ|hàng này|dị ứng|không được|ít
+vslgh_SENT166_S06_R01_F_g03,vslgh,S06,không,có,0.2674,0,có|phải không|có không|không|cần không
+vslgh_SENT167_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9317,1,tôi|gần đây|ix|vết thương|bác sĩ
+vslgh_SENT167_S06_R01_F_g01,vslgh,S06,dị ứng,dị ứng,0.3171,1,dị ứng|hút thuốc|thấy|nhìn|chữ
+vslgh_SENT167_S06_R01_F_g02,vslgh,S06,không,không có,0.8630,0,không có|không|vui chơi|chữ|con mèo
+vslgh_SENT168_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8900,1,tôi|gần đây|đặt|nước|họng
+vslgh_SENT168_S06_R01_F_g01,vslgh,S06,mũi sổ,mũi nghẹt,0.1761,0,mũi nghẹt|sai|ăn|kim loại|khí hư
+vslgh_SENT168_S06_R01_F_g02,vslgh,S06,có,có,0.7477,1,có|có không|phải không|xong rồi|không
+vslgh_SENT169_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8484,1,tôi|gần đây|đặt|vết thương|họng
+vslgh_SENT169_S06_R01_F_g01,vslgh,S06,mũi nghẹt,nhìn,0.2999,0,nhìn|cạo răng|hút thuốc|tiếng anh|vô duyên
+vslgh_SENT169_S06_R01_F_g02,vslgh,S06,có,có,0.7613,1,có|phải không|có không|không|không thấy
+vslgh_SENT170_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8252,1,tôi|khan ho|gần đây|giấy|đặt
+vslgh_SENT170_S06_R01_F_g01,vslgh,S06,khan ho,khan ho,0.7608,1,khan ho|ra nước|ho|tôi|thở khó
+vslgh_SENT171_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7743,1,tôi|khan ho|giấy|đặt|gần đây
+vslgh_SENT171_S06_R01_F_g01,vslgh,S06,ho,khan ho,0.2234,0,khan ho|tôi|ho|ra nước|con
+vslgh_SENT171_S06_R01_F_g02,vslgh,S06,ra nước,khan ho,0.7130,0,khan ho|ra nước|ho|tôi|thở khó
+vslgh_SENT172_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9206,1,tôi|gần đây|giấy|ở đây|họng
+vslgh_SENT172_S06_R01_F_g01,vslgh,S06,cảm thấy,cảm thấy,0.3663,1,cảm thấy|khan ho|thở khó|ho|tôi
+vslgh_SENT172_S06_R01_F_g02,vslgh,S06,thở khó,thở khó,0.9738,1,thở khó|bạn|thi cử|khó khăn|thói quen
+vslgh_SENT173_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7553,1,tôi|nộp|họng|thuốc|vết thương
+vslgh_SENT173_S06_R01_F_g01,vslgh,S06,hút thuốc,hút thuốc,0.9620,1,hút thuốc|thấy|nghe|nhìn|mũi nghẹt
+vslgh_SENT173_S06_R01_F_g02,vslgh,S06,không có,không có,0.9351,1,không có|không|vui chơi|tự do|con mèo
+vslgh_SENT174_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9307,1,tôi|gần đây|đến|đặt|bác sĩ
+vslgh_SENT174_S06_R01_F_g01,vslgh,S06,rượu bia,bia rượu,0.7825,0,bia rượu|rượu bia|ngay|lần đầu|đâu
+vslgh_SENT174_S06_R01_F_g02,vslgh,S06,uống,không,0.1687,0,không|uống|kinh nguyệt|phải|hàng này
+vslgh_SENT174_S06_R01_F_g03,vslgh,S06,ít,ít,0.9215,1,ít|phải không|thuốc uống|không cần|nhỏ
+vslgh_SENT175_S06_R01_F_g00,vslgh,S06,bác sĩ,bác sĩ,0.9422,1,bác sĩ|đeo kính|xem|thú y|lo lắng
+vslgh_SENT175_S06_R01_F_g01,vslgh,S06,hỏi,hỏi tôi,0.7631,0,hỏi tôi|hỏi|rõ|không được|ít
+vslgh_SENT175_S06_R01_F_g02,vslgh,S06,gia đình,gia đình,0.9349,1,gia đình|đáng lo|làm|mụn|kim loại
+vslgh_SENT175_S06_R01_F_g03,vslgh,S06,tôi,bệnh,0.5307,0,bệnh|cầm|bệnh gì|lần đầu|nào
+vslgh_SENT175_S06_R01_F_g04,vslgh,S06,bệnh gì,khác,0.7363,0,khác|bệnh gì|còn|ở đâu|đợi
+vslgh_SENT175_S06_R01_F_g05,vslgh,S06,không,không,0.1945,1,không|phải không|có|cần không|không có
+vslgh_SENT176_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.5384,1,tôi|đến|ix|thẻ|khi
+vslgh_SENT176_S06_R01_F_g01,vslgh,S06,gia đình,gia đình,0.9733,1,gia đình|kim loại|cảm ơn|gặp|tên
+vslgh_SENT176_S06_R01_F_g02,vslgh,S06,bệnh gì,bệnh gì,0.9639,1,bệnh gì|khác|sinh hóa|ở đâu|bệnh
+vslgh_SENT176_S06_R01_F_g03,vslgh,S06,không có,không có,0.8127,1,không có|không|con sư tử|cần không|có thế
+vslgh_SENT177_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8809,1,tôi|gần đây|giấy|đặt|kết quả
+vslgh_SENT177_S06_R01_F_g01,vslgh,S06,thuốc,thuốc,0.7791,1,thuốc|thuốc uống|nước|nước sôi|uống
+vslgh_SENT177_S06_R01_F_g02,vslgh,S06,uống,thuốc,0.1528,0,thuốc|t|uống|hiểu|tai ù
+vslgh_SENT177_S06_R01_F_g03,vslgh,S06,rồi,gì,0.1339,0,gì|rồi|nặng|xong|hết
+vslgh_SENT177_S06_R01_F_g04,vslgh,S06,bớt,bớt,0.9536,1,bớt|kết quả|đóng tiền|kiêng|nhiều
+vslgh_SENT177_S06_R01_F_g05,vslgh,S06,không,không có,0.5384,0,không có|không|tự do|tai ù|nghe
+vslgh_SENT178_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7633,1,tôi|ix|sáng|bác sĩ|kiêng
+vslgh_SENT178_S06_R01_F_g01,vslgh,S06,nằm,nằm,0.8433,1,nằm|vén áo|nhiều|công viên|đại diện
+vslgh_SENT178_S06_R01_F_g02,vslgh,S06,cần không,cần,0.7396,0,cần|cần không|cần không?|chậm|chống đối
+vslgh_SENT179_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9256,1,tôi|gần đây|nay|sáng|tay
+vslgh_SENT179_S06_R01_F_g01,vslgh,S06,vén áo,vén áo,0.7802,1,vén áo|quặn thắt|gan|huyết áp|thừa ruột
+vslgh_SENT179_S06_R01_F_g02,vslgh,S06,phải không,phải không,0.9505,1,phải không|được không|phải không?|tại sao|đúng không
+vslgh_SENT180_S06_R01_F_g00,vslgh,S06,bác sĩ,bác sĩ,0.9644,1,bác sĩ|thú y|đeo kính|lo lắng|viêm xoang
+vslgh_SENT180_S06_R01_F_g01,vslgh,S06,xem,hỏi tôi,0.1470,0,hỏi tôi|tên|hỏi|xem|có
+vslgh_SENT180_S06_R01_F_g02,vslgh,S06,tôi,tôi,0.8465,1,tôi|lâu|con|mới|ấn
+vslgh_SENT180_S06_R01_F_g03,vslgh,S06,ấn,ấn,0.8373,1,ấn|bệnh|đo|da|đau
+vslgh_SENT180_S06_R01_F_g04,vslgh,S06,đau,thấy,0.1356,0,thấy|có|đau|không|thuốc
+vslgh_SENT180_S06_R01_F_g05,vslgh,S06,không,có không,0.4215,0,có không|có|phải không|không|cần không
+vslgh_SENT181_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9723,1,tôi|gần đây|kết quả|vết thương|ix
+vslgh_SENT181_S06_R01_F_g01,vslgh,S06,ấn,ấn,0.9670,1,ấn|bệnh|mâm ngũ quả|bia rượu|tô màu
+vslgh_SENT181_S06_R01_F_g02,vslgh,S06,đau,đau,0.4796,1,đau|nặng|ix|lâu|tôi
+vslgh_SENT181_S06_R01_F_g03,vslgh,S06,lắm,nhiều,0.5659,0,nhiều|lắm|ở đâu|nặng|khác
+vslgh_SENT182_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9272,1,tôi|gần đây|đặt|họng|thuốc
+vslgh_SENT182_S06_R01_F_g01,vslgh,S06,chỗ khác,chỗ khác,0.6088,1,chỗ khác|buồn|nhói|mề đay|thừa ruột
+vslgh_SENT182_S06_R01_F_g02,vslgh,S06,đau,thuốc uống,0.1813,0,thuốc uống|ăn|thấy|đau|số
+vslgh_SENT182_S06_R01_F_g03,vslgh,S06,không có,không có,0.8206,1,không có|không|chữ|vui chơi|phim hoạt hình
+vslgh_SENT183_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8818,1,tôi|gần đây|đặt|họng|giấy
+vslgh_SENT183_S06_R01_F_g01,vslgh,S06,hay quên,hay quên,0.8846,1,hay quên|ăn|sáng|hẹn|kinh
+vslgh_SENT183_S06_R01_F_g02,vslgh,S06,nhiều,nhiều,0.7593,1,nhiều|lắm|ở đâu|khác|tay trái
+vslgh_SENT184_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9166,1,tôi|gần đây|khi|khan ho|vết thương
+vslgh_SENT184_S06_R01_F_g01,vslgh,S06,cảm thấy,cảm thấy,0.3467,1,cảm thấy|tôi|vết thương|nghe|nghĩ
+vslgh_SENT184_S06_R01_F_g02,vslgh,S06,lo lắng,lo lắng,0.9521,1,lo lắng|đáng lo|con bê|hàng này|chóng mặt
+vslgh_SENT184_S06_R01_F_g03,vslgh,S06,nhiều,có,0.4271,0,có|phải không|che|có không|muốn
+vslgh_SENT185_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8278,1,tôi|đặt|gần đây|giấy|ho
+vslgh_SENT185_S06_R01_F_g01,vslgh,S06,cảm thấy,cảm thấy,0.6995,1,cảm thấy|tôi|ho|thở khó|chỉ định
+vslgh_SENT185_S06_R01_F_g02,vslgh,S06,buồn,buồn,0.6900,1,buồn|khó khăn|xe khách|siêu âm|thân cây
+vslgh_SENT185_S06_R01_F_g03,vslgh,S06,nhiều,lắm,0.6264,0,lắm|nhiều|nào|ở đâu|gì
+vslgh_SENT186_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8598,1,tôi|gần đây|đến|vết thương|đặt
+vslgh_SENT186_S06_R01_F_g01,vslgh,S06,liệu,liệu,0.8719,1,liệu|sâu|nộp|khó ngủ|nôn
+vslgh_SENT186_S06_R01_F_g02,vslgh,S06,trầm cảm,đeo kính,0.2349,0,đeo kính|chụp|kính|trầm cảm|nghé
+vslgh_SENT186_S06_R01_F_g03,vslgh,S06,có không,phải không,0.3210,0,phải không|có|không|có không|muốn
+vslgh_SENT187_S06_R01_F_g00,vslgh,S06,bác sĩ,bác sĩ,0.8810,1,bác sĩ|thú y|viêm xoang|đeo kính|đen láy (như đen nhánh)
+vslgh_SENT187_S06_R01_F_g01,vslgh,S06,hỏi tôi,hỏi tôi,0.1157,1,hỏi tôi|chỉ định|cho tôi|ix|vào bình
+vslgh_SENT187_S06_R01_F_g02,vslgh,S06,đau,đau,0.1299,1,đau|nặng|đọc|nhà|đo
+vslgh_SENT187_S06_R01_F_g03,vslgh,S06,bao lâu,bao lâu,0.8408,1,bao lâu|bao giờ?|trước|lúc|không
+vslgh_SENT188_S06_R01_F_g00,vslgh,S06,bác sĩ,bác sĩ,0.9543,1,bác sĩ|xem|đeo kính|thú y|y tế
+vslgh_SENT188_S06_R01_F_g01,vslgh,S06,hỏi tôi,hỏi tôi,0.9890,1,hỏi tôi|rõ|mỗi ngày|ít|hỏi
+vslgh_SENT188_S06_R01_F_g02,vslgh,S06,đau,đau,0.9038,1,đau|đau không|thuốc uống|ê buốt|không
+vslgh_SENT188_S06_R01_F_g03,vslgh,S06,thường xuyên,thường xuyên,0.9941,1,thường xuyên|mẫu|trám|nhiều|thêm
+vslgh_SENT188_S06_R01_F_g04,vslgh,S06,có không,có,0.4596,0,có|có không|không|phải không|cần không
+vslgh_SENT189_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8468,1,tôi|nộp|giấy phép|họng|thuốc
+vslgh_SENT189_S06_R01_F_g01,vslgh,S06,đau,đau,0.7743,1,đau|hít thở|nam|mới|tiểu
+vslgh_SENT189_S06_R01_F_g02,vslgh,S06,mới,mới,0.2558,1,mới|hỏi tôi|không cần|hỏi|giải thích
+vslgh_SENT189_S06_R01_F_g03,vslgh,S06,có,không,0.2480,0,không|ra|ảnh hưởng|có|bệnh gì
+vslgh_SENT189_S06_R01_F_g04,vslgh,S06,thỉnh thoảng,bất thường,0.4559,0,bất thường|con|thỉnh thoảng|con cá|phỏng
+vslgh_SENT190_S06_R01_F_g00,vslgh,S06,bác sĩ,bác sĩ,0.8760,1,bác sĩ|thú y|xem|đeo kính|lo lắng
+vslgh_SENT190_S06_R01_F_g01,vslgh,S06,hỏi tôi,hỏi tôi,0.9225,1,hỏi tôi|chỉ định|y tá|mỗi ngày|cho tôi
+vslgh_SENT190_S06_R01_F_g02,vslgh,S06,tiểu,tiểu,0.9356,1,tiểu|nước tiểu|muốn|không muốn|phải
+vslgh_SENT190_S06_R01_F_g03,vslgh,S06,đau,hỏi,0.0321,0,hỏi|chóng mặt|nghiêm trọng|hay quên|1 000 000 (một triệu)
+vslgh_SENT190_S06_R01_F_g04,vslgh,S06,có không,có,0.6737,0,có|có không|phải không|không|xong rồi
+vslgh_SENT191_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8803,1,tôi|nội soi|giấy phép|vết thương|thuốc
+vslgh_SENT191_S06_R01_F_g01,vslgh,S06,vết thương,vết thương,0.9790,1,vết thương|khí hư|kinh|đặt|soi nội
+vslgh_SENT191_S06_R01_F_g02,vslgh,S06,sâu,sâu,0.5686,1,sâu|giải thích|máu|thẻ|phòng
+vslgh_SENT191_S06_R01_F_g03,vslgh,S06,có không,có,0.4634,0,có|có không|phải không|cần không|không
+vslgh_SENT192_S06_R01_F_g00,vslgh,S06,bác sĩ,bác sĩ,0.9211,1,bác sĩ|đeo kính|xem|thú y|lo lắng
+vslgh_SENT192_S06_R01_F_g01,vslgh,S06,hỏi tôi,hỏi tôi,0.2723,1,hỏi tôi|thỉnh thoảng|ít|22|ê buốt
+vslgh_SENT192_S06_R01_F_g02,vslgh,S06,ngã,thẻ,0.3899,0,thẻ|ngã|mang|bánh cuốn|bệnh gì
+vslgh_SENT192_S06_R01_F_g03,vslgh,S06,khi,khi,0.1533,1,khi|khi nào|đâu|nào|ở đâu
+vslgh_SENT192_S06_R01_F_g04,vslgh,S06,nào,nào,0.4350,1,nào|ở đâu|đâu|được không|muốn
+vslgh_SENT193_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9039,1,tôi|gần đây|khan ho|thuốc|ở đây
+vslgh_SENT193_S06_R01_F_g01,vslgh,S06,da,da,0.5989,1,da|ấn|ăn|đau|bệnh
+vslgh_SENT193_S06_R01_F_g02,vslgh,S06,ngứa nhiều,ngứa nhiều,0.9601,1,ngứa nhiều|gãi|đang|sinh đôi|béo phì
+vslgh_SENT194_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9012,1,tôi|gần đây|khan ho|giấy|ở đây
+vslgh_SENT194_S06_R01_F_g01,vslgh,S06,mề đay,mề đay,0.7689,1,mề đay|khám|huyết áp|da|âm ỉ
+vslgh_SENT194_S06_R01_F_g02,vslgh,S06,có không,có không,0.5378,1,có không|có|phải không|xong rồi|cần không
+vslgh_SENT195_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8912,1,tôi|gần đây|thuốc|khan ho|che
+vslgh_SENT195_S06_R01_F_g01,vslgh,S06,gãi,gãi,0.9450,1,gãi|phòng|ngứa nhiều|tàu hoả|toa xe
+vslgh_SENT195_S06_R01_F_g02,vslgh,S06,suốt,suốt,0.5741,1,suốt|mỗi ngày|khi nào|đen láy (như đen nhánh)|quyết tâm
+vslgh_SENT196_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6121,1,tôi|thuốc|ix|mua|thuốc uống
+vslgh_SENT196_S06_R01_F_g01,vslgh,S06,thuốc,ix,0.7562,0,ix|thuốc|thuốc uống|số|tiền
+vslgh_SENT196_S06_R01_F_g02,vslgh,S06,bổi,phỏng,0.1611,0,phỏng|bổi|tim|tay|ăn
+vslgh_SENT196_S06_R01_F_g03,vslgh,S06,chưa,không được,0.3369,0,không được|chưa|bụi phấn|táo bón|mùa xuân
+vslgh_SENT197_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8613,1,tôi|bác sĩ|phẫu thuật|gần đây|đến
+vslgh_SENT197_S06_R01_F_g01,vslgh,S06,cởi áo,cởi,0.9391,0,cởi|cởi áo|hẹn|thể dục|lễ hội hóa trang
+vslgh_SENT197_S06_R01_F_g02,vslgh,S06,cần không,cần không,0.9064,1,cần không|cần|thi|bức tranh|lấy thuốc
+vslgh_SENT198_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8246,1,tôi|gần đây|ix|thuốc|nộp
+vslgh_SENT198_S06_R01_F_g01,vslgh,S06,nước sôi,nước sôi,0.5844,1,nước sôi|bình thường|thuốc uống|thường xuyên|nhiều
+vslgh_SENT198_S06_R01_F_g02,vslgh,S06,phỏng,phỏng,0.8440,1,phỏng|thêm|nấm da|đúng không|hội thảo
+vslgh_SENT199_S06_R01_F_g00,vslgh,S06,có phải,hỏi,0.6314,0,hỏi|có phải|môn địa lý|héc tô gam (hg)|con kiến
+vslgh_SENT199_S06_R01_F_g01,vslgh,S06,thai,cơ bản,0.4191,0,cơ bản|thai|môn địa lý|bệnh|ấn
+vslgh_SENT199_S06_R01_F_g02,vslgh,S06,có không,phải không,0.5954,0,phải không|giải thích|muốn|không|cuối cùng
+vslgh_SENT200_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.5387,1,tôi|con|mạch|cảm thấy|sâu
+vslgh_SENT200_S06_R01_F_g01,vslgh,S06,thai,thai,0.3196,1,thai|phòng|đợi|nặng|táo bón
+vslgh_SENT200_S06_R01_F_g02,vslgh,S06,không có,không có,0.9299,1,không có|vui chơi|tự do|không|câu thơ
+vslgh_SENT201_S06_R01_F_g00,vslgh,S06,bác sĩ,bác sĩ,0.9594,1,bác sĩ|thú y|đeo kính|xem|lo lắng
+vslgh_SENT201_S06_R01_F_g01,vslgh,S06,hỏi tôi,hỏi tôi,0.9671,1,hỏi tôi|chỉ định|55|22|quay lại
+vslgh_SENT201_S06_R01_F_g02,vslgh,S06,kinh nguyệt,kinh nguyệt,0.5850,1,kinh nguyệt|khí hư|đỏ|vết thương|gặp
+vslgh_SENT201_S06_R01_F_g03,vslgh,S06,đều,đều,0.9797,1,đều|chóng mặt|xe cứu hỏa|120|bệnh gì
+vslgh_SENT201_S06_R01_F_g04,vslgh,S06,có không,có không,0.5042,1,có không|có|không|phải không|cần không
+vslgh_SENT202_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9005,1,tôi|thuốc|nội soi|đặt|tai
+vslgh_SENT202_S06_R01_F_g01,vslgh,S06,kinh nguyệt,kinh nguyệt,0.9061,1,kinh nguyệt|kinh|tai|khí hư|nữ
+vslgh_SENT202_S06_R01_F_g02,vslgh,S06,đều,đều,0.9768,1,đều|không|lạnh lùng|bệnh gì|1 000 000 (một triệu)
+vslgh_SENT202_S06_R01_F_g03,vslgh,S06,không,không,0.8666,1,không|không có|có thế|muốn|chữ
+vslgh_SENT203_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7639,1,tôi|vết thương|gần đây|đặt|họng
+vslgh_SENT203_S06_R01_F_g01,vslgh,S06,kinh,kinh,0.9754,1,kinh|nghe|kinh nguyệt|nín thở|tai ù
+vslgh_SENT203_S06_R01_F_g02,vslgh,S06,hết,hết,0.9012,1,hết|mới|da trắng|khỏi bệnh|lần đầu
+vslgh_SENT204_S06_R01_F_g00,vslgh,S06,bác sĩ,bác sĩ,0.9592,1,bác sĩ|đeo kính|xem|thú y|lo lắng
+vslgh_SENT204_S06_R01_F_g01,vslgh,S06,hỏi tôi,hỏi tôi,0.9801,1,hỏi tôi|55|22|ít|thỉnh thoảng
+vslgh_SENT204_S06_R01_F_g02,vslgh,S06,con,con,0.9300,1,con|tôi|thuốc uống|thỉnh thoảng|hỏi tôi
+vslgh_SENT204_S06_R01_F_g03,vslgh,S06,có chưa,có chưa,0.5511,1,có chưa|không được|chưa|không hiểu|chưa có
+vslgh_SENT205_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9269,1,tôi|gần đây|kết quả|đặt|giấy
+vslgh_SENT205_S06_R01_F_g01,vslgh,S06,con,con,0.3679,1,con|tôi|2|ho|khan ho
+vslgh_SENT205_S06_R01_F_g02,vslgh,S06,2,2,0.3205,1,2|120|1|60|khác
+vslgh_SENT205_S06_R01_F_g03,vslgh,S06,có,có không,0.3843,0,có không|có|phải không|không|cần không
+vslgh_SENT206_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8748,1,tôi|khan ho|gần đây|giấy|đặt
+vslgh_SENT206_S06_R01_F_g01,vslgh,S06,con,con,0.2232,1,con|tôi|xin|khan ho|sâu
+vslgh_SENT206_S06_R01_F_g02,vslgh,S06,chưa có,có chưa,0.3258,0,có chưa|thừa|táo bón|chưa|bụi phấn
+vslgh_SENT207_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9203,1,tôi|gần đây|đặt|đến|thuốc
+vslgh_SENT207_S06_R01_F_g01,vslgh,S06,khám,khám,0.7266,1,khám|đến|đợi|lâu|viết
+vslgh_SENT207_S06_R01_F_g02,vslgh,S06,thêm,thêm,0.8518,1,thêm|mới|kiêng|kỳ|kết quả
+vslgh_SENT207_S06_R01_F_g03,vslgh,S06,cần không,cần,0.4637,0,cần|cần không|lấy thuốc|chậm|không cần
+vslgh_SENT208_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6982,1,tôi|đặt|vết thương|gần đây|họng
+vslgh_SENT208_S06_R01_F_g01,vslgh,S06,khí hư,khí hư,0.9523,1,khí hư|kinh nguyệt|kinh|vết thương|tai ù
+vslgh_SENT208_S06_R01_F_g02,vslgh,S06,ra,bình thường,0.1623,0,bình thường|bảo hiểm|bệnh gì|phải|mũi sổ
+vslgh_SENT208_S06_R01_F_g03,vslgh,S06,bất thường,bất thường,0.5892,1,bất thường|thỉnh thoảng|bình thường|chảy máu|không nhận
+vslgh_SENT209_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6245,1,tôi|vết thương|nội soi|nghĩ|tai
+vslgh_SENT209_S06_R01_F_g01,vslgh,S06,mắt,mắt,0.5460,1,mắt|nín thở|chân răng|răng|nghĩ
+vslgh_SENT209_S06_R01_F_g02,vslgh,S06,mờ,mờ,0.9947,1,mờ|4|ngọn cây|55|đèn báo giao thông
+vslgh_SENT210_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9708,1,tôi|gần đây|giấy phép|nội soi|đơn
+vslgh_SENT210_S06_R01_F_g01,vslgh,S06,nhìn,nhìn,0.3783,1,nhìn|thấy|chữ|mũi sổ|xem
+vslgh_SENT210_S06_R01_F_g02,vslgh,S06,rõ,không,0.2893,0,không|rõ|khám|lịch hẹn|xong
+vslgh_SENT210_S06_R01_F_g03,vslgh,S06,không,không có,0.8890,0,không có|không|nữ|vui chơi|con sư tử
+vslgh_SENT211_S06_R01_F_g00,vslgh,S06,tôi,uống,0.1641,0,uống|nghe|đặt|đến|khi
+vslgh_SENT211_S06_R01_F_g01,vslgh,S06,đọc,xem,0.4618,0,xem|không được|khi nào|lo lắng|đọc
+vslgh_SENT211_S06_R01_F_g02,vslgh,S06,hàng này,hàng này,0.5386,1,hàng này|mỗi ngày|phải|lo lắng|chóng mặt
+vslgh_SENT211_S06_R01_F_g03,vslgh,S06,phải không,phải không,0.8679,1,phải không|được không|giải thích|không|việc
+vslgh_SENT212_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7239,1,tôi|thuốc|khi|sáng|đặt
+vslgh_SENT212_S06_R01_F_g01,vslgh,S06,chữ,chữ,0.3361,1,chữ|không|ít|3 ngày|không được
+vslgh_SENT212_S06_R01_F_g02,vslgh,S06,nhỏ,hỏi,0.1264,0,hỏi|không thấy|nhỏ|xem|đăng ký
+vslgh_SENT212_S06_R01_F_g03,vslgh,S06,không thấy,không thấy,0.7438,1,không thấy|sai|hối hận|vô duyên|ân hận
+vslgh_SENT213_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7839,1,tôi|nộp|họng|nội soi|giấy phép
+vslgh_SENT213_S06_R01_F_g01,vslgh,S06,thấy,thấy,0.7906,1,thấy|chữ|nhìn|hút thuốc|vết thương
+vslgh_SENT213_S06_R01_F_g02,vslgh,S06,không có,không có,0.5115,1,không có|sinh hóa|thể dục|yêu mến (yêu quí)|đáng lo
+vslgh_SENT214_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7633,1,tôi|vết thương|gần đây|họng|giấy
+vslgh_SENT214_S06_R01_F_g01,vslgh,S06,mắt trái,răng,0.6983,0,răng|mắt|chân răng|mắt trái|cạo răng
+vslgh_SENT214_S06_R01_F_g02,vslgh,S06,che,che,0.5398,1,che|mắt|răng|nhổ|chân răng
+vslgh_SENT215_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9113,1,tôi|đặt|ix|vết thương|đến
+vslgh_SENT215_S06_R01_F_g01,vslgh,S06,đọc,ấn,0.1014,0,ấn|bệnh|hội thảo|bắn bi|xuống
+vslgh_SENT215_S06_R01_F_g02,vslgh,S06,sỗ gì,số mấy,0.2778,0,số mấy|sỗ gì|thuốc|lấy thuốc|hỏi tôi
+vslgh_SENT216_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8833,1,tôi|ix|tiếp|đến|gần đây
+vslgh_SENT216_S06_R01_F_g01,vslgh,S06,đeo kính,đeo kính,0.8450,1,đeo kính|bác sĩ|kính|viêm xoang|lo lắng
+vslgh_SENT216_S06_R01_F_g02,vslgh,S06,phải không,có,0.5653,0,có|có không|phải không|không|gì
+vslgh_SENT217_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8840,1,tôi|ix|gần đây|nay|nhà
+vslgh_SENT217_S06_R01_F_g01,vslgh,S06,kính,kính,0.4724,1,kính|đeo kính|nghe|viêm xoang|tai
+vslgh_SENT217_S06_R01_F_g02,vslgh,S06,bỏ ra,bỏ ra,0.9924,1,bỏ ra|rồi|không|cần không|buổi đêm
+vslgh_SENT217_S06_R01_F_g03,vslgh,S06,phải không,phải không,0.9535,1,phải không|được không|đúng không|không|cuối cùng
+vslgh_SENT218_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8129,1,tôi|vết thương|thuốc|nội soi|nghĩ
+vslgh_SENT218_S06_R01_F_g01,vslgh,S06,mắt,mắt,0.9358,1,mắt|tai|kinh nguyệt|nghe|miệng há
+vslgh_SENT218_S06_R01_F_g02,vslgh,S06,đỏ,đỏ,0.9316,1,đỏ|gặp|chóng mặt|không được|không thấy
+vslgh_SENT218_S06_R01_F_g03,vslgh,S06,đau,không,0.1425,0,không|đau|ê buốt|nhìn|mũi sổ
+vslgh_SENT218_S06_R01_F_g04,vslgh,S06,có không,có không,0.5225,1,có không|có|không|phải không|cần không
+vslgh_SENT219_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6224,1,tôi|gần đây|nay|khan ho|tay
+vslgh_SENT219_S06_R01_F_g01,vslgh,S06,tai,mắt trái,0.1856,0,mắt trái|tai|nghe|che|chụp
+vslgh_SENT219_S06_R01_F_g02,vslgh,S06,trái,che,0.3805,0,che|trái|nghe|đang|tai
+vslgh_SENT219_S06_R01_F_g03,vslgh,S06,nghe,nghe,0.9655,1,nghe|màn|thừa thiên – huế|trụi lá|chụp
+vslgh_SENT219_S06_R01_F_g04,vslgh,S06,rõ,x quang,0.0967,0,x quang|lái xe|gói|trầm cảm|rõ
+vslgh_SENT219_S06_R01_F_g05,vslgh,S06,không,che,0.3359,0,che|không có|trái|nữ|được không
+vslgh_SENT220_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8149,1,tôi|đặt|gần đây|vết thương|giấy
+vslgh_SENT220_S06_R01_F_g01,vslgh,S06,tai,tai,0.8005,1,tai|nữ|hiểu|kinh|nghe
+vslgh_SENT220_S06_R01_F_g02,vslgh,S06,phải,phải,0.8383,1,phải|trái|nghe|tai|chức năng
+vslgh_SENT220_S06_R01_F_g03,vslgh,S06,nghe,nghe,0.9277,1,nghe|trái|phải|rõ|23
+vslgh_SENT220_S06_R01_F_g04,vslgh,S06,bình thường,bình thường,0.9938,1,bình thường|ê buốt|1 000 000 (một triệu)|55|mờ
+vslgh_SENT221_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8916,1,tôi|vết thương|gần đây|nội soi|đến
+vslgh_SENT221_S06_R01_F_g01,vslgh,S06,tai ù,tai ù,0.9873,1,tai ù|ù|đều|cô giáo|22
+vslgh_SENT221_S06_R01_F_g02,vslgh,S06,lắm,lắm,0.8072,1,lắm|nhiều|ở đâu|đâu|lỡ mất
+vslgh_SENT222_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9357,1,tôi|thuốc|gần đây|nước|vết thương
+vslgh_SENT222_S06_R01_F_g01,vslgh,S06,miệng há,mắt,0.7305,0,mắt|miệng há|răng|chân răng|họng
+vslgh_SENT222_S06_R01_F_g02,vslgh,S06,phải không,phải không,0.5783,1,phải không|được không|ngủ khó|muốn|đúng không
+vslgh_SENT223_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9086,1,tôi|đặt|thuốc|nước|gần đây
+vslgh_SENT223_S06_R01_F_g01,vslgh,S06,họng,họng,0.5296,1,họng|răng|mắt|cạo răng|nhổ
+vslgh_SENT223_S06_R01_F_g02,vslgh,S06,đau,thấy,0.1096,0,thấy|cảm ơn|ê buốt|đau|văn nghệ
+vslgh_SENT224_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9515,1,tôi|gần đây|thuốc|đặt|sáng
+vslgh_SENT224_S06_R01_F_g01,vslgh,S06,họng,miệng há,0.3828,0,miệng há|mắt|răng|chân răng|họng
+vslgh_SENT224_S06_R01_F_g02,vslgh,S06,amidan,dị ứng,0.3323,0,dị ứng|ê buốt|amidan|chữ|đều
+vslgh_SENT224_S06_R01_F_g03,vslgh,S06,có không,có không,0.7191,1,có không|có|không|cần không|phải không
+vslgh_SENT225_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7805,1,tôi|đến|đặt|tay trái|đập
+vslgh_SENT225_S06_R01_F_g01,vslgh,S06,khám,khám,0.5686,1,khám|chỗ khác|mắt|đến|con người
+vslgh_SENT225_S06_R01_F_g02,vslgh,S06,răng,răng,0.8603,1,răng|vị|mắt|miệng há|chân răng
+vslgh_SENT225_S06_R01_F_g03,vslgh,S06,đau,nhìn,0.1113,0,nhìn|đau|ê buốt|ăn|mũi sổ
+vslgh_SENT225_S06_R01_F_g04,vslgh,S06,có không,có không,0.3762,1,có không|có|phải không|không|cần không
+vslgh_SENT226_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8799,1,tôi|đặt|gần đây|giấy|mới
+vslgh_SENT226_S06_R01_F_g01,vslgh,S06,răng,mắt,0.7708,0,mắt|nhìn|răng|cạo răng|họng
+vslgh_SENT226_S06_R01_F_g02,vslgh,S06,sâu,sâu,0.7148,1,sâu|chỉ định|vào|này|thẻ
+vslgh_SENT226_S06_R01_F_g03,vslgh,S06,nặng,nhiều,0.5177,0,nhiều|nặng|gì|bớt|máu
+vslgh_SENT226_S06_R01_F_g04,vslgh,S06,lắm,rồi,0.3116,0,rồi|cân|lắm|đang|nay
+vslgh_SENT227_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9391,1,tôi|gần đây|đặt|mới|vết thương
+vslgh_SENT227_S06_R01_F_g01,vslgh,S06,răng,miệng há,0.3113,0,miệng há|răng|họng|mắt|chân răng
+vslgh_SENT227_S06_R01_F_g02,vslgh,S06,nhổ,nhổ,0.9624,1,nhổ|mắt|răng|nín thở|này
+vslgh_SENT227_S06_R01_F_g03,vslgh,S06,cần không,cần,0.6695,0,cần|cần không|loãng xương|không cần|da trắng
+vslgh_SENT228_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9494,1,tôi|gần đây|đặt|bác sĩ|đến
+vslgh_SENT228_S06_R01_F_g01,vslgh,S06,răng,răng,0.6805,1,răng|mắt|miệng há|chân răng|họng
+vslgh_SENT228_S06_R01_F_g02,vslgh,S06,nhổ,nhổ,0.9831,1,nhổ|mắt|mũi|cạo răng|họng
+vslgh_SENT228_S06_R01_F_g03,vslgh,S06,muốn,muốn,0.9824,1,muốn|ăn|khí hư|ngày phụ nữ việt nam 20/10|kim loại
+vslgh_SENT228_S06_R01_F_g04,vslgh,S06,không,không,0.8152,1,không|bình thường|anh dũng|chữ|sĩ diện
+vslgh_SENT229_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9386,1,tôi|gần đây|đặt|thuốc|mới
+vslgh_SENT229_S06_R01_F_g01,vslgh,S06,răng,răng,0.3345,1,răng|ăn|nhìn|mắt|nam
+vslgh_SENT229_S06_R01_F_g02,vslgh,S06,trám,đau,0.5240,0,đau|mũi sổ|nhỏ|mặn|ê buốt
+vslgh_SENT229_S06_R01_F_g03,vslgh,S06,muốn,ê buốt,0.3438,0,ê buốt|1 000 000 (một triệu)|đều|bình thường|thường xuyên
+vslgh_SENT230_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9365,1,tôi|gần đây|đặt|nội soi|giấy
+vslgh_SENT230_S06_R01_F_g01,vslgh,S06,răng,mắt,0.5585,0,mắt|răng|chân răng|vết thương|nín thở
+vslgh_SENT230_S06_R01_F_g02,vslgh,S06,ê buốt,muốn,0.3450,0,muốn|trám|nôn|rồi|đau
+vslgh_SENT231_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8880,1,tôi|gần đây|ix|thuốc uống|sâu
+vslgh_SENT231_S06_R01_F_g01,vslgh,S06,máu,máu,0.5345,1,máu|nộp|chảy máu|nhiều|nặng
+vslgh_SENT231_S06_R01_F_g02,vslgh,S06,lấy,lấy,0.1002,1,lấy|có|xem|trám|không được
+vslgh_SENT231_S06_R01_F_g03,vslgh,S06,rồi,rồi,0.8945,1,rồi|gì|nôn|nào|đau
+vslgh_SENT232_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9447,1,tôi|gần đây|thuốc|ở đây|nay
+vslgh_SENT232_S06_R01_F_g01,vslgh,S06,nước tiểu,nước tiểu,0.7947,1,nước tiểu|tiểu|xét nghiệm|tiểu đường|soi nội
+vslgh_SENT232_S06_R01_F_g02,vslgh,S06,vào bình,vào bình,0.2320,1,vào bình|mẫu|đến|hội thảo|chính xác
+vslgh_SENT232_S06_R01_F_g03,vslgh,S06,rồi,rồi,0.9215,1,rồi|gì|thai|nôn|hết
+vslgh_SENT233_S06_R01_F_g00,vslgh,S06,nội soi,nội soi,0.9682,1,nội soi|1 ngày|bít tết (bò)|dám làm|tiểu đường
+vslgh_SENT233_S06_R01_F_g01,vslgh,S06,gây mê,gây mê,0.9455,1,gây mê|đo|cao|3 ngày|chiều cao
+vslgh_SENT233_S06_R01_F_g02,vslgh,S06,đau,đau,0.2399,1,đau|ê buốt|không|ít|ra
+vslgh_SENT233_S06_R01_F_g03,vslgh,S06,có không,có không,0.4378,1,có không|có|không|phải không|cần không
+vslgh_SENT234_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8463,1,tôi|ix|bác sĩ|hỏi|sáng
+vslgh_SENT234_S06_R01_F_g01,vslgh,S06,xét nghiệm,bác sĩ,0.5018,0,bác sĩ|xét nghiệm|nữ|không quen|kính
+vslgh_SENT234_S06_R01_F_g02,vslgh,S06,nước tiểu,nước tiểu,0.6620,1,nước tiểu|giải thích|trám|đói|xét nghiệm
+vslgh_SENT234_S06_R01_F_g03,vslgh,S06,cần không,cần,0.1899,0,cần|cần không|đèn báo giao thông|cơ bản|lấy thuốc
+vslgh_SENT235_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8193,1,tôi|ix|sáng|bác sĩ|hỏi
+vslgh_SENT235_S06_R01_F_g01,vslgh,S06,xét nghiệm,xét nghiệm,0.7886,1,xét nghiệm|kim loại|bác sĩ|gặp|y tế
+vslgh_SENT235_S06_R01_F_g02,vslgh,S06,máu,nhiều,0.2138,0,nhiều|máu|chảy máu|tay trái|nộp
+vslgh_SENT235_S06_R01_F_g03,vslgh,S06,có,có,0.6119,1,có|có không|phải không|cần không|nay
+vslgh_SENT236_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9293,1,tôi|sáng|ix|bác sĩ|gần đây
+vslgh_SENT236_S06_R01_F_g01,vslgh,S06,xét nghiệm,xét nghiệm,0.8865,1,xét nghiệm|bác sĩ|gặp|y tế|kim loại
+vslgh_SENT236_S06_R01_F_g02,vslgh,S06,sinh hóa,sinh hóa,0.9480,1,sinh hóa|không có|đáng lo|phải không|bệnh gì
+vslgh_SENT236_S06_R01_F_g03,vslgh,S06,có,có,0.7002,1,có|có không|phải không|không|cần không
+vslgh_SENT237_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8048,1,tôi|vết thương|khi|nội soi|ix
+vslgh_SENT237_S06_R01_F_g01,vslgh,S06,chụp,chụp,0.9782,1,chụp|trầm cảm|3 ngày|gây mê|kính
+vslgh_SENT237_S06_R01_F_g02,vslgh,S06,x quang,x quang,0.9373,1,x quang|nay|chụp|trầm cảm|thể dục
+vslgh_SENT237_S06_R01_F_g03,vslgh,S06,rồi,rồi,0.9540,1,rồi|gì|đau|nặng|nôn
+vslgh_SENT238_S06_R01_F_g00,vslgh,S06,bác sĩ,bác sĩ,0.9713,1,bác sĩ|đeo kính|xem|thú y|xét nghiệm
+vslgh_SENT238_S06_R01_F_g01,vslgh,S06,chỉ định,chỉ định,0.9991,1,chỉ định|quay lại|vào mùa|tối|cho tôi
+vslgh_SENT238_S06_R01_F_g02,vslgh,S06,chụp,chụp,0.8716,1,chụp|trầm cảm|lo lắng|đo|kính
+vslgh_SENT238_S06_R01_F_g03,vslgh,S06,x quang,x quang,0.9835,1,x quang|chụp|thể dục|chân|nay
+vslgh_SENT238_S06_R01_F_g04,vslgh,S06,phổi,phổi,0.9219,1,phổi|x quang|thận|nước tiểu|chào
+vslgh_SENT239_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7170,1,tôi|họng|hít thở|giấy phép|nộp
+vslgh_SENT239_S06_R01_F_g01,vslgh,S06,chỉ định,ix,0.9511,0,ix|chỉ định|hay quên|hôm nay|thuốc uống
+vslgh_SENT239_S06_R01_F_g02,vslgh,S06,siêu ẩm,chỉ định,0.3426,0,chỉ định|siêu ẩm|siêu âm|mẫu|bắt đền
+vslgh_SENT239_S06_R01_F_g03,vslgh,S06,bụng,bụng,0.5265,1,bụng|chỉ định|máu|ra nước|tôi
+vslgh_SENT240_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9138,1,tôi|ix|gần đây|ở đây|họng
+vslgh_SENT240_S06_R01_F_g01,vslgh,S06,chỉ định,chỉ định,0.9731,1,chỉ định|vào mùa|tối|đến|vào bình
+vslgh_SENT240_S06_R01_F_g02,vslgh,S06,siêu âm,siêu âm,0.8742,1,siêu âm|buồn|khó khăn|phụ khoa|siêu ẩm
+vslgh_SENT240_S06_R01_F_g03,vslgh,S06,tim,tim,0.7212,1,tim|hồi hộp|dạ dày|sợ lắm|đẹp không?
+vslgh_SENT241_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8097,1,tôi|ix|gần đây|thuốc uống|thuốc
+vslgh_SENT241_S06_R01_F_g01,vslgh,S06,đo,đo,0.3729,1,đo|có thế|cháu ngoại|bảng cộng|thuốc
+vslgh_SENT241_S06_R01_F_g02,vslgh,S06,tim,để,0.5901,0,để|đặt|ăn|tim|nhỏ
+vslgh_SENT241_S06_R01_F_g03,vslgh,S06,điện,ăn,0.3234,0,ăn|nam|muốn|kim loại|mạch
+vslgh_SENT241_S06_R01_F_g04,vslgh,S06,xong rồi,xong rồi,0.3602,1,xong rồi|có|lại|không|phải không
+vslgh_SENT242_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8233,1,tôi|vết thương|họng|nội soi|bác sĩ
+vslgh_SENT242_S06_R01_F_g01,vslgh,S06,soi nội,soi nội,0.9473,1,soi nội|nội soi|chỉ định|liệu|khó ngủ
+vslgh_SENT242_S06_R01_F_g02,vslgh,S06,dạ dày,dạ dày,0.8608,1,dạ dày|mạch|tim|gói|này
+vslgh_SENT242_S06_R01_F_g03,vslgh,S06,cần không,cần không,0.6362,1,cần không|cần|da trắng|lấy thuốc|rượu bia
+vslgh_SENT243_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7551,1,tôi|tiếp|ix|thuốc uống|đến
+vslgh_SENT243_S06_R01_F_g01,vslgh,S06,đo,đo,0.9843,1,đo|điện|thường xuyên|thông tin|kính
+vslgh_SENT243_S06_R01_F_g02,vslgh,S06,loãng xương,loãng xương,0.4576,1,loãng xương|cần|mờ|thi|nguy hiểm
+vslgh_SENT244_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9157,1,tôi|họng|thuốc|đơn|nộp
+vslgh_SENT244_S06_R01_F_g01,vslgh,S06,xét nghiệm,xét nghiệm,0.9508,1,xét nghiệm|bác sĩ|bẫy chuột (hành động)|đèn báo giao thông|lễ hội
+vslgh_SENT244_S06_R01_F_g02,vslgh,S06,gan,gan,0.7234,1,gan|thận|siêu âm|đói|sau
+vslgh_SENT244_S06_R01_F_g03,vslgh,S06,chức năng,chức năng,0.9769,1,chức năng|xét nghiệm|khớp gối|đập|mệt
+vslgh_SENT244_S06_R01_F_g04,vslgh,S06,cần,cần,0.7103,1,cần|cần không|loãng xương|chống đối|lấy thuốc
+vslgh_SENT245_S06_R01_F_g00,vslgh,S06,tôi,xét nghiệm,0.8267,0,xét nghiệm|bác sĩ|kim loại|xem|đèn báo giao thông
+vslgh_SENT245_S06_R01_F_g01,vslgh,S06,xét nghiệm,xét nghiệm,0.1622,1,xét nghiệm|thi|chức năng|phổi|bảo vệ môi trường
+vslgh_SENT245_S06_R01_F_g02,vslgh,S06,tổng quát,muốn,0.9930,0,muốn|nam|đau|rồi|có
+vslgh_SENT245_S06_R01_F_g03,vslgh,S06,muốn,bụng,0.3498,0,bụng|trái|phải không|áo đồng phục|lung tung
+vslgh_SENT246_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6849,1,tôi|đặt|bác sĩ|sáng|nín thở
+vslgh_SENT246_S06_R01_F_g01,vslgh,S06,xét nghiệm,bác sĩ,0.4230,0,bác sĩ|xét nghiệm|bẫy chuột (hành động)|lễ hội|thú y
+vslgh_SENT246_S06_R01_F_g02,vslgh,S06,tổng quát,tổng quát,0.9529,1,tổng quát|tôi|yêu mến (yêu quí)|đau|phụ khoa
+vslgh_SENT246_S06_R01_F_g03,vslgh,S06,muốn,muốn,0.9897,1,muốn|nam|sợ lắm|bạn trai|hồi hộp
+vslgh_SENT247_S06_R01_F_g00,vslgh,S06,tối,tối,0.4906,1,tối|phỏng|chỉ định|buổi tối|đêm
+vslgh_SENT247_S06_R01_F_g01,vslgh,S06,hôm qua,hôm qua,0.8711,1,hôm qua|điện|phải|đau|cho tôi
+vslgh_SENT247_S06_R01_F_g02,vslgh,S06,tôi,tôi,0.8133,1,tôi|ăn|để|hít thở|xong
+vslgh_SENT247_S06_R01_F_g03,vslgh,S06,ăn,ăn,0.9148,1,ăn|số|uống|thuốc|rượu bia
+vslgh_SENT247_S06_R01_F_g04,vslgh,S06,không,không,0.9143,1,không|đều|không có|muốn|bình thường
+vslgh_SENT248_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7430,1,tôi|gần đây|họng|thuốc|nước
+vslgh_SENT248_S06_R01_F_g01,vslgh,S06,nước,nước,0.9668,1,nước|nước sôi|thuốc uống|thuốc|nộp
+vslgh_SENT248_S06_R01_F_g02,vslgh,S06,uống,uống,0.8042,1,uống|thuốc uống|nước sôi|trả|thuốc
+vslgh_SENT248_S06_R01_F_g03,vslgh,S06,nhiều,nhiều,0.5694,1,nhiều|lắm|ở đâu|vắng|không có
+vslgh_SENT249_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8537,1,tôi|gần đây|đến|tim|tay trái
+vslgh_SENT249_S06_R01_F_g01,vslgh,S06,tay trái,tay trái,0.9168,1,tay trái|máu|tim|ủy quyền|để
+vslgh_SENT249_S06_R01_F_g02,vslgh,S06,máu,máu,0.8002,1,máu|ấn|lấy|trước|tay trái
+vslgh_SENT249_S06_R01_F_g03,vslgh,S06,lấy,máu,0.2675,0,máu|ấn|lấy|tim|phụ khoa
+vslgh_SENT249_S06_R01_F_g04,vslgh,S06,y tá,y tá,0.9894,1,y tá|120|bác sĩ|đèn điện|cướp
+vslgh_SENT250_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8434,1,tôi|gần đây|đặt|giấy|đến
+vslgh_SENT250_S06_R01_F_g01,vslgh,S06,nộp,nộp,0.9932,1,nộp|ix|để|nằm|máu
+vslgh_SENT250_S06_R01_F_g02,vslgh,S06,bác sĩ,bác sĩ,0.9217,1,bác sĩ|xem|lo lắng|kính|đeo kính
+vslgh_SENT250_S06_R01_F_g03,vslgh,S06,kết quả,kết quả,0.9250,1,kết quả|việc|tên|thứ tự|loãng xương
+vslgh_SENT251_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.5032,1,tôi|nghe|thuốc uống|gần đây|đến
+vslgh_SENT251_S06_R01_F_g01,vslgh,S06,đến,đến,0.1332,1,đến|khám|xong|sức khỏe|vào bình
+vslgh_SENT251_S06_R01_F_g02,vslgh,S06,phòng,tất cả,0.4485,0,tất cả|phòng|giải thích|tay|tối
+vslgh_SENT251_S06_R01_F_g03,vslgh,S06,xét nghiệm,gặp,0.5280,0,gặp|bác sĩ|xét nghiệm|kim loại|y tế
+vslgh_SENT251_S06_R01_F_g04,vslgh,S06,ở đâu,nào,0.4363,0,nào|ở đâu|phải không|nhiều|đâu
+vslgh_SENT252_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.3225,1,tôi|đến|nghe|thuốc uống|này
+vslgh_SENT252_S06_R01_F_g01,vslgh,S06,đến,đến,0.6285,1,đến|khám|tôi|gặp|số
+vslgh_SENT252_S06_R01_F_g02,vslgh,S06,xét nghiệm,xét nghiệm,0.6677,1,xét nghiệm|bác sĩ|tên|tiêu chảy|thị lực
+vslgh_SENT252_S06_R01_F_g03,vslgh,S06,ăn,muốn,0.2608,0,muốn|ăn|thức khuya|uống|không
+vslgh_SENT252_S06_R01_F_g04,vslgh,S06,không,uống,0.5474,0,uống|tôi|đau|không|giày
+vslgh_SENT252_S06_R01_F_g05,vslgh,S06,cần,cần,0.8131,1,cần|cần không|chống đối|không cần|xe khách
+vslgh_SENT253_S06_R01_F_g00,vslgh,S06,sáng,sáng,0.4900,1,sáng|rồi|cởi áo|năm ngoái|cởi
+vslgh_SENT253_S06_R01_F_g01,vslgh,S06,nay,nay,0.7979,1,nay|hôm nay|đang|gần đây|đây
+vslgh_SENT253_S06_R01_F_g02,vslgh,S06,tôi,tôi,0.7554,1,tôi|thuốc|ăn|ấn|muốn
+vslgh_SENT253_S06_R01_F_g03,vslgh,S06,ăn,ăn,0.8794,1,ăn|số|nín thở|uống|xét nghiệm
+vslgh_SENT253_S06_R01_F_g04,vslgh,S06,rồi,rồi,0.9632,1,rồi|lắm|nhiều|tăng cân|hết
+vslgh_SENT254_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7001,1,tôi|nước|gần đây|đặt|giấy
+vslgh_SENT254_S06_R01_F_g01,vslgh,S06,sao không,sao không,0.5721,1,sao không|được không|thuốc uống|phải không|đúng không
+vslgh_SENT255_S06_R01_F_g00,vslgh,S06,lấy,lấy,0.6736,1,lấy|máu|xem|bao nhiêu|giày
+vslgh_SENT255_S06_R01_F_g01,vslgh,S06,máu,máu,0.8398,1,máu|nộp|chảy máu|ủy quyền|giúp
+vslgh_SENT255_S06_R01_F_g02,vslgh,S06,có,thuốc,0.4836,0,thuốc|ix|có|bác sĩ|hỏi
+vslgh_SENT255_S06_R01_F_g03,vslgh,S06,đau không,đau,0.8836,0,đau|đau không|không|rồi|mũi sổ
+vslgh_SENT256_S06_R01_F_g00,vslgh,S06,lấy,lấy,0.9135,1,lấy|đến|cầm|số|này
+vslgh_SENT256_S06_R01_F_g01,vslgh,S06,máu,máu,0.9028,1,máu|chảy máu|nộp|nhiều|nặng
+vslgh_SENT256_S06_R01_F_g02,vslgh,S06,tôi,tôi,0.5651,1,tôi|khan ho|mới|lâu|muốn
+vslgh_SENT256_S06_R01_F_g03,vslgh,S06,sợ lắm,sợ lắm,0.5936,1,sợ lắm|hồi hộp|chảy máu|khan ho|ra nước
+vslgh_SENT257_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8501,1,tôi|gần đây|đến|đặt|vết thương
+vslgh_SENT257_S06_R01_F_g01,vslgh,S06,lấy,lấy,0.6144,1,lấy|bao nhiêu|đến|máu|cầm
+vslgh_SENT257_S06_R01_F_g02,vslgh,S06,máu,máu,0.8001,1,máu|nộp|ủy quyền|ấn|chảy máu
+vslgh_SENT257_S06_R01_F_g03,vslgh,S06,tay,tay,0.3624,1,tay|tất cả|tiền sử|đóng tiền|giải thích
+vslgh_SENT257_S06_R01_F_g04,vslgh,S06,nào,nào,0.3368,1,nào|đang|ở đâu|số mấy|ngay
+vslgh_SENT258_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.2520,1,tôi|khan ho|muốn|ho|lâu
+vslgh_SENT258_S06_R01_F_g01,vslgh,S06,nước tiểu,nước tiểu,0.8664,1,nước tiểu|mạch|tiểu đường|tim|ngực đau
+vslgh_SENT258_S06_R01_F_g02,vslgh,S06,mẫu,mẫu,0.7574,1,mẫu|vào bình|đến|nước tiểu|cho tôi
+vslgh_SENT258_S06_R01_F_g03,vslgh,S06,lấy,lấy,0.9719,1,lấy|mang|lây|nhận|đói
+vslgh_SENT258_S06_R01_F_g04,vslgh,S06,cần không,cần không,0.4736,1,cần không|cần|chống đối|cần không?|sưng
+vslgh_SENT259_S06_R01_F_g00,vslgh,S06,tôi,khan ho,0.1179,0,khan ho|muốn|tôi|hồi hộp|mạch
+vslgh_SENT259_S06_R01_F_g01,vslgh,S06,nước tiểu,nước tiểu,0.7302,1,nước tiểu|xét nghiệm|tiểu đường|kinh|lấy
+vslgh_SENT259_S06_R01_F_g02,vslgh,S06,mẫu,mẫu,0.6096,1,mẫu|vào bình|đến|sức khỏe|tuổi
+vslgh_SENT259_S06_R01_F_g03,vslgh,S06,lấy,lấy,0.6601,1,lấy|mang|nhận|ở đây|đói
+vslgh_SENT259_S06_R01_F_g04,vslgh,S06,ở đâu,ở đâu,0.5844,1,ở đâu|đâu|cố gắng|được không|rượu bia
+vslgh_SENT260_S06_R01_F_g00,vslgh,S06,tôi,muốn,0.5453,0,muốn|ngực đau|nước tiểu|điện|hồi hộp
+vslgh_SENT260_S06_R01_F_g01,vslgh,S06,nước tiểu,nước tiểu,0.9389,1,nước tiểu|xét nghiệm|tiểu đường|tiểu|tim
+vslgh_SENT260_S06_R01_F_g02,vslgh,S06,mẫu,mẫu,0.6218,1,mẫu|vào bình|lấy|đến|khi
+vslgh_SENT260_S06_R01_F_g03,vslgh,S06,bao nhiêu,này,0.1385,0,này|tên|bao nhiêu|cởi|bức tranh
+vslgh_SENT260_S06_R01_F_g04,vslgh,S06,cần,cần,0.5436,1,cần|cần không|loãng xương|không cần|cần không?
+vslgh_SENT261_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7476,1,tôi|cảm thấy|mắt trái|răng|sáng
+vslgh_SENT261_S06_R01_F_g01,vslgh,S06,áo cởi,cởi áo,0.4776,0,cởi áo|áo cởi|cởi|lỡ mất|tay trái
+vslgh_SENT261_S06_R01_F_g02,vslgh,S06,khi,khi,0.2305,1,khi|lịch|nghe|không được|kính
+vslgh_SENT261_S06_R01_F_g03,vslgh,S06,chụp,chụp,0.7513,1,chụp|trầm cảm|không được|mỗi ngày|x quang
+vslgh_SENT261_S06_R01_F_g04,vslgh,S06,x quang,x quang,0.9666,1,x quang|chụp|chân|tên|trầm cảm
+vslgh_SENT261_S06_R01_F_g05,vslgh,S06,cần không,cần,0.4509,0,cần|cần không|thi|lấy thuốc|giấy phép
+vslgh_SENT262_S06_R01_F_g00,vslgh,S06,bác sĩ,bác sĩ,0.4694,1,bác sĩ|xem|đeo kính|tên|lo lắng
+vslgh_SENT262_S06_R01_F_g01,vslgh,S06,hỏi tôi,hỏi tôi,0.9833,1,hỏi tôi|rõ|hỏi|22|mỗi ngày
+vslgh_SENT262_S06_R01_F_g02,vslgh,S06,đeo tay,đeo tay,0.9632,1,đeo tay|ấn|phỏng|ngã|lấy
+vslgh_SENT262_S06_R01_F_g03,vslgh,S06,vòng,vòng,0.3806,1,vòng|kim loại|9|đeo tay|loãng xương
+vslgh_SENT262_S06_R01_F_g04,vslgh,S06,kim loại,kim loại,0.7915,1,kim loại|thông tin|nhỏ|vòng|trả
+vslgh_SENT262_S06_R01_F_g05,vslgh,S06,có không,có không,0.5716,1,có không|có|phải không|không|cần không
+vslgh_SENT263_S06_R01_F_g00,vslgh,S06,tôi,đeo tay,0.4970,0,đeo tay|vòng|sưng|giờ|ngồi
+vslgh_SENT263_S06_R01_F_g01,vslgh,S06,đeo tay,vòng,0.4012,0,vòng|đeo tay|giờ|bao lâu|9
+vslgh_SENT263_S06_R01_F_g02,vslgh,S06,vòng,vòng,0.4966,1,vòng|đeo tay|giờ|phẫu thuật|9
+vslgh_SENT263_S06_R01_F_g03,vslgh,S06,kim loại,kim loại,0.8957,1,kim loại|đóng tiền|bệnh gì|sinh hóa|tự do
+vslgh_SENT263_S06_R01_F_g04,vslgh,S06,không có,không có,0.9571,1,không có|không|vui chơi|tự do|con mèo
+vslgh_SENT264_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9000,1,tôi|gần đây|giấy|ở đây|họng
+vslgh_SENT264_S06_R01_F_g01,vslgh,S06,nước,nước,0.8691,1,nước|tê tay|thuốc uống|nhỏ|nước sôi
+vslgh_SENT264_S06_R01_F_g02,vslgh,S06,uống,uống,0.7922,1,uống|thuốc uống|ăn|nước sôi|thuốc
+vslgh_SENT264_S06_R01_F_g03,vslgh,S06,nhiều,nhiều,0.7057,1,nhiều|nặng|quầy|thẻ|lắm
+vslgh_SENT264_S06_R01_F_g04,vslgh,S06,khi,khi,0.6907,1,khi|lúc|không được|khi nào|bác sĩ
+vslgh_SENT264_S06_R01_F_g05,vslgh,S06,siêu âm,siêu âm,0.6772,1,siêu âm|buồn|siêu ẩm|phụ khoa|lúc
+vslgh_SENT264_S06_R01_F_g06,vslgh,S06,cần không,cần không,0.6565,1,cần không|cần|không cần|nhân hậu|cần không?
+vslgh_SENT265_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.3148,1,tôi|con|thuốc uống|nghe|vết thương
+vslgh_SENT265_S06_R01_F_g01,vslgh,S06,chờ,đợi,0.4499,0,đợi|chờ|không có|nặng|thẻ
+vslgh_SENT265_S06_R01_F_g02,vslgh,S06,kết quả,kết quả,0.9630,1,kết quả|loãng xương|họp nhóm|thay đổi|xong
+vslgh_SENT265_S06_R01_F_g03,vslgh,S06,bao lâu,bao lâu,0.5251,1,bao lâu|trám|chân|có|giờ
+vslgh_SENT266_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.5300,1,tôi|đặt|đến|mạch|này
+vslgh_SENT266_S06_R01_F_g01,vslgh,S06,kết quả,kết quả,0.9187,1,kết quả|đến|hóa đơn|lấy|thông tin
+vslgh_SENT266_S06_R01_F_g02,vslgh,S06,lấy,lấy,0.5909,1,lấy|mang|thẻ|nhận|xong
+vslgh_SENT266_S06_R01_F_g03,vslgh,S06,ở đâu,ở đâu,0.7406,1,ở đâu|đâu|cuối cùng|muốn|nào
+vslgh_SENT267_S06_R01_F_g00,vslgh,S06,kết quả,kết quả,0.9681,1,kết quả|từng|xong|hôm nay|hóa đơn
+vslgh_SENT267_S06_R01_F_g01,vslgh,S06,hôm nay,hôm nay,0.9395,1,hôm nay|nào|đây|phòng|gần đây
+vslgh_SENT267_S06_R01_F_g02,vslgh,S06,có không,có,0.2918,0,có|có không|phải không|không|cần không
+vslgh_SENT268_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8448,1,tôi|sâu|sáng|đặt|bác sĩ
+vslgh_SENT268_S06_R01_F_g01,vslgh,S06,xét nghiệm,xét nghiệm,0.9647,1,xét nghiệm|bác sĩ|gặp|đăng ký|bảo hiểm
+vslgh_SENT268_S06_R01_F_g02,vslgh,S06,tất cả,tất cả,0.7943,1,tất cả|xong|hết|lấy|kết quả
+vslgh_SENT268_S06_R01_F_g03,vslgh,S06,xong,xong,0.3714,1,xong|tên|tất cả|đặt|từng
+vslgh_SENT268_S06_R01_F_g04,vslgh,S06,rồi,rồi,0.9792,1,rồi|gì|lắm|nay|nặng
+vslgh_SENT269_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8823,1,tôi|ix|sáng|bác sĩ|gần đây
+vslgh_SENT269_S06_R01_F_g01,vslgh,S06,phòng,phòng,0.8507,1,phòng|nghỉ|quầy|nào|tất cả
+vslgh_SENT269_S06_R01_F_g02,vslgh,S06,bác sĩ,bác sĩ,0.9145,1,bác sĩ|xét nghiệm|viêm xoang|thị lực|đeo kính
+vslgh_SENT269_S06_R01_F_g03,vslgh,S06,quay lại,quay lại,0.9452,1,quay lại|chỉ định|hỏi tôi|bác sĩ|yếu
+vslgh_SENT269_S06_R01_F_g04,vslgh,S06,phải không,phải không,0.9860,1,phải không|được không|ngủ khó|thuốc uống|không
+vslgh_SENT270_S06_R01_F_g00,vslgh,S06,sáng,sáng,0.8835,1,sáng|nay|rồi|thể dục|cây xanh tươi
+vslgh_SENT270_S06_R01_F_g01,vslgh,S06,nay,nay,0.9450,1,nay|hôm nay|đây|đang|gần đây
+vslgh_SENT270_S06_R01_F_g02,vslgh,S06,tôi,tôi,0.7849,1,tôi|nay|ở đây|thuốc|gần đây
+vslgh_SENT270_S06_R01_F_g03,vslgh,S06,ăn,thuốc uống,0.1718,0,thuốc uống|ăn|mấy lần|uống|số
+vslgh_SENT270_S06_R01_F_g04,vslgh,S06,chưa,chưa,0.4184,1,chưa|có chưa|thừa|ví dụ|bụi phấn
+vslgh_SENT271_S06_R01_F_g00,vslgh,S06,tôi,thuốc,0.5724,0,thuốc|hiểu|thuốc uống|kính|nộp
+vslgh_SENT271_S06_R01_F_g01,vslgh,S06,hiểu,hiểu,0.7266,1,hiểu|thuốc|gây mê|kính|tai
+vslgh_SENT271_S06_R01_F_g02,vslgh,S06,rồi,rồi,0.6214,1,rồi|t|không hiểu|không|3
+vslgh_SENT272_S06_R01_F_g00,vslgh,S06,tôi,số,0.1933,0,số|tôi|ăn|này|mắt
+vslgh_SENT272_S06_R01_F_g01,vslgh,S06,cảm ơn,cảm ơn,0.8976,1,cảm ơn|số|máu|ăn|nộp
+vslgh_SENT272_S06_R01_F_g02,vslgh,S06,bác sĩ,bác sĩ,0.9419,1,bác sĩ|hỏi tôi|hỏi|xét nghiệm|xem
+vslgh_SENT273_S06_R01_F_g00,vslgh,S06,đơn,đơn,0.8767,1,đơn|nhiệt kế|bảo hiểm|ví dụ|ưu tiên
+vslgh_SENT273_S06_R01_F_g01,vslgh,S06,tôi,tôi,0.3714,1,tôi|thuốc|giấy phép|có|ốm
+vslgh_SENT273_S06_R01_F_g02,vslgh,S06,thuốc,mũi sổ,0.1079,0,mũi sổ|đau|nghiêm trọng|thuốc uống|mũi nghẹt
+vslgh_SENT273_S06_R01_F_g03,vslgh,S06,có,có,0.7426,1,có|phải không|có không|không|ra
+vslgh_SENT274_S06_R01_F_g00,vslgh,S06,tôi,đóng,0.8105,0,đóng|để|đóng tiền|mua|tiền
+vslgh_SENT274_S06_R01_F_g01,vslgh,S06,mua,tiền,0.9549,0,tiền|mua|hôm nay|thuốc|trả
+vslgh_SENT274_S06_R01_F_g02,vslgh,S06,thuốc,thuốc,0.8912,1,thuốc|đo|cần|kính|hôm qua
+vslgh_SENT274_S06_R01_F_g03,vslgh,S06,sẽ,sẽ,0.3990,1,sẽ|thông minh|màu xanh da trời|điện|chiều cao
+vslgh_SENT275_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7253,1,tôi|vết thương|gần đây|tiếp|đến
+vslgh_SENT275_S06_R01_F_g01,vslgh,S06,thẻ,thẻ,0.3006,1,thẻ|đáng lo|khác|bệnh gì|bác sĩ
+vslgh_SENT275_S06_R01_F_g02,vslgh,S06,bảo hiểm,bảo hiểm,0.9540,1,bảo hiểm|mờ|lịch|xin|đơn
+vslgh_SENT275_S06_R01_F_g03,vslgh,S06,lấy thuốc,lấy thuốc,0.8969,1,lấy thuốc|không hiểu|cần không|cần|vào
+vslgh_SENT276_S06_R01_F_g00,vslgh,S06,tôi,đóng tiền,0.5262,0,đóng tiền|để|đóng|mua|đăng ký
+vslgh_SENT276_S06_R01_F_g01,vslgh,S06,đóng tiền,thêm,0.5044,0,thêm|bớt|kiêng|kết quả|đóng tiền
+vslgh_SENT276_S06_R01_F_g02,vslgh,S06,thêm,giấy,0.1350,0,giấy|kiêng|thêm|sắp|đập
+vslgh_SENT276_S06_R01_F_g03,vslgh,S06,cần,cần không,0.4938,0,cần không|cần|không cần|chậm|giấy phép
+vslgh_SENT277_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.5454,1,tôi|đặt|khan ho|ho|gần đây
+vslgh_SENT277_S06_R01_F_g01,vslgh,S06,khám,khám,0.7648,1,khám|đến|siêu âm|viết|phòng
+vslgh_SENT277_S06_R01_F_g02,vslgh,S06,kỳ,kỳ,0.8690,1,kỳ|giấy phép|cảm thấy|mua|sữa bột
+vslgh_SENT277_S06_R01_F_g03,vslgh,S06,sau,sau,0.9755,1,sau|tiền|lưng|không hiểu|y tế
+vslgh_SENT277_S06_R01_F_g04,vslgh,S06,lại,lại,0.9569,1,lại|bao lâu|chỉ định|quay lại|bất thường
+vslgh_SENT278_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.4264,1,tôi|gần đây|đặt|tim|đến
+vslgh_SENT278_S06_R01_F_g01,vslgh,S06,lịch,lịch,0.5823,1,lịch|lịch hẹn|kính|cây thân gỗ|lo lắng
+vslgh_SENT278_S06_R01_F_g02,vslgh,S06,khám,khám,0.3440,1,khám|siêu âm|cho tôi|kinh nguyệt|rồi
+vslgh_SENT278_S06_R01_F_g03,vslgh,S06,lại,lại,0.9532,1,lại|được không|này|bất thường|sâu
+vslgh_SENT279_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.8987,1,tôi|gần đây|bác sĩ|ix|vết thương
+vslgh_SENT279_S06_R01_F_g01,vslgh,S06,xin,xin,0.9679,1,xin|bao lâu|giấy phép|đơn|mũi nghẹt
+vslgh_SENT279_S06_R01_F_g02,vslgh,S06,giấy phép,giấy phép,0.7430,1,giấy phép|giấy|đăng ký|xong|kiêng
+vslgh_SENT279_S06_R01_F_g03,vslgh,S06,ốm,ốm,0.5174,1,ốm|đau|xong|mới|hết
+vslgh_SENT279_S06_R01_F_g04,vslgh,S06,cần,cần,0.6295,1,cần|cần không|không cần|loãng xương|bao lâu
+vslgh_SENT280_S06_R01_F_g00,vslgh,S06,tôi,thuốc,0.3162,0,thuốc|tôi|ix|hay quên|nộp
+vslgh_SENT280_S06_R01_F_g01,vslgh,S06,bác sĩ,bác sĩ,0.9110,1,bác sĩ|chỉ định|thú y|đeo kính|thăm hỏi
+vslgh_SENT280_S06_R01_F_g02,vslgh,S06,chào,chào,0.9768,1,chào|phải không|đặt|giờ|vén áo
+vslgh_SENT281_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.2611,1,tôi|đến|gặp|con|bệnh
+vslgh_SENT281_S06_R01_F_g01,vslgh,S06,bệnh,bệnh,0.9810,1,bệnh|ấn|bệnh gì|dịch vụ|ngồi
+vslgh_SENT281_S06_R01_F_g02,vslgh,S06,gì,gì,0.6988,1,gì|đau|ix|đây|tôi
+vslgh_SENT281_S06_R01_F_g03,vslgh,S06,cuối cùng,cuối cùng,0.9419,1,cuối cùng|che|tháng|khi nào|đâu
+vslgh_SENT282_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.4754,1,tôi|đến|đặt|gặp|con
+vslgh_SENT282_S06_R01_F_g01,vslgh,S06,bệnh,bệnh,0.9657,1,bệnh|ấn|trám|bệnh gì|bia rượu
+vslgh_SENT282_S06_R01_F_g02,vslgh,S06,nghiêm trọng,nghiêm trọng,0.1554,1,nghiêm trọng|đau|y tế|không|ốm
+vslgh_SENT282_S06_R01_F_g03,vslgh,S06,có không,có,0.4359,0,có|có không|phải không|không|cần không
+vslgh_SENT283_S06_R01_F_g00,vslgh,S06,1 ngày,1 ngày,0.6431,1,1 ngày|chóng mặt|mỗi ngày|hàng này|lo lắng
+vslgh_SENT283_S06_R01_F_g01,vslgh,S06,tôi,tôi,0.9178,1,tôi|cảm thấy|xong rồi|ăn|x quang
+vslgh_SENT283_S06_R01_F_g02,vslgh,S06,thuốc uống,thuốc uống,0.8289,1,thuốc uống|uống|thuốc|số mấy|ăn
+vslgh_SENT283_S06_R01_F_g03,vslgh,S06,mấy lần,mấy lần,0.7643,1,mấy lần|cuối cùng|ngắt hoa|giải thích|quả dưa hấu
+vslgh_SENT284_S06_R01_F_g00,vslgh,S06,khi,khi,0.6745,1,khi|khi nào|xem|không được|4
+vslgh_SENT284_S06_R01_F_g01,vslgh,S06,trước,trước,0.8244,1,trước|tôi|khi|chiều cao|xem
+vslgh_SENT284_S06_R01_F_g02,vslgh,S06,ăn,ăn,0.5633,1,ăn|sai|nam|mũi nghẹt|quả dưa hấu
+vslgh_SENT284_S06_R01_F_g03,vslgh,S06,tôi,tôi,0.7149,1,tôi|đặt|thuốc|ăn|để
+vslgh_SENT284_S06_R01_F_g04,vslgh,S06,thuốc uống,thuốc uống,0.8431,1,thuốc uống|uống|thuốc|nước sôi|hỏi tôi
+vslgh_SENT284_S06_R01_F_g05,vslgh,S06,phải không,phải không,0.8217,1,phải không|được không|thuốc uống|đúng không|ít
+vslgh_SENT285_S06_R01_F_g00,vslgh,S06,khi,khi,0.7360,1,khi|không được|bác sĩ|khi nào|nghe
+vslgh_SENT285_S06_R01_F_g01,vslgh,S06,sau,sau,0.4992,1,sau|bốt cảnh sát|quần bò|đáng lo|nhói
+vslgh_SENT285_S06_R01_F_g02,vslgh,S06,ăn,tôi,0.7016,0,tôi|ăn|để|thuốc|đau
+vslgh_SENT285_S06_R01_F_g03,vslgh,S06,tôi,ăn,0.9617,0,ăn|nam|mũi nghẹt|gia đình|ân hận
+vslgh_SENT285_S06_R01_F_g04,vslgh,S06,thuốc uống,số,0.3527,0,số|thuốc uống|ăn|nhổ|mặn
+vslgh_SENT285_S06_R01_F_g05,vslgh,S06,phải không,phải không,0.6219,1,phải không|được không|thuốc uống|đúng không|sao không
+vslgh_SENT286_S06_R01_F_g00,vslgh,S06,thuốc,thuốc uống,0.8309,0,thuốc uống|thuốc|uống|nước sôi|lấy thuốc
+vslgh_SENT286_S06_R01_F_g01,vslgh,S06,này,này,0.0971,1,này|sâu|nằm|tuổi|đo
+vslgh_SENT286_S06_R01_F_g02,vslgh,S06,ảnh hưởng,ảnh hưởng,0.8643,1,ảnh hưởng|xét nghiệm|huyết áp|loãng xương|giúp
+vslgh_SENT286_S06_R01_F_g03,vslgh,S06,có không,có,0.4511,0,có|có không|phải không|không|đau
+vslgh_SENT287_S06_R01_F_g00,vslgh,S06,tôi,chỉ định,0.9660,0,chỉ định|tối|nước|máu|đến
+vslgh_SENT287_S06_R01_F_g01,vslgh,S06,khám,khám,0.9775,1,khám|áo cởi|người quen|chỗ khác|phòng
+vslgh_SENT287_S06_R01_F_g02,vslgh,S06,lại,lại,0.8402,1,lại|đến|này|khi|đọc
+vslgh_SENT287_S06_R01_F_g03,vslgh,S06,khi,khi,0.9359,1,khi|lúc|khi nào|khám|hàng này
+vslgh_SENT287_S06_R01_F_g04,vslgh,S06,nào,nào,0.5005,1,nào|được không|khi nào|đúng không|thuốc
+vslgh_SENT288_S06_R01_F_g00,vslgh,S06,tôi,ăn,0.2284,0,ăn|số|nước|mạch|đóng
+vslgh_SENT288_S06_R01_F_g01,vslgh,S06,ăn,ăn,0.9204,1,ăn|số|cảm ơn|để|trả
+vslgh_SENT288_S06_R01_F_g02,vslgh,S06,kiêng,nặng,0.2600,0,nặng|kiêng|đợi|nộp|nhiều
+vslgh_SENT288_S06_R01_F_g03,vslgh,S06,cần không,cần,0.6973,0,cần|cần không|không cần|kiêng|lấy thuốc
+vslgh_SENT289_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6068,1,tôi|con|sâu|cảm thấy|nghe
+vslgh_SENT289_S06_R01_F_g01,vslgh,S06,phẫu thuật,phẫu thuật,0.8763,1,phẫu thuật|nghỉ|hải sản|phòng|đập
+vslgh_SENT289_S06_R01_F_g02,vslgh,S06,cần không,cần,0.6089,0,cần|cần không|bao lâu|chậm|lấy thuốc
+vslgh_SENT290_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9124,1,tôi|gần đây|đặt|đến|ix
+vslgh_SENT290_S06_R01_F_g01,vslgh,S06,kết quả,kết quả,0.9306,1,kết quả|đến|hóa đơn|lần đầu|cá kho
+vslgh_SENT290_S06_R01_F_g02,vslgh,S06,xem,xem,0.3620,1,xem|đọc|đặt|trước|tên
+vslgh_SENT290_S06_R01_F_g03,vslgh,S06,không hiểu,không hiểu,0.9657,1,không hiểu|4|không được|không|đầu đau
+vslgh_SENT291_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.6576,1,tôi|họng|nộp|hít thở|thuốc
+vslgh_SENT291_S06_R01_F_g01,vslgh,S06,bác sĩ,bác sĩ,0.7574,1,bác sĩ|thú y|chỉ định|rưỡi|ix
+vslgh_SENT291_S06_R01_F_g02,vslgh,S06,giải thích,xem,0.1784,0,xem|bao lâu|giải thích|máu|hỏi tôi
+vslgh_SENT291_S06_R01_F_g03,vslgh,S06,cho tôi,cho tôi,0.8045,1,cho tôi|hàng này|muốn|đúng không|lại
+vslgh_SENT291_S06_R01_F_g04,vslgh,S06,được không,phải không,0.5400,0,phải không|được không|thuốc uống|đúng không|sao không
+vslgh_SENT292_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.9040,1,tôi|gần đây|ở đây|giấy|bác sĩ
+vslgh_SENT292_S06_R01_F_g01,vslgh,S06,thuốc uống,thuốc uống,0.6178,1,thuốc uống|thuốc|uống|hút thuốc|nước sôi
+vslgh_SENT292_S06_R01_F_g02,vslgh,S06,này,này,0.3684,1,này|lại|lấy|mẫu|đến
+vslgh_SENT292_S06_R01_F_g03,vslgh,S06,uống,thuốc,0.5766,0,thuốc|uống|lấy thuốc|ăn|ốm
+vslgh_SENT292_S06_R01_F_g04,vslgh,S06,bao lâu,bao lâu,0.7733,1,bao lâu|giải thích|tay|đơn|tổng quát
+vslgh_SENT293_S06_R01_F_g00,vslgh,S06,tôi,tôi,0.7649,1,tôi|sâu|đặt|vết thương|này
+vslgh_SENT293_S06_R01_F_g01,vslgh,S06,nghỉ,nghỉ,0.8391,1,nghỉ|hải sản|quầy|phòng|thẻ
+vslgh_SENT293_S06_R01_F_g02,vslgh,S06,nhiều,nhiều,0.9680,1,nhiều|lắm|nào|quầy|hôm nay
+vslgh_SENT293_S06_R01_F_g03,vslgh,S06,cần không,cần không,0.9409,1,cần không|cần|thi|lấy thuốc|mấy lần
+vslgh_SENT294_S06_R01_F_g00,vslgh,S06,hỏi,hỏi,0.8135,1,hỏi|bác sĩ|9|1|héc tô gam (hg)
+vslgh_SENT294_S06_R01_F_g01,vslgh,S06,bác sĩ,bác sĩ,0.9731,1,bác sĩ|xem|xét nghiệm|đeo kính|y tế
+vslgh_SENT294_S06_R01_F_g02,vslgh,S06,lây,lây,0.1025,1,lây|mang|đây|rõ|đi
+vslgh_SENT294_S06_R01_F_g03,vslgh,S06,bệnh,bệnh,0.5351,1,bệnh|bệnh gì|đây|ngồi|hàng này
+vslgh_SENT294_S06_R01_F_g04,vslgh,S06,có không,có,0.4666,0,có|có không|phải không|không|muốn
+vslgh_SENT295_S06_R01_F_g00,vslgh,S06,hỏi,hỏi,0.5697,1,hỏi|hỏi tôi|còn|ít|rõ
+vslgh_SENT295_S06_R01_F_g01,vslgh,S06,thuốc uống,thuốc uống,0.7379,1,thuốc uống|nước sôi|thuốc|uống|chụp
+vslgh_SENT295_S06_R01_F_g02,vslgh,S06,không cần,không cần,0.9315,1,không cần|thứ tự|ngủ khó|làm|mới
+vslgh_SENT295_S06_R01_F_g03,vslgh,S06,phải không,phải không,0.6051,1,phải không|được không|đúng không|muốn|cuối cùng
+vslgh_SENT296_S06_R01_F_g00,vslgh,S06,hỏi,hỏi,0.8647,1,hỏi|1 ngày|môn địa lý|có phải|tôi
+vslgh_SENT296_S06_R01_F_g01,vslgh,S06,lối sống,lối sống,0.8602,1,lối sống|mua|thay đổi|thuốc|trả
+vslgh_SENT296_S06_R01_F_g02,vslgh,S06,thay đổi,thay đổi,0.9852,1,thay đổi|tay|xe cứu hỏa|khám|cá kho
+vslgh_SENT296_S06_R01_F_g03,vslgh,S06,đúng không,đúng không,0.7171,1,đúng không|phải không|được không|nào|việc
+vslgh_SENT297_S06_R01_F_g00,vslgh,S06,hỏi,rõ,0.1322,0,rõ|hay quên|chóng mặt|mỗi ngày|1 ngày
+vslgh_SENT297_S06_R01_F_g01,vslgh,S06,thể dục,thể dục,0.9796,1,thể dục|chụp|điều hòa|vải lụa|không có
+vslgh_SENT297_S06_R01_F_g02,vslgh,S06,gì,gì,0.8719,1,gì|rồi|muốn|đau|hôm qua
+vslgh_SENT298_S06_R01_F_g00,vslgh,S06,tôi,ăn,0.1300,0,ăn|số|tôi|đóng|thuốc uống
+vslgh_SENT298_S06_R01_F_g01,vslgh,S06,ăn,ăn,0.9272,1,ăn|số|cạo răng|sai|mũi nghẹt
+vslgh_SENT298_S06_R01_F_g02,vslgh,S06,mặn,mặn,0.9127,1,mặn|răng|vị|nhỏ|ít
+vslgh_SENT298_S06_R01_F_g03,vslgh,S06,không được,không được,0.3492,1,không được|yếu|không thấy|đăng ký|đặt
+vslgh_SENT298_S06_R01_F_g04,vslgh,S06,phải không,phải không,0.9463,1,phải không|ít|được không|chóng mặt|không thấy
+vslgh_SENT299_S06_R01_F_g00,vslgh,S06,hỏi,hỏi,0.9826,1,hỏi|hỏi tôi|giờ|phải không|hẹn
+vslgh_SENT299_S06_R01_F_g01,vslgh,S06,rượu bia,rượu bia,0.9038,1,rượu bia|bia rượu|mẫu|ấn|loãng xương
+vslgh_SENT299_S06_R01_F_g02,vslgh,S06,thức khuya,0,0.4243,0,0|ù|uống|60|amidan
+vslgh_SENT299_S06_R01_F_g03,vslgh,S06,ít,bình thường,0.4784,0,bình thường|thường xuyên|ít|nước sôi|nghe
+vslgh_SENT299_S06_R01_F_g04,vslgh,S06,phải không,phải không,0.1687,1,phải không|ê buốt|chữ|ít|không
+vslgh_SENT300_S06_R01_F_g00,vslgh,S06,hỏi,hỏi,0.3670,1,hỏi|phải không|bác sĩ|hỏi tôi|thẻ
+vslgh_SENT300_S06_R01_F_g01,vslgh,S06,bác sĩ,bác sĩ,0.6817,1,bác sĩ|xét nghiệm|gặp|thú y|xem
+vslgh_SENT300_S06_R01_F_g02,vslgh,S06,bệnh,bệnh,0.7521,1,bệnh|bệnh gì|xem|cầm|gặp
+vslgh_SENT300_S06_R01_F_g03,vslgh,S06,đáng lo,đáng lo,0.7517,1,đáng lo|lo lắng|mụn|chụp|sinh hóa
+vslgh_SENT300_S06_R01_F_g04,vslgh,S06,không,được không,0.1720,0,được không|phải không|không|giá trị phần trăm|muốn
