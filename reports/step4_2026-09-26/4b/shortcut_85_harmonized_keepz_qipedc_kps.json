@@ -1,0 +1,23 @@
+{
+  "shared_classes": 85,
+  "features": "harmonized",
+  "hand_z": "keep",
+  "qipedc_kps_dir": "qipedc_kps",
+  "balanced": {
+    "n_by_source": {
+      "qipedc": 106,
+      "vslgh": 106
+    },
+    "chance": 50.0,
+    "all": 92.0,
+    "single_group": {
+      "time": 50.0,
+      "presence": 70.8,
+      "pose_xy": 94.8,
+      "pose_z": 50.0,
+      "hand_xy": 94.8,
+      "hand_z": 79.2,
+      "hand_shape": 86.8
+    }
+  }
+}

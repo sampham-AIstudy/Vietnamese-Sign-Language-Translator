@@ -65,6 +65,20 @@ def legacy_featurize(r):
 PIPE = VSLPreprocessingPipeline(target_len=60)
 
 
+def harmonized_featurizer(hand_z, kps_dir):
+    """Features of the step 4b harmonised input (src/data/harmonized.py) for the same balanced rows."""
+    from src.data.harmonized import harmonize
+
+    def featurize(r):
+        npz = r["npz"] if not r["npz"].startswith("qipedc_kps/") else r["npz"].replace("qipedc_kps/", kps_dir + "/", 1)
+        d = np.load(os.path.join("data/processed", npz))
+        fps = float(json.loads(str(d["metadata"])).get("fps") or 30.0) if "metadata" in d.files else 30.0
+        seq, jm, tm = harmonize(d["keypoints"], d["visibility_mask"], float(r["w"]) / float(r["h"]), fps,
+                                {"hand_z": hand_z})
+        return features(seq, jm, tm)
+    return featurize
+
+
 def source_classifier(rows, featurize):
     y = np.array([r["source"] for r in rows]); g = np.array([r["group"] for r in rows])
     block = feature_blocks(rows, featurize)
@@ -100,17 +114,24 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--skip-eval", action="store_true")
+    ap.add_argument("--features", choices=["legacy", "harmonized"], default="legacy")
+    ap.add_argument("--hand-z", choices=["keep", "drop"], default="keep")
+    ap.add_argument("--qipedc-kps-dir", default="qipedc_kps", help="e.g. qipedc_kps360 for the 360 px extraction")
     args = ap.parse_args()
     man = pd.concat([pd.read_csv(f"data/splits/unified/{s}.csv") for s in ("train", "val", "test")])
     classes = shared_classes(man)
     rows = balanced_rows(man, classes, args.seed)
-    res = {"shared_classes": len(classes), "balanced": source_classifier(rows, legacy_featurize)}
+    featurize = (legacy_featurize if args.features == "legacy"
+                 else harmonized_featurizer(args.hand_z == "keep", args.qipedc_kps_dir))
+    res = {"shared_classes": len(classes), "features": args.features, "hand_z": args.hand_z,
+           "qipedc_kps_dir": args.qipedc_kps_dir, "balanced": source_classifier(rows, featurize)}
     print("source classifier on shared classes:", json.dumps(res["balanced"], ensure_ascii=False), flush=True)
     if not args.skip_eval:
         res["cross_source_current_model"] = cross_source_eval(args.ckpt, man, classes)
         print("cross-source:", json.dumps(res["cross_source_current_model"], ensure_ascii=False), flush=True)
     os.makedirs(args.out, exist_ok=True)
-    json.dump(res, open(os.path.join(args.out, "shortcut_85.json"), "w", encoding="utf-8"), indent=2, ensure_ascii=False)
+    name = "shortcut_85.json" if args.features == "legacy" else f"shortcut_85_harmonized_{args.hand_z}z_{args.qipedc_kps_dir}.json"
+    json.dump(res, open(os.path.join(args.out, name), "w", encoding="utf-8"), indent=2, ensure_ascii=False)
 
 
 if __name__ == "__main__":
