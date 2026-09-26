@@ -1,28 +1,13 @@
 # Handoff — GATE 0 follow-ups, Level 1 nested, sequence endpoint (2026-09-25, updated ~17:15)
 
-## PAUSED HERE (owner moving to home machine) — resume in this order
-1. `kaggle kernels status phmvnsm33/vsl-train-unified` (pushed ~16:40 on GPU T4 x2; seed 42 → `run/` = primary,
-   seed 43 → `run_seed43/` = variance only). Wait with a background loop that ignores network errors.
-2. When COMPLETE: `kaggle kernels output phmvnsm33/vsl-train-unified -p reports/unified_run_2026-09-25`
-   (use `--file-pattern "run(_seed43)?/(metrics\.json|test_logits\.npz|test_predictions\.csv|test_per_class\.csv|history\.json|stgcn_unified_best\.pt|train\.log)$"`).
-   If it failed with "split integrity FAIL" → stop and report to owner.
-3. Finish QIPEDC test keypoints: 387/722 in `data/processed/qipedc_dl/qipedc_kps` (gitignored). Remaining list:
-   recompute (test.csv qipedc rows whose npz is missing) and download in chunks of 100 names with
-   `--file-pattern "qipedc_kps/(A|B|...)\.npz$"` (plain `kernels output` stops after ~200–500 files).
-   Data root for scripts = `data/processed/qipedc_dl` + symlink/copy `data/processed/vslgh_segments` → easiest:
-   pass `--data-root data/processed` after moving `qipedc_kps` to `data/processed/qipedc_kps`.
-4. `python scripts/compare_isolated_models.py --new-ckpt reports/unified_run_2026-09-25/run/stgcn_unified_best.pt --new-metrics .../run/metrics.json --data-root data/processed --out reports/unified_run_2026-09-25/compare_old_new.json`
-   (sanity line must reproduce metrics.json test top-1).
-5. `python scripts/report_unified.py --run reports/unified_run_2026-09-25/run --extra-runs reports/unified_run_2026-09-25/run_seed43 --compare reports/unified_run_2026-09-25/compare_old_new.json --out reports/unified_run_2026-09-25/REPORT.md`
-6. STOP at GATE: send owner the Level 2 report + gate table. Do NOT swap backend default before approval
-   (keep old ckpt in checkpoints/). Then Việc 5 only after owner moves frontend WIP to its own branch.
-If the home machine is a different computer: gitignored local data (hauuto, hcmue_kps, qipedc_dl, checkpoints/)
-is not in git — re-download (hauuto/QIPEDC from Kaggle; HCMUE videos only exist on the original machine).
-
-Supersedes `2026-09-25-after-cleanup.md`. Branch `fix/audit-round2` @ `d1c844f`, pushed. Reply in Vietnamese.
-Owner works gate by gate: stop and report at each GATE. Owner WIP — never stage/commit/stash: `frontend/*`,
-`requirements.txt`, `tests/test_realtime.py`, `start_fullstack.ps1`, `reports/audit_round2/v1_*.json`, `v6_*.json`,
-deleted `app/`, `backend/*.js*`, `data (2)/…`, `data/*.csv` (owner moves frontend to its own branch before Việc 5).
+## NOW (2026-09-26): waiting for owner at GATE Việc 3
+Level 2 trained (seed 42 primary, seed 43), report `reports/unified_run_2026-09-25/REPORT.md` (b3f98fd).
+Gate: new > old on QIPEDC-fair only as a trend (8.3 vs 4.2, p=0.34), clearly on S06 (50.9 vs 0), NOT on HCMUE (0 vs 0)
+→ owner's rule "better on clean test AND HCMUE" is not met; backend default NOT swapped. Checkpoints are in
+`reports/unified_run_2026-09-25/run*/stgcn_unified_best.pt` (gitignored? no — untracked; do not commit without asking).
+Local data: `data/processed/qipedc_kps` (624/4362, all 96 gate clips), `data/processed/hcmue_kps` (47).
+Next after owner decision: Việc 5 needs frontend WIP moved to its own branch first; Việc 6 note: all S06 sentences
+are also signed in train → ViT5 end-to-end on S06 measures unseen signer, not unseen sentence (check ViT5 training data).
 
 ## State
 | Item | Status | Next |
