@@ -14,6 +14,7 @@ Usage: python scripts/shortcut_85.py --ckpt checkpoints/stgcn_unified_best.pt --
 import argparse
 import json
 import os
+import subprocess
 import sys
 
 import numpy as np
@@ -123,7 +124,9 @@ def main():
     rows = balanced_rows(man, classes, args.seed)
     featurize = (legacy_featurize if args.features == "legacy"
                  else harmonized_featurizer(args.hand_z == "keep", args.qipedc_kps_dir))
-    res = {"shared_classes": len(classes), "features": args.features, "hand_z": args.hand_z,
+    commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True).stdout.strip()
+    res = {"command": "python " + " ".join(sys.argv), "git_commit": commit,
+           "shared_classes": len(classes), "features": args.features, "hand_z": args.hand_z,
            "qipedc_kps_dir": args.qipedc_kps_dir, "balanced": source_classifier(rows, featurize)}
     print("source classifier on shared classes:", json.dumps(res["balanced"], ensure_ascii=False), flush=True)
     if not args.skip_eval:
