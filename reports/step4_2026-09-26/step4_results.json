@@ -1,0 +1,2728 @@
+{
+  "generated_by": {
+    "script": "scripts/report_step4.py",
+    "command": "python scripts/report_step4.py --baseline reports/unified_run_2026-09-25/run --runs H-keepz=reports/step4_2026-09-26/runs/run_keepz H-dropz=reports/step4_2026-09-26/runs/run_dropz --run-360 H-keepz-360=reports/step4_2026-09-26/runs/run_keepz_360 --aux-runs H-keepz-seed43=reports/step4_2026-09-26/runs/run_keepz_seed43 H-keepz-notrim=reports/step4_2026-09-26/runs/run_keepz_notrim baseline-seed43=reports/unified_run_2026-09-25/run_seed43 --dict-run reports/step4_2026-09-26/runs/dict_keepz --dict-run-360 reports/step4_2026-09-26/runs/dict_keepz_360 --shortcut-4a reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json --shortcut-4b reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps360.json --shortcut-legacy-compare reports/step4_2026-09-26/4a/shortcut_85.json=reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_dropz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json --kernel-logs reports/step4_2026-09-26/runs/vsl-train-harmonized.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v2.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log reports/unified_run_2026-09-25/vsl-train-unified.log --out reports/step4_2026-09-26/REPORT.md --json-out reports/step4_2026-09-26/step4_results.json",
+    "git_commit": "f4729ff",
+    "code_dirty": false,
+    "code_dirty_files": []
+  },
+  "inputs": [
+    {
+      "path": "checkpoints/stgcn_tier2_indomain.pt",
+      "sha256": "53c34cba43854c3e9820495bba3f93ffe18b5e1cb87ef44278a188ccafe2c826",
+      "role": "checkpoint mặc định của backend (chỉ sha256)"
+    },
+    {
+      "path": "checkpoints/stgcn_unified_best.pt",
+      "sha256": "930633233ff37a5557e16e09714c11d2a1549def0450b6196880f4501de4aabb",
+      "role": "model hiện tại của 4a (chỉ sha256)"
+    },
+    {
+      "path": "data/processed/vslgh_segments/segments.csv",
+      "sha256": "bc4606cc06bdfb69ed2d40d88c7f5e13c43ad9284555a13b2d5378fabd445f15",
+      "role": "VSL-GH segments (chồng lấn câu S06)"
+    },
+    {
+      "path": "data/splits/unified/test.csv",
+      "sha256": "96844753b167ec2b94278ab945e051365e0a67e2ea6aba33702f42ffe4768b8a",
+      "role": "manifest test"
+    },
+    {
+      "path": "data/splits/unified/train.csv",
+      "sha256": "23b5de7a66bc6686f7efa45433b66ec186426e3780b44f26977938811f373007",
+      "role": "manifest train"
+    },
+    {
+      "path": "data/splits/unified/val.csv",
+      "sha256": "22ea2db2644c7dfc57a6eb4deb1986f6c757ce3b870bf6e9ad81949fda84f156",
+      "role": "manifest val"
+    },
+    {
+      "path": "reports/step4_2026-09-26/4a/shortcut_85.json",
+      "sha256": "288913a6e3658ae67cef6d75069a51b4074fed81de0377cea3093920cb56babe",
+      "role": "JSON cũ (không provenance)"
+    },
+    {
+      "path": "reports/step4_2026-09-26/4b/shortcut_85_harmonized_dropz_qipedc_kps.json",
+      "sha256": "333dd8f1f75e72e24c4d1b1a5f402ff5c3e9a60084fab17578188c3c6b5c5983",
+      "role": "JSON cũ (không provenance)"
+    },
+    {
+      "path": "reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps.json",
+      "sha256": "37e25c05f5546d11cd155e90716f2859f3810b44d65166046a701d94be526931",
+      "role": "JSON cũ (không provenance)"
+    },
+    {
+      "path": "reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps360.json",
+      "sha256": "334b1fa82bd1ca7f62a1159f10a1493be871de3d8e5ccaf06e9d4a82fde78d0c",
+      "role": "4b source classifier"
+    },
+    {
+      "path": "reports/step4_2026-09-26/PREREGISTRATION.md",
+      "sha256": "2da6e8e5f172dde63090b1004b973e5041a18adb7397aacc93b65fc45172b793",
+      "role": "preregistration"
+    },
+    {
+      "path": "reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json",
+      "sha256": "76a12be4393c08feaf6ec2ce4474188fc75210418078515d7f1b2971179720e0",
+      "role": "4a source classifier + cross-source (provenance); JSON chạy lại"
+    },
+    {
+      "path": "reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json",
+      "sha256": "31aa8caf4de0f65a1af466d9e009f427340a8edc08b686db293146fcd0414393",
+      "role": "4b source classifier; JSON chạy lại"
+    },
+    {
+      "path": "reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json",
+      "sha256": "4f3fcf51210dafdeffaa8b8047950b1c2bce5e120508521465610b539ecdc7cd",
+      "role": "4b source classifier; JSON chạy lại"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/dict_keepz/metrics.json",
+      "sha256": "d6f0c01f7de8aaa69e115da0d046e12f213b3fd262eedd8e3fe764f8c8631b2c",
+      "role": "metrics.json dict_keepz"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/dict_keepz/stgcn_unified_best.pt",
+      "sha256": "62cb7f2006b22f99d64ddac1bef6164a7592e072cf470fc1b482ad6429435cc0",
+      "role": "stgcn_unified_best.pt dict_keepz"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/dict_keepz/test_logits.npz",
+      "sha256": "1c8213657b42a4eb6f08e8e54b59ebbbf590fefa820f703a8502f29268aef397",
+      "role": "test_logits.npz dict_keepz"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/dict_keepz_360/metrics.json",
+      "sha256": "21f9c9d1ff23c1f17464669097f7e28eb49c912c162e3c52325a7c773b2da82d",
+      "role": "metrics.json dict_keepz_360"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/dict_keepz_360/stgcn_unified_best.pt",
+      "sha256": "1fc9031d127701146efe3a852f410d4bdefbf49264193a899659c6c3d52f54a7",
+      "role": "stgcn_unified_best.pt dict_keepz_360"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/dict_keepz_360/test_logits.npz",
+      "sha256": "013c15075763ec118cff134b1e681ac81b686027af77df0f355f694328b6ba9f",
+      "role": "test_logits.npz dict_keepz_360"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_dropz/metrics.json",
+      "sha256": "b9199034227a316cf05cc53098c832565ca27c223c9671750b4603695570e903",
+      "role": "metrics.json H-dropz"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_dropz/stgcn_unified_best.pt",
+      "sha256": "1dd35425dbc9a6f704ffc88fc9644bb753637b1749126ad3b47a28d5744b3924",
+      "role": "stgcn_unified_best.pt H-dropz"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_dropz/test_logits.npz",
+      "sha256": "4936a0cb33ec842d229f052c2bae967feaf591fc16f4a50cd124d3d93f8c8d0f",
+      "role": "test_logits.npz H-dropz"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_keepz/metrics.json",
+      "sha256": "fa175406149af0489c36c4ea4ef41d13abba683bbaff4571ef3cb79123aaaa57",
+      "role": "metrics.json H-keepz"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_keepz/stgcn_unified_best.pt",
+      "sha256": "db1909493312bccb2bf7271ce375f01ff09c6b1cbb5b7ac442dc6246f357a92d",
+      "role": "stgcn_unified_best.pt H-keepz"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_keepz/test_logits.npz",
+      "sha256": "f66f20fef3875b7225d44f879c521f781557c810b8de8c51e0f68ce1d32b57ed",
+      "role": "test_logits.npz H-keepz"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_keepz_360/metrics.json",
+      "sha256": "a573daa651ad28d2c6f561276c322415a30cc91a2320e568825161650cd98de1",
+      "role": "metrics.json H-keepz-360"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_keepz_360/stgcn_unified_best.pt",
+      "sha256": "648a7825cab9d54cf8d6ce16208cf1cd8dbfbe493fb2d7de919b1f9aebc9b59e",
+      "role": "stgcn_unified_best.pt H-keepz-360"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_keepz_360/test_logits.npz",
+      "sha256": "0a560a6d3810f0578384d0fb110ebd728004881dd087ea2fe101f2ac4ea88bfe",
+      "role": "test_logits.npz H-keepz-360"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_keepz_notrim/metrics.json",
+      "sha256": "12e63883049126fa46d2fc56374f6068e6dd0958cb30d6588a019409d5a78590",
+      "role": "metrics.json H-keepz-notrim"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_keepz_notrim/stgcn_unified_best.pt",
+      "sha256": "92e603e19300e228ac220da8f1a07dae94e18a72bd105859f53de0c4b82e2df9",
+      "role": "stgcn_unified_best.pt H-keepz-notrim"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_keepz_notrim/test_logits.npz",
+      "sha256": "a04cadca374457e787f4b9b2e056ae02577ad9ca7409cca0251a49fab1405eb9",
+      "role": "test_logits.npz H-keepz-notrim"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_keepz_seed43/metrics.json",
+      "sha256": "2bd99e0bd0af07c49f41f937914d7c4fd9ab22a7e323796a262d2fc46760a50b",
+      "role": "metrics.json H-keepz-seed43"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_keepz_seed43/stgcn_unified_best.pt",
+      "sha256": "f8f28f05170551a65b700b947e54fa5b96d348565aeaf4fabc41a35772acbd98",
+      "role": "stgcn_unified_best.pt H-keepz-seed43"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_keepz_seed43/test_logits.npz",
+      "sha256": "bb2bf6b7f495c9a6d95daa952e794e6bc376095257e63371ae18748259f8dab1",
+      "role": "test_logits.npz H-keepz-seed43"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/vsl-train-harmonized.log",
+      "sha256": "cc9a75afdc0f60802c2065acd7fb6fae281f8651c4240d56e66bf5cb0eb25b85",
+      "role": "kernel log"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/vsl-train-harmonized_v2.log",
+      "sha256": "f0dc938d16da2e4fa63ae768511b66cdb9ded491735278a92ca06f1aaf7359a0",
+      "role": "kernel log"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log",
+      "sha256": "d8b011c40f6dde10435f0d7c244cb35aba63c1e3d4655f967498f5dabb06cad8",
+      "role": "kernel log"
+    },
+    {
+      "path": "reports/unified_run_2026-09-25/run/metrics.json",
+      "sha256": "2fa2daadc5ba0558323e401b374fe083741f9c81cecf1c11d1203438cd62cd16",
+      "role": "metrics.json baseline"
+    },
+    {
+      "path": "reports/unified_run_2026-09-25/run/stgcn_unified_best.pt",
+      "sha256": "930633233ff37a5557e16e09714c11d2a1549def0450b6196880f4501de4aabb",
+      "role": "stgcn_unified_best.pt baseline"
+    },
+    {
+      "path": "reports/unified_run_2026-09-25/run/test_logits.npz",
+      "sha256": "cded2935ed711382b759cfb377de4dade06856d797b7a98838968f5a7d5dacf3",
+      "role": "test_logits.npz baseline"
+    },
+    {
+      "path": "reports/unified_run_2026-09-25/run_seed43/metrics.json",
+      "sha256": "9c203a0df80fd13bf49190c254ffe59cda51fbcd41f45eb2c9e3e044d39e78c2",
+      "role": "metrics.json baseline-seed43"
+    },
+    {
+      "path": "reports/unified_run_2026-09-25/run_seed43/stgcn_unified_best.pt",
+      "sha256": "a8f0dc6f7df597fe9bacfedadd846e8eabeada164e3a279bcc82c6b242279871",
+      "role": "stgcn_unified_best.pt baseline-seed43"
+    },
+    {
+      "path": "reports/unified_run_2026-09-25/run_seed43/test_logits.npz",
+      "sha256": "b4d5acf5118fada4d65673acca706d7c8c42ee76a1204d942f43f63528cc0cdd",
+      "role": "test_logits.npz baseline-seed43"
+    },
+    {
+      "path": "reports/unified_run_2026-09-25/vsl-train-unified.log",
+      "sha256": "14c1b59af71cd8dcbd9f5d9157d1a1c729ac38f44029e9d427f27d33d39a3422",
+      "role": "kernel log"
+    }
+  ],
+  "provenance": {
+    "runs": {
+      "baseline": {
+        "dir": "reports/unified_run_2026-09-25/run",
+        "role": "baseline",
+        "kernel_log": "reports/unified_run_2026-09-25/vsl-train-unified.log",
+        "repo_commit": "b4916b9",
+        "branch": "fix/audit-round2",
+        "command": "/usr/bin/python3 scripts/train_unified.py --data-root /tmp/data_root --epochs 120 --batch-size 64 --num-workers 2 --patience 20 --seed 42 --out-dir /kaggle/working/run",
+        "seed_log": 42,
+        "exit": 0,
+        "seed_ckpt": 42,
+        "run_config": null,
+        "effective_config": {
+          "seed": 42
+        },
+        "sha256_test_logits": "cded2935ed711382b759cfb377de4dade06856d797b7a98838968f5a7d5dacf3",
+        "sha256_ckpt": "930633233ff37a5557e16e09714c11d2a1549def0450b6196880f4501de4aabb",
+        "results_committed": {
+          "commit": "b3f98fd",
+          "unix": 1790391729,
+          "date": "2026-09-26 10:02:09 +0700",
+          "subject": "feat(level2): unified model results by group + old-vs-new gate on unseen clips"
+        },
+        "results_committed_after_last_prereg_commit": false
+      },
+      "H-keepz": {
+        "dir": "reports/step4_2026-09-26/runs/run_keepz",
+        "role": "candidate_native",
+        "kernel_log": "reports/step4_2026-09-26/runs/vsl-train-harmonized.log",
+        "repo_commit": "c8a7bdf",
+        "branch": "fix/audit-round2",
+        "command": "/usr/bin/python3 scripts/train_unified.py --data-root /tmp/root_native --out-dir /kaggle/working/run_keepz --epochs 120 --batch-size 64 --num-workers 2 --patience 20 --seed 42 --features harmonized --hand-z keep",
+        "seed_log": 42,
+        "exit": 0,
+        "seed_ckpt": 42,
+        "run_config": {
+          "features": "harmonized",
+          "hand_z": "keep",
+          "sources": "all",
+          "process_height": null
+        },
+        "effective_config": {
+          "trim": true,
+          "features": "harmonized",
+          "hand_z": "keep",
+          "sources": "all",
+          "process_height": null,
+          "seed": 42
+        },
+        "sha256_test_logits": "f66f20fef3875b7225d44f879c521f781557c810b8de8c51e0f68ce1d32b57ed",
+        "sha256_ckpt": "db1909493312bccb2bf7271ce375f01ff09c6b1cbb5b7ac442dc6246f357a92d",
+        "results_committed": {
+          "commit": "c9296bf",
+          "unix": 1790399545,
+          "date": "2026-09-26 12:12:25 +0700",
+          "subject": "results(level2): step 4b harmonised runs (hand z keep / drop), native resolution"
+        },
+        "results_committed_after_last_prereg_commit": false
+      },
+      "H-dropz": {
+        "dir": "reports/step4_2026-09-26/runs/run_dropz",
+        "role": "candidate_native",
+        "kernel_log": "reports/step4_2026-09-26/runs/vsl-train-harmonized.log",
+        "repo_commit": "c8a7bdf",
+        "branch": "fix/audit-round2",
+        "command": "/usr/bin/python3 scripts/train_unified.py --data-root /tmp/root_native --out-dir /kaggle/working/run_dropz --epochs 120 --batch-size 64 --num-workers 2 --patience 20 --seed 42 --features harmonized --hand-z drop",
+        "seed_log": 42,
+        "exit": 0,
+        "seed_ckpt": 42,
+        "run_config": {
+          "features": "harmonized",
+          "hand_z": "drop",
+          "sources": "all",
+          "process_height": null
+        },
+        "effective_config": {
+          "trim": true,
+          "features": "harmonized",
+          "hand_z": "drop",
+          "sources": "all",
+          "process_height": null,
+          "seed": 42
+        },
+        "sha256_test_logits": "4936a0cb33ec842d229f052c2bae967feaf591fc16f4a50cd124d3d93f8c8d0f",
+        "sha256_ckpt": "1dd35425dbc9a6f704ffc88fc9644bb753637b1749126ad3b47a28d5744b3924",
+        "results_committed": {
+          "commit": "c9296bf",
+          "unix": 1790399545,
+          "date": "2026-09-26 12:12:25 +0700",
+          "subject": "results(level2): step 4b harmonised runs (hand z keep / drop), native resolution"
+        },
+        "results_committed_after_last_prereg_commit": false
+      },
+      "H-keepz-360": {
+        "dir": "reports/step4_2026-09-26/runs/run_keepz_360",
+        "role": "candidate_360",
+        "kernel_log": "reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log",
+        "repo_commit": "c65032a",
+        "branch": "fix/audit-round2",
+        "command": "/usr/bin/python3 scripts/train_unified.py --data-root /tmp/root_360 --out-dir /kaggle/working/run_keepz_360 --epochs 120 --batch-size 64 --num-workers 2 --patience 20 --seed 42 --features harmonized --hand-z keep --process-height 360",
+        "seed_log": 42,
+        "exit": 0,
+        "seed_ckpt": 42,
+        "run_config": {
+          "features": "harmonized",
+          "hand_z": "keep",
+          "sources": "all",
+          "process_height": 360,
+          "trim": true
+        },
+        "effective_config": {
+          "trim": true,
+          "features": "harmonized",
+          "hand_z": "keep",
+          "sources": "all",
+          "process_height": 360,
+          "seed": 42
+        },
+        "sha256_test_logits": "0a560a6d3810f0578384d0fb110ebd728004881dd087ea2fe101f2ac4ea88bfe",
+        "sha256_ckpt": "648a7825cab9d54cf8d6ce16208cf1cd8dbfbe493fb2d7de919b1f9aebc9b59e",
+        "results_committed": {
+          "commit": "27233f6",
+          "unix": 1790426023,
+          "date": "2026-09-26 19:33:43 +0700",
+          "subject": "results(level2): harmonised v3 — H-keepz 360 px, trimming ablation (--no-trim), dictionary model 360 px"
+        },
+        "results_committed_after_last_prereg_commit": true
+      },
+      "H-keepz-seed43": {
+        "dir": "reports/step4_2026-09-26/runs/run_keepz_seed43",
+        "role": "aux",
+        "kernel_log": "reports/step4_2026-09-26/runs/vsl-train-harmonized_v2.log",
+        "repo_commit": "c9296bf",
+        "branch": "fix/audit-round2",
+        "command": "/usr/bin/python3 scripts/train_unified.py --data-root /tmp/root_native --out-dir /kaggle/working/run_keepz_seed43 --epochs 120 --batch-size 64 --num-workers 2 --patience 20 --seed 43 --features harmonized --hand-z keep",
+        "seed_log": 43,
+        "exit": 0,
+        "seed_ckpt": 43,
+        "run_config": {
+          "features": "harmonized",
+          "hand_z": "keep",
+          "sources": "all",
+          "process_height": null
+        },
+        "effective_config": {
+          "trim": true,
+          "features": "harmonized",
+          "hand_z": "keep",
+          "sources": "all",
+          "process_height": null,
+          "seed": 43
+        },
+        "sha256_test_logits": "bb2bf6b7f495c9a6d95daa952e794e6bc376095257e63371ae18748259f8dab1",
+        "sha256_ckpt": "f8f28f05170551a65b700b947e54fa5b96d348565aeaf4fabc41a35772acbd98",
+        "results_committed": {
+          "commit": "a414b0d",
+          "unix": 1790404621,
+          "date": "2026-09-26 13:37:01 +0700",
+          "subject": "results(level2): harmonised v2 — dictionary-word model (native) + H-keepz seed 43 (variance only)"
+        },
+        "results_committed_after_last_prereg_commit": true
+      },
+      "H-keepz-notrim": {
+        "dir": "reports/step4_2026-09-26/runs/run_keepz_notrim",
+        "role": "aux",
+        "kernel_log": "reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log",
+        "repo_commit": "c65032a",
+        "branch": "fix/audit-round2",
+        "command": "/usr/bin/python3 scripts/train_unified.py --data-root /tmp/root_native --out-dir /kaggle/working/run_keepz_notrim --epochs 120 --batch-size 64 --num-workers 2 --patience 20 --seed 42 --features harmonized --hand-z keep --no-trim",
+        "seed_log": 42,
+        "exit": 0,
+        "seed_ckpt": 42,
+        "run_config": {
+          "features": "harmonized",
+          "hand_z": "keep",
+          "sources": "all",
+          "process_height": null,
+          "trim": false
+        },
+        "effective_config": {
+          "trim": false,
+          "features": "harmonized",
+          "hand_z": "keep",
+          "sources": "all",
+          "process_height": null,
+          "seed": 42
+        },
+        "sha256_test_logits": "a04cadca374457e787f4b9b2e056ae02577ad9ca7409cca0251a49fab1405eb9",
+        "sha256_ckpt": "92e603e19300e228ac220da8f1a07dae94e18a72bd105859f53de0c4b82e2df9",
+        "results_committed": {
+          "commit": "27233f6",
+          "unix": 1790426023,
+          "date": "2026-09-26 19:33:43 +0700",
+          "subject": "results(level2): harmonised v3 — H-keepz 360 px, trimming ablation (--no-trim), dictionary model 360 px"
+        },
+        "results_committed_after_last_prereg_commit": true
+      },
+      "baseline-seed43": {
+        "dir": "reports/unified_run_2026-09-25/run_seed43",
+        "role": "aux",
+        "kernel_log": "reports/unified_run_2026-09-25/vsl-train-unified.log",
+        "repo_commit": "b4916b9",
+        "branch": "fix/audit-round2",
+        "command": "/usr/bin/python3 scripts/train_unified.py --data-root /tmp/data_root --epochs 120 --batch-size 64 --num-workers 2 --patience 20 --seed 43 --out-dir /kaggle/working/run_seed43",
+        "seed_log": 43,
+        "exit": 0,
+        "seed_ckpt": 43,
+        "run_config": null,
+        "effective_config": {
+          "seed": 43
+        },
+        "sha256_test_logits": "b4d5acf5118fada4d65673acca706d7c8c42ee76a1204d942f43f63528cc0cdd",
+        "sha256_ckpt": "a8f0dc6f7df597fe9bacfedadd846e8eabeada164e3a279bcc82c6b242279871",
+        "results_committed": {
+          "commit": "b3f98fd",
+          "unix": 1790391729,
+          "date": "2026-09-26 10:02:09 +0700",
+          "subject": "feat(level2): unified model results by group + old-vs-new gate on unseen clips"
+        },
+        "results_committed_after_last_prereg_commit": false
+      },
+      "dict_keepz": {
+        "dir": "reports/step4_2026-09-26/runs/dict_keepz",
+        "role": "dict",
+        "kernel_log": "reports/step4_2026-09-26/runs/vsl-train-harmonized_v2.log",
+        "repo_commit": "c9296bf",
+        "branch": "fix/audit-round2",
+        "command": "/usr/bin/python3 scripts/train_unified.py --data-root /tmp/root_native --out-dir /kaggle/working/dict_keepz --epochs 120 --batch-size 64 --num-workers 2 --patience 20 --seed 42 --features harmonized --hand-z keep --sources qipedc",
+        "seed_log": 42,
+        "exit": 0,
+        "seed_ckpt": 42,
+        "run_config": {
+          "features": "harmonized",
+          "hand_z": "keep",
+          "sources": "qipedc",
+          "process_height": null
+        },
+        "effective_config": {
+          "trim": true,
+          "features": "harmonized",
+          "hand_z": "keep",
+          "sources": "qipedc",
+          "process_height": null,
+          "seed": 42
+        },
+        "sha256_test_logits": "1c8213657b42a4eb6f08e8e54b59ebbbf590fefa820f703a8502f29268aef397",
+        "sha256_ckpt": "62cb7f2006b22f99d64ddac1bef6164a7592e072cf470fc1b482ad6429435cc0",
+        "results_committed": {
+          "commit": "a414b0d",
+          "unix": 1790404621,
+          "date": "2026-09-26 13:37:01 +0700",
+          "subject": "results(level2): harmonised v2 — dictionary-word model (native) + H-keepz seed 43 (variance only)"
+        },
+        "results_committed_after_last_prereg_commit": true
+      },
+      "dict_keepz_360": {
+        "dir": "reports/step4_2026-09-26/runs/dict_keepz_360",
+        "role": "dict",
+        "kernel_log": "reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log",
+        "repo_commit": "c65032a",
+        "branch": "fix/audit-round2",
+        "command": "/usr/bin/python3 scripts/train_unified.py --data-root /tmp/root_360 --out-dir /kaggle/working/dict_keepz_360 --epochs 120 --batch-size 64 --num-workers 2 --patience 20 --seed 42 --features harmonized --hand-z keep --sources qipedc --process-height 360",
+        "seed_log": 42,
+        "exit": 0,
+        "seed_ckpt": 42,
+        "run_config": {
+          "features": "harmonized",
+          "hand_z": "keep",
+          "sources": "qipedc",
+          "process_height": 360,
+          "trim": true
+        },
+        "effective_config": {
+          "trim": true,
+          "features": "harmonized",
+          "hand_z": "keep",
+          "sources": "qipedc",
+          "process_height": 360,
+          "seed": 42
+        },
+        "sha256_test_logits": "013c15075763ec118cff134b1e681ac81b686027af77df0f355f694328b6ba9f",
+        "sha256_ckpt": "1fc9031d127701146efe3a852f410d4bdefbf49264193a899659c6c3d52f54a7",
+        "results_committed": {
+          "commit": "27233f6",
+          "unix": 1790426023,
+          "date": "2026-09-26 19:33:43 +0700",
+          "subject": "results(level2): harmonised v3 — H-keepz 360 px, trimming ablation (--no-trim), dictionary model 360 px"
+        },
+        "results_committed_after_last_prereg_commit": true
+      }
+    },
+    "jsons": [
+      {
+        "path": "reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json",
+        "command": "python scripts/shortcut_85.py --out reports/step4_2026-09-26/provenance_rerun/4a",
+        "git_commit": "27233f6"
+      },
+      {
+        "path": "reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json",
+        "command": "python scripts/shortcut_85.py --skip-eval --features harmonized --hand-z keep --qipedc-kps-dir qipedc_kps --out reports/step4_2026-09-26/provenance_rerun/4b",
+        "git_commit": "27233f6"
+      },
+      {
+        "path": "reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json",
+        "command": "python scripts/shortcut_85.py --skip-eval --features harmonized --hand-z drop --qipedc-kps-dir qipedc_kps --out reports/step4_2026-09-26/provenance_rerun/4b",
+        "git_commit": "27233f6"
+      },
+      {
+        "path": "reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps360.json",
+        "command": "python scripts/shortcut_85.py --skip-eval --features harmonized --hand-z keep --qipedc-kps-dir qipedc_kps360 --out reports/step4_2026-09-26/4b",
+        "git_commit": "4bb3811"
+      }
+    ],
+    "legacy_compare": [
+      {
+        "old": "reports/step4_2026-09-26/4a/shortcut_85.json",
+        "new": "reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json",
+        "old_command": null,
+        "old_git_commit": null,
+        "old_added_in": {
+          "commit": "c8a7bdf",
+          "unix": 1790395124,
+          "date": "2026-09-26 10:58:44 +0700",
+          "subject": "feat(level2): step 4a shortcut test + harmonised input for step 4b/4c"
+        },
+        "new_command": "python scripts/shortcut_85.py --out reports/step4_2026-09-26/provenance_rerun/4a",
+        "new_git_commit": "27233f6",
+        "same": true,
+        "different_fields": [],
+        "only_in_old": [],
+        "only_in_new": [
+          "command",
+          "features",
+          "git_commit",
+          "hand_z",
+          "qipedc_kps_dir"
+        ],
+        "values": {}
+      },
+      {
+        "old": "reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps.json",
+        "new": "reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json",
+        "old_command": null,
+        "old_git_commit": null,
+        "old_added_in": {
+          "commit": "5c1d080",
+          "unix": 1790395252,
+          "date": "2026-09-26 11:00:52 +0700",
+          "subject": "analysis(level2): harmonised features remove the clip-length and pose-z cues (50%); report_step4.py"
+        },
+        "new_command": "python scripts/shortcut_85.py --skip-eval --features harmonized --hand-z keep --qipedc-kps-dir qipedc_kps --out reports/step4_2026-09-26/provenance_rerun/4b",
+        "new_git_commit": "27233f6",
+        "same": true,
+        "different_fields": [],
+        "only_in_old": [],
+        "only_in_new": [
+          "command",
+          "git_commit"
+        ],
+        "values": {}
+      },
+      {
+        "old": "reports/step4_2026-09-26/4b/shortcut_85_harmonized_dropz_qipedc_kps.json",
+        "new": "reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json",
+        "old_command": null,
+        "old_git_commit": null,
+        "old_added_in": {
+          "commit": "5c1d080",
+          "unix": 1790395252,
+          "date": "2026-09-26 11:00:52 +0700",
+          "subject": "analysis(level2): harmonised features remove the clip-length and pose-z cues (50%); report_step4.py"
+        },
+        "new_command": "python scripts/shortcut_85.py --skip-eval --features harmonized --hand-z drop --qipedc-kps-dir qipedc_kps --out reports/step4_2026-09-26/provenance_rerun/4b",
+        "new_git_commit": "27233f6",
+        "same": true,
+        "different_fields": [],
+        "only_in_old": [],
+        "only_in_new": [
+          "command",
+          "git_commit"
+        ],
+        "values": {}
+      }
+    ],
+    "kernels": [
+      {
+        "path": "reports/step4_2026-09-26/runs/vsl-train-harmonized.log",
+        "repo_commit": "c8a7bdf",
+        "branch": "fix/audit-round2",
+        "repo_commit_is_ancestor_of_HEAD": true,
+        "repo_commit_date": "2026-09-26 10:58:44 +0700",
+        "runs": [
+          "run_dropz",
+          "run_keepz"
+        ],
+        "duration_s": 4229.100974703,
+        "reported_total_min": 70.4
+      },
+      {
+        "path": "reports/step4_2026-09-26/runs/vsl-train-harmonized_v2.log",
+        "repo_commit": "c9296bf",
+        "branch": "fix/audit-round2",
+        "repo_commit_is_ancestor_of_HEAD": true,
+        "repo_commit_date": "2026-09-26 12:12:25 +0700",
+        "runs": [
+          "dict_keepz",
+          "run_keepz_seed43"
+        ],
+        "duration_s": 4126.423020173,
+        "reported_total_min": 68.7
+      },
+      {
+        "path": "reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log",
+        "repo_commit": "c65032a",
+        "branch": "fix/audit-round2",
+        "repo_commit_is_ancestor_of_HEAD": true,
+        "repo_commit_date": "2026-09-26 12:28:57 +0700",
+        "runs": [
+          "dict_keepz_360",
+          "run_keepz_360",
+          "run_keepz_notrim"
+        ],
+        "duration_s": 6573.644945016,
+        "reported_total_min": 109.4
+      },
+      {
+        "path": "reports/unified_run_2026-09-25/vsl-train-unified.log",
+        "repo_commit": "b4916b9",
+        "branch": "fix/audit-round2",
+        "repo_commit_is_ancestor_of_HEAD": true,
+        "repo_commit_date": "2026-09-25 16:07:58 +0700",
+        "runs": [
+          "run",
+          "run_seed43"
+        ],
+        "duration_s": 6558.010315491,
+        "reported_total_min": 109.2
+      }
+    ],
+    "kernels_total_duration_s": 21487.179255383,
+    "kernel_code_diffs": [
+      {
+        "from": "b4916b9",
+        "to": "c8a7bdf",
+        "numstat": [
+          "117\t0\tscripts/shortcut_85.py",
+          "163\t0\tscripts/source_diagnostics.py",
+          "49\t6\tscripts/train_unified.py",
+          "183\t0\tsrc/data/harmonized.py"
+        ]
+      },
+      {
+        "from": "c8a7bdf",
+        "to": "c9296bf",
+        "numstat": [
+          "23\t2\tscripts/shortcut_85.py"
+        ]
+      },
+      {
+        "from": "c9296bf",
+        "to": "c65032a",
+        "numstat": [
+          "5\t3\tscripts/train_unified.py",
+          "2\t1\tsrc/data/harmonized.py"
+        ]
+      },
+      {
+        "from": "c65032a",
+        "to": "HEAD (f4729ff)",
+        "numstat": [
+          "4\t1\tscripts/shortcut_85.py"
+        ]
+      }
+    ],
+    "config_note": "run_config thiếu khóa trim (run trước commit 9b0ade1) được hiểu là trim=True"
+  },
+  "4a": {
+    "path": "reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json",
+    "command": "python scripts/shortcut_85.py --out reports/step4_2026-09-26/provenance_rerun/4a",
+    "git_commit": "27233f6",
+    "shared_classes": 85,
+    "balanced": {
+      "n_by_source": {
+        "qipedc": 106,
+        "vslgh": 106
+      },
+      "chance": 50.0,
+      "all": 99.5,
+      "single_group": {
+        "time": 98.1,
+        "presence": 70.3,
+        "pose_xy": 99.1,
+        "pose_z": 99.5,
+        "hand_xy": 97.2,
+        "hand_z": 82.5,
+        "hand_shape": 95.3
+      }
+    },
+    "cross_source_current_model": {
+      "classes_kept": 81,
+      "excluded_different_sign": [
+        "kết quả",
+        "thường xuyên",
+        "xem",
+        "yếu"
+      ],
+      "qipedc_test_only": {
+        "n": 26,
+        "classes": 17,
+        "json_top1": 0.0,
+        "json_top1_ci": [
+          0.0,
+          12.87
+        ],
+        "json_top5": 19.2,
+        "top1": {
+          "k": 0,
+          "n": 26,
+          "pct": 0.0,
+          "ci_low": 0.0,
+          "ci_high": 12.873304380462175
+        },
+        "top5": {
+          "k": 5,
+          "n": 26,
+          "pct": 19.23076923076923,
+          "ci_low": 8.506935771788267,
+          "ci_high": 37.87663615465
+        }
+      },
+      "qipedc_val_test": {
+        "n": 26,
+        "classes": 17,
+        "json_top1": 0.0,
+        "json_top1_ci": [
+          0.0,
+          12.87
+        ],
+        "json_top5": 19.2,
+        "top1": {
+          "k": 0,
+          "n": 26,
+          "pct": 0.0,
+          "ci_low": 0.0,
+          "ci_high": 12.873304380462175
+        },
+        "top5": {
+          "k": 5,
+          "n": 26,
+          "pct": 19.23076923076923,
+          "ci_low": 8.506935771788267,
+          "ci_high": 37.87663615465
+        }
+      },
+      "s06_reference": {
+        "n": 202,
+        "classes": 80,
+        "json_top1": 58.4,
+        "json_top1_ci": [
+          51.52,
+          64.99
+        ],
+        "json_top5": 88.1,
+        "top1": {
+          "k": 118,
+          "n": 202,
+          "pct": 58.415841584158414,
+          "ci_low": 51.52378845168559,
+          "ci_high": 64.99376679467859
+        },
+        "top5": {
+          "k": 178,
+          "n": 202,
+          "pct": 88.11881188118812,
+          "ci_low": 82.93020307661156,
+          "ci_high": 91.88460598044979
+        }
+      }
+    },
+    "current_model_ckpt": {
+      "path": "checkpoints/stgcn_unified_best.pt",
+      "sha256": "930633233ff37a5557e16e09714c11d2a1549def0450b6196880f4501de4aabb"
+    },
+    "baseline_ckpt": {
+      "path": "reports/unified_run_2026-09-25/run/stgcn_unified_best.pt",
+      "sha256": "930633233ff37a5557e16e09714c11d2a1549def0450b6196880f4501de4aabb"
+    },
+    "same_checkpoint": true,
+    "cross_source_vs_baseline_logits": {
+      "same": true,
+      "json": [
+        0,
+        26,
+        5
+      ],
+      "baseline_logits": [
+        0,
+        26,
+        5
+      ]
+    }
+  },
+  "4b": {
+    "selection": {
+      "rule": "balanced VAL = (VAL top-1 VSL-GH S05 + VAL top-1 QIPEDC) / 2; chênh < 0.5 điểm -> biến thể đơn giản (bỏ hand z; độ phân giải gốc). Chỉ dùng VAL.",
+      "threshold": 0.5,
+      "n_qipedc_val": 105,
+      "one_qipedc_val_clip_points": 0.47619047619047616,
+      "table": [
+        {
+          "run": "baseline",
+          "role": "baseline",
+          "candidate": false,
+          "val_by_source": {},
+          "balanced_val": null,
+          "best_epoch": 46,
+          "val_best_top1_overall": 63.32
+        },
+        {
+          "run": "H-keepz",
+          "role": "candidate_native",
+          "candidate": true,
+          "val_by_source": {
+            "vslgh": {
+              "k": 892,
+              "n": 1190,
+              "pct": 74.95798319327731,
+              "ci_low": 72.41867483845733,
+              "ci_high": 77.33666958914512
+            },
+            "qipedc": {
+              "k": 18,
+              "n": 105,
+              "pct": 17.142857142857142,
+              "ci_low": 11.127695984061493,
+              "ci_high": 25.47742558710247
+            }
+          },
+          "balanced_val": 46.05042016806723,
+          "best_epoch": 61,
+          "val_best_top1_overall": 70.27
+        },
+        {
+          "run": "H-dropz",
+          "role": "candidate_native",
+          "candidate": true,
+          "val_by_source": {
+            "vslgh": {
+              "k": 871,
+              "n": 1190,
+              "pct": 73.19327731092437,
+              "ci_low": 70.60483944848968,
+              "ci_high": 75.63245032261563
+            },
+            "qipedc": {
+              "k": 15,
+              "n": 105,
+              "pct": 14.285714285714286,
+              "ci_low": 8.852402661833803,
+              "ci_high": 22.240120785083544
+            }
+          },
+          "balanced_val": 43.739495798319325,
+          "best_epoch": 58,
+          "val_best_top1_overall": 68.42
+        },
+        {
+          "run": "H-keepz-360",
+          "role": "candidate_360",
+          "candidate": true,
+          "val_by_source": {
+            "vslgh": {
+              "k": 899,
+              "n": 1190,
+              "pct": 75.54621848739495,
+              "ci_low": 73.02446987092331,
+              "ci_high": 77.90355944217818
+            },
+            "qipedc": {
+              "k": 21,
+              "n": 105,
+              "pct": 20.0,
+              "ci_low": 13.469807905069025,
+              "ci_high": 28.647911790341553
+            }
+          },
+          "balanced_val": 47.773109243697476,
+          "best_epoch": 78,
+          "val_best_top1_overall": 71.04
+        },
+        {
+          "run": "H-keepz-seed43",
+          "role": "aux",
+          "candidate": false,
+          "val_by_source": {
+            "vslgh": {
+              "k": 919,
+              "n": 1190,
+              "pct": 77.22689075630252,
+              "ci_low": 74.75875521657282,
+              "ci_high": 79.51980234081167
+            },
+            "qipedc": {
+              "k": 19,
+              "n": 105,
+              "pct": 18.095238095238095,
+              "ci_low": 11.901573432473684,
+              "ci_high": 26.54108084677248
+            }
+          },
+          "balanced_val": 47.661064425770306,
+          "best_epoch": 103,
+          "val_best_top1_overall": 72.43
+        },
+        {
+          "run": "H-keepz-notrim",
+          "role": "aux",
+          "candidate": false,
+          "val_by_source": {
+            "vslgh": {
+              "k": 910,
+              "n": 1190,
+              "pct": 76.47058823529412,
+              "ci_low": 73.97768202231289,
+              "ci_high": 78.79313782514424
+            },
+            "qipedc": {
+              "k": 17,
+              "n": 105,
+              "pct": 16.19047619047619,
+              "ci_low": 10.361201777616731,
+              "ci_high": 24.40638708546503
+            }
+          },
+          "balanced_val": 46.33053221288515,
+          "best_epoch": 90,
+          "val_best_top1_overall": 71.58
+        },
+        {
+          "run": "baseline-seed43",
+          "role": "aux",
+          "candidate": false,
+          "val_by_source": {},
+          "balanced_val": null,
+          "best_epoch": 51,
+          "val_best_top1_overall": 64.09
+        },
+        {
+          "run": "dict_keepz_360",
+          "role": "dict",
+          "candidate": false,
+          "val_by_source": {
+            "qipedc": {
+              "k": 4,
+              "n": 105,
+              "pct": 3.8095238095238093,
+              "ci_low": 1.4912218047781596,
+              "ci_high": 9.388441853234951
+            }
+          },
+          "balanced_val": null,
+          "best_epoch": 28,
+          "val_best_top1_overall": 3.81
+        }
+      ],
+      "z": {
+        "chosen": "H-keepz",
+        "simple": "H-dropz",
+        "best_other": "H-keepz",
+        "diff": 2.3109243697479016,
+        "near_threshold": false
+      },
+      "resolution": {
+        "chosen": "H-keepz-360",
+        "run_360": "H-keepz-360",
+        "compared_with": "H-keepz",
+        "diff": 1.7226890756302495,
+        "adopted": true,
+        "near_threshold": false
+      },
+      "chosen": "H-keepz-360",
+      "chosen_run_config": {
+        "trim": true,
+        "features": "harmonized",
+        "hand_z": "keep",
+        "sources": "all",
+        "process_height": 360,
+        "seed": 42
+      },
+      "seed_spread_balanced_val": [
+        {
+          "a": "H-keepz",
+          "b": "H-keepz-seed43",
+          "seed_a": 42,
+          "seed_b": 43,
+          "diff_b_minus_a": 1.610644257703079
+        }
+      ]
+    },
+    "trimming": {
+      "val": [
+        {
+          "trimmed": "H-keepz",
+          "untrimmed": "H-keepz-notrim",
+          "diff": -0.2801120448179262,
+          "credited": false,
+          "near_threshold": false
+        }
+      ],
+      "test": [
+        {
+          "trimmed": "H-keepz",
+          "untrimmed": "H-keepz-notrim",
+          "groups": {
+            "vslgh_unseen_signer": {
+              "a": {
+                "k": 936,
+                "n": 1189,
+                "pct": 78.72161480235492,
+                "ci_low": 76.30463913047579,
+                "ci_high": 80.95359197078695
+              },
+              "b": {
+                "k": 940,
+                "n": 1189,
+                "pct": 79.05803195962994,
+                "ci_low": 76.65343409974457,
+                "ci_high": 81.27546442290921
+              },
+              "n_common": 1189,
+              "diff_points": -0.3364171572750223,
+              "diff_k": -4,
+              "mcnemar_top1": {
+                "n10_a_only": 71,
+                "n01_b_only": 75,
+                "p": 0.8040203645137736
+              }
+            },
+            "qipedc_only_class": {
+              "a": {
+                "k": 90,
+                "n": 691,
+                "pct": 13.024602026049203,
+                "ci_low": 10.718081459568195,
+                "ci_high": 15.739977470697347
+              },
+              "b": {
+                "k": 80,
+                "n": 691,
+                "pct": 11.577424023154848,
+                "ci_low": 9.401352919746007,
+                "ci_high": 14.178352152604296
+              },
+              "n_common": 691,
+              "diff_points": 1.447178002894356,
+              "diff_k": 10,
+              "mcnemar_top1": {
+                "n10_a_only": 34,
+                "n01_b_only": 24,
+                "p": 0.23704711476271959
+              }
+            },
+            "total": {
+              "a": {
+                "k": 1030,
+                "n": 1911,
+                "pct": 53.898482469911045,
+                "ci_low": 51.65792106050101,
+                "ci_high": 56.12340142591249
+              },
+              "b": {
+                "k": 1021,
+                "n": 1911,
+                "pct": 53.427524856096284,
+                "ci_low": 51.18636183627866,
+                "ci_high": 55.6549351148634
+              },
+              "n_common": 1911,
+              "diff_points": 0.4709576138147611,
+              "diff_k": 9,
+              "mcnemar_top1": {
+                "n10_a_only": 108,
+                "n01_b_only": 99,
+                "p": 0.5782913753157676
+              }
+            },
+            "cross_source": {
+              "a": {
+                "k": 3,
+                "n": 26,
+                "pct": 11.538461538461538,
+                "ci_low": 4.003171821149494,
+                "ci_high": 28.976293086898337
+              },
+              "b": {
+                "k": 0,
+                "n": 26,
+                "pct": 0.0,
+                "ci_low": 0.0,
+                "ci_high": 12.873304380462175
+              },
+              "n_common": 26,
+              "diff_points": 11.538461538461538,
+              "diff_k": 3,
+              "mcnemar_top1": {
+                "n10_a_only": 3,
+                "n01_b_only": 0,
+                "p": 0.25
+              }
+            }
+          }
+        }
+      ],
+      "vs_baseline": {
+        "chosen": "H-keepz-360",
+        "baseline": "baseline",
+        "groups": {
+          "vslgh_unseen_signer": {
+            "a": {
+              "k": 964,
+              "n": 1189,
+              "pct": 81.07653490328006,
+              "ci_low": 78.75133703552642,
+              "ci_high": 83.2015660154738
+            },
+            "b": {
+              "k": 839,
+              "n": 1189,
+              "pct": 70.56349873843565,
+              "ci_low": 67.91001260250896,
+              "ci_high": 73.08453353002028
+            },
+            "n_common": 1189,
+            "diff_points": 10.513036164844408,
+            "diff_k": 125,
+            "mcnemar_top1": {
+              "n10_a_only": 183,
+              "n01_b_only": 58,
+              "p": 2.8332682936868047e-16
+            }
+          },
+          "qipedc_only_class": {
+            "a": {
+              "k": 83,
+              "n": 691,
+              "pct": 12.011577424023155,
+              "ci_low": 9.795224070219133,
+              "ci_high": 14.647987159505742
+            },
+            "b": {
+              "k": 68,
+              "n": 691,
+              "pct": 9.84081041968162,
+              "ci_low": 7.836943647494865,
+              "ci_high": 12.288736795357147
+            },
+            "n_common": 691,
+            "diff_points": 2.170767004341535,
+            "diff_k": 15,
+            "mcnemar_top1": {
+              "n10_a_only": 46,
+              "n01_b_only": 31,
+              "p": 0.11001559898513334
+            }
+          },
+          "total": {
+            "a": {
+              "k": 1052,
+              "n": 1911,
+              "pct": 55.04971219256934,
+              "ci_low": 52.81146482316614,
+              "ci_high": 57.267697860577506
+            },
+            "b": {
+              "k": 907,
+              "n": 1911,
+              "pct": 47.46206174777603,
+              "ci_low": 45.23049026911206,
+              "ci_high": 49.703816568591904
+            },
+            "n_common": 1911,
+            "diff_points": 7.587650444793304,
+            "diff_k": 145,
+            "mcnemar_top1": {
+              "n10_a_only": 234,
+              "n01_b_only": 89,
+              "p": 3.5367854409527463e-16
+            }
+          },
+          "cross_source": {
+            "a": {
+              "k": 4,
+              "n": 26,
+              "pct": 15.384615384615385,
+              "ci_low": 6.149933998929477,
+              "ci_high": 33.531584418313564
+            },
+            "b": {
+              "k": 0,
+              "n": 26,
+              "pct": 0.0,
+              "ci_low": 0.0,
+              "ci_high": 12.873304380462175
+            },
+            "n_common": 26,
+            "diff_points": 15.384615384615385,
+            "diff_k": 4,
+            "mcnemar_top1": {
+              "n10_a_only": 4,
+              "n01_b_only": 0,
+              "p": 0.125
+            }
+          }
+        },
+        "chosen_process_height": 360,
+        "ablation_process_heights": [
+          "None"
+        ]
+      }
+    },
+    "test_groups": {
+      "runs": {
+        "baseline": {
+          "vslgh_unseen_signer": {
+            "top1": {
+              "k": 839,
+              "n": 1189,
+              "pct": 70.56349873843565,
+              "ci_low": 67.91001260250896,
+              "ci_high": 73.08453353002028
+            },
+            "top5": {
+              "k": 1081,
+              "n": 1189,
+              "pct": 90.91673675357443,
+              "ci_low": 89.14882168357332,
+              "ci_high": 92.42110344311575
+            }
+          },
+          "qipedc_only_class": {
+            "top1": {
+              "k": 68,
+              "n": 691,
+              "pct": 9.84081041968162,
+              "ci_low": 7.836943647494865,
+              "ci_high": 12.288736795357147
+            },
+            "top5": {
+              "k": 150,
+              "n": 691,
+              "pct": 21.70767004341534,
+              "ci_low": 18.794757505723542,
+              "ci_high": 24.93342457203346
+            }
+          },
+          "total": {
+            "top1": {
+              "k": 907,
+              "n": 1911,
+              "pct": 47.46206174777603,
+              "ci_low": 45.23049026911206,
+              "ci_high": 49.703816568591904
+            },
+            "top5": {
+              "k": 1236,
+              "n": 1911,
+              "pct": 64.67817896389325,
+              "ci_low": 62.50765981195304,
+              "ci_high": 66.7898027040065
+            }
+          },
+          "cross_source": {
+            "top1": {
+              "k": 0,
+              "n": 26,
+              "pct": 0.0,
+              "ci_low": 0.0,
+              "ci_high": 12.873304380462175
+            },
+            "top5": {
+              "k": 5,
+              "n": 26,
+              "pct": 19.23076923076923,
+              "ci_low": 8.506935771788267,
+              "ci_high": 37.87663615465
+            }
+          }
+        },
+        "H-keepz": {
+          "vslgh_unseen_signer": {
+            "top1": {
+              "k": 936,
+              "n": 1189,
+              "pct": 78.72161480235492,
+              "ci_low": 76.30463913047579,
+              "ci_high": 80.95359197078695
+            },
+            "top5": {
+              "k": 1126,
+              "n": 1189,
+              "pct": 94.70142977291842,
+              "ci_low": 93.27811642953438,
+              "ci_high": 95.83681718780427
+            }
+          },
+          "qipedc_only_class": {
+            "top1": {
+              "k": 90,
+              "n": 691,
+              "pct": 13.024602026049203,
+              "ci_low": 10.718081459568195,
+              "ci_high": 15.739977470697347
+            },
+            "top5": {
+              "k": 174,
+              "n": 691,
+              "pct": 25.180897250361795,
+              "ci_low": 22.087783471203487,
+              "ci_high": 28.54844786555009
+            }
+          },
+          "total": {
+            "top1": {
+              "k": 1030,
+              "n": 1911,
+              "pct": 53.898482469911045,
+              "ci_low": 51.65792106050101,
+              "ci_high": 56.12340142591249
+            },
+            "top5": {
+              "k": 1311,
+              "n": 1911,
+              "pct": 68.60282574568289,
+              "ci_low": 66.48640177311026,
+              "ci_high": 70.64460687011122
+            }
+          },
+          "cross_source": {
+            "top1": {
+              "k": 3,
+              "n": 26,
+              "pct": 11.538461538461538,
+              "ci_low": 4.003171821149494,
+              "ci_high": 28.976293086898337
+            },
+            "top5": {
+              "k": 10,
+              "n": 26,
+              "pct": 38.46153846153846,
+              "ci_low": 22.42835951183443,
+              "ci_high": 57.46547996057993
+            }
+          }
+        },
+        "H-dropz": {
+          "vslgh_unseen_signer": {
+            "top1": {
+              "k": 904,
+              "n": 1189,
+              "pct": 76.03027754415476,
+              "ci_low": 73.52235257672733,
+              "ci_high": 78.37053915340684
+            },
+            "top5": {
+              "k": 1108,
+              "n": 1189,
+              "pct": 93.18755256518082,
+              "ci_low": 91.61185070320704,
+              "ci_high": 94.48507951787177
+            }
+          },
+          "qipedc_only_class": {
+            "top1": {
+              "k": 80,
+              "n": 691,
+              "pct": 11.577424023154848,
+              "ci_low": 9.401352919746007,
+              "ci_high": 14.178352152604296
+            },
+            "top5": {
+              "k": 161,
+              "n": 691,
+              "pct": 23.299565846599133,
+              "ci_low": 20.300420065991034,
+              "ci_high": 26.593951255472735
+            }
+          },
+          "total": {
+            "top1": {
+              "k": 987,
+              "n": 1911,
+              "pct": 51.64835164835165,
+              "ci_low": 49.406715316987736,
+              "ci_high": 53.88337405646227
+            },
+            "top5": {
+              "k": 1277,
+              "n": 1911,
+              "pct": 66.82365253793826,
+              "ci_low": 64.68066710390097,
+              "ci_high": 68.8991339616284
+            }
+          },
+          "cross_source": {
+            "top1": {
+              "k": 3,
+              "n": 26,
+              "pct": 11.538461538461538,
+              "ci_low": 4.003171821149494,
+              "ci_high": 28.976293086898337
+            },
+            "top5": {
+              "k": 7,
+              "n": 26,
+              "pct": 26.923076923076923,
+              "ci_low": 13.704275525067386,
+              "ci_high": 46.083403419761304
+            }
+          }
+        },
+        "H-keepz-360": {
+          "vslgh_unseen_signer": {
+            "top1": {
+              "k": 964,
+              "n": 1189,
+              "pct": 81.07653490328006,
+              "ci_low": 78.75133703552642,
+              "ci_high": 83.2015660154738
+            },
+            "top5": {
+              "k": 1139,
+              "n": 1189,
+              "pct": 95.79478553406224,
+              "ci_low": 94.49877699424141,
+              "ci_high": 96.7958257426182
+            }
+          },
+          "qipedc_only_class": {
+            "top1": {
+              "k": 83,
+              "n": 691,
+              "pct": 12.011577424023155,
+              "ci_low": 9.795224070219133,
+              "ci_high": 14.647987159505742
+            },
+            "top5": {
+              "k": 175,
+              "n": 691,
+              "pct": 25.32561505065123,
+              "ci_low": 22.225611375379582,
+              "ci_high": 28.69845534716552
+            }
+          },
+          "total": {
+            "top1": {
+              "k": 1052,
+              "n": 1911,
+              "pct": 55.04971219256934,
+              "ci_low": 52.81146482316614,
+              "ci_high": 57.267697860577506
+            },
+            "top5": {
+              "k": 1324,
+              "n": 1911,
+              "pct": 69.28309785452643,
+              "ci_low": 67.17775607594044,
+              "ci_high": 71.31106722933976
+            }
+          },
+          "cross_source": {
+            "top1": {
+              "k": 4,
+              "n": 26,
+              "pct": 15.384615384615385,
+              "ci_low": 6.149933998929477,
+              "ci_high": 33.531584418313564
+            },
+            "top5": {
+              "k": 9,
+              "n": 26,
+              "pct": 34.61538461538461,
+              "ci_low": 19.412014972852127,
+              "ci_high": 53.77977099036699
+            }
+          }
+        },
+        "H-keepz-seed43": {
+          "vslgh_unseen_signer": {
+            "top1": {
+              "k": 959,
+              "n": 1189,
+              "pct": 80.6560134566863,
+              "ci_low": 78.31352189120723,
+              "ci_high": 82.80104688305417
+            },
+            "top5": {
+              "k": 1135,
+              "n": 1189,
+              "pct": 95.45836837678722,
+              "ci_low": 94.12131332208361,
+              "ci_high": 96.50262199338493
+            }
+          },
+          "qipedc_only_class": {
+            "top1": {
+              "k": 87,
+              "n": 691,
+              "pct": 12.590448625180898,
+              "ci_low": 10.321938189799974,
+              "ci_high": 15.272614583090999
+            },
+            "top5": {
+              "k": 180,
+              "n": 691,
+              "pct": 26.049204052098407,
+              "ci_low": 22.915449966242008,
+              "ci_high": 29.447793685260713
+            }
+          },
+          "total": {
+            "top1": {
+              "k": 1051,
+              "n": 1911,
+              "pct": 54.99738356881214,
+              "ci_low": 52.759004973523574,
+              "ci_high": 57.215710428523266
+            },
+            "top5": {
+              "k": 1322,
+              "n": 1911,
+              "pct": 69.17844060701204,
+              "ci_low": 67.07135984624617,
+              "ci_high": 71.20856889564038
+            }
+          },
+          "cross_source": {
+            "top1": {
+              "k": 4,
+              "n": 26,
+              "pct": 15.384615384615385,
+              "ci_low": 6.149933998929477,
+              "ci_high": 33.531584418313564
+            },
+            "top5": {
+              "k": 6,
+              "n": 26,
+              "pct": 23.076923076923077,
+              "ci_low": 11.033699683676687,
+              "ci_high": 42.05192575195679
+            }
+          }
+        },
+        "H-keepz-notrim": {
+          "vslgh_unseen_signer": {
+            "top1": {
+              "k": 940,
+              "n": 1189,
+              "pct": 79.05803195962994,
+              "ci_low": 76.65343409974457,
+              "ci_high": 81.27546442290921
+            },
+            "top5": {
+              "k": 1137,
+              "n": 1189,
+              "pct": 95.62657695542472,
+              "ci_low": 94.30981665478326,
+              "ci_high": 96.6494523713808
+            }
+          },
+          "qipedc_only_class": {
+            "top1": {
+              "k": 80,
+              "n": 691,
+              "pct": 11.577424023154848,
+              "ci_low": 9.401352919746007,
+              "ci_high": 14.178352152604296
+            },
+            "top5": {
+              "k": 169,
+              "n": 691,
+              "pct": 24.457308248914618,
+              "ci_low": 21.399357658155665,
+              "ci_high": 27.797696749640295
+            }
+          },
+          "total": {
+            "top1": {
+              "k": 1021,
+              "n": 1911,
+              "pct": 53.427524856096284,
+              "ci_low": 51.18636183627866,
+              "ci_high": 55.6549351148634
+            },
+            "top5": {
+              "k": 1309,
+              "n": 1911,
+              "pct": 68.4981684981685,
+              "ci_low": 66.38008569955164,
+              "ci_high": 70.54202838027615
+            }
+          },
+          "cross_source": {
+            "top1": {
+              "k": 0,
+              "n": 26,
+              "pct": 0.0,
+              "ci_low": 0.0,
+              "ci_high": 12.873304380462175
+            },
+            "top5": {
+              "k": 2,
+              "n": 26,
+              "pct": 7.6923076923076925,
+              "ci_low": 2.135463918337556,
+              "ci_high": 24.141947480515054
+            }
+          }
+        },
+        "baseline-seed43": {
+          "vslgh_unseen_signer": {
+            "top1": {
+              "k": 853,
+              "n": 1189,
+              "pct": 71.74095878889824,
+              "ci_low": 69.11476966242186,
+              "ci_high": 74.22711244497614
+            },
+            "top5": {
+              "k": 1079,
+              "n": 1189,
+              "pct": 90.74852817493692,
+              "ci_low": 88.96773380324697,
+              "ci_high": 92.26685761274656
+            }
+          },
+          "qipedc_only_class": {
+            "top1": {
+              "k": 69,
+              "n": 691,
+              "pct": 9.985528219971057,
+              "ci_low": 7.966577465815322,
+              "ci_high": 12.446938362828213
+            },
+            "top5": {
+              "k": 144,
+              "n": 691,
+              "pct": 20.839363241678726,
+              "ci_low": 17.976263144926733,
+              "ci_high": 24.024906618081125
+            }
+          },
+          "total": {
+            "top1": {
+              "k": 925,
+              "n": 1911,
+              "pct": 48.40397697540555,
+              "ci_low": 46.16877365391719,
+              "ci_high": 50.645584254329634
+            },
+            "top5": {
+              "k": 1230,
+              "n": 1911,
+              "pct": 64.36420722135009,
+              "ci_low": 62.190058678300765,
+              "ci_high": 66.48072014747784
+            }
+          },
+          "cross_source": {
+            "top1": {
+              "k": 3,
+              "n": 26,
+              "pct": 11.538461538461538,
+              "ci_low": 4.003171821149494,
+              "ci_high": 28.976293086898337
+            },
+            "top5": {
+              "k": 7,
+              "n": 26,
+              "pct": 26.923076923076923,
+              "ci_low": 13.704275525067386,
+              "ci_high": 46.083403419761304
+            }
+          }
+        }
+      },
+      "qipedc_only_excluded_lt2_recordings": 0,
+      "tie_check": {
+        "baseline": {
+          "1": {
+            "used": 907,
+            "pessimistic": 907,
+            "optimistic": 907,
+            "n": 1911,
+            "metrics_json_fp32": 907
+          },
+          "5": {
+            "used": 1236,
+            "pessimistic": 1236,
+            "optimistic": 1236,
+            "n": 1911,
+            "metrics_json_fp32": 1236
+          },
+          "10": {
+            "used": 1327,
+            "pessimistic": 1327,
+            "optimistic": 1327,
+            "n": 1911
+          }
+        },
+        "H-keepz": {
+          "1": {
+            "used": 1030,
+            "pessimistic": 1030,
+            "optimistic": 1030,
+            "n": 1911,
+            "metrics_json_fp32": 1030
+          },
+          "5": {
+            "used": 1311,
+            "pessimistic": 1310,
+            "optimistic": 1311,
+            "n": 1911,
+            "metrics_json_fp32": 1311
+          },
+          "10": {
+            "used": 1377,
+            "pessimistic": 1377,
+            "optimistic": 1377,
+            "n": 1911
+          }
+        },
+        "H-dropz": {
+          "1": {
+            "used": 987,
+            "pessimistic": 986,
+            "optimistic": 988,
+            "n": 1911,
+            "metrics_json_fp32": 987
+          },
+          "5": {
+            "used": 1277,
+            "pessimistic": 1277,
+            "optimistic": 1278,
+            "n": 1911,
+            "metrics_json_fp32": 1277
+          },
+          "10": {
+            "used": 1364,
+            "pessimistic": 1363,
+            "optimistic": 1364,
+            "n": 1911
+          }
+        },
+        "H-keepz-360": {
+          "1": {
+            "used": 1052,
+            "pessimistic": 1052,
+            "optimistic": 1052,
+            "n": 1911,
+            "metrics_json_fp32": 1052
+          },
+          "5": {
+            "used": 1324,
+            "pessimistic": 1323,
+            "optimistic": 1324,
+            "n": 1911,
+            "metrics_json_fp32": 1324
+          },
+          "10": {
+            "used": 1386,
+            "pessimistic": 1385,
+            "optimistic": 1387,
+            "n": 1911
+          }
+        },
+        "H-keepz-seed43": {
+          "1": {
+            "used": 1051,
+            "pessimistic": 1051,
+            "optimistic": 1051,
+            "n": 1911,
+            "metrics_json_fp32": 1051
+          },
+          "5": {
+            "used": 1322,
+            "pessimistic": 1321,
+            "optimistic": 1322,
+            "n": 1911,
+            "metrics_json_fp32": 1321
+          },
+          "10": {
+            "used": 1394,
+            "pessimistic": 1394,
+            "optimistic": 1394,
+            "n": 1911
+          }
+        },
+        "H-keepz-notrim": {
+          "1": {
+            "used": 1021,
+            "pessimistic": 1021,
+            "optimistic": 1021,
+            "n": 1911,
+            "metrics_json_fp32": 1021
+          },
+          "5": {
+            "used": 1309,
+            "pessimistic": 1309,
+            "optimistic": 1309,
+            "n": 1911,
+            "metrics_json_fp32": 1309
+          },
+          "10": {
+            "used": 1376,
+            "pessimistic": 1376,
+            "optimistic": 1376,
+            "n": 1911
+          }
+        },
+        "baseline-seed43": {
+          "1": {
+            "used": 925,
+            "pessimistic": 925,
+            "optimistic": 925,
+            "n": 1911,
+            "metrics_json_fp32": 925
+          },
+          "5": {
+            "used": 1230,
+            "pessimistic": 1230,
+            "optimistic": 1230,
+            "n": 1911,
+            "metrics_json_fp32": 1230
+          },
+          "10": {
+            "used": 1325,
+            "pessimistic": 1325,
+            "optimistic": 1325,
+            "n": 1911
+          }
+        },
+        "dict_keepz_360": {
+          "1": {
+            "used": 23,
+            "pessimistic": 23,
+            "optimistic": 23,
+            "n": 721,
+            "metrics_json_fp32": 23
+          },
+          "5": {
+            "used": 70,
+            "pessimistic": 70,
+            "optimistic": 70,
+            "n": 721,
+            "metrics_json_fp32": 70
+          },
+          "10": {
+            "used": 96,
+            "pessimistic": 96,
+            "optimistic": 96,
+            "n": 721
+          }
+        }
+      }
+    },
+    "seed_spread": {
+      "balanced_val": [
+        {
+          "a": "H-keepz",
+          "b": "H-keepz-seed43",
+          "seed_a": 42,
+          "seed_b": 43,
+          "diff_b_minus_a": 1.610644257703079
+        }
+      ],
+      "test": [
+        {
+          "a": "baseline",
+          "b": "baseline-seed43",
+          "seed_a": 42,
+          "seed_b": 43,
+          "groups": {
+            "vslgh_unseen_signer": {
+              "top1": {
+                "a": {
+                  "k": 839,
+                  "n": 1189,
+                  "pct": 70.56349873843565,
+                  "ci_low": 67.91001260250896,
+                  "ci_high": 73.08453353002028
+                },
+                "b": {
+                  "k": 853,
+                  "n": 1189,
+                  "pct": 71.74095878889824,
+                  "ci_low": 69.11476966242186,
+                  "ci_high": 74.22711244497614
+                },
+                "diff_points": 1.1774600504625852,
+                "diff_k": 14
+              },
+              "top5": {
+                "a": {
+                  "k": 1081,
+                  "n": 1189,
+                  "pct": 90.91673675357443,
+                  "ci_low": 89.14882168357332,
+                  "ci_high": 92.42110344311575
+                },
+                "b": {
+                  "k": 1079,
+                  "n": 1189,
+                  "pct": 90.74852817493692,
+                  "ci_low": 88.96773380324697,
+                  "ci_high": 92.26685761274656
+                },
+                "diff_points": -0.16820857863750405,
+                "diff_k": -2
+              }
+            },
+            "qipedc_only_class": {
+              "top1": {
+                "a": {
+                  "k": 68,
+                  "n": 691,
+                  "pct": 9.84081041968162,
+                  "ci_low": 7.836943647494865,
+                  "ci_high": 12.288736795357147
+                },
+                "b": {
+                  "k": 69,
+                  "n": 691,
+                  "pct": 9.985528219971057,
+                  "ci_low": 7.966577465815322,
+                  "ci_high": 12.446938362828213
+                },
+                "diff_points": 0.14471780028943648,
+                "diff_k": 1
+              },
+              "top5": {
+                "a": {
+                  "k": 150,
+                  "n": 691,
+                  "pct": 21.70767004341534,
+                  "ci_low": 18.794757505723542,
+                  "ci_high": 24.93342457203346
+                },
+                "b": {
+                  "k": 144,
+                  "n": 691,
+                  "pct": 20.839363241678726,
+                  "ci_low": 17.976263144926733,
+                  "ci_high": 24.024906618081125
+                },
+                "diff_points": -0.8683068017366153,
+                "diff_k": -6
+              }
+            },
+            "total": {
+              "top1": {
+                "a": {
+                  "k": 907,
+                  "n": 1911,
+                  "pct": 47.46206174777603,
+                  "ci_low": 45.23049026911206,
+                  "ci_high": 49.703816568591904
+                },
+                "b": {
+                  "k": 925,
+                  "n": 1911,
+                  "pct": 48.40397697540555,
+                  "ci_low": 46.16877365391719,
+                  "ci_high": 50.645584254329634
+                },
+                "diff_points": 0.9419152276295151,
+                "diff_k": 18
+              },
+              "top5": {
+                "a": {
+                  "k": 1236,
+                  "n": 1911,
+                  "pct": 64.67817896389325,
+                  "ci_low": 62.50765981195304,
+                  "ci_high": 66.7898027040065
+                },
+                "b": {
+                  "k": 1230,
+                  "n": 1911,
+                  "pct": 64.36420722135009,
+                  "ci_low": 62.190058678300765,
+                  "ci_high": 66.48072014747784
+                },
+                "diff_points": -0.31397174254315985,
+                "diff_k": -6
+              }
+            },
+            "cross_source": {
+              "top1": {
+                "a": {
+                  "k": 0,
+                  "n": 26,
+                  "pct": 0.0,
+                  "ci_low": 0.0,
+                  "ci_high": 12.873304380462175
+                },
+                "b": {
+                  "k": 3,
+                  "n": 26,
+                  "pct": 11.538461538461538,
+                  "ci_low": 4.003171821149494,
+                  "ci_high": 28.976293086898337
+                },
+                "diff_points": 11.538461538461538,
+                "diff_k": 3
+              },
+              "top5": {
+                "a": {
+                  "k": 5,
+                  "n": 26,
+                  "pct": 19.23076923076923,
+                  "ci_low": 8.506935771788267,
+                  "ci_high": 37.87663615465
+                },
+                "b": {
+                  "k": 7,
+                  "n": 26,
+                  "pct": 26.923076923076923,
+                  "ci_low": 13.704275525067386,
+                  "ci_high": 46.083403419761304
+                },
+                "diff_points": 7.692307692307693,
+                "diff_k": 2
+              }
+            }
+          }
+        },
+        {
+          "a": "H-keepz",
+          "b": "H-keepz-seed43",
+          "seed_a": 42,
+          "seed_b": 43,
+          "groups": {
+            "vslgh_unseen_signer": {
+              "top1": {
+                "a": {
+                  "k": 936,
+                  "n": 1189,
+                  "pct": 78.72161480235492,
+                  "ci_low": 76.30463913047579,
+                  "ci_high": 80.95359197078695
+                },
+                "b": {
+                  "k": 959,
+                  "n": 1189,
+                  "pct": 80.6560134566863,
+                  "ci_low": 78.31352189120723,
+                  "ci_high": 82.80104688305417
+                },
+                "diff_points": 1.9343986543313747,
+                "diff_k": 23
+              },
+              "top5": {
+                "a": {
+                  "k": 1126,
+                  "n": 1189,
+                  "pct": 94.70142977291842,
+                  "ci_low": 93.27811642953438,
+                  "ci_high": 95.83681718780427
+                },
+                "b": {
+                  "k": 1135,
+                  "n": 1189,
+                  "pct": 95.45836837678722,
+                  "ci_low": 94.12131332208361,
+                  "ci_high": 96.50262199338493
+                },
+                "diff_points": 0.7569386038688037,
+                "diff_k": 9
+              }
+            },
+            "qipedc_only_class": {
+              "top1": {
+                "a": {
+                  "k": 90,
+                  "n": 691,
+                  "pct": 13.024602026049203,
+                  "ci_low": 10.718081459568195,
+                  "ci_high": 15.739977470697347
+                },
+                "b": {
+                  "k": 87,
+                  "n": 691,
+                  "pct": 12.590448625180898,
+                  "ci_low": 10.321938189799974,
+                  "ci_high": 15.272614583090999
+                },
+                "diff_points": -0.4341534008683059,
+                "diff_k": -3
+              },
+              "top5": {
+                "a": {
+                  "k": 174,
+                  "n": 691,
+                  "pct": 25.180897250361795,
+                  "ci_low": 22.087783471203487,
+                  "ci_high": 28.54844786555009
+                },
+                "b": {
+                  "k": 180,
+                  "n": 691,
+                  "pct": 26.049204052098407,
+                  "ci_low": 22.915449966242008,
+                  "ci_high": 29.447793685260713
+                },
+                "diff_points": 0.8683068017366118,
+                "diff_k": 6
+              }
+            },
+            "total": {
+              "top1": {
+                "a": {
+                  "k": 1030,
+                  "n": 1911,
+                  "pct": 53.898482469911045,
+                  "ci_low": 51.65792106050101,
+                  "ci_high": 56.12340142591249
+                },
+                "b": {
+                  "k": 1051,
+                  "n": 1911,
+                  "pct": 54.99738356881214,
+                  "ci_low": 52.759004973523574,
+                  "ci_high": 57.215710428523266
+                },
+                "diff_points": 1.098901098901095,
+                "diff_k": 21
+              },
+              "top5": {
+                "a": {
+                  "k": 1311,
+                  "n": 1911,
+                  "pct": 68.60282574568289,
+                  "ci_low": 66.48640177311026,
+                  "ci_high": 70.64460687011122
+                },
+                "b": {
+                  "k": 1322,
+                  "n": 1911,
+                  "pct": 69.17844060701204,
+                  "ci_low": 67.07135984624617,
+                  "ci_high": 71.20856889564038
+                },
+                "diff_points": 0.575614861329143,
+                "diff_k": 11
+              }
+            },
+            "cross_source": {
+              "top1": {
+                "a": {
+                  "k": 3,
+                  "n": 26,
+                  "pct": 11.538461538461538,
+                  "ci_low": 4.003171821149494,
+                  "ci_high": 28.976293086898337
+                },
+                "b": {
+                  "k": 4,
+                  "n": 26,
+                  "pct": 15.384615384615385,
+                  "ci_low": 6.149933998929477,
+                  "ci_high": 33.531584418313564
+                },
+                "diff_points": 3.8461538461538467,
+                "diff_k": 1
+              },
+              "top5": {
+                "a": {
+                  "k": 10,
+                  "n": 26,
+                  "pct": 38.46153846153846,
+                  "ci_low": 22.42835951183443,
+                  "ci_high": 57.46547996057993
+                },
+                "b": {
+                  "k": 6,
+                  "n": 26,
+                  "pct": 23.076923076923077,
+                  "ci_low": 11.033699683676687,
+                  "ci_high": 42.05192575195679
+                },
+                "diff_points": -15.384615384615383,
+                "diff_k": -4
+              }
+            }
+          }
+        }
+      ]
+    },
+    "source_classifier": [
+      {
+        "path": "reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json",
+        "command": "python scripts/shortcut_85.py --skip-eval --features harmonized --hand-z keep --qipedc-kps-dir qipedc_kps --out reports/step4_2026-09-26/provenance_rerun/4b",
+        "git_commit": "27233f6",
+        "hand_z": "keep",
+        "qipedc_kps_dir": "qipedc_kps",
+        "features": "harmonized",
+        "n_by_source": {
+          "qipedc": 106,
+          "vslgh": 106
+        },
+        "all": 92.0,
+        "single_group": {
+          "time": 50.0,
+          "presence": 70.8,
+          "pose_xy": 94.8,
+          "pose_z": 50.0,
+          "hand_xy": 94.8,
+          "hand_z": 79.2,
+          "hand_shape": 86.8
+        }
+      },
+      {
+        "path": "reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json",
+        "command": "python scripts/shortcut_85.py --skip-eval --features harmonized --hand-z drop --qipedc-kps-dir qipedc_kps --out reports/step4_2026-09-26/provenance_rerun/4b",
+        "git_commit": "27233f6",
+        "hand_z": "drop",
+        "qipedc_kps_dir": "qipedc_kps",
+        "features": "harmonized",
+        "n_by_source": {
+          "qipedc": 106,
+          "vslgh": 106
+        },
+        "all": 94.3,
+        "single_group": {
+          "time": 50.0,
+          "presence": 70.8,
+          "pose_xy": 94.8,
+          "pose_z": 50.0,
+          "hand_xy": 94.8,
+          "hand_z": 50.0,
+          "hand_shape": 85.8
+        }
+      },
+      {
+        "path": "reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps360.json",
+        "command": "python scripts/shortcut_85.py --skip-eval --features harmonized --hand-z keep --qipedc-kps-dir qipedc_kps360 --out reports/step4_2026-09-26/4b",
+        "git_commit": "4bb3811",
+        "hand_z": "keep",
+        "qipedc_kps_dir": "qipedc_kps360",
+        "features": "harmonized",
+        "n_by_source": {
+          "qipedc": 106,
+          "vslgh": 106
+        },
+        "all": 94.8,
+        "single_group": {
+          "time": 50.0,
+          "presence": 70.3,
+          "pose_xy": 95.3,
+          "pose_z": 50.0,
+          "hand_xy": 95.3,
+          "hand_z": 77.4,
+          "hand_shape": 85.8
+        }
+      }
+    ],
+    "harmonisation_config": {
+      "source": "checkpoint reports/step4_2026-09-26/runs/run_keepz_360/stgcn_unified_best.pt -> preprocessing; src/data/harmonized.py (HARMONIZED_DEFAULT, docstring)",
+      "preprocessing_of_chosen": {
+        "features": "harmonized_v1",
+        "target_len": 32,
+        "hand_z": true,
+        "trim": true,
+        "rest_y": 1.2,
+        "active_speed": 1.0,
+        "pad_s": 0.1,
+        "max_gap_s": 0.25,
+        "mask_resting_hand": true,
+        "process_height": 360,
+        "joints": "arms(11-16)+hands(25-66); face, pose hand points 17-22 (thumbs 21/22), hips masked",
+        "pose_z": false,
+        "extractor": "CleanHolisticExtractor",
+        "mediapipe_version": "0.10.14"
+      },
+      "differs_from_HARMONIZED_DEFAULT": {
+        "process_height": {
+          "default": null,
+          "chosen": 360
+        }
+      },
+      "doc": {
+        "joints": "arms (MediaPipe pose 11-16: shoulders, elbows, wrists) + both hands (25-66). Face (0-10), the pose hand points 17-22 (incl. thumbs 21/22, which came from different models per source; the hand-model thumb is kept as part of the hand) and hips (23-24) are masked out. The 67-joint layout is kept so the ST-GCN graph and checkpoints stay compatible; dropped joints have mask 0 and coordinates 0.",
+        "coordinates": "aspect-corrected, centred on the mid-shoulder of each frame, scaled by the clip's median shoulder width. Pose z is dropped (set to 0); hand z is kept or dropped by config.",
+        "time": "the rest before/after the sign is trimmed with one motion/position rule, then the active span is resampled uniformly IN TIME (from fps or timestamps) to a fixed number of frames. Short hand gaps are bridged by linear interpolation; longer gaps stay masked."
+      },
+      "augmentation": "Augmentation (training only): scale, rotation, speed warp 0.7-1.3, random temporal crop.",
+      "tta": "không (TEST đánh giá một lần, không TTA: scripts/train_unified.py predict_all một lượt)"
+    }
+  },
+  "4c": {
+    "dict_run_used": "dict_keepz_360",
+    "dict_run_config": {
+      "trim": true,
+      "features": "harmonized",
+      "hand_z": "keep",
+      "sources": "qipedc",
+      "process_height": 360,
+      "seed": 42
+    },
+    "unified_run": "H-keepz-360",
+    "unified_run_config": {
+      "trim": true,
+      "features": "harmonized",
+      "hand_z": "keep",
+      "sources": "all",
+      "process_height": 360,
+      "seed": 42
+    },
+    "dict_runs_not_reported": [
+      {
+        "run": "dict_keepz",
+        "reason": "không khớp cách hài hòa đã chọn; không báo theo PREREGISTRATION.md dòng 23"
+      }
+    ],
+    "sample_size": {
+      "dict": {
+        "classes": 594,
+        "classes_with_train_data": 594,
+        "train_clips": 795,
+        "classes_le_2_clips": 593,
+        "hist": {
+          "1": 394,
+          "2": 199,
+          "3": 1
+        }
+      },
+      "unified": {
+        "classes": 876,
+        "classes_with_train_data": 876,
+        "train_clips": 15138,
+        "classes_le_2_clips": 509,
+        "hist": {
+          "1": 319,
+          "2": 190,
+          "3": 1,
+          "11": 5,
+          "12": 179,
+          "13": 32,
+          "14": 3,
+          "22": 1,
+          "23": 2,
+          "24": 33,
+          "25": 18,
+          "26": 3,
+          "27": 1,
+          "34": 1,
+          "36": 16,
+          "37": 11,
+          "38": 2,
+          "48": 10,
+          "49": 3,
+          "56": 1,
+          "59": 1,
+          "60": 6,
+          "61": 2,
+          "71": 1,
+          "72": 6,
+          "84": 4,
+          "85": 1,
+          "95": 1,
+          "96": 2,
+          "97": 1,
+          "107": 1,
+          "109": 1,
+          "121": 1,
+          "122": 1,
+          "131": 1,
+          "132": 1,
+          "133": 1,
+          "134": 1,
+          "144": 1,
+          "156": 1,
+          "168": 1,
+          "180": 1,
+          "195": 1,
+          "203": 1,
+          "224": 1,
+          "239": 1,
+          "300": 1,
+          "301": 1,
+          "312": 1,
+          "3324": 1
+        }
+      },
+      "common_test_clips": 721,
+      "dict_test_rows": 721,
+      "unified_qipedc_test_rows": 722
+    },
+    "main": {
+      "top": {
+        "dict": {
+          "1": {
+            "k": 23,
+            "n": 721,
+            "pct": 3.19001386962552,
+            "ci_low": 2.134916047992643,
+            "ci_high": 4.741289732691026
+          },
+          "5": {
+            "k": 70,
+            "n": 721,
+            "pct": 9.70873786407767,
+            "ci_low": 7.75627229038535,
+            "ci_high": 12.088284092692
+          },
+          "10": {
+            "k": 96,
+            "n": 721,
+            "pct": 13.314840499306518,
+            "ci_low": 11.028349370164015,
+            "ci_high": 15.990188197216227
+          }
+        },
+        "unified": {
+          "1": {
+            "k": 88,
+            "n": 721,
+            "pct": 12.205270457697642,
+            "ci_low": 10.014074850396899,
+            "ci_high": 14.797083891043988
+          },
+          "5": {
+            "k": 185,
+            "n": 721,
+            "pct": 25.65880721220527,
+            "ci_low": 22.605633899116825,
+            "ci_high": 28.969993106838682
+          },
+          "10": {
+            "k": 231,
+            "n": 721,
+            "pct": 32.03883495145631,
+            "ci_low": 28.735633641934395,
+            "ci_high": 35.532421613172374
+          }
+        }
+      },
+      "mcnemar_top1": {
+        "n10_dict_only": 7,
+        "n01_unified_only": 72,
+        "p": 1.059068672061396e-14
+      },
+      "registered": true
+    },
+    "exploratory": {
+      "registered": false,
+      "a_unified_restricted_to_dict_labels": {
+        "top": {
+          "1": {
+            "k": 92,
+            "n": 721,
+            "pct": 12.76005547850208,
+            "ci_low": 10.520468989301115,
+            "ci_high": 15.394379165109449
+          },
+          "5": {
+            "k": 194,
+            "n": 721,
+            "pct": 26.907073509015255,
+            "ci_low": 23.79861062816383,
+            "ci_high": 30.260317556973437
+          },
+          "10": {
+            "k": 247,
+            "n": 721,
+            "pct": 34.25797503467406,
+            "ci_low": 30.88548794658159,
+            "ci_high": 37.79732496040388
+          }
+        },
+        "mcnemar_top1": {
+          "n10_dict_only": 7,
+          "n01_unified_only": 76,
+          "p": 9.43054794183671e-16
+        }
+      },
+      "a_missing_dict_classes_in_unified": [],
+      "b_unified_top1_class_origin": {
+        "qipedc_test_all": {
+          "vslgh_only_class": {
+            "k": 69,
+            "n": 722,
+            "pct": 9.556786703601109,
+            "ci_low": 7.621309052036514,
+            "ci_high": 11.920365054269876
+          },
+          "class_with_qipedc_train": {
+            "k": 653,
+            "n": 722,
+            "pct": 90.4432132963989,
+            "ci_low": 88.07963494573012,
+            "ci_high": 92.37869094796349
+          },
+          "class_without_train_data": {
+            "k": 0,
+            "n": 722,
+            "pct": 0.0,
+            "ci_low": 0.0,
+            "ci_high": 0.5292614807418037
+          }
+        },
+        "qipedc_test_common": {
+          "vslgh_only_class": {
+            "k": 69,
+            "n": 721,
+            "pct": 9.57004160887656,
+            "ci_low": 7.631978844029804,
+            "ci_high": 11.936655185805126
+          },
+          "class_with_qipedc_train": {
+            "k": 652,
+            "n": 721,
+            "pct": 90.42995839112344,
+            "ci_low": 88.06334481419488,
+            "ci_high": 92.3680211559702
+          },
+          "class_without_train_data": {
+            "k": 0,
+            "n": 721,
+            "pct": 0.0,
+            "ci_low": 0.0,
+            "ci_high": 0.5299916561080379
+          }
+        },
+        "s06_contrast": {
+          "vslgh_only_class": {
+            "k": 973,
+            "n": 1189,
+            "pct": 81.83347350714887,
+            "ci_low": 79.54045717521015,
+            "ci_high": 83.92144757392002
+          },
+          "class_with_qipedc_train": {
+            "k": 216,
+            "n": 1189,
+            "pct": 18.166526492851137,
+            "ci_low": 16.07855242607999,
+            "ci_high": 20.459542824789864
+          },
+          "class_without_train_data": {
+            "k": 0,
+            "n": 1189,
+            "pct": 0.0,
+            "ci_low": 0.0,
+            "ci_high": 0.3220544957519925
+          }
+        },
+        "n_classes_vslgh_only": 282,
+        "n_classes_with_qipedc_train": 594
+      }
+    }
+  },
+  "limitations_data": {
+    "test_group_n_chosen": {
+      "vslgh_unseen_signer": 1189,
+      "qipedc_only_class": 691,
+      "total": 1911,
+      "cross_source": 26
+    },
+    "cross_source_ci_chosen": {
+      "k": 4,
+      "n": 26,
+      "pct": 15.384615384615385,
+      "ci_low": 6.149933998929477,
+      "ci_high": 33.531584418313564
+    },
+    "qipedc_only_excluded_lt2_recordings": 0,
+    "hist_unified_chosen": {
+      "classes_with_train_data": 876,
+      "train_clips": 15138,
+      "classes_le_2_clips": 509,
+      "hist": {
+        "1": 319,
+        "2": 190,
+        "3": 1,
+        "11": 5,
+        "12": 179,
+        "13": 32,
+        "14": 3,
+        "22": 1,
+        "23": 2,
+        "24": 33,
+        "25": 18,
+        "26": 3,
+        "27": 1,
+        "34": 1,
+        "36": 16,
+        "37": 11,
+        "38": 2,
+        "48": 10,
+        "49": 3,
+        "56": 1,
+        "59": 1,
+        "60": 6,
+        "61": 2,
+        "71": 1,
+        "72": 6,
+        "84": 4,
+        "85": 1,
+        "95": 1,
+        "96": 2,
+        "97": 1,
+        "107": 1,
+        "109": 1,
+        "121": 1,
+        "122": 1,
+        "131": 1,
+        "132": 1,
+        "133": 1,
+        "134": 1,
+        "144": 1,
+        "156": 1,
+        "168": 1,
+        "180": 1,
+        "195": 1,
+        "203": 1,
+        "224": 1,
+        "239": 1,
+        "300": 1,
+        "301": 1,
+        "312": 1,
+        "3324": 1
+      }
+    },
+    "hist_dict_used": {
+      "classes_with_train_data": 594,
+      "train_clips": 795,
+      "classes_le_2_clips": 593,
+      "hist": {
+        "1": 394,
+        "2": 199,
+        "3": 1
+      }
+    },
+    "seeds_same_config": {
+      "H-keepz-360": 1,
+      "dict_keepz_360": 1
+    },
+    "qipedc_rows_with_signer_id": {
+      "k": 0,
+      "n": 1622,
+      "pct": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.23628378065858324
+    },
+    "manifest_sources": [
+      "qipedc",
+      "vslgh"
+    ],
+    "s06_segments_from_sentences_seen_in_train": {
+      "k": 1189,
+      "n": 1189,
+      "pct": 100.0,
+      "ci_low": 99.67794550424799,
+      "ci_high": 99.99999999999999
+    },
+    "live_path_files_calling_harmonize": [],
+    "chosen_process_height": 360,
+    "backend_default_model": {
+      "model_type_default": "stgcn",
+      "ckpt": "checkpoints/stgcn_tier2_indomain.pt",
+      "sha256": "53c34cba43854c3e9820495bba3f93ffe18b5e1cb87ef44278a188ccafe2c826",
+      "same_as_4a_model": false
+    },
+    "preregistration_commits": [
+      {
+        "commit": "9b0ade1",
+        "unix": 1790399604,
+        "date": "2026-09-26 12:13:24 +0700",
+        "subject": "feat(level2): trimming ablation flag (--no-trim), per-GPU job queues; pre-register ablation and 360 rules"
+      },
+      {
+        "commit": "c8a7bdf",
+        "unix": 1790395124,
+        "date": "2026-09-26 10:58:44 +0700",
+        "subject": "feat(level2): step 4a shortcut test + harmonised input for step 4b/4c"
+      }
+    ],
+    "epoch_selection": "epoch tốt nhất của mỗi run chọn theo VAL top-1 tổng (VSL-GH chiếm 1190/1295 clip VAL), còn biến thể chọn theo balanced VAL"
+  },
+  "review": null
+}

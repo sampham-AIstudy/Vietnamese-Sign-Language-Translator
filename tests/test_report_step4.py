@@ -408,5 +408,43 @@ class TestEndToEnd(unittest.TestCase):
         self.assertNoOutput()
 
 
+class TestProposal4c(unittest.TestCase):
+    """AC5: PROPOSAL_4c.md <= 550 words, one recommendation, the user decides, limitations, and every number
+    (decimal, %, k/n, integer >= 10) copied verbatim from REPORT.md. A missing file fails (no conditional skip)."""
+    DIR = os.path.join(ROOT, "reports", "step4_2026-09-26")
+
+    def setUp(self):
+        with open(os.path.join(self.DIR, "PROPOSAL_4c.md"), encoding="utf-8") as f:
+            self.prop = f.read()
+        with open(os.path.join(self.DIR, "REPORT.md"), encoding="utf-8") as f:
+            self.report = f.read()
+
+    def test_length_and_single_recommendation(self):
+        import re
+        self.assertLessEqual(len(self.prop.split()), 550)
+        recs = re.findall(r"Khuyến nghị: ([AB])\b", self.prop)
+        self.assertEqual(len(recs), 1)
+        self.assertIn("người dùng quyết định", self.prop)
+
+    def test_limitations_section(self):
+        lim = self.prop.split("## Giới hạn", 1)[1].split("\n## ", 1)[0]
+        for item in ("Ít mẫu mỗi lớp", "nhãn người ký", "seed cho model từ điển", "CI rộng", "(Cấp 3)",
+                     "KHÔNG được đánh giá trong Bước 4", "Bộ phân loại nguồn", "đầu vào hài hòa", "harmonize()",
+                     "realtime"):
+            self.assertIn(item, lim)
+        self.assertIn("## Điều gì sẽ làm đổi khuyến nghị", self.prop)
+
+    def test_every_number_is_in_report(self):
+        import re
+        tokens = re.findall(r"(?<![\d.])(\d+(?:\.\d+)?%|\d+/\d+|\d+\.\d+|\d+)", self.prop)
+        checked = 0
+        for t in tokens:
+            if not ("%" in t or "/" in t or "." in t or int(t) >= 10):
+                continue
+            checked += 1
+            self.assertRegex(self.report, r"(?<![\d.])" + re.escape(t) + r"(?!\.?\d)", f"'{t}' not in REPORT.md")
+        self.assertGreater(checked, 20)
+
+
 if __name__ == "__main__":
     unittest.main()
