@@ -1,0 +1,176 @@
+{
+  "label_spaces": {
+    "old": 487,
+    "new": 876,
+    "both": 487
+  },
+  "missing_npz": {
+    "qipedc_fair": 0,
+    "s06_fair": 0,
+    "hcmue_fair": 0
+  },
+  "sets": {
+    "qipedc_fair": {
+      "old": {
+        "n": 96,
+        "top1": 4.17,
+        "top1_ci": [
+          1.63,
+          10.23
+        ],
+        "top5": 11.46,
+        "top5_ci": [
+          6.52,
+          19.36
+        ]
+      },
+      "new": {
+        "n": 96,
+        "top1": 8.33,
+        "top1_ci": [
+          4.28,
+          15.59
+        ],
+        "top5": 13.54,
+        "top5_ci": [
+          8.09,
+          21.8
+        ]
+      },
+      "mcnemar_top1": {
+        "old_only": 3,
+        "new_only": 7,
+        "p": 0.34375
+      },
+      "labels": 96
+    },
+    "s06_fair": {
+      "old": {
+        "n": 59,
+        "top1": 0.0,
+        "top1_ci": [
+          0.0,
+          6.11
+        ],
+        "top5": 0.0,
+        "top5_ci": [
+          0.0,
+          6.11
+        ]
+      },
+      "new": {
+        "n": 59,
+        "top1": 50.85,
+        "top1_ci": [
+          38.43,
+          63.16
+        ],
+        "top5": 88.14,
+        "top5_ci": [
+          77.48,
+          94.13
+        ]
+      },
+      "mcnemar_top1": {
+        "old_only": 0,
+        "new_only": 30,
+        "p": 1.862645149230957e-09
+      },
+      "labels": 19
+    },
+    "hcmue_fair": {
+      "old": {
+        "n": 26,
+        "top1": 0.0,
+        "top1_ci": [
+          0.0,
+          12.87
+        ],
+        "top5": 3.85,
+        "top5_ci": [
+          0.68,
+          18.89
+        ]
+      },
+      "new": {
+        "n": 26,
+        "top1": 0.0,
+        "top1_ci": [
+          0.0,
+          12.87
+        ],
+        "top5": 7.69,
+        "top5_ci": [
+          2.14,
+          24.14
+        ]
+      },
+      "mcnemar_top1": {
+        "old_only": 0,
+        "new_only": 0,
+        "p": 1.0
+      },
+      "labels": 22,
+      "by_region_not_signer": {
+        "Bình Dương": {
+          "n": 9,
+          "old_top1": 0.0,
+          "new_top1": 0.0
+        },
+        "Cần Thơ": {
+          "n": 3,
+          "old_top1": 0.0,
+          "new_top1": 0.0
+        },
+        "Huế": {
+          "n": 1,
+          "old_top1": 0.0,
+          "new_top1": 0.0
+        },
+        "Hà Nội": {
+          "n": 3,
+          "old_top1": 0.0,
+          "new_top1": 0.0
+        },
+        "Hải Phòng": {
+          "n": 4,
+          "old_top1": 0.0,
+          "new_top1": 0.0
+        },
+        "Lâm Đồng": {
+          "n": 1,
+          "old_top1": 0.0,
+          "new_top1": 0.0
+        },
+        "Thành Phố Hồ Chí Minh": {
+          "n": 3,
+          "old_top1": 0.0,
+          "new_top1": 0.0
+        },
+        "Toàn Quốc": {
+          "n": 2,
+          "old_top1": 0.0,
+          "new_top1": 0.0
+        }
+      }
+    }
+  },
+  "sanity_new_vs_training_predictions": {
+    "rows_checked": 1674,
+    "same_top1": 1674,
+    "agreement": 100.0
+  },
+  "hcmue_new_all_known_labels": {
+    "n": 47,
+    "top1": 4.26,
+    "top1_ci": [
+      1.17,
+      14.25
+    ],
+    "top5": 8.51,
+    "top5_ci": [
+      3.36,
+      19.93
+    ]
+  }
+}

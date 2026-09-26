@@ -136,11 +136,14 @@ def main():
         sets[name] = [r for r in sets[name] if os.path.exists(r["npz"])]
     report = {"label_spaces": {"old": len(old.labels), "new": len(new.labels), "both": len(both)},
               "missing_npz": missing, "sets": {}}
-    if args.new_metrics:  # sanity: our preprocessing path reproduces the training script's test score
-        t1, _ = score(new, [r for r in all_test if os.path.exists(r["npz"])])
-        ref = json.load(open(args.new_metrics, encoding="utf-8"))["test_overall"]["top1"]
-        report["sanity_new_full_test"] = {"reproduced_top1": round(100 * t1.mean(), 2), "metrics_json_top1": round(ref, 2)}
-        print("sanity:", report["sanity_new_full_test"], flush=True)
+    if args.new_metrics:  # sanity: this preprocessing path gives the same top-1 as the training script, row by row
+        pred_csv = os.path.join(os.path.dirname(args.new_metrics), "test_predictions.csv")
+        ref = {str(r["video_id"]): normalize_label(r["pred"]) for r in csv.DictReader(open(pred_csv, encoding="utf-8"))}
+        rows = [r for r in all_test if os.path.exists(r["npz"])]
+        same = [new.run(r["npz"], r["width"], r["height"])[0] == ref[str(r["id"])] for r in rows]
+        report["sanity_new_vs_training_predictions"] = {"rows_checked": len(rows), "same_top1": int(sum(same)),
+                                                        "agreement": round(100 * float(np.mean(same)), 2)}
+        print("sanity:", report["sanity_new_vs_training_predictions"], flush=True)
     for name, rows in sets.items():
         o1, o5 = score(old, rows)
         n1, n5 = score(new, rows)

@@ -96,6 +96,28 @@ def main():
         out.append(f"| {names[g]} | {r['n']} | {r['classes']} | **{r['top1']:.1f}** | {f(*r['top1_wilson'])} | "
                    f"{f(*r['top1_cluster'])} | {r['top5']:.1f} | {f(*r['top5_wilson'])} |")
     out.append(f"\nQIPEDC-only test rows excluded for < 2 recordings: {dropped}.")
+    # evaluation-rigor checks (class imbalance, mode collapse, source confound, sentence overlap)
+    pred = pd.read_csv(os.path.join(args.run, "test_predictions.csv"))
+    vcls = set(train.loc[train.source == "vslgh", "gloss_normalized"])
+    v, q = pred[pred.source == "vslgh"], pred[pred.source == "qipedc"]
+    top_cls, top_n = v.true.value_counts().index[0], v.true.value_counts().iloc[0]
+    out += ["", "## Checks", "",
+            f"- S06 class imbalance: most frequent class '{top_cls}' is {100 * top_n / len(v):.1f}% of rows (majority baseline); "
+            f"top-1 without it {100 * v[v.true != top_cls].correct.mean():.1f}%; class-balanced top-1 "
+            f"{100 * v.groupby('true').correct.mean().mean():.1f}% over {v.true.nunique()} classes.",
+            f"- Mode collapse: QIPEDC predictions use {q.pred.nunique()} distinct labels (top-10 labels = "
+            f"{100 * q.pred.value_counts().head(10).sum() / len(q):.0f}% of predictions); S06 {v.pred.nunique()} labels.",
+            f"- Source confound: {100 * v.pred.isin(vcls).mean():.1f}% of S06 predictions are VSL-GH-vocabulary words vs "
+            f"{100 * q.pred.isin(vcls).mean():.1f}% of QIPEDC predictions; QIPEDC rows whose word also has VSL-GH training data: "
+            f"{int(q.true.isin(vcls).sum())} rows, top-1 {100 * q[q.true.isin(vcls)].correct.mean():.1f}%."]
+    seg_csv = os.path.join("data", "processed", "vslgh_segments", "segments.csv")
+    if os.path.exists(seg_csv):
+        seg = pd.read_csv(seg_csv)
+        seen = set(seg[seg.signer_id.isin(set(train.signer_id.dropna()))].sentence_id)
+        s6 = seg[seg.signer_id == "S06"]
+        out.append(f"- Sentence overlap: {100 * s6.sentence_id.isin(seen).mean():.1f}% of S06 segments come from sentences "
+                   f"also signed by training signers ({s6.sentence_id.nunique()} S06 sentences) → S06 measures an unseen "
+                   f"signer, not unseen sentences.")
     if args.extra_runs:
         out += ["", "## Seed variance (not used for selection)", "", "| Run | " + " | ".join(names[g] for g in masks) + " |",
                 "|---" * (len(masks) + 1) + "|"]
@@ -107,8 +129,10 @@ def main():
         out += ["", "## Gate (Việc 3): old backend model vs new, clips neither model has seen", "",
                 f"Label spaces: old {c['label_spaces']['old']}, new {c['label_spaces']['new']}, shared {c['label_spaces']['both']}. "
                 f"Missing npz: {c['missing_npz']}.", ""]
-        if "sanity_new_full_test" in c:
-            out.append(f"Sanity (new model through the comparison path, full test): {c['sanity_new_full_test']}.\n")
+        if "sanity_new_vs_training_predictions" in c:
+            s = c["sanity_new_vs_training_predictions"]
+            out.append(f"Sanity: the comparison path reproduces the training script's top-1 prediction on "
+                       f"{s['same_top1']}/{s['rows_checked']} test rows ({s['agreement']}%).\n")
         out += ["| Set | n | Old top-1 [95%] | New top-1 [95%] | Old top-5 | New top-5 | McNemar p (old-only / new-only) |",
                 "|---|---|---|---|---|---|---|"]
         for s, e in c["sets"].items():
