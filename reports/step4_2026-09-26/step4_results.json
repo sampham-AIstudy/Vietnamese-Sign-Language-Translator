@@ -2,7 +2,7 @@
   "generated_by": {
     "script": "scripts/report_step4.py",
     "command": "python scripts/report_step4.py --baseline reports/unified_run_2026-09-25/run --runs H-keepz=reports/step4_2026-09-26/runs/run_keepz H-dropz=reports/step4_2026-09-26/runs/run_dropz --run-360 H-keepz-360=reports/step4_2026-09-26/runs/run_keepz_360 --aux-runs H-keepz-seed43=reports/step4_2026-09-26/runs/run_keepz_seed43 H-keepz-notrim=reports/step4_2026-09-26/runs/run_keepz_notrim baseline-seed43=reports/unified_run_2026-09-25/run_seed43 --dict-run reports/step4_2026-09-26/runs/dict_keepz --dict-run-360 reports/step4_2026-09-26/runs/dict_keepz_360 --shortcut-4a reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json --shortcut-4b reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps360.json --shortcut-legacy-compare reports/step4_2026-09-26/4a/shortcut_85.json=reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_dropz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json --kernel-logs reports/step4_2026-09-26/runs/vsl-train-harmonized.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v2.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log reports/unified_run_2026-09-25/vsl-train-unified.log --out reports/step4_2026-09-26/REPORT.md --json-out reports/step4_2026-09-26/step4_results.json",
-    "git_commit": "f4729ff",
+    "git_commit": "c54b772",
     "code_dirty": false,
     "code_dirty_files": []
   },
@@ -78,6 +78,11 @@
       "role": "4b source classifier; JSON chạy lại"
     },
     {
+      "path": "reports/step4_2026-09-26/runs/dict_keepz/history.json",
+      "sha256": "159338d4de02e956410d1b2e1ad27effa0d02d0ab337662a52bd38ae44c885dc",
+      "role": "history.json dict_keepz"
+    },
+    {
       "path": "reports/step4_2026-09-26/runs/dict_keepz/metrics.json",
       "sha256": "d6f0c01f7de8aaa69e115da0d046e12f213b3fd262eedd8e3fe764f8c8631b2c",
       "role": "metrics.json dict_keepz"
@@ -91,6 +96,11 @@
       "path": "reports/step4_2026-09-26/runs/dict_keepz/test_logits.npz",
       "sha256": "1c8213657b42a4eb6f08e8e54b59ebbbf590fefa820f703a8502f29268aef397",
       "role": "test_logits.npz dict_keepz"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/dict_keepz_360/history.json",
+      "sha256": "0bfc024f26621ae1741d85c03f5bda0df7a85e98b76baab28ad04e0e8ece00b6",
+      "role": "history.json dict_keepz_360"
     },
     {
       "path": "reports/step4_2026-09-26/runs/dict_keepz_360/metrics.json",
@@ -108,6 +118,11 @@
       "role": "test_logits.npz dict_keepz_360"
     },
     {
+      "path": "reports/step4_2026-09-26/runs/run_dropz/history.json",
+      "sha256": "564e3eb9c9ee9124ef9fc2362339ed30fd87d06367f98f1761368f9a90b838fd",
+      "role": "history.json H-dropz"
+    },
+    {
       "path": "reports/step4_2026-09-26/runs/run_dropz/metrics.json",
       "sha256": "b9199034227a316cf05cc53098c832565ca27c223c9671750b4603695570e903",
       "role": "metrics.json H-dropz"
@@ -121,6 +136,11 @@
       "path": "reports/step4_2026-09-26/runs/run_dropz/test_logits.npz",
       "sha256": "4936a0cb33ec842d229f052c2bae967feaf591fc16f4a50cd124d3d93f8c8d0f",
       "role": "test_logits.npz H-dropz"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_keepz/history.json",
+      "sha256": "d00e23636aa4b74b0011b2cf9c78f7dafd5a4d57389b1663eb6af2dcbbe953d4",
+      "role": "history.json H-keepz"
     },
     {
       "path": "reports/step4_2026-09-26/runs/run_keepz/metrics.json",
@@ -138,6 +158,11 @@
       "role": "test_logits.npz H-keepz"
     },
     {
+      "path": "reports/step4_2026-09-26/runs/run_keepz_360/history.json",
+      "sha256": "b2f292d369aa146b6eb9fe95179794cb686230bfd6019a396ceda0f4e69d695d",
+      "role": "history.json H-keepz-360"
+    },
+    {
       "path": "reports/step4_2026-09-26/runs/run_keepz_360/metrics.json",
       "sha256": "a573daa651ad28d2c6f561276c322415a30cc91a2320e568825161650cd98de1",
       "role": "metrics.json H-keepz-360"
@@ -153,6 +178,11 @@
       "role": "test_logits.npz H-keepz-360"
     },
     {
+      "path": "reports/step4_2026-09-26/runs/run_keepz_notrim/history.json",
+      "sha256": "1a567f2036d114649d67d3e904a4e2ed7afbe06fb92bfd9688efe30f67c73f4a",
+      "role": "history.json H-keepz-notrim"
+    },
+    {
       "path": "reports/step4_2026-09-26/runs/run_keepz_notrim/metrics.json",
       "sha256": "12e63883049126fa46d2fc56374f6068e6dd0958cb30d6588a019409d5a78590",
       "role": "metrics.json H-keepz-notrim"
@@ -166,6 +196,11 @@
       "path": "reports/step4_2026-09-26/runs/run_keepz_notrim/test_logits.npz",
       "sha256": "a04cadca374457e787f4b9b2e056ae02577ad9ca7409cca0251a49fab1405eb9",
       "role": "test_logits.npz H-keepz-notrim"
+    },
+    {
+      "path": "reports/step4_2026-09-26/runs/run_keepz_seed43/history.json",
+      "sha256": "a98d2f9f5deb2374ba9fe20b90e63d7bdf0f6d6ac6611f32b3805a8a614a07f1",
+      "role": "history.json H-keepz-seed43"
     },
     {
       "path": "reports/step4_2026-09-26/runs/run_keepz_seed43/metrics.json",
@@ -198,6 +233,11 @@
       "role": "kernel log"
     },
     {
+      "path": "reports/unified_run_2026-09-25/run/history.json",
+      "sha256": "3a1d7bc924a07fc4b8d46e35d28dbe2b6df69366fcb7b783f9d3683279631dab",
+      "role": "history.json baseline"
+    },
+    {
       "path": "reports/unified_run_2026-09-25/run/metrics.json",
       "sha256": "2fa2daadc5ba0558323e401b374fe083741f9c81cecf1c11d1203438cd62cd16",
       "role": "metrics.json baseline"
@@ -211,6 +251,11 @@
       "path": "reports/unified_run_2026-09-25/run/test_logits.npz",
       "sha256": "cded2935ed711382b759cfb377de4dade06856d797b7a98838968f5a7d5dacf3",
       "role": "test_logits.npz baseline"
+    },
+    {
+      "path": "reports/unified_run_2026-09-25/run_seed43/history.json",
+      "sha256": "e5c0f7cc6d7760c55bae5cf43f3adbdd9141512d94e5f3cdfe5bfacc8332f648",
+      "role": "history.json baseline-seed43"
     },
     {
       "path": "reports/unified_run_2026-09-25/run_seed43/metrics.json",
@@ -231,6 +276,11 @@
       "path": "reports/unified_run_2026-09-25/vsl-train-unified.log",
       "sha256": "14c1b59af71cd8dcbd9f5d9157d1a1c729ac38f44029e9d427f27d33d39a3422",
       "role": "kernel log"
+    },
+    {
+      "path": "scripts/train_unified.py",
+      "sha256": "276d91601a90fde92710d094b5bb5dada2b5a78790ac40fd3285b4585976705c",
+      "role": "scripts/train_unified.py (chỉ đọc text: tùy chọn khởi tạo)"
     }
   ],
   "provenance": {
@@ -251,6 +301,7 @@
         },
         "sha256_test_logits": "cded2935ed711382b759cfb377de4dade06856d797b7a98838968f5a7d5dacf3",
         "sha256_ckpt": "930633233ff37a5557e16e09714c11d2a1549def0450b6196880f4501de4aabb",
+        "history_json": "reports/unified_run_2026-09-25/run/history.json",
         "results_committed": {
           "commit": "b3f98fd",
           "unix": 1790391729,
@@ -285,6 +336,7 @@
         },
         "sha256_test_logits": "f66f20fef3875b7225d44f879c521f781557c810b8de8c51e0f68ce1d32b57ed",
         "sha256_ckpt": "db1909493312bccb2bf7271ce375f01ff09c6b1cbb5b7ac442dc6246f357a92d",
+        "history_json": "reports/step4_2026-09-26/runs/run_keepz/history.json",
         "results_committed": {
           "commit": "c9296bf",
           "unix": 1790399545,
@@ -319,6 +371,7 @@
         },
         "sha256_test_logits": "4936a0cb33ec842d229f052c2bae967feaf591fc16f4a50cd124d3d93f8c8d0f",
         "sha256_ckpt": "1dd35425dbc9a6f704ffc88fc9644bb753637b1749126ad3b47a28d5744b3924",
+        "history_json": "reports/step4_2026-09-26/runs/run_dropz/history.json",
         "results_committed": {
           "commit": "c9296bf",
           "unix": 1790399545,
@@ -354,6 +407,7 @@
         },
         "sha256_test_logits": "0a560a6d3810f0578384d0fb110ebd728004881dd087ea2fe101f2ac4ea88bfe",
         "sha256_ckpt": "648a7825cab9d54cf8d6ce16208cf1cd8dbfbe493fb2d7de919b1f9aebc9b59e",
+        "history_json": "reports/step4_2026-09-26/runs/run_keepz_360/history.json",
         "results_committed": {
           "commit": "27233f6",
           "unix": 1790426023,
@@ -388,6 +442,7 @@
         },
         "sha256_test_logits": "bb2bf6b7f495c9a6d95daa952e794e6bc376095257e63371ae18748259f8dab1",
         "sha256_ckpt": "f8f28f05170551a65b700b947e54fa5b96d348565aeaf4fabc41a35772acbd98",
+        "history_json": "reports/step4_2026-09-26/runs/run_keepz_seed43/history.json",
         "results_committed": {
           "commit": "a414b0d",
           "unix": 1790404621,
@@ -423,6 +478,7 @@
         },
         "sha256_test_logits": "a04cadca374457e787f4b9b2e056ae02577ad9ca7409cca0251a49fab1405eb9",
         "sha256_ckpt": "92e603e19300e228ac220da8f1a07dae94e18a72bd105859f53de0c4b82e2df9",
+        "history_json": "reports/step4_2026-09-26/runs/run_keepz_notrim/history.json",
         "results_committed": {
           "commit": "27233f6",
           "unix": 1790426023,
@@ -447,6 +503,7 @@
         },
         "sha256_test_logits": "b4d5acf5118fada4d65673acca706d7c8c42ee76a1204d942f43f63528cc0cdd",
         "sha256_ckpt": "a8f0dc6f7df597fe9bacfedadd846e8eabeada164e3a279bcc82c6b242279871",
+        "history_json": "reports/unified_run_2026-09-25/run_seed43/history.json",
         "results_committed": {
           "commit": "b3f98fd",
           "unix": 1790391729,
@@ -481,6 +538,7 @@
         },
         "sha256_test_logits": "1c8213657b42a4eb6f08e8e54b59ebbbf590fefa820f703a8502f29268aef397",
         "sha256_ckpt": "62cb7f2006b22f99d64ddac1bef6164a7592e072cf470fc1b482ad6429435cc0",
+        "history_json": "reports/step4_2026-09-26/runs/dict_keepz/history.json",
         "results_committed": {
           "commit": "a414b0d",
           "unix": 1790404621,
@@ -516,6 +574,7 @@
         },
         "sha256_test_logits": "013c15075763ec118cff134b1e681ac81b686027af77df0f355f694328b6ba9f",
         "sha256_ckpt": "1fc9031d127701146efe3a852f410d4bdefbf49264193a899659c6c3d52f54a7",
+        "history_json": "reports/step4_2026-09-26/runs/dict_keepz_360/history.json",
         "results_committed": {
           "commit": "27233f6",
           "unix": 1790426023,
@@ -702,7 +761,7 @@
       },
       {
         "from": "c65032a",
-        "to": "HEAD (f4729ff)",
+        "to": "HEAD (commit ở header / generated_by.git_commit)",
         "numstat": [
           "4\t1\tscripts/shortcut_85.py"
         ]
@@ -1252,6 +1311,12 @@
         "ablation_process_heights": [
           "None"
         ]
+      },
+      "consequence": {
+        "chosen": "H-keepz-360",
+        "chosen_trim": true,
+        "credited": false,
+        "sentence": "Run được chọn H-keepz-360 train với trim=true, tức VẪN cắt đoạn nghỉ (cắt nghỉ không được công nhận theo luật VAL). Đường live muốn khớp với model này thì harmonize() phải gồm bước cắt nghỉ với cùng tham số trong `preprocessing` của checkpoint. Giữ hay bỏ cắt nghỉ ở đường live không do luật đăng ký trước quyết định (PREREGISTRATION chỉ quy định khi nào cắt nghỉ được công nhận); bỏ thì phải train lại."
       }
     },
     "test_groups": {
@@ -2329,7 +2394,7 @@
         "coordinates": "aspect-corrected, centred on the mid-shoulder of each frame, scaled by the clip's median shoulder width. Pose z is dropped (set to 0); hand z is kept or dropped by config.",
         "time": "the rest before/after the sign is trimmed with one motion/position rule, then the active span is resampled uniformly IN TIME (from fps or timestamps) to a fixed number of frames. Short hand gaps are bridged by linear interpolation; longer gaps stay masked."
       },
-      "augmentation": "Augmentation (training only): scale, rotation, speed warp 0.7-1.3, random temporal crop.",
+      "augmentation": "scale, rotation, speed warp 0.7-1.3, random temporal crop.",
       "tta": "không (TEST đánh giá một lần, không TTA: scripts/train_unified.py predict_all một lượt)"
     }
   },
@@ -2488,6 +2553,85 @@
       },
       "registered": true
     },
+    "fit_and_scope": {
+      "dict": {
+        "epochs_run": 48,
+        "best_epoch": 28,
+        "train_top1_at_best": 29.69,
+        "train_top1_last": 34.21,
+        "train_loss_last": 3.9816,
+        "lr_first": 0.001,
+        "lr_last": 1.5625e-05,
+        "lr_drop_epochs": [
+          16,
+          22,
+          28,
+          34,
+          40,
+          46
+        ],
+        "val_loss_first": 6.3943,
+        "val_loss_min": 6.3584,
+        "val_loss_last": 6.4564,
+        "n_train": 795,
+        "batch_size": 64,
+        "steps_per_epoch": 13,
+        "total_steps": 624,
+        "time_sec_total": 212.48,
+        "time_sec_mean": 4.426666666666667
+      },
+      "unified": {
+        "epochs_run": 98,
+        "best_epoch": 78,
+        "train_top1_at_best": 95.15,
+        "train_top1_last": 95.47,
+        "train_loss_last": 1.452,
+        "lr_first": 0.001,
+        "lr_last": 1.5625e-05,
+        "lr_drop_epochs": [
+          50,
+          64,
+          74,
+          81,
+          87,
+          97
+        ],
+        "val_loss_first": 4.3396,
+        "val_loss_min": 2.4065,
+        "val_loss_last": 2.437,
+        "n_train": 15138,
+        "batch_size": 64,
+        "steps_per_epoch": 237,
+        "total_steps": 23226,
+        "time_sec_total": 5738.509999999998,
+        "time_sec_mean": 58.5562244897959
+      },
+      "batch_size_source": "lệnh train trong log kernel",
+      "train_cmd_diff": {
+        "only_a": {},
+        "only_b": {},
+        "different": {}
+      },
+      "train_cmd_diff_a_b": [
+        "H-keepz-360",
+        "dict_keepz_360"
+      ],
+      "train_cmd_diff_ignored": [
+        "--out-dir",
+        "--data-root",
+        "--sources"
+      ],
+      "init_options": [],
+      "dict_command_uses_init": false,
+      "scope_limited": true,
+      "scope_sentence": "Kết quả chính so model tách **train từ đầu, cùng công thức với model gộp** với model gộp. Hai model có quỹ tối ưu và mức khớp train khác nhau (bảng trên). Vì vậy kết quả này KHÔNG đo phương án tách có khởi tạo từ trọng số VSL-GH / model gộp, và cũng không đo phương án tách được train tới khi khớp.",
+      "step_matched_estimate": {
+        "epochs_needed": 1787,
+        "gpu_s_estimate": 7910.453333333334,
+        "note": "ước lượng, không phải kết quả; time_sec đo trong kernel có thể chạy nhiều job"
+      },
+      "train_top1_measurement": "train_top1 là số src/training/trainer.py ghi trong train_epoch: đo trên batch đã augment, ở chế độ model.train() (dropout), với batch do WeightedRandomSampler lấy mẫu (scripts/train_unified.py) — không phải độ chính xác sạch trên tập train"
+    },
     "exploratory": {
       "registered": false,
       "a_unified_restricted_to_dict_labels": {
@@ -2543,7 +2687,31 @@
             "pct": 0.0,
             "ci_low": 0.0,
             "ci_high": 0.5292614807418037
-          }
+          },
+          "wrong_only": {
+            "vslgh_only_class": {
+              "k": 69,
+              "n": 634,
+              "pct": 10.883280757097792,
+              "ci_low": 8.690515429113779,
+              "ci_high": 13.547231371972885
+            },
+            "class_with_qipedc_train": {
+              "k": 565,
+              "n": 634,
+              "pct": 89.1167192429022,
+              "ci_low": 86.45276862802712,
+              "ci_high": 91.30948457088623
+            },
+            "class_without_train_data": {
+              "k": 0,
+              "n": 634,
+              "pct": 0.0,
+              "ci_low": 0.0,
+              "ci_high": 0.6022811933244867
+            }
+          },
+          "correct_n": 88
         },
         "qipedc_test_common": {
           "vslgh_only_class": {
@@ -2566,7 +2734,31 @@
             "pct": 0.0,
             "ci_low": 0.0,
             "ci_high": 0.5299916561080379
-          }
+          },
+          "wrong_only": {
+            "vslgh_only_class": {
+              "k": 69,
+              "n": 633,
+              "pct": 10.90047393364929,
+              "ci_low": 8.704392724600533,
+              "ci_high": 13.568272880158958
+            },
+            "class_with_qipedc_train": {
+              "k": 564,
+              "n": 633,
+              "pct": 89.0995260663507,
+              "ci_low": 86.43172711984104,
+              "ci_high": 91.29560727539948
+            },
+            "class_without_train_data": {
+              "k": 0,
+              "n": 633,
+              "pct": 0.0,
+              "ci_low": 0.0,
+              "ci_high": 0.6032269248742544
+            }
+          },
+          "correct_n": 88
         },
         "s06_contrast": {
           "vslgh_only_class": {
@@ -2589,10 +2781,41 @@
             "pct": 0.0,
             "ci_low": 0.0,
             "ci_high": 0.3220544957519925
-          }
+          },
+          "wrong_only": {
+            "vslgh_only_class": {
+              "k": 183,
+              "n": 225,
+              "pct": 81.33333333333333,
+              "ci_low": 75.73157872502617,
+              "ci_high": 85.88309273331008
+            },
+            "class_with_qipedc_train": {
+              "k": 42,
+              "n": 225,
+              "pct": 18.666666666666668,
+              "ci_low": 14.116907266689918,
+              "ci_high": 24.268421274973836
+            },
+            "class_without_train_data": {
+              "k": 0,
+              "n": 225,
+              "pct": 0.0,
+              "ci_low": 1.734723475976807e-16,
+              "ci_high": 1.6787157579740746
+            }
+          },
+          "correct_n": 964
         },
         "n_classes_vslgh_only": 282,
-        "n_classes_with_qipedc_train": 594
+        "n_classes_with_qipedc_train": 594,
+        "label_space_base_rate": {
+          "k": 282,
+          "n": 876,
+          "pct": 32.19178082191781,
+          "ci_low": 29.181337364880488,
+          "ci_high": 35.357734213458144
+        }
       }
     }
   },
@@ -2722,6 +2945,24 @@
         "subject": "feat(level2): step 4a shortcut test + harmonised input for step 4b/4c"
       }
     ],
+    "preregistration_header_times": [
+      {
+        "header": "Added 2026-09-26 12:30",
+        "header_time": "2026-09-26 12:30",
+        "commit": "9b0ade1",
+        "commit_time": "2026-09-26 12:13:24 +0700",
+        "header_minus_commit_s": 996
+      }
+    ],
+    "train_top1_measurement": "train_top1 là số src/training/trainer.py ghi trong train_epoch: đo trên batch đã augment, ở chế độ model.train() (dropout), với batch do WeightedRandomSampler lấy mẫu (scripts/train_unified.py) — không phải độ chính xác sạch trên tập train (src/training/trainer.py)",
+    "dict_fit": {
+      "dict_run": "dict_keepz_360",
+      "unified_run": "H-keepz-360",
+      "dict_train_top1_last": 34.21,
+      "unified_train_top1_last": 95.47,
+      "dict_total_steps": 624,
+      "unified_total_steps": 23226
+    },
     "epoch_selection": "epoch tốt nhất của mỗi run chọn theo VAL top-1 tổng (VSL-GH chiếm 1190/1295 clip VAL), còn biến thể chọn theo balanced VAL"
   },
   "review": null

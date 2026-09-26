@@ -715,5 +715,70 @@ class TestRevision1EndToEnd(unittest.TestCase):
         self.assertIsNotNone(res["4c"]["fit_and_scope"]["dict"])
 
 
+class TestProposal4cScope(unittest.TestCase):
+    """AC5b (Lần sửa 1): PROPOSAL_4c.md states the scope of what 4c measured; numbers are checked in context. A missing
+    file fails (no conditional skip)."""
+    DIR = os.path.join(ROOT, "reports", "step4_2026-09-26")
+    # one number token: scientific notation, percentage, k/n, decimal, integer
+    NUM = r"\d+(?:\.\d+)?e[-+]?\d+|\d+(?:\.\d+)?%|\d+/\d+|\d+\.\d+|\d+"
+
+    def setUp(self):
+        with open(os.path.join(self.DIR, "PROPOSAL_4c.md"), encoding="utf-8") as f:
+            self.prop = f.read()
+        with open(os.path.join(self.DIR, "REPORT.md"), encoding="utf-8") as f:
+            self.report = f.read()
+        with open(os.path.join(self.DIR, "step4_results.json"), encoding="utf-8") as f:
+            self.res = json.load(f)
+
+    def section(self, heading):
+        self.assertIn(heading, self.prop)
+        return self.prop.split(heading, 1)[1].split("\n## ", 1)[0]
+
+    def test_pct_k_n_phrases_verbatim(self):
+        import re
+        phrases = re.findall(r"\d+(?:\.\d+)?% \(\d+/\d+\)", self.prop)
+        self.assertGreaterEqual(len(phrases), 5)
+        for ph in phrases:
+            self.assertIn(ph, self.report, f"'{ph}' not verbatim in REPORT.md")
+
+    def test_numbers_match_with_non_alnum_boundaries(self):
+        import re
+        tokens = re.findall(r"(?<![0-9A-Za-z.])(" + self.NUM + r")(?![0-9A-Za-z]|\.\d)", self.prop)
+        checked = 0
+        for t in tokens:
+            if not ("%" in t or "/" in t or "." in t or "e" in t or int(t) >= 10):
+                continue
+            checked += 1
+            self.assertRegex(self.report, r"(?<![0-9A-Za-z.])" + re.escape(t) + r"(?![0-9A-Za-z]|\.\d)",
+                             f"'{t}' not in REPORT.md with non-alphanumeric boundaries")
+        self.assertGreater(checked, 20)
+
+    def test_scope_phrases_and_fit_values(self):
+        self.assertIn("train từ đầu", self.prop)
+        self.assertIn("khởi tạo từ trọng số", self.prop)
+        fs = self.res["4c"]["fit_and_scope"]
+        scope = self.report.split("Phạm vi so sánh và mức khớp train", 1)[1].split("Phân tích thăm dò", 1)[0]
+        for key in ("dict", "unified"):
+            v = str(fs[key]["train_top1_last"])
+            self.assertIn(v, scope, f"train_top1_last {key} {v} not in REPORT 4c scope section")
+            self.assertIn(v, self.prop, f"train_top1_last {key} {v} not in PROPOSAL")
+
+    def test_old_unscoped_sentence_removed(self):
+        self.assertNotIn("mất toàn bộ dữ liệu VSL-GH", self.prop)
+
+    def test_class_origin_only_with_wrong_predictions(self):
+        if "chỉ-VSL-GH" in self.prop:
+            self.assertIn("dự đoán sai", self.prop)
+
+    def test_what_would_change_the_recommendation(self):
+        s = self.section("## Điều gì sẽ làm đổi khuyến nghị")
+        self.assertTrue("khi khớp" in s or "khởi tạo" in s)
+        self.assertIn("tốn GPU", s)
+
+    def test_follow_up_mentions_rest_trimming(self):
+        s = self.section("## Không làm trong việc này; việc SAU khi người dùng duyệt")
+        self.assertTrue("cắt đoạn nghỉ" in s or "cắt nghỉ" in s)
+
+
 if __name__ == "__main__":
     unittest.main()

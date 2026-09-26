@@ -1,7 +1,7 @@
 # Báo cáo Bước 4a–4c (sinh bởi scripts/report_step4.py)
 
 - Lệnh: `python scripts/report_step4.py --baseline reports/unified_run_2026-09-25/run --runs H-keepz=reports/step4_2026-09-26/runs/run_keepz H-dropz=reports/step4_2026-09-26/runs/run_dropz --run-360 H-keepz-360=reports/step4_2026-09-26/runs/run_keepz_360 --aux-runs H-keepz-seed43=reports/step4_2026-09-26/runs/run_keepz_seed43 H-keepz-notrim=reports/step4_2026-09-26/runs/run_keepz_notrim baseline-seed43=reports/unified_run_2026-09-25/run_seed43 --dict-run reports/step4_2026-09-26/runs/dict_keepz --dict-run-360 reports/step4_2026-09-26/runs/dict_keepz_360 --shortcut-4a reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json --shortcut-4b reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps360.json --shortcut-legacy-compare reports/step4_2026-09-26/4a/shortcut_85.json=reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_dropz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json --kernel-logs reports/step4_2026-09-26/runs/vsl-train-harmonized.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v2.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log reports/unified_run_2026-09-25/vsl-train-unified.log --out reports/step4_2026-09-26/REPORT.md --json-out reports/step4_2026-09-26/step4_results.json`
-- HEAD: `f4729ff`; code_dirty (scripts/, src/, tests/): false
+- HEAD: `c54b772`; code_dirty (scripts/, src/, tests/): false
 - Luật chọn đăng ký trước: `reports/step4_2026-09-26/PREREGISTRATION.md`. Chọn chỉ bằng VAL; TEST chỉ đọc lại `test_logits.npz` đã sinh một lần trong kernel; không TTA.
 - Mọi số trong báo cáo này có trong `step4_results.json` (cùng dict) hoặc trong JSON đầu vào.
 
@@ -51,7 +51,7 @@ Diff mã giữa các commit kernel (`git diff --numstat`, src/data/harmonized.py
 - b4916b9 → c8a7bdf: `117	0	scripts/shortcut_85.py`; `163	0	scripts/source_diagnostics.py`; `49	6	scripts/train_unified.py`; `183	0	src/data/harmonized.py`
 - c8a7bdf → c9296bf: `23	2	scripts/shortcut_85.py`
 - c9296bf → c65032a: `5	3	scripts/train_unified.py`; `2	1	src/data/harmonized.py`
-- c65032a → HEAD (f4729ff): `4	1	scripts/shortcut_85.py`
+- c65032a → HEAD (commit ở header / generated_by.git_commit): `4	1	scripts/shortcut_85.py`
 
 ### 1.3 JSON bộ phân loại nguồn
 
@@ -90,37 +90,47 @@ Bản cũ không ghi `--ckpt`/`--seed`; bản chạy lại dùng mặc định c
 | `reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json` | 4a source classifier + cross-source (provenance); JSON chạy lại | `76a12be4393c08feaf6ec2ce4474188fc75210418078515d7f1b2971179720e0` |
 | `reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json` | 4b source classifier; JSON chạy lại | `31aa8caf4de0f65a1af466d9e009f427340a8edc08b686db293146fcd0414393` |
 | `reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json` | 4b source classifier; JSON chạy lại | `4f3fcf51210dafdeffaa8b8047950b1c2bce5e120508521465610b539ecdc7cd` |
+| `reports/step4_2026-09-26/runs/dict_keepz/history.json` | history.json dict_keepz | `159338d4de02e956410d1b2e1ad27effa0d02d0ab337662a52bd38ae44c885dc` |
 | `reports/step4_2026-09-26/runs/dict_keepz/metrics.json` | metrics.json dict_keepz | `d6f0c01f7de8aaa69e115da0d046e12f213b3fd262eedd8e3fe764f8c8631b2c` |
 | `reports/step4_2026-09-26/runs/dict_keepz/stgcn_unified_best.pt` | stgcn_unified_best.pt dict_keepz | `62cb7f2006b22f99d64ddac1bef6164a7592e072cf470fc1b482ad6429435cc0` |
 | `reports/step4_2026-09-26/runs/dict_keepz/test_logits.npz` | test_logits.npz dict_keepz | `1c8213657b42a4eb6f08e8e54b59ebbbf590fefa820f703a8502f29268aef397` |
+| `reports/step4_2026-09-26/runs/dict_keepz_360/history.json` | history.json dict_keepz_360 | `0bfc024f26621ae1741d85c03f5bda0df7a85e98b76baab28ad04e0e8ece00b6` |
 | `reports/step4_2026-09-26/runs/dict_keepz_360/metrics.json` | metrics.json dict_keepz_360 | `21f9c9d1ff23c1f17464669097f7e28eb49c912c162e3c52325a7c773b2da82d` |
 | `reports/step4_2026-09-26/runs/dict_keepz_360/stgcn_unified_best.pt` | stgcn_unified_best.pt dict_keepz_360 | `1fc9031d127701146efe3a852f410d4bdefbf49264193a899659c6c3d52f54a7` |
 | `reports/step4_2026-09-26/runs/dict_keepz_360/test_logits.npz` | test_logits.npz dict_keepz_360 | `013c15075763ec118cff134b1e681ac81b686027af77df0f355f694328b6ba9f` |
+| `reports/step4_2026-09-26/runs/run_dropz/history.json` | history.json H-dropz | `564e3eb9c9ee9124ef9fc2362339ed30fd87d06367f98f1761368f9a90b838fd` |
 | `reports/step4_2026-09-26/runs/run_dropz/metrics.json` | metrics.json H-dropz | `b9199034227a316cf05cc53098c832565ca27c223c9671750b4603695570e903` |
 | `reports/step4_2026-09-26/runs/run_dropz/stgcn_unified_best.pt` | stgcn_unified_best.pt H-dropz | `1dd35425dbc9a6f704ffc88fc9644bb753637b1749126ad3b47a28d5744b3924` |
 | `reports/step4_2026-09-26/runs/run_dropz/test_logits.npz` | test_logits.npz H-dropz | `4936a0cb33ec842d229f052c2bae967feaf591fc16f4a50cd124d3d93f8c8d0f` |
+| `reports/step4_2026-09-26/runs/run_keepz/history.json` | history.json H-keepz | `d00e23636aa4b74b0011b2cf9c78f7dafd5a4d57389b1663eb6af2dcbbe953d4` |
 | `reports/step4_2026-09-26/runs/run_keepz/metrics.json` | metrics.json H-keepz | `fa175406149af0489c36c4ea4ef41d13abba683bbaff4571ef3cb79123aaaa57` |
 | `reports/step4_2026-09-26/runs/run_keepz/stgcn_unified_best.pt` | stgcn_unified_best.pt H-keepz | `db1909493312bccb2bf7271ce375f01ff09c6b1cbb5b7ac442dc6246f357a92d` |
 | `reports/step4_2026-09-26/runs/run_keepz/test_logits.npz` | test_logits.npz H-keepz | `f66f20fef3875b7225d44f879c521f781557c810b8de8c51e0f68ce1d32b57ed` |
+| `reports/step4_2026-09-26/runs/run_keepz_360/history.json` | history.json H-keepz-360 | `b2f292d369aa146b6eb9fe95179794cb686230bfd6019a396ceda0f4e69d695d` |
 | `reports/step4_2026-09-26/runs/run_keepz_360/metrics.json` | metrics.json H-keepz-360 | `a573daa651ad28d2c6f561276c322415a30cc91a2320e568825161650cd98de1` |
 | `reports/step4_2026-09-26/runs/run_keepz_360/stgcn_unified_best.pt` | stgcn_unified_best.pt H-keepz-360 | `648a7825cab9d54cf8d6ce16208cf1cd8dbfbe493fb2d7de919b1f9aebc9b59e` |
 | `reports/step4_2026-09-26/runs/run_keepz_360/test_logits.npz` | test_logits.npz H-keepz-360 | `0a560a6d3810f0578384d0fb110ebd728004881dd087ea2fe101f2ac4ea88bfe` |
+| `reports/step4_2026-09-26/runs/run_keepz_notrim/history.json` | history.json H-keepz-notrim | `1a567f2036d114649d67d3e904a4e2ed7afbe06fb92bfd9688efe30f67c73f4a` |
 | `reports/step4_2026-09-26/runs/run_keepz_notrim/metrics.json` | metrics.json H-keepz-notrim | `12e63883049126fa46d2fc56374f6068e6dd0958cb30d6588a019409d5a78590` |
 | `reports/step4_2026-09-26/runs/run_keepz_notrim/stgcn_unified_best.pt` | stgcn_unified_best.pt H-keepz-notrim | `92e603e19300e228ac220da8f1a07dae94e18a72bd105859f53de0c4b82e2df9` |
 | `reports/step4_2026-09-26/runs/run_keepz_notrim/test_logits.npz` | test_logits.npz H-keepz-notrim | `a04cadca374457e787f4b9b2e056ae02577ad9ca7409cca0251a49fab1405eb9` |
+| `reports/step4_2026-09-26/runs/run_keepz_seed43/history.json` | history.json H-keepz-seed43 | `a98d2f9f5deb2374ba9fe20b90e63d7bdf0f6d6ac6611f32b3805a8a614a07f1` |
 | `reports/step4_2026-09-26/runs/run_keepz_seed43/metrics.json` | metrics.json H-keepz-seed43 | `2bd99e0bd0af07c49f41f937914d7c4fd9ab22a7e323796a262d2fc46760a50b` |
 | `reports/step4_2026-09-26/runs/run_keepz_seed43/stgcn_unified_best.pt` | stgcn_unified_best.pt H-keepz-seed43 | `f8f28f05170551a65b700b947e54fa5b96d348565aeaf4fabc41a35772acbd98` |
 | `reports/step4_2026-09-26/runs/run_keepz_seed43/test_logits.npz` | test_logits.npz H-keepz-seed43 | `bb2bf6b7f495c9a6d95daa952e794e6bc376095257e63371ae18748259f8dab1` |
 | `reports/step4_2026-09-26/runs/vsl-train-harmonized.log` | kernel log | `cc9a75afdc0f60802c2065acd7fb6fae281f8651c4240d56e66bf5cb0eb25b85` |
 | `reports/step4_2026-09-26/runs/vsl-train-harmonized_v2.log` | kernel log | `f0dc938d16da2e4fa63ae768511b66cdb9ded491735278a92ca06f1aaf7359a0` |
 | `reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log` | kernel log | `d8b011c40f6dde10435f0d7c244cb35aba63c1e3d4655f967498f5dabb06cad8` |
+| `reports/unified_run_2026-09-25/run/history.json` | history.json baseline | `3a1d7bc924a07fc4b8d46e35d28dbe2b6df69366fcb7b783f9d3683279631dab` |
 | `reports/unified_run_2026-09-25/run/metrics.json` | metrics.json baseline | `2fa2daadc5ba0558323e401b374fe083741f9c81cecf1c11d1203438cd62cd16` |
 | `reports/unified_run_2026-09-25/run/stgcn_unified_best.pt` | stgcn_unified_best.pt baseline | `930633233ff37a5557e16e09714c11d2a1549def0450b6196880f4501de4aabb` |
 | `reports/unified_run_2026-09-25/run/test_logits.npz` | test_logits.npz baseline | `cded2935ed711382b759cfb377de4dade06856d797b7a98838968f5a7d5dacf3` |
+| `reports/unified_run_2026-09-25/run_seed43/history.json` | history.json baseline-seed43 | `e5c0f7cc6d7760c55bae5cf43f3adbdd9141512d94e5f3cdfe5bfacc8332f648` |
 | `reports/unified_run_2026-09-25/run_seed43/metrics.json` | metrics.json baseline-seed43 | `9c203a0df80fd13bf49190c254ffe59cda51fbcd41f45eb2c9e3e044d39e78c2` |
 | `reports/unified_run_2026-09-25/run_seed43/stgcn_unified_best.pt` | stgcn_unified_best.pt baseline-seed43 | `a8f0dc6f7df597fe9bacfedadd846e8eabeada164e3a279bcc82c6b242279871` |
 | `reports/unified_run_2026-09-25/run_seed43/test_logits.npz` | test_logits.npz baseline-seed43 | `b4d5acf5118fada4d65673acca706d7c8c42ee76a1204d942f43f63528cc0cdd` |
 | `reports/unified_run_2026-09-25/vsl-train-unified.log` | kernel log | `14c1b59af71cd8dcbd9f5d9157d1a1c729ac38f44029e9d427f27d33d39a3422` |
+| `scripts/train_unified.py` | scripts/train_unified.py (chỉ đọc text: tùy chọn khởi tạo) | `276d91601a90fde92710d094b5bb5dada2b5a78790ac40fd3285b4585976705c` |
 
 ## 2. Bước 4a — kiểm tra lối tắt trên các lớp có ở cả hai nguồn
 
@@ -163,7 +173,7 @@ Nguồn: checkpoint reports/step4_2026-09-26/runs/run_keepz_360/stgcn_unified_be
 - Cắt đoạn nghỉ: `trim=True`, `rest_y=1.2`, `active_speed=1.0`, `pad_s=0.1`, `mask_resting_hand=True`
 - Resample theo thời gian: the rest before/after the sign is trimmed with one motion/position rule, then the active span is resampled uniformly IN TIME (from fps or timestamps) to a fixed number of frames. Short hand gaps are bridged by linear interpolation; longer gaps stay masked. `target_len=32`, `max_gap_s=0.25`
 - Độ phân giải trích xuất: `process_height=360`; extractor `CleanHolisticExtractor` MediaPipe `0.10.14`
-- Augmentation: Augmentation (training only): scale, rotation, speed warp 0.7-1.3, random temporal crop.
+- Augmentation (training only): scale, rotation, speed warp 0.7-1.3, random temporal crop.
 - TTA: không (TEST đánh giá một lần, không TTA: scripts/train_unified.py predict_all một lượt)
 - Khác `HARMONIZED_DEFAULT`: `{"process_height": {"default": null, "chosen": 360}}`
 
@@ -260,6 +270,8 @@ Kiểm tra hòa điểm: `test_logits.npz` lưu float16 nên lớp đúng có th
 
 **Kết luận:** ablation cắt nghỉ chạy ở độ phân giải gốc. Theo luật VAL đăng ký trước, cắt đoạn nghỉ KHÔNG được công nhận là có ích; bảng (ii) chỉ để mô tả. So sánh (iii) với baseline cũ đo tác động gộp của cả gói hài hòa, không riêng cắt nghỉ.
 
+(iv) Hệ quả cho run được chọn (sinh từ `run_config.trim`): Run được chọn H-keepz-360 train với trim=true, tức VẪN cắt đoạn nghỉ (cắt nghỉ không được công nhận theo luật VAL). Đường live muốn khớp với model này thì harmonize() phải gồm bước cắt nghỉ với cùng tham số trong `preprocessing` của checkpoint. Giữ hay bỏ cắt nghỉ ở đường live không do luật đăng ký trước quyết định (PREREGISTRATION chỉ quy định khi nào cắt nghỉ được công nhận); bỏ thì phải train lại.
+
 ### 3.5 Dao động seed
 
 Chênh = seed sau − seed trước; theo điểm % và theo số clip đúng (k). Không dùng để chọn.
@@ -304,6 +316,24 @@ Clip chung (QIPEDC TEST có lớp thuộc cả hai không gian nhãn): 721 (dòn
 
 McNemar chính xác top-1: từ điển đúng & gộp sai n10 = 7, ngược lại n01 = 72, p = 1.06e-14.
 
+### Phạm vi so sánh và mức khớp train
+
+Sinh từ `history.json` của hai run (trainer ghi mỗi epoch) và lệnh train trong log kernel; không chạy lại model.
+
+| Model | Epoch đã chạy | Epoch tốt nhất | Train top-1 ở epoch tốt nhất | Train top-1 ở epoch cuối | lr đầu → lr cuối | Epoch giảm lr | val_loss đầu / min / cuối | Clip train | Batch (từ lệnh) | Bước/epoch | Tổng bước | Tổng `time_sec` (s) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| từ điển (dict_keepz_360) | 48 | 28 | 29.69% | 34.21% | 0.001 → 1.5625e-05 | 16, 22, 28, 34, 40, 46 | 6.3943 / 6.3584 / 6.4564 | 795 | 64 | 13 | 624 | 212.5 |
+| gộp (H-keepz-360) | 98 | 78 | 95.15% | 95.47% | 0.001 → 1.5625e-05 | 50, 64, 74, 81, 87, 97 | 4.3396 / 2.4065 / 2.437 | 15138 | 64 | 237 | 23226 | 5738.5 |
+
+- train top-1 = số trainer ghi trên batch augment ở chế độ train (src/training/trainer.py), không phải độ chính xác sạch trên tập train. Chi tiết: train_top1 là số src/training/trainer.py ghi trong train_epoch: đo trên batch đã augment, ở chế độ model.train() (dropout), với batch do WeightedRandomSampler lấy mẫu (scripts/train_unified.py) — không phải độ chính xác sạch trên tập train.
+- Bước/epoch = ceil(clip train / batch) (WeightedRandomSampler với num_samples = số clip train, không drop_last); lr ghi trong history là lr dùng ở epoch đó (trước bước ReduceLROnPlateau theo VAL loss).
+- Lệnh train hai model chỉ khác: không khác ngoài --out-dir/--data-root/--sources.
+- scripts/train_unified.py không có tùy chọn khởi tạo từ trọng số → cả hai model train từ khởi tạo ngẫu nhiên.
+
+**Phạm vi:** Kết quả chính so model tách **train từ đầu, cùng công thức với model gộp** với model gộp. Hai model có quỹ tối ưu và mức khớp train khác nhau (bảng trên). Vì vậy kết quả này KHÔNG đo phương án tách có khởi tạo từ trọng số VSL-GH / model gộp, và cũng không đo phương án tách được train tới khi khớp.
+
+Ước lượng (không phải kết quả, không thuộc kế hoạch này): train model từ điển tới cùng tổng số bước như model gộp cần 1787 epoch × 4.43 s/epoch (trung bình `time_sec` của run từ điển) ≈ 7910 s ≈ 2.20 giờ GPU cho một run một seed, chưa gồm khởi động kernel; ước lượng, không phải kết quả; time_sec đo trong kernel có thể chạy nhiều job.
+
 **Phân tích thăm dò — không đăng ký trước, không dùng để chọn:**
 
 (a) Model gộp với logits giới hạn về đúng không gian nhãn của model từ điển, cùng clip:
@@ -314,15 +344,17 @@ McNemar chính xác top-1: từ điển đúng & gộp sai n10 = 7, ngược l�
 
 McNemar top-1 (từ điển vs gộp giới hạn): n10 = 7, n01 = 76, p = 9.43e-16.
 
-(b) Dự đoán top-1 của model gộp rơi vào lớp chỉ-VSL-GH (282 lớp có train VSL-GH, không có train QIPEDC) vs lớp có train QIPEDC (594 lớp):
+(b) Dự đoán top-1 của model gộp rơi vào lớp chỉ-VSL-GH (282 lớp có train VSL-GH, không có train QIPEDC) vs lớp có train QIPEDC (594 lớp). Không đăng ký trước, chỉ báo, không kiểm định. Cột "mọi dự đoán" lẫn độ chính xác vào (dự đoán đúng tất nhiên rơi vào lớp của nguồn đúng), nên có thêm các cột chỉ dự đoán sai:
 
-| Tập clip | Lớp chỉ-VSL-GH | Lớp có QIPEDC | Lớp không có train |
-|---|---|---|---|
-| mọi clip QIPEDC TEST | 9.6% (69/722) [7.6, 11.9] | 90.4% (653/722) [88.1, 92.4] | 0.0% (0/722) [0.0, 0.5] |
-| clip chung của 4c | 9.6% (69/721) [7.6, 11.9] | 90.4% (652/721) [88.1, 92.4] | 0.0% (0/721) [0.0, 0.5] |
-| S06 (đối chứng) | 81.8% (973/1189) [79.5, 83.9] | 18.2% (216/1189) [16.1, 20.5] | 0.0% (0/1189) [0.0, 0.3] |
+| Tập clip | Mọi dự đoán: lớp chỉ-VSL-GH | Mọi dự đoán: lớp có QIPEDC | Mọi dự đoán: lớp không có train | Dự đoán đúng (top-1) | Chỉ dự đoán sai: lớp chỉ-VSL-GH | Chỉ dự đoán sai: lớp có QIPEDC | Chỉ dự đoán sai: lớp không có train |
+|---|---|---|---|---|---|---|---|
+| mọi clip QIPEDC TEST | 9.6% (69/722) [7.6, 11.9] | 90.4% (653/722) [88.1, 92.4] | 0.0% (0/722) [0.0, 0.5] | 88/722 | 10.9% (69/634) [8.7, 13.5] | 89.1% (565/634) [86.5, 91.3] | 0.0% (0/634) [0.0, 0.6] |
+| clip chung của 4c | 9.6% (69/721) [7.6, 11.9] | 90.4% (652/721) [88.1, 92.4] | 0.0% (0/721) [0.0, 0.5] | 88/721 | 10.9% (69/633) [8.7, 13.6] | 89.1% (564/633) [86.4, 91.3] | 0.0% (0/633) [0.0, 0.6] |
+| S06 (đối chứng) | 81.8% (973/1189) [79.5, 83.9] | 18.2% (216/1189) [16.1, 20.5] | 0.0% (0/1189) [0.0, 0.3] | 964/1189 | 81.3% (183/225) [75.7, 85.9] | 18.7% (42/225) [14.1, 24.3] | 0.0% (0/225) [0.0, 1.7] |
 
-Chỉ là chỉ báo cho giả thuyết "model gộp học phân biệt nguồn", không phải kiểm định.
+Tỷ lệ nền: lớp chỉ-VSL-GH trong không gian nhãn model gộp: 282/876 (32.2%).
+
+Chỉ là chỉ báo cho giả thuyết "model gộp học phân biệt nguồn", không phải kiểm định. Lớp đúng của S06 thuộc VSL-GH, nên lỗi của S06 tự nhiên rơi vào lớp VSL-GH nhiều hơn.
 
 ## 5. Giới hạn
 
@@ -335,6 +367,9 @@ Chỉ là chỉ báo cho giả thuyết "model gộp học phân biệt nguồn"
 - Đường live chưa dùng `harmonize()`: file trong backend/ và src/inference/ gọi harmonize: không có.
 - Độ phân giải của run được chọn: process_height=360. Nếu giữ lựa chọn này, đường realtime (webcam 640×480) phải giảm về cùng chiều cao trước MediaPipe và có test tương đương train–realtime — việc SAU khi người dùng duyệt (PREREGISTRATION dòng 11–12).
 - Phần bổ sung của PREREGISTRATION viết sau khi đã biết kết quả chọn z; commit của PREREGISTRATION: 9b0ade1 2026-09-26 12:13:24 +0700; c8a7bdf 2026-09-26 10:58:44 +0700 (so với cột "Sau lần sửa PREREG cuối" ở mục 1.1).
+- Tiêu đề phần bổ sung PREREGISTRATION ghi `2026-09-26 12:30`; commit `9b0ade1` lúc `2026-09-26 12:13:24 +0700` (tiêu đề − commit = 996 s; giờ tiêu đề đọc theo múi giờ của commit). Thứ tự so với kết quả được xét theo giờ commit.
+- Mức khớp train của model từ điển (dict_keepz_360): train top-1 ở epoch cuối 34.21% so với 95.47% của model gộp (H-keepz-360); tổng bước tối ưu 624 so với 23226 (mục 4, "Phạm vi so sánh và mức khớp train"). Kết quả chính của 4c chỉ nói về model tách train từ đầu bằng công thức hiện tại.
+- Nguồn gốc số train top-1: train_top1 là số src/training/trainer.py ghi trong train_epoch: đo trên batch đã augment, ở chế độ model.train() (dropout), với batch do WeightedRandomSampler lấy mẫu (scripts/train_unified.py) — không phải độ chính xác sạch trên tập train (src/training/trainer.py).
 - Nguồn trong manifest: qipedc, vslgh — HCMUE không dùng để train hay đo.
 - Model mặc định của backend: VSL_MODEL_TYPE mặc định `stgcn` → `checkpoints/stgcn_tier2_indomain.pt` (sha256 53c34cba43854c3e9820495bba3f93ffe18b5e1cb87ef44278a188ccafe2c826); trùng model được kiểm ở 4a: KHÔNG.
 - Chọn epoch: epoch tốt nhất của mỗi run chọn theo VAL top-1 tổng (VSL-GH chiếm 1190/1295 clip VAL), còn biến thể chọn theo balanced VAL.
