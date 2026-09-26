@@ -1,0 +1,644 @@
+{
+  "pool_segments": 1464,
+  "pool_words": 366,
+  "cross_source": {
+    "n": 23,
+    "top1": 0.0,
+    "top5": 17.4,
+    "median_rank": 29.0,
+    "per_query": [
+      {
+        "id": "qipedc_D0156",
+        "label": "thường xuyên",
+        "rank": 222,
+        "nearest": [
+          "ngực đau",
+          "che",
+          "tôi",
+          "nam",
+          "suốt"
+        ]
+      },
+      {
+        "id": "qipedc_D0163N",
+        "label": "hẹn",
+        "rank": 51,
+        "nearest": [
+          "miệng há",
+          "ho",
+          "nam",
+          "không thấy",
+          "che"
+        ]
+      },
+      {
+        "id": "qipedc_D0163T",
+        "label": "hẹn",
+        "rank": 50,
+        "nearest": [
+          "miệng há",
+          "ho",
+          "nam",
+          "che",
+          "không thấy"
+        ]
+      },
+      {
+        "id": "qipedc_D0167B",
+        "label": "lâu",
+        "rank": 41,
+        "nearest": [
+          "lưng",
+          "phụ khoa",
+          "thừa ruột",
+          "nhói",
+          "nước tiểu"
+        ]
+      },
+      {
+        "id": "qipedc_D0169B",
+        "label": "mỗi ngày",
+        "rank": 29,
+        "nearest": [
+          "mắt trái",
+          "sốt",
+          "miệng há",
+          "điện thoại",
+          "đầu đau"
+        ]
+      },
+      {
+        "id": "qipedc_D0169N",
+        "label": "mỗi ngày",
+        "rank": 29,
+        "nearest": [
+          "mắt trái",
+          "sốt",
+          "điện thoại",
+          "miệng há",
+          "đầu đau"
+        ]
+      },
+      {
+        "id": "qipedc_D0192B",
+        "label": "xem",
+        "rank": 332,
+        "nearest": [
+          "nam",
+          "hỏi",
+          "nhìn",
+          "mũi nghẹt",
+          "mũi sổ"
+        ]
+      },
+      {
+        "id": "qipedc_W00286N",
+        "label": "bình thường",
+        "rank": 2,
+        "nearest": [
+          "55",
+          "bình thường",
+          "60",
+          "120",
+          "5"
+        ]
+      },
+      {
+        "id": "qipedc_W00286T",
+        "label": "bình thường",
+        "rank": 2,
+        "nearest": [
+          "55",
+          "bình thường",
+          "60",
+          "120",
+          "5"
+        ]
+      },
+      {
+        "id": "qipedc_W01205N",
+        "label": "điện",
+        "rank": 43,
+        "nearest": [
+          "ho",
+          "miệng há",
+          "nam",
+          "không được",
+          "120"
+        ]
+      },
+      {
+        "id": "qipedc_W01205T",
+        "label": "điện",
+        "rank": 43,
+        "nearest": [
+          "ho",
+          "miệng há",
+          "nam",
+          "không được",
+          "120"
+        ]
+      },
+      {
+        "id": "qipedc_W01304N",
+        "label": "đợi",
+        "rank": 61,
+        "nearest": [
+          "ho",
+          "55",
+          "bình thường",
+          "22",
+          "120"
+        ]
+      },
+      {
+        "id": "qipedc_W01470N",
+        "label": "giấy",
+        "rank": 4,
+        "nearest": [
+          "táo bón",
+          "tiếp",
+          "nôn",
+          "giấy",
+          "chưa có"
+        ]
+      },
+      {
+        "id": "qipedc_W01470T",
+        "label": "giấy",
+        "rank": 4,
+        "nearest": [
+          "táo bón",
+          "tiếp",
+          "nôn",
+          "giấy",
+          "chưa có"
+        ]
+      },
+      {
+        "id": "qipedc_W01591N",
+        "label": "hiểu",
+        "rank": 29,
+        "nearest": [
+          "hít thở",
+          "nam",
+          "sốt",
+          "nín thở",
+          "không hiểu"
+        ]
+      },
+      {
+        "id": "qipedc_W01591T",
+        "label": "hiểu",
+        "rank": 29,
+        "nearest": [
+          "hít thở",
+          "nam",
+          "sốt",
+          "nín thở",
+          "không hiểu"
+        ]
+      },
+      {
+        "id": "qipedc_W01672B",
+        "label": "hỏi",
+        "rank": 29,
+        "nearest": [
+          "120",
+          "chóng mặt",
+          "70",
+          "có không",
+          "60"
+        ]
+      },
+      {
+        "id": "qipedc_W01690B",
+        "label": "hồi hộp",
+        "rank": 11,
+        "nearest": [
+          "ra nước",
+          "tôi",
+          "ngực đau",
+          "thở khó",
+          "gần đây"
+        ]
+      },
+      {
+        "id": "qipedc_W01690T",
+        "label": "hồi hộp",
+        "rank": 11,
+        "nearest": [
+          "ra nước",
+          "ngực đau",
+          "tôi",
+          "thở khó",
+          "gần đây"
+        ]
+      },
+      {
+        "id": "qipedc_W01754N",
+        "label": "kết quả",
+        "rank": 202,
+        "nearest": [
+          "phẫu thuật",
+          "lúc",
+          "cccd",
+          "khi",
+          "lấy"
+        ]
+      },
+      {
+        "id": "qipedc_W01754T",
+        "label": "kết quả",
+        "rank": 199,
+        "nearest": [
+          "phẫu thuật",
+          "lúc",
+          "cccd",
+          "khi",
+          "lấy"
+        ]
+      },
+      {
+        "id": "qipedc_W01840B",
+        "label": "không hiểu",
+        "rank": 14,
+        "nearest": [
+          "đầu đau",
+          "sốt",
+          "mắt trái",
+          "chóng mặt",
+          "60"
+        ]
+      },
+      {
+        "id": "qipedc_W04059B",
+        "label": "yếu",
+        "rank": 211,
+        "nearest": [
+          "đâu",
+          "giày",
+          "phẫu thuật",
+          "không",
+          "táo bón"
+        ]
+      }
+    ]
+  },
+  "s06_reference": {
+    "n": 29,
+    "top1": 55.2,
+    "top5": 79.3,
+    "median_rank": 1.0,
+    "per_query": [
+      {
+        "id": "SENT013_S06_R01_F_g02",
+        "label": "giấy",
+        "rank": 6,
+        "nearest": [
+          "giới thiệu",
+          "tên",
+          "giấy phép",
+          "nào",
+          "này"
+        ]
+      },
+      {
+        "id": "SENT019_S06_R01_F_g04",
+        "label": "hẹn",
+        "rank": 47,
+        "nearest": [
+          "yếu",
+          "mũi",
+          "hàng này",
+          "điện thoại",
+          "phải"
+        ]
+      },
+      {
+        "id": "SENT021_S06_R01_F_g01",
+        "label": "giấy",
+        "rank": 4,
+        "nearest": [
+          "để",
+          "đặt",
+          "táo bón",
+          "giấy",
+          "đăng ký"
+        ]
+      },
+      {
+        "id": "SENT025_S06_R01_F_g01",
+        "label": "giấy",
+        "rank": 1,
+        "nearest": [
+          "giấy",
+          "gần đây",
+          "giới thiệu",
+          "tay trái",
+          "da"
+        ]
+      },
+      {
+        "id": "SENT028_S06_R01_F_g03",
+        "label": "đợi",
+        "rank": 1,
+        "nearest": [
+          "đợi",
+          "chờ",
+          "không có",
+          "không",
+          "thẻ"
+        ]
+      },
+      {
+        "id": "SENT032_S06_R01_F_g02",
+        "label": "lâu",
+        "rank": 4,
+        "nearest": [
+          "mắt trái",
+          "răng",
+          "cảm thấy",
+          "lâu",
+          "miệng há"
+        ]
+      },
+      {
+        "id": "SENT033_S06_R01_F_g01",
+        "label": "hẹn",
+        "rank": 45,
+        "nearest": [
+          "miệng há",
+          "1",
+          "chữ",
+          "bình thường",
+          "đỏ"
+        ]
+      },
+      {
+        "id": "SENT036_S06_R01_F_g01",
+        "label": "hiểu",
+        "rank": 3,
+        "nearest": [
+          "hít thở",
+          "giáo viên",
+          "hiểu",
+          "cao",
+          "nín thở"
+        ]
+      },
+      {
+        "id": "SENT038_S06_R01_F_g01",
+        "label": "đợi",
+        "rank": 2,
+        "nearest": [
+          "chờ",
+          "đợi",
+          "khác",
+          "thường xuyên",
+          "không có"
+        ]
+      },
+      {
+        "id": "SENT054_S06_R01_F_g01",
+        "label": "lâu",
+        "rank": 2,
+        "nearest": [
+          "cảm thấy",
+          "lâu",
+          "ngực đau",
+          "gần đây",
+          "mắt trái"
+        ]
+      },
+      {
+        "id": "SENT067_S06_R01_F_g01",
+        "label": "đợi",
+        "rank": 1,
+        "nearest": [
+          "đợi",
+          "chờ",
+          "thẻ",
+          "lượt",
+          "bảo hiểm"
+        ]
+      },
+      {
+        "id": "SENT088_S06_R01_F_g02",
+        "label": "bình thường",
+        "rank": 25,
+        "nearest": [
+          "1",
+          "ù",
+          "0",
+          "nhìn",
+          "2"
+        ]
+      },
+      {
+        "id": "SENT089_S06_R01_F_g02",
+        "label": "bình thường",
+        "rank": 1,
+        "nearest": [
+          "bình thường",
+          "120",
+          "2",
+          "ê buốt",
+          "còn"
+        ]
+      },
+      {
+        "id": "SENT090_S06_R01_F_g02",
+        "label": "hồi hộp",
+        "rank": 1,
+        "nearest": [
+          "hồi hộp",
+          "khan ho",
+          "ra nước",
+          "sợ lắm",
+          "mạch"
+        ]
+      },
+      {
+        "id": "SENT097_S06_R01_F_g02",
+        "label": "yếu",
+        "rank": 1,
+        "nearest": [
+          "yếu",
+          "hẹn",
+          "quay lại",
+          "điện thoại",
+          "y tế"
+        ]
+      },
+      {
+        "id": "SENT125_S06_R01_F_g03",
+        "label": "mỗi ngày",
+        "rank": 1,
+        "nearest": [
+          "mỗi ngày",
+          "hàng này",
+          "y tá",
+          "đây",
+          "70"
+        ]
+      },
+      {
+        "id": "SENT151_S06_R01_F_g01",
+        "label": "hỏi",
+        "rank": 1,
+        "nearest": [
+          "hỏi",
+          "hỏi tôi",
+          "đỏ",
+          "thức khuya",
+          "chân răng"
+        ]
+      },
+      {
+        "id": "SENT159_S06_R01_F_g01",
+        "label": "hỏi",
+        "rank": 1,
+        "nearest": [
+          "hỏi",
+          "chân răng",
+          "đỏ",
+          "thức khuya",
+          "hỏi tôi"
+        ]
+      },
+      {
+        "id": "SENT165_S06_R01_F_g02",
+        "label": "hỏi",
+        "rank": 2,
+        "nearest": [
+          "thuốc uống",
+          "hỏi",
+          "ix",
+          "kinh nguyệt",
+          "thấy"
+        ]
+      },
+      {
+        "id": "SENT180_S06_R01_F_g01",
+        "label": "xem",
+        "rank": 242,
+        "nearest": [
+          "hỏi",
+          "9",
+          "hỏi tôi",
+          "kim loại",
+          "đợi"
+        ]
+      },
+      {
+        "id": "SENT188_S06_R01_F_g03",
+        "label": "thường xuyên",
+        "rank": 1,
+        "nearest": [
+          "thường xuyên",
+          "xin",
+          "đợi",
+          "thứ tự",
+          "bảo hiểm"
+        ]
+      },
+      {
+        "id": "SENT220_S06_R01_F_g04",
+        "label": "bình thường",
+        "rank": 1,
+        "nearest": [
+          "bình thường",
+          "đều",
+          "5",
+          "ù",
+          "có thế"
+        ]
+      },
+      {
+        "id": "SENT241_S06_R01_F_g03",
+        "label": "điện",
+        "rank": 2,
+        "nearest": [
+          "hen suyễn",
+          "điện",
+          "ăn",
+          "họng",
+          "nam"
+        ]
+      },
+      {
+        "id": "SENT250_S06_R01_F_g03",
+        "label": "kết quả",
+        "rank": 1,
+        "nearest": [
+          "kết quả",
+          "đăng ký",
+          "giấy phép",
+          "kim loại",
+          "9"
+        ]
+      },
+      {
+        "id": "SENT265_S06_R01_F_g02",
+        "label": "kết quả",
+        "rank": 30,
+        "nearest": [
+          "thông tin",
+          "đăng ký",
+          "giấy phép",
+          "9",
+          "viêm xoang"
+        ]
+      },
+      {
+        "id": "SENT266_S06_R01_F_g01",
+        "label": "kết quả",
+        "rank": 1,
+        "nearest": [
+          "kết quả",
+          "tiếp",
+          "đặt",
+          "giấy",
+          "kiêng"
+        ]
+      },
+      {
+        "id": "SENT271_S06_R01_F_g01",
+        "label": "hiểu",
+        "rank": 1,
+        "nearest": [
+          "hiểu",
+          "trái",
+          "giáo viên",
+          "nghe",
+          "hút thuốc"
+        ]
+      },
+      {
+        "id": "SENT290_S06_R01_F_g02",
+        "label": "xem",
+        "rank": 1,
+        "nearest": [
+          "xem",
+          "giờ",
+          "này",
+          "trám",
+          "mũi"
+        ]
+      },
+      {
+        "id": "SENT290_S06_R01_F_g03",
+        "label": "không hiểu",
+        "rank": 1,
+        "nearest": [
+          "không hiểu",
+          "trước",
+          "5",
+          "ù",
+          "có thế"
+        ]
+      }
+    ]
+  }
+}
