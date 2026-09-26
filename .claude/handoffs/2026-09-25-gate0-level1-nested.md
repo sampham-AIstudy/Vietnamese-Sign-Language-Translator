@@ -1,5 +1,19 @@
 # Handoff — GATE 0 follow-ups, Level 1 nested, sequence endpoint (2026-09-25, updated ~17:15)
 
+## NOW (2026-09-26 11:00): step 4a–4c in progress — brief: docs/prompts/buoc4_5.md (replaces all earlier)
+Rules fixed in advance: reports/step4_2026-09-26/PREREGISTRATION.md. STOP after 4c and send owner the REPORT file.
+- 4a DONE (c8a7bdf): shared 85 classes, balanced 106/106 → source classifier 99.5% (shortcut real); current model
+  cross-source 0/26 (seed 43 of the same legacy model gets 3/26 → metric is noisy).
+- 4b: harmonised input `src/data/harmonized.py`; classifier on harmonised features 92.0/94.3% (length, pose z → 50%).
+  Kaggle `vsl-train-harmonized` v1 RUNNING (GPU0 run_keepz, GPU1 run_dropz). 360 px shards
+  `vsl-extract-qipedc360-s{0,1,2}` RUNNING (CPU).
+  Next: download outputs to reports/step4_2026-09-26/runs/, run `scripts/report_step4.py`, pick z variant by the
+  pre-registered VAL rule, then kernel v2: GPU0 chosen-z @360 (add the 3 shard kernels to kernel_sources, kps=360),
+  GPU1 `--sources qipedc` (4c) chosen-z native. If 360 wins on VAL → v3 dictionary model @360.
+  Also rerun `shortcut_85.py --features harmonized --qipedc-kps-dir qipedc_kps360` (download 360 output first).
+- Local data: data/processed/qipedc_kps = all 4362 (tar from `vsl-pack-qipedc`), old subset kept as qipedc_kps_partial623.
+- No `vslt-reviewer` subagent installed → say so in the report.
+
 ## DECISION GATE Việc 3 (owner, 2026-09-26): (a) keep the old model as default
 Reason: the gate rule (new > old on the clean test AND on HCMUE) was fixed before the results; HCMUE is 0 vs 0,
 so relaxing it now because S06 looks good is the mistake we set out to avoid. The key result is 0/31: the model
