@@ -7,9 +7,11 @@ Output : /kaggle/working/<out>/ (metrics.json incl. val_by_source, test_logits.n
 """
 import glob, os, subprocess, sys, time
 
+# v1 (done): run_keepz / run_dropz, native resolution. v2: chosen variant = hand z kept (pre-registered VAL rule).
 JOBS = [
-    {"gpu": "0", "out": "run_keepz", "kps": "native", "args": "--features harmonized --hand-z keep"},
-    {"gpu": "1", "out": "run_dropz", "kps": "native", "args": "--features harmonized --hand-z drop"},
+    {"gpu": "0", "out": "dict_keepz", "kps": "native", "args": "--features harmonized --hand-z keep --sources qipedc"},
+    {"gpu": "1", "out": "run_keepz_seed43", "kps": "native", "seed": 43,   # seed variance only, never selected
+     "args": "--features harmonized --hand-z keep"},
 ]
 SEED = 42  # pre-declared, no seed selection (reports/step4_2026-09-26/PREREGISTRATION.md)
 
@@ -56,7 +58,7 @@ for job in JOBS:
     os.makedirs(out, exist_ok=True)
     extra = " --process-height 360" if job["kps"] == "360" else ""
     cmd = (f"{sys.executable} scripts/train_unified.py --data-root {roots[job['kps']]} --out-dir {out} --epochs 120 "
-           f"--batch-size 64 --num-workers {workers} --patience 20 --seed {SEED} {job['args']}{extra}")
+           f"--batch-size 64 --num-workers {workers} --patience 20 --seed {job.get('seed', SEED)} {job['args']}{extra}")
     print(f"$ [GPU {job['gpu']}] {cmd}", flush=True)
     log = open(f"{out}/train.log", "w")
     procs.append((job, out, log, subprocess.Popen(cmd, shell=True, stdout=log, stderr=subprocess.STDOUT,
