@@ -36,7 +36,7 @@ def _extract_one(task):
     if os.path.exists(out_path):
         return out_path, "skip", 0.0
     t0 = time.time()
-    extractor = CleanHolisticExtractor()
+    extractor = CleanHolisticExtractor(process_height=meta.get("process_height"))
     try:
         res = extractor.extract_from_video(video_path)
     except Exception as e:  # unreadable video: record and continue
@@ -80,6 +80,8 @@ def main():
     ap.add_argument("--workers", type=int, default=os.cpu_count() or 2)
     ap.add_argument("--shard", default="0/1", help="i/n: process every n-th video starting at i")
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--process-height", type=int, default=None,
+                    help="resize frames to this height before MediaPipe (e.g. 360 to match VSL-GH)")
     args = ap.parse_args()
 
     os.makedirs(args.out_dir, exist_ok=True)
@@ -98,7 +100,8 @@ def main():
             continue
         stem = os.path.splitext(video)[0]
         tasks.append((path, os.path.join(args.out_dir, f"{stem}.npz"),
-                      {"source": args.source, "file_name": video, "label": r["LABEL"].strip()}))
+                      {"source": args.source, "file_name": video, "label": r["LABEL"].strip(),
+                       "process_height": args.process_height}))
 
     print(f"{len(tasks)} videos, {args.workers} workers, shard {args.shard}", flush=True)
     t0, done, errors = time.time(), 0, []

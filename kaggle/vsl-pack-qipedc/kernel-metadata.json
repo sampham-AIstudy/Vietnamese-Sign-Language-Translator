@@ -1,0 +1,14 @@
+{
+  "id": "phmvnsm33/vsl-pack-qipedc",
+  "title": "vsl-pack-qipedc",
+  "code_file": "pack_qipedc.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": false,
+  "dataset_sources": [],
+  "kernel_sources": ["phmvnsm33/vsl-extract-qipedc"],
+  "competition_sources": [],
+  "model_sources": []
+}

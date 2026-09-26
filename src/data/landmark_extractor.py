@@ -33,8 +33,13 @@ class CleanHolisticExtractor:
         min_detection_confidence: float = 0.5,
         min_tracking_confidence: float = 0.5,
         model_complexity: int = 1,
+        process_height: Optional[int] = None,
     ):
+        """process_height: if set, frames are resized (aspect kept, INTER_AREA) to this height before
+        MediaPipe — e.g. 360 to match VSL-GH, whose upstream extraction ran on 360x360 frames.
+        Landmarks stay normalised to [0, 1], so coordinates remain comparable."""
         self.min_detection_confidence = min_detection_confidence
+        self.process_height = process_height
         self.min_tracking_confidence = min_tracking_confidence
         self.model_complexity = model_complexity
         self._holistic = None
@@ -58,6 +63,10 @@ class CleanHolisticExtractor:
             mask: np.ndarray of shape (67,), 1.0 if detected, 0.0 if missing.
         """
         holistic = self._get_holistic()
+        if self.process_height and frame_rgb.shape[0] != self.process_height:
+            h, w = frame_rgb.shape[:2]
+            frame_rgb = cv2.resize(frame_rgb, (max(1, round(w * self.process_height / h)), self.process_height),
+                                   interpolation=cv2.INTER_AREA)
         results = holistic.process(frame_rgb)
 
         coords = np.full((67, 3), np.nan, dtype=np.float32)
