@@ -3,30 +3,34 @@
 Model: unified ST-GCN, seed 42 (`reports/unified_run_2026-09-25/run`). Key symptom: 0/31 QIPEDC test clips of words
 with hundreds of VSL-GH training samples. Numbers below come from the JSON files in this folder.
 
-## Step 1 — source classifier on the model input (`prelim_hcmue47/source_diagnostics.json`)
+## Step 1 — source classifier on the model input (`final/source_diagnostics.json`)
 Logistic regression on clip summaries of the preprocessed input (aspect-corrected, shoulder-centred, 60 frames +
-masks), GroupKFold(5) by recording. n = VSL-GH 1500, QIPEDC 623, HCMUE 47 (full 435 rerun → `final/`).
+masks), GroupKFold(5) by recording. n = VSL-GH 1500, QIPEDC 623, HCMUE 435 (all crawled videos).
+Preliminary run with 47 HCMUE clips: `prelim_hcmue47/` (same conclusions).
 
 | Features | 3 sources, balanced acc. (chance 33.3) | VSL-GH vs QIPEDC |
 |---|---|---|
-| all | 93.9 | **100.0** |
-| pose x/y only | 95.3 | **100.0** |
-| pose z only | 91.1 | **100.0** |
-| clip length only (valid-frame share, 1 number) | 66.2 | **98.2** |
-| hand shape only (wrist-centred, size-scaled) | 85.2 | 94.7 |
-| hand x/y only | 81.9 | 97.8 |
-| hand z only | 77.5 | 90.9 |
-| joint presence only | 48.2 | 60.8 |
+| all | **98.3** | **100.0** |
+| pose x/y only | 98.1 | **100.0** |
+| pose z only | 94.2 | **100.0** |
+| clip length only (valid-frame share, 1 number) | 66.0 | **98.2** |
+| hand shape only (wrist-centred, size-scaled) | 87.3 | 94.7 |
+| hand x/y only | 85.6 | 97.8 |
+| hand z only | 79.4 | 90.9 |
+| joint presence only | 45.0 | 60.8 |
 
-Leaving any one group out keeps ≥ 88.8% → the source is encoded redundantly, mostly by body geometry and clip length.
+Confusion (all features): VSL-GH 1499/1500 correct; QIPEDC↔HCMUE confuse each other in 25 clips; VSL-GH is never
+confused with the two dictionary sources. Leaving any one group out keeps ≥ 97.0% → the source is encoded
+redundantly, mostly by body geometry and clip length.
 
 ## Step 2 — per-source statistics and extraction paths
-| | VSL-GH | QIPEDC | HCMUE (47) |
+| | VSL-GH | QIPEDC | HCMUE (435) |
 |---|---|---|---|
-| Frames per clip (median) | 27 (sign cut from a sentence) | 115 (rest → sign → rest) | 273 |
-| Frames with left / right hand | 0.97 / 0.97 | 0.53 / 0.68 | see JSON |
-| Frames with no hand | 0.4% | 29.4% | |
-| Pose z (median) | −0.51 | −0.40 | |
+| Frames per clip (median) | 27 (sign cut from a sentence) | 115 (rest → sign → rest) | 243 |
+| Resolution / fps | 1080×1080 (processed at 360×360) / 30 | 1280×720 / 24–30 | 320×240 or 214×160 / 16–30 |
+| Frames with left / right hand | 0.97 / 0.97 | 0.53 / 0.68 | 0.29 / 0.55 |
+| Frames with no hand | 0.4% | 29.4% | 39.9% |
+| Pose z (median) | −0.51 | −0.40 | −0.62 |
 | Stored dtype | float16 | float32 | float32 |
 | Missing stored as NaN | yes | yes | yes |
 

@@ -1,0 +1,168 @@
+{
+  "n_by_source": {
+    "hcmue": 435,
+    "qipedc": 623,
+    "vslgh": 1500
+  },
+  "chance_balanced_accuracy": 33.3,
+  "all_features": {
+    "balanced_accuracy": 98.3,
+    "confusion": {
+      "labels": [
+        "hcmue",
+        "qipedc",
+        "vslgh"
+      ],
+      "matrix": [
+        [
+          420,
+          15,
+          0
+        ],
+        [
+          10,
+          613,
+          0
+        ],
+        [
+          0,
+          1,
+          1499
+        ]
+      ]
+    }
+  },
+  "single_group": {
+    "time": 66.0,
+    "presence": 45.0,
+    "pose_xy": 98.1,
+    "pose_z": 94.2,
+    "hand_xy": 85.6,
+    "hand_z": 79.4,
+    "hand_shape": 87.3
+  },
+  "all_but_group": {
+    "time": 98.2,
+    "presence": 98.4,
+    "pose_xy": 97.0,
+    "pose_z": 98.1,
+    "hand_xy": 98.6,
+    "hand_z": 98.5,
+    "hand_shape": 98.4
+  },
+  "feature_dims": {
+    "time": 1,
+    "presence": 67,
+    "pose_xy": 100,
+    "pose_z": 50,
+    "hand_xy": 168,
+    "hand_z": 84,
+    "hand_shape": 126
+  },
+  "vslgh_vs_qipedc_all": 100.0,
+  "vslgh_vs_qipedc_single_group": {
+    "time": 98.2,
+    "presence": 60.8,
+    "pose_xy": 100.0,
+    "pose_z": 100.0,
+    "hand_xy": 97.8,
+    "hand_z": 90.9,
+    "hand_shape": 94.7
+  },
+  "raw_stats": {
+    "vslgh": {
+      "clips": 1500,
+      "frames_median": 27.0,
+      "fps": [
+        30
+      ],
+      "resolution": [
+        "1080x1080"
+      ],
+      "dtype": [
+        "float16"
+      ],
+      "lh_present": 0.9664460581769277,
+      "rh_present": 0.9723935533666879,
+      "no_hand": 0.0036768582304459656,
+      "pose_present": 0.9972362424166975,
+      "pose_z": -0.5143172740936279,
+      "hand_z_spread": 0.015503793954849243,
+      "x_span": 0.2678373456001282,
+      "missing_stored_as_nan": 1.0,
+      "joints_never_present": [],
+      "joints_present_lt_50pct": []
+    },
+    "qipedc": {
+      "clips": 623,
+      "frames_median": 115.0,
+      "fps": "n/a",
+      "resolution": [
+        "1280x720"
+      ],
+      "dtype": [
+        "float32"
+      ],
+      "lh_present": 0.5280421494109635,
+      "rh_present": 0.6787098290414468,
+      "no_hand": 0.2944537289445897,
+      "pose_present": 0.9994930813976903,
+      "pose_z": -0.39670950174331665,
+      "hand_z_spread": 0.008589654229581356,
+      "x_span": 0.23157449066638947,
+      "missing_stored_as_nan": 0.9807383627608347,
+      "joints_never_present": [],
+      "joints_present_lt_50pct": []
+    },
+    "hcmue": {
+      "clips": 435,
+      "frames_median": 243.0,
+      "fps": [
+        16,
+        25,
+        26,
+        29,
+        30
+      ],
+      "resolution": [
+        "214x160",
+        "320x240"
+      ],
+      "dtype": [
+        "float32"
+      ],
+      "lh_present": 0.293617641678232,
+      "rh_present": 0.5473707533326299,
+      "no_hand": 0.3992751946620869,
+      "pose_present": 0.9943093751367198,
+      "pose_z": -0.6160738468170166,
+      "hand_z_spread": 0.012639778666198254,
+      "x_span": 0.3665785789489746,
+      "missing_stored_as_nan": 0.7471264367816092,
+      "joints_never_present": [],
+      "joints_present_lt_50pct": [
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ]
+    }
+  }
+}
