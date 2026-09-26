@@ -11,6 +11,13 @@
 - Thay đổi chưa commit của người dùng (xóa 3 CSV trong data/, "data (2)/"): để nguyên.
 - reports/audit_round2/*.json đã restore về bản commit 536c7c5; bản chạy lại lưu ở ../_backup_audit_round2_rerun_2026-09-24/.
 
+## ĐIỂM DỪNG SAU 4c (tối 2026-09-26) — chờ người dùng
+- Việc 1 backlog (kế hoạch docs/plans/01-buoc4-hoan-tat-4a-4c.md) APPROVE vòng 2/3 (docs/reviews/01-review.md), HEAD fc598dd.
+- Sản phẩm: reports/step4_2026-09-26/REPORT.md, step4_results.json, PROPOSAL_4c.md (khuyến nghị B có điều kiện).
+- Chờ người dùng: 5 câu hỏi ở mục "CẦN NGƯỜI DÙNG QUYẾT ĐỊNH" của review vòng 2 (A/B; train lại model từ điển;
+  thêm seed 360 px; giữ/bỏ cắt đoạn nghỉ ở live; REPORT_partial.md / .gitignore .pt). Chưa đổi model mặc định.
+- Góp ý không chặn còn mở: G1 (test AC5 so cả §6), G2 (đếm từ PROPOSAL 546/550), G3 (PROPOSAL dòng 17 mẫu số 634).
+
 ## CẬP NHẬT 13:40 — phiên chính làm nốt 4b/4c theo yêu cầu người dùng (agent chưa nạp)
 - v2 COMPLETE (68.7 min, repo c9296bf): runs/dict_keepz (QIPEDC-only 594 lớp, 795 clip train → VAL top-1 2.86%,
   giới hạn cỡ mẫu, không phải lỗi) và runs/run_keepz_seed43 (chỉ đo dao động seed). Log: runs/vsl-train-harmonized_v2.log.
