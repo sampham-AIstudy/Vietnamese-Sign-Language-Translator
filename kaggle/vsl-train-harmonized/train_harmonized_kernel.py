@@ -7,11 +7,12 @@ Output : /kaggle/working/<out>/ (metrics.json incl. val_by_source, test_logits.n
 """
 import glob, os, subprocess, sys, time
 
-# v1 (done): run_keepz / run_dropz, native resolution. v2: chosen variant = hand z kept (pre-registered VAL rule).
+# v1 (done): run_keepz / run_dropz, native resolution. v2 (done): dict_keepz (4c, native) + run_keepz_seed43
+# (seed variance only). v3: 360 px (chosen z) + dictionary model at 360 px + trimming ablation (PREREGISTRATION.md).
 JOBS = [
-    {"gpu": "0", "out": "dict_keepz", "kps": "native", "args": "--features harmonized --hand-z keep --sources qipedc"},
-    {"gpu": "1", "out": "run_keepz_seed43", "kps": "native", "seed": 43,   # seed variance only, never selected
-     "args": "--features harmonized --hand-z keep"},
+    {"gpu": "0", "out": "run_keepz_360", "kps": "360", "args": "--features harmonized --hand-z keep"},
+    {"gpu": "1", "out": "run_keepz_notrim", "kps": "native", "args": "--features harmonized --hand-z keep --no-trim"},
+    {"gpu": "1", "out": "dict_keepz_360", "kps": "360", "args": "--features harmonized --hand-z keep --sources qipedc"},
 ]
 SEED = 42  # pre-declared, no seed selection (reports/step4_2026-09-26/PREREGISTRATION.md)
 

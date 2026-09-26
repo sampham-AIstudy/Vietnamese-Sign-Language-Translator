@@ -8,7 +8,12 @@
   "enable_gpu": true,
   "enable_internet": true,
   "dataset_sources": [],
-  "kernel_sources": ["phmvnsm33/vsl-extract-qipedc"],
+  "kernel_sources": [
+    "phmvnsm33/vsl-extract-qipedc",
+    "phmvnsm33/vsl-extract-qipedc360-s0",
+    "phmvnsm33/vsl-extract-qipedc360-s1",
+    "phmvnsm33/vsl-extract-qipedc360-s2"
+  ],
   "competition_sources": [],
   "model_sources": []
 }
