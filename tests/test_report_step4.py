@@ -243,6 +243,14 @@ class TestProvenance(unittest.TestCase):
 
 # ------------------------------------------------------------------------------------------------ end-to-end fixture
 CLASSES = ["a", "b", "c", "d", "e"]
+# Lần sửa 1: history.json of the chosen / dictionary run is a required input (exit 2 when missing), so every fixture
+# run gets this small trainer-format history (unit-test fixture, not report data).
+FIT_HISTORY = [
+    {"epoch": 1, "train_loss": 6.0, "train_top1": 1.0, "val_loss": 5.0, "val_top1": 10.0, "lr": 0.001, "time_sec": 4.0},
+    {"epoch": 2, "train_loss": 5.0, "train_top1": 5.5, "val_loss": 4.0, "val_top1": 20.0, "lr": 0.001, "time_sec": 4.5},
+    {"epoch": 3, "train_loss": 4.0, "train_top1": 9.25, "val_loss": 3.5, "val_top1": 20.0, "lr": 0.0005, "time_sec": 5.0},
+    {"epoch": 4, "train_loss": 3.0, "train_top1": 12.0, "val_loss": 3.9, "val_top1": 15.0, "lr": 0.00025, "time_sec": 5.5},
+]
 
 
 def _rows(spec, split):
@@ -274,6 +282,7 @@ def make_fixture(d, dict_runs=("dict", "dict360"), bad_label_run=None):
         if rc is not None:
             m["run_config"] = rc
         dump(m, os.path.join(p, "metrics.json"))
+        dump(FIT_HISTORY, os.path.join(p, "history.json"))
         torch.save({"label_map": {c: i for i, c in enumerate(classes)}, "seed": seed, "run_config": rc,
                     "preprocessing": {"joints": "arms", "hand_z": True, "trim": True, "target_len": 32}},
                    os.path.join(p, "stgcn_unified_best.pt"))
@@ -444,6 +453,266 @@ class TestProposal4c(unittest.TestCase):
             checked += 1
             self.assertRegex(self.report, r"(?<![\d.])" + re.escape(t) + r"(?!\.?\d)", f"'{t}' not in REPORT.md")
         self.assertGreater(checked, 20)
+
+
+# ------------------------------------------------------------------------------------------------ Lần sửa 1 (AC1 16-23)
+class TestTrainingFit(unittest.TestCase):
+    """AC1 case 16: fit diagnostics read verbatim from a trainer-format history."""
+
+    def test_best_epoch_follows_trainer_rule(self):
+        # epochs 2 and 3 tie on val_top1 (20.0); epoch 3 has the lower val_loss -> best 3
+        f = R.training_fit(FIT_HISTORY, 795, 64)
+        self.assertEqual(f["best_epoch"], 3)
+        # same tie, the earlier epoch has the lower loss -> best 2
+        h = [dict(e) for e in FIT_HISTORY]
+        h[2]["val_loss"] = 4.2
+        self.assertEqual(R.training_fit(h, 795, 64)["best_epoch"], 2)
+        # full tie (val_top1 and val_loss) -> the earlier epoch
+        h[2]["val_loss"] = 4.0
+        self.assertEqual(R.training_fit(h, 795, 64)["best_epoch"], 2)
+
+    def test_lr_drops_and_verbatim_values(self):
+        f = R.training_fit(FIT_HISTORY, 795, 64)
+        self.assertEqual(f["lr_drop_epochs"], [3, 4])
+        self.assertEqual((f["lr_first"], f["lr_last"]), (0.001, 0.00025))
+        self.assertEqual(f["train_top1_at_best"], 9.25)
+        self.assertEqual(f["train_top1_last"], 12.0)
+        self.assertEqual(f["train_loss_last"], 3.0)
+        self.assertEqual((f["val_loss_first"], f["val_loss_min"], f["val_loss_last"]), (5.0, 3.5, 3.9))
+        self.assertEqual(f["epochs_run"], 4)
+        self.assertAlmostEqual(f["time_sec_total"], 19.0)
+        self.assertAlmostEqual(f["time_sec_mean"], 4.75)
+
+    def test_steps_with_uneven_batches(self):
+        self.assertEqual(R.steps_per_epoch(795, 64), 13)
+        self.assertEqual(R.steps_per_epoch(768, 64), 12)
+        f = R.training_fit(FIT_HISTORY, 795, 64)
+        self.assertEqual((f["steps_per_epoch"], f["total_steps"]), (13, 52))
+
+    def test_missing_batch_size_is_none_not_error(self):
+        self.assertIsNone(R.steps_per_epoch(795, None))
+        f = R.training_fit(FIT_HISTORY, 795, None)
+        self.assertIsNone(f["steps_per_epoch"])
+        self.assertIsNone(f["total_steps"])
+
+    def test_empty_history_is_exit_2(self):
+        with self.assertRaises(R.ReportError) as cm:
+            R.training_fit([], 795, 64)
+        self.assertEqual(cm.exception.code, 2)
+
+
+class TestBatchSizeFromCommand(unittest.TestCase):
+    """AC1 case 17."""
+
+    def test_batch_size(self):
+        self.assertEqual(R.batch_size_from_command(
+            "/usr/bin/python3 scripts/train_unified.py --data-root /tmp/r --batch-size 64 --seed 42"), 64)
+        self.assertIsNone(R.batch_size_from_command("/usr/bin/python3 scripts/train_unified.py --data-root /tmp/r"))
+        self.assertIsNone(R.batch_size_from_command(None))
+
+
+class TestTrainCmdDiff(unittest.TestCase):
+    """AC1 case 18."""
+    A = ("/usr/bin/python3 scripts/train_unified.py --data-root /tmp/root_360 --out-dir /kaggle/working/run_keepz_360 "
+         "--epochs 120 --batch-size 64 --patience 20 --seed 42 --features harmonized --hand-z keep")
+    B = ("/usr/bin/python3 scripts/train_unified.py --data-root /tmp/root_360 --out-dir /kaggle/working/dict_keepz_360 "
+         "--epochs 120 --batch-size 64 --patience 20 --seed 42 --features harmonized --hand-z keep --sources qipedc")
+    EMPTY = {"only_a": {}, "only_b": {}, "different": {}}
+
+    def test_only_ignored_flags_differ(self):
+        self.assertEqual(R.train_cmd_diff(self.A, self.B), self.EMPTY)
+
+    def test_extra_flag_reported(self):
+        d = R.train_cmd_diff(self.A, self.B + " --process-height 360")
+        self.assertEqual(d["only_b"], {"--process-height": "360"})
+        self.assertEqual((d["only_a"], d["different"]), ({}, {}))
+        d = R.train_cmd_diff(self.A + " --process-height 360", self.B)
+        self.assertEqual(d["only_a"], {"--process-height": "360"})
+        d = R.train_cmd_diff(self.A + " --no-trim", self.B)
+        self.assertEqual(d["only_a"], {"--no-trim": True})
+
+    def test_changed_value_reported(self):
+        d = R.train_cmd_diff(self.A, self.B.replace("--epochs 120", "--epochs 60"))
+        self.assertEqual(d["different"], {"--epochs": ["120", "60"]})
+        self.assertEqual((d["only_a"], d["only_b"]), ({}, {}))
+
+
+class TestInitOptions(unittest.TestCase):
+    """AC1 case 19: argparse text (fixture) scanned for weight-initialisation options."""
+    BASE = ('ap = argparse.ArgumentParser()\nap.add_argument("--data-root", required=True)\n'
+            'ap.add_argument("--num-workers", type=int, default=2)\nap.add_argument("--out-dir", required=True)\n'
+            'ap.add_argument("--no-trim", action="store_true", help="keep the whole clip (ablation)")\n')
+
+    def scan(self, text):
+        d = tempfile.mkdtemp()
+        try:
+            p = os.path.join(d, "train_fixture.py")
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(text)
+            return R.init_options(p)
+        finally:
+            shutil.rmtree(d)
+
+    def test_no_init_flag(self):
+        self.assertEqual(self.scan(self.BASE), [])
+
+    def test_init_flag_found(self):
+        self.assertEqual(self.scan(self.BASE + 'ap.add_argument("--init-from", default=None, help="checkpoint (.pt)")\n'),
+                         ["--init-from"])
+
+
+class TestPredOrigin(unittest.TestCase):
+    """AC1 case 20: class origin of top-1 predictions, all / wrong only / base rate."""
+    VSLGH_ONLY, WITH_Q = {"x", "y"}, {"a", "b"}
+    PRED = ["a", "x", "b", "z", "y", "a"]
+    TRUE = ["a", "a", "c", "b", "y", "b"]
+
+    def test_all_and_wrong_only(self):
+        o = R.pred_origin(self.PRED, self.TRUE, self.VSLGH_ONLY, self.WITH_Q)
+        a, w = o["all"], o["wrong_only"]
+        self.assertEqual([a[k]["k"] for k in ("vslgh_only_class", "class_with_qipedc_train", "class_without_train_data")],
+                         [2, 3, 1])
+        self.assertEqual(w["vslgh_only_class"]["n"], sum(p != t for p, t in zip(self.PRED, self.TRUE)))
+        # the correct "a" (row 0) is in a class with QIPEDC training data but not in wrong_only
+        self.assertEqual([w[k]["k"] for k in ("vslgh_only_class", "class_with_qipedc_train", "class_without_train_data")],
+                         [1, 2, 1])
+        self.assertEqual(o["correct_n"], 2)
+        for blk in (a, w):
+            ks = [blk[k]["k"] for k in ("vslgh_only_class", "class_with_qipedc_train", "class_without_train_data")]
+            self.assertEqual(sum(ks), blk["vslgh_only_class"]["n"])
+
+    def test_label_space_base_rate(self):
+        r = R.label_space_base_rate(self.VSLGH_ONLY, ["a", "b", "c", "x", "y", "z"])
+        self.assertEqual((r["k"], r["n"]), (2, 6))
+
+
+class TestTrimConsequence(unittest.TestCase):
+    """AC1 case 21: sentence built from run_config.trim of the chosen run and the VAL verdict."""
+    ROWS = [{"trimmed": "K", "untrimmed": "Knotrim", "diff": -0.28, "credited": False}]
+
+    def test_trimmed_not_credited(self):
+        c = R.trim_consequence("K360", cfg("keep", 360, True), self.ROWS)
+        self.assertTrue(c["chosen_trim"])
+        self.assertFalse(c["credited"])
+        for s in ("K360", "trim=true", "harmonize()", "không do luật đăng ký trước quyết định"):
+            self.assertIn(s, c["sentence"])
+
+    def test_not_trimmed(self):
+        c = R.trim_consequence("K360", cfg("keep", 360, False), self.ROWS)
+        self.assertFalse(c["chosen_trim"])
+        self.assertIn("không cắt đoạn nghỉ", c["sentence"])
+        self.assertNotIn("trim=true", c["sentence"])
+
+    def test_name_not_hard_coded(self):
+        c = R.trim_consequence("Other-run_x", cfg("keep", 360, True), self.ROWS)
+        self.assertIn("Other-run_x", c["sentence"])
+        self.assertNotIn("K360", c["sentence"])
+
+
+class TestPreregHeaderTimes(unittest.TestCase):
+    """AC1 case 22: header time written in PREREGISTRATION vs the time of the first commit containing it."""
+    TEXT = "# Pre-registration\n\n1. rule\n\n## Added 2026-09-26 12:30, after the z choice\n\n2. rule\n"
+
+    @staticmethod
+    def commit(h, date, text):
+        import datetime as dt
+        return {"commit": h, "date": date, "unix": int(dt.datetime.strptime(date, "%Y-%m-%d %H:%M:%S %z").timestamp()),
+                "text": text}
+
+    def test_header_minus_commit(self):
+        commits = [self.commit("ccc3333", "2026-09-26 13:00:00 +0700", self.TEXT),
+                   self.commit("bbb2222", "2026-09-26 12:13:24 +0700", self.TEXT),
+                   self.commit("aaa1111", "2026-09-26 10:58:44 +0700", "# Pre-registration\n\n1. rule\n")]
+        out = R.prereg_header_times(self.TEXT, commits)
+        self.assertEqual(len(out), 1)
+        self.assertEqual(out[0]["header_time"], "2026-09-26 12:30")
+        self.assertEqual(out[0]["commit"], "bbb2222")
+        self.assertEqual(out[0]["commit_time"], "2026-09-26 12:13:24 +0700")
+        self.assertEqual(out[0]["header_minus_commit_s"], 996)
+
+    def test_no_header(self):
+        self.assertEqual(R.prereg_header_times("# Pre-registration\n\n1. rule\n", []), [])
+
+    def test_commit_not_found(self):
+        out = R.prereg_header_times(self.TEXT, [self.commit("aaa1111", "2026-09-26 10:58:44 +0700", "# old\n")])
+        self.assertEqual(out[0]["header_time"], "2026-09-26 12:30")
+        self.assertIsNone(out[0]["commit"])
+        self.assertIsNone(out[0]["commit_time"])
+        self.assertIsNone(out[0]["header_minus_commit_s"])
+        self.assertIsNone(R.prereg_header_times(self.TEXT, [])[0]["commit"])
+
+
+class TestRevision1EndToEnd(unittest.TestCase):
+    """AC1 case 23 + the Lần sửa 1 CLI contract (history.json inputs, new JSON keys, 4c scope section)."""
+
+    def setUp(self):
+        self.d = tempfile.mkdtemp().replace("\\", "/")
+        self.cwd = os.getcwd()
+
+    def tearDown(self):
+        os.chdir(self.cwd)
+        shutil.rmtree(self.d, ignore_errors=True)
+
+    def build(self, argv):
+        return R.build(R.parse_args(argv), argv)
+
+    def test_augmentation_line_not_repeated(self):
+        p = make_fixture(self.d)
+        text = R.render(self.build(argv_for(self.d, p)))
+        self.assertNotIn("Augmentation: Augmentation", text)
+        self.assertEqual(sum(l.startswith("- Augmentation (training only):") for l in text.splitlines()), 1)
+
+    def test_new_json_keys_and_scope_section(self):
+        p = make_fixture(self.d)
+        res = self.build(argv_for(self.d, p))
+        fs = res["4c"]["fit_and_scope"]
+        self.assertEqual(fs["dict"]["best_epoch"], 3)
+        self.assertEqual(fs["unified"]["train_top1_last"], 12.0)
+        self.assertIsNone(fs["dict"]["batch_size"])          # no kernel log in the fixture -> no command
+        self.assertEqual(fs["init_options"], [])
+        self.assertFalse(fs["dict_command_uses_init"])
+        self.assertTrue(fs["scope_limited"])
+        eb = res["4c"]["exploratory"]["b_unified_top1_class_origin"]
+        for key in ("qipedc_test_all", "qipedc_test_common", "s06_contrast"):
+            self.assertIn("wrong_only", eb[key])
+            self.assertIn("vslgh_only_class", eb[key])     # old keys kept
+        self.assertIn("label_space_base_rate", eb)
+        self.assertIn("consequence", res["4b"]["trimming"])
+        self.assertIn("preregistration_header_times", res["limitations_data"])
+        self.assertIn("train_top1_measurement", res["limitations_data"])
+        aug = res["4b"]["harmonisation_config"]["augmentation"]
+        self.assertIsNotNone(aug)
+        self.assertFalse(aug.startswith("Augmentation"))
+        roles = {i["role"] for i in res["inputs"]}
+        self.assertIn("history.json K360", roles)
+        self.assertIn("history.json dict360", roles)
+        text = R.render(res)
+        i_scope = text.index("Phạm vi so sánh và mức khớp train")
+        self.assertLess(text.index("McNemar chính xác top-1"), i_scope)
+        self.assertLess(i_scope, text.index("Phân tích thăm dò"))
+        self.assertIn("không phải độ chính xác sạch trên tập train", text)
+        self.assertIn("(iv) ", text)
+
+    def test_missing_history_of_chosen_run_exit_2_writes_nothing(self):
+        p = make_fixture(self.d)
+        os.remove(os.path.join(p["k360"], "history.json"))
+        self.assertEqual(R.main(argv_for(self.d, p)), 2)
+        self.assertFalse(os.path.exists(os.path.join(self.d, "out", "REPORT.md")))
+        self.assertFalse(os.path.exists(os.path.join(self.d, "out", "step4_results.json")))
+
+    def test_missing_history_of_dict_run_used_exit_2(self):
+        p = make_fixture(self.d)
+        os.remove(os.path.join(p["dict360"], "history.json"))
+        self.assertEqual(R.main(argv_for(self.d, p)), 2)
+
+    def test_missing_history_of_other_run_is_null(self):
+        p = make_fixture(self.d)
+        os.remove(os.path.join(p["drop"], "history.json"))
+        res = self.build(argv_for(self.d, p))
+        self.assertNotIn("history.json D", {i["role"] for i in res["inputs"]})
+        self.assertIsNone(res["provenance"]["runs"]["D"]["history_json"])
+        self.assertEqual(res["provenance"]["runs"]["K"]["history_json"], R.rel(os.path.join(p["keep"], "history.json")))
+        self.assertIsNotNone(res["4c"]["fit_and_scope"]["dict"])
 
 
 if __name__ == "__main__":

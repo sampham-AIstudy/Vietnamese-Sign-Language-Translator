@@ -315,6 +315,161 @@ def compare_legacy(old, new):
             "values": {k: {"old": fo[k], "new": fn[k]} for k in diff}}
 
 
+# ---- Lần sửa 1: training fit / scope of the 4c comparison, class origin, trimming consequence, PREREG header times
+TRAIN_TOP1_MEASUREMENT = ("train_top1 là số src/training/trainer.py ghi trong train_epoch: đo trên batch đã augment, ở chế "
+                          "độ model.train() (dropout), với batch do WeightedRandomSampler lấy mẫu (scripts/train_unified.py) "
+                          "— không phải độ chính xác sạch trên tập train")
+SCOPE_SENTENCE = ("Kết quả chính so model tách **train từ đầu, cùng công thức với model gộp** với model gộp. Hai model "
+                  "có quỹ tối ưu và mức khớp train khác nhau (bảng trên). Vì vậy kết quả này KHÔNG đo phương án tách có "
+                  "khởi tạo từ trọng số VSL-GH / model gộp, và cũng không đo phương án tách được train tới khi khớp.")
+INIT_OPTION_RE = re.compile(r"init|pretrain|resume|finetune|load", re.I)
+
+
+def steps_per_epoch(n_train, batch_size):
+    """Optimizer steps per epoch of scripts/train_unified.py: WeightedRandomSampler(num_samples=len(train_ds)), no
+    drop_last -> ceil(n_train / batch_size). None when the batch size is unknown."""
+    if batch_size is None or n_train is None:
+        return None
+    return -(-int(n_train) // int(batch_size))
+
+
+def training_fit(history, n_train, batch_size):
+    """Fit diagnostics copied verbatim from a trainer history.json (list of per-epoch dicts). best_epoch follows the
+    trainer's checkpoint rule: highest val_top1, ties -> lower val_loss, then the earlier epoch."""
+    if not history:
+        raise ReportError(2, "history.json rỗng")
+    best = min(history, key=lambda e: (-e["val_top1"], e["val_loss"], e["epoch"]))
+    lrs = [e["lr"] for e in history]
+    spe = steps_per_epoch(n_train, batch_size)
+    times = [e["time_sec"] for e in history]
+    return {"epochs_run": len(history), "best_epoch": best["epoch"],
+            "train_top1_at_best": best["train_top1"], "train_top1_last": history[-1]["train_top1"],
+            "train_loss_last": history[-1]["train_loss"],
+            "lr_first": lrs[0], "lr_last": lrs[-1],
+            "lr_drop_epochs": [history[i]["epoch"] for i in range(1, len(history)) if lrs[i] < lrs[i - 1]],
+            "val_loss_first": history[0]["val_loss"], "val_loss_min": min(e["val_loss"] for e in history),
+            "val_loss_last": history[-1]["val_loss"],
+            "n_train": n_train, "batch_size": batch_size,
+            "steps_per_epoch": spe, "total_steps": None if spe is None else spe * len(history),
+            "time_sec_total": sum(times), "time_sec_mean": sum(times) / len(times)}
+
+
+def _flags(cmd):
+    """--flag value / --flag=value / --store-true-flag -> {flag: value | True}."""
+    toks = shlex.split(cmd)
+    out = {}
+    i = 0
+    while i < len(toks):
+        t = toks[i]
+        if t.startswith("--"):
+            if "=" in t:
+                k, v = t.split("=", 1)
+                out[k] = v
+            elif i + 1 < len(toks) and not toks[i + 1].startswith("--"):
+                out[t] = toks[i + 1]
+                i += 1
+            else:
+                out[t] = True
+        i += 1
+    return out
+
+
+def batch_size_from_command(cmd):
+    """--batch-size N of a logged train command; None when absent (the argparse default is NOT assumed)."""
+    if not cmd:
+        return None
+    v = _flags(cmd).get("--batch-size")
+    return None if v is None or v is True else int(v)
+
+
+def train_cmd_diff(cmd_a, cmd_b, ignore=("--out-dir", "--data-root", "--sources")):
+    """Flag-by-flag difference of two train commands, ignoring the given flags. None if a command is missing."""
+    if not cmd_a or not cmd_b:
+        return None
+    fa = {k: v for k, v in _flags(cmd_a).items() if k not in ignore}
+    fb = {k: v for k, v in _flags(cmd_b).items() if k not in ignore}
+    return {"only_a": {k: fa[k] for k in sorted(fa) if k not in fb},
+            "only_b": {k: fb[k] for k in sorted(fb) if k not in fa},
+            "different": {k: [fa[k], fb[k]] for k in sorted(fa) if k in fb and fa[k] != fb[k]}}
+
+
+def init_options(train_script_path):
+    """argparse options of the train script (read as text, never imported) whose name contains
+    init|pretrain|resume|finetune|load. [] = every run starts from random initialisation."""
+    text = read_text(train_script_path)
+    flags = []
+    for call in re.finditer(r"add_argument\(([^)]*)", text):
+        for f in re.findall(r"""["'](--[A-Za-z0-9][\w-]*)["']""", call.group(1)):
+            if INIT_OPTION_RE.search(f) and f not in flags:
+                flags.append(f)
+    return flags
+
+
+def pred_origin(pred_cls, true_cls, vslgh_only, with_qipedc):
+    """Where top-1 predictions fall: class with VSL-GH training data only / class with QIPEDC training data / class
+    without training data; on all rows and on wrong predictions only (a correct prediction necessarily falls in the
+    class of its own source)."""
+    pred, true = list(pred_cls), list(true_cls)
+
+    def block(ps):
+        n = len(ps)
+        return {"vslgh_only_class": rate(sum(c in vslgh_only for c in ps), n),
+                "class_with_qipedc_train": rate(sum(c in with_qipedc for c in ps), n),
+                "class_without_train_data": rate(sum(c not in vslgh_only and c not in with_qipedc for c in ps), n)}
+    return {"all": block(pred), "wrong_only": block([p for p, t in zip(pred, true) if p != t]),
+            "correct_n": sum(p == t for p, t in zip(pred, true))}
+
+
+def label_space_base_rate(vslgh_only, label_space):
+    """Share of VSL-GH-only classes in a model's label space."""
+    ls = set(label_space)
+    return rate(len(set(vslgh_only) & ls), len(ls))
+
+
+def trim_consequence(chosen_name, chosen_cfg, trimming_rows):
+    """What the trimming verdict means for the chosen run (built from its run_config.trim; no run name hard-coded)."""
+    trim = chosen_cfg.get("trim")
+    credited = None if not trimming_rows else all(t["credited"] for t in trimming_rows)
+    if trim is True:
+        verdict = ("không được công nhận theo luật VAL" if credited is False else
+                   "được công nhận theo luật VAL" if credited else "không có ablation để xét theo luật VAL")
+        s = (f"Run được chọn {chosen_name} train với trim=true, tức VẪN cắt đoạn nghỉ (cắt nghỉ {verdict}). "
+             "Đường live muốn khớp với model này thì harmonize() phải gồm bước cắt nghỉ với cùng tham số trong "
+             "`preprocessing` của checkpoint.")
+        if credited is not True:
+            s += (" Giữ hay bỏ cắt nghỉ ở đường live không do luật đăng ký trước quyết định (PREREGISTRATION chỉ quy "
+                  "định khi nào cắt nghỉ được công nhận); bỏ thì phải train lại.")
+    elif trim is False:
+        s = (f"Run được chọn {chosen_name} train với trim=false, tức không cắt đoạn nghỉ; harmonize() ở đường live "
+             "không được cắt nghỉ để khớp model này.")
+    else:
+        s = f"Run được chọn {chosen_name} không có khóa trim trong run_config (không dùng đầu vào hài hòa)."
+    return {"chosen": chosen_name, "chosen_trim": trim, "credited": credited, "sentence": s}
+
+
+_PREREG_HEADER = re.compile(r"Added (\d{4}-\d{2}-\d{2} \d{2}:\d{2})")
+
+
+def prereg_header_times(prereg_text, prereg_commits):
+    """Headers "Added YYYY-MM-DD HH:MM" in PREREGISTRATION.md vs the earliest commit whose file text contains them.
+    prereg_commits: [{"commit", "date" ("%Y-%m-%d %H:%M:%S %z"), "unix", "text"}]. The header time carries no zone;
+    it is read in the zone of that commit."""
+    import datetime as dt
+    out = []
+    for m in _PREREG_HEADER.finditer(prereg_text):
+        with_h = [c for c in prereg_commits if m.group(0) in (c.get("text") or "")]
+        first = min(with_h, key=lambda c: c["unix"]) if with_h else None
+        e = {"header": m.group(0), "header_time": m.group(1), "commit": None, "commit_time": None,
+             "header_minus_commit_s": None}
+        if first:
+            ct = dt.datetime.strptime(first["date"], "%Y-%m-%d %H:%M:%S %z")
+            ht = dt.datetime.strptime(m.group(1), "%Y-%m-%d %H:%M").replace(tzinfo=ct.tzinfo)
+            e.update(commit=first["commit"], commit_time=first["date"],
+                     header_minus_commit_s=int((ht - ct).total_seconds()))
+        out.append(e)
+    return out
+
+
 # ---------------------------------------------------------------------------------------------------------------
 # file helpers
 # ---------------------------------------------------------------------------------------------------------------
@@ -491,6 +646,27 @@ def build(args, argv):
     dict_names = [n for n in meta if meta[n]["role"] == "dict"]
     used_dict = pick_dict_run(meta[chosen]["cfg"], {n: meta[n]["cfg"] for n in dict_names}) if dict_names else None
     hidden = set(dict_names) - {used_dict}
+    # history.json (trainer per-epoch log): required for the chosen run and the dictionary run used in 4c; null for
+    # any other run without it.
+    hist = {}
+    for name in meta:
+        hp = os.path.join(meta[name]["dir"], "history.json")
+        if os.path.isfile(hp):
+            hist[name] = load_json(hp, inputs, f"history.json {name}")
+        elif name in (chosen, used_dict):
+            raise ReportError(2, f"thiếu file đầu vào: {rel(hp)} (history.json {name})")
+        else:
+            hist[name] = None
+    kernel_runs = {}
+    for kl in kernels:
+        for od, r in kl["runs"].items():
+            if od in kernel_runs:
+                raise ReportError(3, f"out-dir {od} xuất hiện trong nhiều log kernel ({kernel_runs[od][0]}, {kl['path']})")
+            kernel_runs[od] = (kl["path"], r, kl["repo_commit"], kl["branch"])
+
+    def train_command(name):
+        k = kernel_runs.get(os.path.basename(os.path.normpath(meta[name]["dir"])))
+        return k[1]["command"] if k else None
     q_val_n = sorted({int(meta[n]["metrics"]["val_by_source"]["qipedc"]["n"]) for n in meta
                       if meta[n]["role"] in ("candidate_native", "candidate_360") and meta[n]["bal"] is not None})
     if len(q_val_n) != 1:
@@ -524,6 +700,7 @@ def build(args, argv):
                  "seed_spread_balanced_val": seed_val}
     for t in trimming:
         t["near_threshold"] = near(t["diff"])
+    trim_cons = trim_consequence(chosen, meta[chosen]["cfg"], trimming)
 
     # ---- TEST (logits only re-read) ----
     masks_all, dropped = group_rows(test, train)
@@ -601,7 +778,7 @@ def build(args, argv):
     import src.data.harmonized as H
     prep = meta[chosen]["ckpt"]["preprocessing"] or {}
     doc = H.__doc__ or ""
-    aug = re.search(r"Augmentation \(training only\):[^\n]*", doc)
+    aug = re.search(r"Augmentation \(training only\):([^\n]*)", doc)
     bullets = {k: re.search(rf"- {k}:(.*?)(?=\n- |\nAugmentation|\Z)", doc, re.S) for k in ("joints", "coordinates", "time")}
     harm = {"source": f"checkpoint {rel(os.path.join(meta[chosen]['dir'], 'stgcn_unified_best.pt'))} -> preprocessing; "
                       "src/data/harmonized.py (HARMONIZED_DEFAULT, docstring)",
@@ -610,7 +787,7 @@ def build(args, argv):
                                                 for k in sorted(set(H.HARMONIZED_DEFAULT) | set(prep))
                                                 if k in H.HARMONIZED_DEFAULT and prep.get(k) != H.HARMONIZED_DEFAULT.get(k)},
             "doc": {k: " ".join(v.group(1).split()) if v else None for k, v in bullets.items()},
-            "augmentation": aug.group(0) if aug else None,
+            "augmentation": aug.group(1).strip() if aug else None,
             "tta": "không (TEST đánh giá một lần, không TTA: scripts/train_unified.py predict_all một lượt)"}
 
     # ---- 4a ----
@@ -671,18 +848,42 @@ def build(args, argv):
         tr_v = set(train.loc[train.source == "vslgh", "gloss_normalized"])
         tr_q = set(train.loc[train.source == "qipedc", "gloss_normalized"])
         pred_cls = np.array([u_cls[i] for i in U["pred"]])
+        true_cls = np.array([u_cls[i] for i in U["true"]])
+        vs_only = tr_v - tr_q
 
         def pred_split(mask):
-            pc = pred_cls[mask]
-            n = len(pc)
-            return {"vslgh_only_class": rate(sum((c in tr_v) and (c not in tr_q) for c in pc), n),
-                    "class_with_qipedc_train": rate(sum(c in tr_q for c in pc), n),
-                    "class_without_train_data": rate(sum((c not in tr_v) and (c not in tr_q) for c in pc), n)}
+            o = pred_origin(pred_cls[mask], true_cls[mask], vs_only, tr_q)
+            return {**o["all"], "wrong_only": o["wrong_only"], "correct_n": o["correct_n"]}
         common_mask = np.zeros(len(U["rows"]), bool)
         common_mask[ui] = True
         explo_b = {"qipedc_test_all": pred_split(uq), "qipedc_test_common": pred_split(common_mask),
                    "s06_contrast": pred_split(U["rows"].source.values == "vslgh"),
-                   "n_classes_vslgh_only": len(tr_v - tr_q), "n_classes_with_qipedc_train": len(tr_q & set(u_cls))}
+                   "n_classes_vslgh_only": len(vs_only), "n_classes_with_qipedc_train": len(tr_q & set(u_cls)),
+                   "label_space_base_rate": label_space_base_rate(vs_only, u_cls)}
+
+        # fit / scope of the registered comparison (history.json + logged train commands; nothing is re-run)
+        d_cmd, u_cmd = train_command(used), train_command(chosen)
+        fit_d = training_fit(hist[used], _hist_summary(meta[used]["metrics"])["train_clips"],
+                             batch_size_from_command(d_cmd))
+        fit_u = training_fit(hist[chosen], _hist_summary(meta[chosen]["metrics"])["train_clips"],
+                             batch_size_from_command(u_cmd))
+        train_script = inputs.add(os.path.join(ROOT, "scripts", "train_unified.py"),
+                                  "scripts/train_unified.py (chỉ đọc text: tùy chọn khởi tạo)")
+        inits = init_options(train_script)
+        uses_init = bool(d_cmd) and any(f in _flags(d_cmd) for f in inits)
+        epochs_needed = (None if not fit_d["steps_per_epoch"] or fit_u["total_steps"] is None
+                         else -(-fit_u["total_steps"] // fit_d["steps_per_epoch"]))
+        scope_limited = fit_d["total_steps"] != fit_u["total_steps"] or not uses_init
+        fit_scope = {"dict": fit_d, "unified": fit_u, "batch_size_source": "lệnh train trong log kernel",
+                     "train_cmd_diff": train_cmd_diff(u_cmd, d_cmd), "train_cmd_diff_a_b": [chosen, used],
+                     "train_cmd_diff_ignored": ["--out-dir", "--data-root", "--sources"],
+                     "init_options": inits, "dict_command_uses_init": uses_init,
+                     "scope_limited": scope_limited, "scope_sentence": SCOPE_SENTENCE if scope_limited else None,
+                     "step_matched_estimate": {
+                         "epochs_needed": epochs_needed,
+                         "gpu_s_estimate": None if epochs_needed is None else epochs_needed * fit_d["time_sec_mean"],
+                         "note": "ước lượng, không phải kết quả; time_sec đo trong kernel có thể chạy nhiều job"},
+                     "train_top1_measurement": TRAIN_TOP1_MEASUREMENT}
         c4 = {"dict_run_used": used, "dict_run_config": _cfg_for_json(meta[used]["cfg"]),
               "unified_run": chosen, "unified_run_config": _cfg_for_json(meta[chosen]["cfg"]),
               "dict_runs_not_reported": [{"run": n, "reason": "không khớp cách hài hòa đã chọn; không báo theo "
@@ -694,6 +895,7 @@ def build(args, argv):
               "main": {"top": {m: {str(k): v for k, v in t.items()} for m, t in main_tab.items()},
                        "mcnemar_top1": {"n10_dict_only": n10, "n01_unified_only": n01, "p": p},
                        "registered": True},
+              "fit_and_scope": fit_scope,
               "exploratory": {"registered": False,
                               "a_unified_restricted_to_dict_labels": (
                                   None if restricted is None else
@@ -703,12 +905,6 @@ def build(args, argv):
                               "b_unified_top1_class_origin": explo_b}}
 
     # ---- provenance ----
-    kernel_runs = {}
-    for kl in kernels:
-        for od, r in kl["runs"].items():
-            if od in kernel_runs:
-                raise ReportError(3, f"out-dir {od} xuất hiện trong nhiều log kernel ({kernel_runs[od][0]}, {kl['path']})")
-            kernel_runs[od] = (kl["path"], r, kl["repo_commit"], kl["branch"])
     prov_runs = {}
     for name in meta:
         d = meta[name]["dir"]
@@ -724,6 +920,7 @@ def build(args, argv):
                            "effective_config": _cfg_for_json(meta[name]["cfg"]),
                            "sha256_test_logits": sha256(os.path.join(d, "test_logits.npz")),
                            "sha256_ckpt": sha256(os.path.join(d, "stgcn_unified_best.pt")),
+                           "history_json": None if hist[name] is None else rel(os.path.join(d, "history.json")),
                            "results_committed": added}
     prov_kernels = []
     for kl in kernels:
@@ -743,7 +940,7 @@ def build(args, argv):
     for a, b in zip(chain, chain[1:]):
         ns = git("diff", "--numstat", a, b, "--", "src/data/harmonized.py", "scripts/train_unified.py",
                  "scripts/shortcut_85.py", "scripts/source_diagnostics.py")
-        code_diffs.append({"from": a, "to": b if b != "HEAD" else f"HEAD ({git('rev-parse', '--short', 'HEAD')})",
+        code_diffs.append({"from": a, "to": b if b != "HEAD" else "HEAD (commit ở header / generated_by.git_commit)",
                            "numstat": ns.splitlines() if ns else []})
     prov_jsons = []
     for p in [args.shortcut_4a] + list(s4b_paths):
@@ -761,6 +958,8 @@ def build(args, argv):
     prereg = [dict(zip(("commit", "unix", "date", "subject"), l.split("|", 3))) for l in prereg_log.splitlines()]
     for p in prereg:
         p["unix"] = int(p["unix"])
+    prereg_versions = [{**p, "text": git("show", f"{p['commit']}:{rel(args.prereg)}")} for p in prereg]
+    header_times = prereg_header_times(read_text(args.prereg), prereg_versions)
     last_prereg = max((p["unix"] for p in prereg), default=None)
     for name, pr in prov_runs.items():
         rc = pr["results_committed"]
@@ -808,6 +1007,14 @@ def build(args, argv):
               "chosen_process_height": meta[chosen]["cfg"].get("process_height"),
               "backend_default_model": backend,
               "preregistration_commits": prereg,
+              "preregistration_header_times": header_times,
+              "train_top1_measurement": TRAIN_TOP1_MEASUREMENT + " (src/training/trainer.py)",
+              "dict_fit": (None if not c4 else
+                           {"dict_run": c4["dict_run_used"], "unified_run": chosen,
+                            "dict_train_top1_last": c4["fit_and_scope"]["dict"]["train_top1_last"],
+                            "unified_train_top1_last": c4["fit_and_scope"]["unified"]["train_top1_last"],
+                            "dict_total_steps": c4["fit_and_scope"]["dict"]["total_steps"],
+                            "unified_total_steps": c4["fit_and_scope"]["unified"]["total_steps"]}),
               "epoch_selection": "epoch tốt nhất của mỗi run chọn theo VAL top-1 tổng (VSL-GH chiếm "
                                  f"{int((val.source == 'vslgh').sum())}/{len(val)} clip VAL), còn biến thể chọn theo balanced VAL"}
 
@@ -824,7 +1031,8 @@ def build(args, argv):
                            "kernel_code_diffs": code_diffs,
                            "config_note": "run_config thiếu khóa trim (run trước commit 9b0ade1) được hiểu là trim=True"},
             "4a": s4a_out,
-            "4b": {"selection": selection, "trimming": {"val": trimming, "test": trim_test, "vs_baseline": vs_baseline},
+            "4b": {"selection": selection, "trimming": {"val": trimming, "test": trim_test, "vs_baseline": vs_baseline,
+                                                     "consequence": trim_cons},
                    "test_groups": {"runs": test_groups, "qipedc_only_excluded_lt2_recordings": dropped,
                                    "tie_check": ties},
                    "seed_spread": {"balanced_val": seed_val, "test": seed_spread},
@@ -855,6 +1063,11 @@ def fv(x, d=2, sign=False):
 
 def na(x):
     return MISSING if x is None or x == "" else str(x)
+
+
+def raw(x):
+    """Value as stored (history.json numbers are printed verbatim, not rounded)."""
+    return MISSING if x is None else str(x)
 
 
 def yn(b):
@@ -958,7 +1171,7 @@ def render(res):
           f"- Resample theo thời gian: {na(hc['doc'].get('time'))} `target_len={p.get('target_len')}`, `max_gap_s={p.get('max_gap_s')}`",
           f"- Độ phân giải trích xuất: `process_height={p.get('process_height')}`; extractor `{p.get('extractor')}` "
           f"MediaPipe `{p.get('mediapipe_version')}`",
-          f"- Augmentation: {na(hc['augmentation'])}",
+          f"- Augmentation (training only): {na(hc['augmentation'])}",
           f"- TTA: {hc['tta']}",
           f"- Khác `HARMONIZED_DEFAULT`: `{json.dumps(hc['differs_from_HARMONIZED_DEFAULT'], ensure_ascii=False)}`"]
 
@@ -1039,6 +1252,7 @@ def render(res):
         o += ["", f"**Kết luận:** ablation cắt nghỉ chạy ở độ phân giải {heights}. Theo luật VAL đăng ký trước, cắt đoạn "
                   f"nghỉ {'được' if credited else 'KHÔNG được'} công nhận là có ích; bảng (ii) chỉ để mô tả. "
                   "So sánh (iii) với baseline cũ đo tác động gộp của cả gói hài hòa, không riêng cắt nghỉ."]
+    o += ["", f"(iv) Hệ quả cho run được chọn (sinh từ `run_config.trim`): {tr['consequence']['sentence']}"]
 
     o += ["", "### 3.5 Dao động seed", "",
           "Chênh = seed sau − seed trước; theo điểm % và theo số clip đúng (k). Không dùng để chọn.", "",
@@ -1087,8 +1301,52 @@ def render(res):
             o.append(f"| {lab} | {fr(t['1'])} | {fr(t['5'])} | {fr(t['10'])} |")
         mc = c4["main"]["mcnemar_top1"]
         o += ["", f"McNemar chính xác top-1: từ điển đúng & gộp sai n10 = {mc['n10_dict_only']}, ngược lại n01 = "
-                  f"{mc['n01_unified_only']}, p = {mc['p']:.3g}.", "",
-              "**Phân tích thăm dò — không đăng ký trước, không dùng để chọn:**", ""]
+                  f"{mc['n01_unified_only']}, p = {mc['p']:.3g}.", ""]
+        fs = c4["fit_and_scope"]
+        o += ["### Phạm vi so sánh và mức khớp train", "",
+              "Sinh từ `history.json` của hai run (trainer ghi mỗi epoch) và lệnh train trong log kernel; không chạy lại "
+              "model.", "",
+              "| Model | Epoch đã chạy | Epoch tốt nhất | Train top-1 ở epoch tốt nhất | Train top-1 ở epoch cuối | "
+              "lr đầu → lr cuối | Epoch giảm lr | val_loss đầu / min / cuối | Clip train | Batch (từ lệnh) | Bước/epoch | "
+              "Tổng bước | Tổng `time_sec` (s) |",
+              "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+        for key, lab in (("dict", f"từ điển ({c4['dict_run_used']})"), ("unified", f"gộp ({c4['unified_run']})")):
+            f = fs[key]
+            o.append(f"| {lab} | {f['epochs_run']} | {f['best_epoch']} | {raw(f['train_top1_at_best'])}% | "
+                     f"{raw(f['train_top1_last'])}% | {raw(f['lr_first'])} → {raw(f['lr_last'])} | "
+                     f"{', '.join(str(e) for e in f['lr_drop_epochs']) or 'không'} | {raw(f['val_loss_first'])} / "
+                     f"{raw(f['val_loss_min'])} / {raw(f['val_loss_last'])} | {raw(f['n_train'])} | {raw(f['batch_size'])} | "
+                     f"{raw(f['steps_per_epoch'])} | {raw(f['total_steps'])} | {fv(f['time_sec_total'], 1)} |")
+        o += ["", f"- train top-1 = số trainer ghi trên batch augment ở chế độ train (src/training/trainer.py), không "
+                  f"phải độ chính xác sạch trên tập train. Chi tiết: {fs['train_top1_measurement']}.",
+              "- Bước/epoch = ceil(clip train / batch) (WeightedRandomSampler với num_samples = số clip train, không "
+              "drop_last); lr ghi trong history là lr dùng ở epoch đó (trước bước ReduceLROnPlateau theo VAL loss)."]
+        cd = fs["train_cmd_diff"]
+        ign = "/".join(fs["train_cmd_diff_ignored"])
+        if cd is None:
+            o.append(f"- Lệnh train hai model: {MISSING} (thiếu lệnh trong log kernel).")
+        else:
+            parts = [f"chỉ {fs['train_cmd_diff_a_b'][0]} có `{k} {v}`" for k, v in cd["only_a"].items()]
+            parts += [f"chỉ {fs['train_cmd_diff_a_b'][1]} có `{k} {v}`" for k, v in cd["only_b"].items()]
+            parts += [f"`{k}`: {v[0]} vs {v[1]}" for k, v in cd["different"].items()]
+            o.append("- Lệnh train hai model chỉ khác: " + ("; ".join(parts) + f" (ngoài {ign})." if parts
+                                                              else f"không khác ngoài {ign}."))
+        o.append("- " + ("scripts/train_unified.py không có tùy chọn khởi tạo từ trọng số → cả hai model train từ khởi tạo "
+                         "ngẫu nhiên." if not fs["init_options"] else
+                         f"scripts/train_unified.py có tùy chọn khởi tạo: {', '.join(fs['init_options'])}; lệnh của run "
+                         f"từ điển dùng tùy chọn đó: {yn(fs['dict_command_uses_init'])}."))
+        if fs["scope_limited"]:
+            o += ["", f"**Phạm vi:** {fs['scope_sentence']}"]
+        est = fs["step_matched_estimate"]
+        if est["epochs_needed"] is not None:
+            o += ["", f"Ước lượng (không phải kết quả, không thuộc kế hoạch này): train model từ điển tới cùng tổng số bước "
+                      f"như model gộp cần {est['epochs_needed']} epoch × {fv(fs['dict']['time_sec_mean'], 2)} s/epoch "
+                      f"(trung bình `time_sec` của run từ điển) ≈ {fv(est['gpu_s_estimate'], 0)} s "
+                      f"≈ {fv(est['gpu_s_estimate'] / 3600, 2)} giờ GPU cho một run một seed, chưa gồm khởi động kernel; "
+                      f"{est['note']}."]
+        else:
+            o += ["", f"Ước lượng số epoch cần để cùng số bước: {MISSING} (thiếu batch size trong lệnh train)."]
+        o += ["", "**Phân tích thăm dò — không đăng ký trước, không dùng để chọn:**", ""]
         ex = c4["exploratory"]
         a = ex["a_unified_restricted_to_dict_labels"]
         if a:
@@ -1102,13 +1360,23 @@ def render(res):
             o.append(f"(a) {MISSING}: lớp của model từ điển không có trong model gộp: {ex['a_missing_dict_classes_in_unified']}.")
         eb = ex["b_unified_top1_class_origin"]
         o += [f"(b) Dự đoán top-1 của model gộp rơi vào lớp chỉ-VSL-GH ({eb['n_classes_vslgh_only']} lớp có train VSL-GH, "
-              f"không có train QIPEDC) vs lớp có train QIPEDC ({eb['n_classes_with_qipedc_train']} lớp):", "",
-              "| Tập clip | Lớp chỉ-VSL-GH | Lớp có QIPEDC | Lớp không có train |", "|---|---|---|---|"]
+              f"không có train QIPEDC) vs lớp có train QIPEDC ({eb['n_classes_with_qipedc_train']} lớp). Không đăng ký "
+              "trước, chỉ báo, không kiểm định. Cột \"mọi dự đoán\" lẫn độ chính xác vào (dự đoán đúng tất nhiên rơi vào "
+              "lớp của nguồn đúng), nên có thêm các cột chỉ dự đoán sai:", "",
+              "| Tập clip | Mọi dự đoán: lớp chỉ-VSL-GH | Mọi dự đoán: lớp có QIPEDC | Mọi dự đoán: lớp không có train | "
+              "Dự đoán đúng (top-1) | Chỉ dự đoán sai: lớp chỉ-VSL-GH | Chỉ dự đoán sai: lớp có QIPEDC | "
+              "Chỉ dự đoán sai: lớp không có train |", "|---|---|---|---|---|---|---|---|"]
         for key, lab in (("qipedc_test_all", "mọi clip QIPEDC TEST"), ("qipedc_test_common", "clip chung của 4c"),
                          ("s06_contrast", "S06 (đối chứng)")):
             e = eb[key]
-            o.append(f"| {lab} | {fr(e['vslgh_only_class'])} | {fr(e['class_with_qipedc_train'])} | {fr(e['class_without_train_data'])} |")
-        o.append("\nChỉ là chỉ báo cho giả thuyết \"model gộp học phân biệt nguồn\", không phải kiểm định.")
+            w = e["wrong_only"]
+            o.append(f"| {lab} | {fr(e['vslgh_only_class'])} | {fr(e['class_with_qipedc_train'])} | "
+                     f"{fr(e['class_without_train_data'])} | {e['correct_n']}/{e['vslgh_only_class']['n']} | "
+                     f"{fr(w['vslgh_only_class'])} | {fr(w['class_with_qipedc_train'])} | {fr(w['class_without_train_data'])} |")
+        br = eb["label_space_base_rate"]
+        o += ["", f"Tỷ lệ nền: lớp chỉ-VSL-GH trong không gian nhãn model gộp: {br['k']}/{br['n']} ({fv(br['pct'], 1)}%).",
+              "", "Chỉ là chỉ báo cho giả thuyết \"model gộp học phân biệt nguồn\", không phải kiểm định. Lớp đúng của "
+                  "S06 thuộc VSL-GH, nên lỗi của S06 tự nhiên rơi vào lớp VSL-GH nhiều hơn."]
 
     # 5. limitations
     L = lim
@@ -1136,6 +1404,15 @@ def render(res):
           "- Phần bổ sung của PREREGISTRATION viết sau khi đã biết kết quả chọn z; commit của PREREGISTRATION: "
           + "; ".join(f"{p['commit']} {p['date']}" for p in L["preregistration_commits"])
           + " (so với cột \"Sau lần sửa PREREG cuối\" ở mục 1.1).",
+          *[f"- Tiêu đề phần bổ sung PREREGISTRATION ghi `{h['header_time']}`; commit `{na(h['commit'])}` lúc "
+            f"`{na(h['commit_time'])}` (tiêu đề − commit = {na(h['header_minus_commit_s'])} s; giờ tiêu đề đọc theo múi "
+            "giờ của commit). Thứ tự so với kết quả được xét theo giờ commit." for h in L["preregistration_header_times"]],
+          *([f"- Mức khớp train của model từ điển ({L['dict_fit']['dict_run']}): train top-1 ở epoch cuối "
+             f"{raw(L['dict_fit']['dict_train_top1_last'])}% so với {raw(L['dict_fit']['unified_train_top1_last'])}% của "
+             f"model gộp ({L['dict_fit']['unified_run']}); tổng bước tối ưu {raw(L['dict_fit']['dict_total_steps'])} so với "
+             f"{raw(L['dict_fit']['unified_total_steps'])} (mục 4, \"Phạm vi so sánh và mức khớp train\"). Kết quả chính "
+             "của 4c chỉ nói về model tách train từ đầu bằng công thức hiện tại."] if L["dict_fit"] else []),
+          f"- Nguồn gốc số train top-1: {L['train_top1_measurement']}.",
           f"- Nguồn trong manifest: {', '.join(L['manifest_sources'])} — HCMUE không dùng để train hay đo.",
           f"- Model mặc định của backend: VSL_MODEL_TYPE mặc định `{na(bd['model_type_default'])}` → `{na(bd['ckpt'])}` "
           f"(sha256 {na(bd['sha256'])}); trùng model được kiểm ở 4a: {yn(bd['same_as_4a_model'])}.",
