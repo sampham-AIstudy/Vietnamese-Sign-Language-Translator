@@ -1,3 +1,132 @@
+# Vòng 2
+
+Review 01, vòng CODE↔REVIEW 2/3. Reviewer độc lập, ngày 2026-09-26, nhánh `feat/vslt-complete`, HEAD `65a2821`.
+Commit mới được review: `c54b772`, `67ff25a`, `65a2821` (nối tiếp `8c08845`). Kế hoạch: `docs/plans/01-buoc4-hoan-tat-4a-4c.md`
+(§0 "Lần sửa 1", AC1–AC9). Mọi con số dưới đây do reviewer tự chạy lại qua `.venv/Scripts/python`, `PYTHONIOENCODING=utf-8`.
+Không tin tóm tắt của coder; đã đọc `git diff 8c08845..HEAD`.
+
+## Kết luận vòng 2: **APPROVE**
+
+Không còn FAIL. M1–M4 và các góp ý nhỏ của vòng 1 đã được xử lý thật, do script sinh ra (không chỉnh tay), có test. Mục 13
+nay PASS: REPORT có mục "Phạm vi so sánh và mức khớp train" sinh từ `history.json`, PROPOSAL nêu đúng phạm vi.
+Việc còn lại **theo kế hoạch, không phải lỗi**: R6 — sinh lại REPORT/JSON với `--review-file docs/reviews/01-review.md`
+(file này, có vòng 2), kiểm AC9, rồi DỪNG ở điểm dừng "sau 4c". Hiện §6 của REPORT vẫn chứa kết luận vòng 1
+(CHANGES_REQUESTED), nên AC4 j chưa xong cho tới R6.
+
+## Bảng 1–13 (trạng thái HEAD `65a2821`)
+
+| # | Tiêu chí | Kết quả | Bằng chứng |
+|---|---|---|---|
+| 1 | Đúng kế hoạch; AC có test thật | PASS | AC1 ca 16–23 có test riêng, assert giá trị cụ thể: `TestTrainingFit` (`tests/test_report_step4.py:459–501`: hòa `val_top1` ở epoch 2/3 → chọn val_loss nhỏ hơn; đảo loss → 2; hòa cả hai → epoch sớm; `lr_drop_epochs == [3, 4]`; 795/64 → 13 bước; batch `None` → `None`; history rỗng → mã 2), ca 17 (504–511), ca 18 (514–537), ca 19 (540–561, quét text fixture có/không `--init-from`), ca 20 (564–586: dự đoán đúng "a" không vào `wrong_only`, tổng ba cột = n), ca 21 (589–609: tên run đổi theo; nhánh trim=false không có "trim=true"), ca 22 (612–642: 996 s; không tiêu đề → `[]`; không commit → `None`), ca 23 + hợp đồng CLI (645–715: exit 2 khi thiếu history của run chọn / run từ điển dùng, `null` với run khác, thứ tự mục 4c). AC5b 1–6: `TestProposal4cScope` (718–780), không skip, thiếu file thì lỗi ở `setUp`. |
+| 2 | Tự chạy lại toàn bộ test | PASS | `python -m unittest tests.test_report_step4 -v` → `Ran 69 tests ... OK`, 0 skip. Bộ AC2 (10 module handoff) → `Ran 53 tests ... OK`. Khớp số coder báo (38 → 62 ở c54b772, → 69 ở 67ff25a; AC2 53 → 53). |
+| 3 | Test không bị sửa/skip/xóa/nới | PASS | `git diff 8c08845..HEAD -- tests/` → 1 file, `334 insertions(+)`, không có dòng `-` nào ngoài dòng header `--- a/…`. Không có `skip`/`expectedFailure` mới. Thay đổi `make_fixture` chỉ THÊM hằng `FIT_HISTORY` (dòng 246–253) và một dòng ghi `history.json` cho mỗi run fixture (dòng 285). Đánh giá: không nới test cũ. Mọi assert cũ giữ nguyên. `history.json` nay là đầu vào bắt buộc (exit 2 khi thiếu ở run chọn / run từ điển dùng), nên nếu không thêm dòng này thì các test end-to-end cũ sẽ fail vì lý do hợp lệ. Các test lỗi cũ (thiếu `test_logits.npz` → 2, sai thứ tự nhãn → 1, không khớp từ điển → 3) vẫn kiểm cùng mã thoát và vẫn kiểm không ghi file. |
+| 4 | Nguồn gốc dữ liệu thật | PASS | Đầu vào mới chỉ là `runs/*/history.json` do trainer ghi trong kernel (7 file đã commit) và lệnh train trong log kernel. Số clip train 795 / 15138 khớp `train.log` của từng run ("classes 594, train 795, val 105, test 721"; "classes 876, train 15138"). Batch 64 khớp lệnh ở `vsl-train-harmonized_v3.log` dòng 15 và 80. Không có dữ liệu sinh. |
+| 5 | Rò rỉ | PASS (giới hạn đã công bố) | Không đổi so với vòng 1: `split_integrity` PASS; QIPEDC không có signer_id và S06 dùng câu đã thấy trong train, cả hai nằm trong REPORT §5. |
+| 6 | Chọn bằng VAL, TEST một lần | PASS | Chẩn đoán mức khớp chỉ đọc `history.json` (train/VAL), tính SAU khi chọn (`scripts/report_step4.py:861–884`), không đi vào `select`/`choose_*`. TEST vẫn chỉ đọc lại `test_logits.npz`. Mọi giá trị JSON cũ không đổi (mục 7). |
+| 7 | Số liệu truy được | PASS | (a) Chạy lại đúng lệnh ở header, chỉ đổi `--out`/`--json-out` sang thư mục tạm: exit 0; JSON bằng (`==`) bản đã commit sau khi bỏ `generated_by`; REPORT chỉ khác 2 dòng header (đường dẫn out, HEAD `67ff25a` → `65a2821`). (b) Chạy lần 2 cùng lệnh → `cmp` byte-giống cả hai file. (c) `git diff 67ff25a HEAD -- scripts src tests` rỗng; `code_dirty=false`. (d) Duyệt đệ quy JSON `8c08845` vs HEAD: không khóa cũ nào bị xóa; giá trị cũ chỉ đổi ở `generated_by`, `inputs` (45 mục cũ là tập con của 56 mục mới; thêm 9 `history.json`, `train_unified.py`, review), `kernel_code_diffs[3].to`, `augmentation` (bỏ tiền tố lặp), `review`. (e) Kiểm độc lập mục 4c mới từ `history.json`: từ điển 48 epoch, best 28 (= `metrics.json` `val_best.epoch`), train top-1 29.69 / 34.21, lr 0.001 → 1.5625e-05, giảm lr ở 16, 22, 28, 34, 40, 46, val_loss 6.3943 / 6.3584 / 6.4564, tổng time_sec 212.5; gộp 98 epoch, best 78, 95.15 / 95.47, giảm lr ở 50, 64, 74, 81, 87, 97, val_loss 4.3396 / 2.4065 / 2.437, tổng 5738.5. Bước: ceil(795/64) = 13 → 624; ceil(15138/64) = 237 → 23226; ceil(23226/13) = 1787 epoch × 4.4267 s ≈ 7910 s ≈ 2.20 giờ. Tất cả trùng REPORT dòng 326–336. (f) Thăm dò (b): 69/634, 183/225, 282/876 trùng số reviewer tự tính ở vòng 1; 634 = 722 − 88, 225 = 1189 − 964. |
+| 8 | Cỡ mẫu và CI | PASS | Cột "chỉ dự đoán sai" có k/n + Wilson CI cho cả ba bộ dòng (REPORT dòng 352–354). Không có kết luận mới rút từ n nhỏ; (b) ghi "chỉ báo, không kiểm định". |
+| 9 | Nhất quán train–realtime | PASS (trong phạm vi) | REPORT §3.4 (iv) (dòng 274) sinh từ `run_config.trim`: H-keepz-360 train với trim=true; live phải cắt nghỉ cùng tham số; giữ/bỏ không do PREREG quyết định; bỏ thì train lại. Việc này không chạm `backend/`, `src/`. Vẫn **chặn** đổi model mặc định cho tới khi có test tương đương (360 px + cắt nghỉ). |
+| 10 | Không random/mock/hard-code | PASS | Chuỗi cố định mới (`SCOPE_SENTENCE`, `TRAIN_TOP1_MEASUREMENT`) là mô tả, không chứa số. Câu phạm vi chỉ in khi `scope_limited` (tổng bước khác nhau hoặc không dùng cờ khởi tạo), đúng §3.4. `trim_consequence` không gõ cứng tên run (test ca 21c). Không có random/mock mới. |
+| 11 | Bảo mật | PASS | Không token/khóa/`kaggle.json` trong diff. `git diff --name-only 27233f6..HEAD -- '*.pt' '*.npz' '*.log'` rỗng. Không đụng API/CORS/WS. Vẫn còn: `reports/unified_run_2026-09-25/run*/stgcn_unified_best.pt` untracked và không bị gitignore (`git check-ignore` exit 1); đây là câu hỏi cho người dùng. |
+| 12 | So sánh công bằng | PASS | 4c vẫn trên cùng 721 clip; ngưỡng 0.5 không đổi; không tiêu chí nào bị nới. Mục mới nói rõ hai model có cùng lệnh train (chỉ khác `--out-dir/--data-root/--sources`; reviewer đối chiếu log v3 dòng 15 và 80), nhưng quỹ tối ưu khác nhau: 624 vs 23226 bước. |
+| 13 | Kết luận vượt bằng chứng | PASS | REPORT: câu phạm vi (dòng 334) và dòng Giới hạn (372) nói kết quả chính chỉ về "model tách train từ đầu bằng công thức hiện tại". PROPOSAL: "khuyến nghị có điều kiện: 4c chỉ đo một cách tách" (dòng 3); mục "Phạm vi" (9–12) có 34.21% vs 95.47% và 624 vs 23226 bước, nói rõ KHÔNG loại trừ A khi train tới khi khớp hoặc khởi tạo từ trọng số; câu cũ "mất toàn bộ dữ liệu VSL-GH" đã bỏ; (b) chỉ dùng cột dự đoán sai + tỷ lệ nền, ghi "chỉ báo, không kiểm định"; "Điều gì sẽ làm đổi khuyến nghị" có thí nghiệm mới "tốn GPU … cần người dùng duyệt". Nhận xét thêm của reviewer (ủng hộ "chưa khớp"): val_loss của model từ điển 6.3943 → min 6.3584, gần ln(594) ≈ 6.387, tức VAL loss hầu như không rời mức ngẫu nhiên. Góp ý câu chữ nhỏ ở G3, không chặn. |
+
+## Kiểm theo AC (vòng 2)
+
+| AC | Kết quả | Ghi chú |
+|---|---|---|
+| AC1 | PASS | 69 OK, 0 skip; ca 1–15 cũ nguyên vẹn; ca 16–23 có test (mục 1). |
+| AC2 | PASS | 53 → 53 OK; `test_report_step4` 38 → 69 (≥ 38 + 8); diff test chỉ có dòng thêm. Số trước/sau có trong `docs/progress_log.md`. |
+| AC3 | PASS | Mục 7 (a)–(c). Đã kiểm ≥ 10 số, trong đó > 3 số ở mục 4c mới truy về `history.json`. |
+| AC4 a–i | PASS | Không đổi so với vòng 1 (giá trị JSON cũ không đổi). |
+| AC4 j | CHƯA XONG (theo kế hoạch) | §6 hiện là review vòng 1. Làm ở R6 với file này. |
+| AC4 k | PASS | REPORT dòng 320–336: bảng đủ 13 cột, dòng về cách trainer đo, `train_cmd_diff`, `init_options`, câu phạm vi, ước lượng GPU có nhãn "ước lượng". Đã đối chiếu > 2 giá trị mỗi model với `history.json`. |
+| AC4 l | PASS | §3.4 (iv) dòng 274; JSON `4b.trimming.consequence`. |
+| AC4 m | PASS | Dòng 348–358; số trùng review vòng 1 (69/634, 183/225, 282/876). |
+| AC4 n | PASS | Dòng 371 (12:30 vs 12:13:24, 996 s), dòng 372–373. |
+| AC4 o | PASS | Dòng 177: đúng một dòng "- Augmentation (training only): …"; không còn "Augmentation: Augmentation". |
+| AC5 | PASS (sát ngưỡng) | 546 từ theo `str.split()` (cách test đếm) và theo `LC_ALL=C.UTF-8 wc -w`; một khuyến nghị (B); có "người dùng quyết định"; `TestProposal4c` không bị sửa. Xem G2 về cách đếm `wc -w`. |
+| AC5b | PASS | 1–6 có test và đều qua. Reviewer kiểm thêm: 8 cụm `% (k/n)` và 45 số của PROPOSAL đều có trong REPORT §1–5 (không tính §6 Review). |
+| AC6 | PASS | `git diff --stat 27233f6..HEAD`: chỉ file được phép. Code chỉ đổi `scripts/report_step4.py`. Không đổi `.gitignore`, PREREG, `history.json`, `metrics.json`, JSON 4a/4b cũ, `data/`. `REPORT_partial.md` không có trong git và vẫn trên đĩa. 3 file data người dùng xóa vẫn chưa commit. |
+| AC7 | PASS (vòng này) | Không FAIL cho các commit Lần sửa 1 và cho 348843f, 4bb3811, 9e3be95, a414b0d, 27233f6, 4f4e349 (không đổi từ vòng 1). |
+| AC8 | PASS | Cả 3 commit mới ghi `impact` + `detect-changes --scope all` (không partial/truncated) trong commit message. `docs/progress_log.md` có đúng 1 dòng kế hoạch 01, số test, và ghi chú `--scope staged` của 3 commit cũ. Dòng này cần cập nhật ở R6 (kết luận review cuối, số vòng, commit C). |
+| AC9 | PASS (cơ chế) / làm lại ở R6 | `git diff 67ff25a 65a2821 -- REPORT.md`: 3 hunk = header (2 dòng), dòng inputs của file review, §6. JSON bằng nhau sau khi bỏ `generated_by`, `review`, input vai trò "review". Cần kiểm lại với commit R6. |
+
+## Xác minh M1–M4 và góp ý nhỏ vòng 1
+
+| Việc | Đã xử lý? | Bằng chứng |
+|---|---|---|
+| M1 (mức khớp / phạm vi 4c) | CÓ | Hàm `steps_per_epoch`, `training_fit`, `batch_size_from_command`, `train_cmd_diff`, `init_options` (`scripts/report_step4.py:318–396`); `4c.fit_and_scope` (861–884); render (1304–1349). PROPOSAL viết lại có phạm vi; có test AC5b. |
+| M2 (hệ quả cắt nghỉ) | CÓ | `trim_consequence` (434–452), JSON `4b.trimming.consequence`, REPORT (iv). |
+| M3 ((b) chỉ-sai + tỷ lệ nền) | CÓ | `pred_origin`, `label_space_base_rate` (413–431); `pred_split` dùng chúng (851–862) và giữ khóa cũ. |
+| M4 (quy trình) | CÓ, trừ R6 | REPORT đã sinh với `--review-file` (65a2821); progress_log có dòng; `--scope all` ở cả 3 commit. Còn R6 cuối. |
+| Góp ý: test AC5 theo ngữ cảnh | CÓ | AC5b.1 (so cụm `% (k/n)` nguyên văn + biên không phải `[0-9A-Za-z]`). Còn điểm yếu nhỏ, xem G1. |
+| Góp ý: `REPORT_partial.md` | CÓ | Kế hoạch §2.1 đã sửa; file untracked, không bị đụng; câu hỏi ở §7. |
+| Góp ý: giờ tiêu đề PREREG | CÓ | `prereg_header_times` (458–478), REPORT dòng 371, sinh từ `git show <commit>:PREREGISTRATION.md`. |
+| Góp ý: "Augmentation" lặp | CÓ | REPORT dòng 177; test ca 23. |
+| Góp ý: `.gitignore` cho `.pt` | Chuyển cho người dùng | Đúng kế hoạch (§7 câu 5); `.gitignore` chưa bị sửa. |
+
+## Xác minh risk HIGH của `detect-changes` ở c54b772
+
+- Reviewer chạy `node .gitnexus/run.cjs detect-changes --scope compare --base-ref 8c08845 --repo .` → `risk high`, 8 luồng bị
+  ảnh hưởng: `Pred_split → Wilson`, `Main → Rel`, `Main → Sha256`, `Main → Fr`, `Main → Fv`, `Main → Na`, `Main → Yn`,
+  `Label_space_base_rate → Wilson`. Cả 8 luồng nằm trong `scripts/report_step4.py`. Coder ghi 7 luồng; luồng thêm là
+  `Label_space_base_rate`, do index được làm mới ở commit sau. Không đổi kết luận.
+- `git diff -U0 8c08845..HEAD -- scripts/report_step4.py`: các hunk chỉ nằm ở khối hàm mới chèn sau `compare_legacy`, trong
+  `build`, ở hàm mới `raw` (chèn sau `na`), và trong `render`. Không hàm có sẵn nào khác bị sửa. HIGH đến từ số symbol/luồng
+  bị ảnh hưởng và việc lệch dòng, không phải từ caller ngoài script.
+- `impact build --file scripts/report_step4.py --direction upstream`: LOW, `epistemic: exact`, caller duy nhất `main`
+  (+ module Tests). `impact render …`: LOW nhưng `epistemic: lower-bound` (1 call site không xác định được kiểu receiver).
+  Text search bù: chuỗi `report_step4` chỉ xuất hiện trong `scripts/report_step4.py`, `tests/test_report_step4.py` và
+  `step4_results.json` (chuỗi lệnh). Trong script, `build(`/`render(` chỉ được gọi ở `main` (dòng 1469–1470). Call site không
+  xác định là `R.render(...)` trong test. Kết luận: không có caller nào ngoài `main()` và test.
+
+## Góp ý nhỏ (không chặn)
+
+- **G1 (triển khai, test).** `TestProposal4c.test_every_number_is_in_report` và AC5b.1 so với TOÀN BỘ REPORT.md, kể cả §6
+  Review. Văn bản review lại chứa đúng các số đó (34.21%, 69/634, …), nên test có thể qua nhờ văn bản review chứ không nhờ
+  phần do script sinh. Reviewer đã kiểm tay: mọi số của PROPOSAL có trong §1–5. Đề xuất (việc sau, THÊM test mới): cắt REPORT
+  trước `## 6. Review` khi so. Ngoài ra, biên `(?<![0-9A-Za-z.])` coi `_` là biên, nên "360" có thể khớp vào `run_keepz_360`.
+- **G2 (kế hoạch, cách đo AC5).** `wc -w` phụ thuộc locale. Trong Git Bash mặc định ra **555** (> 550), vì chế độ byte tách từ
+  tại byte 0xA0 của chữ "à". `LC_ALL=C.UTF-8 wc -w` và `str.split()` ra **546**. Con số "508" của vòng 1 cũng là số đếm ở chế
+  độ byte (UTF-8: 498). Số đúng là 546 ≤ 550, nhưng chỉ dư 4 từ. Planner nên ghi rõ cách đếm (UTF-8 / `str.split()` như test).
+- **G3 (triển khai, câu chữ PROPOSAL dòng 17).** "…rơi vào lớp chỉ-VSL-GH ở 10.9% (69/634) clip QIPEDC": mẫu số là 634 dự đoán
+  SAI, không phải mọi clip QIPEDC. PROPOSAL cũng thiếu lưu ý đã có trong REPORT: lớp đúng của S06 thuộc VSL-GH nên lỗi S06 tự
+  nhiên rơi vào lớp VSL-GH; và tỷ lệ nền của không gian nhãn không phải một giả thuyết không (null) chuẩn. Dòng đã ghi "chỉ
+  báo, không kiểm định", nên không chặn.
+- **G4 (quy trình).** `docs/plans/` đang untracked: hợp đồng AC mà REPORT, review và progress_log trỏ tới không có trong git.
+  AC6 cho phép commit `docs/plans/`; orchestrator nên commit kế hoạch ở R6.
+- **G5 (truy nguồn).** `reports/unified_run_2026-09-25/run_seed43/history.json` untracked nhưng được đọc làm đầu vào (sha256 ở
+  REPORT §1.4). Không số nào trong REPORT phụ thuộc file này (chỉ run chọn và run từ điển được dùng `history.json`).
+- **G6 (đọc ước lượng cho đúng).** `step_matched_estimate` giả định cùng thời gian/epoch và bỏ qua dừng sớm/giảm lr. Với công
+  thức hiện tại, model từ điển sẽ lại dừng sớm. REPORT đã ghi "ước lượng, không phải kết quả". Thí nghiệm "train tới khi khớp"
+  cần đổi công thức (không giảm lr / không dừng theo VAL 105 clip), tức là kế hoạch mới.
+
+## Việc phải làm tiếp (không phải FAIL)
+
+1. R6: chạy lại lệnh R3 + `--review-file docs/reviews/01-review.md` (file này) ở HEAD sạch; kiểm AC3 (`cmp` hai lần chạy) và
+   AC9 (so với `67ff25a`: chỉ header, dòng inputs của review, §6); chạy lại `tests.test_report_step4`.
+2. Cập nhật dòng progress_log: kết luận "APPROVE, vòng 2/3", thêm commit R6.
+3. (Tùy chọn) commit `docs/plans/01-buoc4-hoan-tat-4a-4c.md` (G4).
+
+Phân loại: không còn lỗi triển khai hay thiết kế ở mức FAIL. G1, G3 là lỗi triển khai nhỏ; G2, G4 thuộc kế hoạch/quy trình.
+
+## CẦN NGƯỜI DÙNG QUYẾT ĐỊNH
+
+1. **A/B cho 4c.** Coder khuyến nghị B, có điều kiện. Kết quả chính (top-1 12.2% vs 3.2% trên 721 clip, p = 1.06e-14) là
+   thật và đúng luật đăng ký, nhưng chỉ nói về model tách train từ đầu và chưa khớp (train top-1 34.21% vs 95.47%, 624 vs
+   23226 bước). Nên đọc REPORT mục 4 "Phạm vi so sánh và mức khớp train" trước khi chọn.
+2. **Có làm thí nghiệm MỚI trước khi chọn không** (chưa đăng ký trước, tốn GPU): (i) model từ điển train tới khi khớp: ước lượng
+   thô ≈ 2.20 giờ GPU mỗi run mỗi seed, cần đổi công thức; (ii) khởi tạo từ trọng số VSL-GH / model gộp rồi fine-tune: cần thêm
+   tùy chọn vào `scripts/train_unified.py` và phần đăng ký trước mới. Cần duyệt ngân sách GPU (hạn 10 giờ/tuần).
+3. **360 px chỉ có một seed** (+1.72 điểm, trong khi chênh giữa hai seed H-keepz là +1.61): thêm seed trước khi đổi đường
+   realtime sang 360 px, hay chấp nhận kết quả theo luật?
+4. **Cắt đoạn nghỉ ở đường live:** model được chọn train với trim=true. Giữ bước cắt (khớp model) hay bỏ (phải train lại)?
+5. **Việc nhỏ:** `REPORT_partial.md` (untracked): commit, giữ, hay xóa? Thêm `reports/unified_run_*/**/*.pt` vào `.gitignore`?
+   Có commit file kế hoạch trong `docs/plans/` không (G4)?
+
+---
+
 # Review 01: Bước 4a → 4c (kế hoạch `docs/plans/01-buoc4-hoan-tat-4a-4c.md`)
 
 Reviewer độc lập, ngày 2026-09-26, nhánh `feat/vslt-complete`, HEAD `8c08845`.
