@@ -74,10 +74,8 @@ Project/
 │   ├── evaluate.py                     # Đánh giá Top-1, Top-5 & vẽ Confusion Matrix
 │   └── export.py                       # Xuất mô hình ONNX & TorchScript
 ├── app/
-│   ├── api/
-│   │   └── main.py                     # FastAPI backend (REST endpoints)
-│   └── ui/
-│       └── app.py                      # Streamlit Web UI tương tác thời gian thực
+│   └── api/
+│       └── main.py                     # FastAPI backend (REST endpoints)
 ├── configs/
 │   ├── alphabet_config.yaml            # Cấu hình huấn luyện Level 1
 │   └── word_config.yaml                # Cấu hình huấn luyện Level 2
@@ -142,9 +140,3 @@ Hoặc khởi chạy độc lập từng tầng:
   cd frontend; npm run dev
   ```
 Mở trình duyệt: `http://localhost:3000` (React Web) hoặc `http://localhost:8000/docs` (Swagger API).
-
-#### Bước 7: (Tùy chọn) Khởi chạy Giao diện Thử nghiệm Nhanh (Streamlit UI)
-```powershell
-.\.venv\Scripts\streamlit.exe run app/ui/app.py
-```
-Giao diện Streamlit mở tại: `http://localhost:8501`.
