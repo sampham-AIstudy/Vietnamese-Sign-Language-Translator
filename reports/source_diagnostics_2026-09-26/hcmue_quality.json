@@ -1,0 +1,41 @@
+{
+  "214x160": {
+    "clips": 57,
+    "dominant_hand_frames_median": 0.74,
+    "clips_ge_60pct": 51
+  },
+  "320x240": {
+    "clips": 378,
+    "dominant_hand_frames_median": 0.566,
+    "clips_ge_60pct": 168
+  },
+  "usable_total": 219,
+  "usable_in_876": 23,
+  "usable_in_old_487": 14,
+  "usable_in_both": 14,
+  "usable_files_in_876": [
+    "ao-khoac-280.mp4",
+    "ban-616.mp4",
+    "bo-doi-723.mp4",
+    "buoi-sang-889.mp4",
+    "co-84.mp4",
+    "h-456.mp4",
+    "hom-nay-922.mp4",
+    "hom-nay-924.mp4",
+    "hom-nay-926.mp4",
+    "hom-nay-927.mp4",
+    "hom-qua-931.mp4",
+    "hom-qua-933.mp4",
+    "khong-105.mp4",
+    "mau-nau-316.mp4",
+    "mau-trang-313.mp4",
+    "mua-he-972.mp4",
+    "mua-xuan-978.mp4",
+    "mua-xuan-982.mp4",
+    "nghi-he-1002.mp4",
+    "nghi-hoc-1001.mp4",
+    "ong-ngoai-694.mp4",
+    "ong-noi-695.mp4",
+    "quyet-dinh-788.mp4"
+  ]
+}

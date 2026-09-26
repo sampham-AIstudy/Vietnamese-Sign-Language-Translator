@@ -50,8 +50,20 @@ Extraction paths (upstream `clone/Vietnamese-Sign-Language-Translation/source/ex
    joints 21/22 come from the hand model (VSL-GH) vs the pose model (QIPEDC).
 4. VSL-GH segments are float16 (precision ~1e-3).
 
-Trimming the rest at the start/end of QIPEDC/HCMUE clips (`trim_rest_eval_hcmue47.json`, no retraining) does not
-fix it: cross-source 0.0 → 4.3% top-1 (1/23), QIPEDC test 11.3 → 3.7%, HCMUE 4.3 → 0.0%; S06 control 67.2 → 67.0%.
+Trimming the rest at the start/end of QIPEDC/HCMUE clips: **not concluded — test without retraining only**
+(`trim_rest_eval_hcmue47.json`): cross-source 0.0 → 4.3% top-1 (1/23), QIPEDC test 11.3 → 3.7%, S06 control 67.2 → 67.0%.
+The model was trained on untrimmed QIPEDC clips, so trimming only at test time is not a fair test; decided by step 4b.
+
+### HCMUE quality (`hcmue_quality.json`)
+Share of frames with the dominant hand detected (whole clip, rest included), per resolution:
+214×160 — 57 clips, median 0.74, 51 clips ≥ 60%; 320×240 — 378 clips, median 0.57, 168 clips ≥ 60%.
+Clips ≥ 60%: 219/435, of which **23 have a label in the 876 classes** (14 in the old model's 487). Below the
+30-clip bar → **HCMUE is not good enough to be a measure; no HCMUE number is used**, including the 0% of the gate.
+(Lower resolution does not explain it: 214×160 detects hands better than 320×240.)
+
+### Realtime input resolution
+Frontend (`CameraCapture.jsx`, `RealtimeStream.jsx`) asks the webcam for 640×480 (ideal, 4:3), sends the full
+frame as JPEG q=0.75; the backend does not resize (aspect ratio taken from the frame, mirroring is display-only).
 
 ## Step 3 — are the words signed the same way?
 Side-by-side renders (VSL-GH segment of S01 | QIPEDC test clip | QIPEDC video): `cross_source/<word>.png|.mp4`
@@ -82,9 +94,14 @@ from the cut, not only from a different sign.
 
 ## Reading
 - The model can tell the source from body geometry and clip length alone (100%), and the two vocabularies barely
-  overlap (85 of 876 classes), so "which source" is a cheap proxy for "which word" during training.
+  overlap (85 of 876 classes). That "which source" acts as a proxy for "which word" is a hypothesis, **not yet
+  tested** (needs the 85 shared classes, step 4a).
+- The largest boundary is "word cut from a sentence" (VSL-GH) vs "isolated dictionary word" (QIPEDC, HCMUE):
+  VSL-GH is confused with the dictionary sources in 1/1500 clips, the two dictionary sources with each other in 25.
 - Not a single extraction bug: the extractors agree; the sources differ as studios (camera, framing, people,
   360-px processing for VSL-GH), as tasks (sign cut from a sentence vs citation form with rest), and partly as
   vocabularies (some words signed differently).
 - Even with hands only and no learned model, QIPEDC clips land near the correct VSL-GH word far less often than S06
   does (median rank 29 vs 1) → part of the gap is real sign/segmentation difference, not only a shortcut.
+- Pose z alone separates VSL-GH/QIPEDC 100% (medians −0.51 / −0.40 / −0.62); MediaPipe Pose z is a weak estimate →
+  candidate to drop in step 4b.
