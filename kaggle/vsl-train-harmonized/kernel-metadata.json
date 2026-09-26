@@ -1,0 +1,14 @@
+{
+  "id": "phmvnsm33/vsl-train-harmonized",
+  "title": "vsl-train-harmonized",
+  "code_file": "train_harmonized_kernel.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": [],
+  "kernel_sources": ["phmvnsm33/vsl-extract-qipedc"],
+  "competition_sources": [],
+  "model_sources": []
+}

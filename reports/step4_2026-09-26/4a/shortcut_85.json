@@ -1,0 +1,59 @@
+{
+  "shared_classes": 85,
+  "balanced": {
+    "n_by_source": {
+      "qipedc": 106,
+      "vslgh": 106
+    },
+    "chance": 50.0,
+    "all": 99.5,
+    "single_group": {
+      "time": 98.1,
+      "presence": 70.3,
+      "pose_xy": 99.1,
+      "pose_z": 99.5,
+      "hand_xy": 97.2,
+      "hand_z": 82.5,
+      "hand_shape": 95.3
+    }
+  },
+  "cross_source_current_model": {
+    "classes_kept": 81,
+    "excluded_different_sign": [
+      "kết quả",
+      "thường xuyên",
+      "xem",
+      "yếu"
+    ],
+    "qipedc_val_test": {
+      "n": 26,
+      "classes": 17,
+      "top1": 0.0,
+      "top1_ci": [
+        0.0,
+        12.87
+      ],
+      "top5": 19.2
+    },
+    "qipedc_test_only": {
+      "n": 26,
+      "classes": 17,
+      "top1": 0.0,
+      "top1_ci": [
+        0.0,
+        12.87
+      ],
+      "top5": 19.2
+    },
+    "s06_reference": {
+      "n": 202,
+      "classes": 80,
+      "top1": 58.4,
+      "top1_ci": [
+        51.52,
+        64.99
+      ],
+      "top5": 88.1
+    }
+  }
+}

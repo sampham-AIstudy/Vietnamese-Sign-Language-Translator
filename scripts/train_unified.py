@@ -133,6 +133,13 @@ def main():
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--skip-missing", action="store_true")
     ap.add_argument("--max-batches", type=int, default=None)
+    ap.add_argument("--features", choices=["legacy", "harmonized"], default="legacy",
+                    help="harmonized = src/data/harmonized.py (arms+hands, no pose z, rest trimmed, time resampled)")
+    ap.add_argument("--hand-z", choices=["keep", "drop"], default="keep")
+    ap.add_argument("--process-height", type=int, default=None,
+                    help="record only: frame height the keypoints were extracted at (None = native)")
+    ap.add_argument("--sources", choices=["all", "qipedc"], default="all",
+                    help="qipedc = dictionary-word model (step 4c): QIPEDC rows only, classes with QIPEDC training data")
     args = ap.parse_args()
     set_seed(args.seed)
     os.makedirs(args.out_dir, exist_ok=True)
@@ -148,10 +155,36 @@ def main():
     integrity = assert_split_integrity(paths)
     print("split integrity:", json.dumps(integrity), flush=True)
 
-    common = dict(label_map=label_map, target_len=60, auto_extract=False, aspect_correct=True)
-    train_ds = VSLDataset(paths["train"], augment=True, **common)
-    val_ds = VSLDataset(paths["val"], **common)
-    test_ds = VSLDataset(paths["test"], **common)
+    dropped = {}
+    if args.sources == "qipedc":  # keep QIPEDC rows; classes = those with QIPEDC training data
+        for split in ("train", "val", "test"):
+            with open(paths[split], encoding="utf-8") as f:
+                rows = list(csv.DictReader(f))
+            with open(paths[split], "w", encoding="utf-8", newline="") as f:
+                w = csv.DictWriter(f, fieldnames=list(rows[0])); w.writeheader()
+                w.writerows([r for r in rows if r["source"] == "qipedc"])
+        with open(paths["train"], encoding="utf-8") as f:
+            q_classes = {r["gloss_normalized"] for r in csv.DictReader(f)}
+        classes = [c for c in classes if c in q_classes]
+        label_map = {c: i for i, c in enumerate(classes)}
+        for split in ("val", "test"):
+            with open(paths[split], encoding="utf-8") as f:
+                dropped[split] = sum(r["gloss_normalized"] not in label_map for r in csv.DictReader(f))
+        print(f"sources=qipedc: {len(classes)} classes; rows without QIPEDC training data dropped: {dropped}", flush=True)
+
+    preprocessing = dict(PREPROCESSING)
+    if args.features == "harmonized":
+        from src.data.harmonized import HARMONIZED_DEFAULT, HarmonizedDataset
+        hcfg = {**HARMONIZED_DEFAULT, "hand_z": args.hand_z == "keep", "process_height": args.process_height}
+        preprocessing = {**hcfg, "extractor": "CleanHolisticExtractor", "mediapipe_version": "0.10.14"}
+        train_ds = HarmonizedDataset(paths["train"], label_map, hcfg, augment=True)
+        val_ds = HarmonizedDataset(paths["val"], label_map, hcfg)
+        test_ds = HarmonizedDataset(paths["test"], label_map, hcfg)
+    else:
+        common = dict(label_map=label_map, target_len=60, auto_extract=False, aspect_correct=True)
+        train_ds = VSLDataset(paths["train"], augment=True, **common)
+        val_ds = VSLDataset(paths["val"], **common)
+        test_ds = VSLDataset(paths["test"], **common)
     counts = Counter(r["gloss_normalized"] for r in train_ds.samples)
     weights = [1.0 / math.sqrt(counts[r["gloss_normalized"]]) for r in train_ds.samples]
     sampler = WeightedRandomSampler(weights, num_samples=len(weights), replacement=True,
@@ -173,12 +206,19 @@ def main():
     # Final checkpoint: best weights + everything inference needs to reproduce training input.
     ckpt = torch.load(ckpt_path, map_location="cpu", weights_only=False)
     ckpt.pop("optimizer_state_dict", None)
-    ckpt.update({"label_map": label_map, "num_classes": len(classes), "preprocessing": PREPROCESSING,
+    ckpt.update({"label_map": label_map, "num_classes": len(classes), "preprocessing": preprocessing,
+                 "run_config": {"features": args.features, "hand_z": args.hand_z, "sources": args.sources,
+                                "process_height": args.process_height},
                  "model_config": MODEL_CFG, "manifest_report": json.load(open(os.path.join(args.manifest_dir, "report.json"), encoding="utf-8")),
                  "seed": args.seed})
     torch.save(ckpt, ckpt_path)
     model.load_state_dict(ckpt["model_state_dict"])
     model.to(device)
+
+    # VAL by source (selection data; used to choose between harmonisation variants, never the test set)
+    v_logits, v_labels = predict_all(model, val_loader, device)
+    v_src = np.array([r["source"] for r in val_ds.samples])
+    val_by_source = {s: summarise(v_logits[v_src == s], v_labels[v_src == s], len(classes)) for s in sorted(set(v_src))}
 
     # TEST — once, after selection on VAL.
     logits, labels = predict_all(model, test_loader, device)
@@ -187,11 +227,14 @@ def main():
     cls_has_vslgh = {r["gloss_normalized"] for r in train_ds.samples if r["source"] == "vslgh"}
     grp = np.array(["vslgh_class" if r["gloss_normalized"] in cls_has_vslgh else "qipedc_only_class" for r in rows])
     metrics = {"val_best": {"epoch": summary["best_epoch"], "top1": summary["best_val_top1"]},
+               "val_by_source": val_by_source,
                "test_overall": summarise(logits, labels, len(classes)),
                "test_by_source": {s: summarise(logits[src == s], labels[src == s], len(classes)) for s in sorted(set(src))},
                "test_by_class_group": {g: summarise(logits[grp == g], labels[grp == g], len(classes)) for g in sorted(set(grp))},
                "train_samples_per_class_hist": dict(sorted(Counter(counts.values()).items())),
-               "missing_npz": missing, "split_integrity": integrity, "smoke": bool(args.skip_missing or args.max_batches)}
+               "missing_npz": missing, "split_integrity": integrity, "rows_dropped_no_class": dropped,
+               "run_config": {"features": args.features, "hand_z": args.hand_z, "sources": args.sources,
+                              "process_height": args.process_height}, "smoke": bool(args.skip_missing or args.max_batches)}
     pred = logits.argmax(1)
     # raw test logits so reports (groups, Top-5, CIs, model comparisons) are recomputed from files
     np.savez_compressed(os.path.join(args.out_dir, "test_logits.npz"), logits=logits.astype(np.float16),
