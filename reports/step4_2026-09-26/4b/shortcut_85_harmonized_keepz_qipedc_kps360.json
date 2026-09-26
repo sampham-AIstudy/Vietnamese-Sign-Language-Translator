@@ -1,0 +1,25 @@
+{
+  "command": "python scripts/shortcut_85.py --skip-eval --features harmonized --hand-z keep --qipedc-kps-dir qipedc_kps360 --out reports/step4_2026-09-26/4b",
+  "git_commit": "4bb3811",
+  "shared_classes": 85,
+  "features": "harmonized",
+  "hand_z": "keep",
+  "qipedc_kps_dir": "qipedc_kps360",
+  "balanced": {
+    "n_by_source": {
+      "qipedc": 106,
+      "vslgh": 106
+    },
+    "chance": 50.0,
+    "all": 94.8,
+    "single_group": {
+      "time": 50.0,
+      "presence": 70.3,
+      "pose_xy": 95.3,
+      "pose_z": 50.0,
+      "hand_xy": 95.3,
+      "hand_z": 77.4,
+      "hand_shape": 85.8
+    }
+  }
+}
