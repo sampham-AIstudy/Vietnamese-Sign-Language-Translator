@@ -25,7 +25,7 @@
 | **Physical GPU** | **NVIDIA GeForce RTX 3050 Laptop GPU** | `nvidia-smi`: Driver 566.36, CUDA 12.7, VRAM: 4096 MiB (4GB) |
 | **Active Python** | Python 3.11.9 (`.\.venv\Scripts\python.exe`) | Virtual environment active in project root |
 | **PyTorch Version** | **`2.14.0+cpu`** | **CRITICAL: PyTorch is CPU-only!** `torch.cuda.is_available()` returns `False` |
-| **Key Packages** | `mediapipe==0.10.x`, `opencv-python`, `fastapi`, `uvicorn`, `streamlit`, `onnx`, `onnxruntime`, `pypdf` | Installed in `.venv` |
+| **Key Packages** | `mediapipe==0.10.x`, `opencv-python`, `fastapi`, `uvicorn`, `onnx`, `onnxruntime`, `pypdf` | Installed in `.venv` |
 
 ---
 
@@ -66,15 +66,12 @@ Project/
 │   │   ├── gru_classifier.py      # BiGRUSequenceClassifier (input 201, hidden 128, out 40)
 │   │   ├── transformer_classifier.py # VSLTransformerClassifier (input 201, d_model 128)
 │   │   └── stgcn.py               # STGCNClassifier (num_nodes=67, in_channels=3)
-│   ├── inference/
-│   │   └── realtime_processor.py  # WebRTC sliding window inference buffer
 │   ├── train_alphabet.py
 │   ├── train_word.py
 │   ├── evaluate.py
 │   └── export.py
 ├── app/
-│   ├── api/main.py                # FastAPI REST + WebSocket (/ws/live-stream)
-│   └── ui/app.py                  # Streamlit UI
+│   └── api/main.py                # FastAPI REST + WebSocket (/ws/live-stream)
 ├── backend/                       # Node.js Express server (proxy + dictionary API)
 ├── frontend/                      # React 18 + Vite + Tailwind CSS frontend
 ├── reference/                     # 2 HUST research papers (2025 Alphabet, 2026 VSL Review)

@@ -12,7 +12,6 @@ Trước khi thực hiện tinh chỉnh, terminal của backend FastAPI xuất h
 
 | # | Vấn đề ban đầu | Nguồn gốc | Giải pháp kỹ thuật | Kết quả đạt được |
 |---|---|---|---|---|
-| **1** | `WARNING streamlit.runtime.caching.cache_data_api: No runtime found` | `src/inference/__init__.py` import `realtime_processor.py` (vốn phụ thuộc `streamlit_webrtc`). | Gỡ bỏ import thừa khỏi `__init__.py`, bảo vệ `streamlit_webrtc` chỉ tải khi chạy trong môi trường Streamlit. | **Triệt tiêu hoàn toàn 100% warning Streamlit**. |
 | **2** | `W0000 ... inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference` & `XNNPACK delegate` | MediaPipe Holistic C++ engine in trực tiếp ra STDERR khi biên dịch subgraph lần đầu. | Thiết lập biến môi trường C++ (`TF_CPP_MIN_LOG_LEVEL=3`, `GLOG_minloglevel=3`) và bọc khởi tạo + warmup qua C-level stderr redirector. | **Triệt tiêu toàn bộ C++ spam log của MediaPipe & TF Lite**. |
 | **3** | `[WebSocket] Exception in session loop: Cannot call "receive" once a disconnect message has been received` | Client đóng tab/refresh trình duyệt làm socket ASGI ném ngoại lệ disconnect chuẩn. | Bắt riêng `WebSocketDisconnect` và chuỗi disconnect/receive, ghi log `INFO` trang nhã không kèm stacktrace. | **Log hiển thị sạch: `Client disconnected gracefully` & `Session cleaned up gracefully`**. |
 | **4** | `INFO: 127.0.0.1:xxx - "GET /health HTTP/1.1" 200 OK` lặp lại mỗi 5 giây | Frontend React gửi polling định kỳ để kiểm tra sức khỏe backend. | Tạo `HealthCheckFilter` gắn vào `uvicorn.access` logger để lọc bỏ các request `/health`. | **Console không còn bị trôi log bởi polling request**. |
@@ -20,10 +19,6 @@ Trước khi thực hiện tinh chỉnh, terminal của backend FastAPI xuất h
 ---
 
 ## 2. Chi Tiết Kỹ Thuật Các Thay Đổi
-
-### 2.1 Khử và Loại Bỏ Hoàn Toàn Streamlit (Decommissioned)
-- **Hành động**: Loại bỏ hoàn toàn Streamlit khỏi dự án (bao gồm `requirements.txt`, module kế thừa `realtime_processor.py`, và giao diện `archive/app/ui/app.py`).
-- **Hiện trạng**: Toàn bộ hệ sinh thái đã thống nhất 100% trên nền tảng **FastAPI (REST & WebSockets) + React 18 (Vite HUD)** và `RealtimePipeline`. Triệt tiêu vĩnh viễn mọi lỗi runtime hay warning liên quan đến Streamlit/WebRTC.
 
 ### 2.2 Triệt tiêu C++ Warning của MediaPipe Holistic
 - **File sửa đổi**: [`backend/main.py`](file:///C:/Users/Admin/Python%20Advanced/Deep%20Learning%20-%20CV/Project/backend/main.py) và [`src/inference/realtime_extractor.py`](file:///C:/Users/Admin/Python%20Advanced/Deep%20Learning%20-%20CV/Project/src/inference/realtime_extractor.py).
