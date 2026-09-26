@@ -1,0 +1,78 @@
+{
+  "val_best": {
+    "epoch": 28,
+    "top1": 3.81
+  },
+  "val_by_source": {
+    "qipedc": {
+      "n": 105,
+      "top1": 3.8095238095238098,
+      "top5": 6.666666666666667,
+      "macro_f1_present_classes": 2.31023102310231
+    }
+  },
+  "test_overall": {
+    "n": 721,
+    "top1": 3.19001386962552,
+    "top5": 9.70873786407767,
+    "macro_f1_present_classes": 1.6532031909390403
+  },
+  "test_by_source": {
+    "qipedc": {
+      "n": 721,
+      "top1": 3.19001386962552,
+      "top5": 9.70873786407767,
+      "macro_f1_present_classes": 1.6532031909390403
+    }
+  },
+  "test_by_class_group": {
+    "qipedc_only_class": {
+      "n": 721,
+      "top1": 3.19001386962552,
+      "top5": 9.70873786407767,
+      "macro_f1_present_classes": 1.6532031909390403
+    }
+  },
+  "train_samples_per_class_hist": {
+    "1": 394,
+    "2": 199,
+    "3": 1
+  },
+  "missing_npz": {},
+  "split_integrity": {
+    "status": "PASS",
+    "qipedc_recording_groups": 1227,
+    "vslgh_signers": {
+      "S01": [
+        "train"
+      ],
+      "S02": [
+        "train"
+      ],
+      "S03": [
+        "train"
+      ],
+      "S04": [
+        "train"
+      ],
+      "S05": [
+        "val"
+      ],
+      "S06": [
+        "test"
+      ]
+    }
+  },
+  "rows_dropped_no_class": {
+    "val": 0,
+    "test": 1
+  },
+  "run_config": {
+    "features": "harmonized",
+    "hand_z": "keep",
+    "sources": "qipedc",
+    "process_height": 360,
+    "trim": true
+  },
+  "smoke": false
+}
