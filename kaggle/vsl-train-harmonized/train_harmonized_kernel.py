@@ -68,8 +68,8 @@ def run_queue(gpu):  # jobs on the same GPU run one after another
         with open(f"{out}/train.log", "w") as log:
             rc = subprocess.run(cmd, shell=True, stdout=log, stderr=subprocess.STDOUT,
                                 env={**os.environ, "CUDA_VISIBLE_DEVICES": gpu}).returncode
-        print(f"--- {job['out']} exit {rc} ---
-" + "".join(open(f"{out}/train.log").readlines()[-30:]), flush=True)
+        tail = "".join(open(f"{out}/train.log").readlines()[-30:])
+        print(f"--- {job['out']} exit {rc} ---", tail, sep="\n", flush=True)
         if rc:
             failed.append(job["out"])
 
