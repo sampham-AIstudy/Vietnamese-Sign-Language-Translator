@@ -72,3 +72,4 @@ data/external/hauuto_raw/
 reports/alphabet_nested_*/**/nested_predictions.csv
 reports/alphabet_nested_*/**/*.pt
 reports/source_diagnostics_*/cross_source/
+reports/step4_*/runs/**/*.pt
