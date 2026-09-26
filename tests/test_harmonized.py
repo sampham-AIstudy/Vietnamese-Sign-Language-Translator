@@ -45,6 +45,12 @@ class TestHarmonized(unittest.TestCase):
         self.assertEqual(jm[:, 25].sum(), 0)               # left hand resting at the hip -> absent
         self.assertGreater((seq[jm[:, 46] > 0, 46, 1] < 1.2).mean(), 0.6)  # raised part + fast ramps + 0.1 s pad
 
+    def test_no_trim_keeps_whole_clip(self):
+        k, v = clip()
+        _, jm_trim, _ = harmonize(k, v, 1.0, 30)
+        _, jm_full, _ = harmonize(k, v, 1.0, 30, {"trim": False})
+        self.assertLess(jm_full[:, 46].mean(), jm_trim[:, 46].mean())  # rest frames (hand masked) come back
+
     def test_hand_z_drop_and_determinism(self):
         k, v = clip()
         a = harmonize(k, v, 1.0, 30)[0]

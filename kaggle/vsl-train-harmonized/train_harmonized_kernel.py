@@ -49,25 +49,33 @@ for name, srcs in (("native", dirs), ("360", dirs360)):
     roots[name] = root
     print(name, "qipedc npz:", len(os.listdir(kps)), "from", srcs, flush=True)
 
+import threading
 import torch
 n_gpu = torch.cuda.device_count()
-workers = max(1, (os.cpu_count() or 2) // max(1, min(n_gpu, len(JOBS))))
-procs = []
-for job in JOBS:
-    out = f"/kaggle/working/{job['out']}"
-    os.makedirs(out, exist_ok=True)
-    extra = " --process-height 360" if job["kps"] == "360" else ""
-    cmd = (f"{sys.executable} scripts/train_unified.py --data-root {roots[job['kps']]} --out-dir {out} --epochs 120 "
-           f"--batch-size 64 --num-workers {workers} --patience 20 --seed {job.get('seed', SEED)} {job['args']}{extra}")
-    print(f"$ [GPU {job['gpu']}] {cmd}", flush=True)
-    log = open(f"{out}/train.log", "w")
-    procs.append((job, out, log, subprocess.Popen(cmd, shell=True, stdout=log, stderr=subprocess.STDOUT,
-                                                  env={**os.environ, "CUDA_VISIBLE_DEVICES": job["gpu"]})))
+gpus = sorted({j["gpu"] for j in JOBS})
+workers = max(1, (os.cpu_count() or 2) // max(1, min(n_gpu, len(gpus))))
 failed = []
-for job, out, log, p in procs:
-    rc = p.wait(); log.close()
-    print(f"--- {job['out']} exit {rc} ---\n" + "".join(open(f"{out}/train.log").readlines()[-30:]), flush=True)
-    if rc:
-        failed.append(job["out"])
+
+
+def run_queue(gpu):  # jobs on the same GPU run one after another
+    for job in [j for j in JOBS if j["gpu"] == gpu]:
+        out = f"/kaggle/working/{job['out']}"
+        os.makedirs(out, exist_ok=True)
+        extra = " --process-height 360" if job["kps"] == "360" else ""
+        cmd = (f"{sys.executable} scripts/train_unified.py --data-root {roots[job['kps']]} --out-dir {out} --epochs 120 "
+               f"--batch-size 64 --num-workers {workers} --patience 20 --seed {job.get('seed', SEED)} {job['args']}{extra}")
+        print(f"$ [GPU {gpu}] {cmd}", flush=True)
+        with open(f"{out}/train.log", "w") as log:
+            rc = subprocess.run(cmd, shell=True, stdout=log, stderr=subprocess.STDOUT,
+                                env={**os.environ, "CUDA_VISIBLE_DEVICES": gpu}).returncode
+        print(f"--- {job['out']} exit {rc} ---
+" + "".join(open(f"{out}/train.log").readlines()[-30:]), flush=True)
+        if rc:
+            failed.append(job["out"])
+
+
+threads = [threading.Thread(target=run_queue, args=(g,)) for g in gpus]
+[t.start() for t in threads]
+[t.join() for t in threads]
 print(f"total {(time.time() - t0) / 60:.1f} min; failed: {failed}", flush=True)
 assert not failed, failed

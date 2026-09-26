@@ -29,6 +29,7 @@ HARMONIZED_DEFAULT: Dict[str, Any] = {
     "features": "harmonized_v1",
     "target_len": 32,
     "hand_z": True,            # False -> hand z set to 0
+    "trim": True,              # False -> keep the whole clip (ablation of the rest trimming)
     "rest_y": 1.2,             # wrist below this (shoulder widths under the shoulder line) counts as resting...
     "active_speed": 1.0,       # ...unless it moves faster than this (shoulder widths / second)
     "pad_s": 0.1,              # context kept around the active span
@@ -127,7 +128,7 @@ def harmonize(kps: np.ndarray, vis: np.ndarray, aspect: Optional[float], fps: fl
     k, v = _normalise(kps, vis, aspect)
     fps = float(fps) if fps and fps > 0 else 30.0
     t = np.asarray(timestamps_s, np.float64) if timestamps_s is not None else np.arange(len(k)) / fps
-    a, b = active_span(k, v, fps, cfg)
+    a, b = active_span(k, v, fps, cfg) if cfg["trim"] else (0, len(k))
     if cfg["mask_resting_hand"]:
         for sl, active in zip(HAND_SLICES, hand_activity(k, v, fps, cfg)):
             v[~active, sl] = False

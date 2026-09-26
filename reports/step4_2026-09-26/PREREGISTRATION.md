@@ -15,3 +15,10 @@ Written before the harmonised models are trained; results must not change these 
   the SAME QIPEDC TEST clips (rows whose class is in both label spaces): Top-1/5/10, Wilson 95% CI, exact McNemar.
 - Cross-source check: QIPEDC TEST clips of the shared classes minus xem, kết quả, yếu, thường xuyên.
 - Trimming conclusion: compare the chosen 4b model (trimmed, retrained) with the old unified model on the same groups.
+
+## Added 2026-09-26 12:30, after the 4b z-variant choice (H-keepz) and before any 360 / no-trim / 4c result
+- Trimming ablation: H-keepz with `--no-trim` (everything else identical). Trimming is credited only if H-keepz
+  beats it on the same pre-registered balanced VAL rule (≥ 0.5 point); TEST groups reported for both.
+- 360 px: H-keepz at 360 px vs H-keepz native by the balanced VAL rule; the dictionary-word model is trained at
+  both resolutions in parallel to save a round, and only the one matching the chosen resolution is reported as 4c.
+- H-keepz seed 43: seed variance of the cross-source numbers only; never used for a choice.

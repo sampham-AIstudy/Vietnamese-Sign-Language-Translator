@@ -136,6 +136,7 @@ def main():
     ap.add_argument("--features", choices=["legacy", "harmonized"], default="legacy",
                     help="harmonized = src/data/harmonized.py (arms+hands, no pose z, rest trimmed, time resampled)")
     ap.add_argument("--hand-z", choices=["keep", "drop"], default="keep")
+    ap.add_argument("--no-trim", action="store_true", help="harmonized: keep the whole clip (trimming ablation)")
     ap.add_argument("--process-height", type=int, default=None,
                     help="record only: frame height the keypoints were extracted at (None = native)")
     ap.add_argument("--sources", choices=["all", "qipedc"], default="all",
@@ -175,7 +176,8 @@ def main():
     preprocessing = dict(PREPROCESSING)
     if args.features == "harmonized":
         from src.data.harmonized import HARMONIZED_DEFAULT, HarmonizedDataset
-        hcfg = {**HARMONIZED_DEFAULT, "hand_z": args.hand_z == "keep", "process_height": args.process_height}
+        hcfg = {**HARMONIZED_DEFAULT, "hand_z": args.hand_z == "keep", "process_height": args.process_height,
+                "trim": not args.no_trim}
         preprocessing = {**hcfg, "extractor": "CleanHolisticExtractor", "mediapipe_version": "0.10.14"}
         train_ds = HarmonizedDataset(paths["train"], label_map, hcfg, augment=True)
         val_ds = HarmonizedDataset(paths["val"], label_map, hcfg)
@@ -208,7 +210,7 @@ def main():
     ckpt.pop("optimizer_state_dict", None)
     ckpt.update({"label_map": label_map, "num_classes": len(classes), "preprocessing": preprocessing,
                  "run_config": {"features": args.features, "hand_z": args.hand_z, "sources": args.sources,
-                                "process_height": args.process_height},
+                                "process_height": args.process_height, "trim": not args.no_trim},
                  "model_config": MODEL_CFG, "manifest_report": json.load(open(os.path.join(args.manifest_dir, "report.json"), encoding="utf-8")),
                  "seed": args.seed})
     torch.save(ckpt, ckpt_path)
@@ -234,7 +236,7 @@ def main():
                "train_samples_per_class_hist": dict(sorted(Counter(counts.values()).items())),
                "missing_npz": missing, "split_integrity": integrity, "rows_dropped_no_class": dropped,
                "run_config": {"features": args.features, "hand_z": args.hand_z, "sources": args.sources,
-                              "process_height": args.process_height}, "smoke": bool(args.skip_missing or args.max_batches)}
+                              "process_height": args.process_height, "trim": not args.no_trim}, "smoke": bool(args.skip_missing or args.max_batches)}
     pred = logits.argmax(1)
     # raw test logits so reports (groups, Top-5, CIs, model comparisons) are recomputed from files
     np.savez_compressed(os.path.join(args.out_dir, "test_logits.npz"), logits=logits.astype(np.float16),
