@@ -80,8 +80,19 @@ from fastapi import Query, UploadFile, File
 # Global predictor singleton
 GLOBAL_PREDICTOR: Optional[VSLPredictor] = None
 MODEL_TYPE = os.getenv("VSL_MODEL_TYPE", "stgcn")
-STGCN_CKPT = os.getenv("VSL_STGCN_CKPT", "checkpoints/stgcn_tier2_indomain.pt")
-CLASSES_PATH = os.getenv("VSL_CLASSES_PATH", "configs/tier2_classes.txt")
+# Level 2 ST-GCN variants selectable with VSL_MODEL_TYPE (other values go to VSLPredictor unchanged).
+#   stgcn          default backend model (tier2, 487 classes)
+#   stgcn_unified  unified 876-class model (reports/unified_run_2026-09-25, seed 42). Opt-in for the Việc 6
+#                  experiments only: it did not pass the Việc 3 gate (0% on HCMUE, 0/31 cross-source clips).
+#                  Classes come from the checkpoint's label_map.
+STGCN_VARIANTS = {
+    "stgcn": {"ckpt": "checkpoints/stgcn_tier2_indomain.pt", "classes": "configs/tier2_classes.txt"},
+    "stgcn_unified": {"ckpt": "checkpoints/stgcn_unified_best.pt", "classes": None},
+}
+_STGCN_VARIANT = STGCN_VARIANTS.get(MODEL_TYPE, STGCN_VARIANTS["stgcn"])
+PREDICTOR_MODEL_TYPE = "stgcn" if MODEL_TYPE in STGCN_VARIANTS else MODEL_TYPE
+STGCN_CKPT = os.getenv("VSL_STGCN_CKPT", _STGCN_VARIANT["ckpt"])
+CLASSES_PATH = os.getenv("VSL_CLASSES_PATH", _STGCN_VARIANT["classes"])
 
 
 def get_or_load_predictor() -> VSLPredictor:
@@ -90,7 +101,7 @@ def get_or_load_predictor() -> VSLPredictor:
     if GLOBAL_PREDICTOR is None:
         logger.info(f"[FastAPI] Initializing VSLPredictor (model_type='{MODEL_TYPE}', ckpt='{STGCN_CKPT}', classes='{CLASSES_PATH}')...")
         GLOBAL_PREDICTOR = VSLPredictor(
-            model_type=MODEL_TYPE,
+            model_type=PREDICTOR_MODEL_TYPE,
             stgcn_ckpt=STGCN_CKPT,
             classes_path=CLASSES_PATH,
             warmup=True,

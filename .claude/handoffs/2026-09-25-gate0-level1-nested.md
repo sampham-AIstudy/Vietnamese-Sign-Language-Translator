@@ -1,13 +1,19 @@
 # Handoff — GATE 0 follow-ups, Level 1 nested, sequence endpoint (2026-09-25, updated ~17:15)
 
-## NOW (2026-09-26): waiting for owner at GATE Việc 3
-Level 2 trained (seed 42 primary, seed 43), report `reports/unified_run_2026-09-25/REPORT.md` (b3f98fd).
-Gate: new > old on QIPEDC-fair only as a trend (8.3 vs 4.2, p=0.34), clearly on S06 (50.9 vs 0), NOT on HCMUE (0 vs 0)
-→ owner's rule "better on clean test AND HCMUE" is not met; backend default NOT swapped. Checkpoints are in
-`reports/unified_run_2026-09-25/run*/stgcn_unified_best.pt` (gitignored? no — untracked; do not commit without asking).
-Local data: `data/processed/qipedc_kps` (624/4362, all 96 gate clips), `data/processed/hcmue_kps` (47).
-Next after owner decision: Việc 5 needs frontend WIP moved to its own branch first; Việc 6 note: all S06 sentences
-are also signed in train → ViT5 end-to-end on S06 measures unseen signer, not unseen sentence (check ViT5 training data).
+## DECISION GATE Việc 3 (owner, 2026-09-26): (a) keep the old model as default
+Reason: the gate rule (new > old on the clean test AND on HCMUE) was fixed before the results; HCMUE is 0 vs 0,
+so relaxing it now because S06 looks good is the mistake we set out to avoid. The key result is 0/31: the model
+recognises the video SOURCE, not the sign — a user's webcam is a new source too, so live accuracy will be near the
+4–10% seen on QIPEDC/HCMUE for either model.
+- Default stays `stgcn` (tier2, 487 classes). New model registered as `VSL_MODEL_TYPE=stgcn_unified`
+  (`checkpoints/stgcn_unified_best.pt`, local copy of reports/unified_run_2026-09-25/run) — Việc 6 experiments only.
+- Now doing (c): why does the model separate sources. Steps 1–3 then STOP for owner:
+  1 source classifier on model-input features (grouped by recording), then per feature group;
+  2 per-source statistics + trace VSL-GH 411→67 conversion vs QIPEDC MediaPipe path;
+  3 side-by-side landmark videos for 10 of the 0/31 words, list true variant differences.
+  After approval: 4 harmonise data + retrain (report 3 groups + 31 cross-source + source classifier), 5 webcam test set.
+- Report caveats for 70.6% (Level 2): S06 sentences all seen in train; no generalisation to other sources (0/31).
+- Việc 6: check ViT5 training data first; report end-to-end only on sentences ViT5 has not seen.
 
 ## State
 | Item | Status | Next |
