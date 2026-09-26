@@ -12,6 +12,9 @@ recognises the video SOURCE, not the sign — a user's webcam is a new source to
   2 per-source statistics + trace VSL-GH 411→67 conversion vs QIPEDC MediaPipe path;
   3 side-by-side landmark videos for 10 of the 0/31 words, list true variant differences.
   After approval: 4 harmonise data + retrain (report 3 groups + 31 cross-source + source classifier), 5 webcam test set.
+- (c) steps 1–3 DONE (26322dc, `reports/source_diagnostics_2026-09-26/REPORT.md`): source = body geometry + clip length
+  (100%), no gross extraction bug, VSL-GH ran MediaPipe at 360x360, xem/kết quả/yếu/thường xuyên signed differently.
+  WAITING for owner approval of steps 4–5. Rerun with all 435 HCMUE → `.../final/` (background; commit when done).
 - Report caveats for 70.6% (Level 2): S06 sentences all seen in train; no generalisation to other sources (0/31).
 - Việc 6: check ViT5 training data first; report end-to-end only on sentences ViT5 has not seen.
 
