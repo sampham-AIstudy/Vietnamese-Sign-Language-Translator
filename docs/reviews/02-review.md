@@ -1,3 +1,79 @@
+# Vòng 2
+
+- Commit review: 514ad47 (A5), ae82625 (B'), 208fc5f (C1), 72bc1b1 (C2), nối tiếp 12ef791. HEAD `72bc1b1`.
+- Kế hoạch: `docs/plans/02-don-dep-sau-4c.md` (Lần sửa 1, §0; AC1 ca 21–27; AC2, AC5, AC8, AC9 cập nhật).
+- Reviewer: vslt-reviewer, vòng 2/3, ngày 2026-09-27. Tôi tự chạy lại mọi lệnh. Kaggle chỉ dùng lệnh đọc.
+  `docs/reviews/02-review.md` sẽ được sinh lại theo R5.2 sau vòng này, vì vậy sha256 của file này trong REPORT §1.4 hiện đã cũ.
+  Đó không phải lỗi của lần sinh 72bc1b1.
+
+**Kết luận vòng 2: CHANGES_REQUESTED (mức thấp).** FAIL của vòng 1 đã được sửa thật. Câu Giới hạn giờ sinh từ inputs × git × manifest.
+Danh sách 8 file khớp số tôi tự đếm. Câu vẫn giữ ý "sha256 ở §1.4 là bằng chứng thay thế" và nói rõ "kể cả khi có quyền truy cập
+dataset… vẫn KHÔNG tái tạo được". Vẫn còn một FAIL nhỏ ở mục 13, lỗi gốc thuộc thiết kế: vế "Thiếu một đầu vào thì
+scripts/report_step4.py dừng với mã 2" là khẳng định phổ quát, và tôi đã chứng minh bằng thực nghiệm là nó sai với 3/8 file.
+Kết luận chính của câu (clone sạch không tái tạo được báo cáo) vẫn đúng. Xem mục "CẦN NGƯỜI DÙNG QUYẾT ĐỊNH" (a/b).
+
+## Bảng 1–13 (vòng 2, HEAD 72bc1b1)
+
+| # | Mục | Kết quả | Bằng chứng |
+|---|---|---|---|
+| 1 | Đúng kế hoạch, test thật | PASS | Ca 21 nằm ở `TestUntrackedUnarchivedInputs`. Ca 22 ở `TestGitTracked`: 22a đếm đúng 1 lời gọi `ls-files` và không truyền đường dẫn ngoài repo; 22b/22c kiểm mã 2 và không ghi file. Ca 23–26 ở `TestLimitationUntrackedInputs`, ca 27 ở `TestRealReportUntrackedInputs` (đọc file thật, tự gọi `git ls-files -z`, không skip). Đột biến trong bộ nhớ, không sửa file: đưa lại câu cũ → 23 FAIL; bỏ một đường dẫn khỏi câu → 23 FAIL; không trừ tập archived → 23 FAIL; nhánh n==0 thêm "tái tạo được" → 24 FAIL; `git_tracked` luôn trả rỗng → 22a FAIL. Câu §1.5 khớp nguyên văn §3.3 (REPORT dòng 164). |
+| 2 | Tự chạy lại test | PASS | `unittest tests.test_archive_step4_kaggle tests.test_report_step4 -v`: `Ran 123 tests OK`, 0 skip/FAIL/ERROR (24 + 99). AC2 (10 module): `Ran 53 tests OK`. `test_report_step4`: 88 → 99 (+11 ≥ +7). `test_archive_step4_kaggle` giữ 24. Khớp progress_log. |
+| 3 | Test không bị sửa/nới | PASS | `git diff 12ef791 HEAD -- tests/` và `git diff 09d4057 HEAD -- tests/`: 0 dòng `-` ngoài header. Hai tham số `make_fixture(dict_runs=)` và `argv_for(dict_runs=)` đã có từ trước (12ef791:261, 320). Test cũ, gồm cả ca 14 và 19, không đổi và vẫn qua. |
+| 4 | Nguồn dữ liệu | PASS | Không có dữ liệu mới, không train. Manifest không đổi (`git diff 12ef791 HEAD -- reports/step4_2026-09-26/archive/` rỗng). |
+| 5 | Rò rỉ | PASS (không áp dụng) | AC5: JSON HEAD `==` JSON P sau khi bỏ các khóa §5 AC5 → `True`. |
+| 6 | VAL/TEST | PASS (không áp dụng) | Vẫn chọn `H-keepz-360`, không chọn lại model. |
+| 7 | Số liệu truy được | PASS | Chạy lại lệnh ở header (HEAD 208fc5f, hai `--review-file` + `--archive-manifest`) hai lần, đổi out sang thư mục tạm: exit 0 cả hai lần. Hai lần chạy giống nhau, trừ đường dẫn out. Thân REPORT (bỏ dòng 3–4) giống bản commit. JSON bằng bản commit, trừ `generated_by.command`/`git_commit`. `git diff 208fc5f HEAD -- scripts src tests` rỗng; `code_dirty=false`. AC5 12ef791 ↔ B': JSON `==` (bỏ `generated_by` + khóa mới); REPORT chỉ đổi dòng 4, 163, 407. AC9 B' ↔ C2: JSON `==` (bỏ generated_by/review/input review/`n_inputs`); REPORT chỉ đổi header, dòng §1.4 của review 02, `8/57` → `8/58` (phần còn lại của dòng Giới hạn giống hệt), và §6 (review 02 ở dòng 412, trước review 01 ở dòng 514). |
+| 8 | Cỡ mẫu | PASS (không áp dụng) | Không có thống kê mới. |
+| 9 | Train–realtime | PASS (không áp dụng) | backend/src/configs/frontend không đổi. |
+| 10 | Mock/hard-code | PASS | Danh sách sinh từ `inputs.as_list()` × `git ls-files -z` × `manifest.files[*].local_path` (`scripts/report_step4.py` hàm `git_tracked`, `untracked_unarchived_inputs`, `archive_limit_line`). Không có đường dẫn gõ tay. |
+| 11 | Bảo mật | PASS | Kiểm lại bằng lệnh đọc: `dataset_list(mine)` → `is_private=True`, `current_version_number=1`, `last_updated` 10:48:19Z (không đổi từ vòng 1); gọi ẩn danh `datasets/view` → 403. Credential: grep `KGAT_`/`"key"` trên diff 09d4057..HEAD và trên commit message: 0. Lần sửa 1 không chạy lệnh Kaggle ghi. |
+| 12 | Công bằng, không nới | PASS | Planner chỉ THÊM khóa và số mới (`untracked_unarchived_inputs`, `n_inputs`) vào danh sách được bỏ ở AC5/AC9, kèm lý do. Danh sách file và `n` vẫn phải bằng nhau, nên không nới. |
+| 13 | Kết luận vượt bằng chứng | **FAIL (mức thấp, thiết kế)** | Đã sửa được: REPORT dòng 408 liệt kê đúng 8/58 đầu vào vừa không track vừa không nằm trong lưu trữ. Tôi tự tính từ `inputs` × `git ls-files` × manifest và ra đúng 8 file, trùng danh sách vòng 1: 4 log kernel, `data/processed/vslgh_segments/segments.csv`, `checkpoints/stgcn_tier2_indomain.pt`, `checkpoints/stgcn_unified_best.pt`, `reports/unified_run_2026-09-25/run_seed43/history.json`. sha256 của cả 8 file khớp `inputs`. Câu có "bằng chứng thay thế cho các file này là sha256 ở mục 1.4" và "kể cả khi có quyền truy cập dataset, clone sạch vẫn KHÔNG tái tạo được báo cáo". §1.5 dòng 164 không còn "Chỉ chủ dự án". **Còn sai:** vế "Thiếu một đầu vào thì scripts/report_step4.py dừng với mã 2" chỉ đúng với 5/8 file (4 log kernel qua `inputs.add` ở dòng 689; `checkpoints/stgcn_unified_best.pt` qua `inputs.add(cur_ckpt)` không điều kiện). Với 3 file còn lại, script vẫn chạy và sinh báo cáo KHÁC mà không báo lỗi: (i) `segments.csv` được đọc chỉ khi `os.path.isfile` (dòng 1065). Tôi chạy lại lệnh header với `--segments <không tồn tại>`: **exit 0**, REPORT ghi `7/57`, khác bản commit 5 dòng. (ii) `checkpoints/stgcn_tier2_indomain.pt` chỉ được thêm khi file có (dòng 1055). (iii) `history.json` của run phụ `baseline-seed43` → `null`, không lỗi (dòng 722–731, chỉ run được chọn và run từ điển dùng ở 4c mới bắt buộc). Kết luận "không tái tạo được" vẫn đúng. Nhưng câu này nói quá khả năng tự phát hiện thiếu file của script: thiếu 3 file kia thì báo cáo lặng lẽ khác đi. Câu này là chữ cố định do planner chốt ở §3.3, nên đây là lỗi thiết kế. |
+
+## Kiểm tra riêng vòng 2
+
+- **detect-changes HIGH ở 514ad47.** `detect-changes --scope compare --base-ref 12ef791`: 10 file (gồm 3 file data của người dùng),
+  76 symbol (chủ yếu Section Markdown của kế hoạch/review/REPORT và test mới), 6 luồng: `Main → {Rel, Sha256, Fr, Fv, Na, Yn}`,
+  đều thuộc `scripts/report_step4.py`. `impact -f scripts/report_step4.py` (upstream): `git_tracked`, `untracked_unarchived_inputs`,
+  `archive_limit_line` LOW/exact (caller lần lượt build, build, render); `build` LOW/exact; `render` LOW lower-bound; `git` LOW/exact
+  (caller: build, git_added, git_commit_info, git_tracked; tất cả trong cùng file). Text search `git grep` tên 3 hàm mới và
+  "report_step4" trên py/js/ts/sh/yml ngoài 2 script + 2 test: rỗng. Phạm vi: chỉ trong `scripts/report_step4.py`.
+- **progress_log (AC8), `docs/progress_log.md:47-54`.** Có đúng một dòng bảng cho kế hoạch 02 với đủ các hash. Lịch sử lệnh Kaggle
+  khớp log ngoài repo (`../_kaggle_staging/*.out`, theo mtime): upload.out 17:40:41 (403 GetDatasetStatus, exit 6),
+  upload2.out 17:44:27 (Errno 2, exit 6), upload3.out 17:48:00 (`created … (private)`, exit=0), verify.out 17:48:52
+  (404 DownloadDataset, exit 6), verify2.out 17:56:50 (exit 0). Không kiểm được lần `stage` (không có file log) và các lệnh
+  chỉ đọc của coder (`config view`, `datasets status` ×3), nên đánh dấu UNVERIFIED, không chặn. `current_version_number=1` khớp việc
+  không có `datasets version`. A3: `alphabet_real_best.pt` được thêm ở 429b289, có trong `origin/fix/audit-round2`, tôi đã xác nhận.
+  Số test trước → sau (53/53/53; 69/88/99; 24/24) khớp số tôi đo. Cột "kết luận review" đang ghi "vòng 2: chờ vslt-reviewer",
+  orchestrator cần cập nhật theo kết luận này. Định dạng: có thêm một dòng tiêu đề bảng lặp lại; chấp nhận được.
+- **Phạm vi (AC7).** `git diff --stat 09d4057..HEAD`: 12 file, đều thuộc danh sách AC7. Lần sửa 1 không đổi
+  `scripts/archive_step4_kaggle.py`, manifest, PROPOSAL, `01-review.md`, backend/src/configs/frontend/data. Ba file data của người
+  dùng vẫn ở trạng thái ` D`.
+- **Nhận xét không chặn.** (1) `git_tracked` truyền đường dẫn cho `git ls-files` dưới dạng pathspec. Đường dẫn có `*`, `?` hoặc `[`
+  sẽ bị hiểu là glob; hiện không có đầu vào nào như vậy, nhưng nên dùng `--literal-pathspecs`. (2) Ca 27 phụ thuộc trạng thái git
+  lúc chạy test. Đó là chủ ý (§6), nhưng sau này commit/gỡ track một đầu vào sẽ làm ca 27 FAIL cho tới khi sinh lại REPORT.
+
+## Việc phải sửa (vòng 2)
+
+1. **[Thiết kế → triển khai, mục 13, mức thấp]** Planner sửa chữ cố định ở §3.3 cho vế cơ chế. Ví dụ: "Thiếu các đầu vào này thì
+   scripts/report_step4.py dừng với mã 2 hoặc bỏ qua phần dùng chúng (giá trị thành null), nên kể cả khi có quyền truy cập
+   dataset, clone sạch vẫn KHÔNG tái tạo được báo cáo." Cũng có thể tách danh sách thành "bắt buộc (mã 2)" và "tùy chọn (báo cáo khác
+   đi)", nhưng phải sinh từ dữ liệu, không gõ tay. THÊM test: câu không khẳng định mọi file thiếu đều cho mã 2, hoặc kiểm phân loại.
+   Không sửa test cũ. Ca 23 hiện kiểm cụm "mã 2", nên cụm "mã 2" phải còn trong câu mới.
+
+## CẦN NGƯỜI DÙNG QUYẾT ĐỊNH (vòng 2)
+
+1. **Mục 13 còn lại (chọn một).** (a) Làm vòng CODE↔REVIEW thứ 3 để sửa vế "dừng với mã 2" như trên. Tốn khoảng 0.5 giờ, không dùng
+   GPU, không chạy lệnh Kaggle. (b) Chấp nhận câu hiện tại, ghi lỗi này vào progress_log là giới hạn đã biết. Kết luận chính của câu
+   vẫn đúng: clone sạch không tái tạo được. Reviewer đề xuất (a), vì đây là mục "Giới hạn" (DoD 9).
+2. **A3 (§7.1, vẫn chờ).** `reports/alphabet_real_run_2026-09-25/alphabet_run/alphabet_real_best.pt` vẫn được git track, thêm ở
+   429b289 và đã có trên `origin/fix/audit-round2`, nên đã nằm trên remote. `git rm --cached` không xóa được nó khỏi lịch sử đã push.
+   Chọn (a) giữ, (b) lưu trữ private rồi `git rm --cached`, hoặc (c) `git rm --cached`.
+3. **§7.2 (không chặn).** Có lưu thêm 4 log kernel, `run_seed43/history.json`, và nếu được phép thì `segments.csv` và
+   `checkpoints/*.pt` vào dataset private (version mới, kế hoạch riêng) không? Khi đó danh sách trong câu Giới hạn tự ngắn lại.
+
+---
+
 # Review 02: Dọn dẹp sau 4c (.gitignore, lưu trữ Kaggle, G1–G3)
 
 - Kế hoạch: `docs/plans/02-don-dep-sau-4c.md` (P = `09d4057`)
