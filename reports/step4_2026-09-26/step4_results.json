@@ -1,8 +1,8 @@
 {
   "generated_by": {
     "script": "scripts/report_step4.py",
-    "command": "python scripts/report_step4.py --baseline reports/unified_run_2026-09-25/run --runs H-keepz=reports/step4_2026-09-26/runs/run_keepz H-dropz=reports/step4_2026-09-26/runs/run_dropz --run-360 H-keepz-360=reports/step4_2026-09-26/runs/run_keepz_360 --aux-runs H-keepz-seed43=reports/step4_2026-09-26/runs/run_keepz_seed43 H-keepz-notrim=reports/step4_2026-09-26/runs/run_keepz_notrim baseline-seed43=reports/unified_run_2026-09-25/run_seed43 --dict-run reports/step4_2026-09-26/runs/dict_keepz --dict-run-360 reports/step4_2026-09-26/runs/dict_keepz_360 --shortcut-4a reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json --shortcut-4b reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps360.json --shortcut-legacy-compare reports/step4_2026-09-26/4a/shortcut_85.json=reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_dropz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json --kernel-logs reports/step4_2026-09-26/runs/vsl-train-harmonized.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v2.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log reports/unified_run_2026-09-25/vsl-train-unified.log --out reports/step4_2026-09-26/REPORT.md --json-out reports/step4_2026-09-26/step4_results.json --review-file docs/reviews/01-review.md",
-    "git_commit": "65a2821",
+    "command": "python scripts/report_step4.py --baseline reports/unified_run_2026-09-25/run --runs H-keepz=reports/step4_2026-09-26/runs/run_keepz H-dropz=reports/step4_2026-09-26/runs/run_dropz --run-360 H-keepz-360=reports/step4_2026-09-26/runs/run_keepz_360 --aux-runs H-keepz-seed43=reports/step4_2026-09-26/runs/run_keepz_seed43 H-keepz-notrim=reports/step4_2026-09-26/runs/run_keepz_notrim baseline-seed43=reports/unified_run_2026-09-25/run_seed43 --dict-run reports/step4_2026-09-26/runs/dict_keepz --dict-run-360 reports/step4_2026-09-26/runs/dict_keepz_360 --shortcut-4a reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json --shortcut-4b reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps360.json --shortcut-legacy-compare reports/step4_2026-09-26/4a/shortcut_85.json=reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_dropz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json --kernel-logs reports/step4_2026-09-26/runs/vsl-train-harmonized.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v2.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log reports/unified_run_2026-09-25/vsl-train-unified.log --out reports/step4_2026-09-26/REPORT.md --json-out reports/step4_2026-09-26/step4_results.json --review-file docs/reviews/01-review.md --archive-manifest reports/step4_2026-09-26/archive/kaggle_archive_manifest.json",
+    "git_commit": "bee12af",
     "code_dirty": false,
     "code_dirty_files": []
   },
@@ -66,6 +66,11 @@
       "path": "reports/step4_2026-09-26/PREREGISTRATION.md",
       "sha256": "2da6e8e5f172dde63090b1004b973e5041a18adb7397aacc93b65fc45172b793",
       "role": "preregistration"
+    },
+    {
+      "path": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json",
+      "sha256": "12c5ceb37ee8c70e16c53ca8679b34c8f3a931553cdb69e9c38fbe0f770df91f",
+      "role": "archive manifest"
     },
     {
       "path": "reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json",
@@ -772,7 +777,145 @@
         ]
       }
     ],
-    "config_note": "run_config thiếu khóa trim (run trước commit 9b0ade1) được hiểu là trim=True"
+    "config_note": "run_config thiếu khóa trim (run trước commit 9b0ade1) được hiểu là trim=True",
+    "archive": {
+      "manifest": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json",
+      "ref": "phmvnsm33/vslt-step4-artifacts",
+      "url": "https://www.kaggle.com/datasets/phmvnsm33/vslt-step4-artifacts",
+      "is_private": true,
+      "status": "ready",
+      "total_bytes": 37417786,
+      "files": [
+        {
+          "run": "baseline",
+          "kind": "checkpoint",
+          "archive_name": "unified_run_2026-09-25__run__stgcn_unified_best.pt",
+          "size_bytes": 1958573,
+          "sha256": "930633233ff37a5557e16e09714c11d2a1549def0450b6196880f4501de4aabb"
+        },
+        {
+          "run": "baseline",
+          "kind": "test_logits",
+          "archive_name": "unified_run_2026-09-25__run__test_logits.npz",
+          "size_bytes": 2690394,
+          "sha256": "cded2935ed711382b759cfb377de4dade06856d797b7a98838968f5a7d5dacf3"
+        },
+        {
+          "run": "H-keepz",
+          "kind": "checkpoint",
+          "archive_name": "step4_2026-09-26__runs__run_keepz__stgcn_unified_best.pt",
+          "size_bytes": 1958829,
+          "sha256": "db1909493312bccb2bf7271ce375f01ff09c6b1cbb5b7ac442dc6246f357a92d"
+        },
+        {
+          "run": "H-keepz",
+          "kind": "test_logits",
+          "archive_name": "step4_2026-09-26__runs__run_keepz__test_logits.npz",
+          "size_bytes": 2662197,
+          "sha256": "f66f20fef3875b7225d44f879c521f781557c810b8de8c51e0f68ce1d32b57ed"
+        },
+        {
+          "run": "H-dropz",
+          "kind": "checkpoint",
+          "archive_name": "step4_2026-09-26__runs__run_dropz__stgcn_unified_best.pt",
+          "size_bytes": 1958829,
+          "sha256": "1dd35425dbc9a6f704ffc88fc9644bb753637b1749126ad3b47a28d5744b3924"
+        },
+        {
+          "run": "H-dropz",
+          "kind": "test_logits",
+          "archive_name": "step4_2026-09-26__runs__run_dropz__test_logits.npz",
+          "size_bytes": 2657818,
+          "sha256": "4936a0cb33ec842d229f052c2bae967feaf591fc16f4a50cd124d3d93f8c8d0f"
+        },
+        {
+          "run": "H-keepz-360",
+          "kind": "checkpoint",
+          "archive_name": "step4_2026-09-26__runs__run_keepz_360__stgcn_unified_best.pt",
+          "size_bytes": 1958829,
+          "sha256": "648a7825cab9d54cf8d6ce16208cf1cd8dbfbe493fb2d7de919b1f9aebc9b59e"
+        },
+        {
+          "run": "H-keepz-360",
+          "kind": "test_logits",
+          "archive_name": "step4_2026-09-26__runs__run_keepz_360__test_logits.npz",
+          "size_bytes": 2653253,
+          "sha256": "0a560a6d3810f0578384d0fb110ebd728004881dd087ea2fe101f2ac4ea88bfe"
+        },
+        {
+          "run": "H-keepz-seed43",
+          "kind": "checkpoint",
+          "archive_name": "step4_2026-09-26__runs__run_keepz_seed43__stgcn_unified_best.pt",
+          "size_bytes": 1958829,
+          "sha256": "f8f28f05170551a65b700b947e54fa5b96d348565aeaf4fabc41a35772acbd98"
+        },
+        {
+          "run": "H-keepz-seed43",
+          "kind": "test_logits",
+          "archive_name": "step4_2026-09-26__runs__run_keepz_seed43__test_logits.npz",
+          "size_bytes": 2648534,
+          "sha256": "bb2bf6b7f495c9a6d95daa952e794e6bc376095257e63371ae18748259f8dab1"
+        },
+        {
+          "run": "H-keepz-notrim",
+          "kind": "checkpoint",
+          "archive_name": "step4_2026-09-26__runs__run_keepz_notrim__stgcn_unified_best.pt",
+          "size_bytes": 1958829,
+          "sha256": "92e603e19300e228ac220da8f1a07dae94e18a72bd105859f53de0c4b82e2df9"
+        },
+        {
+          "run": "H-keepz-notrim",
+          "kind": "test_logits",
+          "archive_name": "step4_2026-09-26__runs__run_keepz_notrim__test_logits.npz",
+          "size_bytes": 2649741,
+          "sha256": "a04cadca374457e787f4b9b2e056ae02577ad9ca7409cca0251a49fab1405eb9"
+        },
+        {
+          "run": "baseline-seed43",
+          "kind": "checkpoint",
+          "archive_name": "unified_run_2026-09-25__run_seed43__stgcn_unified_best.pt",
+          "size_bytes": 1958573,
+          "sha256": "a8f0dc6f7df597fe9bacfedadd846e8eabeada164e3a279bcc82c6b242279871"
+        },
+        {
+          "run": "baseline-seed43",
+          "kind": "test_logits",
+          "archive_name": "unified_run_2026-09-25__run_seed43__test_logits.npz",
+          "size_bytes": 2683317,
+          "sha256": "b4d5acf5118fada4d65673acca706d7c8c42ee76a1204d942f43f63528cc0cdd"
+        },
+        {
+          "run": "dict_keepz",
+          "kind": "checkpoint",
+          "archive_name": "step4_2026-09-26__runs__dict_keepz__stgcn_unified_best.pt",
+          "size_bytes": 1807533,
+          "sha256": "62cb7f2006b22f99d64ddac1bef6164a7592e072cf470fc1b482ad6429435cc0"
+        },
+        {
+          "run": "dict_keepz",
+          "kind": "test_logits",
+          "archive_name": "step4_2026-09-26__runs__dict_keepz__test_logits.npz",
+          "size_bytes": 722096,
+          "sha256": "1c8213657b42a4eb6f08e8e54b59ebbbf590fefa820f703a8502f29268aef397"
+        },
+        {
+          "run": "dict_keepz_360",
+          "kind": "checkpoint",
+          "archive_name": "step4_2026-09-26__runs__dict_keepz_360__stgcn_unified_best.pt",
+          "size_bytes": 1807597,
+          "sha256": "1fc9031d127701146efe3a852f410d4bdefbf49264193a899659c6c3d52f54a7"
+        },
+        {
+          "run": "dict_keepz_360",
+          "kind": "test_logits",
+          "archive_name": "step4_2026-09-26__runs__dict_keepz_360__test_logits.npz",
+          "size_bytes": 721817,
+          "sha256": "013c15075763ec118cff134b1e681ac81b686027af77df0f355f694328b6ba9f"
+        }
+      ],
+      "verified_at_utc": "2026-09-27T10:56:50Z",
+      "manifest_git_commit": "2b3ca94"
+    }
   },
   "4a": {
     "path": "reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json",

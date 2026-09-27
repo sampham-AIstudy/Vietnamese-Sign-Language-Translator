@@ -1,7 +1,7 @@
 # Báo cáo Bước 4a–4c (sinh bởi scripts/report_step4.py)
 
-- Lệnh: `python scripts/report_step4.py --baseline reports/unified_run_2026-09-25/run --runs H-keepz=reports/step4_2026-09-26/runs/run_keepz H-dropz=reports/step4_2026-09-26/runs/run_dropz --run-360 H-keepz-360=reports/step4_2026-09-26/runs/run_keepz_360 --aux-runs H-keepz-seed43=reports/step4_2026-09-26/runs/run_keepz_seed43 H-keepz-notrim=reports/step4_2026-09-26/runs/run_keepz_notrim baseline-seed43=reports/unified_run_2026-09-25/run_seed43 --dict-run reports/step4_2026-09-26/runs/dict_keepz --dict-run-360 reports/step4_2026-09-26/runs/dict_keepz_360 --shortcut-4a reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json --shortcut-4b reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps360.json --shortcut-legacy-compare reports/step4_2026-09-26/4a/shortcut_85.json=reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_dropz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json --kernel-logs reports/step4_2026-09-26/runs/vsl-train-harmonized.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v2.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log reports/unified_run_2026-09-25/vsl-train-unified.log --out reports/step4_2026-09-26/REPORT.md --json-out reports/step4_2026-09-26/step4_results.json --review-file docs/reviews/01-review.md`
-- HEAD: `65a2821`; code_dirty (scripts/, src/, tests/): false
+- Lệnh: `python scripts/report_step4.py --baseline reports/unified_run_2026-09-25/run --runs H-keepz=reports/step4_2026-09-26/runs/run_keepz H-dropz=reports/step4_2026-09-26/runs/run_dropz --run-360 H-keepz-360=reports/step4_2026-09-26/runs/run_keepz_360 --aux-runs H-keepz-seed43=reports/step4_2026-09-26/runs/run_keepz_seed43 H-keepz-notrim=reports/step4_2026-09-26/runs/run_keepz_notrim baseline-seed43=reports/unified_run_2026-09-25/run_seed43 --dict-run reports/step4_2026-09-26/runs/dict_keepz --dict-run-360 reports/step4_2026-09-26/runs/dict_keepz_360 --shortcut-4a reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json --shortcut-4b reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps360.json --shortcut-legacy-compare reports/step4_2026-09-26/4a/shortcut_85.json=reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_dropz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json --kernel-logs reports/step4_2026-09-26/runs/vsl-train-harmonized.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v2.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log reports/unified_run_2026-09-25/vsl-train-unified.log --out reports/step4_2026-09-26/REPORT.md --json-out reports/step4_2026-09-26/step4_results.json --review-file docs/reviews/01-review.md --archive-manifest reports/step4_2026-09-26/archive/kaggle_archive_manifest.json`
+- HEAD: `bee12af`; code_dirty (scripts/, src/, tests/): false
 - Luật chọn đăng ký trước: `reports/step4_2026-09-26/PREREGISTRATION.md`. Chọn chỉ bằng VAL; TEST chỉ đọc lại `test_logits.npz` đã sinh một lần trong kernel; không TTA.
 - Mọi số trong báo cáo này có trong `step4_results.json` (cùng dict) hoặc trong JSON đầu vào.
 
@@ -88,6 +88,7 @@ Bản cũ không ghi `--ckpt`/`--seed`; bản chạy lại dùng mặc định c
 | `reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps.json` | JSON cũ (không provenance) | `37e25c05f5546d11cd155e90716f2859f3810b44d65166046a701d94be526931` |
 | `reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps360.json` | 4b source classifier | `334b1fa82bd1ca7f62a1159f10a1493be871de3d8e5ccaf06e9d4a82fde78d0c` |
 | `reports/step4_2026-09-26/PREREGISTRATION.md` | preregistration | `2da6e8e5f172dde63090b1004b973e5041a18adb7397aacc93b65fc45172b793` |
+| `reports/step4_2026-09-26/archive/kaggle_archive_manifest.json` | archive manifest | `12c5ceb37ee8c70e16c53ca8679b34c8f3a931553cdb69e9c38fbe0f770df91f` |
 | `reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json` | 4a source classifier + cross-source (provenance); JSON chạy lại | `76a12be4393c08feaf6ec2ce4474188fc75210418078515d7f1b2971179720e0` |
 | `reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json` | 4b source classifier; JSON chạy lại | `31aa8caf4de0f65a1af466d9e009f427340a8edc08b686db293146fcd0414393` |
 | `reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json` | 4b source classifier; JSON chạy lại | `4f3fcf51210dafdeffaa8b8047950b1c2bce5e120508521465610b539ecdc7cd` |
@@ -132,6 +133,34 @@ Bản cũ không ghi `--ckpt`/`--seed`; bản chạy lại dùng mặc định c
 | `reports/unified_run_2026-09-25/run_seed43/test_logits.npz` | test_logits.npz baseline-seed43 | `b4d5acf5118fada4d65673acca706d7c8c42ee76a1204d942f43f63528cc0cdd` |
 | `reports/unified_run_2026-09-25/vsl-train-unified.log` | kernel log | `14c1b59af71cd8dcbd9f5d9157d1a1c729ac38f44029e9d427f27d33d39a3422` |
 | `scripts/train_unified.py` | scripts/train_unified.py (chỉ đọc text: tùy chọn khởi tạo) | `276d91601a90fde92710d094b5bb5dada2b5a78790ac40fd3285b4585976705c` |
+
+### 1.5 Lưu trữ checkpoint và logits (Kaggle dataset private)
+
+- Dataset: `phmvnsm33/vslt-step4-artifacts` (https://www.kaggle.com/datasets/phmvnsm33/vslt-step4-artifacts); private: CÓ (kiểm bằng dataset_list(mine) và dataset_metadata lúc 2026-09-27T10:56:50Z); trạng thái: ready; tổng dung lượng: 37417786 byte (18 file + SHA256SUMS).
+- Manifest: `reports/step4_2026-09-26/archive/kaggle_archive_manifest.json` (sinh bởi `scripts/archive_step4_kaggle.py verify` ở commit 2b3ca94; sha256 của manifest ở mục 1.4).
+
+| Run | Loại | Tên trong dataset | Kích thước (byte) | sha256 | trùng §1.4 |
+|---|---|---|---|---|---|
+| baseline | checkpoint | `unified_run_2026-09-25__run__stgcn_unified_best.pt` | 1958573 | `930633233ff37a5557e16e09714c11d2a1549def0450b6196880f4501de4aabb` | CÓ |
+| baseline | test_logits | `unified_run_2026-09-25__run__test_logits.npz` | 2690394 | `cded2935ed711382b759cfb377de4dade06856d797b7a98838968f5a7d5dacf3` | CÓ |
+| H-keepz | checkpoint | `step4_2026-09-26__runs__run_keepz__stgcn_unified_best.pt` | 1958829 | `db1909493312bccb2bf7271ce375f01ff09c6b1cbb5b7ac442dc6246f357a92d` | CÓ |
+| H-keepz | test_logits | `step4_2026-09-26__runs__run_keepz__test_logits.npz` | 2662197 | `f66f20fef3875b7225d44f879c521f781557c810b8de8c51e0f68ce1d32b57ed` | CÓ |
+| H-dropz | checkpoint | `step4_2026-09-26__runs__run_dropz__stgcn_unified_best.pt` | 1958829 | `1dd35425dbc9a6f704ffc88fc9644bb753637b1749126ad3b47a28d5744b3924` | CÓ |
+| H-dropz | test_logits | `step4_2026-09-26__runs__run_dropz__test_logits.npz` | 2657818 | `4936a0cb33ec842d229f052c2bae967feaf591fc16f4a50cd124d3d93f8c8d0f` | CÓ |
+| H-keepz-360 | checkpoint | `step4_2026-09-26__runs__run_keepz_360__stgcn_unified_best.pt` | 1958829 | `648a7825cab9d54cf8d6ce16208cf1cd8dbfbe493fb2d7de919b1f9aebc9b59e` | CÓ |
+| H-keepz-360 | test_logits | `step4_2026-09-26__runs__run_keepz_360__test_logits.npz` | 2653253 | `0a560a6d3810f0578384d0fb110ebd728004881dd087ea2fe101f2ac4ea88bfe` | CÓ |
+| H-keepz-seed43 | checkpoint | `step4_2026-09-26__runs__run_keepz_seed43__stgcn_unified_best.pt` | 1958829 | `f8f28f05170551a65b700b947e54fa5b96d348565aeaf4fabc41a35772acbd98` | CÓ |
+| H-keepz-seed43 | test_logits | `step4_2026-09-26__runs__run_keepz_seed43__test_logits.npz` | 2648534 | `bb2bf6b7f495c9a6d95daa952e794e6bc376095257e63371ae18748259f8dab1` | CÓ |
+| H-keepz-notrim | checkpoint | `step4_2026-09-26__runs__run_keepz_notrim__stgcn_unified_best.pt` | 1958829 | `92e603e19300e228ac220da8f1a07dae94e18a72bd105859f53de0c4b82e2df9` | CÓ |
+| H-keepz-notrim | test_logits | `step4_2026-09-26__runs__run_keepz_notrim__test_logits.npz` | 2649741 | `a04cadca374457e787f4b9b2e056ae02577ad9ca7409cca0251a49fab1405eb9` | CÓ |
+| baseline-seed43 | checkpoint | `unified_run_2026-09-25__run_seed43__stgcn_unified_best.pt` | 1958573 | `a8f0dc6f7df597fe9bacfedadd846e8eabeada164e3a279bcc82c6b242279871` | CÓ |
+| baseline-seed43 | test_logits | `unified_run_2026-09-25__run_seed43__test_logits.npz` | 2683317 | `b4d5acf5118fada4d65673acca706d7c8c42ee76a1204d942f43f63528cc0cdd` | CÓ |
+| dict_keepz | checkpoint | `step4_2026-09-26__runs__dict_keepz__stgcn_unified_best.pt` | 1807533 | `62cb7f2006b22f99d64ddac1bef6164a7592e072cf470fc1b482ad6429435cc0` | CÓ |
+| dict_keepz | test_logits | `step4_2026-09-26__runs__dict_keepz__test_logits.npz` | 722096 | `1c8213657b42a4eb6f08e8e54b59ebbbf590fefa820f703a8502f29268aef397` | CÓ |
+| dict_keepz_360 | checkpoint | `step4_2026-09-26__runs__dict_keepz_360__stgcn_unified_best.pt` | 1807597 | `1fc9031d127701146efe3a852f410d4bdefbf49264193a899659c6c3d52f54a7` | CÓ |
+| dict_keepz_360 | test_logits | `step4_2026-09-26__runs__dict_keepz_360__test_logits.npz` | 721817 | `013c15075763ec118cff134b1e681ac81b686027af77df0f355f694328b6ba9f` | CÓ |
+
+Chỉ chủ dự án truy cập được; tải: `kaggle datasets download phmvnsm33/vslt-step4-artifacts`; kiểm: `sha256sum -c SHA256SUMS`.
 
 ## 2. Bước 4a — kiểm tra lối tắt trên các lớp có ở cả hai nguồn
 
@@ -375,7 +404,7 @@ Chỉ là chỉ báo cho giả thuyết "model gộp học phân biệt nguồn"
 - Model mặc định của backend: VSL_MODEL_TYPE mặc định `stgcn` → `checkpoints/stgcn_tier2_indomain.pt` (sha256 53c34cba43854c3e9820495bba3f93ffe18b5e1cb87ef44278a188ccafe2c826); trùng model được kiểm ở 4a: KHÔNG.
 - Chọn epoch: epoch tốt nhất của mỗi run chọn theo VAL top-1 tổng (VSL-GH chiếm 1190/1295 clip VAL), còn biến thể chọn theo balanced VAL.
 - `git_commit` trong JSON của scripts/shortcut_85.py chỉ là HEAD, không ghi trạng thái bẩn của mã.
-- Logits, checkpoint và log kernel bị gitignore: clone sạch không tái tạo được báo cáo; sha256 ở mục 1.4 là bằng chứng thay thế.
+- Checkpoint và logits TEST của mọi run được lưu ở Kaggle dataset private `phmvnsm33/vslt-step4-artifacts` (sha256 ở mục 1.5); log kernel và `train.log` vẫn bị gitignore và không nằm trong lưu trữ; clone sạch không có quyền truy cập dataset thì vẫn không tái tạo được báo cáo.
 
 ## 6. Review
 
