@@ -556,6 +556,25 @@ def join_reviews(parts):
     return "\n\n---\n\n".join(f"### Review: `{rel(p)}`\n\n{t.rstrip()}" for p, t in parts)
 
 
+def git_tracked(paths):
+    """Set of the given rel() paths that git tracks: one `git ls-files -z` call for the in-repo paths; paths outside the
+    repo (still absolute after rel()) count as untracked and are never passed to git. git failure -> exit 2."""
+    inside = sorted({p for p in paths if p and not os.path.isabs(p)})
+    if not inside:
+        return set()
+    out = git("ls-files", "-z", "--", *inside)
+    if out is None:
+        raise ReportError(2, "không xác định được file nào được git track")
+    listed = {p.replace("\\", "/") for p in out.split("\0") if p}
+    return {p for p in inside if p.replace("\\", "/") in listed}
+
+
+def untracked_unarchived_inputs(inputs, tracked, archived):
+    """inputs.as_list() entries whose path is neither git-tracked nor in the archive manifest, sorted by path."""
+    return sorted(({"path": i["path"], "sha256": i["sha256"], "role": i["role"]} for i in inputs
+                   if i["path"] not in tracked and i["path"] not in archived), key=lambda i: i["path"])
+
+
 ARCHIVE_KINDS = {"checkpoint": ("stgcn_unified_best.pt", "sha256_ckpt"),
                  "test_logits": ("test_logits.npz", "sha256_test_logits")}
 
@@ -1074,6 +1093,13 @@ def build(args, argv):
               "epoch_selection": "epoch tốt nhất của mỗi run chọn theo VAL top-1 tổng (VSL-GH chiếm "
                                  f"{int((val.source == 'vslgh').sum())}/{len(val)} clip VAL), còn biến thể chọn theo balanced VAL"}
 
+    # every inputs.add() is done at this point (reviews and archive manifest included)
+    in_list = inputs.as_list()
+    archived = ({rel(f.get("local_path") or "") for f in archive_manifest.get("files") or []}
+                if archive_manifest is not None else set())
+    untracked = untracked_unarchived_inputs(in_list, git_tracked([i["path"] for i in in_list]), archived)
+    limits["untracked_unarchived_inputs"] = {"n": len(untracked), "n_inputs": len(in_list), "files": untracked}
+
     head = git("rev-parse", "--short", "HEAD")
     dirty = git("status", "--porcelain", "--", "scripts", "src", "tests")
     return {"generated_by": {"script": "scripts/report_step4.py",
@@ -1129,6 +1155,18 @@ def raw(x):
 
 def yn(b):
     return MISSING if b is None else ("CÓ" if b else "KHÔNG")
+
+
+def archive_limit_line(ref, u):
+    """Giới hạn line when the archive manifest is given (plan 02 Lần sửa 1, §3.3; fixed wording, data in {})."""
+    head = (f"- Checkpoint và logits TEST của mọi run được lưu ở Kaggle dataset private `{ref}` (sha256 ở mục 1.5); lưu "
+            "trữ không gồm log kernel hay đầu vào nào khác.")
+    if u["n"] == 0:
+        return head + " Mọi đầu vào của báo cáo này đều được git track hoặc nằm trong lưu trữ."
+    return (head + f" {u['n']}/{u['n_inputs']} đầu vào của báo cáo này vừa không được git track vừa không nằm trong lưu "
+            "trữ: " + ", ".join(f"`{f['path']}`" for f in u["files"]) + "; bằng chứng thay thế cho các file này là sha256 "
+            "ở mục 1.4. Thiếu một đầu vào thì scripts/report_step4.py dừng với mã 2, nên kể cả khi có quyền truy cập "
+            "dataset, clone sạch vẫn KHÔNG tái tạo được báo cáo.")
 
 
 def render(res):
@@ -1199,8 +1237,9 @@ def render(res):
             p = pv["runs"][f["run"]]["dir"] + "/" + ARCHIVE_KINDS[f["kind"]][0]
             o.append(f"| {f['run']} | {f['kind']} | `{f['archive_name']}` | {f['size_bytes']} | `{f['sha256']}` | "
                      f"{yn(sha14.get(p) == f['sha256'] if p in sha14 else None)} |")
-        o += ["", f"Chỉ chủ dự án truy cập được; tải: `kaggle datasets download {ar['ref']}`; kiểm: "
-                  "`sha256sum -c SHA256SUMS`."]
+        o += ["", "Dataset private theo Kaggle API (không truy cập ẩn danh được; chỉ tài khoản chủ và người được chia sẻ "
+                  "truy cập được; danh sách chia sẻ không được kiểm); tải: "
+                  f"`kaggle datasets download {ar['ref']}`; kiểm: `sha256sum -c SHA256SUMS`."]
 
     # 2. 4a
     bal4a = s4a["balanced"]
@@ -1492,10 +1531,7 @@ def render(res):
           f"- Chọn epoch: {L['epoch_selection']}.",
           "- `git_commit` trong JSON của scripts/shortcut_85.py chỉ là HEAD, không ghi trạng thái bẩn của mã.",
           ("- Logits, checkpoint và log kernel bị gitignore: clone sạch không tái tạo được báo cáo; sha256 ở mục 1.4 là bằng chứng thay thế."
-           if not pv.get("archive") else
-           f"- Checkpoint và logits TEST của mọi run được lưu ở Kaggle dataset private `{pv['archive']['ref']}` (sha256 ở "
-           "mục 1.5); log kernel và `train.log` vẫn bị gitignore và không nằm trong lưu trữ; clone sạch không có quyền truy "
-           "cập dataset thì vẫn không tái tạo được báo cáo.")]
+           if not pv.get("archive") else archive_limit_line(pv["archive"]["ref"], L["untracked_unarchived_inputs"]))]
 
     o += ["", "## 6. Review", ""]
     o.append(res["review"].rstrip() if res["review"] else "Chưa có kết quả vslt-reviewer (sinh lại với `--review-file`).")

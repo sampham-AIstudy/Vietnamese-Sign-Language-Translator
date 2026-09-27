@@ -1026,5 +1026,193 @@ class TestProposal4cCleanup(unittest.TestCase):
         self.assertIn("khuyến nghị có điều kiện", self.prop)
 
 
+# ------------------------------------------------------------------------------------------------ plan 02 Lần sửa 1 (AC1 21-26)
+class TestUntrackedUnarchivedInputs(unittest.TestCase):
+    """AC1 case 21: pure set logic (path not tracked and not archived), sorted by path, keys path/sha256/role."""
+
+    @staticmethod
+    def item(p):
+        return {"path": p, "sha256": "h_" + p, "role": "r_" + p}
+
+    def test_21a_single_remaining_input(self):
+        inputs = [self.item(p) for p in ("t1", "t2", "arch", "both", "left")]
+        out = R.untracked_unarchived_inputs(inputs, {"t1", "t2", "both"}, {"arch", "both"})
+        self.assertEqual(out, [self.item("left")])
+        self.assertEqual(set(out[0]), {"path", "sha256", "role"})
+
+    def test_21b_two_remaining_sorted(self):
+        inputs = [self.item(p) for p in ("z/b.log", "t1", "a/c.csv")]
+        out = R.untracked_unarchived_inputs(inputs, {"t1"}, set())
+        self.assertEqual([o["path"] for o in out], ["a/c.csv", "z/b.log"])
+        for o in out:
+            self.assertEqual(set(o), {"path", "sha256", "role"})
+
+    def test_21c_empty(self):
+        self.assertEqual(R.untracked_unarchived_inputs([], {"x"}, {"y"}), [])
+
+
+class TestGitTracked(unittest.TestCase):
+    """AC1 case 22: git_tracked() — one `git ls-files -z` call for in-repo paths, none for paths outside the repo."""
+
+    def setUp(self):
+        self.orig = R.git
+        self.d = tempfile.mkdtemp().replace("\\", "/")
+        self.cwd = os.getcwd()
+
+    def tearDown(self):
+        R.git = self.orig
+        os.chdir(self.cwd)
+        shutil.rmtree(self.d, ignore_errors=True)
+
+    def test_22a_tracked_missing_and_outside(self):
+        calls = []
+
+        def rec(*a):
+            calls.append(a)
+            return self.orig(*a)
+        R.git = rec
+        outside = R.rel(os.path.join(self.d, "x.txt"))
+        self.assertTrue(os.path.isabs(outside))
+        got = R.git_tracked(["scripts/report_step4.py", "reports/__no_such_file__.txt", outside])
+        self.assertEqual(got, {"scripts/report_step4.py"})
+        self.assertEqual(len(calls), 1)
+        self.assertIn("ls-files", calls[0])
+        self.assertNotIn(outside, calls[0])
+        self.assertFalse(any(self.d in str(x) for x in calls[0]))
+
+    def test_22b_git_error_is_exit_2(self):
+        R.git = lambda *a: None
+        with self.assertRaises(R.ReportError) as cm:
+            R.git_tracked(["scripts/report_step4.py"])
+        self.assertEqual(cm.exception.code, 2)
+
+    def test_22c_git_error_through_main_writes_nothing(self):
+        p = make_fixture(self.d)
+        orig = self.orig
+        R.git = lambda *a: None if "ls-files" in a else orig(*a)
+        self.assertEqual(R.main(argv_for(self.d, p)), 2)
+        self.assertFalse(os.path.exists(os.path.join(self.d, "out", "REPORT.md")))
+        self.assertFalse(os.path.exists(os.path.join(self.d, "out", "step4_results.json")))
+
+
+class TestLimitationUntrackedInputs(unittest.TestCase):
+    """AC1 cases 23-26: the archive limitation line is generated from inputs x git x manifest; section 1.5 access
+    sentence. So that no fixture input is git-tracked: the preregistration file is copied into the temp dir, and the
+    fixture has no dictionary runs (with a 4c dictionary run, build() also reads the tracked scripts/train_unified.py).
+    The only in-repo input left is the backend default checkpoint when it exists locally (checkpoints/ is gitignored)."""
+
+    def setUp(self):
+        self.d = tempfile.mkdtemp().replace("\\", "/")
+        self.cwd = os.getcwd()
+        self.orig_tracked = R.git_tracked
+        self.p = make_fixture(self.d, dict_runs=())
+        prereg = self.d + "/PREREGISTRATION.md"
+        shutil.copyfile(PREREG, prereg)
+        self.argv = [prereg if a == PREREG else a for a in argv_for(self.d, self.p, dict_runs=())]
+        base = R.build(R.parse_args(self.argv), self.argv)
+        self.man = self.d + "/kaggle_archive_manifest.json"
+        self.m = make_archive_manifest(base)
+        dump(self.m, self.man)
+
+    def tearDown(self):
+        R.git_tracked = self.orig_tracked
+        os.chdir(self.cwd)
+        shutil.rmtree(self.d, ignore_errors=True)
+
+    def run_main(self, with_manifest=True):
+        argv = self.argv + (["--archive-manifest", self.man] if with_manifest else [])
+        self.assertEqual(R.main(argv), 0)
+        with open(os.path.join(self.d, "out", "REPORT.md"), encoding="utf-8") as f:
+            text = f.read()
+        with open(os.path.join(self.d, "out", "step4_results.json"), encoding="utf-8") as f:
+            return text, json.load(f)
+
+    def limit_line(self, text, ref):
+        lim = text.split("## 5. Giới hạn", 1)[1].split("\n## 6.", 1)[0]
+        lines = [l for l in lim.splitlines() if ref in l]
+        self.assertEqual(len(lines), 1)
+        return lines[0]
+
+    def test_23_untracked_list_and_limit_line(self):
+        text, js = self.run_main()
+        self.assertEqual(R.git_tracked([i["path"] for i in js["inputs"]]), set())   # premise: nothing tracked
+        u = js["limitations_data"]["untracked_unarchived_inputs"]
+        archived = {R.rel(f["local_path"]) for f in self.m["files"]}
+        expected = {i["path"] for i in js["inputs"]} - archived
+        self.assertEqual({f["path"] for f in u["files"]}, expected)
+        self.assertEqual(u["n"], len(u["files"]))
+        self.assertEqual(u["n_inputs"], len(js["inputs"]))
+        line = self.limit_line(text, js["provenance"]["archive"]["ref"])
+        self.assertIn(f"{u['n']}/{u['n_inputs']} đầu vào", line)
+        for f in u["files"]:
+            self.assertIn(f"`{f['path']}`", line)
+        for s in ("bằng chứng thay thế cho các file này là sha256 ở mục 1.4", "kể cả khi có quyền truy cập dataset",
+                  "vẫn KHÔNG tái tạo được báo cáo", "mã 2"):
+            self.assertIn(s, line)
+        self.assertNotIn("không có quyền truy cập dataset thì", line)
+
+    def test_24_all_tracked_branch(self):
+        R.git_tracked = lambda paths: set(paths)
+        text, js = self.run_main()
+        self.assertEqual(js["limitations_data"]["untracked_unarchived_inputs"]["n"], 0)
+        line = self.limit_line(text, js["provenance"]["archive"]["ref"])
+        self.assertIn("Mọi đầu vào của báo cáo này đều được git track hoặc nằm trong lưu trữ", line)
+        self.assertNotIn("kể cả khi", line)
+        self.assertNotIn("tái tạo được", line)
+
+    def test_25_section_1_5_access_sentence(self):
+        text, _ = self.run_main()
+        sec = text[text.index("### 1.5"):text.index("\n## 2.")]
+        self.assertIn("không truy cập ẩn danh được", sec)
+        self.assertIn("danh sách chia sẻ không được kiểm", sec)
+        self.assertNotIn("Chỉ chủ dự án", text)
+
+    def test_26_without_manifest_key_present(self):
+        text, js = self.run_main(with_manifest=False)
+        u = js["limitations_data"]["untracked_unarchived_inputs"]
+        self.assertEqual(u["n_inputs"], len(js["inputs"]))
+        self.assertEqual(u["n"], len(u["files"]))
+        self.assertNotIn("kể cả khi có quyền truy cập dataset", text)
+
+
+# ------------------------------------------------------------------------------------------------ plan 02 Lần sửa 1 (AC1 27)
+class TestRealReportUntrackedInputs(unittest.TestCase):
+    """AC1 case 27: the committed REPORT/JSON list exactly the inputs that are neither git-tracked (git ls-files now) nor
+    in the archive manifest. Recomputed here without calling report_step4.py. A missing file fails (no skip)."""
+    DIR = os.path.join(ROOT, "reports", "step4_2026-09-26")
+    MARK = "\n## 6. Review\n"
+
+    def test_27_real_files(self):
+        import subprocess
+        with open(os.path.join(self.DIR, "REPORT.md"), encoding="utf-8") as f:
+            report = f.read()
+        with open(os.path.join(self.DIR, "step4_results.json"), encoding="utf-8") as f:
+            res = json.load(f)
+        with open(os.path.join(self.DIR, "archive", "kaggle_archive_manifest.json"), encoding="utf-8") as f:
+            man = json.load(f)
+        paths = [i["path"] for i in res["inputs"]]
+        r = subprocess.run(["git", "ls-files", "-z", "--", *paths], capture_output=True, text=True, encoding="utf-8",
+                           cwd=ROOT)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        tracked = {p for p in r.stdout.split("\0") if p}
+        archived = {R.rel(f["local_path"]) for f in man["files"]}
+        expected = {p for p in paths if p not in tracked and p not in archived}
+        self.assertTrue(expected)
+        listed = {f["path"] for f in res["limitations_data"]["untracked_unarchived_inputs"]["files"]}
+        self.assertEqual(listed, expected)
+        self.assertIn(self.MARK, report)
+        body = report.split(self.MARK, 1)[0]
+        ref = man["dataset"]["ref"]
+        lim = body.split("## 5. Giới hạn", 1)[1]
+        lines = [l for l in lim.splitlines() if ref in l]
+        self.assertEqual(len(lines), 1)
+        for p in expected:
+            self.assertIn(p, lines[0])
+        self.assertIn("kể cả khi có quyền truy cập dataset", lines[0])
+        self.assertIn("bằng chứng thay thế cho các file này là sha256 ở mục 1.4", lines[0])
+        self.assertIn("không truy cập ẩn danh được", body)
+        self.assertNotIn("Chỉ chủ dự án", body)
+
+
 if __name__ == "__main__":
     unittest.main()
