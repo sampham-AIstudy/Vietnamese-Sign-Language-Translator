@@ -1,3 +1,65 @@
+# Vòng 3
+
+- Commit review: f2b7c5b (A6), 7643a12 (C3), eaa48e1 (B''), nối tiếp 72bc1b1. HEAD `eaa48e1`.
+- Kế hoạch: `docs/plans/02-don-dep-sau-4c.md` (§0b Lần sửa 2; T0–T5; AC1 ca 28–32; AC2, AC5b, AC8, AC9', AC10).
+- Reviewer: vslt-reviewer, vòng 3/3 (cuối), ngày 2026-09-27. Tôi tự chạy lại mọi lệnh. Không di chuyển hay xóa file thật: mọi thực
+  nghiệm "thiếu file" dùng `unittest.mock.patch` hoặc đổi đường dẫn trong đối số sang thư mục tạm. Kaggle chỉ dùng lệnh đọc.
+  Sau khi vòng này được ghi, sha256 của `docs/reviews/02-review.md` trong REPORT §1.4 sẽ cũ; bước T5 (C4, C5) sinh lại. Đó không
+  phải lỗi của B''.
+
+**Kết luận vòng 3: APPROVE.** Không còn FAIL. FAIL mục 13 của vòng 2 đã được sửa thật. Phân loại bắt buộc/tùy chọn lấy từ chính các
+chỗ gọi `Inputs.add` trong mã, không gõ tay. REPORT in 5 bắt buộc / 3 tùy chọn, khớp thực nghiệm của tôi trên dữ liệu thật với cả
+8/8 file. Câu Giới hạn đúng cho cả hai nhóm và không vượt bằng chứng.
+
+## Bảng 1–13 (vòng 3, HEAD eaa48e1)
+
+| # | Mục | Kết quả | Bằng chứng |
+|---|---|---|---|
+| 1 | Đúng kế hoạch, test thật | PASS | Ca 28 `TestInputsRequired`: phép OR theo cả hai thứ tự; `as_list` giữ 3 khóa. Ca 29 `TestRequiredOptionalBehaviour`: với MỖI file trong danh sách, giả lập thiếu bằng `mock.patch` (`os.path.isfile`/`exists`), rồi kiểm bắt buộc → `main` = 2 và không ghi file; tùy chọn → 0 và thân REPORT khác. Không động đĩa: có assert file thật trong repo vẫn còn. Ca 30: vị trí từng path theo nhóm, nhóm rỗng in "không có". Ca 31a: `--literal-pathspecs` đứng trước `ls-files`. Ca 32: file thật. Đột biến trong bộ nhớ: mọi `add` thành bắt buộc → 29 FAIL; mọi `add` thành tùy chọn → 29 FAIL; đảo nhóm trong câu → 30 FAIL; bỏ cờ literal trong `git_tracked` → 31a FAIL. Riêng 31b không phân biệt được: không có cờ literal thì kết quả vẫn rỗng, vì `git_tracked` lọc theo tên chính xác. Chỉ 31a canh cờ này (không chặn). |
+| 2 | Tự chạy lại test | PASS | `unittest tests.test_archive_step4_kaggle tests.test_report_step4 -v`: `Ran 129 tests OK`, 0 skip/FAIL/ERROR (24 + 105; `test_report_step4` từ 99 lên 105, +6 ≥ +5). AC2 (10 module): `Ran 53 OK`. `git status --porcelain` trước và sau khi chạy toàn bộ test giống hệt (`cmp`). Các file thật (`checkpoints/*.pt`, `segments.csv`, `run_seed43/history.json`, log kernel) vẫn còn. |
+| 3 | Test không bị sửa/nới | PASS | `git diff 72bc1b1 HEAD -- tests/` và `git diff 09d4057 HEAD -- tests/`: 0 dòng `-` ngoài header. Mọi lớp test cũ (ca 14, 19, 23–27, G1–G3) không đổi và vẫn qua. |
+| 4 | Nguồn dữ liệu | PASS | Không có dữ liệu mới. `git diff 72bc1b1 HEAD -- reports/step4_2026-09-26/archive/` rỗng. |
+| 5 | Rò rỉ | PASS (không áp dụng) | AC5: JSON HEAD `==` JSON tại P sau khi bỏ các khóa §5 → `True`. |
+| 6 | VAL/TEST | PASS (không áp dụng) | Vẫn chọn `H-keepz-360`. |
+| 7 | Số liệu truy được | PASS | Chạy lệnh ở header (HEAD 7643a12) hai lần, đổi out sang thư mục tạm: exit 0 cả hai lần. Hai lần chạy giống nhau, trừ đường dẫn out. Thân REPORT giống bản commit. JSON bằng bản commit, trừ `generated_by.command`/`git_commit`. `git diff 7643a12 HEAD -- scripts src tests` rỗng; `code_dirty=false`. sha256 của review 02 trong JSON (`34c40318…`) bằng file đã commit ở 7643a12. AC5b: JSON 72bc1b1 `==` B'' (bỏ generated_by/review/input review/`untracked_unarchived_inputs`). Tập path, `n`, `n_inputs` bằng nhau (8, 58). REPORT chỉ đổi dòng 4 (HEAD), dòng 86 (§1.4 review 02), dòng 408 (Giới hạn) và phần sau `## 6. Review`. |
+| 8 | Cỡ mẫu | PASS (không áp dụng) | Không có thống kê mới. |
+| 9 | Train–realtime | PASS (không áp dụng) | backend/src/configs/frontend không đổi. |
+| 10 | Mock/hard-code | PASS | Mock chỉ có trong test. Cờ `required` đặt tại các chỗ gọi, và chỉ ở 3 chỗ mã đã kiểm tồn tại rồi bỏ qua khi thiếu: `history.json` của run ngoài `(chosen, used_dict)`, checkpoint mặc định của backend, `segments`. Tôi đọc mọi chỗ gọi `inputs.add`/`load_json` khác (`scripts/report_step4.py:680-716, 721, 885, 956`): đều không có điều kiện, nên bắt buộc là đúng. |
+| 11 | Bảo mật | PASS | Không có lệnh Kaggle nào trong Lần sửa 2: `../_kaggle_staging/*.out` mới nhất vẫn là 17:56. Lệnh đọc của tôi: `dataset_list(mine)` → `is_private=True`, version 1, `last_updated` không đổi; gọi ẩn danh `datasets/view` → 403. Grep `KGAT_`/`"key"` trên diff 09d4057..HEAD, commit message và tên file: 0. |
+| 12 | Công bằng, không nới | PASS | Planner chỉ thêm tiêu chí: ca 28–32, AC5b, "git status không đổi sau test". Khóa mới `n_required`/`n_optional` nằm trong khóa đã được bỏ khi so với P. Không nới AC cũ. |
+| 13 | Kết luận vượt bằng chứng | PASS | REPORT dòng 408: "8/58 … Bắt buộc (5; thiếu thì scripts/report_step4.py dừng với mã 2): `checkpoints/stgcn_unified_best.pt`, 4 log kernel. Tùy chọn (3; thiếu thì script vẫn chạy nhưng bỏ phần dùng file đó hoặc ghi null, nên báo cáo khác đi mà không báo lỗi): `checkpoints/stgcn_tier2_indomain.pt`, `data/processed/vslgh_segments/segments.csv`, `reports/unified_run_2026-09-25/run_seed43/history.json`. Vì vậy kể cả khi có quyền truy cập dataset, clone sạch vẫn KHÔNG tái tạo được báo cáo." Đã bỏ vế "Thiếu một đầu vào thì…". Thực nghiệm trên dữ liệu thật (AC10): (a) lệnh header, đổi `--kernel-logs …_v3.log` sang file không tồn tại trong thư mục tạm → **exit 2**, không ghi file; (b) `--segments <không tồn tại>` → **exit 0**, REPORT in "Bắt buộc (5;" / "Tùy chọn (2;"; (c) với cả 8 file, gọi `R.main(<lệnh header>)` trong `missing_patch(path)`: 5 file nhóm bắt buộc → exit 2, không ghi file; 3 file nhóm tùy chọn → exit 0, REPORT khác. **Khớp 8/8** với nhóm REPORT in, và khớp thực nghiệm vòng 2 (5/3). |
+
+## Kiểm tra riêng vòng 3
+
+- **Inputs / Inputs.add, impact UNKNOWN.** GitNexus: `Inputs` UNKNOWN (không resolve được caller); `add` LOW lower-bound (caller: build).
+  `load_json`, `untracked_unarchived_inputs`, `git_tracked` LOW/exact (build); `archive_limit_line` LOW/exact (render). Text search:
+  `Inputs()` chỉ xuất hiện ở `scripts/report_step4.py:678` (build) và `tests/test_report_step4.py:1231`. Chỉ `tests/test_report_step4.py`
+  import `report_step4`. Các kết quả grep "Inputs" khác chỉ là chữ trong docstring (`kaggle/*_kernel.py:3`, `src/models/baseline_bigru.py:5`).
+  `detect-changes --scope compare --base-ref 72bc1b1`: 9 file (gồm 3 file data của người dùng), MEDIUM, 2 luồng `Main → {Rel, Sha256}`
+  (đổi: build, add), đều trong `scripts/report_step4.py`. Tham số mới `required` mặc định `True`, nên mọi lời gọi cũ giữ nguyên hành vi.
+  `as_list()` không đổi, và khóa của JSON `inputs` vẫn là `path, role, sha256`.
+- **`--literal-pathspecs`:** có ở `git_tracked`, ca 31a kiểm.
+- **Phạm vi (AC7):** Lần sửa 2 chỉ đổi `scripts/report_step4.py`, `tests/test_report_step4.py`, REPORT/JSON, và commit review + kế hoạch.
+  Không đổi manifest, `archive_step4_kaggle.py`, `.gitignore`, PROPOSAL, `01-review.md`, backend/src/configs/frontend/data.
+  Ba file data của người dùng vẫn ở trạng thái ` D`. Review vòng 2 ở 7643a12 giống hệt bản tôi viết (sha256 `34c40318…`).
+- **Chưa đến hạn (T5, không tính ở vòng này):** C4/C5, AC9', và cập nhật progress_log (AC8): cột "kết luận review" đang ghi
+  "vòng 2: chờ vslt-reviewer" cần đổi thành lịch sử 3 vòng; thêm `n_required=5`/`n_optional=3`; thêm "Lần sửa 2 không chạy lệnh Kaggle nào".
+- **Không chặn:** ca 31b không phân biệt được việc có hay không có `--literal-pathspecs` (chỉ 31a canh). Nếu muốn chặt hơn, thêm ca
+  dùng một file tạm có tên chứa `[`, nhưng việc này ngoài phạm vi kế hoạch.
+
+## CẦN NGƯỜI DÙNG QUYẾT ĐỊNH (vòng 3)
+
+1. **A3 (§7.1, vẫn chờ).** `reports/alphabet_real_run_2026-09-25/alphabet_run/alphabet_real_best.pt` vẫn được git track (thêm ở 429b289,
+   đã có trên `origin/fix/audit-round2`). File này train trên bộ hauuto, giấy phép chưa rõ. Chọn (a) giữ; (b) lưu vào Kaggle dataset
+   private (kế hoạch nhỏ riêng) rồi `git rm --cached`; (c) `git rm --cached` không lưu trữ. Không cách nào xóa được file khỏi lịch
+   sử đã push.
+2. **§7.2 (không chặn).** Có lưu thêm 4 log kernel (nhóm bắt buộc), `run_seed43/history.json`, và nếu được phép thì `segments.csv`
+   và `checkpoints/*.pt` vào dataset private (version mới, kế hoạch riêng) không? Nếu lưu đủ 5 file bắt buộc thì người có quyền dataset
+   chạy lại được script; nhưng thiếu file tùy chọn thì báo cáo vẫn khác.
+3. **Không bắt buộc.** PROPOSAL_4c.md đã sửa câu chữ sau khi người dùng quyết B (dòng 6, 11, 17, 32); nội dung quyết định không đổi.
+
+---
+
 # Vòng 2
 
 - Commit review: 514ad47 (A5), ae82625 (B'), 208fc5f (C1), 72bc1b1 (C2), nối tiếp 12ef791. HEAD `72bc1b1`.
