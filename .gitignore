@@ -73,3 +73,7 @@ reports/alphabet_nested_*/**/nested_predictions.csv
 reports/alphabet_nested_*/**/*.pt
 reports/source_diagnostics_*/cross_source/
 reports/step4_*/runs/**/*.pt
+
+# Checkpoints and logits under reports/ (archived in a private Kaggle dataset; see the step-4 REPORT §1.5)
+reports/**/*.pt
+reports/**/*.npz
