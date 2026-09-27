@@ -6,6 +6,8 @@ Provides:
 - WebSocket /ws/live-stream: Low-latency live video streaming & sign language recognition
 - POST /api/fingerspelling/sequence: Level 1 letters/tone marks from a hand-landmark sequence
   (POST /api/fingerspelling with an image returns 409)
+- POST /api/fingerspelling/compose: Level 1 accepted tokens (letters, tone marks, spaces) -> Vietnamese text
+- GET /api/fingerspelling/status: Level 1 model availability, preprocessing and training-data provenance
 """
 
 # ============================================================
@@ -50,15 +52,19 @@ import json
 import base64
 import asyncio
 import collections
+import threading
 from concurrent.futures import ThreadPoolExecutor
-from typing import Dict, Any, Optional, List, Union
+from typing import Annotated, Dict, Any, Optional, List, Union
 
 import cv2
 import numpy as np
 import torch
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi.exception_handlers import request_validation_exception_handler
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 
 # Global ThreadPool for CPU-heavy tasks (MediaPipe extraction + Model inference)
@@ -146,6 +152,86 @@ app = FastAPI(
     version="1.2.0",
     lifespan=lifespan,
 )
+
+# -------------------------------------------------------------
+# Level 1 request limits (plan 03 §3.2). Applied ONLY to the two Level 1 JSON endpoints; every other
+# path (including the retired POST /api/fingerspelling, which always answers 409) is untouched.
+# -------------------------------------------------------------
+ALPHABET_MAX_BODY_BYTES = 1_048_576
+ALPHABET_SEQUENCE_ENDPOINT = "/api/fingerspelling/sequence"
+ALPHABET_COMPOSE_ENDPOINT = "/api/fingerspelling/compose"
+BODY_LIMITED_PATHS = frozenset({ALPHABET_SEQUENCE_ENDPOINT, ALPHABET_COMPOSE_ENDPOINT})
+
+
+def _is_body_limited(path: str) -> bool:
+    return path.rstrip("/") in BODY_LIMITED_PATHS
+
+
+class PathBodyLimitMiddleware:
+    """Pure ASGI middleware. On the limited paths it answers 413 BEFORE any JSON parsing when the body
+    is larger than `max_bytes`: from Content-Length when the client declares it, otherwise while
+    reading a chunked body. An accepted body (<= max_bytes) is buffered and replayed to the app."""
+
+    def __init__(self, app, max_bytes: int):
+        self.app, self.max_bytes = app, max_bytes
+
+    async def _reject(self, scope, receive, send):
+        response = JSONResponse(status_code=413,
+                                content={"detail": f"Request body larger than {self.max_bytes} bytes"})
+        await response(scope, receive, send)
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http" or not _is_body_limited(scope["path"]):
+            await self.app(scope, receive, send)
+            return
+        for name, value in scope.get("headers", []):
+            if name == b"content-length":
+                try:
+                    declared = int(value)
+                except ValueError:
+                    declared = None
+                if declared is not None and declared > self.max_bytes:
+                    await self._reject(scope, receive, send)
+                    return
+        chunks, size = [], 0
+        while True:
+            message = await receive()
+            if message["type"] == "http.disconnect":
+                return
+            chunk = message.get("body", b"")
+            size += len(chunk)
+            if size > self.max_bytes:
+                await self._reject(scope, receive, send)
+                return
+            chunks.append(chunk)
+            if not message.get("more_body", False):
+                break
+        body, replayed = b"".join(chunks), False
+
+        async def replay():
+            nonlocal replayed
+            if not replayed:
+                replayed = True
+                return {"type": "http.request", "body": body, "more_body": False}
+            return await receive()
+
+        await self.app(scope, replay, send)
+
+
+@app.exception_handler(RequestValidationError)
+async def _validation_error_handler(request, exc: RequestValidationError):
+    """On the Level 1 JSON endpoints, 422 bodies carry loc/msg/type only: echoing the rejected input
+    could hold NaN/Infinity (not valid JSON -> would become a 500) or up to 1 MiB of payload.
+    Every other path keeps FastAPI's default handler."""
+    if _is_body_limited(request.url.path):
+        errors = [{"loc": list(e.get("loc", ())), "msg": str(e.get("msg", "")), "type": str(e.get("type", ""))}
+                  for e in exc.errors()]
+        return JSONResponse(status_code=422, content={"detail": errors})
+    return await request_validation_exception_handler(request, exc)
+
+
+# Registered before CORS so that CORS stays the outermost layer (413s keep their CORS headers).
+app.add_middleware(PathBodyLimitMiddleware, max_bytes=ALPHABET_MAX_BODY_BYTES)
 
 # Enable CORS for React frontend (Vite port 3000, 5173, etc.)
 app.add_middleware(
@@ -354,45 +440,84 @@ def get_dictionary(
 # UNMIRRORED frames and posts the landmark sequence of one sign. Preprocessing is the shared
 # src.data.alphabet_preprocessing.alphabet_clip_features, configured by the checkpoint's
 # `preprocessing` dict, so live input goes through exactly the training code path.
+# The server is stateless: it classifies ONE sign per request (/sequence) and composes a list of
+# accepted tokens into text (/compose). Body size limit: PathBodyLimitMiddleware above.
+from src.inference.fingerspelling_compose import TONE_STYLE, compose, token_kind  # noqa: E402
+
 ALPHABET_CKPT = os.getenv("VSL_ALPHABET_CKPT", "checkpoints/alphabet_best.pt")
 ALPHABET_MAX_FRAMES = 300
-ALPHABET_SEQUENCE_ENDPOINT = "/api/fingerspelling/sequence"
+ALPHABET_MAX_FRAME_SIDE = 8192
+COMPOSE_MAX_TOKENS = 200
+# Only facts recorded in docs/data_registry.md §1b; any other / missing source -> {"status": "unknown"}.
+ALPHABET_DATA_PROVENANCE = {
+    "hauuto": {"licence": "unknown", "usage": "internal only", "registry": "docs/data_registry.md#1b"},
+}
+ALPHABET_EVALUATION_REPORT = "reports/alphabet_nested_2026-09-25/REPORT.md"
 _alphabet_model = None
 _alphabet_meta: Optional[Dict[str, Any]] = None
+_alphabet_lock = threading.Lock()
 
 
 def get_or_load_alphabet_model():
     """Lazily loads the Level 1 model. Returns (model, meta) or (None, None).
     The checkpoint must carry `classes` and `preprocessing`; without them the train/live
-    input cannot be guaranteed identical, so it is refused."""
+    input cannot be guaranteed identical, so it is refused.
+    Double-checked lock: concurrent first requests run torch.load once. A failed load is not
+    cached (the next call tries again)."""
     global _alphabet_model, _alphabet_meta
     if _alphabet_model is not None:
         return _alphabet_model, _alphabet_meta
-    if not os.path.exists(ALPHABET_CKPT):
-        return None, None
+    with _alphabet_lock:
+        if _alphabet_model is not None:
+            return _alphabet_model, _alphabet_meta
+        if not os.path.exists(ALPHABET_CKPT):
+            return None, None
+        try:
+            ckpt = torch.load(ALPHABET_CKPT, map_location="cpu")
+            classes, preprocessing = list(ckpt["classes"]), dict(ckpt["preprocessing"])
+            model_type = ckpt.get("model_type", "bigru")
+            hparams = ckpt.get("hparams", {})
+            if model_type == "mlp":
+                from src.models.alphabet_mlp import VSLAlphabetMLP
+                model = VSLAlphabetMLP(input_dim=63, num_classes=len(classes),
+                                       hidden_dims=tuple(hparams.get("hidden_dims", (128, 64))))
+            else:
+                from src.models.alphabet_temporal import VSLAlphabetBiGRU
+                model = VSLAlphabetBiGRU(input_dim=63, hidden_dim=hparams.get("hidden_dim", 64),
+                                         num_layers=hparams.get("num_layers", 2), num_classes=len(classes))
+            model.load_state_dict(ckpt["state_dict"])
+            model.eval()
+            # meta first: a lock-free reader that sees the model must also see its meta
+            _alphabet_meta = {"classes": classes, "preprocessing": preprocessing, "model_type": model_type,
+                              "checkpoint": os.path.basename(ALPHABET_CKPT),
+                              "trained_on": ckpt.get("trained_on")}
+            _alphabet_model = model
+            logger.info("Loaded Level 1 alphabet model (%s, %d classes) from %s",
+                        model_type, len(classes), ALPHABET_CKPT)
+        except Exception as e:
+            logger.error("Failed to load alphabet model %s: %s", ALPHABET_CKPT, e)
+            return None, None
+        return _alphabet_model, _alphabet_meta
+
+
+def alphabet_data_provenance(trained_on: Any) -> Dict[str, Any]:
+    """Licence/usage of the training data, looked up by trained_on.source in ALPHABET_DATA_PROVENANCE."""
+    source = trained_on.get("source") if isinstance(trained_on, dict) else None
+    if isinstance(source, str) and source in ALPHABET_DATA_PROVENANCE:
+        return dict(ALPHABET_DATA_PROVENANCE[source])
+    return {"status": "unknown"}
+
+
+def class_kind(name: str) -> Optional[str]:
+    """'letter' | 'tone' for a Level 1 class name; None for a class outside the Level 1 vocabulary."""
     try:
-        ckpt = torch.load(ALPHABET_CKPT, map_location="cpu")
-        classes, preprocessing = list(ckpt["classes"]), dict(ckpt["preprocessing"])
-        model_type = ckpt.get("model_type", "bigru")
-        hparams = ckpt.get("hparams", {})
-        if model_type == "mlp":
-            from src.models.alphabet_mlp import VSLAlphabetMLP
-            model = VSLAlphabetMLP(input_dim=63, num_classes=len(classes),
-                                   hidden_dims=tuple(hparams.get("hidden_dims", (128, 64))))
-        else:
-            from src.models.alphabet_temporal import VSLAlphabetBiGRU
-            model = VSLAlphabetBiGRU(input_dim=63, hidden_dim=hparams.get("hidden_dim", 64),
-                                     num_layers=hparams.get("num_layers", 2), num_classes=len(classes))
-        model.load_state_dict(ckpt["state_dict"])
-        model.eval()
-        _alphabet_model = model
-        _alphabet_meta = {"classes": classes, "preprocessing": preprocessing, "model_type": model_type,
-                          "checkpoint": os.path.basename(ALPHABET_CKPT)}
-        logger.info("Loaded Level 1 alphabet model (%s, %d classes) from %s", model_type, len(classes), ALPHABET_CKPT)
-    except Exception as e:
-        logger.error("Failed to load alphabet model %s: %s", ALPHABET_CKPT, e)
-        return None, None
-    return _alphabet_model, _alphabet_meta
+        return token_kind(name)
+    except ValueError:
+        return None
+
+
+_Point = Annotated[List[float], Field(max_length=3)]
+_Frame = Annotated[List[_Point], Field(max_length=21)]
 
 
 class FingerspellingSequenceRequest(BaseModel):
@@ -401,13 +526,18 @@ class FingerspellingSequenceRequest(BaseModel):
     handedness[t]: 'Left' / 'Right' / '' (MediaPipe label); required when the model mirrors left hands.
     timestamps_ms[t]: capture time; required when the model resamples by time.
     source_mirrored: true if MediaPipe ran on selfie-mirrored frames (the server un-mirrors)."""
-    landmarks: List[Optional[List[List[float]]]]
-    handedness: Optional[List[str]] = None
-    timestamps_ms: Optional[List[float]] = None
-    frame_width: int
-    frame_height: int
+    landmarks: List[Optional[_Frame]] = Field(max_length=ALPHABET_MAX_FRAMES)
+    handedness: Optional[List[str]] = Field(None, max_length=ALPHABET_MAX_FRAMES)
+    timestamps_ms: Optional[List[float]] = Field(None, max_length=ALPHABET_MAX_FRAMES)
+    frame_width: int = Field(ge=1, le=ALPHABET_MAX_FRAME_SIDE)
+    frame_height: int = Field(ge=1, le=ALPHABET_MAX_FRAME_SIDE)
     source_mirrored: bool = False
-    top_k: int = 3
+    top_k: int = Field(3, ge=1, le=10)
+
+
+class FingerspellingComposeRequest(BaseModel):
+    """Accepted Level 1 tokens in signing order: class names (letters, 'dấu …') and ' ' between words."""
+    tokens: List[str] = Field(max_length=COMPOSE_MAX_TOKENS)
 
 
 def parse_fingerspelling_sequence(req: FingerspellingSequenceRequest, preprocessing: Dict[str, Any]):
@@ -416,8 +546,8 @@ def parse_fingerspelling_sequence(req: FingerspellingSequenceRequest, preprocess
     T = len(req.landmarks)
     if not 1 <= T <= ALPHABET_MAX_FRAMES:
         raise ValueError(f"landmarks must have 1..{ALPHABET_MAX_FRAMES} frames, got {T}")
-    if req.frame_width <= 0 or req.frame_height <= 0:
-        raise ValueError("frame_width and frame_height must be positive")
+    if not (1 <= req.frame_width <= ALPHABET_MAX_FRAME_SIDE and 1 <= req.frame_height <= ALPHABET_MAX_FRAME_SIDE):
+        raise ValueError(f"frame_width and frame_height must be in 1..{ALPHABET_MAX_FRAME_SIDE}")
     if not 1 <= req.top_k <= 10:
         raise ValueError("top_k must be in 1..10")
     raw = np.zeros((T, 21, 3), dtype=np.float32)
@@ -425,9 +555,13 @@ def parse_fingerspelling_sequence(req: FingerspellingSequenceRequest, preprocess
     for t, frame in enumerate(req.landmarks):
         if not frame:
             continue
-        arr = np.asarray(frame, dtype=np.float32)
-        if arr.shape != (21, 3) or not np.isfinite(arr).all():
-            raise ValueError(f"landmarks[{t}] must be 21 x [x, y, z] finite numbers or null")
+        bad_frame = f"landmarks[{t}] must be 21 x [x, y, z] finite numbers or null"
+        if len(frame) != 21 or any(len(p) != 3 for p in frame):
+            raise ValueError(bad_frame)
+        with np.errstate(over="ignore"):  # |v| > float32 max becomes inf and is rejected below
+            arr = np.asarray(frame, dtype=np.float32)
+        if not np.isfinite(arr).all():
+            raise ValueError(bad_frame)
         raw[t], detected[t] = arr, True
 
     if req.handedness is None:
@@ -439,7 +573,7 @@ def parse_fingerspelling_sequence(req: FingerspellingSequenceRequest, preprocess
             raise ValueError(f"handedness must have {T} entries, got {len(req.handedness)}")
         bad = sorted({h for h in req.handedness if h not in ("Left", "Right", "")})
         if bad:
-            raise ValueError(f"handedness values must be 'Left', 'Right' or '', got {bad}")
+            raise ValueError(f"handedness values must be 'Left', 'Right' or '', got {bad[:5]}")
         hand = np.array(req.handedness)
 
     ts = None
@@ -458,7 +592,8 @@ def parse_fingerspelling_sequence(req: FingerspellingSequenceRequest, preprocess
 
 @app.get("/api/fingerspelling/status")
 def get_fingerspelling_status():
-    """Returns availability status of Level 1 Fingerspelling model."""
+    """Returns availability status of Level 1 Fingerspelling model, with the provenance of its
+    training data (`trained_on` from the checkpoint; licence/usage from docs/data_registry.md)."""
     model, meta = get_or_load_alphabet_model()
     if model is not None:
         return {
@@ -469,13 +604,18 @@ def get_fingerspelling_status():
             "classes": meta["classes"],
             "preprocessing": meta["preprocessing"],
             "endpoint": ALPHABET_SEQUENCE_ENDPOINT,
+            "compose_endpoint": ALPHABET_COMPOSE_ENDPOINT,
             "input": "landmark_sequence",
+            "trained_on": meta["trained_on"],
+            "data_provenance": alphabet_data_provenance(meta["trained_on"]),
+            "evaluation_report": ALPHABET_EVALUATION_REPORT,
             "message": "Mô hình Cấp 1 đã sẵn sàng",
         }
     return {
         "available": False,
         "model": None,
         "endpoint": ALPHABET_SEQUENCE_ENDPOINT,
+        "compose_endpoint": ALPHABET_COMPOSE_ENDPOINT,
         "message": f"Chưa có mô hình Cấp 1 hợp lệ ({ALPHABET_CKPT})",
     }
 
@@ -499,10 +639,11 @@ def predict_fingerspelling_sequence(req: FingerspellingSequenceRequest):
     with torch.no_grad():
         probs = torch.softmax(model(torch.from_numpy(feats).unsqueeze(0)), dim=-1)[0]
         topk = torch.topk(probs, k=min(req.top_k, len(classes)))
-    candidates = [{"class": classes[i], "confidence": round(v, 4)}
+    candidates = [{"class": classes[i], "confidence": round(v, 4), "kind": class_kind(classes[i])}
                   for v, i in zip(topk.values.tolist(), topk.indices.tolist())]
     return {
         "prediction": candidates[0]["class"],
+        "prediction_kind": candidates[0]["kind"],
         "confidence": candidates[0]["confidence"],
         "candidates": candidates,
         "frames": len(req.landmarks),
@@ -512,10 +653,22 @@ def predict_fingerspelling_sequence(req: FingerspellingSequenceRequest):
     }
 
 
+@app.post(ALPHABET_COMPOSE_ENDPOINT)
+def compose_fingerspelling(req: FingerspellingComposeRequest):
+    """Composes accepted Level 1 tokens into Vietnamese text (tone mark placed on the right vowel).
+    Stateless and needs no model; never changes or guesses tokens (src/inference/fingerspelling_compose.py)."""
+    try:
+        out = compose(req.tokens)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    return {**out, "tone_style": TONE_STYLE}
+
+
 @app.post("/api/fingerspelling")
-async def predict_fingerspelling(file: Optional[UploadFile] = File(None)):
+async def predict_fingerspelling():
     """Retired single-image endpoint: the Level 1 model classifies a landmark sequence
-    (letters with motion and tone marks cannot be read from one frame)."""
+    (letters with motion and tone marks cannot be read from one frame).
+    Takes no parameters, so the request body is never read or parsed."""
     raise HTTPException(
         status_code=409,
         detail={
