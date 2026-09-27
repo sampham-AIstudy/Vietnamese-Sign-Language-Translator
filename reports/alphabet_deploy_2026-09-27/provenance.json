@@ -1,8 +1,8 @@
 {
   "generated_by": {
     "command": "python scripts/alphabet_ckpt_provenance.py --out reports/alphabet_deploy_2026-09-27/provenance.json",
-    "head": "4fbc1a289d3d5e0850bc525a2082fff1d1417196",
-    "utc": "2026-09-27T17:02:06Z"
+    "head": "9be36e4b0940e97fcce37287aa40c12972e273a1",
+    "utc": "2026-09-27T17:24:57Z"
   },
   "checkpoints": {
     "deployed": {
@@ -313,14 +313,104 @@
       ]
     }
   },
+  "verdict": "real_data_known_checkpoint",
+  "verdict_checks": {
+    "V1": {
+      "ok": true,
+      "detail": {
+        "M": [
+          "nested_primary",
+          "nested_variants"
+        ],
+        "compared": [
+          "nested_primary",
+          "nested_variants"
+        ],
+        "real_run_state_dict_equal_not_counted": false
+      }
+    },
+    "V2": {
+      "ok": true,
+      "detail": {
+        "mismatches": []
+      }
+    },
+    "V3": {
+      "ok": true,
+      "detail": {
+        "K_with_preprocessing_and_trained_on": [
+          "nested_variants"
+        ]
+      }
+    },
+    "V4": {
+      "ok": true,
+      "detail": {
+        "variant": "frame",
+        "equal": true
+      }
+    },
+    "V5": {
+      "ok": true,
+      "detail": {
+        "trained_on.source": "hauuto"
+      }
+    },
+    "V6": {
+      "ok": true,
+      "detail": {
+        "k": 46,
+        "n": 46,
+        "clips_in_csv": 46
+      }
+    }
+  },
+  "M": [
+    "nested_primary",
+    "nested_variants"
+  ],
+  "sha256_match": null,
   "match": null,
-  "verdict": "UNKNOWN_PROVENANCE",
-  "verdict_rule": "'real_data_known_checkpoint' iff the deployed sha256 equals a known checkpoint's sha256 AND deployed trained_on.source == 'hauuto'; otherwise 'UNKNOWN_PROVENANCE'",
+  "verdict_rule": "'real_data_known_checkpoint' iff ALL of: V1 M = {K in nested_primary, nested_variants: state_dict bit-exact (same key order, shape, dtype, torch.equal)}} is non-empty (real_run excluded); V2 for every K in M, every field of ['model_type', 'classes', 'selected', 'hparams', 'input_dim', 'num_classes', 'epochs', 'preprocessing', 'trained_on'] present in K is present and equal in the deployed checkpoint (classes in order); V3 some K in M has both preprocessing and trained_on; V4 deployed preprocessing == train_alphabet_nested.preprocessing_for(selected[2]); V5 deployed trained_on.source == 'hauuto'; V6 external_reproduction computed with n == clips_in_csv > 0 and k == n. Otherwise (any check false or not computable) 'UNKNOWN_PROVENANCE'. A sha256 match exempts no check.",
   "state_dict_equal": {
-    "note": "information only, not used by verdict: same keys and torch.equal on every tensor",
+    "note": "bit-exact state_dict per known checkpoint; V1 counts only the nested ones",
     "nested_primary": true,
     "nested_variants": true,
     "real_run": false
+  },
+  "metadata_diff": {
+    "nested_primary": {
+      "only_in_deployed": {
+        "epochs": "int",
+        "evaluation": "dict",
+        "hparams": "dict",
+        "licence_note": "str",
+        "preprocessing": "dict",
+        "trained_on": "dict"
+      },
+      "only_in_known": {}
+    },
+    "nested_variants": {
+      "only_in_deployed": {
+        "evaluation": "dict",
+        "licence_note": "str"
+      },
+      "only_in_known": {
+        "external_qipedc": "dict",
+        "loso4_val_top1": "float"
+      }
+    },
+    "real_run": {
+      "only_in_deployed": {
+        "epochs": "int",
+        "evaluation": "dict",
+        "licence_note": "str",
+        "selected": "list"
+      },
+      "only_in_known": {
+        "loso_summary": "dict"
+      }
+    }
   },
   "external_reproduction": {
     "k": 46,
@@ -331,6 +421,6 @@
     "original_device": "cuda (primary/nested.log)",
     "variant": "frame",
     "compared_with": "reports/alphabet_nested_2026-09-25/primary/nested_predictions.csv (run=external, column pred)",
-    "note": "information only: agreement of argmax with the original run, not accuracy"
+    "note": "V6: agreement of argmax with the original run (not accuracy)"
   }
 }
