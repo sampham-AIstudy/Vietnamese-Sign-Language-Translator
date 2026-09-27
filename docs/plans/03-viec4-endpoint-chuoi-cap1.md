@@ -1,15 +1,104 @@
 # Kế hoạch 03: Việc 4, endpoint chuỗi landmark cho Cấp 1 "Đánh vần" (chỉ backend/)
 
-> **Điểm dừng: KHÔNG có điểm dừng lúc bắt đầu.** Có một **điểm dừng CÓ ĐIỀU KIỆN ở Bước 0**. Nếu checkpoint Cấp 1
-> đang được nạp (`checkpoints/alphabet_best.pt`) KHÔNG trùng sha256 với checkpoint nào đã biết là train trên dữ liệu
-> thật, hoặc không có `trained_on.source == "hauuto"`, thì ghi "CẦN NGƯỜI DÙNG" vào progress_log và dừng Bước 5.
-> Lý do: nguồn gốc model mặc định không rõ, và muốn thay nó thì phải đổi model mặc định, việc này cần người dùng duyệt.
-> Các bước khác không phụ thuộc Bước 0 thì vẫn làm tiếp.
-> Việc này KHÔNG đổi model mặc định: không sửa/thay/chép checkpoint, không đổi giá trị mặc định `VSL_ALPHABET_CKPT`.
-> Việc này KHÔNG đụng frontend/ (thuộc Việc 5). KHÔNG `git add -A` / `git add .`: thư mục làm việc có các file bị xóa
-> chưa commit của người dùng (progress_log, mục "Ghi chú của người dùng" 3).
+> **Điểm dừng: KHÔNG có điểm dừng trước khi code.** Tình trạng này không đổi sau Lần sửa 1.
+> Bước 0 vẫn có một **điểm dừng CÓ ĐIỀU KIỆN**, nhưng tiêu chí đã sửa ở Lần sửa 1 (§0).
+> - Nếu `provenance.json` sinh lại mà vẫn ra `verdict = UNKNOWN_PROVENANCE`, thì "CẦN NGƯỜI DÙNG" vẫn giữ nguyên, Bước 5
+>   (AC5) vẫn bị chặn, và KHÔNG thay checkpoint.
+> - Việc này KHÔNG đổi model mặc định: không sửa, không thay, không chép checkpoint, và không đổi giá trị mặc định của
+>   `VSL_ALPHABET_CKPT`.
+> - Việc này KHÔNG đụng `frontend/` (phần đó thuộc Việc 5).
+> - KHÔNG dùng `git add -A` hay `git add .`, vì thư mục làm việc có file bị xóa chưa commit của người dùng.
 
-Nhánh `feat/vslt-complete`, lập kế hoạch tại HEAD `09d4057`, ngày 2026-09-27.
+Nhánh `feat/vslt-complete`. Lập kế hoạch lần đầu tại HEAD `09d4057` (2026-09-27). Kế hoạch đã commit ở `f903980`.
+Lập lại (Lần sửa 1) ngày 2026-09-28, sau khi coder trả "CẦN PLANNER".
+
+---
+
+## 0. Lần sửa 1 (sau khi Bước 0 cho `UNKNOWN_PROVENANCE`; coder trả "CẦN PLANNER")
+
+Các commit của coder GIỮ NGUYÊN: `f903980` (Bước 0), `7366274` (Bước 1–4), `1713f8d`. Không viết lại lịch sử. Mọi sửa
+đổi đều là commit MỚI.
+
+### 0.1 Nguyên nhân gốc
+Tiêu chí danh tính ở Bước 0/AC0 của kế hoạch trước là "sha256 của FILE trùng một checkpoint đã biết VÀ
+`trained_on.source == "hauuto"`". Đây là lỗi của kế hoạch. sha256 của file là một **đại diện** cho câu hỏi thật ("model
+đang chạy có phải model train trên dữ liệu thật đã biết không"). Đại diện này hỏng ngay khi checkpoint được **đóng gói
+lại**: file `.pt` là một dict pickle, nên chỉ cần thêm hoặc bớt một khóa metadata là mọi byte của file đổi, dù trọng số
+và mọi thứ ảnh hưởng tới suy luận vẫn giữ nguyên. Kế hoạch trước không lường trường hợp này. Bằng chứng, trích từ
+`reports/alphabet_deploy_2026-09-27/provenance.json` (script sinh ở HEAD `4fbc1a2`):
+- sha256 của `checkpoints/alphabet_best.pt` (`a6311820…`) khác cả 3 checkpoint đã biết, nên `match = null`.
+- `state_dict_equal`: `nested_primary = true`, `nested_variants = true`, `real_run = false`. Tức là mọi tensor bằng
+  nhau theo `torch.equal`, cùng khóa, cùng shape, cùng dtype.
+- Khóa của file triển khai lệch so với `nested_variants`: có thêm `licence_note`, `evaluation`, và thiếu
+  `external_qipedc`, `loso4_val_top1`. Các trường `model_type`, `selected`, `epochs`, `preprocessing`, `trained_on`,
+  `classes` đều trùng với `nested_variants`. Còn `nested_primary` chỉ có `classes`, `input_dim`, `model_type`,
+  `num_classes`, `selected`, `state_dict`.
+- `external_reproduction`: 46/46 argmax trên CPU trùng cột `pred` (run=external) của
+  `primary/nested_predictions.csv`. Run gốc chạy trên cuda.
+
+Kết luận: file triển khai là trọng số của model nested (bigru 120 frame, hauuto), đã đóng gói lại với metadata khác.
+Ai đóng gói lại và vào lúc nào thì KHÔNG truy được, vì `checkpoints/` bị gitignore. Điểm này ghi vào §6. Nó không làm đổi
+kế hoạch, vì các khóa thêm vào không được dùng ở đâu (AC4-f mới).
+
+### 0.2 Tiêu chí mới cho Bước 0 (thay AC0 cũ; KHÔNG nới về bản chất)
+`verdict = "real_data_known_checkpoint"` khi và chỉ khi TẤT CẢ V1–V6 đúng. Nếu có bất kỳ điều kiện nào sai hoặc không
+tính được (ví dụ thiếu dữ liệu) thì `verdict = "UNKNOWN_PROVENANCE"`.
+- **V1 (trọng số).** Gọi M là tập các checkpoint trong `{nested_primary, nested_variants}` có state_dict bằng
+  bit-từng-bit với checkpoint triển khai: cùng danh sách khóa theo đúng thứ tự, và mọi tensor cùng shape, cùng dtype,
+  `torch.equal`. Yêu cầu: M khác rỗng.
+  `real_run` KHÔNG được tính vào M, vì AC5 dùng đường offline của `train_alphabet_nested.load`.
+- **V2 (metadata ảnh hưởng suy luận).** Với MỌI K trong M, và với mọi trường trong `{model_type, classes, selected,
+  hparams, input_dim, num_classes, epochs, preprocessing, trained_on}` mà K có: checkpoint triển khai cũng phải có
+  trường đó, và giá trị phải bằng nhau. Riêng `classes` so cả thứ tự.
+- **V3 (nguồn của preprocessing và trained_on).** Ít nhất một K trong M có CẢ `preprocessing` lẫn `trained_on`. Điều
+  kiện này bảo đảm hai trường đó đến từ output của run, không phải chỉ được thêm vào lúc đóng gói lại.
+- **V4.** `preprocessing` của checkpoint triển khai bằng `train_alphabet_nested.preprocessing_for(selected[2])`.
+- **V5.** `trained_on.source == "hauuto"`.
+- **V6 (tái lập dự đoán).** `external_reproduction` tính được (dữ liệu + CSV có mặt), và thỏa
+  `n == clips_in_csv > 0` và `k == n`.
+  Trước đây `external_reproduction` chỉ là thông tin. Từ Lần sửa 1 nó là điều kiện bắt buộc.
+
+Lý do đây KHÔNG phải là nới tiêu chí:
+- Điều mà tiêu chí cũ muốn bảo đảm là hành vi suy luận giống hệt một model đã biết, train trên dữ liệu thật.
+  V1 + V2 + V4 kiểm trực tiếp đúng điều đó (trọng số bit-exact + mọi tham số suy luận), chứ không qua đại diện.
+- V6 thêm một bằng chứng hành vi mà tiêu chí cũ không có.
+- Tiêu chí mới CHẶT hơn tiêu chí cũ ở ba chỗ: không chấp nhận khớp với `real_run` (vì AC5 dùng đường nested), bắt buộc
+  V4, và bắt buộc V6.
+- Thứ duy nhất được phép khác là các khóa metadata KHÔNG dùng khi suy luận. Để bù cho điểm này:
+  - `provenance.json` phải ghi `metadata_diff`: khóa chỉ có ở file triển khai, khóa chỉ có ở từng K, và kiểu giá trị
+    của chúng. KHÔNG chép giá trị của `evaluation` / `licence_note`, vì các giá trị này không truy được nguồn, và chép
+    vào sẽ có người lấy chúng làm số liệu.
+  - AC4-f bắt buộc backend không đọc và không trả các khóa đó.
+- Việc phát hiện đổi file về SAU vẫn giữ nguyên: AC5-a ghim sha256 của file triển khai vào `provenance.json`.
+- Tiêu chí được sửa SAU khi đã thấy kết quả. Điều này được ghi công khai ở đây. Nó được chấp nhận vì hai lý do:
+  (1) đây là tiêu chí danh tính, không phải GATE chất lượng hay độ chính xác;
+  (2) mọi điều kiện đều chỉ về cùng hướng (khẳng định model này là model nested); không điều kiện nào thay đổi số liệu
+  báo cáo hay lựa chọn model.
+
+### 0.3 Xem xét các giả định coder tự đặt
+| # | Giả định (commit) | Quyết định | Điều kiện / yêu cầu |
+|---|---|---|---|
+| G1 | Handler 422 riêng cho `/sequence` và `/compose` (`backend/main.py:221-230`). Body lỗi chỉ có `loc/msg/type`, không trả lại `input` | **CHẤP NHẬN** | Lý do: handler mặc định trả lại `input`, nên khi input chứa NaN thì JSON không hợp lệ → 500 (vi phạm AC1-j), và có thể trả lại tới 1 MiB. Test đã có: `test_nan_inside_a_pydantic_error_is_still_422`, `test_other_paths_keep_default_422_format`. Hợp đồng §3.2 bổ sung: lỗi schema trên hai path này có dạng `{"detail": [{"loc","msg","type"}]}`; lỗi ngữ nghĩa (từ `parse_fingerspelling_sequence`/`compose`) có dạng `{"detail": str}`. Việc 5 phải xử lý cả hai dạng |
+| G2 | Trường `compose_endpoint` trong status (`:607`, `:618`) | **CHẤP NHẬN** (chỉ thêm) | Ghi vào hợp đồng §3.4. Cần test MỚI (AC4-g) cho cả hai nhánh `available` true/false. Hiện chưa có test nào |
+| G3 | `kind = null` cho lớp ngoài bộ từ Cấp 1 (`class_kind`, `:511-516`) | **CHẤP NHẬN** | Không được từ chối nạp checkpoint có lớp lạ (sẽ làm hỏng fixture `c0..c33` của `tests/test_fingerspelling_api.py`, file không được sửa). Hợp đồng §3.2: `kind`/`prediction_kind` ∈ {`"letter"`, `"tone"`, `null`}; `null` CHỈ khi tên lớp trong checkpoint không thuộc bộ từ Cấp 1. Cần test MỚI: fixture có lớp `c0..` → 200 và `kind is None` (AC4-h). Với checkpoint triển khai: KHÔNG được có `null` (AC5-h) |
+| G4a | `multiple_tones`: một cảnh báo cho MỖI dấu trước dấu cuối | **CHẤP NHẬN** | Đúng AC3-b. Cần test số cảnh báo khi có 3 dấu (AC3-f) |
+| G4b | "qu"/"gi": nếu bỏ "u"/"i" mà không còn nguyên âm nào thì không bỏ | **CHẤP NHẬN** | Nhất quán với ca `gì` ở AC3-a. Thêm ca `q u` → `qu`, và `q u dấu sắc` → `qú` (AC3-f) |
+| G4c | Cụm nguyên âm = dãy nguyên âm liên tiếp ĐẦU TIÊN | **CHẤP NHẬN** | Như §3.3 |
+| G4d | Token được chuẩn hóa NFC trước khi so khớp (dạng tổ hợp như `a` + U+0306 được nhận là `ă`); chữ hoa là token lạ → 422 | **CHẤP NHẬN** | Không đoán và không hạ chữ thường. Cần test (AC3-f) |
+| G4e | `syllables` bỏ âm tiết rỗng; `text` giữ nguyên khoảng trắng | **CHẤP NHẬN** | Đúng AC3-b |
+| G5 | `detect-changes` báo risk HIGH ở `7366274` (35 symbol, 7 luồng, đều thuộc Cấp 1) | **Ghi nhận, không chặn** | Middleware và exception handler đăng ký trên toàn app, nhưng chỉ tác động tới hai path. Reviewer phải kiểm cả 7 luồng: tất cả phải nằm trong Cấp 1. WebSocket (`scope["type"] != "http"`) và các path khác phải đi thẳng qua, có bằng chứng từ `tests.test_ws_throughput` + `test_other_paths_are_not_limited` trong AC8 |
+
+### 0.4 Thay đổi so với kế hoạch trước
+- §4: thêm các bước R1–R4.
+- §5 có các thay đổi sau. Không bỏ tiêu chí nào, và không nới tiêu chí nào ngoài phần danh tính đã giải thích ở §0.2:
+  - AC0 thay bằng AC0' (V1–V6).
+  - Thêm AC0b (unit test cho quy tắc verdict).
+  - Thêm AC3-f và AC4-f/g/h.
+  - Thêm AC5-h.
+  - AC8 thêm module `tests.test_alphabet_ckpt_provenance`.
+  - AC9 thêm yêu cầu về progress_log.
+- §3.2/§3.4: bổ sung hợp đồng cho G1–G3.
+- §6: thêm rủi ro "đóng gói lại không truy được".
 
 ---
 
@@ -20,45 +109,45 @@ vslt-reviewer). Việc này làm bốn thứ:
 1. Kiểm chứng phần đã có.
 2. Bổ sung phần còn thiếu để đạt DoD 2 phía backend: giới hạn kích thước request, ghép chữ thành từ có dấu thanh,
    nguồn gốc model trong status.
-3. Viết test tương đương train và realtime cho **đúng checkpoint đang được nạp**.
-4. Cho vslt-reviewer duyệt.
+3. Viết test tương đương train/realtime cho **đúng checkpoint đang nạp**.
+4. Đưa vslt-reviewer duyệt.
 
 **DoD phục vụ.**
 - DoD 2 (phía backend): endpoint nhận CHUỖI landmark → chữ cái + confidence; ghép chữ thành từ; endpoint ảnh cũ trả 409.
 - DoD 6: không có kết quả giả. Không có model thì trả 503. Không ghép khi token không hợp lệ. Nguồn gốc model phải
   hiển thị.
-- DoD 7: unit + contract + test tương đương train và realtime.
-- Mục 11 (bảo mật) của reviewer: kiểm tra shape, kích thước và loại input; giới hạn kích thước body.
+- DoD 7: unit test + contract test + test tương đương train/realtime.
+- Mục 11 của reviewer (bảo mật): kiểm tra shape, kích thước và loại input; giới hạn kích thước body.
 
 ---
 
-## 2. Hiện trạng: đối chiếu DoD 2 phía backend với code (HEAD `09d4057`)
+## 2. Hiện trạng: đối chiếu DoD 2 phía backend với code (HEAD `09d4057`, trước khi coder làm)
 
 | Yêu cầu | Đã có? | Bằng chứng | Còn thiếu |
 |---|---|---|---|
-| Endpoint nhận chuỗi landmark | CÓ | `backend/main.py:483-512` `predict_fingerspelling_sequence`; request model `:398-410`; kiểm tra input `:413-456` | Không giới hạn kích thước body trước khi parse JSON (xem dưới) |
-| Trả chữ cái + confidence + top-k | CÓ | `:498-512` (`prediction`, `confidence`, `candidates`, `frames`, `detected_frames`, `model_type`, `checkpoint`) | Không phân biệt chữ cái với dấu thanh trong response |
-| Ảnh cũ → 409 | CÓ | `:515-527`; test `tests/test_fingerspelling_api.py:87-91` | Route vẫn khai `file: Optional[UploadFile] = File(None)` (`:516`), nên FastAPI parse TOÀN BỘ multipart (lưu tạm ra đĩa) rồi mới trả 409. Không giới hạn kích thước |
-| Kiểm tra input → 422 | CÓ phần lớn | `:416-451`; test `:110-127` (10 ca) | Không có giới hạn byte của body. `List[...]` không có `max_length`, nên pydantic parse cả danh sách tùy ý dài rồi mới kiểm `T ≤ 300` (`:417`). `frame_width/height` không có cận trên. Không có test NaN/Infinity, không có test body không phải JSON |
-| 503 khi không có model / checkpoint thiếu `preprocessing` | CÓ | `:364-395`, `:489-490`; test `:150-159` | Nạp lười không có khóa (`:368-395`), nên hai request đầu đồng thời có thể cùng `torch.load` |
-| Tiền xử lý dùng chung train và realtime | CÓ | Backend gọi `src/data/alphabet_preprocessing.py:270-304` `alphabet_clip_features` theo dict `preprocessing` trong checkpoint. Script train model triển khai `scripts/train_alphabet_nested.py:51-73` cũng gọi đúng hàm đó | — |
-| Test tương đương train và realtime | CÓ, nhưng SAI checkpoint | Fixture: `tests/test_fingerspelling_api.py:172-187` (so với `canonicalize_hand_sequence`+`sequence_features_from_clip`, preprocessing rút gọn `:59`). Dữ liệu thật: `:190-219` dùng `REAL_CKPT = reports/alphabet_real_run_2026-09-25/.../alphabet_real_best.pt` (`:34`) và đường offline `train_alphabet_real.load` | KHÔNG có test nào chạy **checkpoint đang triển khai** (`checkpoints/alphabet_best.pt`, theo handoff 2026-09-25 là "bigru 120 frame" từ nested run) qua đường offline của `train_alphabet_nested.load`. Chỉ so `prediction`, không so confidence (`:216`) |
-| Ghép chữ thành từ | KHÔNG (backend) | Frontend `frontend/src/components/Fingerspelling.jsx:207` nối chuỗi tên lớp thô (`prev + prediction`). Nhãn dấu là `"dấu sắc"` … (`scripts/build_alphabet_tasks.py:27`), nên sẽ ra chữ "adấu sắc" thay vì "á" | Cần hàm ghép tiếng Việt (áp dấu thanh vào đúng nguyên âm) có test và endpoint không trạng thái (§3.3) |
-| Nguồn gốc model hiển thị | KHÔNG | Status `:459-480` không trả `trained_on`. Checkpoint nested có `trained_on`, `selected`, `epochs` (`scripts/train_alphabet_nested.py:206-213`) | Trả `trained_on` và ghi chú giấy phép dữ liệu (`docs/data_registry.md:41-48`: hauuto, licence unknown, internal only) |
-| Model Cấp 1 nào đang nạp, dữ liệu có hợp lệ không | CHƯA KIỂM CHỨNG | `ALPHABET_CKPT` mặc định `checkpoints/alphabet_best.pt` (`:357`), bị gitignore (`.gitignore:62`). Handoff `2026-09-25-gate0-level1-nested.md:43` ghi "deployed … bigru 120 frame" nhưng không có sha256. Tên file này trùng với tên mà pipeline tổng hợp cũ định sinh ra (`reports/audit_round2/AUDIT_ROUND2.md:119`; memory: `data/vsl_alphabet_pilot` là TỔNG HỢP, run Kaggle đã dừng trước khi upload) | Bước 0: sha256 + đọc khóa checkpoint + so với các checkpoint đã biết |
+| Endpoint nhận chuỗi landmark | CÓ | `backend/main.py:483-512` `predict_fingerspelling_sequence`; request model `:398-410`; kiểm tra `:413-456` | Không giới hạn kích thước body trước khi parse JSON |
+| Chữ cái + confidence + top-k | CÓ | `:498-512` | Không phân biệt chữ cái với dấu thanh |
+| Ảnh cũ → 409 | CÓ | `:515-527`; test `tests/test_fingerspelling_api.py:87-91` | Route khai `file: Optional[UploadFile] = File(None)` (`:516`), nên FastAPI parse toàn bộ multipart rồi mới trả 409 |
+| Kiểm tra input → 422 | CÓ phần lớn | `:416-451`; test `:110-127` | Không giới hạn số byte. Các list không có `max_length`. `frame_width/height` không có cận trên. Chưa có test NaN/Infinity và test body không phải JSON |
+| 503 khi không có model | CÓ | `:364-395`, `:489-490`; test `:150-159` | Nạp model lười và không có khóa (`:368-395`) |
+| Tiền xử lý dùng chung | CÓ | `src/data/alphabet_preprocessing.py:270-304` `alphabet_clip_features`; `scripts/train_alphabet_nested.py:51-73` | — |
+| Test tương đương | CÓ, nhưng dùng SAI checkpoint | `tests/test_fingerspelling_api.py:172-219` dùng fixture và `REAL_CKPT = alphabet_real_best.pt` | Chưa có test cho checkpoint đang triển khai. Chưa so confidence |
+| Ghép chữ thành từ | KHÔNG | `frontend/src/components/Fingerspelling.jsx:207` nối thẳng tên lớp thô | Cần hàm ghép + endpoint (§3.3) |
+| Nguồn gốc model | KHÔNG | Status `:459-480` | `trained_on` + ghi chú giấy phép (`docs/data_registry.md:41-48`) |
+| Model Cấp 1 đang nạp | CHƯA KIỂM CHỨNG | `ALPHABET_CKPT` (`:357`), gitignore (`.gitignore:62`) | Bước 0 |
 
-**Dữ liệu và model đã biết (không phải số liệu mới, chỉ để định hướng):**
-- `reports/alphabet_nested_2026-09-25/primary/alphabet_nested_final.pt`: train trên hauuto (4 người thật, MediaPipe
-  thật, GATE 0 PASS ở `reports/alphabet_real_run_2026-09-25/GATE0_integrity.md`), log `primary/nested.log:6`
-  chọn `('bigru', 120, 'frame')`, train trên `cuda`. Giấy phép hauuto: **unknown**, chỉ dùng nội bộ.
-- `reports/alphabet_nested_2026-09-25/variants/alphabet_nested_final.pt`: ứng viên thứ hai.
-- `reports/alphabet_real_run_2026-09-25/alphabet_run/alphabet_real_best.pt`: model cũ hơn, đã commit công khai
-  (`docs/data_registry.md:44`). Giữ hay gỡ là quyết định của người dùng; việc này không động vào.
-- Dữ liệu thật cho test có trên máy: `data/external/alphabet_hands_kaggle/alphabet_hands/manifest.csv` (gitignored).
+Checkpoint đã biết:
+- `reports/alphabet_nested_2026-09-25/primary/alphabet_nested_final.pt`: hauuto, GATE 0 PASS
+  (`reports/alphabet_real_run_2026-09-25/GATE0_integrity.md`), `primary/nested.log:6` ghi `('bigru', 120, 'frame')`,
+  train trên cuda.
+- `.../variants/alphabet_nested_final.pt`.
+- `reports/alphabet_real_run_2026-09-25/alphabet_run/alphabet_real_best.pt`: đã commit công khai; giữ hay xóa do người
+  dùng quyết.
 
-**Ghi chú về ranh giới:** CORS `allow_origins=["*"]` + `allow_credentials=True` (`backend/main.py:151-157`) là lỗi
-có từ trước (mục 11 của reviewer). Việc 4 không sửa nó, vì đổi CORS trước khi nối proxy `/ws` ở Việc 5 có thể làm hỏng
-frontend. Chuyển sang Việc 5 (§8).
+Dữ liệu thật có trên máy (gitignored): `data/external/alphabet_hands_kaggle/alphabet_hands/manifest.csv`.
+
+CORS `allow_origins=["*"]` + `allow_credentials=True` (`backend/main.py`, khối CORSMiddleware) là lỗi có từ trước, và
+thuộc Việc 5 (§8).
 
 ---
 
@@ -70,309 +159,279 @@ frontend. Chuyển sang Việc 5 (§8).
    → POST /api/fingerspelling/sequence {landmarks[T], handedness[T], timestamps_ms[T]?, frame_width, frame_height}
 [backend] giới hạn body (413) → pydantic (422) → parse_fingerspelling_sequence (422)
    → alphabet_clip_features(..., preprocessing = checkpoint["preprocessing"])   ← CÙNG hàm với train_alphabet_nested.load
-   → model → top-k {class, confidence} + prediction_kind
-[Việc 5] người dùng chấp nhận/sửa token → danh sách token (chữ, dấu, " ")
-   → POST /api/fingerspelling/compose {tokens} → {text, syllables, warnings}   ← hàm thuần, không trạng thái
+   → model → top-k {class, confidence, kind} + prediction_kind
+[Việc 5] người dùng chấp nhận hoặc sửa token → danh sách token (chữ, dấu, " ")
+   → POST /api/fingerspelling/compose {tokens} → {text, syllables, warnings, tone_style}   ← hàm thuần, không trạng thái
 ```
-Ranh giới với Việc 5. **Backend (Việc 4)** không giữ trạng thái. Nó phân loại MỘT ký hiệu mỗi request và ghép một danh
-sách token thành chữ. **Frontend (Việc 5)** lo mọi thứ còn lại: MediaPipe phía client, cắt ký hiệu trong luồng, giữ danh
-sách token, nút cách/xóa lùi/xóa hết, hiển thị cảnh báo, đọc to. Frontend phải gọi `/compose` và không tự ghép chuỗi.
+Phân chia giữa hai bên:
+- **Backend (Việc 4)** không giữ trạng thái. Mỗi request phân loại MỘT ký hiệu, hoặc ghép một danh sách token.
+- **Frontend (Việc 5)** lo phần còn lại:
+  - chạy MediaPipe;
+  - cắt từng ký hiệu;
+  - giữ danh sách token;
+  - các nút cách, xóa lùi, xóa hết;
+  - hiển thị cảnh báo;
+  - đọc to.
+
+  Frontend phải gọi `/compose`, không tự ghép chuỗi.
 
 ### 3.2 Hợp đồng `POST /api/fingerspelling/sequence` (giữ nguyên các trường cũ, chỉ THÊM)
-Input (JSON), giữ tương thích với `FingerspellingSequenceRequest` hiện có:
-- `landmarks`: list độ dài 1..`ALPHABET_MAX_FRAMES` (=300, giữ nguyên). Mỗi phần tử là `null`, `[]`, hoặc đúng
-  21 × [x, y, z] số hữu hạn. Dùng pydantic `Field(max_length=ALPHABET_MAX_FRAMES)` cho danh sách ngoài. Danh sách trong
-  có `max_length` 21 và 3, để parse không phình ra.
-- `handedness`: `null` hoặc list cùng độ dài T, giá trị trong {"Left","Right",""}. Bắt buộc có khi
-  `mirror_left_hand` (như cũ).
-- `timestamps_ms`: `null` hoặc T số hữu hạn không giảm. Bắt buộc có khi `resample == "time"` (như cũ).
-- `frame_width`, `frame_height`: int trong 1..`ALPHABET_MAX_FRAME_SIDE` (hằng mới, = 8192).
-- `source_mirrored`: bool (như cũ). `top_k`: 1..10 (như cũ).
+Input (JSON):
+- `landmarks`: có 1..`ALPHABET_MAX_FRAMES` (=300) phần tử. Mỗi phần tử là `null`, `[]`, hoặc đúng 21 × [x, y, z]
+  số hữu hạn. Có `max_length` ở cả 3 cấp.
+- `handedness`: `null` hoặc T phần tử thuộc {"Left","Right",""}. Bắt buộc khi `mirror_left_hand`.
+- `timestamps_ms`: `null` hoặc T số hữu hạn, không giảm. Bắt buộc khi `resample == "time"`.
+- `frame_width`, `frame_height`: 1..`ALPHABET_MAX_FRAME_SIDE` (=8192).
+- `source_mirrored`: bool.
+- `top_k`: 1..10.
 
-Output 200: các trường cũ, cộng thêm:
-- `prediction_kind`: `"letter"` | `"tone"` (của `prediction`).
-- Mỗi phần tử `candidates` có thêm `kind`.
-Không làm tròn thêm và không đổi `confidence` (vẫn `round(v, 4)`).
+Output 200: các trường cũ, thêm:
+- `prediction_kind`;
+- mỗi `candidates[i]` có thêm `kind`.
+
+Giá trị của `kind` ∈ {`"letter"`, `"tone"`, `null`}. `null` CHỈ xuất hiện khi tên lớp trong checkpoint không thuộc bộ
+từ Cấp 1 (G3). `confidence` vẫn là `round(v, 4)`.
 
 Mã lỗi:
-- 413: body lớn hơn `ALPHABET_MAX_BODY_BYTES` (hằng mới, = 1_048_576), áp cho cả request có `Content-Length` lẫn
-  request chunked. Body là JSON `{"detail": ...}`. Kiểm tra TRƯỚC khi parse JSON. Chỉ áp cho hai path
-  `/api/fingerspelling/sequence` và `/api/fingerspelling/compose`. Không áp cho các path khác của app, và KHÔNG áp cho
-  `/api/fingerspelling` (path này phải luôn trả 409).
-  Cách làm (middleware ASGI giới hạn theo path, hoặc đọc body có chặn trong route) do coder chọn. Nếu đổi route sang
-  `async`, suy luận vẫn phải chạy ngoài event loop (threadpool).
-- 422: sai kiểu, sai shape, NaN/Infinity, body không phải JSON, vượt độ dài danh sách, `frame_*` ngoài khoảng, thiếu
-  `handedness`/`timestamps_ms` khi model cần, ít hơn `min_detected_frames` khung có tay.
-- 503: không có checkpoint hợp lệ (như cũ).
-- Không bao giờ trả 500 cho input xấu.
+- **413**: body > `ALPHABET_MAX_BODY_BYTES` (=1_048_576).
+  - Áp cho cả request có `Content-Length` lẫn request chunked, và kiểm TRƯỚC khi parse.
+  - CHỈ áp cho `/api/fingerspelling/sequence` và `/api/fingerspelling/compose`.
+  - `/api/fingerspelling` luôn trả 409.
+- **422**:
+  - lỗi schema: `{"detail": [{"loc","msg","type"}]}`, không trả lại `input` (G1);
+  - lỗi ngữ nghĩa: `{"detail": str}`.
+  - Các trường hợp gây 422: sai kiểu/shape, NaN/Infinity, body không phải JSON, vượt độ dài, `frame_*` ngoài khoảng,
+    thiếu `handedness`/`timestamps_ms` khi model cần, ít hơn `min_detected_frames` khung có tay.
+- **503**: không có checkpoint hợp lệ.
+- Không bao giờ trả 500 khi input xấu.
 
-Lý do chọn 1 MiB: payload hợp lệ lớn nhất gồm 300 khung × 63 số, mỗi số là float ở dạng repr dài nhất, cộng handedness
-và timestamps. Test AC1-e dựng đúng payload này và chứng minh nó NHỎ HƠN giới hạn và trả 200. Không ước lượng tay.
+Lý do chọn 1 MiB: test AC1-e dựng payload hợp lệ lớn nhất và chứng minh nó nhỏ hơn giới hạn và vẫn trả 200.
 
-### 3.3 Hợp đồng `POST /api/fingerspelling/compose` (mới) + module thuần
-Module mới `src/inference/fingerspelling_compose.py` (không import torch/fastapi, dùng được ở mọi nơi):
-- Hằng `LETTERS` (29) và `TONE_MARKS` (5 nhãn `"dấu sắc"`, `"dấu huyền"`, `"dấu hỏi"`, `"dấu ngã"`, `"dấu nặng"` →
-  dấu kết hợp U+0301, U+0300, U+0309, U+0303, U+0323), `SPACE = " "`.
-- `token_kind(token) -> "letter" | "tone" | "space"`: ném `ValueError` nếu token lạ.
-- `compose(tokens) -> {"text": str (NFC), "syllables": [str], "warnings": [{"code", "token_index", "message"}]}`.
+### 3.3 Hợp đồng `POST /api/fingerspelling/compose` + module thuần
+Module `src/inference/fingerspelling_compose.py` không import torch hay fastapi. Nó có:
+- các hằng `LETTERS` (29), `TONE_MARKS` (5 dấu → dấu kết hợp U+0301, U+0300, U+0309, U+0303, U+0323), `SPACE = " "`;
+- `token_kind(token)`: trả `"letter" | "tone" | "space"`; token lạ thì ném `ValueError`. Token được chuẩn hóa NFC
+  trước khi so khớp; không hạ chữ thường (G4d);
+- `compose(tokens)`: trả `{"text": NFC, "syllables": [...], "warnings": [{"code","token_index","message"}]}`.
 
-Quy tắc ghép (có tài liệu trong docstring và test ở AC3):
-1. Âm tiết là chuỗi token nằm giữa hai `" "`. Chữ cái nối theo thứ tự. Dấu thanh áp cho CẢ âm tiết, bất kể nó đứng ở
-   đâu trong âm tiết (thường ký sau chữ cuối, giống Telex).
-2. Nếu âm tiết có từ 2 dấu thanh trở lên thì dùng dấu CUỐI và thêm cảnh báo `multiple_tones`.
-3. Nếu âm tiết không có nguyên âm thì không áp dấu, giữ nguyên các chữ, và thêm cảnh báo `tone_without_vowel`.
-   Không tự sửa hay đoán chữ.
-4. Chọn nguyên âm mang dấu. Nguyên âm gồm a ă â e ê i o ô ơ u ư y. Bỏ "u" trong "qu" đầu âm tiết. Bỏ "i" trong "gi"
-   đầu âm tiết khi sau nó còn nguyên âm khác.
-   Với cụm nguyên âm còn lại:
-   (a) Cụm có nguyên âm mang mũ/móc (ă â ê ô ơ ư): đặt dấu vào nguyên âm mang mũ/móc CUỐI cùng. Ví dụ "ươ" đặt ở ơ.
-   (b) Nếu không, và âm tiết có phụ âm cuối: đặt vào nguyên âm cuối của cụm.
-   (c) Nếu không, cụm 3 nguyên âm: đặt vào nguyên âm giữa.
-   (d) Nếu không, cụm 2 nguyên âm: đặt vào nguyên âm ĐẦU. Đây là **kiểu cũ**: hòa, thủy.
-   (e) Cụm 1 nguyên âm: đặt vào nguyên âm đó.
-   Kiểu đặt dấu cũ/mới là lựa chọn trình bày, không phải điểm dừng. Ghi `"tone_style": "traditional"` trong response
-   để frontend/tài liệu nói rõ.
-5. Kết quả chuẩn hóa NFC, chữ thường. Không viết hoa và không tự thêm khoảng trắng.
+Quy tắc ghép:
+1. Âm tiết là phần giữa hai `" "`. Dấu thanh áp cho cả âm tiết, bất kể nó đứng ở vị trí nào trong âm tiết.
+2. Âm tiết có từ 2 dấu trở lên: dùng dấu CUỐI. Mỗi dấu đứng trước sinh một cảnh báo `multiple_tones` (G4a).
+3. Âm tiết không có nguyên âm: không áp dấu, và sinh cảnh báo `tone_without_vowel`. Không sửa hay đoán chữ.
+4. Tập nguyên âm: a ă â e ê i o ô ơ u ư y.
+   - Bỏ "u" của "qu" ở đầu âm tiết.
+   - Bỏ "i" của "gi" ở đầu âm tiết khi phía sau còn nguyên âm khác.
+   - Nếu bỏ đi mà không còn nguyên âm nào thì không bỏ (G4b).
+
+   Trên dãy nguyên âm liên tiếp ĐẦU TIÊN (G4c), chọn nguyên âm mang dấu theo thứ tự ưu tiên:
+   (a) nếu có nguyên âm mang mũ/móc, lấy nguyên âm mang mũ/móc CUỐI;
+   (b) nếu không, và có phụ âm cuối, lấy nguyên âm cuối của cụm;
+   (c) nếu không, và cụm có 3 nguyên âm, lấy nguyên âm giữa;
+   (d) nếu không, và cụm có 2 nguyên âm, lấy nguyên âm ĐẦU (kiểu cũ);
+   (e) cụm 1 nguyên âm thì lấy nguyên âm đó.
+
+   Response ghi `"tone_style": "traditional"`.
+5. Output ở dạng NFC, chữ thường, giữ nguyên khoảng trắng. `syllables` bỏ các âm tiết rỗng (G4e).
 
 Endpoint:
-- Input: `{"tokens": [str]}`, độ dài 0..`COMPOSE_MAX_TOKENS` (=200).
-- Output 200: `compose(...)` + `"tone_style"`.
-- Lỗi: 422 khi token lạ (thông báo nêu vị trí), khi vượt độ dài, hoặc khi sai kiểu. 413 khi body vượt giới hạn (§3.2).
-- Endpoint KHÔNG cần model, nên vẫn chạy được khi checkpoint không có. Không gọi model, không sửa token.
+- Input: `{"tokens": [str]}`, có 0..`COMPOSE_MAX_TOKENS` (=200) phần tử.
+- 200: kết quả `compose(...)` kèm `tone_style`.
+- 422: token lạ (thông báo nêu vị trí), vượt độ dài, sai kiểu.
+- 413: body quá lớn.
+- Không cần model.
 
-Tính nhất quán nhãn: tập `LETTERS ∪ TONE_MARKS` phải BẰNG `scripts/build_alphabet_tasks.ALPHABET_CLASSES`. Nếu checkpoint
-triển khai có mặt, tập này cũng phải bằng `classes` của nó (AC3-d). `prediction_kind`/`kind` ở §3.2 lấy từ `token_kind`.
+Tập `LETTERS ∪ TONE_MARKS` phải BẰNG `ALPHABET_CLASSES`, và bằng `classes` của checkpoint triển khai.
 
-### 3.4 Status có nguồn gốc model (`GET /api/fingerspelling/status`, chỉ THÊM trường)
-- `trained_on`: lấy nguyên từ checkpoint (`None` nếu checkpoint không có khóa này).
-- `data_provenance`: tra theo `trained_on.source` trong một hằng ở backend. Hằng này chỉ chứa sự thật đã ghi ở
-  `docs/data_registry.md` §1b: hauuto → `{"licence": "unknown", "usage": "internal only", "registry": "docs/data_registry.md#1b"}`.
-  Nguồn không có trong hằng, hoặc thiếu `trained_on` → `{"status": "unknown"}`.
-- `evaluation_report`: đường dẫn `reports/alphabet_nested_2026-09-25/REPORT.md` (chỉ đường dẫn, KHÔNG chép số liệu
-  vào API).
-- KHÔNG từ chối nạp checkpoint thiếu `trained_on`. Từ chối như vậy là đổi hành vi của model mặc định, và nó sẽ làm hỏng
-  các fixture test có sẵn. Test ở Bước 5 mới là chỗ kiểm chứng nguồn gốc.
+### 3.4 Status (`GET /api/fingerspelling/status`, chỉ THÊM)
+- `trained_on`: lấy nguyên từ checkpoint, hoặc `null`.
+- `data_provenance`: hằng tra theo `trained_on.source`. Với hauuto là
+  `{"licence": "unknown", "usage": "internal only", "registry": "docs/data_registry.md#1b"}`. Các trường hợp khác trả
+  `{"status": "unknown"}`.
+- `evaluation_report`: chỉ đường dẫn tới báo cáo.
+- `compose_endpoint`: có ở cả hai nhánh `available` true/false (G2).
+- Backend KHÔNG đọc và KHÔNG trả các khóa `evaluation` hay `licence_note` của checkpoint (§0.2).
+- Không từ chối nạp checkpoint thiếu `trained_on`.
 
 ### 3.5 Nạp model an toàn khi chạy đồng thời
-`get_or_load_alphabet_model` dùng `threading.Lock` theo mẫu double-checked, để `torch.load` chạy đúng một lần. Hành vi
-trả `(None, None)` khi lỗi giữ nguyên. Không cache lỗi vĩnh viễn: giữ như hiện tại, lần sau thử lại.
+Dùng `threading.Lock` theo kiểu double-checked. Khi lỗi thì trả `(None, None)`, và lần gọi sau thử nạp lại.
 
 ---
 
-## 4. Chia việc (thứ tự và phụ thuộc)
+## 4. Chia việc
 
-Trước khi sửa bất kỳ hàm nào, chạy GitNexus `impact` (upstream) cho: `predict_fingerspelling_sequence`,
-`parse_fingerspelling_sequence`, `FingerspellingSequenceRequest`, `get_or_load_alphabet_model`,
-`get_fingerspelling_status`, `predict_fingerspelling`. Ghi risk vào commit message. Nếu risk là HIGH/CRITICAL thì cảnh
-báo. Nếu là UNKNOWN thì xác nhận thêm bằng text search.
+Các bước 0–4 và 6 (trừ review) ĐÃ LÀM ở `f903980`, `7366274`, `1713f8d`. Nội dung gốc của các bước này giữ ở cuối mục
+để truy vết. Việc còn lại:
 
-**Bước 0: Nguồn gốc checkpoint đang nạp (≤ 1 giờ, không phụ thuộc bước nào).**
-- Viết script mới `scripts/alphabet_ckpt_provenance.py`. Script ghi `reports/alphabet_deploy_2026-09-27/provenance.json`
-  gồm các mục sau:
-  - `generated_by`: lệnh, HEAD commit, thời điểm.
-  - sha256 và kích thước của `checkpoints/alphabet_best.pt` và của 3 checkpoint đã biết ở §2.
-  - Các khóa của mỗi checkpoint.
-  - `model_type`, `selected`, `epochs`, `preprocessing`, `trained_on`, `classes` (danh sách).
-  - `match`: tên checkpoint đã biết trùng sha256, hoặc `null`.
-  - `verdict` ∈ {`"real_data_known_checkpoint"`, `"UNKNOWN_PROVENANCE"`}.
-  - Mục thông tin `external_reproduction`: chạy checkpoint đang nạp trên CPU với 46 clip QIPEDC qua đường offline, so
-    với `reports/alphabet_nested_2026-09-25/primary/nested_predictions.csv` (run="external"), rồi ghi `k/n`. Nếu thiếu
-    dữ liệu/CSV thì ghi `null` + lý do. Mục này CHỈ là thông tin, vì run gốc train trên cuda.
-  - JSON KHÔNG chứa landmark hay mã clip riêng lẻ.
-- Nếu `verdict == "UNKNOWN_PROVENANCE"` hoặc `trained_on.source != "hauuto"`: ghi "CẦN NGƯỜI DÙNG" vào progress_log,
-  bỏ qua Bước 5, và làm tiếp các bước còn lại. KHÔNG thay checkpoint.
+**R1: Sửa quy tắc verdict + sinh lại provenance (≤ 1.5 giờ).**
+- Trong `scripts/alphabet_ckpt_provenance.py`, thay `verdict_for` bằng một hàm THUẦN. Hàm này nhận các dict đã nạp và
+  kết quả tái lập, không đọc đĩa, và trả `(verdict, checks)`. `checks` có `V1`…`V6`, mỗi mục là `{"ok": bool,
+  "detail": ...}`.
+- JSON ghi thêm các mục sau:
+  - `verdict_checks`;
+  - `M` (tên các K thỏa V1);
+  - `sha256_match` (giữ tên cũ `match` với cùng nghĩa, để tương thích);
+  - `metadata_diff`: chỉ ghi tên khóa + tên kiểu giá trị, KHÔNG ghi giá trị;
+  - `verdict_rule`: câu mô tả V1–V6.
+- `external_reproduction` bỏ nhãn "information only", vì đã thành V6.
+- Unit test cho hàm verdict: `tests/test_alphabet_ckpt_provenance.py` (AC0b).
+- Sinh lại JSON 2 lần (AC0').
 
-**Bước 1: Giới hạn input + 409 không đọc body (≤ 2 giờ).**
-- Thêm hằng `ALPHABET_MAX_BODY_BYTES`, `ALPHABET_MAX_FRAME_SIDE`. Thêm giới hạn 413 theo path (§3.2).
-- Thêm `max_length` cho các list trong pydantic và cận cho `frame_width/height`.
-- Route `/api/fingerspelling` bỏ tham số `file`, nên không còn đọc body. Nội dung 409 giữ nguyên.
-- Test: AC1, AC2 (file test MỚI `tests/test_fingerspelling_limits.py`).
+**R2: Test còn thiếu cho G2, G3, G4 và cho khóa metadata không truy được (≤ 1 giờ).**
+- Chỉ THÊM test (AC3-f, AC4-f/g/h) vào `tests/test_fingerspelling_limits.py` / `tests/test_fingerspelling_compose.py`.
+- Không sửa và không xóa test đã có.
+- Chỉ sửa code nếu test mới lộ ra lỗi.
 
-**Bước 2: Module ghép chữ (≤ 2 giờ, không phụ thuộc bước nào).**
-- `src/inference/fingerspelling_compose.py` + `tests/test_fingerspelling_compose.py` (AC3-a..c, e).
+**R3: Bước 5 = AC5 (≤ 1.5 giờ). CHỈ làm khi AC0' ra `real_data_known_checkpoint`.**
+- `tests/test_fingerspelling_deployed.py`.
 
-**Bước 3: Endpoint `/compose`, `prediction_kind`, status có nguồn gốc (≤ 1.5 giờ, phụ thuộc Bước 1 và 2).**
-- Test: AC3-d, AC4, AC7 (thêm vào `tests/test_fingerspelling_compose.py` / `tests/test_fingerspelling_limits.py`).
+**R4: Chốt (≤ 1 giờ).**
+- Chạy AC8.
+- Chạy `detect-changes --scope all` trước MỖI commit.
+- `git add` theo từng đường dẫn.
+- progress_log (AC9).
+- vslt-reviewer.
 
-**Bước 4: Khóa khi nạp model (≤ 0.5 giờ, phụ thuộc Bước 3 vì cùng vùng code).** Test AC6.
+Trước khi sửa symbol nào, phải chạy GitNexus `impact` (upstream). Riêng R1: chạy cho `verdict_for` và `build_report`.
 
-**Bước 5: Test tương đương cho checkpoint đang triển khai (≤ 1.5 giờ, phụ thuộc Bước 0 = verdict hợp lệ).**
-- File MỚI `tests/test_fingerspelling_deployed.py` (AC5).
-
-**Bước 6: Kiểm tra cuối, commit, review (≤ 1 giờ).**
-- Cập nhật docstring đầu `backend/main.py:1-9` (thêm `/compose`).
-- Chạy toàn bộ bộ test (AC8). Chạy `node .gitnexus/run.cjs detect-changes --scope all --repo .` trước MỖI commit.
-- Mỗi commit chỉ `git add` từng đường dẫn cụ thể.
-- Ghi 1 dòng vào progress_log. Chạy vslt-reviewer với kế hoạch này và danh sách commit.
+*(Truy vết, đã làm)*
+- Bước 0: `scripts/alphabet_ckpt_provenance.py` + `provenance.json`.
+- Bước 1: giới hạn 413/422 + 409 không đọc body.
+- Bước 2: module compose.
+- Bước 3: `/compose`, `prediction_kind`, status có nguồn gốc.
+- Bước 4: khóa khi nạp.
+- Bước 6: docstring + test + commit.
 
 ---
 
-## 5. TIÊU CHÍ CHẤP NHẬN (hợp đồng, coder KHÔNG được đổi)
+## 5. TIÊU CHÍ CHẤP NHẬN (hợp đồng; coder KHÔNG được đổi)
 
-Môi trường chạy: `.venv/Scripts/python`, đặt `PYTHONIOENCODING=utf-8`. Ghi output thật của mọi lệnh vào báo cáo của
-coder.
+Môi trường: `.venv/Scripts/python`, `PYTHONIOENCODING=utf-8`. Output thật của mọi lệnh phải ghi vào báo cáo của coder.
 
-**AC0: Nguồn gốc (Bước 0).**
+**AC0' (Lần sửa 1, thay AC0): Nguồn gốc.**
 - Lệnh: `.venv/Scripts/python scripts/alphabet_ckpt_provenance.py --out reports/alphabet_deploy_2026-09-27/provenance.json`.
-- File phải có đủ các trường ở Bước 0.
-- `verdict` do script tính từ sha256 và `trained_on`. Không gõ tay.
-- Chạy lại lần hai thì JSON giống hệt, ngoại trừ `generated_by`.
-- Nếu `verdict != "real_data_known_checkpoint"` thì phải có dòng progress_log với "CẦN NGƯỜI DÙNG", và AC5 được ghi
-  "BLOCKED (điểm dừng)". AC5 không được tính là PASS.
+- `verdict` phải do script tính theo V1–V6 (§0.2). `verdict_checks` có đủ 6 mục.
+- Chạy 2 lần: JSON giống hệt nhau, trừ `generated_by`.
+- `metadata_diff` không chứa giá trị của `evaluation` hay `licence_note`.
+- Nếu `verdict == "real_data_known_checkpoint"`: làm R3, và dòng progress_log mới ghi rõ "CẦN NGƯỜI DÙNG của dòng
+  2026-09-28 trước được gỡ theo Lần sửa 1 (tiêu chí V1–V6)".
+- Nếu không: giữ "CẦN NGƯỜI DÙNG", AC5 = "BLOCKED (điểm dừng)", KHÔNG tính là PASS, và KHÔNG thay checkpoint.
 
-**AC1: Giới hạn input** (`tests/test_fingerspelling_limits.py`). Mỗi ý là ít nhất một test:
-- a. Body lớn hơn `ALPHABET_MAX_BODY_BYTES` gửi tới `/api/fingerspelling/sequence` có `Content-Length` → 413.
-- b. Như (a) nhưng gửi chunked (TestClient `content=` là generator, không có `Content-Length`) → 413.
-- c. (a) và (b) cho `/api/fingerspelling/compose` → 413.
-- d. Các path khác không bị giới hạn này: gửi body lớn hơn giới hạn tới một path KHÔNG tồn tại
-  (`POST /api/__limit_probe__`) → 404, không phải 413. Không dùng route thật nào có nạp model.
-- e. Payload HỢP LỆ lớn nhất có thể: T=300, mọi khung đủ 21×3, có đủ handedness và timestamps. Mỗi tọa độ là một float
-  Python mà `repr` có đúng 17 chữ số có nghĩa và có số mũ, ví dụ `0.5 + k·1.2345678901234567e-07`. Như vậy độ dài
-  chuỗi JSON đạt mức tối đa của float, và bàn tay vẫn có kích thước lòng bàn tay khác 0. Test kiểm
-  `len(json.dumps(body).encode()) < ALPHABET_MAX_BODY_BYTES` VÀ POST trả 200.
-- f. Body chứa `NaN` và body chứa `Infinity` trong landmarks → 422. Test gửi chuỗi JSON thô, không để client lọc.
-- g. Body không phải JSON (`content=b"abc"`, `text/plain`) → 422.
-- h. `frame_width = ALPHABET_MAX_FRAME_SIDE + 1` → 422. `frame_height = ALPHABET_MAX_FRAME_SIDE` → 200.
-- i. Một khung có 22 điểm, và một điểm có 4 tọa độ → 422.
-- j. Không ca nào trong AC1 trả 500.
+**AC0b (mới): Unit test quy tắc verdict** (`tests/test_alphabet_ckpt_provenance.py`).
+- Chỉ dùng fixture checkpoint nhỏ tạo trong test (tensor vài phần tử). Không đọc checkpoint thật.
+- Mỗi ca là một test:
+  - a. Trọng số bit-exact + metadata suy luận trùng + K có `preprocessing`/`trained_on` + V4, V5 + tái lập `k == n > 0`
+    → `real_data_known_checkpoint`.
+  - b. Như (a), nhưng file triển khai có thêm khóa `evaluation` và `licence_note` → vẫn real. `metadata_diff` liệt kê
+    đúng tên khóa, và không chứa giá trị.
+  - c. Một tensor lệch 1 ULP (`torch.nextafter`) → UNKNOWN, và `V1.ok == False`.
+  - d. Thứ tự khóa của state_dict khác → UNKNOWN.
+  - e. `classes` cùng tập nhưng khác thứ tự → UNKNOWN (V2).
+  - f. `preprocessing` khác ở một trường (ví dụ `target_frames`) → UNKNOWN (V2 hoặc V4).
+  - g. Chỉ khớp với `real_run` → UNKNOWN (V1).
+  - h. Trong M không có K nào có cả `preprocessing` và `trained_on` → UNKNOWN (V3).
+  - i. `trained_on.source = "other"` → UNKNOWN (V5).
+  - j. Tái lập `k = n - 1` → UNKNOWN. Tái lập `null` (thiếu dữ liệu) → UNKNOWN. `n = 0` → UNKNOWN (V6).
+  - k. sha256 trùng hệt nhưng V6 sai → UNKNOWN. Trùng sha256 không được miễn điều kiện nào.
 
-**AC2: 409** (`tests/test_fingerspelling_limits.py`).
-- `inspect.signature(api.predict_fingerspelling).parameters` rỗng.
-- Upload multipart 5 MB tới `/api/fingerspelling` → 409 với `detail.use == "/api/fingerspelling/sequence"`.
-- POST rỗng → 409. Test cũ `test_image_endpoint_returns_409` vẫn pass và không bị sửa.
+**AC1: Giới hạn input.** Giữ nguyên như kế hoạch trước (ý a–j). Đã có test trong `tests/test_fingerspelling_limits.py`.
 
-**AC3: Ghép chữ** (`tests/test_fingerspelling_compose.py`).
-- a. Bảng ca bắt buộc cho `compose`. Token viết bằng tên lớp, `␣` là `" "`. Kết quả so theo NFC:
-  `v i ê t dấu nặng ␣ n a m` → `việt nam`;
-  `n g ư ơ i dấu huyền` → `người`;
-  `h o a dấu huyền` → `hòa`;
-  `t h u y dấu hỏi` → `thủy`;
-  `t o a n dấu sắc` → `toán`;
-  `h o a n g dấu huyền` → `hoàng`;
-  `t u â n dấu sắc` → `tuấn`;
-  `q u a dấu hỏi` → `quả`;
-  `q u y dấu sắc` → `quý`;
-  `q u ô c dấu sắc` → `quốc`;
-  `g i a dấu huyền` → `già`;
-  `g i dấu huyền` → `gì`;
-  `g i ê n g dấu sắc` → `giếng`;
-  `n g o a i dấu huyền` → `ngoài`;
-  `k h u y u dấu hỏi` → `khuỷu`;
-  `c ư a dấu hỏi` → `cửa`;
-  `c ư u dấu huyền` → `cừu`;
-  `m u ô n dấu sắc` → `muốn`;
-  `k h u y ê n dấu sắc` → `khuyến`;
-  `x o ă n dấu sắc` → `xoắn`;
-  `t h u ơ dấu hỏi` → `thuở`;
-  `c u a dấu hỏi` → `của`;
-  `y dấu sắc` → `ý`;
-  `đ a dấu ngã` → `đã`;
-  `t o dấu sắc a n` (dấu đứng giữa) → `toán`;
-  `m e` (không dấu) → `me`.
-- b. Cảnh báo:
-  - `b dấu sắc` → text `b`, cảnh báo `tone_without_vowel` với đúng `token_index`.
-  - `a dấu sắc dấu huyền` → `à` + cảnh báo `multiple_tones`.
-  - `[]` → `""`, không cảnh báo.
-  - `["a", " ", " ", "b"]`: `text` giữ đúng hai khoảng trắng. Không chuẩn hóa khoảng trắng.
-- c. `compose(["x1"])` ném `ValueError`. Output luôn là NFC (`unicodedata.is_normalized("NFC", text)`).
-- d. `set(LETTERS) | set(TONE_MARKS) == set(ALPHABET_CLASSES)` (import từ `scripts/build_alphabet_tasks`). Nếu
-  `checkpoints/alphabet_best.pt` có mặt thì tập này cũng bằng `classes` của nó (dùng skipUnless riêng cho phần checkpoint).
-- e. Endpoint: token lạ → 422, thông báo có vị trí; 201 token → 422; 200 token → 200; khi KHÔNG có checkpoint
-  (`api.ALPHABET_CKPT` trỏ tới file không tồn tại) `/compose` vẫn trả 200; response có `"tone_style": "traditional"`.
+**AC2: 409.** Giữ nguyên.
+
+**AC3: Ghép chữ.**
+- a–e giữ nguyên như kế hoạch trước (bảng 26 ca, cảnh báo, NFC, tập nhãn, endpoint).
+- **f (mới, G4):**
+  - `a dấu sắc dấu huyền dấu hỏi` → `ả` + ĐÚNG 2 cảnh báo `multiple_tones`, với `token_index` 1 và 2.
+  - `q u` → `qu`; `q u dấu sắc` → `qú`.
+  - token dạng tổ hợp `"ă"` được nhận là `ă`, nên `["ă", "dấu sắc"]` → `ắ`.
+  - token `"A"` → `compose` ném `ValueError`, và endpoint trả 422.
 
 **AC4: Response và status.**
-- `/sequence` với fixture checkpoint trả `prediction_kind`. Mỗi candidate có `kind`, và `kind == token_kind(class)`.
-  Fixture phải dùng `classes = ALPHABET_CLASSES` để `kind` có nghĩa.
-- Fixture checkpoint KHÔNG có `trained_on` → status có `trained_on is None` và `data_provenance == {"status": "unknown"}`.
-- Fixture CÓ `trained_on.source == "hauuto"` → `data_provenance.licence == "unknown"`.
-- Status có `evaluation_report` là đường dẫn tồn tại trong repo.
-- Mọi test cũ của `test_status_describes_sequence_contract` vẫn pass.
+- a–e giữ nguyên (kind, trained_on null/hauuto/nguồn lạ, evaluation_report, trường cũ).
+- **f (mới):** fixture checkpoint có thêm `"evaluation": {"top1": 0.5}` và `"licence_note": "x"`. Kiểm:
+  - Body của status và của `/sequence` không có khóa `evaluation` hay `licence_note` ở bất kỳ cấp nào (duyệt đệ quy).
+  - Không chứa chuỗi `"licence_note"`.
+- **g (mới, G2):** `compose_endpoint == "/api/fingerspelling/compose"` khi `available` true, và cả khi checkpoint không
+  tồn tại (`available` false).
+- **h (mới, G3):** fixture có `classes = ["c0", …]` → `/sequence` trả 200. `prediction_kind is None`, và mọi
+  `candidates[i]["kind"] is None`.
 
-**AC5: Tương đương train và realtime cho checkpoint ĐANG TRIỂN KHAI** (`tests/test_fingerspelling_deployed.py`).
-- `skipUnless` checkpoint + `manifest.csv` có mặt. Trên máy này **phải chạy, 0 skip**. Lý do skip phải nêu rõ tên file
-  thiếu.
-- a. Đọc checkpoint `checkpoints/alphabet_best.pt`. Có sha256 bằng `provenance.json` → `checkpoints.deployed.sha256`.
-  Nếu lệch thì FAIL, vì checkpoint đã bị đổi sau Bước 0.
-- b. `train_alphabet_nested.preprocessing_for(ckpt["selected"][2]) == ckpt["preprocessing"]`.
-- c. Đường offline: `train_alphabet_nested.load(REAL_DATA, {})` lấy đặc trưng của variant `selected[2]`, rồi forward
-  model trên CPU → softmax. Nếu `resample == "time"` thì request gửi `timestamps_ms = arange(T)*1000/fps` từ manifest,
-  đúng như `load()` dùng khi không có PTS.
-- d. Mẫu: TẤT CẢ clip `source == "qipedc"` + 15 clip mỗi người hauuto, chọn bằng `np.random.default_rng(0)`, theo thứ
-  tự `sample_id` đã sort.
-- e. Với mỗi clip: POST landmarks thô + handedness + width/height từ manifest tới `/sequence` → 200; `prediction` BẰNG
-  argmax offline; `abs(confidence - p_offline) <= 1e-4`; `candidates[:3]` có cùng thứ tự lớp với top-3 offline.
-- f. Thêm một ca `source_mirrored=True`: lật x và đổi nhãn tay của 5 clip thật → cùng `prediction`/`confidence`.
-- g. KHÔNG sửa `TestRealClipEquivalence` cũ. Test đó vẫn chạy với `REAL_CKPT` của nó.
+**AC5: Tương đương train/realtime cho checkpoint ĐANG TRIỂN KHAI** (`tests/test_fingerspelling_deployed.py`).
+- Ý a–g giữ nguyên:
+  - a. sha256 của `checkpoints/alphabet_best.pt` bằng `provenance.json` → `checkpoints.deployed.sha256`. Nếu lệch thì
+    FAIL; đây là cơ chế phát hiện đổi file về sau.
+  - b. `preprocessing_for(selected[2]) == ckpt["preprocessing"]`.
+  - c. Đường offline là `train_alphabet_nested.load`, chạy trên CPU.
+  - d. Mẫu: mọi clip qipedc, cộng 15 clip mỗi người hauuto, chọn bằng `default_rng(0)` trên danh sách `sample_id` đã sort.
+  - e. Cùng `prediction`; `|Δconfidence| ≤ 1e-4`; cùng top-3.
+  - f. `source_mirrored=True` cho 5 clip.
+  - g. Không sửa `TestRealClipEquivalence`.
+- **h (mới, G3):** với mọi clip của AC5, `prediction_kind` và mọi `kind` đều ≠ `None`.
+- Test thêm: `provenance.json` → `verdict == "real_data_known_checkpoint"` (test đọc JSON đã commit).
+- skipUnless checkpoint + manifest. Trên máy này phải chạy, 0 skip.
 
-**AC6: Khóa khi nạp.** 8 thread gọi `get_or_load_alphabet_model()` đồng thời với fixture checkpoint. `torch.load` được
-gọi đúng 1 lần (đếm bằng `unittest.mock.patch` bọc hàm thật). Cả 8 lần gọi nhận cùng một object model.
+**AC6: Khóa khi nạp.** Giữ nguyên.
 
-**AC7: Hợp đồng OpenAPI.** `GET /openapi.json` có:
-- path `/api/fingerspelling/sequence` (POST), `/api/fingerspelling/compose` (POST), `/api/fingerspelling/status` (GET),
-  `/api/fingerspelling` (POST).
-- schema request của `/sequence` có đủ `landmarks`, `handedness`, `timestamps_ms`, `frame_width`, `frame_height`,
-  `source_mirrored`, `top_k`, và `landmarks` có `maxItems` 300.
-- schema request của `/compose` có `tokens` với `maxItems` 200.
+**AC7: OpenAPI.** Giữ nguyên.
 
-**AC8: Hồi quy và toàn vẹn test.**
-- Lệnh: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_alphabet_preprocessing tests.test_aspect_correction tests.test_realtime tests.test_split_guards tests.test_translation_core tests.test_vsl_system tests.test_ws_throughput tests.test_fingerspelling_api tests.test_unified_split_integrity tests.test_report_step4 tests.test_fingerspelling_limits tests.test_fingerspelling_compose tests.test_fingerspelling_deployed -v`.
-- Kỳ vọng: 0 failure, 0 error. Báo số test và số skip thật, kèm lý do từng skip.
-- `tests.test_fingerspelling_api`: số test trước và sau bằng nhau, và `TestRealClipEquivalence` KHÔNG skip trên máy này.
+**AC8: Hồi quy.**
+- Lệnh: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_alphabet_preprocessing tests.test_aspect_correction tests.test_realtime tests.test_split_guards tests.test_translation_core tests.test_vsl_system tests.test_ws_throughput tests.test_fingerspelling_api tests.test_unified_split_integrity tests.test_report_step4 tests.test_fingerspelling_limits tests.test_fingerspelling_compose tests.test_fingerspelling_deployed tests.test_alphabet_ckpt_provenance -v`.
+- Kết quả: 0 failure, 0 error. Báo số test và số skip thật, kèm lý do từng skip.
+- Nếu AC0' ra UNKNOWN: chạy lệnh trên nhưng không có `tests.test_fingerspelling_deployed`, và ghi rõ điều này.
 - `git diff 09d4057 HEAD -- tests/test_fingerspelling_api.py tests/test_alphabet_preprocessing.py` phải RỖNG.
-  Test mới chỉ nằm ở file mới.
-- Grep mã mới trong `backend/main.py` và `src/inference/fingerspelling_compose.py` không thấy `random`, không thấy số
-  liệu độ chính xác gõ tay.
+- `git diff 1713f8d HEAD -- tests/test_fingerspelling_limits.py tests/test_fingerspelling_compose.py` chỉ có dòng THÊM.
+- Grep mã mới không thấy `random` và không thấy số liệu độ chính xác gõ tay.
 
 **AC9: Quy trình.**
-- Có output `impact` cho 6 symbol ở §4. Có output `detect-changes --scope all` cho mỗi commit (ghi vào commit message).
-- `git status` sau commit cuối: 3 file bị xóa của người dùng vẫn ở trạng thái " D", chưa staged.
-- Không commit `.pt`, `.npz`, landmark, file per-clip.
-- Có dòng progress_log. Có review `docs/reviews/03-review.md` với kết luận APPROVE.
+- Có output `impact` cho mọi symbol bị sửa. Mỗi commit có `detect-changes --scope all`, ghi risk vào commit message.
+- `git status`: 3 file bị xóa của người dùng vẫn ở trạng thái " D", chưa staged.
+- Không commit `.pt`, `.npz`, landmark, hay file per-clip.
+- **progress_log:** THÊM một dòng mới cho Lần sửa 1, không sửa dòng 2026-09-28 cũ. Dòng mới ghi:
+  - commit;
+  - verdict mới cùng 6 kết quả V1–V6 (lấy từ JSON);
+  - trạng thái "CẦN NGƯỜI DÙNG" được gỡ hay còn giữ, kèm lý do;
+  - số test trước → sau.
+- Review `docs/reviews/03-review.md` kết luận APPROVE.
 
 ---
 
 ## 6. Rủi ro dữ liệu / ML
 
-- **Nguồn gốc model mặc định chưa được kiểm chứng.** Tên `alphabet_best.pt` trùng với tên của pipeline tổng hợp cũ
-  (memory: `data/vsl_alphabet_pilot` là TỔNG HỢP, không được train hay đánh giá trên nó). Bước 0 + AC5-a xử lý rủi ro
-  này. Khi chưa có kết luận của Bước 0, không được nói "model Cấp 1 train trên dữ liệu thật".
-- **Giấy phép.** hauuto có licence unknown, chỉ dùng nội bộ. Status phải nói điều đó (AC4). Không commit landmark hay
-  CSV dự đoán theo clip. `nested_predictions.csv` đã bị gitignore (`.gitignore:72`), và `provenance.json` chỉ chứa số
-  đếm. Vấn đề `alphabet_real_best.pt` đã công khai: đã ghi ở data_registry. Việc này không xử lý vấn đề đó.
-- **Lệch train và realtime (lớn nhất, nằm NGOÀI backend).** Dữ liệu train được trích bằng Python
-  `mp.solutions.hands` 0.10.14 (`max_num_hands=1, model_complexity=1`). Nếu Việc 5 chạy MediaPipe JS (tasks-vision) ở
-  trình duyệt thì model và phiên bản đều khác, nên landmark có thể lệch dù test backend pass.
-  Backend chỉ giúp được một việc: status đã trả `preprocessing.extractor` và `mediapipe_version` để client đối chiếu.
-  Kế hoạch Việc 5 phải quyết định chỗ chạy MediaPipe, và phải có test tương đương client so với trích offline. Test đó
-  cần clip webcam thật, nên dính điểm dừng "dữ liệu người dùng quay" (Bước 5 backlog).
-- **Cắt ký hiệu.** Train dùng CẢ clip khoảng 3 s (`REPORT.md` bảng capture). Live cắt theo tay xuất hiện/biến mất, nên
-  độ dài và phần đệm có thể khác train. Resample theo index giảm bớt ảnh hưởng này nhưng không loại hết. Việc 5 phải ghi
-  rõ quy tắc cắt.
-- **Cỡ mẫu.** 4 người ký. Dấu thanh có CI [7.5, 74.2] (`reports/alphabet_nested_2026-09-25/REPORT.md:14`), và GATE 0
-  kết luận số liệu dấu thanh "không dùng được làm kết quả". Việc này KHÔNG đưa số liệu nào vào API. `prediction_kind`
-  chỉ để UI (Việc 5) cảnh báo riêng cho dấu.
-- **Tương đương số học.** Model gốc train trên cuda, còn backend chạy CPU. Vì vậy AC5 so backend với offline trên CÙNG
-  CPU. So với CSV do run gốc ghi chỉ là thông tin (Bước 0), không phải tiêu chí pass/fail.
-- **Rò rỉ.** Không có. Việc này không train và không đánh giá accuracy. AC5 dùng clip hauuto đã có trong train, và chỉ
-  để kiểm tra tính đồng nhất đầu vào, không để đo độ chính xác.
+- **Nguồn gốc model mặc định.** AC0' giải quyết rủi ro này bằng V1–V6. Chỉ khi AC0' đạt mới được nói "model Cấp 1 là
+  model nested train trên hauuto (dữ liệu thật)".
+- **Đóng gói lại không truy được (mới).** `checkpoints/alphabet_best.pt` có hai khóa `licence_note` và `evaluation`.
+  Không run nào sinh ra chúng, và không biết ai thêm hay thêm lúc nào.
+  - Các giá trị này KHÔNG được dùng làm số liệu ở bất kỳ đâu: README, EVALUATION, API, báo cáo.
+  - Số liệu Cấp 1 chỉ lấy từ `reports/alphabet_nested_2026-09-25/primary/nested_report.json` + `REPORT.md`.
+  - Ghi điểm này vào mục "Giới hạn" của báo cáo cuối (DoD 9).
+- **Giấy phép.** hauuto: unknown, chỉ dùng nội bộ. `provenance.json` chỉ chứa số đếm và tên khóa.
+- **Lệch train/realtime (ngoài backend).** Dữ liệu train được trích bằng `mp.solutions.hands` 0.10.14 (Python). Nếu
+  Việc 5 chạy MediaPipe JS thì landmark có thể lệch. Việc 5 phải xử lý và phải có test tương đương cho client (cần
+  clip webcam thật).
+- **Cắt ký hiệu.** Lúc train, mỗi mẫu là cả clip dài khoảng 3 s. Lúc live, ký hiệu được cắt theo tay xuất hiện/biến
+  mất. Việc 5 phải ghi rõ quy tắc cắt.
+- **Cỡ mẫu.** Chỉ có 4 người ký. Dấu thanh có CI [7.5, 74.2]. Không đưa số liệu nào vào API.
+- **Tương đương số học.** Model train trên cuda, backend chạy CPU. AC5 so với đường offline chạy trên cùng CPU. V6 so
+  argmax với CSV của run cuda, và đã quan sát được 46/46. Nếu sau này cần sinh lại mà ra k < n, verdict sẽ thành
+  UNKNOWN; khi đó dừng lại, KHÔNG nới V6.
+- **Rò rỉ.** Không có, vì không train và không đo accuracy.
 
 ---
 
 ## 7. Điểm dừng
-- Đổi model mặc định: KHÔNG. Không chạm checkpoint, không đổi `ALPHABET_CKPT`.
-- Cần dữ liệu người dùng: KHÔNG, với phạm vi này.
-- Đụng thay đổi chưa commit của người dùng: KHÔNG. Chỉ `git add` từng đường dẫn cụ thể (AC9).
+- Đổi model mặc định: KHÔNG.
+- Cần dữ liệu từ người dùng: KHÔNG.
+- Đụng thay đổi chưa commit của người dùng: KHÔNG.
 - Hành động không hoàn tác: KHÔNG.
-- Vấn đề dữ liệu mới: CÓ ĐIỀU KIỆN. Nếu Bước 0 ra `UNKNOWN_PROVENANCE` hoặc nguồn khác hauuto → "CẦN NGƯỜI DÙNG",
-  và chặn Bước 5/AC5.
+- Vấn đề dữ liệu mới: CÓ ĐIỀU KIỆN. Nếu AC0' vẫn ra UNKNOWN → "CẦN NGƯỜI DÙNG", chặn R3/AC5. Việc đóng gói lại không
+  truy được KHÔNG phải điểm dừng: nó không đổi kế hoạch hay model, và chỉ cần ghi vào mục "Giới hạn".
 
-## 8. Ngoài phạm vi (chuyển cho kế hoạch sau, ghi để không bị quên)
+## 8. Ngoài phạm vi
 - Việc 5:
-  - thay `Fingerspelling.jsx` (còn gọi endpoint ảnh ở `:69`, nối tên lớp thô ở `:207`, ghi cứng "25 lớp" ở `:130`);
+  - `Fingerspelling.jsx` (`:69` gọi endpoint ảnh, `:207` nối tên lớp thô, `:130` ghi cứng "25 lớp");
   - cắt ký hiệu phía client;
-  - chọn chỗ chạy MediaPipe và làm test tương đương client;
-  - thu hẹp CORS (`backend/main.py:151-157`) sau khi dùng proxy `/api` + `/ws` của Vite.
-- DoD 8 yêu cầu đo độ trễ "qua WebSocket thật" cho cả Đánh vần, nhưng Cấp 1 dùng REST. Kế hoạch đo hiệu năng phải ghi
-  rõ cách đo cho Cấp 1 (REST round-trip) và báo điểm lệch này cho người dùng. Chưa phải điểm dừng.
-- Kiểu đặt dấu (cũ hay mới): việc này chọn kiểu cũ và ghi trong response. Nếu người dùng muốn kiểu mới thì đó là một
-  thay đổi nhỏ có test.
+  - chọn nơi chạy MediaPipe và viết test tương đương cho client;
+  - thu hẹp CORS;
+  - xử lý cả hai dạng body của lỗi 422 (G1).
+- DoD 8 ghi đo độ trễ "qua WebSocket" cho cả chế độ Đánh vần, nhưng Cấp 1 dùng REST. Việc đo hiệu năng phải ghi rõ
+  điểm lệch này và báo người dùng.
+- Kiểu đặt dấu: hiện là kiểu cũ. Đổi sang kiểu mới là một thay đổi nhỏ, có test.
