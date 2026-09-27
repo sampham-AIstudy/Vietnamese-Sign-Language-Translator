@@ -454,5 +454,59 @@ class TestOpenApiContract(_Case):
         self.assertNotIn("requestBody", self.spec["paths"][IMAGE]["post"])
 
 
+def _all_keys(obj):
+    """Every dict key at any depth of a JSON value."""
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            yield k
+            yield from _all_keys(v)
+    elif isinstance(obj, list):
+        for v in obj:
+            yield from _all_keys(v)
+
+
+class TestLevel1ContractAdditions(_Case):
+    """AC4-f, AC4-g, AC4-h (plan 03 Lần sửa 1: G2, G3 and the untraceable checkpoint keys)."""
+
+    def test_untraceable_checkpoint_keys_are_never_returned(self):  # AC4-f
+        path = os.path.join(self.tmp.name, "fixture_extra_keys.pt")
+        save_fixture(path, trained_on={"source": "hauuto"})
+        ckpt = torch.load(path, map_location="cpu", weights_only=False)
+        ckpt["evaluation"] = {"top1": 0.5}
+        ckpt["licence_note"] = "x"
+        torch.save(ckpt, path)
+        self._use(path)
+        lms, labels = hand_clip()
+        responses = [self.client.get(STATUS), self.client.post(SEQ, json=body_for(lms, labels, top_k=10))]
+        for r in responses:
+            with self.subTest(url=str(r.url)):
+                self.assertEqual(r.status_code, 200, r.text)
+                keys = set(_all_keys(r.json()))
+                self.assertNotIn("evaluation", keys)
+                self.assertNotIn("licence_note", keys)
+                self.assertNotIn("licence_note", r.text)
+
+    def test_compose_endpoint_in_status_both_branches(self):  # AC4-g
+        body = self.client.get(STATUS).json()
+        self.assertTrue(body["available"])
+        self.assertEqual(body["compose_endpoint"], "/api/fingerspelling/compose")
+        self._use(os.path.join(self.tmp.name, "does_not_exist.pt"))
+        body = self.client.get(STATUS).json()
+        self.assertFalse(body["available"])
+        self.assertEqual(body["compose_endpoint"], "/api/fingerspelling/compose")
+
+    def test_kind_is_null_for_classes_outside_level1(self):  # AC4-h
+        path = save_fixture(os.path.join(self.tmp.name, "fixture_c_classes.pt"),
+                            classes=[f"c{i}" for i in range(34)])
+        self._use(path)
+        lms, labels = hand_clip()
+        r = self.client.post(SEQ, json=body_for(lms, labels, top_k=10))
+        self.assertEqual(r.status_code, 200, r.text)
+        body = r.json()
+        self.assertIsNone(body["prediction_kind"])
+        self.assertEqual(len(body["candidates"]), 10)
+        self.assertTrue(all(c["kind"] is None for c in body["candidates"]))
+
+
 if __name__ == "__main__":
     unittest.main()

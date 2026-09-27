@@ -227,5 +227,35 @@ class TestComposeEndpoint(unittest.TestCase):  # AC3-e
         self.assertEqual(r.json()["text"], "")
 
 
+class TestComposeAssumptionsG4(unittest.TestCase):  # AC3-f (plan 03 Lần sửa 1, G4)
+    def test_three_tones_give_two_warnings(self):
+        out = compose(["a", "dấu sắc", "dấu huyền", "dấu hỏi"])
+        self.assertEqual(out["text"], nfc("ả"))
+        self.assertEqual([(w["code"], w["token_index"]) for w in out["warnings"]],
+                         [("multiple_tones", 1), ("multiple_tones", 2)])
+
+    def test_qu_without_other_vowel(self):
+        self.assertEqual(compose(["q", "u"]), {"text": "qu", "syllables": ["qu"], "warnings": []})
+        out = compose(["q", "u", "dấu sắc"])
+        self.assertEqual(out["text"], nfc("qú"))
+        self.assertEqual(out["warnings"], [])
+
+    def test_combining_form_token(self):
+        combining_a_breve = "ă"
+        self.assertNotEqual(combining_a_breve, "ă")
+        self.assertEqual(token_kind(combining_a_breve), "letter")
+        out = compose([combining_a_breve, "dấu sắc"])
+        self.assertEqual(out["text"], nfc("ắ"))
+        self.assertTrue(unicodedata.is_normalized("NFC", out["text"]))
+
+    def test_upper_case_is_unknown(self):
+        with self.assertRaises(ValueError):
+            compose(["A"])
+        client = TestClient(api.app)
+        r = client.post(COMPOSE, json={"tokens": ["A"]})
+        self.assertEqual(r.status_code, 422)
+        self.assertIn("tokens[0]", r.text)
+
+
 if __name__ == "__main__":
     unittest.main()
