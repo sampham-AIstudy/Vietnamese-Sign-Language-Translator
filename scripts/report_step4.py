@@ -519,22 +519,29 @@ def git_added(path):
 class Inputs:
     def __init__(self):
         self.items = {}
+        self.required = {}
 
-    def add(self, path, role):
+    def add(self, path, role, required=True):
+        """required=False only where the caller has already checked that the file exists and skips it when missing
+        (the file is then optional: the report changes without an error). Repeated adds: required = OR."""
         p = rel(path)
         if not os.path.isfile(path):
             raise ReportError(2, f"thiếu file đầu vào: {p} ({role})")
         self.items.setdefault(p, {"path": p, "sha256": sha256(path), "roles": []})
         if role not in self.items[p]["roles"]:
             self.items[p]["roles"].append(role)
+        self.required[p] = self.required.get(p, False) or bool(required)
         return path
+
+    def required_paths(self):
+        return {p for p, r in self.required.items() if r}
 
     def as_list(self):
         return [{"path": v["path"], "sha256": v["sha256"], "role": "; ".join(v["roles"])} for _, v in sorted(self.items.items())]
 
 
-def load_json(path, inputs, role):
-    inputs.add(path, role)
+def load_json(path, inputs, role, required=True):
+    inputs.add(path, role, required=required)
     return read_json(path)
 
 
@@ -562,17 +569,23 @@ def git_tracked(paths):
     inside = sorted({p for p in paths if p and not os.path.isabs(p)})
     if not inside:
         return set()
-    out = git("ls-files", "-z", "--", *inside)
+    out = git("--literal-pathspecs", "ls-files", "-z", "--", *inside)
     if out is None:
         raise ReportError(2, "không xác định được file nào được git track")
     listed = {p.replace("\\", "/") for p in out.split("\0") if p}
     return {p for p in inside if p.replace("\\", "/") in listed}
 
 
-def untracked_unarchived_inputs(inputs, tracked, archived):
-    """inputs.as_list() entries whose path is neither git-tracked nor in the archive manifest, sorted by path."""
-    return sorted(({"path": i["path"], "sha256": i["sha256"], "role": i["role"]} for i in inputs
-                   if i["path"] not in tracked and i["path"] not in archived), key=lambda i: i["path"])
+def untracked_unarchived_inputs(inputs, tracked, archived, required=None):
+    """inputs.as_list() entries whose path is neither git-tracked nor in the archive manifest, sorted by path.
+    With `required` (set of required paths, Inputs.required_paths()) every entry also gets "required": bool; without
+    it the entries keep the three keys of Lần sửa 1."""
+    out = sorted(({"path": i["path"], "sha256": i["sha256"], "role": i["role"]} for i in inputs
+                  if i["path"] not in tracked and i["path"] not in archived), key=lambda i: i["path"])
+    if required is not None:
+        for i in out:
+            i["required"] = i["path"] in required
+    return out
 
 
 ARCHIVE_KINDS = {"checkpoint": ("stgcn_unified_best.pt", "sha256_ckpt"),
@@ -725,7 +738,7 @@ def build(args, argv):
     for name in meta:
         hp = os.path.join(meta[name]["dir"], "history.json")
         if os.path.isfile(hp):
-            hist[name] = load_json(hp, inputs, f"history.json {name}")
+            hist[name] = load_json(hp, inputs, f"history.json {name}", required=name in (chosen, used_dict))
         elif name in (chosen, used_dict):
             raise ReportError(2, f"thiếu file đầu vào: {rel(hp)} (history.json {name})")
         else:
@@ -1053,7 +1066,7 @@ def build(args, argv):
             if m2:
                 backend["ckpt"] = m2.group(1)
                 if os.path.isfile(m2.group(1)):
-                    inputs.add(m2.group(1), "checkpoint mặc định của backend (chỉ sha256)")
+                    inputs.add(m2.group(1), "checkpoint mặc định của backend (chỉ sha256)", required=False)
                     backend["sha256"] = sha256(m2.group(1))
                     backend["same_as_4a_model"] = backend["sha256"] == sha256(cur_ckpt)
     live_files = []
@@ -1063,7 +1076,7 @@ def build(args, argv):
     live_uses = sorted(rel(f) for f in live_files if "harmonize" in read_text(f))
     s06_overlap = None
     if args.segments and os.path.isfile(args.segments):
-        seg = pd.read_csv(inputs.add(args.segments, "VSL-GH segments (chồng lấn câu S06)"))
+        seg = pd.read_csv(inputs.add(args.segments, "VSL-GH segments (chồng lấn câu S06)", required=False))
         seen = set(seg[seg.signer_id.isin(set(train.signer_id.dropna()))].sentence_id)
         s6 = seg[seg.signer_id == "S06"]
         s06_overlap = rate(int(s6.sentence_id.isin(seen).sum()), len(s6))
@@ -1097,8 +1110,11 @@ def build(args, argv):
     in_list = inputs.as_list()
     archived = ({rel(f.get("local_path") or "") for f in archive_manifest.get("files") or []}
                 if archive_manifest is not None else set())
-    untracked = untracked_unarchived_inputs(in_list, git_tracked([i["path"] for i in in_list]), archived)
-    limits["untracked_unarchived_inputs"] = {"n": len(untracked), "n_inputs": len(in_list), "files": untracked}
+    untracked = untracked_unarchived_inputs(in_list, git_tracked([i["path"] for i in in_list]), archived,
+                                            inputs.required_paths())
+    n_req = sum(1 for i in untracked if i["required"])
+    limits["untracked_unarchived_inputs"] = {"n": len(untracked), "n_inputs": len(in_list), "n_required": n_req,
+                                             "n_optional": len(untracked) - n_req, "files": untracked}
 
     head = git("rev-parse", "--short", "HEAD")
     dirty = git("status", "--porcelain", "--", "scripts", "src", "tests")
@@ -1158,15 +1174,19 @@ def yn(b):
 
 
 def archive_limit_line(ref, u):
-    """Giới hạn line when the archive manifest is given (plan 02 Lần sửa 1, §3.3; fixed wording, data in {})."""
+    """Giới hạn line when the archive manifest is given (plan 02 Lần sửa 1-2, §3.3 / §0b.2; fixed wording, data in {})."""
     head = (f"- Checkpoint và logits TEST của mọi run được lưu ở Kaggle dataset private `{ref}` (sha256 ở mục 1.5); lưu "
             "trữ không gồm log kernel hay đầu vào nào khác.")
     if u["n"] == 0:
         return head + " Mọi đầu vào của báo cáo này đều được git track hoặc nằm trong lưu trữ."
+    def group(req):
+        return ", ".join(f"`{f['path']}`" for f in u["files"] if f["required"] is req) or "không có"
     return (head + f" {u['n']}/{u['n_inputs']} đầu vào của báo cáo này vừa không được git track vừa không nằm trong lưu "
-            "trữ: " + ", ".join(f"`{f['path']}`" for f in u["files"]) + "; bằng chứng thay thế cho các file này là sha256 "
-            "ở mục 1.4. Thiếu một đầu vào thì scripts/report_step4.py dừng với mã 2, nên kể cả khi có quyền truy cập "
-            "dataset, clone sạch vẫn KHÔNG tái tạo được báo cáo.")
+            "trữ; bằng chứng thay thế cho các file này là sha256 ở mục 1.4. "
+            f"Bắt buộc ({u['n_required']}; thiếu thì scripts/report_step4.py dừng với mã 2): {group(True)}. "
+            f"Tùy chọn ({u['n_optional']}; thiếu thì script vẫn chạy nhưng bỏ phần dùng file đó hoặc ghi null, nên báo "
+            f"cáo khác đi mà không báo lỗi): {group(False)}. Vì vậy kể cả khi có quyền truy cập dataset, clone sạch vẫn "
+            "KHÔNG tái tạo được báo cáo.")
 
 
 def render(res):

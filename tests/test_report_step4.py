@@ -1214,5 +1214,225 @@ class TestRealReportUntrackedInputs(unittest.TestCase):
         self.assertNotIn("Chỉ chủ dự án", body)
 
 
+# ------------------------------------------------------------------------------------------------ plan 02 Lần sửa 2 (AC1 28-31)
+class TestInputsRequired(unittest.TestCase):
+    """AC1 case 28: Inputs.add(required=...) — OR over repeated adds; as_list() keeps exactly path/sha256/role."""
+
+    def setUp(self):
+        self.d = tempfile.mkdtemp().replace("\\", "/")
+        for n in ("p", "q", "a", "b"):
+            with open(f"{self.d}/{n}.txt", "w", encoding="utf-8") as f:
+                f.write(n)
+
+    def tearDown(self):
+        shutil.rmtree(self.d, ignore_errors=True)
+
+    def test_28_required_flags(self):
+        inp = R.Inputs()
+        p, q, a, b = (f"{self.d}/{n}.txt" for n in ("p", "q", "a", "b"))
+        inp.add(p, "r")
+        inp.add(q, "r", required=False)
+        inp.add(a, "r1", required=False)
+        inp.add(a, "r2", required=True)
+        inp.add(b, "r1", required=True)
+        inp.add(b, "r2", required=False)
+        req = inp.required_paths()
+        self.assertIn(R.rel(p), req)
+        self.assertNotIn(R.rel(q), req)
+        self.assertIn(R.rel(a), req)
+        self.assertIn(R.rel(b), req)
+        for i in inp.as_list():
+            self.assertEqual(set(i), {"path", "sha256", "role"})
+
+
+def missing_patch(target):
+    """Context manager: os.path.isfile / os.path.exists return False for exactly `target` (compared after R.rel); every
+    other path keeps the real behaviour. Nothing on disk is touched."""
+    from unittest import mock
+    real_isfile, real_exists = os.path.isfile, os.path.exists
+
+    def isfile(p, *a, **k):
+        return False if R.rel(os.fspath(p)) == target else real_isfile(p, *a, **k)
+
+    def exists(p, *a, **k):
+        return False if R.rel(os.fspath(p)) == target else real_exists(p, *a, **k)
+    patches = [mock.patch("os.path.isfile", isfile), mock.patch("os.path.exists", exists)]
+
+    class _Ctx:
+        def __enter__(self):
+            for x in patches:
+                x.start()
+
+        def __exit__(self, *exc):
+            for x in patches:
+                x.stop()
+            return False
+    return _Ctx()
+
+
+def _report_body(text):
+    return "\n".join(l for l in text.splitlines() if not l.startswith(("- Lệnh: ", "- HEAD: ")))
+
+
+class TestRequiredOptionalBehaviour(unittest.TestCase):
+    """AC1 cases 29-30: the required/optional flag of every untracked, unarchived input matches what the script really
+    does when that single file is missing (simulated with mock.patch; no file outside the temp dir is moved or deleted)."""
+
+    def setUp(self):
+        self.d = tempfile.mkdtemp().replace("\\", "/")
+        self.cwd = os.getcwd()
+        self.orig_tracked = R.git_tracked
+        self.p = make_fixture(self.d)
+        seg = self.d + "/segments.csv"
+        pd.DataFrame([{"signer_id": "S01", "sentence_id": "A"}, {"signer_id": "S06", "sentence_id": "A"},
+                      {"signer_id": "S06", "sentence_id": "B"}]).to_csv(seg, index=False)
+        a = argv_for(self.d, self.p, out=False)
+        a[a.index("--segments") + 1] = seg
+        self.base_argv = a
+        res = R.build(R.parse_args(a + ["--out", self.d + "/x/R.md", "--json-out", self.d + "/x/r.json"]), a)
+        self.man = self.d + "/kaggle_archive_manifest.json"
+        self.m = make_archive_manifest(res)
+        dump(self.m, self.man)
+        self.ref_text, self.ref_js = self.run_main("ref")
+
+    def tearDown(self):
+        R.git_tracked = self.orig_tracked
+        os.chdir(self.cwd)
+        shutil.rmtree(self.d, ignore_errors=True)
+
+    def argv(self, tag):
+        return self.base_argv + ["--archive-manifest", self.man, "--out", f"{self.d}/out_{tag}/REPORT.md",
+                                 "--json-out", f"{self.d}/out_{tag}/step4_results.json"]
+
+    def run_main(self, tag):
+        self.assertEqual(R.main(self.argv(tag)), 0)
+        with open(f"{self.d}/out_{tag}/REPORT.md", encoding="utf-8") as f:
+            text = f.read()
+        with open(f"{self.d}/out_{tag}/step4_results.json", encoding="utf-8") as f:
+            return text, json.load(f)
+
+    def limit_line(self, text):
+        ref = self.m["dataset"]["ref"]
+        lim = text.split("## 5. Giới hạn", 1)[1].split("\n## 6.", 1)[0]
+        lines = [l for l in lim.splitlines() if ref in l]
+        self.assertEqual(len(lines), 1)
+        return lines[0]
+
+    def test_29_flags_match_simulated_missing_file(self):
+        files = self.ref_js["limitations_data"]["untracked_unarchived_inputs"]["files"]
+        req = [f["path"] for f in files if f["required"] is True]
+        opt = [f["path"] for f in files if f["required"] is False]
+        self.assertTrue(req)
+        self.assertTrue(opt)
+        self.assertEqual(len(req) + len(opt), len(files))
+        ref_body = _report_body(self.ref_text)
+        for i, f in enumerate(files):
+            tag = f"miss{i}"
+            with self.subTest(path=f["path"], required=f["required"]):
+                with missing_patch(f["path"]):
+                    code = R.main(self.argv(tag))
+                out_md, out_js = f"{self.d}/out_{tag}/REPORT.md", f"{self.d}/out_{tag}/step4_results.json"
+                if f["required"]:
+                    self.assertEqual(code, 2)
+                    self.assertFalse(os.path.exists(out_md))
+                    self.assertFalse(os.path.exists(out_js))
+                else:
+                    self.assertEqual(code, 0)
+                    with open(out_md, encoding="utf-8") as fh:
+                        self.assertNotEqual(_report_body(fh.read()), ref_body)
+        # the simulation touched nothing on disk
+        for f in files:
+            if not os.path.isabs(f["path"]):
+                self.assertTrue(os.path.isfile(os.path.join(ROOT, f["path"])), f["path"])
+
+    def test_30_limit_line_groups(self):
+        u = self.ref_js["limitations_data"]["untracked_unarchived_inputs"]
+        self.assertEqual(u["n_required"] + u["n_optional"], u["n"])
+        line = self.limit_line(self.ref_text)
+        head_r = f"Bắt buộc ({u['n_required']}; thiếu thì scripts/report_step4.py dừng với mã 2)"
+        head_o = (f"Tùy chọn ({u['n_optional']}; thiếu thì script vẫn chạy nhưng bỏ phần dùng file đó hoặc ghi null, nên "
+                  "báo cáo khác đi mà không báo lỗi)")
+        self.assertIn(head_r, line)
+        self.assertIn(head_o, line)
+        ir, io = line.index("Bắt buộc ("), line.index("Tùy chọn (")
+        for f in u["files"]:
+            j = line.index(f"`{f['path']}`")
+            if f["required"]:
+                self.assertTrue(ir < j < io, f["path"])
+            else:
+                self.assertGreater(j, io, f["path"])
+        self.assertNotIn("Thiếu một đầu vào thì", line)
+        # empty optional group
+        opt = {f["path"] for f in u["files"] if not f["required"]}
+        orig = self.orig_tracked
+        R.git_tracked = lambda paths: orig(paths) | {p for p in paths if p in opt}
+        text, js = self.run_main("noopt")
+        line = self.limit_line(text)
+        self.assertIn("Tùy chọn (0; ", line)
+        grp = line[line.index("Tùy chọn (0; "):]
+        self.assertTrue(grp[grp.index(":") + 1:].lstrip().startswith("không có"), grp)
+        self.assertEqual(js["limitations_data"]["untracked_unarchived_inputs"]["n_optional"], 0)
+
+
+class TestGitTrackedLiteral(unittest.TestCase):
+    """AC1 case 31: git_tracked passes pathspecs literally (--literal-pathspecs before ls-files)."""
+
+    def setUp(self):
+        self.orig = R.git
+
+    def tearDown(self):
+        R.git = self.orig
+
+    def test_31a_flag_before_ls_files(self):
+        calls = []
+
+        def rec(*a):
+            calls.append(a)
+            return self.orig(*a)
+        R.git = rec
+        R.git_tracked(["scripts/report_step4.py"])
+        self.assertEqual(len(calls), 1)
+        a = list(calls[0])
+        self.assertIn("--literal-pathspecs", a)
+        self.assertLess(a.index("--literal-pathspecs"), a.index("ls-files"))
+
+    def test_31b_glob_is_not_expanded(self):
+        self.assertEqual(R.git_tracked(["scripts/*.py"]), set())
+        self.assertEqual(R.git_tracked(["scripts/report_step4.py"]), {"scripts/report_step4.py"})
+
+
+# ------------------------------------------------------------------------------------------------ plan 02 Lần sửa 2 (AC1 32)
+class TestRealReportRequiredGroups(unittest.TestCase):
+    """AC1 case 32: the committed REPORT/JSON split the untracked, unarchived inputs into required / optional groups.
+    A missing file fails (no skip)."""
+    DIR = os.path.join(ROOT, "reports", "step4_2026-09-26")
+    MARK = "\n## 6. Review\n"
+
+    def test_32_real_files(self):
+        with open(os.path.join(self.DIR, "REPORT.md"), encoding="utf-8") as f:
+            report = f.read()
+        with open(os.path.join(self.DIR, "step4_results.json"), encoding="utf-8") as f:
+            res = json.load(f)
+        u = res["limitations_data"]["untracked_unarchived_inputs"]
+        for f in u["files"]:
+            self.assertIsInstance(f["required"], bool, f["path"])
+        self.assertEqual(u["n_required"] + u["n_optional"], u["n"])
+        self.assertIn(self.MARK, report)
+        body = report.split(self.MARK, 1)[0]
+        ref = res["provenance"]["archive"]["ref"]
+        lim = body.split("## 5. Giới hạn", 1)[1]
+        lines = [l for l in lim.splitlines() if ref in l]
+        self.assertEqual(len(lines), 1)
+        line = lines[0]
+        ir, io = line.index("Bắt buộc ("), line.index("Tùy chọn (")
+        for f in u["files"]:
+            j = line.index(f"`{f['path']}`")
+            if f["required"]:
+                self.assertTrue(ir < j < io, f["path"])
+            else:
+                self.assertGreater(j, io, f["path"])
+        self.assertNotIn("Thiếu một đầu vào thì", line)
+
+
 if __name__ == "__main__":
     unittest.main()
