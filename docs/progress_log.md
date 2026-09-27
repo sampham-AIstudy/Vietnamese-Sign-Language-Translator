@@ -15,6 +15,28 @@ Nhánh: feat/vslt-complete (tách từ fix/audit-round2). Quy trình: docs/promp
 3. Thay đổi chưa commit của người dùng trong thư mục làm việc (xóa `data (2)/Dataset/Labels/label.csv`,
    `data/alphabet_landmarks_full.csv`, `data/hand_data.csv`): KHÔNG commit, KHÔNG khôi phục, KHÔNG xóa.
 
+## Quyết định của người dùng tại điểm dừng 4c (2026-09-27) — bắt buộc tuân theo
+
+1. 4c: chọn **B**. Ứng viên Cấp 2 = **H-keepz-360** (reports/step4_2026-09-26/runs/run_keepz_360). CHƯA đổi model
+   mặc định — đó là GATE riêng.
+2. Không làm (i) (train model từ điển tới khi khớp). Thêm (ii) — fine-tune model từ điển khởi tạo từ trọng số
+   H-keepz-360 — vào CUỐI backlog, chỉ sau khi DoD 1–7 xong; planner phải đăng ký trước tiêu chí so sánh
+   (cùng 721 clip QIPEDC TEST, chọn epoch bằng VAL) TRƯỚC khi chạy.
+3. 360 px: chấp nhận theo luật, không chạy thêm seed. Đường realtime hạ frame về chiều cao 360 TRƯỚC MediaPipe,
+   kèm test tương đương train–realtime.
+4. Cắt đoạn nghỉ: GIỮ ở đường realtime, cùng tham số preprocessing lưu trong checkpoint. Chế độ "Ký từ" gom trọn
+   một ký hiệu (bắt đầu chuyển động → tay nghỉ) rồi mới dự đoán; planner thiết kế luồng này (bộ đệm, timeout,
+   trạng thái "đang ghi ký hiệu" trên giao diện).
+5. REPORT_partial.md: chuyển ra ../_backup_step4/, không commit. Thêm reports/**/*.pt (và logits *.npz) vào
+   .gitignore; tải checkpoint + logits các run bước 4 lên một Kaggle dataset PRIVATE làm lưu trữ, ghi slug + sha256
+   vào REPORT.md.
+6. 3 góp ý nhỏ của reviewer vòng 2 (G1 test AC5 chỉ so §1–5; G2 cách đếm từ PROPOSAL; G3 PROPOSAL dòng 17 mẫu số
+   634 + lưu ý S06): sửa trong đợt kế tiếp, cùng một vòng review.
+
+Thứ tự tiếp theo: (việc dọn dẹp mục 5–6) → Việc 4 (endpoint chuỗi landmark Cấp 1) → nối harmonize() vào đường live
+(360 px + cắt nghỉ + luồng gom ký hiệu, test tương đương) → Việc 5 (nối frontend) → Việc 6 (nút chế độ, Ký từ,
+Ký câu) → DỪNG ở GATE đổi model mặc định Cấp 2 với bảng so sánh model cũ vs H-keepz-360 trên cùng tập test sạch.
+
 ## Nhật ký
 
 ngày | việc | kế hoạch | commit | kết luận review | việc tiếp theo
