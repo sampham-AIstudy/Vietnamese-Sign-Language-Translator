@@ -780,5 +780,166 @@ class TestProposal4cScope(unittest.TestCase):
         self.assertTrue("cắt đoạn nghỉ" in s or "cắt nghỉ" in s)
 
 
+# ------------------------------------------------------------------------------------------------ plan 02 (AC1 14-20)
+def make_archive_manifest(res, ref="owner1/vslt-step4-artifacts"):
+    """Archive manifest built from the real sha256 of the fixture files (as scripts/archive_step4_kaggle.py writes it)."""
+    files = []
+    for name, pr in res["provenance"]["runs"].items():
+        for kind, fname, key in (("checkpoint", "stgcn_unified_best.pt", "sha256_ckpt"),
+                                 ("test_logits", "test_logits.npz", "sha256_test_logits")):
+            local = pr["dir"] + "/" + fname
+            files.append({"run": name, "run_dir": pr["dir"], "kind": kind, "local_path": local,
+                          "archive_name": f"{name}__{fname}", "size_bytes": os.path.getsize(local),
+                          "sha256": pr[key], "sha256_after_download": pr[key]})
+    return {"generated_by": {"script": "scripts/archive_step4_kaggle.py", "command": "python scripts/archive_step4_kaggle.py verify",
+                             "git_commit": "abc1234", "kaggle_version": "2.2.4", "kagglesdk_version": "0.1.37",
+                             "verified_at_utc": "2026-09-27T00:00:00Z"},
+            "dataset": {"ref": ref, "url": f"https://www.kaggle.com/datasets/{ref}", "title": "t", "license": "unknown",
+                        "is_private": True, "is_private_sources": {"dataset_list_mine": True, "dataset_metadata": True},
+                        "status": "ready", "total_bytes": sum(f["size_bytes"] for f in files)},
+            "files": files, "sha256sums_file": {"archive_name": "SHA256SUMS", "sha256": "0" * 64},
+            "verified": {"file_list_matches": True, "downloaded_sha256_all_match": True, "n_files": len(files)}}
+
+
+class TestArchiveManifestAndReviews(unittest.TestCase):
+    """Plan 02 AC1 cases 14-20: --archive-manifest (section 1.5, provenance.archive) and several --review-file."""
+    OLD_LIMIT = ("- Logits, checkpoint và log kernel bị gitignore: clone sạch không tái tạo được báo cáo; sha256 ở mục 1.4 "
+                 "là bằng chứng thay thế.")
+
+    def setUp(self):
+        self.d = tempfile.mkdtemp().replace("\\", "/")
+        self.cwd = os.getcwd()
+        self.p = make_fixture(self.d)
+        self.argv = argv_for(self.d, self.p)
+        self.base = R.build(R.parse_args(self.argv), self.argv)
+        self.man = self.d + "/kaggle_archive_manifest.json"
+        self.m = make_archive_manifest(self.base)
+
+    def tearDown(self):
+        os.chdir(self.cwd)
+        shutil.rmtree(self.d, ignore_errors=True)
+
+    def write(self):
+        dump(self.m, self.man)
+
+    def out(self):
+        with open(os.path.join(self.d, "out", "REPORT.md"), encoding="utf-8") as f:
+            text = f.read()
+        with open(os.path.join(self.d, "out", "step4_results.json"), encoding="utf-8") as f:
+            return text, json.load(f)
+
+    def assertNoOutput(self):
+        self.assertFalse(os.path.exists(os.path.join(self.d, "out", "REPORT.md")))
+        self.assertFalse(os.path.exists(os.path.join(self.d, "out", "step4_results.json")))
+
+    def main_with_manifest(self):
+        self.write()
+        return R.main(self.argv + ["--archive-manifest", self.man])
+
+    def test_14_valid_manifest_section_1_5_and_limit(self):
+        self.assertEqual(self.main_with_manifest(), 0)
+        text, js = self.out()
+        ar = js["provenance"]["archive"]
+        self.assertEqual(ar["ref"], "owner1/vslt-step4-artifacts")
+        self.assertIs(ar["is_private"], True)
+        runs = js["provenance"]["runs"]
+        for name in runs:
+            self.assertEqual(sorted(f["kind"] for f in ar["files"] if f["run"] == name), ["checkpoint", "test_logits"])
+        self.assertEqual(len(ar["files"]), 2 * len(runs))
+        i14, i15, i2 = text.index("### 1.4"), text.index("### 1.5"), text.index("\n## 2.")
+        self.assertLess(i14, i15)
+        self.assertLess(i15, i2)
+        sec = text[i15:i2]
+        self.assertIn(ar["ref"], sec)
+        for f in self.m["files"]:
+            self.assertIn(f["sha256"], sec)
+        lim = text.split("## 5. Giới hạn", 1)[1].split("\n## 6.", 1)[0]
+        line = [l for l in lim.splitlines() if ar["ref"] in l]
+        self.assertEqual(len(line), 1)
+        self.assertIn("private", line[0])
+        self.assertIn("log kernel", line[0])
+        self.assertNotIn("sha256 ở mục 1.4 là bằng chứng thay thế", text)
+        self.assertIn("archive manifest", {i["role"] for i in js["inputs"]})
+
+    def test_15_sha_differs_from_local_exit_3(self):
+        f = self.m["files"][0]
+        f["sha256"] = ("0" if f["sha256"][0] != "0" else "1") + f["sha256"][1:]
+        self.assertEqual(self.main_with_manifest(), 3)
+        self.assertNoOutput()
+
+    def test_16a_not_private_exit_3(self):
+        self.m["dataset"]["is_private"] = False
+        self.assertEqual(self.main_with_manifest(), 3)
+        self.assertNoOutput()
+
+    def test_16b_one_private_source_false_exit_3(self):
+        self.m["dataset"]["is_private_sources"]["dataset_metadata"] = False
+        self.assertEqual(self.main_with_manifest(), 3)
+        self.assertNoOutput()
+
+    def test_16c_download_sha_not_all_match_exit_3(self):
+        self.m["verified"]["downloaded_sha256_all_match"] = False
+        self.assertEqual(self.main_with_manifest(), 3)
+        self.assertNoOutput()
+
+    def test_17a_missing_run_exit_3(self):
+        gone = self.m["files"][0]["run_dir"]
+        self.m["files"] = [f for f in self.m["files"] if f["run_dir"] != gone]
+        self.assertEqual(self.main_with_manifest(), 3)
+        self.assertNoOutput()
+
+    def test_17b_extra_run_exit_3(self):
+        self.m["files"] += [dict(f, run="X", run_dir=self.d + "/extra_run") for f in self.m["files"][:2]]
+        self.assertEqual(self.main_with_manifest(), 3)
+        self.assertNoOutput()
+
+    def test_18_manifest_missing_exit_2(self):
+        self.assertEqual(R.main(self.argv + ["--archive-manifest", self.d + "/does_not_exist.json"]), 2)
+        self.assertNoOutput()
+
+    def test_19_without_manifest_old_limit_verbatim(self):
+        self.assertEqual(R.main(self.argv), 0)
+        text, js = self.out()
+        self.assertIn("archive", js["provenance"])
+        self.assertIsNone(js["provenance"]["archive"])
+        self.assertNotIn("### 1.5", text)
+        self.assertIn(self.OLD_LIMIT, text.splitlines())
+
+    def review_files(self):
+        a, b = self.d + "/review_A.md", self.d + "/review_B.md"
+        with open(a, "w", encoding="utf-8") as f:
+            f.write("# Review A\n\nKết luận: APPROVE (A)\n\n")
+        with open(b, "w", encoding="utf-8") as f:
+            f.write("# Review B\n\nKết luận: APPROVE (B)\n")
+        return a, b
+
+    def test_20a_two_review_files(self):
+        a, b = self.review_files()
+        self.assertEqual(R.main(self.argv + ["--review-file", a, b]), 0)
+        text, js = self.out()
+        roles = {i["path"]: i["role"] for i in js["inputs"]}
+        self.assertEqual(roles[R.rel(a)], "review")
+        self.assertEqual(roles[R.rel(b)], "review")
+        sec = text.split("\n## 6. Review\n", 1)[1]
+        ha, hb = f"### Review: `{R.rel(a)}`", f"### Review: `{R.rel(b)}`"
+        self.assertIn(ha, sec.splitlines())
+        self.assertIn(hb, sec.splitlines())
+        self.assertLess(sec.index(ha), sec.index("Kết luận: APPROVE (A)"))
+        self.assertLess(sec.index("Kết luận: APPROVE (A)"), sec.index(hb))
+        self.assertLess(sec.index(hb), sec.index("Kết luận: APPROVE (B)"))
+        self.assertIn("\n\n---\n\n", sec)
+        self.assertIsInstance(js["review"], str)
+
+    def test_20b_one_review_file_unchanged(self):
+        a, _ = self.review_files()
+        self.assertEqual(R.main(self.argv + ["--review-file", a]), 0)
+        text, js = self.out()
+        with open(a, encoding="utf-8") as f:
+            content = f.read()
+        self.assertEqual(text.split("\n## 6. Review\n\n", 1)[1], content.rstrip() + "\n")
+        self.assertEqual(js["review"], content)
+        self.assertNotIn("### Review:", text)
+
+
 if __name__ == "__main__":
     unittest.main()

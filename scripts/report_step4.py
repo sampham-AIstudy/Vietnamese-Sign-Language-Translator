@@ -546,6 +546,58 @@ def load_ckpt_meta(path):
             "run_config": ck.get("run_config"), "preprocessing": ck.get("preprocessing")}
 
 
+def join_reviews(parts):
+    """[(path, text)] -> the `review` string: one file = its text unchanged; several = each part headed by
+    '### Review: `<path>`', in command-line order, separated by a blank line + '---' + a blank line."""
+    if not parts:
+        return None
+    if len(parts) == 1:
+        return parts[0][1]
+    return "\n\n---\n\n".join(f"### Review: `{rel(p)}`\n\n{t.rstrip()}" for p, t in parts)
+
+
+ARCHIVE_KINDS = {"checkpoint": ("stgcn_unified_best.pt", "sha256_ckpt"),
+                 "test_logits": ("test_logits.npz", "sha256_test_logits")}
+
+
+def archive_summary(path, m, prov_runs):
+    """Check the Kaggle archive manifest written by scripts/archive_step4_kaggle.py verify against provenance.runs and
+    the local files (re-hashed); any mismatch is exit 3. Returns provenance.archive."""
+    ds, ver = m.get("dataset") or {}, m.get("verified") or {}
+    srcs = ds.get("is_private_sources") or {}
+    if ds.get("is_private") is not True or any(srcs.get(k) is not True for k in ("dataset_list_mine", "dataset_metadata")):
+        raise ReportError(3, f"{rel(path)}: dataset không được xác minh là private")
+    if ver.get("file_list_matches") is not True or ver.get("downloaded_sha256_all_match") is not True:
+        raise ReportError(3, f"{rel(path)}: verified.file_list_matches / downloaded_sha256_all_match không phải true")
+    files = m.get("files") or []
+    by_dir = {}
+    for f in files:
+        by_dir.setdefault(rel(f.get("run_dir") or ""), []).append(f)
+    run_dirs = {pr["dir"]: name for name, pr in prov_runs.items()}
+    if set(by_dir) != set(run_dirs):
+        raise ReportError(3, f"{rel(path)}: run trong manifest khác provenance.runs (thiếu "
+                             f"{sorted(set(run_dirs) - set(by_dir))}, thừa {sorted(set(by_dir) - set(run_dirs))})")
+    out = []
+    for name, pr in prov_runs.items():
+        fs = by_dir[pr["dir"]]
+        if sorted(f.get("kind") for f in fs) != sorted(ARCHIVE_KINDS):
+            raise ReportError(3, f"{rel(path)}: run {name} phải có đúng 2 file (checkpoint, test_logits)")
+        for f in sorted(fs, key=lambda f: list(ARCHIVE_KINDS).index(f["kind"])):
+            fname, key = ARCHIVE_KINDS[f["kind"]]
+            local = f.get("local_path") or ""
+            if rel(local) != rel(os.path.join(pr["dir"], fname)) or not os.path.isfile(local):
+                raise ReportError(3, f"{rel(path)}: local_path {local!r} không phải {fname} của run {name}")
+            if not (f.get("sha256") == sha256(local) == f.get("sha256_after_download") == pr[key]):
+                raise ReportError(3, f"{rel(path)}: sha256 của {rel(local)} không khớp (file local / sau tải về / "
+                                     f"provenance.runs.{name}.{key})")
+            out.append({"run": name, "kind": f["kind"], "archive_name": f.get("archive_name"),
+                        "size_bytes": f.get("size_bytes"), "sha256": f["sha256"]})
+    g = m.get("generated_by") or {}
+    return {"manifest": rel(path), "ref": ds.get("ref"), "url": ds.get("url"), "is_private": True,
+            "status": ds.get("status"), "total_bytes": ds.get("total_bytes"), "files": out,
+            "verified_at_utc": g.get("verified_at_utc"), "manifest_git_commit": g.get("git_commit")}
+
+
 def _named(items, flag):
     out = {}
     for s in items:
@@ -626,7 +678,9 @@ def build(args, argv):
             raise ReportError(2, f"--shortcut-legacy-compare: cần OLD=NEW, nhận '{pair}'")
         o, n = pair.split("=", 1)
         legacy.append((o, n, load_json(o, inputs, "JSON cũ (không provenance)"), load_json(n, inputs, "JSON chạy lại")))
-    review = read_text(inputs.add(args.review_file, "review")) if args.review_file else None
+    review = join_reviews([(p, read_text(inputs.add(p, "review"))) for p in (args.review_file or [])])
+    archive_manifest = (load_json(args.archive_manifest, inputs, "archive manifest")
+                        if args.archive_manifest else None)
     inputs.add(args.prereg, "preregistration")
 
     # ---- per-run metadata (VAL, config, seed) ----
@@ -922,6 +976,8 @@ def build(args, argv):
                            "sha256_ckpt": sha256(os.path.join(d, "stgcn_unified_best.pt")),
                            "history_json": None if hist[name] is None else rel(os.path.join(d, "history.json")),
                            "results_committed": added}
+    archive = (None if archive_manifest is None
+               else archive_summary(args.archive_manifest, archive_manifest, prov_runs))
     prov_kernels = []
     for kl in kernels:
         info = git_commit_info(kl["repo_commit"])
@@ -1029,7 +1085,8 @@ def build(args, argv):
                            "kernels": prov_kernels,
                            "kernels_total_duration_s": sum(k["duration_s"] or 0 for k in prov_kernels),
                            "kernel_code_diffs": code_diffs,
-                           "config_note": "run_config thiếu khóa trim (run trước commit 9b0ade1) được hiểu là trim=True"},
+                           "config_note": "run_config thiếu khóa trim (run trước commit 9b0ade1) được hiểu là trim=True",
+                           "archive": archive},
             "4a": s4a_out,
             "4b": {"selection": selection, "trimming": {"val": trimming, "test": trim_test, "vs_baseline": vs_baseline,
                                                      "consequence": trim_cons},
@@ -1128,6 +1185,22 @@ def render(res):
                  f"(`--ckpt {SHORTCUT_DEFAULT_CKPT}`, `--seed 0`) — giả định là bản cũ cũng vậy.")
     o += ["", "### 1.4 File đầu vào (sha256)", "", "| File | Vai trò | sha256 |", "|---|---|---|"]
     o += [f"| `{i['path']}` | {i['role']} | `{i['sha256']}` |" for i in res["inputs"]]
+    ar = pv.get("archive")
+    if ar:
+        sha14 = {i["path"]: i["sha256"] for i in res["inputs"]}
+        o += ["", "### 1.5 Lưu trữ checkpoint và logits (Kaggle dataset private)", "",
+              f"- Dataset: `{ar['ref']}` ({ar['url']}); private: CÓ (kiểm bằng dataset_list(mine) và dataset_metadata "
+              f"lúc {ar['verified_at_utc']}); trạng thái: {ar['status']}; tổng dung lượng: {ar['total_bytes']} byte "
+              f"({len(ar['files'])} file + SHA256SUMS).",
+              f"- Manifest: `{ar['manifest']}` (sinh bởi `scripts/archive_step4_kaggle.py verify` ở commit "
+              f"{na(ar['manifest_git_commit'])}; sha256 của manifest ở mục 1.4).", "",
+              "| Run | Loại | Tên trong dataset | Kích thước (byte) | sha256 | trùng §1.4 |", "|---|---|---|---|---|---|"]
+        for f in ar["files"]:
+            p = pv["runs"][f["run"]]["dir"] + "/" + ARCHIVE_KINDS[f["kind"]][0]
+            o.append(f"| {f['run']} | {f['kind']} | `{f['archive_name']}` | {f['size_bytes']} | `{f['sha256']}` | "
+                     f"{yn(sha14.get(p) == f['sha256'] if p in sha14 else None)} |")
+        o += ["", f"Chỉ chủ dự án truy cập được; tải: `kaggle datasets download {ar['ref']}`; kiểm: "
+                  "`sha256sum -c SHA256SUMS`."]
 
     # 2. 4a
     bal4a = s4a["balanced"]
@@ -1418,7 +1491,11 @@ def render(res):
           f"(sha256 {na(bd['sha256'])}); trùng model được kiểm ở 4a: {yn(bd['same_as_4a_model'])}.",
           f"- Chọn epoch: {L['epoch_selection']}.",
           "- `git_commit` trong JSON của scripts/shortcut_85.py chỉ là HEAD, không ghi trạng thái bẩn của mã.",
-          "- Logits, checkpoint và log kernel bị gitignore: clone sạch không tái tạo được báo cáo; sha256 ở mục 1.4 là bằng chứng thay thế."]
+          ("- Logits, checkpoint và log kernel bị gitignore: clone sạch không tái tạo được báo cáo; sha256 ở mục 1.4 là bằng chứng thay thế."
+           if not pv.get("archive") else
+           f"- Checkpoint và logits TEST của mọi run được lưu ở Kaggle dataset private `{pv['archive']['ref']}` (sha256 ở "
+           "mục 1.5); log kernel và `train.log` vẫn bị gitignore và không nằm trong lưu trữ; clone sạch không có quyền truy "
+           "cập dataset thì vẫn không tái tạo được báo cáo.")]
 
     o += ["", "## 6. Review", ""]
     o.append(res["review"].rstrip() if res["review"] else "Chưa có kết quả vslt-reviewer (sinh lại với `--review-file`).")
@@ -1450,7 +1527,8 @@ def parse_args(argv):
     ap.add_argument("--shortcut-4b", nargs="+", default=None, help="default: every shortcut_85_harmonized* in 4b/")
     ap.add_argument("--shortcut-legacy-compare", nargs="*", default=[], help="OLD=NEW JSON pairs")
     ap.add_argument("--kernel-logs", nargs="*", default=[])
-    ap.add_argument("--review-file")
+    ap.add_argument("--review-file", nargs="+", help="one or more vslt-reviewer files; several are joined in order")
+    ap.add_argument("--archive-manifest", help="manifest of scripts/archive_step4_kaggle.py verify (adds section 1.5)")
     ap.add_argument("--prereg", default="reports/step4_2026-09-26/PREREGISTRATION.md")
     ap.add_argument("--segments", default="data/processed/vslgh_segments/segments.csv")
     ap.add_argument("--out", required=True)
