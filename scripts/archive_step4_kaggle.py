@@ -265,7 +265,9 @@ def upload(staging, dataset, api):
     else:
         raise ArchiveError(5, f"dataset {dataset} đã tồn tại (status {st!r}); không tạo, không ghi đè")
     try:
-        result = api.dataset_create_new(folder=staging, public=False, quiet=False, dir_mode="skip")
+        # absolute folder: kaggle 2.2.4 names its resumable-upload state file after the file path, and a relative
+        # path such as ../x/SHA256SUMS makes that name point to a non-existent directory (errno 2, 2026-09-27)
+        result = api.dataset_create_new(folder=os.path.abspath(staging), public=False, quiet=False, dir_mode="skip")
     except Exception as e:  # noqa: BLE001
         raise ArchiveError(6, f"dataset_create_new lỗi: {e}")
     err, status = getattr(result, "error", None), getattr(result, "status", None)
@@ -376,7 +378,7 @@ def verify(staging, dataset, download_dir, manifest_out, api, argv, results_path
                               f"{sorted(n for n in set(remote) & set(local_sizes) if remote[n] != local_sizes[n])}")
 
     os.makedirs(download_dir, exist_ok=True)
-    dl = tempfile.mkdtemp(prefix="verify-", dir=download_dir)
+    dl = tempfile.mkdtemp(prefix="verify-", dir=os.path.abspath(download_dir))
     try:
         api.dataset_download_files(dataset, path=dl, unzip=True)
     except Exception as e:  # noqa: BLE001

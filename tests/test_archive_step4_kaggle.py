@@ -213,6 +213,19 @@ class TestUpload(Base):
         self.assertEqual(kw["dir_mode"], "skip")
         self.assertEqual(kw["folder"], self.staging)
 
+    def test_04b_relative_staging_passed_as_absolute_folder(self):
+        cwd = os.getcwd()
+        os.chdir(os.path.dirname(os.path.dirname(self.staging)))
+        try:
+            rel_staging = os.path.join("staging", "vslt-step4-artifacts")
+            api = FakeApi(staging=self.staging)
+            self.assertEqual(self.code(A.upload, rel_staging, DATASET, api), 0)
+        finally:
+            os.chdir(cwd)
+        kw = [c for c in api.calls if c[0] == "dataset_create_new"][0][1]
+        self.assertTrue(os.path.isabs(kw["folder"]))
+        self.assertEqual(os.path.normcase(kw["folder"]), os.path.normcase(os.path.abspath(self.staging)))
+
     def test_05_existing_slug_exit_5_no_create(self):
         api = FakeApi(staging=self.staging, exists=True)
         self.assertEqual(self.upload(api), 5)
