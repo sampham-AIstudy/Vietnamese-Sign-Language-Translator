@@ -179,8 +179,19 @@ def check_staging(staging):
 
 
 def is_not_found(exc):
+    """GetDatasetStatus answers 403 (not 404) for a slug that does not exist under the caller's own account (probe
+    2026-09-27, kaggle 2.2.4); both are read as "maybe absent" and cross-checked with dataset_list(mine=True)."""
     resp = getattr(exc, "response", None)
-    return getattr(resp, "status_code", None) == 404
+    return getattr(resp, "status_code", None) in (403, 404)
+
+
+def listed_mine(api, dataset):
+    """True when dataset_list(mine=True, search=<slug>) contains `dataset`; list errors are API errors (exit 6)."""
+    try:
+        items = api.dataset_list(mine=True, search=dataset.split("/")[1]) or []
+    except Exception as e:  # noqa: BLE001
+        raise ArchiveError(6, f"dataset_list lỗi: {e}")
+    return any(d is not None and str(getattr(d, "ref", "")).lower() == dataset.lower() for d in items)
 
 
 def git_head():
@@ -246,9 +257,11 @@ def upload(staging, dataset, api):
     read_metadata(staging, dataset)              # (2) isPrivate is True, id == dataset -> 2
     try:                                         # (3) the slug must not exist yet -> 5
         st = api.dataset_status(dataset)
-    except Exception as e:  # noqa: BLE001 - HTTP 404 means "does not exist"; anything else is an API/network error
+    except Exception as e:  # noqa: BLE001 - HTTP 403/404 means "maybe absent"; anything else is an API/network error
         if not is_not_found(e):
             raise ArchiveError(6, f"dataset_status lỗi: {e}")
+        if listed_mine(api, dataset):
+            raise ArchiveError(5, f"dataset {dataset} đã có trong dataset_list(mine); không tạo, không ghi đè")
     else:
         raise ArchiveError(5, f"dataset {dataset} đã tồn tại (status {st!r}); không tạo, không ghi đè")
     try:

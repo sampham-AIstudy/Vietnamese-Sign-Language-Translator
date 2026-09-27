@@ -21,13 +21,12 @@ def sha(b):
     return hashlib.sha256(b).hexdigest()
 
 
-class NotFound(Exception):
-    """Mimics requests.HTTPError for a 404 (the attribute read by the script is response.status_code)."""
+class HttpError(Exception):
+    """Mimics requests.HTTPError (the attribute read by the script is response.status_code)."""
 
-    class _R:
-        status_code = 404
-
-    response = _R()
+    def __init__(self, code):
+        super().__init__(f"{code} Client Error")
+        self.response = Obj(status_code=code)
 
 
 class Obj:
@@ -39,8 +38,9 @@ class FakeApi:
     """Records calls. `exists` controls dataset_status before creation; after create the status is `status_after`."""
 
     def __init__(self, staging=None, exists=False, create_result=None, status_after="ready", list_private=True,
-                 meta_info=None, remote_override=None, pages=1, download_tamper=None):
+                 meta_info=None, remote_override=None, pages=1, download_tamper=None, absent_code=404, listed=None):
         self.calls = []
+        self.absent_code, self.listed = absent_code, listed
         self.staging, self.exists, self.created = staging, exists, False
         self.create_result = create_result or Obj(status="ok", error=None, ref=DATASET, url="u")
         self.status_after, self.list_private = status_after, list_private
@@ -51,7 +51,7 @@ class FakeApi:
         self.calls.append(("dataset_status", dataset))
         if self.exists or self.created:
             return self.status_after if self.created else "ready"
-        raise NotFound("404")
+        raise HttpError(self.absent_code)
 
     def dataset_create_new(self, **kw):
         self.calls.append(("dataset_create_new", kw))
@@ -60,7 +60,8 @@ class FakeApi:
 
     def dataset_list(self, **kw):
         self.calls.append(("dataset_list", kw))
-        if self.list_private == "absent":
+        visible = self.exists or self.created if self.listed is None else self.listed
+        if self.list_private == "absent" or not visible:
             return [Obj(ref="owner1/other-dataset", is_private=True)]
         return [Obj(ref="owner1/other-dataset", is_private=False), Obj(ref=DATASET, is_private=self.list_private)]
 
@@ -215,6 +216,22 @@ class TestUpload(Base):
     def test_05_existing_slug_exit_5_no_create(self):
         api = FakeApi(staging=self.staging, exists=True)
         self.assertEqual(self.upload(api), 5)
+        self.assertNotIn("dataset_create_new", api.names())
+
+    def test_05b_status_403_and_not_listed_creates(self):
+        # kaggle 2.2.4 answers 403 for a slug absent from the caller's account; dataset_list(mine) confirms absence
+        api = FakeApi(staging=self.staging, absent_code=403)
+        self.assertEqual(self.upload(api), 0)
+        self.assertEqual(api.names().count("dataset_create_new"), 1)
+
+    def test_05c_status_403_but_listed_exit_5_no_create(self):
+        api = FakeApi(staging=self.staging, absent_code=403, listed=True)
+        self.assertEqual(self.upload(api), 5)
+        self.assertNotIn("dataset_create_new", api.names())
+
+    def test_05d_status_other_http_error_exit_6_no_create(self):
+        api = FakeApi(staging=self.staging, absent_code=401)
+        self.assertEqual(self.upload(api), 6)
         self.assertNotIn("dataset_create_new", api.names())
 
     def set_meta(self, **kw):
