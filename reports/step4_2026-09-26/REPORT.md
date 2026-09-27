@@ -1,7 +1,7 @@
 # Báo cáo Bước 4a–4c (sinh bởi scripts/report_step4.py)
 
 - Lệnh: `python scripts/report_step4.py --baseline reports/unified_run_2026-09-25/run --runs H-keepz=reports/step4_2026-09-26/runs/run_keepz H-dropz=reports/step4_2026-09-26/runs/run_dropz --run-360 H-keepz-360=reports/step4_2026-09-26/runs/run_keepz_360 --aux-runs H-keepz-seed43=reports/step4_2026-09-26/runs/run_keepz_seed43 H-keepz-notrim=reports/step4_2026-09-26/runs/run_keepz_notrim baseline-seed43=reports/unified_run_2026-09-25/run_seed43 --dict-run reports/step4_2026-09-26/runs/dict_keepz --dict-run-360 reports/step4_2026-09-26/runs/dict_keepz_360 --shortcut-4a reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json --shortcut-4b reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps360.json --shortcut-legacy-compare reports/step4_2026-09-26/4a/shortcut_85.json=reports/step4_2026-09-26/provenance_rerun/4a/shortcut_85.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_keepz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_keepz_qipedc_kps.json reports/step4_2026-09-26/4b/shortcut_85_harmonized_dropz_qipedc_kps.json=reports/step4_2026-09-26/provenance_rerun/4b/shortcut_85_harmonized_dropz_qipedc_kps.json --kernel-logs reports/step4_2026-09-26/runs/vsl-train-harmonized.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v2.log reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log reports/unified_run_2026-09-25/vsl-train-unified.log --out reports/step4_2026-09-26/REPORT.md --json-out reports/step4_2026-09-26/step4_results.json --review-file docs/reviews/01-review.md --archive-manifest reports/step4_2026-09-26/archive/kaggle_archive_manifest.json`
-- HEAD: `bee12af`; code_dirty (scripts/, src/, tests/): false
+- HEAD: `514ad47`; code_dirty (scripts/, src/, tests/): false
 - Luật chọn đăng ký trước: `reports/step4_2026-09-26/PREREGISTRATION.md`. Chọn chỉ bằng VAL; TEST chỉ đọc lại `test_logits.npz` đã sinh một lần trong kernel; không TTA.
 - Mọi số trong báo cáo này có trong `step4_results.json` (cùng dict) hoặc trong JSON đầu vào.
 
@@ -160,7 +160,7 @@ Bản cũ không ghi `--ckpt`/`--seed`; bản chạy lại dùng mặc định c
 | dict_keepz_360 | checkpoint | `step4_2026-09-26__runs__dict_keepz_360__stgcn_unified_best.pt` | 1807597 | `1fc9031d127701146efe3a852f410d4bdefbf49264193a899659c6c3d52f54a7` | CÓ |
 | dict_keepz_360 | test_logits | `step4_2026-09-26__runs__dict_keepz_360__test_logits.npz` | 721817 | `013c15075763ec118cff134b1e681ac81b686027af77df0f355f694328b6ba9f` | CÓ |
 
-Chỉ chủ dự án truy cập được; tải: `kaggle datasets download phmvnsm33/vslt-step4-artifacts`; kiểm: `sha256sum -c SHA256SUMS`.
+Dataset private theo Kaggle API (không truy cập ẩn danh được; chỉ tài khoản chủ và người được chia sẻ truy cập được; danh sách chia sẻ không được kiểm); tải: `kaggle datasets download phmvnsm33/vslt-step4-artifacts`; kiểm: `sha256sum -c SHA256SUMS`.
 
 ## 2. Bước 4a — kiểm tra lối tắt trên các lớp có ở cả hai nguồn
 
@@ -404,7 +404,7 @@ Chỉ là chỉ báo cho giả thuyết "model gộp học phân biệt nguồn"
 - Model mặc định của backend: VSL_MODEL_TYPE mặc định `stgcn` → `checkpoints/stgcn_tier2_indomain.pt` (sha256 53c34cba43854c3e9820495bba3f93ffe18b5e1cb87ef44278a188ccafe2c826); trùng model được kiểm ở 4a: KHÔNG.
 - Chọn epoch: epoch tốt nhất của mỗi run chọn theo VAL top-1 tổng (VSL-GH chiếm 1190/1295 clip VAL), còn biến thể chọn theo balanced VAL.
 - `git_commit` trong JSON của scripts/shortcut_85.py chỉ là HEAD, không ghi trạng thái bẩn của mã.
-- Checkpoint và logits TEST của mọi run được lưu ở Kaggle dataset private `phmvnsm33/vslt-step4-artifacts` (sha256 ở mục 1.5); log kernel và `train.log` vẫn bị gitignore và không nằm trong lưu trữ; clone sạch không có quyền truy cập dataset thì vẫn không tái tạo được báo cáo.
+- Checkpoint và logits TEST của mọi run được lưu ở Kaggle dataset private `phmvnsm33/vslt-step4-artifacts` (sha256 ở mục 1.5); lưu trữ không gồm log kernel hay đầu vào nào khác. 8/57 đầu vào của báo cáo này vừa không được git track vừa không nằm trong lưu trữ: `checkpoints/stgcn_tier2_indomain.pt`, `checkpoints/stgcn_unified_best.pt`, `data/processed/vslgh_segments/segments.csv`, `reports/step4_2026-09-26/runs/vsl-train-harmonized.log`, `reports/step4_2026-09-26/runs/vsl-train-harmonized_v2.log`, `reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log`, `reports/unified_run_2026-09-25/run_seed43/history.json`, `reports/unified_run_2026-09-25/vsl-train-unified.log`; bằng chứng thay thế cho các file này là sha256 ở mục 1.4. Thiếu một đầu vào thì scripts/report_step4.py dừng với mã 2, nên kể cả khi có quyền truy cập dataset, clone sạch vẫn KHÔNG tái tạo được báo cáo.
 
 ## 6. Review
 
