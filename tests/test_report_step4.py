@@ -941,5 +941,90 @@ class TestArchiveManifestAndReviews(unittest.TestCase):
         self.assertNotIn("### Review:", text)
 
 
+# ------------------------------------------------------------------------------------------------ plan 02 (AC6 G1-G3)
+class TestProposal4cCleanup(unittest.TestCase):
+    """AC6: PROPOSAL numbers are checked against the script-generated part of REPORT.md only (before '## 6. Review'),
+    with stricter boundaries; one word count; the (b) exploratory line states wrong-prediction denominators and caveats.
+    A missing file fails (no conditional skip)."""
+    DIR = os.path.join(ROOT, "reports", "step4_2026-09-26")
+    NUM = TestProposal4cScope.NUM
+    MARK = "\n## 6. Review\n"
+
+    def setUp(self):
+        with open(os.path.join(self.DIR, "PROPOSAL_4c.md"), encoding="utf-8") as f:
+            self.prop = f.read()
+        with open(os.path.join(self.DIR, "REPORT.md"), encoding="utf-8") as f:
+            self.report = f.read()
+        with open(os.path.join(self.DIR, "step4_results.json"), encoding="utf-8") as f:
+            self.res = json.load(f)
+        self.assertIn(self.MARK, self.report)
+        self.body = self.report.split(self.MARK, 1)[0]
+
+    def test_g1a_pct_k_n_phrases_in_body(self):
+        import re
+        phrases = re.findall(r"\d+(?:\.\d+)?% \(\d+/\d+\)", self.prop)
+        self.assertGreaterEqual(len(phrases), 5)
+        for ph in phrases:
+            self.assertIn(ph, self.body, f"'{ph}' not verbatim in REPORT.md before '## 6. Review'")
+
+    def test_g1b_numbers_in_body_strict_boundaries(self):
+        import re
+        tokens = re.findall(r"(?<![0-9A-Za-z.])(" + self.NUM + r")(?![0-9A-Za-z]|\.\d)", self.prop)
+        checked = 0
+        for t in tokens:
+            if not ("%" in t or "/" in t or "." in t or "e" in t or int(t) >= 10):
+                continue
+            checked += 1
+            self.assertRegex(self.body, r"(?<![0-9A-Za-z_.])" + re.escape(t) + r"(?![0-9A-Za-z_]|\.\d)",
+                             f"'{t}' not in REPORT.md body with strict boundaries")
+        self.assertGreater(checked, 20)
+
+    def test_g1c_fit_values_in_body_and_proposal(self):
+        fs = self.res["4c"]["fit_and_scope"]
+        for key in ("dict", "unified"):
+            v = str(fs[key]["train_top1_last"])
+            self.assertIn(v, self.body)
+            self.assertIn(v, self.prop)
+
+    def test_g2_word_count_definition(self):
+        import re
+        n = len(re.findall(r"[^ \t\n\r\f\v]+", self.prop))
+        self.assertLessEqual(n, 550)
+        self.assertEqual(n, len(self.prop.split()))
+        self.assertIsNone(re.search(r"[^\S \n\r]", self.prop))
+
+    def test_g3a_wrong_prediction_denominators(self):
+        eb = self.res["4c"]["exploratory"]["b_unified_top1_class_origin"]
+        lines = self.prop.splitlines()
+        for key in ("qipedc_test_all", "s06_contrast"):
+            r = eb[key]["wrong_only"]["vslgh_only_class"]
+            kn = f"({r['k']}/{r['n']})"
+            self.assertIn(kn, self.prop, key)
+            line = [l for l in lines if kn in l]
+            self.assertEqual(len(line), 1, key)
+            self.assertIn("dự đoán sai", line[0], key)
+            i = line[0].index(kn) + len(kn)
+            self.assertFalse(line[0][i:].startswith(" clip"), key)
+
+    def test_g3b_base_rate_is_not_a_standard_null(self):
+        r = self.res["4c"]["exploratory"]["b_unified_top1_class_origin"]["label_space_base_rate"]
+        kn = f"{r['k']}/{r['n']}"
+        line = [l for l in self.prop.splitlines() if kn in l]
+        self.assertEqual(len(line), 1)
+        self.assertIn("tỷ lệ nền", line[0])
+        self.assertIn("không phải", line[0])
+        self.assertTrue("null" in line[0] or "giả thuyết không" in line[0])
+
+    def test_g3c_s06_true_class_caveat(self):
+        line = [l for l in self.prop.splitlines() if "lớp đúng của s06" in l.lower()]
+        self.assertGreaterEqual(len(line), 1)
+        self.assertTrue(any("VSL-GH" in l for l in line))
+
+    def test_g3d_single_conditional_recommendation_b(self):
+        import re
+        self.assertEqual(re.findall(r"Khuyến nghị: ([AB])\b", self.prop), ["B"])
+        self.assertIn("khuyến nghị có điều kiện", self.prop)
+
+
 if __name__ == "__main__":
     unittest.main()
