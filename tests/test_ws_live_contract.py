@@ -494,6 +494,19 @@ class TestAC7Legacy(_WsCase):
         with open(os.path.join(PROJECT_ROOT, "backend", "main.py"), encoding="utf-8") as fh:
             self.assertIsNone(re.search(r"latency_ms \* 0\.[0-9]", fh.read()))
 
+    def test_e_new_files_no_random_no_hardcoded_accuracy(self):
+        acc = re.compile(r"(accuracy|acc|top-?1|top-?5|f1|precision|recall)\w*\s*[:=]\s*[0-9]", re.I)
+        for rel in ("src/inference/sign_segmenter.py", "src/inference/harmonized_live.py",
+                    "scripts/live_segment_check.py"):
+            path = os.path.join(PROJECT_ROOT, rel)
+            if not os.path.exists(path):
+                self.fail(f"{rel} missing")
+            with open(path, encoding="utf-8") as fh:
+                text = fh.read()
+            with self.subTest(file=rel):
+                self.assertNotIn("random", text)
+                self.assertIsNone(acc.search(text))
+
 
 class TestAC7aUnchangedFiles(unittest.TestCase):
     FILES = ["src/inference/realtime_pipeline.py", "src/inference/realtime_extractor.py", "src/inference/predictor.py",
