@@ -3,12 +3,10 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-28 13:46 (giờ Việt Nam)
-- HEAD: 22f891c (+ commit state) | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h ≥ 82% (số cuối 13:28, chưa tính lượt coder B0+B1), reset lúc 15:50 giờ VN.
-  Việc kế tiếp: chạy `node .gitnexus/run.cjs analyze --index-only`, rồi vslt-coder kế hoạch 05 chặng [B2] hoặc [B2,B3,B4]
-  (est 20; cần 5h ≤ 60% để qua cổng).
-- Hạn mức: không biết (chưa có `%USERPROFILE%\.claude\vslt_usage.json` thật)
+- Cập nhật lần cuối: 2026-09-28 16:46 (giờ Việt Nam)
+- HEAD: e0e2365 | Nhánh: feat/vslt-complete
+- Trạng thái phiên: ĐANG LÀM — vslt-coder kế hoạch 05 chặng [B2, B3, B4].
+- Hạn mức (16:44): 5 giờ 0% (reset 21:50 giờ VN), 7 ngày 13% (reset 1790820000). Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -29,6 +27,8 @@
   - Coder XONG B0 + B1 (commit 22f891c; tiến độ docs/plans/05-progress.md). B0: không điểm dừng nào kích hoạt; Kaggle xác thực được;
     (e) xác nhận; file nhị phân track duy nhất = alphabet_real_best.pt. B1: status chỉ {source, n_signers}; 73 test OK (4 module).
     Mốc B0: 20 module cũ 334 OK, 0 skip. Còn: B2–B8. Ghi chú cho reviewer: 05-progress.md nằm trong commit B1 (ngoài danh sách AC1).
+  - vslt-coder ĐÃ GIAO 16:47 (HEAD e0e2365, 5h 0%, est 20, cổng 30 ≤ 90) chặng [B2, B3, B4]; tiến độ ở docs/plans/05-progress.md.
+    Nếu bị ngắt: giao lại coder với kế hoạch + 05-progress.md, tiếp tục từ bước dở.
 
 ## Quyết định của người dùng (không hỏi lại)
 - 4c: chọn B (giữ model gộp). Chưa đổi model mặc định — đó là GATE riêng.
@@ -94,3 +94,4 @@
 - 2026-09-28 11:55 | cổng ngân sách (không phải ngắt) | planner 05 xong; coder 05 chặng 1 chưa giao: 73 + 1.5×20 = 103 > 90 | Dừng sạch theo usage_guard §5, chờ reset 14:30.
 - 2026-09-28 13:30 | người dùng yêu cầu dùng nốt hạn mức | sửa giờ reset 14:30 → 15:50 (quy đổi sai trước đó) | Giao coder 05 chặng B0+B1.
 - 2026-09-28 13:46 | dừng theo hạn mức (không phải ngắt) | coder 05 B0+B1 xong; số hạn mức chưa cập nhật sau lượt coder | Dừng sạch, chờ 15:50.
+- 2026-09-28 16:46 | khôi phục sau chờ hạn mức (người dùng nhắn "tiếp tục") | STATE khớp git (HEAD e0e2365); dòng "Hạn mức" còn ghi "không biết" do sửa trước không áp được → sửa | Giao coder 05 chặng B2–B4.
