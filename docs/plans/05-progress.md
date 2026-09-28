@@ -1,8 +1,8 @@
 # Kế hoạch 05 — tiến độ (coder; phiên 1: B0 + B1; phiên 2: B2–B4; phiên 3: B5; phiên 4: B6–B8)
 
-- Bước đã xong: B0 (không điểm dừng nào kích hoạt), B1 (22f891c), B2 (77f4da3), B3 (0e1d737), B4 (9e2c64a), B5 (46674ab), B6 (8a73e9d)
-- Bước đang làm: B7 (phiên 5, từ HEAD 76d1208)
-- Bước còn lại: B7, B8 (AC10-d/e đã chạy xong, PASS; AC10-c để reviewer)
+- Bước đã xong: B0 (không điểm dừng nào kích hoạt), B1 (22f891c), B2 (77f4da3), B3 (0e1d737), B4 (9e2c64a), B5 (46674ab), B6 (8a73e9d), B7 (684402e), B8 (commit "05: B8 — ...")
+- Bước đang làm: (không; dừng trước review)
+- Bước còn lại: review (orchestrator gọi vslt-reviewer)
 
 ## B0 (HEAD 2477257, 2026-09-28, không commit)
 
@@ -158,3 +158,20 @@ verified_at_utc 2026-09-28T10:42:46Z (17:42 giờ VN, trùng ngày trong đườ
 - Trước commit: AC11 a–f pass, g/h FAIL (cần commit). `tests.test_fingerspelling_api` → Ran 11, OK, 0 skip;
   TestRealClipEquivalence CHẠY (nạp alphabet_real_best.pt từ đĩa) và ok.
 - detect-changes --scope all (sau analyze --index-only): risk low, 0 process (chỉ các mục tài liệu).
+- Sau commit B7 (684402e): AC11 `Ran 8`, `OK`. `git merge-base --is-ancestor 429b289 HEAD` → 0; `git log --oneline -- X` →
+  684402e + 429b289; `git show --name-status 684402e` có `D	reports/alphabet_real_run_2026-09-25/alphabet_run/alphabet_real_best.pt`;
+  `git check-ignore -v` → `.gitignore:78:reports/**/*.pt`; file trên đĩa sha256 afc00521… (không đổi).
+
+## B8 — đóng việc
+
+- `analyze --index-only` trước khi chạy. AC2 đủ 25 module (log `../_plan05_tmp/b8_ac2.log`): `Ran 383 tests in 569.477s`,
+  `OK`, 0 skip. Theo module (B0 → B8): alphabet_ckpt_provenance 16→16, alphabet_preprocessing 6→6, archive_step4_kaggle 24→24,
+  aspect_correction 3→3, fingerspelling_api 11→11, fingerspelling_compose 28→28, fingerspelling_deployed 9→9,
+  fingerspelling_limits 48→48, harmonized 6→6, harmonized_live 10→10, live_harmonized_equivalence 8→9, realtime 3→3,
+  report_step4 105→105, sign_segmenter 15→15, split_guards 6→6, translation_core 8→8, unified_split_integrity 4→4,
+  vsl_system 6→6, ws_live_contract 18→18, ws_throughput 0→0; mới: status_privacy 5, backend_model_unavailable 5,
+  ws_dropped_frames 3, archive_private_kaggle 27, private_artifacts 8. 334 + 49 = 383.
+- `git status --porcelain` trước/sau lần chạy AC2: giống hệt. So với file B0: chỉ khác 05-progress.md (B0 `??`, nay tracked).
+- `git diff b337aee HEAD -- tests/`: 0 dòng `-`. `git diff --name-status b337aee HEAD` ngoài danh sách AC1 còn có
+  docs/STATE.md, docs/usage_ledger.csv (commit state của orchestrator) và docs/plans/05-progress.md (theo lệnh orchestrator).
+- docs/progress_log.md: THÊM 1 bảng 1 dòng + ghi chú (AC13), không sửa dòng cũ.

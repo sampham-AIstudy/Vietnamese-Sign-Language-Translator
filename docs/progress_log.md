@@ -85,3 +85,20 @@ ngày | việc | kế hoạch | commit | kết luận review | việc tiếp the
 2026-09-28 | Kế hoạch 04: nối harmonize() vào đường live "Ký từ" — HOÀN TẤT | `docs/plans/04-harmonize-duong-live.md` | 0f07585, 9c894da, 4c9e24c, 5627010, b1d447a, 2807a8a, af6d384 + commit ghi dòng này (review) | APPROVE — vòng 1/3 (`docs/reviews/04-review.md`); reviewer tự chạy AC8 310 OK, 0 skip; AC4 max\|Δ\| 0.0 trên 8 clip | Thực thi quyết định người dùng 2026-09-28 (backlog mục 2)
 
 Ghi chú (orchestrator): 2 lần amend cục bộ (b1d447a, af6d384) chỉ sửa message về risk, tree không đổi, chưa push — ghi nhận là vi phạm hình thức mức thấp. Việc theo sau từ review 04 (không chặn) đã đưa vào backlog trong docs/STATE.md: smoke_test_phase12.py hỏng (KeyError 'gloss') cho tới Việc 5; AC6 7/8 thiếu CI (Wilson ≈ [0.53, 0.98]) và W03251B phát lặp gloss "thìa"; reports/audit_round2/v1_latency_benchmark.json có phần tách thành phần tổng hợp từ tỷ lệ bịa 0.4/0.6.
+
+ngày | việc | kế hoạch | commit | kết luận review | việc tiếp theo
+--- | --- | --- | --- | --- | ---
+2026-09-29 | Kế hoạch 05: thực thi quyết định người dùng 2026-09-28 (status không lộ tên người ký; /api/classes 503; dropped_frames; AC5 không PASS rỗng; lưu trữ private + gỡ alphabet_real_best.pt khỏi index) — coder xong B0–B8 | `docs/plans/05-thuc-thi-quyet-dinh-0928.md` | 22f891c, 77f4da3, 0e1d737, 9e2c64a, 46674ab, 8a73e9d, 684402e + commit ghi dòng này (B8) | chưa review | vslt-reviewer cho kế hoạch 05
+
+Ghi chú (coder, kế hoạch 05; chi tiết và output nguyên văn ở `docs/plans/05-progress.md`):
+- Số test (AC2, `-v`, một tiến trình): B0 20 module Ran 334 OK 0 skip → B8 25 module Ran 383 in 569.477s OK 0 skip. Mới: test_status_privacy 5, test_backend_model_unavailable 5, test_ws_dropped_frames 3, test_archive_private_kaggle 27, test_private_artifacts 8, test_live_harmonized_equivalence 8 → 9; các module cũ khác giữ nguyên số test (test_ws_throughput 0 test, như B0). `git diff b337aee HEAD -- tests/`: 0 dòng `-`.
+- B0 `git ls-files -- '*.pt' '*.pth' '*.npz' '*.ckpt' '*.onnx' '*.safetensors'`: chỉ `reports/alphabet_real_run_2026-09-25/alphabet_run/alphabet_real_best.pt`; sau B7: rỗng.
+- Bằng chứng (e): `ls -l ../_backup_step4/REPORT_partial.md` → 2350 byte, Sep 26 12:11; sha256 d456d1cece190b11a089fd91fadea29071f61b4a3e8cfe36f59364023e6a434f; `git ls-files -- '*REPORT_partial.md'` rỗng; `git log --all --oneline -- '*REPORT_partial.md'` rỗng; `git check-ignore -v` → `.gitignore:78:reports/**/*.pt`, `.gitignore:79:reports/**/*.npz`.
+- Lệnh Kaggle (B6, HEAD f7ad8d2): stage exit 0 (không gọi Kaggle); upload exit 0 (đúng 1 dataset_create_new, private); verify lần 1 exit 6 (404 ở DownloadDataset, chưa ghi manifest); verify lần 2 exit 0. Không lệnh nào chứa version / metadata --update / delete / kernels push.
+- Manifest `reports/private_archive_2026-09-28/kaggle_archive_manifest.json`: ref phmvnsm33/vslt-provenance-artifacts, is_private true (dataset_list_mine true, dataset_metadata true), status ready, verified.n_files 13, total_bytes 8363141.
+- licence_status "unknown" (nhóm A, hauuto): checkpoints/alphabet_best.pt, 2 × alphabet_nested_final.pt, nested_predictions.csv, alphabet_real_best.pt. "redistribution_not_stated" (nhóm S): stgcn_tier2_indomain.pt, stgcn_unified_best.pt, 4 log kernel, history.json, segments.csv; segments.csv chỉ từ VSL-GH (MIT theo registry, chưa kiểm lại).
+- sha256 của checkpoints/stgcn_unified_best.pt trùng file baseline unified_run_2026-09-25__run__stgcn_unified_best.pt trong phmvnsm33/vslt-step4-artifacts (so bằng hai manifest).
+- Quét bí mật trước khi lưu trữ: 0 khớp. Quét theo mẫu, không chứng minh được là không có bí mật.
+- REPORT bước 4 chưa sinh lại (việc theo sau).
+- AC10-d: provenance chạy lại == JSON đã commit (True). AC10-e: restore vào root tạm exit 0, 13 file sha256 đúng; restore root mặc định exit 0, 13 "đã có", repo không đổi (sha256, mtime, git status).
+- `git status --porcelain` sau AC2 so với file B0: chỉ khác `docs/plans/05-progress.md` (lúc B0 là `??`, sau đó được commit theo lệnh orchestrator); 3 file data của người dùng vẫn ` D`.
