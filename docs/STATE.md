@@ -3,9 +3,10 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-28 11:40 (giờ Việt Nam)
-- HEAD: d329801 (+ commit ghi review 04) | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG LÀM — planner kế hoạch 05
+- Cập nhật lần cuối: 2026-09-28 11:55 (giờ Việt Nam)
+- HEAD: b337aee (+ commit state: chờ hạn mức) | Nhánh: feat/vslt-complete
+- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h dùng 73%, reset lúc 14:30 giờ VN (five_hour_resets_at 1790585400).
+  Việc kế tiếp: vslt-coder kế hoạch 05, chặng 1 = [B0, B1, B2]; est 20 (chưa đủ 3 dòng ok cho coder) → cần 5h ≤ 60% để qua cổng.
 - Hạn mức: không biết (chưa có `%USERPROFILE%\.claude\vslt_usage.json` thật)
 
 ## Đã xong (đã APPROVE)
@@ -20,9 +21,10 @@
   (docs/reviews/04-review.md), commit af6d384, 310 test pass. Model mặc định KHÔNG đổi (ứng viên: VSL_MODEL_TYPE=stgcn_h360).
 
 ## Đang chạy / dở dang
-- vslt-planner → kế hoạch 05 (thực thi quyết định người dùng 2026-09-28, backlog mục 1 a–f).
-  Giao lúc 11:42 giờ VN, HEAD bfe2946, 5h 54% (est 20, cổng 84 ≤ 90). Đầu ra: docs/plans/05-thuc-thi-quyet-dinh-0928.md.
-  Nếu bị ngắt: giao lại planner với đường dẫn file, hoàn thiện phần còn thiếu.
+- Kế hoạch 05 (thực thi quyết định 2026-09-28): planner XONG — docs/plans/05-thuc-thi-quyet-dinh-0928.md (commit cùng lượt này).
+  Không có CẦN NGƯỜI DÙNG trước khi code; 6 điểm dừng có điều kiện ở §7. Lưu trữ: dataset private MỚI phmvnsm33/vslt-provenance-artifacts
+  (script mới scripts/archive_private_kaggle.py); planner thêm checkpoints/alphabet_best.pt vào lưu trữ — orchestrator CHẤP NHẬN.
+  Chặng coder: [B0,B1,B2] → [B3,B4] → [B5] → [B6,B7,B8]. CHƯA giao coder (cổng ngân sách không đạt lúc 11:53).
 
 ## Quyết định của người dùng (không hỏi lại)
 - 4c: chọn B (giữ model gộp). Chưa đổi model mặc định — đó là GATE riêng.
@@ -42,7 +44,8 @@
   §7.2: mở rộng lưu trữ private (log kernel, run_seed43/history.json, các đầu vào không track).
 
 ## Câu hỏi chờ người dùng
-- (không có)
+- (không chặn) Tên người ký hauuto còn trong reports/alphabet_deploy_2026-09-27/provenance.json:49–54 (đã commit)
+  và docs/data_registry.md:45. Quyết định 2026-09-28 chỉ nói về API — có gỡ tên ở hai chỗ này không?
 
 ## Backlog còn lại (thứ tự)
 1. Thực thi quyết định người dùng 2026-09-28 (planner → coder → reviewer, một kế hoạch nhỏ, số 05):
@@ -63,7 +66,8 @@
 6. Bước 5: bộ test webcam (script quay + đánh giá; việc QUAY là của người dùng).
 7. Đo độ trễ (DoD 8; ≥ 3 lần qua WebSocket thật, ghi cấu hình máy + tải). reports/audit_round2/v1_latency_benchmark.json: phần tách
    thành phần dựa trên tỷ lệ bịa 0.4/0.6 → đánh dấu không dùng; 90.78 ms "chưa xác minh lại" trong EVALUATION/VERIFY/AUDIT_ROUND2.
-8. Dọn dẹp: configs/alphabet_config.yaml (hỏi trước khi xóa); sửa câu chữ AC7-e kế hoạch 04; phương án (ii) (đăng ký trước tiêu chí).
+8. Dọn dẹp: report_step4.py đọc thêm manifest vslt-provenance-artifacts để REPORT bước 4 không còn ghi 8 đầu vào 'không lưu trữ';
+   configs/alphabet_config.yaml (hỏi trước khi xóa); sửa câu chữ AC7-e kế hoạch 04; phương án (ii) (đăng ký trước tiêu chí).
 
 ## Tài nguyên
 - Kaggle GPU tuần này: ~6 giờ đã dùng (ước tính của người dùng, chưa xác minh), giới hạn tự đặt 10 giờ/tuần.
@@ -80,3 +84,4 @@
   thêm kế hoạch 02 (APPROVE vòng 3) vào "Đã xong"; kế hoạch 04 = 6 commit B1–B6b xong, chưa review, dòng progress_log chưa commit;
   "3 góp ý nhỏ" đã làm ở kế hoạch 02 → bỏ khỏi backlog; chuyển 5 câu hỏi sang "Quyết định" và đưa việc thực thi vào backlog mục 2–3.
 - 2026-09-28 11:10 | đối chiếu sau bootstrap | STATE ghi HEAD 2807a8a, progress_log 04 chưa commit, review chưa giao — thực tế HEAD af6d384 (dòng progress_log đã commit), reviewer 04 đã được giao trước khi orchestrator đọc giao thức mới | Sửa mục Đang chạy, ghi hạn mức, commit bootstrap.
+- 2026-09-28 11:55 | cổng ngân sách (không phải ngắt) | planner 05 xong; coder 05 chặng 1 chưa giao: 73 + 1.5×20 = 103 > 90 | Dừng sạch theo usage_guard §5, chờ reset 14:30.
