@@ -77,3 +77,4 @@ reports/step4_*/runs/**/*.pt
 # Checkpoints and logits under reports/ (archived in a private Kaggle dataset; see the step-4 REPORT §1.5)
 reports/**/*.pt
 reports/**/*.npz
+# A3 (2026-09-28): alphabet_real_best.pt gỡ khỏi index (lịch sử đã push vẫn còn), lưu ở dataset private — xem reports/private_archive_*/

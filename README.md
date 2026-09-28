@@ -253,6 +253,19 @@ Chi tiết pipeline, cách chia dữ liệu và Colab: xem [docs/cloud_training.
 
 ---
 
+### Artifact không nằm trong git
+
+Checkpoint, logit và log có dữ liệu giấy phép chưa rõ không được commit; chúng nằm trong 2 dataset Kaggle private:
+- `phmvnsm33/vslt-step4-artifacts`: manifest `reports/step4_2026-09-26/archive/kaggle_archive_manifest.json`.
+- `phmvnsm33/vslt-provenance-artifacts`: manifest `reports/private_archive_2026-09-28/kaggle_archive_manifest.json`
+  (bằng chứng nguồn gốc Cấp 1, gồm `alphabet_real_best.pt`, và các đầu vào không track của REPORT bước 4).
+
+Khôi phục (tải về ngoài repo, kiểm sha256 theo manifest, chỉ ghi file còn thiếu, không ghi đè):
+```bash
+python scripts/archive_private_kaggle.py restore --manifest reports/private_archive_2026-09-28/kaggle_archive_manifest.json --download-dir ../_kaggle_restore
+```
+Dataset private theo Kaggle API; chỉ tài khoản chủ và người được chia sẻ tải được (danh sách chia sẻ không được kiểm).
+
 ## 6. Trích Dẫn & Bản Quyền
 
 Dự án được phát triển phục vụ mục đích nghiên cứu học thuật trong khuôn khổ môn học **Deep Learning + Computer Vision**. Mọi mã nguồn phát hành dưới giấy phép MIT License.

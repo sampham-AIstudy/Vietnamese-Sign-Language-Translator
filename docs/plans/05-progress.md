@@ -1,7 +1,7 @@
 # Kế hoạch 05 — tiến độ (coder; phiên 1: B0 + B1; phiên 2: B2–B4; phiên 3: B5; phiên 4: B6–B8)
 
 - Bước đã xong: B0 (không điểm dừng nào kích hoạt), B1 (22f891c), B2 (77f4da3), B3 (0e1d737), B4 (9e2c64a), B5 (46674ab), B6 (8a73e9d)
-- Bước đang làm: (không; TẠM DỪNG theo yêu cầu người dùng qua orchestrator, sau B6 + AC10-d/e)
+- Bước đang làm: B7 (phiên 5, từ HEAD 76d1208)
 - Bước còn lại: B7, B8 (AC10-d/e đã chạy xong, PASS; AC10-c để reviewer)
 
 ## B0 (HEAD 2477257, 2026-09-28, không commit)
@@ -144,3 +144,17 @@ verified_at_utc 2026-09-28T10:42:46Z (17:42 giờ VN, trùng ngày trong đườ
 - Chưa bắt đầu B7 trong repo: chưa `git rm --cached`, chưa sửa .gitignore/README/data_registry. Bản nháp test AC11
   (`tests/test_private_artifacts.py`, chưa chạy) được chuyển ra ngoài repo: `../_plan05_tmp/test_private_artifacts.py.draft`
   (phiên sau có thể chép lại vào tests/ khi làm B7).
+
+## B7 — (a) gỡ alphabet_real_best.pt khỏi index
+
+- Bản nháp AC11 chép lại vào `tests/test_private_artifacts.py`, không sửa. Chạy TRƯỚC khi sửa: a, b, d, g, h FAIL (a/d: X còn
+  track — `git ls-files` chỉ ra đúng X, không file nào khác của manifest bị track, nên AC11-d không có phát hiện mới;
+  b: check-ignore 1; g: .gitignore chưa có dòng chú thích; h: chưa có commit xóa X khỏi index); c, e, f pass.
+- `git rm --cached -- reports/alphabet_real_run_2026-09-25/alphabet_run/alphabet_real_best.pt`; file vẫn trên đĩa:
+  `sha256sum` → `afc00521d56bccb2eddf9570eff8905c89aa33c67df0d4781fafec4936a15fa9` (= manifest = provenance.json known.real_run), 541077 byte.
+- `.gitignore`: thêm đúng 1 dòng chú thích sau `reports/**/*.npz`. README: thêm mục "Artifact không nằm trong git" (13 dòng,
+  2 ref, 2 manifest, lệnh restore). `docs/data_registry.md:44`: thay vế "already committed and pushed…owner's call" bằng
+  429b289 / origin/fix/audit-round2 / gỡ ở B7 / ref private mới.
+- Trước commit: AC11 a–f pass, g/h FAIL (cần commit). `tests.test_fingerspelling_api` → Ran 11, OK, 0 skip;
+  TestRealClipEquivalence CHẠY (nạp alphabet_real_best.pt từ đĩa) và ok.
+- detect-changes --scope all (sau analyze --index-only): risk low, 0 process (chỉ các mục tài liệu).
