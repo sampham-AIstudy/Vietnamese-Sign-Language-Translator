@@ -171,13 +171,18 @@ class SignSegmenter:
         self._run_start = self._onset_t = self._last_active_t = self._inactive_since = None
 
     # ---------------------------------------------------------------- API
-    def push(self, coords, vis, t_s: float, frame_wh, seq: Optional[int] = None) -> Optional[SegmenterEvent]:
-        # --- validate everything before touching any state
+    def validate_time(self, t_s: float) -> float:
+        """ValueError unless t_s is finite and strictly after the last pushed frame. Changes nothing."""
         t = float(t_s)
         if not np.isfinite(t):
             raise ValueError("t_s must be finite")
         if self._last_t is not None and not t > self._last_t:
             raise ValueError(f"timestamps must be strictly increasing ({t} <= {self._last_t})")
+        return t
+
+    def push(self, coords, vis, t_s: float, frame_wh, seq: Optional[int] = None) -> Optional[SegmenterEvent]:
+        # --- validate everything before touching any state
+        t = self.validate_time(t_s)
         c = np.asarray(coords, dtype=np.float32)
         v = np.asarray(vis, dtype=np.float32)
         if c.shape != (67, 3) or v.shape != (67,):
