@@ -1,8 +1,8 @@
-# Kế hoạch 05 — tiến độ (coder; phiên 1: B0 + B1; phiên 2: B2–B4)
+# Kế hoạch 05 — tiến độ (coder; phiên 1: B0 + B1; phiên 2: B2–B4; phiên 3: B5)
 
-- Bước đã xong: B0 (không điểm dừng nào kích hoạt), B1 (22f891c), B2 (77f4da3), B3 (0e1d737), B4 (commit "05: B4 — ...")
-- Bước đang làm: (không; phiên 2 dừng sau B4 theo lệnh orchestrator)
-- Bước còn lại: B5–B8 (phiên sau)
+- Bước đã xong: B0 (không điểm dừng nào kích hoạt), B1 (22f891c), B2 (77f4da3), B3 (0e1d737), B4 (9e2c64a), B5 (commit "05: B5 — ...")
+- Bước đang làm: (không; phiên 3 dừng sau B5 theo lệnh orchestrator)
+- Bước còn lại: B6–B8 (phiên sau; B6 = chạy Kaggle thật)
 
 ## B0 (HEAD 2477257, 2026-09-28, không commit)
 
@@ -88,3 +88,22 @@
 - detect-changes --scope all (sau analyze --index-only): risk CRITICAL, 52 flow. Nguyên nhân: graph gộp các symbol cùng tên
   (`setUpClass`, biến `api`) giữa nhiều file test. Symbol thực sự đổi đều nằm trong file test: TestWebSocketEventsNotEmpty,
   setUpClass của nó, `api`; 0 dòng mã production.
+
+## B5 — (c) scripts/archive_private_kaggle.py + test với API giả (AC9)
+
+- Không sửa hàm có sẵn nào (script và test đều mới; `scripts/archive_step4_kaggle.py` chỉ được import, `git diff b337aee`
+  của file này rỗng). Không chạy lệnh Kaggle nào (kể cả lệnh đọc) trong bước này.
+- Test viết trước (`tests/test_archive_private_kaggle.py`, 27 test, AC9 ca 1–13), chạy trước khi có script: `Ran 1`,
+  `FAILED (errors=1)`: `ModuleNotFoundError: No module named 'archive_private_kaggle'`.
+- Lần chạy đầu sau khi viết script: 26/27 pass; `test_11b_existing_same_sha_untouched` FAIL `8 != 7`, vì dòng tổng kết của
+  restore cũng chứa chữ "đã có". Sửa câu tổng kết của script ("bỏ qua vì có sẵn cùng sha256"), không sửa test.
+- Sau khi sửa: `tests.test_archive_private_kaggle tests.test_archive_step4_kaggle -v` → `Ran 51 tests`, `OK`, 0 skip
+  (mới 27; archive_step4_kaggle 24 = như B0). Log `../_plan05_tmp/b5_tests.log`.
+- Kiểm trước B6, chỉ đọc (không băm, không staging, không Kaggle): `plan_files(JSON thật)` → 13 file, 0 file thiếu trên đĩa,
+  tổng 8361555 byte (≤ 2 GiB), quét bí mật trên các file text thật → 0 khớp. Quét chỉ theo mẫu, không chứng minh được là
+  không có bí mật. sha256 so với JSON sẽ được kiểm ở `stage` của B6.
+- Thêm ngoài §3.3 (giả định của coder): `verify` từ chối `--manifest-out` nằm trong repo nếu khác
+  `reports/private_archive_<ngày hôm nay giờ VN>/kaggle_archive_manifest.json` (exit 2, trước mọi lời gọi API); ngoài repo thì
+  không ràng buộc (để test ghi vào thư mục tạm). `main(..., src_root=ROOT)` là tham số chỉ dùng cho test (không có cờ CLI).
+- detect-changes --scope all (sau analyze --index-only): risk low, 0 process (chỉ thấy 05-progress.md; script và test mới
+  chưa được track nên không có trong graph).
