@@ -1,8 +1,8 @@
 # Kế hoạch 05 — tiến độ (coder; phiên 1: B0 + B1; phiên 2: B2–B4)
 
-- Bước đã xong: B0 (không điểm dừng nào kích hoạt), B1 (22f891c), B2 (commit "05: B2 — ...")
-- Bước đang làm: B3
-- Bước còn lại: B3, B4 (phiên 2); B5–B8 (phiên sau)
+- Bước đã xong: B0 (không điểm dừng nào kích hoạt), B1 (22f891c), B2 (77f4da3), B3 (commit "05: B3 — ...")
+- Bước đang làm: B4
+- Bước còn lại: B4 (phiên 2); B5–B8 (phiên sau)
 
 ## B0 (HEAD 2477257, 2026-09-28, không commit)
 
@@ -51,3 +51,20 @@
   (mới 5; ws_live_contract 18 = như B0). Log `../_plan05_tmp/b2_tests.log`.
 - detect-changes --scope all (index vừa refresh): risk medium; symbol get_classes; 3 flow của chính get_classes
   (Get_classes → _is_int / _sha256_file / _short, qua _active_model).
+
+## B3 — (f3) dropped_frames không đếm message lỗi/control
+
+- impact upstream: `_process_frame_worker_harmonized` LOW (1 caller trực tiếp: run_harmonized, 1 process);
+  `websocket_live_stream` UNKNOWN (0 caller; text search: chỉ là route WS, chỉ sửa docstring).
+- Test viết trước (`tests/test_ws_dropped_frames.py`, 3 test), chạy trước khi sửa: `FAILED (failures=3)`:
+  TestWsErrorsAreNotDroppedFrames.test_errors_during_recording `AssertionError: 5 != 0` (đúng giá trị P5 kế hoạch nêu);
+  TestWorkerSeq.test_drops_inside_recording `73926 != 3`; TestWorkerSeq.test_drops_in_idle_before_sign `73926 != 0`
+  (received_seq = 1000*i cố ý không liên quan).
+- Sửa: `push_seq = item.get("dropped_frames", 0) + stats["frame_seq"] + 1` → `session.process(..., seq=push_seq)`;
+  docstring `websocket_live_stream` thêm hợp đồng `sign_result.segment.dropped_frames`. Không đổi `src/`.
+- Sau khi sửa: `tests.test_ws_dropped_frames tests.test_ws_live_contract tests.test_harmonized_live
+  tests.test_live_harmonized_equivalence -v` → `Ran 39 tests in 560.066s`, `OK`, 0 skip (mới 3; ws_live_contract 18,
+  harmonized_live 10, live_harmonized_equivalence 8 = như B0). Log `../_plan05_tmp/b3_tests.log`.
+- detect-changes --scope all (index tại 77f4da3): risk HIGH; symbol _process_frame_worker_harmonized,
+  websocket_live_stream; 11 flow (Run_harmonized → ..., Websocket_live_stream → ...). Thay đổi thực tế chỉ là giá trị
+  `seq` truyền vào segmenter + docstring; AC4/AC5 tương đương của kế hoạch 04 vẫn pass.

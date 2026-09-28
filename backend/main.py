@@ -1189,8 +1189,12 @@ def _process_frame_worker_harmonized(item: Dict[str, Any], session: HarmonizedLi
     except WsError as e:
         return [_ws_error(e.code, e.detail, item["received_seq"])]
     t1 = time.perf_counter()
+    # Segmenter sequence number: frames dropped from the slot so far + frames pushed so far + 1. Within one sign,
+    # seq_n - seq_1 + 1 - n = slot overwrites between taking its first and its last frame; error, control and empty
+    # messages (which advance received_seq) are not counted.
+    push_seq = item.get("dropped_frames", 0) + stats["frame_seq"] + 1
     try:
-        out = session.process(frame_bgr, item["t_s"], seq=item["received_seq"])
+        out = session.process(frame_bgr, item["t_s"], seq=push_seq)
     except ValueError as e:
         return [_ws_error("bad_timestamp", f"frame time rejected: {e}", item["received_seq"])]
     stats["frame_seq"] += 1
@@ -1301,6 +1305,11 @@ async def websocket_live_stream(websocket: WebSocket):
       legacy path: one `frame_result` per frame (sliding window + smoother), unchanged prediction behaviour.
       harmonized_v1 path: `frame_result` per frame (no prediction) + `sign_result` / `sign_discarded` per sign.
     - Errors: `error{code}`; only message_too_large (close 1009) and model_unavailable (close 1011) end the session.
+    - `sign_result.segment.dropped_frames`: number of valid frames dropped because the worker was busy (slot
+      overwritten) between the first and the last frame of the sign. Error messages (receive or worker side, e.g.
+      bad_message, bad_config, bad_timestamp, decode_failed, unsupported_format, frame_too_small, frame_too_large),
+      control messages and empty messages are NOT counted. `received_seq` and `frame_result.dropped_frames`
+      (cumulative slot overwrites of the session) keep their meaning.
     """
     await websocket.accept()
     client_addr = f"{websocket.client.host}:{websocket.client.port}" if websocket.client else "unknown"
