@@ -1,8 +1,8 @@
 # Kế hoạch 05 — tiến độ (coder; phiên 1: B0 + B1; phiên 2: B2–B4)
 
-- Bước đã xong: B0 (không điểm dừng nào kích hoạt), B1 (22f891c), B2 (77f4da3), B3 (commit "05: B3 — ...")
-- Bước đang làm: B4
-- Bước còn lại: B4 (phiên 2); B5–B8 (phiên sau)
+- Bước đã xong: B0 (không điểm dừng nào kích hoạt), B1 (22f891c), B2 (77f4da3), B3 (0e1d737), B4 (commit "05: B4 — ...")
+- Bước đang làm: (không; phiên 2 dừng sau B4 theo lệnh orchestrator)
+- Bước còn lại: B5–B8 (phiên sau)
 
 ## B0 (HEAD 2477257, 2026-09-28, không commit)
 
@@ -68,3 +68,23 @@
 - detect-changes --scope all (index tại 77f4da3): risk HIGH; symbol _process_frame_worker_harmonized,
   websocket_live_stream; 11 flow (Run_harmonized → ..., Websocket_live_stream → ...). Thay đổi thực tế chỉ là giá trị
   `seq` truyền vào segmenter + docstring; AC4/AC5 tương đương của kế hoạch 04 vẫn pass.
+
+## B4 — (f1) AC5 không PASS rỗng
+
+- Thêm lớp `TestWebSocketEventsNotEmpty` ở cuối `tests/test_live_harmonized_equivalence.py` (trước khối `__main__`),
+  `skipUnless(AVAILABLE, REASON)`, không kế thừa `TestWebSocketEndToEnd`, gọi lại `TestWebSocketEndToEnd._stream`;
+  cùng env/reload/tearDownClass như lớp cũ; assert `len(ws_events) >= 1` cho từng clip trong 2 clip đầu, in `(type, reason, gloss)`.
+  `git diff` file này: 56 dòng `+`, 0 dòng `-`. Không có symbol production nào bị sửa, nên không chạy impact.
+- Không có FAIL trước khi sửa: hành vi vốn đúng, lớp mới chỉ chặn trường hợp PASS rỗng. Chưa tự chạy đột biến "WS trả 0 event"
+  (AC14-iv, để reviewer làm).
+- Thời gian module `tests.test_live_harmonized_equivalence`: trước `Ran 8 tests in 506.958s` (real 8m28s), OK;
+  sau `Ran 9 tests in 471.899s` (real 7m54s), OK, 0 skip. Log `../_plan05_tmp/b4_before.log`, `../_plan05_tmp/b4_after.log`.
+- Output AC8 (nguyên văn):
+  `[AC8] qipedc_W03251B: 257 frames + 21 padding frames -> WS events [('sign_result', None, 'thìa'), ('sign_result', None, 'thìa')]`
+  `[AC8] qipedc_D0120T: 113 frames + 21 padding frames -> WS events [('sign_result', None, 'phải không?')]`
+  (clip TRAIN, chỉ để chứng minh có event; không phải số liệu đánh giá).
+- `git status --porcelain` trước/sau lần chạy: chỉ khác ` M docs/plans/05-progress.md` (coder sửa file này trong lúc test chạy);
+  test không đổi file nào.
+- detect-changes --scope all (sau analyze --index-only): risk CRITICAL, 52 flow. Nguyên nhân: graph gộp các symbol cùng tên
+  (`setUpClass`, biến `api`) giữa nhiều file test. Symbol thực sự đổi đều nằm trong file test: TestWebSocketEventsNotEmpty,
+  setUpClass của nó, `api`; 0 dòng mã production.

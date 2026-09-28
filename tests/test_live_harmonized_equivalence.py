@@ -329,5 +329,61 @@ class TestSegmentCheckJson(unittest.TestCase):
             self.assertNotIn(banned, text)
 
 
+@unittest.skipUnless(AVAILABLE, REASON)
+class TestWebSocketEventsNotEmpty(unittest.TestCase):
+    """Plan 05 AC8 (f1): AC5 above compares WS events with in-process events and would pass if both were empty.
+    Here each of the first 2 clips of select_train_clips(8, 0), streamed the same way (TestWebSocketEndToEnd._stream,
+    lock-step PNG data URLs, VSL_MODEL_TYPE=stgcn_h360), must give at least one sign_result / sign_discarded event.
+    Only TRAIN clips; no accuracy is measured."""
+
+    @classmethod
+    def setUpClass(cls):
+        import backend.main as api
+        cls.api = api
+        cls._env = {k: os.environ.get(k) for k in ("VSL_MODEL_TYPE", "VSL_STGCN_CKPT")}
+        os.environ["VSL_MODEL_TYPE"] = "stgcn_h360"
+        os.environ.pop("VSL_STGCN_CKPT", None)
+        importlib.reload(api)
+
+    @classmethod
+    def tearDownClass(cls):
+        for k, v in cls._env.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+        importlib.reload(cls.api)       # back to the default model constants for the other test modules
+
+    def test_each_clip_has_ws_events(self):
+        from fastapi.testclient import TestClient
+        api = self.api
+        self.assertEqual(api.MODEL_TYPE, "stgcn_h360")
+        client = TestClient(api.app)
+        rows = live_clip_sample.select_train_clips(8, 0)[:2]
+        self.assertEqual(len(rows), 2)
+        for row in rows:
+            stream, n_clip = TestWebSocketEndToEnd._stream(self, row)
+            ws_events, frame_results = [], 0
+            with client.websocket_connect("/ws/live-stream") as ws:
+                info = ws.receive_json()
+                self.assertEqual((info["type"], info["pipeline"]), ("session_info", "harmonized_v1"))
+                for data, ts in stream:
+                    ws.send_text(json.dumps({"image": "data:image/png;base64," + base64.b64encode(data).decode(),
+                                             "timestamp": ts}))
+                    while True:
+                        m = ws.receive_json()
+                        self.assertNotEqual(m["type"], "error", m)
+                        if m["type"] == "frame_result":
+                            frame_results += 1
+                            break
+                        ws_events.append(m)
+            self.assertEqual(frame_results, len(stream))
+            summary = [(e["type"], e.get("reason"), e.get("gloss")) for e in ws_events]
+            print(f"\n[AC8] {row['video_id']}: {n_clip} frames + {len(stream) - n_clip} padding frames -> WS events "
+                  f"{summary}")
+            with self.subTest(video_id=row["video_id"]):
+                self.assertGreaterEqual(len(ws_events), 1)
+
+
 if __name__ == "__main__":
     unittest.main()
