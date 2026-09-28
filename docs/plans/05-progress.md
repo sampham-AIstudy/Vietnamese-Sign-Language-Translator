@@ -1,8 +1,8 @@
-# Kế hoạch 05 — tiến độ (coder; phiên 1: B0 + B1; phiên 2: B2–B4; phiên 3: B5)
+# Kế hoạch 05 — tiến độ (coder; phiên 1: B0 + B1; phiên 2: B2–B4; phiên 3: B5; phiên 4: B6–B8)
 
-- Bước đã xong: B0 (không điểm dừng nào kích hoạt), B1 (22f891c), B2 (77f4da3), B3 (0e1d737), B4 (9e2c64a), B5 (commit "05: B5 — ...")
-- Bước đang làm: (không; phiên 3 dừng sau B5 theo lệnh orchestrator)
-- Bước còn lại: B6–B8 (phiên sau; B6 = chạy Kaggle thật)
+- Bước đã xong: B0 (không điểm dừng nào kích hoạt), B1 (22f891c), B2 (77f4da3), B3 (0e1d737), B4 (9e2c64a), B5 (46674ab)
+- Bước đang làm: B6 (verify xong, đang commit manifest), sau đó AC10-d/e rồi B7
+- Bước còn lại: B6, B7, B8
 
 ## B0 (HEAD 2477257, 2026-09-28, không commit)
 
@@ -107,3 +107,25 @@
   không ràng buộc (để test ghi vào thư mục tạm). `main(..., src_root=ROOT)` là tham số chỉ dùng cho test (không có cờ CLI).
 - detect-changes --scope all (sau analyze --index-only): risk low, 0 process (chỉ thấy 05-progress.md; script và test mới
   chưa được track nên không có trong graph).
+
+## B6 — chạy thật (lịch sử lệnh Kaggle, theo thứ tự)
+
+HEAD lúc chạy: f7ad8d2; `git status --porcelain -- scripts src tests backend` rỗng. Output: `../_kaggle_staging/prov_*.out`.
+- `stage` (không gọi Kaggle) → exit 0: "staged 13 files + SHA256SUMS + dataset-metadata.json ... (8361555 bytes of data)"; sha256 13 file khớp JSON (các file có sha256 ghi sẵn).
+- `upload` (1 lần `dataset_create_new`, public=False trong archive_step4_kaggle.upload) → exit 0: "created phmvnsm33/vslt-provenance-artifacts (private); status='Ok'".
+- `verify` lần 1 → exit 6: "dataset_download_files lỗi: 404 Client Error: Not Found for url: https://api.kaggle.com/v1/datasets.DatasetApiService/DownloadDataset" (ready, private 2 nguồn và danh sách file đã qua; lỗi ở bước tải về, chưa ghi manifest). Theo kế hoạch: chạy lại verify, không chạy lại upload.
+- `verify` lần 2 (sau ~4 phút) → exit 0: "verified phmvnsm33/vslt-provenance-artifacts: private (2 sources), ready, 13 files +
+  SHA256SUMS; manifest reports/private_archive_2026-09-28/kaggle_archive_manifest.json".
+- Tổng: đúng 1 `dataset_create_new` (trong upload). Không lệnh nào chứa version / metadata --update / delete / kernels push.
+
+Manifest `reports/private_archive_2026-09-28/kaggle_archive_manifest.json` (chép từ file): ref `phmvnsm33/vslt-provenance-artifacts`,
+is_private true, is_private_sources {dataset_list_mine: true, dataset_metadata: true}, status ready, total_bytes 8363141,
+verified {file_list_matches: true, downloaded_sha256_all_match: true, n_files: 13}, git_commit f7ad8d2,
+verified_at_utc 2026-09-28T10:42:46Z (17:42 giờ VN, trùng ngày trong đường dẫn).
+- licence_status "unknown" (nhóm A, hauuto, 5 file): checkpoints/alphabet_best.pt, 2 × alphabet_nested_final.pt,
+  nested_predictions.csv, alphabet_real_best.pt.
+- licence_status "redistribution_not_stated" (nhóm S, 8 file): 2 checkpoint Cấp 2, 4 log kernel, history.json, segments.csv.
+  `data/processed/vslgh_segments/segments.csv` chỉ từ VSL-GH (MIT theo docs/data_registry.md §2, chưa kiểm lại).
+- sha256 của `checkpoints/stgcn_unified_best.pt` (930633233ff3…) trùng file `unified_run_2026-09-25__run__stgcn_unified_best.pt`
+  trong `phmvnsm33/vslt-step4-artifacts` (so bằng hai manifest).
+- Quét bí mật theo mẫu: 0 khớp. Đây là quét theo mẫu, không chứng minh được là không có bí mật.

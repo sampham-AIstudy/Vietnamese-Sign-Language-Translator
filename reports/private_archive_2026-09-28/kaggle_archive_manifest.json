@@ -1,0 +1,190 @@
+{
+  "dataset": {
+    "is_private": true,
+    "is_private_sources": {
+      "dataset_list_mine": true,
+      "dataset_metadata": true
+    },
+    "license": "unknown",
+    "ref": "phmvnsm33/vslt-provenance-artifacts",
+    "status": "ready",
+    "title": "VSLT provenance evidence and untracked inputs",
+    "total_bytes": 8363141,
+    "url": "https://www.kaggle.com/datasets/phmvnsm33/vslt-provenance-artifacts"
+  },
+  "files": [
+    {
+      "archive_name": "checkpoints__alphabet_best.pt",
+      "expected_sha256_source": "reports/alphabet_deploy_2026-09-27/provenance.json#checkpoints.deployed",
+      "group": "alphabet_provenance",
+      "licence_note": "hauuto/vietnamese-sign-language-alphabet: licence unknown (docs/data_registry.md §1b); private, internal use only",
+      "licence_status": "unknown",
+      "local_path": "checkpoints/alphabet_best.pt",
+      "role": "deployed",
+      "sha256": "a6311820ba778b6b38a33cffffd58602b2bb840b8b35326b5bf46086e5b708a2",
+      "sha256_after_download": "a6311820ba778b6b38a33cffffd58602b2bb840b8b35326b5bf46086e5b708a2",
+      "size_bytes": 537926
+    },
+    {
+      "archive_name": "checkpoints__stgcn_tier2_indomain.pt",
+      "expected_sha256_source": "reports/step4_2026-09-26/step4_results.json#limitations_data.untracked_unarchived_inputs",
+      "group": "step4_untracked_input",
+      "licence_note": "derived from QIPEDC and/or VSL-GH: QIPEDC educational / academic research use, redistribution not stated (docs/data_registry.md §1); VSL-GH MIT per docs/data_registry.md §2 (not re-verified); private",
+      "licence_status": "redistribution_not_stated",
+      "local_path": "checkpoints/stgcn_tier2_indomain.pt",
+      "role": "checkpoint mặc định của backend (chỉ sha256)",
+      "sha256": "53c34cba43854c3e9820495bba3f93ffe18b5e1cb87ef44278a188ccafe2c826",
+      "sha256_after_download": "53c34cba43854c3e9820495bba3f93ffe18b5e1cb87ef44278a188ccafe2c826",
+      "size_bytes": 1746004
+    },
+    {
+      "archive_name": "checkpoints__stgcn_unified_best.pt",
+      "expected_sha256_source": "reports/step4_2026-09-26/step4_results.json#limitations_data.untracked_unarchived_inputs",
+      "group": "step4_untracked_input",
+      "licence_note": "derived from QIPEDC and/or VSL-GH: QIPEDC educational / academic research use, redistribution not stated (docs/data_registry.md §1); VSL-GH MIT per docs/data_registry.md §2 (not re-verified); private",
+      "licence_status": "redistribution_not_stated",
+      "local_path": "checkpoints/stgcn_unified_best.pt",
+      "role": "model hiện tại của 4a (chỉ sha256)",
+      "sha256": "930633233ff37a5557e16e09714c11d2a1549def0450b6196880f4501de4aabb",
+      "sha256_after_download": "930633233ff37a5557e16e09714c11d2a1549def0450b6196880f4501de4aabb",
+      "size_bytes": 1958573
+    },
+    {
+      "archive_name": "data__processed__vslgh_segments__segments.csv",
+      "expected_sha256_source": "reports/step4_2026-09-26/step4_results.json#limitations_data.untracked_unarchived_inputs",
+      "group": "step4_untracked_input",
+      "licence_note": "derived from QIPEDC and/or VSL-GH: QIPEDC educational / academic research use, redistribution not stated (docs/data_registry.md §1); VSL-GH MIT per docs/data_registry.md §2 (not re-verified); private",
+      "licence_status": "redistribution_not_stated",
+      "local_path": "data/processed/vslgh_segments/segments.csv",
+      "role": "VSL-GH segments (chồng lấn câu S06)",
+      "sha256": "bc4606cc06bdfb69ed2d40d88c7f5e13c43ad9284555a13b2d5378fabd445f15",
+      "sha256_after_download": "bc4606cc06bdfb69ed2d40d88c7f5e13c43ad9284555a13b2d5378fabd445f15",
+      "size_bytes": 2417374
+    },
+    {
+      "archive_name": "reports__alphabet_nested_2026-09-25__primary__alphabet_nested_final.pt",
+      "expected_sha256_source": "reports/alphabet_deploy_2026-09-27/provenance.json#checkpoints.known.nested_primary",
+      "group": "alphabet_provenance",
+      "licence_note": "hauuto/vietnamese-sign-language-alphabet: licence unknown (docs/data_registry.md §1b); private, internal use only",
+      "licence_status": "unknown",
+      "local_path": "reports/alphabet_nested_2026-09-25/primary/alphabet_nested_final.pt",
+      "role": "known.nested_primary",
+      "sha256": "82bb141e2c7ab794c452fad66bfe51fc652bf0baaa422c7dc531bf91eb94d149",
+      "sha256_after_download": "82bb141e2c7ab794c452fad66bfe51fc652bf0baaa422c7dc531bf91eb94d149",
+      "size_bytes": 537054
+    },
+    {
+      "archive_name": "reports__alphabet_nested_2026-09-25__primary__nested_predictions.csv",
+      "expected_sha256_source": null,
+      "group": "alphabet_provenance",
+      "licence_note": "hauuto/vietnamese-sign-language-alphabet: licence unknown (docs/data_registry.md §1b); private, internal use only",
+      "licence_status": "unknown",
+      "local_path": "reports/alphabet_nested_2026-09-25/primary/nested_predictions.csv",
+      "role": "nested_predictions (V6)",
+      "sha256": "212d0fd62457bfa2c329f56d6989568eae1e6de353e8a05849fc4bf98ad148db",
+      "sha256_after_download": "212d0fd62457bfa2c329f56d6989568eae1e6de353e8a05849fc4bf98ad148db",
+      "size_bytes": 31109
+    },
+    {
+      "archive_name": "reports__alphabet_nested_2026-09-25__variants__alphabet_nested_final.pt",
+      "expected_sha256_source": "reports/alphabet_deploy_2026-09-27/provenance.json#checkpoints.known.nested_variants",
+      "group": "alphabet_provenance",
+      "licence_note": "hauuto/vietnamese-sign-language-alphabet: licence unknown (docs/data_registry.md §1b); private, internal use only",
+      "licence_status": "unknown",
+      "local_path": "reports/alphabet_nested_2026-09-25/variants/alphabet_nested_final.pt",
+      "role": "known.nested_variants",
+      "sha256": "6f65f3022ebcdee2dfa9f992efb0099cb975dbdf6ed90953f3ddf18c35d5beb7",
+      "sha256_after_download": "6f65f3022ebcdee2dfa9f992efb0099cb975dbdf6ed90953f3ddf18c35d5beb7",
+      "size_bytes": 538014
+    },
+    {
+      "archive_name": "reports__alphabet_real_run_2026-09-25__alphabet_run__alphabet_real_best.pt",
+      "expected_sha256_source": "reports/alphabet_deploy_2026-09-27/provenance.json#checkpoints.known.real_run",
+      "group": "alphabet_provenance",
+      "licence_note": "hauuto/vietnamese-sign-language-alphabet: licence unknown (docs/data_registry.md §1b); private, internal use only",
+      "licence_status": "unknown",
+      "local_path": "reports/alphabet_real_run_2026-09-25/alphabet_run/alphabet_real_best.pt",
+      "role": "known.real_run",
+      "sha256": "afc00521d56bccb2eddf9570eff8905c89aa33c67df0d4781fafec4936a15fa9",
+      "sha256_after_download": "afc00521d56bccb2eddf9570eff8905c89aa33c67df0d4781fafec4936a15fa9",
+      "size_bytes": 541077
+    },
+    {
+      "archive_name": "reports__step4_2026-09-26__runs__vsl-train-harmonized.log",
+      "expected_sha256_source": "reports/step4_2026-09-26/step4_results.json#limitations_data.untracked_unarchived_inputs",
+      "group": "step4_untracked_input",
+      "licence_note": "derived from QIPEDC and/or VSL-GH: QIPEDC educational / academic research use, redistribution not stated (docs/data_registry.md §1); VSL-GH MIT per docs/data_registry.md §2 (not re-verified); private",
+      "licence_status": "redistribution_not_stated",
+      "local_path": "reports/step4_2026-09-26/runs/vsl-train-harmonized.log",
+      "role": "kernel log",
+      "sha256": "cc9a75afdc0f60802c2065acd7fb6fae281f8651c4240d56e66bf5cb0eb25b85",
+      "sha256_after_download": "cc9a75afdc0f60802c2065acd7fb6fae281f8651c4240d56e66bf5cb0eb25b85",
+      "size_bytes": 8121
+    },
+    {
+      "archive_name": "reports__step4_2026-09-26__runs__vsl-train-harmonized_v2.log",
+      "expected_sha256_source": "reports/step4_2026-09-26/step4_results.json#limitations_data.untracked_unarchived_inputs",
+      "group": "step4_untracked_input",
+      "licence_note": "derived from QIPEDC and/or VSL-GH: QIPEDC educational / academic research use, redistribution not stated (docs/data_registry.md §1); VSL-GH MIT per docs/data_registry.md §2 (not re-verified); private",
+      "licence_status": "redistribution_not_stated",
+      "local_path": "reports/step4_2026-09-26/runs/vsl-train-harmonized_v2.log",
+      "role": "kernel log",
+      "sha256": "f0dc938d16da2e4fa63ae768511b66cdb9ded491735278a92ca06f1aaf7359a0",
+      "sha256_after_download": "f0dc938d16da2e4fa63ae768511b66cdb9ded491735278a92ca06f1aaf7359a0",
+      "size_bytes": 8125
+    },
+    {
+      "archive_name": "reports__step4_2026-09-26__runs__vsl-train-harmonized_v3.log",
+      "expected_sha256_source": "reports/step4_2026-09-26/step4_results.json#limitations_data.untracked_unarchived_inputs",
+      "group": "step4_untracked_input",
+      "licence_note": "derived from QIPEDC and/or VSL-GH: QIPEDC educational / academic research use, redistribution not stated (docs/data_registry.md §1); VSL-GH MIT per docs/data_registry.md §2 (not re-verified); private",
+      "licence_status": "redistribution_not_stated",
+      "local_path": "reports/step4_2026-09-26/runs/vsl-train-harmonized_v3.log",
+      "role": "kernel log",
+      "sha256": "d8b011c40f6dde10435f0d7c244cb35aba63c1e3d4655f967498f5dabb06cad8",
+      "sha256_after_download": "d8b011c40f6dde10435f0d7c244cb35aba63c1e3d4655f967498f5dabb06cad8",
+      "size_bytes": 11169
+    },
+    {
+      "archive_name": "reports__unified_run_2026-09-25__run_seed43__history.json",
+      "expected_sha256_source": "reports/step4_2026-09-26/step4_results.json#limitations_data.untracked_unarchived_inputs",
+      "group": "step4_untracked_input",
+      "licence_note": "derived from QIPEDC and/or VSL-GH: QIPEDC educational / academic research use, redistribution not stated (docs/data_registry.md §1); VSL-GH MIT per docs/data_registry.md §2 (not re-verified); private",
+      "licence_status": "redistribution_not_stated",
+      "local_path": "reports/unified_run_2026-09-25/run_seed43/history.json",
+      "role": "history.json baseline-seed43",
+      "sha256": "e5c0f7cc6d7760c55bae5cf43f3adbdd9141512d94e5f3cdfe5bfacc8332f648",
+      "sha256_after_download": "e5c0f7cc6d7760c55bae5cf43f3adbdd9141512d94e5f3cdfe5bfacc8332f648",
+      "size_bytes": 17191
+    },
+    {
+      "archive_name": "reports__unified_run_2026-09-25__vsl-train-unified.log",
+      "expected_sha256_source": "reports/step4_2026-09-26/step4_results.json#limitations_data.untracked_unarchived_inputs",
+      "group": "step4_untracked_input",
+      "licence_note": "derived from QIPEDC and/or VSL-GH: QIPEDC educational / academic research use, redistribution not stated (docs/data_registry.md §1); VSL-GH MIT per docs/data_registry.md §2 (not re-verified); private",
+      "licence_status": "redistribution_not_stated",
+      "local_path": "reports/unified_run_2026-09-25/vsl-train-unified.log",
+      "role": "kernel log",
+      "sha256": "14c1b59af71cd8dcbd9f5d9157d1a1c729ac38f44029e9d427f27d33d39a3422",
+      "sha256_after_download": "14c1b59af71cd8dcbd9f5d9157d1a1c729ac38f44029e9d427f27d33d39a3422",
+      "size_bytes": 9818
+    }
+  ],
+  "generated_by": {
+    "command": "python scripts/archive_private_kaggle.py verify --staging ../_kaggle_staging/vslt-provenance-artifacts --dataset phmvnsm33/vslt-provenance-artifacts --download-dir ../_kaggle_staging/verify_provenance --manifest-out reports/private_archive_2026-09-28/kaggle_archive_manifest.json --results reports/step4_2026-09-26/step4_results.json --provenance reports/alphabet_deploy_2026-09-27/provenance.json",
+    "git_commit": "f7ad8d2",
+    "kaggle_version": "2.2.4",
+    "kagglesdk_version": "0.1.37",
+    "script": "scripts/archive_private_kaggle.py",
+    "verified_at_utc": "2026-09-28T10:42:46Z"
+  },
+  "sha256sums_file": {
+    "archive_name": "SHA256SUMS",
+    "sha256": "ca8e905ea661714fb781c01d6ea5c7fe04ba3429b83cdece8305c1abdcba3982"
+  },
+  "verified": {
+    "downloaded_sha256_all_match": true,
+    "file_list_matches": true,
+    "n_files": 13
+  }
+}
