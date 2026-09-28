@@ -1,8 +1,8 @@
 # Kế hoạch 05 — tiến độ (coder; phiên 1: B0 + B1; phiên 2: B2–B4; phiên 3: B5; phiên 4: B6–B8)
 
-- Bước đã xong: B0 (không điểm dừng nào kích hoạt), B1 (22f891c), B2 (77f4da3), B3 (0e1d737), B4 (9e2c64a), B5 (46674ab)
-- Bước đang làm: B6 (verify xong, đang commit manifest), sau đó AC10-d/e rồi B7
-- Bước còn lại: B6, B7, B8
+- Bước đã xong: B0 (không điểm dừng nào kích hoạt), B1 (22f891c), B2 (77f4da3), B3 (0e1d737), B4 (9e2c64a), B5 (46674ab), B6 (8a73e9d)
+- Bước đang làm: (không; TẠM DỪNG theo yêu cầu người dùng qua orchestrator, sau B6 + AC10-d/e)
+- Bước còn lại: B7, B8 (AC10-d/e đã chạy xong, PASS; AC10-c để reviewer)
 
 ## B0 (HEAD 2477257, 2026-09-28, không commit)
 
@@ -129,3 +129,18 @@ verified_at_utc 2026-09-28T10:42:46Z (17:42 giờ VN, trùng ngày trong đườ
 - sha256 của `checkpoints/stgcn_unified_best.pt` (930633233ff3…) trùng file `unified_run_2026-09-25__run__stgcn_unified_best.pt`
   trong `phmvnsm33/vslt-step4-artifacts` (so bằng hai manifest).
 - Quét bí mật theo mẫu: 0 khớp. Đây là quét theo mẫu, không chứng minh được là không có bí mật.
+
+### AC10 sau commit B6 (8a73e9d)
+- AC10-e(1) `restore --manifest reports/private_archive_2026-09-28/kaggle_archive_manifest.json --download-dir
+  ../_kaggle_staging/restore_dl --root ../_kaggle_staging/restore_root` → exit 0, "13 file ghi mới"; sha256 cả 13 file dưới
+  root tạm = manifest (True).
+- AC10-e(2) `restore` với root mặc định (`--download-dir ../_kaggle_staging/restore_dl2`) → exit 0, 13 dòng "đã có: …",
+  "0 file ghi mới"; sha256 + mtime của 13 file trong repo trước/sau giống hệt; `git status --porcelain` trước/sau giống hệt.
+- AC10-d `scripts/alphabet_ckpt_provenance.py --out ../_plan05_tmp/ac10d/provenance.json` → exit 0,
+  verdict=real_data_known_checkpoint, V1–V6 True; so với JSON đã commit sau khi bỏ generated_by: `True`.
+- AC10-c (kaggle datasets list --mine + truy cập ẩn danh) để reviewer tự chạy.
+
+### Tạm dừng sau B6
+- Chưa bắt đầu B7 trong repo: chưa `git rm --cached`, chưa sửa .gitignore/README/data_registry. Bản nháp test AC11
+  (`tests/test_private_artifacts.py`, chưa chạy) được chuyển ra ngoài repo: `../_plan05_tmp/test_private_artifacts.py.draft`
+  (phiên sau có thể chép lại vào tests/ khi làm B7).
