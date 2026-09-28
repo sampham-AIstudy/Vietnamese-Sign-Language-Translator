@@ -3,10 +3,10 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-28 16:46 (giờ Việt Nam)
-- HEAD: e0e2365 | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG LÀM — vslt-coder kế hoạch 05 chặng [B2, B3, B4].
-- Hạn mức (16:44): 5 giờ 0% (reset 21:50 giờ VN), 7 ngày 13% (reset 1790820000). Sổ đo: docs/usage_ledger.csv
+- Cập nhật lần cuối: 2026-09-28 17:30 (giờ Việt Nam)
+- HEAD: 9e2c64a | Nhánh: feat/vslt-complete
+- Trạng thái phiên: ĐANG LÀM — vslt-coder kế hoạch 05 chặng [B5].
+- Hạn mức (17:15, số cuối): 5 giờ 18% (reset 21:50 giờ VN), 7 ngày 13% (reset 1790820000). Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -27,7 +27,9 @@
   - Coder XONG B0 + B1 (commit 22f891c; tiến độ docs/plans/05-progress.md). B0: không điểm dừng nào kích hoạt; Kaggle xác thực được;
     (e) xác nhận; file nhị phân track duy nhất = alphabet_real_best.pt. B1: status chỉ {source, n_signers}; 73 test OK (4 module).
     Mốc B0: 20 module cũ 334 OK, 0 skip. Còn: B2–B8. Ghi chú cho reviewer: 05-progress.md nằm trong commit B1 (ngoài danh sách AC1).
-  - vslt-coder ĐÃ GIAO 16:47 (HEAD e0e2365, 5h 0%, est 20, cổng 30 ≤ 90) chặng [B2, B3, B4]; tiến độ ở docs/plans/05-progress.md.
+  - Coder XONG B2 (77f4da3, /api/classes 503), B3 (0e1d737, dropped_frames; detect-changes HIGH — 11 luồng /ws/live-stream, thay đổi 1 biểu thức + docstring),
+    B4 (9e2c64a, AC5 không PASS rỗng; CRITICAL trên đồ thị do gộp symbol trùng tên trong test, 0 dòng production). Reviewer phải xác minh HIGH/CRITICAL.
+  - vslt-coder ĐÃ GIAO 17:31 (HEAD 9e2c64a, 5h 18%, est 20, cổng 48 ≤ 90) chặng [B5] (script lưu trữ + test API giả); tiến độ ở docs/plans/05-progress.md.
     Nếu bị ngắt: giao lại coder với kế hoạch + 05-progress.md, tiếp tục từ bước dở.
 
 ## Quyết định của người dùng (không hỏi lại)
