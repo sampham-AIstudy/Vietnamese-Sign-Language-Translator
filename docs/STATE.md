@@ -3,9 +3,11 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-28 17:37 (giờ Việt Nam)
-- HEAD: 46674ab | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG LÀM — vslt-coder kế hoạch 05 chặng [B6, B7, B8].
+- Cập nhật lần cuối: 2026-09-28 17:47 (giờ Việt Nam)
+- HEAD: 8a73e9d (+ commit progress/state) | Nhánh: feat/vslt-complete
+- Trạng thái phiên: TẠM DỪNG theo yêu cầu người dùng (17:45) — tối chạy tiếp.
+  Việc kế tiếp khi "tiếp tục": chạy giao thức khôi phục; đọc docs/plans/05-progress.md; giao vslt-coder kế hoạch 05 chặng
+  [AC10-d/e nếu chưa xong, B7, B8]; sau đó vslt-reviewer cho toàn bộ kế hoạch 05 (xác minh HIGH ở B3, CRITICAL ở B4).
 - Hạn mức (17:29, số cuối): 5 giờ 21% (reset 21:50 giờ VN), 7 ngày 13% (reset 1790820000). Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
@@ -30,8 +32,10 @@
   - Coder XONG B2 (77f4da3, /api/classes 503), B3 (0e1d737, dropped_frames; detect-changes HIGH — 11 luồng /ws/live-stream, thay đổi 1 biểu thức + docstring),
     B4 (9e2c64a, AC5 không PASS rỗng; CRITICAL trên đồ thị do gộp symbol trùng tên trong test, 0 dòng production). Reviewer phải xác minh HIGH/CRITICAL.
   - Coder XONG B5 (46674ab): scripts/archive_private_kaggle.py + 27 test API giả; 13 file, 8.36 MB; chưa chạy lệnh Kaggle nào.
-  - vslt-coder ĐÃ GIAO 17:37 (HEAD 46674ab, 5h 21%, cổng 51 ≤ 90) chặng [B6 upload THẬT dataset private phmvnsm33/vslt-provenance-artifacts,
-    B7 git rm --cached alphabet_real_best.pt, B8 AC2 25 module]. Điểm dừng §7 (exit 4/5/2/3) → CẦN NGƯỜI DÙNG.
+  - Coder XONG B6 (8a73e9d): dataset PRIVATE phmvnsm33/vslt-provenance-artifacts đã upload + verify, manifest đã commit.
+    Chi tiết lệnh Kaggle + exit code: docs/plans/05-progress.md mục B6. Dừng trước B7 theo yêu cầu người dùng.
+  - Còn lại: AC10-d/e (kiểm sau B6, xem 05-progress.md), B7 (git rm --cached alphabet_real_best.pt, KHÔNG viết lại lịch sử),
+    B8 (AC2 25 module + progress_log), rồi review kế hoạch 05.
     Nếu bị ngắt: giao lại coder với kế hoạch + 05-progress.md, tiếp tục từ bước dở.
 
 ## Quyết định của người dùng (không hỏi lại)
@@ -101,3 +105,4 @@
 - 2026-09-28 13:30 | người dùng yêu cầu dùng nốt hạn mức | sửa giờ reset 14:30 → 15:50 (quy đổi sai trước đó) | Giao coder 05 chặng B0+B1.
 - 2026-09-28 13:46 | dừng theo hạn mức (không phải ngắt) | coder 05 B0+B1 xong; số hạn mức chưa cập nhật sau lượt coder | Dừng sạch, chờ 15:50.
 - 2026-09-28 16:46 | khôi phục sau chờ hạn mức (người dùng nhắn "tiếp tục") | STATE khớp git (HEAD e0e2365); dòng "Hạn mức" còn ghi "không biết" do sửa trước không áp được → sửa | Giao coder 05 chặng B2–B4.
+- 2026-09-28 17:47 | tạm dừng theo yêu cầu người dùng | kế hoạch 05 xong B0–B6, còn AC10-d/e, B7, B8, review | Coder được báo dừng sau B6; STATE lưu việc kế tiếp.
