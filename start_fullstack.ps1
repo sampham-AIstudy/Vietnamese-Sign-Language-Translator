@@ -10,7 +10,7 @@ Write-Host "==========================================================" -Foregro
 
 # 1. Start Python FastAPI AI Backend
 Write-Host "`n[1/2] Starting Python AI Backend (:8000)..." -ForegroundColor Green
-Start-Process -FilePath ".\.venv\Scripts\uvicorn.exe" -ArgumentList "backend.main:app --host 0.0.0.0 --port 8000 --reload" -NoNewWindow
+Start-Process -FilePath ".\.venv\Scripts\uvicorn.exe" -ArgumentList "backend.main:app --host 0.0.0.0 --port 8000 --reload --ws-max-size 1048576" -NoNewWindow
 
 Start-Sleep -Seconds 2
 
