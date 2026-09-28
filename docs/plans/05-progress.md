@@ -1,8 +1,8 @@
-# Kế hoạch 05 — tiến độ (coder, phạm vi phiên: B0 + B1)
+# Kế hoạch 05 — tiến độ (coder; phiên 1: B0 + B1; phiên 2: B2–B4)
 
-- Bước đã xong: B0 (không điểm dừng nào kích hoạt), B1 (commit "05: B1 — ...", xem git log)
-- Bước đang làm: (không; phiên dừng sau B1 theo lệnh orchestrator)
-- Bước còn lại: B2–B8 (phiên sau)
+- Bước đã xong: B0 (không điểm dừng nào kích hoạt), B1 (22f891c), B2 (commit "05: B2 — ...")
+- Bước đang làm: B3
+- Bước còn lại: B3, B4 (phiên 2); B5–B8 (phiên sau)
 
 ## B0 (HEAD 2477257, 2026-09-28, không commit)
 
@@ -39,3 +39,15 @@
   tests.test_fingerspelling_deployed -v` → `Ran 73 tests` `OK`, 0 skip (status_privacy 5 mới; limits 48, api 11, deployed 9 = như B0).
 - detect-changes --scope all (sau `analyze --index-only`, index trước đó chậm 6 commit và báo sai "high" do lệch dòng):
   risk low, 3 symbol (public_trained_on, out, get_fingerspelling_status), 0 process.
+
+## B2 — (f2, f4) /api/classes 503 + test checkpoint không phục vụ được
+
+- impact upstream `get_classes`: UNKNOWN (0 caller); text search backend/scripts/tests/frontend/src/src: không caller ngoài route.
+- Test viết trước (`tests/test_backend_model_unavailable.py`, 5 test), chạy trước khi sửa: `Ran 5`, `FAILED (failures=3)`:
+  test_features_unknown, test_mediapipe_version_mismatch (tại /api/classes: `AssertionError: 500 != 503`; health và
+  model_info đã 503 trước đó trong cùng test), test_file_not_found_is_503 (`500 != 503`). 2 ca thành công (g) PASS ngay.
+- Sửa: `get_classes` dùng `_active_model()`, bắt `ModelUnavailable` → `_model_unavailable_response`.
+- Sau khi sửa: `tests.test_backend_model_unavailable tests.test_ws_live_contract -v` → `Ran 23`, `OK`, 0 skip
+  (mới 5; ws_live_contract 18 = như B0). Log `../_plan05_tmp/b2_tests.log`.
+- detect-changes --scope all (index vừa refresh): risk medium; symbol get_classes; 3 flow của chính get_classes
+  (Get_classes → _is_int / _sha256_file / _short, qua _active_model).

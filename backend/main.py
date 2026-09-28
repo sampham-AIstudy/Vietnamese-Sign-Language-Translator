@@ -491,8 +491,12 @@ def model_info():
 
 @app.get("/api/classes")
 def get_classes():
-    """Returns the list of all active vocabulary classes (487 classes for Tier 2)."""
-    predictor = get_or_load_predictor()
+    """Returns the list of all active vocabulary classes (487 classes for Tier 2).
+    503 {"status": "model_unavailable", "detail"} when the configured Level 2 model cannot be served."""
+    try:
+        predictor, _ = _active_model()
+    except ModelUnavailable as e:
+        return _model_unavailable_response(e)
     return {
         "total": predictor.num_classes,
         "classes": predictor.class_names,
