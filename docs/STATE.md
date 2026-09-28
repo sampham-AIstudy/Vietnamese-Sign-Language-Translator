@@ -50,9 +50,11 @@
 - (2026-09-28 13:27) "mới 74% tận dụng nốt đi": cho phép giao việc nhỏ khi cổng ngân sách chưa đạt, trong cửa sổ 5h hiện tại.
   Orchestrator vẫn giao đơn vị nhỏ nhất, đọc hạn mức sau mỗi đơn vị, không cố ý chạm giới hạn.
 
+- (2026-09-28) Mã người ký hauuto (hauuto_hau/khoi/tai/vy) trong file báo cáo, provenance.json, data_registry.md: GIỮ NGUYÊN (lựa chọn a).
+  Chỉ API không trả tên (đã làm ở 22f891c). Không đổi sang S1–S4, không sửa file đã commit.
+
 ## Câu hỏi chờ người dùng
-- (không chặn) Tên người ký hauuto còn trong reports/alphabet_deploy_2026-09-27/provenance.json:49–54 (đã commit)
-  và docs/data_registry.md:45. Quyết định 2026-09-28 chỉ nói về API — có gỡ tên ở hai chỗ này không?
+- (không có)
 
 ## Backlog còn lại (thứ tự)
 1. Thực thi quyết định người dùng 2026-09-28 (planner → coder → reviewer, một kế hoạch nhỏ, số 05):
