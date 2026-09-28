@@ -3,9 +3,10 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-29 00:41 (giờ Việt Nam)
+- Cập nhật lần cuối: 2026-09-29 00:56 (giờ Việt Nam)
 - HEAD: 4adbe41 | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG LÀM — vslt-reviewer kế hoạch 05, phần 1/3 (mục 1–4 + chạy lại AC2), giao 00:41, HEAD 4adbe41.
+- Trạng thái phiên: ĐANG LÀM — vslt-reviewer kế hoạch 05, phần 2/3 (mục 5–9), giao 00:56. Phần 1/3 (mục 1–4) PASS, AC2 383 OK tự chạy lại;
+  file docs/reviews/05-review.md (untracked, ghi dần).
   Hạn mức KHÔNG BIẾT (vslt_usage.json cũ > 20 phút) → review chia 3 phần (1–4, 5–9, 10–13), ghi file sau mỗi phần.
 - Hạn mức (00:13): 5 giờ 0% (reset 05:50 giờ VN), 7 ngày 17% (reset 1790820000). Sổ đo: docs/usage_ledger.csv
 
