@@ -4,10 +4,10 @@
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
 - Cập nhật lần cuối: 2026-09-28 17:47 (giờ Việt Nam)
-- HEAD: 8a73e9d (+ commit progress/state) | Nhánh: feat/vslt-complete
+- HEAD: f4d38f0 (+ commit state) | Nhánh: feat/vslt-complete
 - Trạng thái phiên: TẠM DỪNG theo yêu cầu người dùng (17:45) — tối chạy tiếp.
   Việc kế tiếp khi "tiếp tục": chạy giao thức khôi phục; đọc docs/plans/05-progress.md; giao vslt-coder kế hoạch 05 chặng
-  [AC10-d/e nếu chưa xong, B7, B8]; sau đó vslt-reviewer cho toàn bộ kế hoạch 05 (xác minh HIGH ở B3, CRITICAL ở B4).
+  [B7, B8] (AC10-d/e đã PASS); sau đó vslt-reviewer cho toàn bộ kế hoạch 05 (xác minh HIGH ở B3, CRITICAL ở B4).
 - Hạn mức (17:29, số cuối): 5 giờ 21% (reset 21:50 giờ VN), 7 ngày 13% (reset 1790820000). Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
@@ -34,7 +34,11 @@
   - Coder XONG B5 (46674ab): scripts/archive_private_kaggle.py + 27 test API giả; 13 file, 8.36 MB; chưa chạy lệnh Kaggle nào.
   - Coder XONG B6 (8a73e9d): dataset PRIVATE phmvnsm33/vslt-provenance-artifacts đã upload + verify, manifest đã commit.
     Chi tiết lệnh Kaggle + exit code: docs/plans/05-progress.md mục B6. Dừng trước B7 theo yêu cầu người dùng.
-  - Còn lại: AC10-d/e (kiểm sau B6, xem 05-progress.md), B7 (git rm --cached alphabet_real_best.pt, KHÔNG viết lại lịch sử),
+    Verify: private từ 2 nguồn (dataset_list_mine + dataset_metadata), 13 file, 8363141 byte, sha256 sau tải khớp 13/13.
+    AC10-d (V1–V6 True, JSON khớp) và AC10-e (restore root tạm 13/13 khớp; root mặc định không ghi đè) PASS. AC10-c để reviewer.
+    f4d38f0: progress — tạm dừng sau B6. Bản nháp test AC11 (B7) để NGOÀI repo:
+    ../_plan05_tmp/test_private_artifacts.py.draft (chưa chạy; ca AC11-g chỉ pass sau commit B7).
+  - Còn lại: B7 (git rm --cached alphabet_real_best.pt, KHÔNG viết lại lịch sử),
     B8 (AC2 25 module + progress_log), rồi review kế hoạch 05.
     Nếu bị ngắt: giao lại coder với kế hoạch + 05-progress.md, tiếp tục từ bước dở.
 

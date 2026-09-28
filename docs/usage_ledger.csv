@@ -4,3 +4,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-09-28T06:44Z,vslt-coder,05,B0+B1,74,,,,stale (after not updated: written_at 13:28 VN = right after launch; reading 82 predates coder work)
 2026-09-28T10:28Z,vslt-coder,05,B2+B3+B4,0,18,18,2,stale (after written 17:15 VN before coder finished 17:28)
 2026-09-28T10:35Z,vslt-coder,05,B5,18,,,,stale (after not yet updated; last reading 21 at 17:29 VN predates B5 end)
+2026-09-28T10:48Z,vslt-coder,05,B6 (+AC10-d/e),21,33,12,2,stale (after 17:46 VN before coder finished)
