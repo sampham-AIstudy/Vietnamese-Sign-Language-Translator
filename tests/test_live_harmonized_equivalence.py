@@ -292,5 +292,42 @@ class TestWebSocketEndToEnd(unittest.TestCase):
                         self.assertEqual(set(w), {"type", "segment_id", "frame_seq", "reason", "segment"})
 
 
+class TestSegmentCheckJson(unittest.TestCase):
+    """Plan 04 AC6: the committed report of scripts/live_segment_check.py (latest reports/live_word_*/)."""
+
+    @classmethod
+    def setUpClass(cls):
+        import glob
+        found = sorted(glob.glob(os.path.join(PROJECT_ROOT, "reports", "live_word_*", "segment_check.json")))
+        cls.path = found[-1] if found else None
+
+    def test_exists_and_complete(self):
+        self.assertIsNotNone(self.path, "reports/live_word_*/segment_check.json missing")
+        with open(self.path, encoding="utf-8") as f:
+            report = json.load(f)
+        gen = report["generated_by"]
+        self.assertIs(gen["code_dirty"], False)
+        self.assertEqual(gen["checkpoint_sha256"], "648a7825cab9d54cf8d6ce16208cf1cd8dbfbe493fb2d7de919b1f9aebc9b59e")
+        for key in ("command", "git_commit", "mediapipe", "cv2", "numpy", "segmenter_default"):
+            self.assertIn(key, gen)
+        import subprocess
+        anc = subprocess.run(["git", "merge-base", "--is-ancestor", gen["git_commit"], "HEAD"], cwd=PROJECT_ROOT,
+                             capture_output=True, text=True, timeout=60)
+        self.assertEqual(anc.returncode, 0, f"{gen['git_commit']} is not an ancestor of HEAD")
+        self.assertEqual(len(report["clips"]), 8)
+        self.assertEqual(report["n_clips"], 8)
+        if AVAILABLE:
+            self.assertEqual([c["video_id"] for c in report["clips"]],
+                             [r["video_id"] for r in live_clip_sample.select_train_clips(8, 0)])
+        for clip in report["clips"]:
+            with self.subTest(video_id=clip["video_id"]):
+                self.assertGreaterEqual(len(clip["events"]), 1)
+                self.assertIsInstance(clip["contains_offline_span"], bool)
+        self.assertEqual(report["n_contains_offline_span"], sum(c["contains_offline_span"] for c in report["clips"]))
+        text = json.dumps(report)
+        for banned in ("keypoints", "landmarks", "coords", "visibility"):
+            self.assertNotIn(banned, text)
+
+
 if __name__ == "__main__":
     unittest.main()
