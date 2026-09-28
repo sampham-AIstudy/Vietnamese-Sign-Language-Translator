@@ -3,12 +3,11 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-28 17:47 (giờ Việt Nam)
-- HEAD: f4d38f0 (+ commit state) | Nhánh: feat/vslt-complete
-- Trạng thái phiên: TẠM DỪNG theo yêu cầu người dùng (17:45) — tối chạy tiếp.
-  Việc kế tiếp khi "tiếp tục": chạy giao thức khôi phục; đọc docs/plans/05-progress.md; giao vslt-coder kế hoạch 05 chặng
-  [B7, B8] (AC10-d/e đã PASS); sau đó vslt-reviewer cho toàn bộ kế hoạch 05 (xác minh HIGH ở B3, CRITICAL ở B4).
-- Hạn mức (17:29, số cuối): 5 giờ 21% (reset 21:50 giờ VN), 7 ngày 13% (reset 1790820000). Sổ đo: docs/usage_ledger.csv
+- Cập nhật lần cuối: 2026-09-29 00:15 (giờ Việt Nam)
+- HEAD: 20b0c36 | Nhánh: feat/vslt-complete
+- Trạng thái phiên: ĐANG LÀM — vslt-coder kế hoạch 05 chặng [B7, B8] (giao 00:15, HEAD 20b0c36, 5h 0%, cổng 30 ≤ 90).
+  Sau đó: vslt-reviewer toàn bộ kế hoạch 05 (xác minh HIGH ở B3, CRITICAL ở B4; AC10-c).
+- Hạn mức (00:13): 5 giờ 0% (reset 05:50 giờ VN), 7 ngày 17% (reset 1790820000). Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -110,3 +109,4 @@
 - 2026-09-28 13:46 | dừng theo hạn mức (không phải ngắt) | coder 05 B0+B1 xong; số hạn mức chưa cập nhật sau lượt coder | Dừng sạch, chờ 15:50.
 - 2026-09-28 16:46 | khôi phục sau chờ hạn mức (người dùng nhắn "tiếp tục") | STATE khớp git (HEAD e0e2365); dòng "Hạn mức" còn ghi "không biết" do sửa trước không áp được → sửa | Giao coder 05 chặng B2–B4.
 - 2026-09-28 17:47 | tạm dừng theo yêu cầu người dùng | kế hoạch 05 xong B0–B6, còn AC10-d/e, B7, B8, review | Coder được báo dừng sau B6; STATE lưu việc kế tiếp.
+- 2026-09-29 00:15 | khôi phục sau tạm dừng (người dùng nhắn "tiếp tục") | STATE khớp git (HEAD 20b0c36), bản nháp AC11 còn ở ../_plan05_tmp | Giao coder 05 chặng B7–B8.
