@@ -4,9 +4,9 @@
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
 - Cập nhật lần cuối: 2026-09-29 01:20 (giờ Việt Nam)
-- HEAD: fc1f2b2 (+ commit ghi review 05) | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG LÀM — kế hoạch 05 APPROVE; kế tiếp: vslt-planner cho Việc 5 (backlog mục 2).
-- Hạn mức (00:13): 5 giờ 0% (reset 05:50 giờ VN), 7 ngày 17% (reset 1790820000). Sổ đo: docs/usage_ledger.csv
+- HEAD: 431a290 | Nhánh: feat/vslt-complete
+- Trạng thái phiên: ĐANG LÀM — vslt-planner kế hoạch 06 (Việc 5).
+- Hạn mức (01:06): 5 giờ 45% (reset 05:50 giờ VN), 7 ngày 23%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -24,7 +24,8 @@
   (docs/reviews/04-review.md), commit af6d384, 310 test pass. Model mặc định KHÔNG đổi (ứng viên: VSL_MODEL_TYPE=stgcn_h360).
 
 ## Đang chạy / dở dang
-- (không có)
+- vslt-planner → kế hoạch 06 = Việc 5 (backlog mục 2). Giao 01:08, HEAD 431a290, 5h 45% (est 20, cổng 75 ≤ 90).
+  Đầu ra: docs/plans/06-viec5-frontend.md (ghi dần theo mục). Nếu bị ngắt: giao lại planner hoàn thiện phần còn thiếu.
 
 ## Quyết định của người dùng (không hỏi lại)
 - 4c: chọn B (giữ model gộp). Chưa đổi model mặc định — đó là GATE riêng.
