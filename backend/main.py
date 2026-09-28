@@ -442,11 +442,12 @@ def get_dictionary(
 # `preprocessing` dict, so live input goes through exactly the training code path.
 # The server is stateless: it classifies ONE sign per request (/sequence) and composes a list of
 # accepted tokens into text (/compose). Body size limit: PathBodyLimitMiddleware above.
-from src.inference.fingerspelling_compose import TONE_STYLE, compose, token_kind  # noqa: E402
+from src.inference.fingerspelling_compose import TONE_STYLE, compose, short_repr, token_kind  # noqa: E402
 
 ALPHABET_CKPT = os.getenv("VSL_ALPHABET_CKPT", "checkpoints/alphabet_best.pt")
 ALPHABET_MAX_FRAMES = 300
 ALPHABET_MAX_FRAME_SIDE = 8192
+ALPHABET_MAX_ABS_COORD = 10.0  # bound on every raw landmark coordinate (plan 03 Lần sửa 2, AC12)
 COMPOSE_MAX_TOKENS = 200
 # Only facts recorded in docs/data_registry.md §1b; any other / missing source -> {"status": "unknown"}.
 ALPHABET_DATA_PROVENANCE = {
@@ -540,9 +541,31 @@ class FingerspellingComposeRequest(BaseModel):
     tokens: List[str] = Field(max_length=COMPOSE_MAX_TOKENS)
 
 
+def validate_hand_frame(frame, t: int) -> np.ndarray:
+    """One frame that claims a hand -> float32 [21, 3] (the backend's exact parsing).
+    Raises ValueError (client message naming frame t) unless it is 21 x [x, y, z] finite numbers with
+    |v| <= ALPHABET_MAX_ABS_COORD (MediaPipe image coordinates lie around [0, 1]; the bound also keeps
+    x * aspect far from float32 overflow) and the 21 points are not all identical (never a MediaPipe
+    output; a frame without a hand is sent as null / [])."""
+    bad_frame = f"landmarks[{t}] must be 21 x [x, y, z] finite numbers or null"
+    if len(frame) != 21 or any(len(p) != 3 for p in frame):
+        raise ValueError(bad_frame)
+    with np.errstate(over="ignore"):  # |v| > float32 max becomes inf and is rejected below
+        arr = np.asarray(frame, dtype=np.float32)
+    if not np.isfinite(arr).all():
+        raise ValueError(bad_frame)
+    if float(np.abs(arr).max()) > ALPHABET_MAX_ABS_COORD:
+        raise ValueError(f"landmarks[{t}]: coordinates must satisfy |x|, |y|, |z| <= {ALPHABET_MAX_ABS_COORD} "
+                         "(MediaPipe image coordinates)")
+    if (arr == arr[0]).all():
+        raise ValueError(f"landmarks[{t}]: all 21 points are identical, which is not a hand; "
+                         "send null (or []) for a frame without a hand")
+    return arr
+
+
 def parse_fingerspelling_sequence(req: FingerspellingSequenceRequest, preprocessing: Dict[str, Any]):
     """Validates the request -> (raw [T,21,3], detected [T], handedness [T], timestamps or None).
-    Raises ValueError with a client-facing message."""
+    Raises ValueError with a client-facing message (client input quoted with short_repr only)."""
     T = len(req.landmarks)
     if not 1 <= T <= ALPHABET_MAX_FRAMES:
         raise ValueError(f"landmarks must have 1..{ALPHABET_MAX_FRAMES} frames, got {T}")
@@ -555,14 +578,7 @@ def parse_fingerspelling_sequence(req: FingerspellingSequenceRequest, preprocess
     for t, frame in enumerate(req.landmarks):
         if not frame:
             continue
-        bad_frame = f"landmarks[{t}] must be 21 x [x, y, z] finite numbers or null"
-        if len(frame) != 21 or any(len(p) != 3 for p in frame):
-            raise ValueError(bad_frame)
-        with np.errstate(over="ignore"):  # |v| > float32 max becomes inf and is rejected below
-            arr = np.asarray(frame, dtype=np.float32)
-        if not np.isfinite(arr).all():
-            raise ValueError(bad_frame)
-        raw[t], detected[t] = arr, True
+        raw[t], detected[t] = validate_hand_frame(frame, t), True
 
     if req.handedness is None:
         if preprocessing.get("mirror_left_hand", True):
@@ -573,7 +589,8 @@ def parse_fingerspelling_sequence(req: FingerspellingSequenceRequest, preprocess
             raise ValueError(f"handedness must have {T} entries, got {len(req.handedness)}")
         bad = sorted({h for h in req.handedness if h not in ("Left", "Right", "")})
         if bad:
-            raise ValueError(f"handedness values must be 'Left', 'Right' or '', got {bad[:5]}")
+            raise ValueError("handedness values must be 'Left', 'Right' or '', got "
+                             + ", ".join(short_repr(h) for h in bad[:5]))
         hand = np.array(req.handedness)
 
     ts = None
@@ -634,11 +651,18 @@ def predict_fingerspelling_sequence(req: FingerspellingSequenceRequest):
                                        meta["preprocessing"], meta["model_type"])
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
+    if not np.isfinite(feats).all():  # input-derived features: the client's landmarks are at fault
+        raise HTTPException(status_code=422, detail="landmarks give non-finite model features")
 
     classes = meta["classes"]
     with torch.no_grad():
         probs = torch.softmax(model(torch.from_numpy(feats).unsqueeze(0)), dim=-1)[0]
-        topk = torch.topk(probs, k=min(req.top_k, len(classes)))
+    if not bool(torch.isfinite(probs).all()):  # finite features, non-finite output: the model is at fault
+        logger.error("Level 1 model %s returned non-finite probabilities for finite features", ALPHABET_CKPT)
+        raise HTTPException(status_code=503,
+                            detail="Đầu ra mô hình Cấp 1 không hợp lệ (xác suất không hữu hạn) / "
+                                   "Level 1 model output is invalid (non-finite probabilities)")
+    topk = torch.topk(probs, k=min(req.top_k, len(classes)))
     candidates = [{"class": classes[i], "confidence": round(v, 4), "kind": class_kind(classes[i])}
                   for v, i in zip(topk.values.tolist(), topk.indices.tolist())]
     return {

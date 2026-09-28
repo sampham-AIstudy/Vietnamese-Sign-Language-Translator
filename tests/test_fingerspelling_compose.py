@@ -257,5 +257,31 @@ class TestComposeAssumptionsG4(unittest.TestCase):  # AC3-f (plan 03 Lần sửa
         self.assertIn("tokens[0]", r.text)
 
 
+class TestShortTokenMessages(unittest.TestCase):  # AC13-a, c, d (plan 03 Lần sửa 2)
+    def test_a_long_token_endpoint(self):
+        client = TestClient(api.app)
+        r = client.post(COMPOSE, json={"tokens": ["x" * 500_000]})
+        self.assertEqual(r.status_code, 422)
+        self.assertLessEqual(len(r.content), 1024)
+        self.assertIn("tokens[0]", r.text)
+
+    def test_c_long_token_unit(self):
+        with self.assertRaises(ValueError) as cm:
+            token_kind("x" * 500_000)
+        self.assertLessEqual(len(str(cm.exception)), 200)
+        with self.assertRaises(ValueError) as cm:
+            compose(["a", "x" * 500_000])
+        self.assertLessEqual(len(str(cm.exception)), 200)
+        self.assertIn("tokens[1]", str(cm.exception))
+
+    def test_d_short_token_quoted_whole(self):
+        with self.assertRaises(ValueError) as cm:
+            compose(["x1"])
+        self.assertIn("'x1'", str(cm.exception))
+        with self.assertRaises(ValueError) as cm:
+            token_kind("x1")
+        self.assertIn("'x1'", str(cm.exception))
+
+
 if __name__ == "__main__":
     unittest.main()

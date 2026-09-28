@@ -156,5 +156,59 @@ class TestDeployedCheckpointEquivalence(unittest.TestCase):
         self.assertEqual(api._alphabet_meta["classes"], self.classes)
 
 
+@unittest.skipUnless(os.path.exists(DEPLOYED_CKPT),
+                     "missing file(s): " + os.path.relpath(DEPLOYED_CKPT, PROJECT_ROOT))
+class TestDeployedCheckpointHugeCoordinates(unittest.TestCase):
+    """AC11-c (plan 03 Lần sửa 2) with the deployed checkpoint: review 03 round 1 payload -> 422, not 500."""
+
+    def test_reviewer_payload_is_422(self):
+        saved = api.ALPHABET_CKPT
+        api.ALPHABET_CKPT, api._alphabet_model, api._alphabet_meta = DEPLOYED_CKPT, None, None
+        try:
+            client = TestClient(api.app, raise_server_exceptions=False)
+            frame = [[3e38 * (i % 2), -3e38 * (i % 3 == 0), 1.0] for i in range(21)]
+            body = {"landmarks": [frame] * 10, "handedness": ["Right"] * 10, "frame_width": 640, "frame_height": 480}
+            r = client.post(SEQ, json=body)
+            self.assertEqual(r.status_code, 422, r.text[:300])
+            self.assertNotIn("NaN", r.text)
+            self.assertEqual(api._alphabet_meta["checkpoint"], "alphabet_best.pt")
+        finally:
+            api.ALPHABET_CKPT, api._alphabet_model, api._alphabet_meta = saved, None, None
+
+
+@unittest.skipUnless(os.path.exists(MANIFEST), "missing file(s): " + os.path.relpath(MANIFEST, PROJECT_ROOT))
+class TestRealFramesPassFrameChecks(unittest.TestCase):
+    """AC12-d (plan 03 Lần sửa 2): every detected-hand frame of every real clip in manifest.csv (hauuto and
+    qipedc) passes the backend's own frame check (api.validate_hand_frame): 0 frames over the coordinate
+    bound, 0 degenerate frames. Counts are printed from the run."""
+
+    def test_all_real_frames_pass(self):
+        clips = frames = over_bound = degenerate = other = 0
+        with open(MANIFEST, encoding="utf-8") as f:
+            rows = list(csv.DictReader(f))
+        for m in rows:
+            d = np.load(os.path.join(REAL_DATA, m["landmark_path"]))
+            clips += 1
+            for t, (frame, ok) in enumerate(zip(d["raw_landmarks"], d["detected_mask"].astype(bool))):
+                if not ok:
+                    continue
+                frames += 1
+                try:
+                    api.validate_hand_frame(frame, t)
+                except ValueError as e:
+                    msg = str(e)
+                    if "<=" in msg:
+                        over_bound += 1
+                    elif "identical" in msg:
+                        degenerate += 1
+                    else:
+                        other += 1
+        print(f"\n[AC12-d] clips={clips} detected_frames={frames} over_bound={over_bound} "
+              f"degenerate={degenerate} other_rejections={other}")
+        self.assertEqual(clips, len(rows))
+        self.assertGreater(frames, 0)
+        self.assertEqual((over_bound, degenerate, other), (0, 0, 0))
+
+
 if __name__ == "__main__":
     unittest.main()

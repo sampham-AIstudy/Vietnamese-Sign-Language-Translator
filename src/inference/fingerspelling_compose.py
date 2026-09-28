@@ -47,6 +47,13 @@ def _nfc(s: str) -> str:
     return unicodedata.normalize("NFC", s)
 
 
+def short_repr(value: Any, limit: int = 40) -> str:
+    """repr(value) cut to its first `limit` characters + "…", so error messages that quote client
+    input stay short (a 500 KB token must not be echoed back)."""
+    r = repr(value)
+    return r if len(r) <= limit else r[:limit] + "…"
+
+
 def token_kind(token: Any) -> str:
     """'letter' | 'tone' | 'space'. Raises ValueError for anything else."""
     if isinstance(token, str):
@@ -57,7 +64,7 @@ def token_kind(token: Any) -> str:
             return "letter"
         if t in TONE_MARKS:
             return "tone"
-    raise ValueError(f"unknown token {token!r}")
+    raise ValueError(f"unknown token {short_repr(token)}")
 
 
 def tone_vowel_index(letters: Sequence[str]) -> int:
@@ -116,7 +123,7 @@ def compose(tokens: Sequence[str]) -> Dict[str, Any]:
         try:
             kinds.append(token_kind(tok))
         except ValueError:
-            raise ValueError(f"tokens[{i}]: unknown token {tok!r}") from None
+            raise ValueError(f"tokens[{i}]: unknown token {short_repr(tok)}") from None
     warnings: List[Dict[str, Any]] = []
     parts: List[str] = []
     syllables: List[str] = []

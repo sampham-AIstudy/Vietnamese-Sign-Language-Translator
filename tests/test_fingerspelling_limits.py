@@ -76,8 +76,9 @@ def is_long_float(v):
 def largest_valid_payload():
     """AC1-e: T=300, every frame 21x3, handedness + timestamps, every coordinate a float whose repr
     has 17 significant digits and an exponent (x, y ~ (1.3..1.8)e-5, z ~ -(1.0..1.2)e-5: a leading
-    digit 1 makes 17-digit reprs common) so the JSON is as long as floats can make it, while the palm
-    length stays > 0."""
+    digit 1 makes 17-digit reprs common), while the palm length stays > 0. This is NOT the longest
+    possible float repr (a 3-digit exponent such as -1.2345678901234567e-300 is longer); the size bound
+    for that case is checked by test_longest_float_repr_payload_is_under_the_limit (AC15-b)."""
     T = api.ALPHABET_MAX_FRAMES
     lms, _ = hand_clip(T=T, seed=7)
     lms[..., :2] = (1.0 + lms[..., :2]) * 1e-5
@@ -506,6 +507,245 @@ class TestLevel1ContractAdditions(_Case):
         self.assertIsNone(body["prediction_kind"])
         self.assertEqual(len(body["candidates"]), 10)
         self.assertTrue(all(c["kind"] is None for c in body["candidates"]))
+
+
+class _NoRaiseCase(_Case):
+    """A client that reports server errors as 500 instead of raising, so "never 500" is observable."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.safe = TestClient(api.app, raise_server_exceptions=False)
+
+    def assert_clean_json(self, r):
+        self.assertNotIn("NaN", r.text)
+        self.assertNotIn("Infinity", r.text)
+        json.loads(r.text, parse_constant=lambda c: self.fail(f"non-JSON constant {c}"))
+
+
+def reviewer_payload():
+    """Review 03 round 1, item 11: 10 frames of 21 points [3e38*(i%2), -3e38*(i%3==0), 1.0]."""
+    frame = [[3e38 * (i % 2), -3e38 * (i % 3 == 0), 1.0] for i in range(21)]
+    return {"landmarks": [frame] * 10, "handedness": ["Right"] * 10, "frame_width": 640, "frame_height": 480}
+
+
+class TestFiniteFeaturesAndProbabilities(_NoRaiseCase):
+    """AC11 (plan 03 Lần sửa 2)."""
+
+    def test_a_non_finite_features_are_422(self):
+        lms, labels = hand_clip()
+        for bad in (float("nan"), float("inf"), -float("inf")):
+            feats = np.zeros((30, 63), dtype=np.float32)
+            feats[3, 7] = bad
+            with self.subTest(bad=bad), \
+                    mock.patch("src.data.alphabet_preprocessing.alphabet_clip_features", return_value=feats):
+                r = self.safe.post(SEQ, json=body_for(lms, labels))
+                self.assertEqual(r.status_code, 422, r.text)
+                self.assert_clean_json(r)
+
+    def test_b_non_finite_model_output_is_503(self):
+        path = os.path.join(self.tmp.name, "fixture_nan_weight.pt")
+        save_fixture(path)
+        ckpt = torch.load(path, map_location="cpu", weights_only=False)
+        name = next(k for k in ckpt["state_dict"] if k.endswith("weight"))
+        ckpt["state_dict"][name].view(-1)[0] = float("nan")
+        torch.save(ckpt, path)
+        self._use(path)
+        lms, labels = hand_clip()
+        with self.assertLogs("vslr.backend", level="ERROR"):
+            r = self.safe.post(SEQ, json=body_for(lms, labels))
+        self.assertEqual(r.status_code, 503, r.text)
+        self.assert_clean_json(r)
+        self.assertIn("model output is invalid", r.json()["detail"])
+
+    def test_c_reviewer_payload_is_422(self):
+        r = self.safe.post(SEQ, json=reviewer_payload())
+        self.assertEqual(r.status_code, 422, r.text)
+        self.assert_clean_json(r)
+
+    def test_d_huge_coordinate_with_extreme_aspect_is_422(self):
+        frame = [[1e35 * (1 + i / 21), 1e35, 0.5] for i in range(21)]
+        body = {"landmarks": [frame] * 5, "handedness": ["Right"] * 5, "frame_width": 8192, "frame_height": 1}
+        r = self.safe.post(SEQ, json=body)
+        self.assertEqual(r.status_code, 422, r.text)
+
+    def test_e_large_and_tiny_coordinate_sweep(self):
+        """New sweep (test_no_500_on_bad_input is unchanged): finite-but-large values are 422,
+        subnormal values are 200 or 422, nothing is 500."""
+        lms, labels = hand_clip()
+        cases = []
+        for value in (3e38, -3e38, 3.4e38, 10.000001):
+            big = lms.copy()
+            big[:, 0, 0] = value
+            cases.append((repr(value), body_for(big, labels), {422}))
+        big = lms.copy()
+        big[:, 0, 0] = 1e35
+        cases.append(("1e35 @ 8192:1", body_for(big, labels, width=8192, height=1), {422}))
+        tiny = [[[(3 * i + j + 1) * 1e-45 for j in range(3)] for i in range(21)]] * 10
+        cases.append(("subnormal", {"landmarks": tiny, "handedness": ["Right"] * 10,
+                                    "frame_width": 640, "frame_height": 480}, {200, 422}))
+        for name, body, allowed in cases:
+            with self.subTest(name):
+                r = self.safe.post(SEQ, json=body)
+                self.assertNotEqual(r.status_code, 500, r.text[:300])
+                self.assertIn(r.status_code, allowed, r.text[:300])
+                self.assert_clean_json(r)
+
+
+class TestCoordinateBoundAndDegenerateFrames(_NoRaiseCase):
+    """AC12-a..c (plan 03 Lần sửa 2)."""
+
+    def test_a_constant(self):
+        self.assertEqual(api.ALPHABET_MAX_ABS_COORD, 10.0)
+
+    def test_b_bound_is_inclusive(self):
+        lms, labels = hand_clip()
+        at = lms.copy()
+        at[5, 3, 0] = 10.0
+        r = self.safe.post(SEQ, json=body_for(at, labels))
+        self.assertEqual(r.status_code, 200, r.text)
+        for axis in range(3):
+            for sign in (1.0, -1.0):
+                over = lms.copy()
+                over[5, 3, axis] = sign * 10.000001
+                with self.subTest(axis=axis, sign=sign):
+                    r = self.safe.post(SEQ, json=body_for(over, labels))
+                    self.assertEqual(r.status_code, 422, r.text)
+                    self.assertIn("landmarks[5]", r.json()["detail"])
+
+    def test_c_degenerate_frames(self):
+        lms, labels = hand_clip()
+        good = body_for(lms, labels)
+        same = [[0.5, 0.5, 0.0]] * 21
+        zeros = [[0.0, 0.0, 0.0]] * 21
+        r = self.safe.post(SEQ, json={**good, "landmarks": good["landmarks"][:7] + [same] + good["landmarks"][8:]})
+        self.assertEqual(r.status_code, 422, r.text)
+        self.assertIn("landmarks[7]", r.json()["detail"])
+        r = self.safe.post(SEQ, json={**good, "landmarks": [zeros] + good["landmarks"][1:]})
+        self.assertEqual(r.status_code, 422, r.text)
+        self.assertIn("null", r.json()["detail"])
+        twenty_plus_one = [[0.5, 0.5, 0.0]] * 20 + [[0.6, 0.4, 0.01]]
+        r = self.safe.post(SEQ, json={**good, "landmarks": [twenty_plus_one] * 40})
+        self.assertEqual(r.status_code, 200, r.text)
+
+    def test_validate_hand_frame_is_module_level(self):
+        lms, _ = hand_clip(T=1)
+        out = api.validate_hand_frame(lms[0].tolist(), 0)
+        self.assertEqual((out.shape, out.dtype), ((21, 3), np.float32))
+        with self.assertRaises(ValueError):
+            api.validate_hand_frame([[0.0, 0.0, 0.0]] * 21, 0)
+
+
+class TestShortErrorMessages(_NoRaiseCase):
+    """AC13-b (plan 03 Lần sửa 2): long handedness labels are not echoed back."""
+
+    def test_long_handedness_labels(self):
+        lms, _ = hand_clip(T=2)
+        labels = ["L" * 400_000, "R" * 400_000]
+        body = body_for(lms, labels)
+        self.assertLess(len(json.dumps(body).encode()), LIMIT)
+        r = self.safe.post(SEQ, json=body)
+        self.assertEqual(r.status_code, 422, r.text[:300])
+        self.assertLessEqual(len(r.content), 1024)
+        self.assertIn("handedness", r.json()["detail"])
+
+
+class _Recorder:
+    """Fake inner ASGI app: records (scope, receive), reads an HTTP body fully, answers 200 to HTTP."""
+
+    def __init__(self):
+        self.calls, self.body = [], b""
+
+    async def __call__(self, scope, receive, send):
+        self.calls.append((scope, receive))
+        if scope["type"] != "http":
+            return
+        while True:
+            message = await receive()
+            self.body += message.get("body", b"")
+            if not message.get("more_body", False):
+                break
+        await send({"type": "http.response.start", "status": 200, "headers": []})
+        await send({"type": "http.response.body", "body": b"ok"})
+
+
+def run_asgi(app, scope, messages):
+    import asyncio
+    sent, queue = [], list(messages)
+
+    async def receive():
+        return queue.pop(0) if queue else {"type": "http.disconnect"}
+
+    async def send(message):
+        sent.append(message)
+
+    asyncio.run(app(scope, receive, send))
+    return receive, sent
+
+
+class TestBodyLimitMiddlewareAsgi(unittest.TestCase):
+    """AC14 (plan 03 Lần sửa 2): the middleware leaves WebSocket, lifespan and other paths alone."""
+
+    def _mw(self):
+        inner = _Recorder()
+        return inner, api.PathBodyLimitMiddleware(inner, max_bytes=10)
+
+    def test_a_websocket_passes_through(self):
+        for path in ("/ws/live-stream", SEQ):
+            inner, mw = self._mw()
+            receive, sent = run_asgi(mw, {"type": "websocket", "path": path, "headers": []}, [])
+            with self.subTest(path=path):
+                self.assertEqual(len(inner.calls), 1)
+                self.assertIs(inner.calls[0][1], receive)
+                self.assertEqual(sent, [])
+
+    def test_b_lifespan_passes_through(self):
+        inner, mw = self._mw()
+        receive, sent = run_asgi(mw, {"type": "lifespan"}, [])
+        self.assertEqual(len(inner.calls), 1)
+        self.assertIs(inner.calls[0][1], receive)
+        self.assertEqual(sent, [])
+
+    def test_c_other_http_path_reads_full_body(self):
+        inner, mw = self._mw()
+        body = b"y" * 100
+        scope = {"type": "http", "method": "POST", "path": "/api/translate",
+                 "headers": [(b"content-length", b"100")]}
+        receive, sent = run_asgi(mw, scope, [{"type": "http.request", "body": body, "more_body": False}])
+        self.assertEqual(len(inner.calls), 1)
+        self.assertIs(inner.calls[0][1], receive)
+        self.assertEqual(inner.body, body)
+        self.assertEqual(sent[0]["status"], 200)
+
+    def test_d_limited_path_chunked_over_limit_is_413_without_inner(self):
+        inner, mw = self._mw()
+        scope = {"type": "http", "method": "POST", "path": COMPOSE, "headers": []}
+        _, sent = run_asgi(mw, scope, [{"type": "http.request", "body": b"123456", "more_body": True},
+                                       {"type": "http.request", "body": b"78901", "more_body": False}])
+        self.assertEqual(inner.calls, [])
+        self.assertEqual(sent[0]["type"], "http.response.start")
+        self.assertEqual(sent[0]["status"], 413)
+
+    def test_e_registered_on_the_app(self):
+        found = [m for m in api.app.user_middleware if m.cls is api.PathBodyLimitMiddleware]
+        self.assertEqual(len(found), 1)
+        self.assertEqual(found[0].kwargs.get("max_bytes"), api.ALPHABET_MAX_BODY_BYTES)
+
+
+class TestLongestFloatReprSize(unittest.TestCase):
+    """AC15-b (plan 03 Lần sửa 2): size only, no POST."""
+
+    def test_longest_float_repr_payload_is_under_the_limit(self):
+        v = -1.2345678901234567e-300  # nearest double prints as -1.2345678901234568e-300 (same length)
+        self.assertEqual(len(repr(v)), len("-1.2345678901234567e-300"))
+        self.assertTrue(is_long_float(v))
+        T = api.ALPHABET_MAX_FRAMES
+        body = {"landmarks": [[[v, v, v]] * 21] * T, "handedness": ["Right"] * T, "timestamps_ms": [v] * T,
+                "frame_width": api.ALPHABET_MAX_FRAME_SIDE, "frame_height": api.ALPHABET_MAX_FRAME_SIDE,
+                "source_mirrored": False, "top_k": 10}
+        size = len(json.dumps(body).encode())
+        print(f"\n[AC15-b] longest-float-repr payload: {size} bytes (limit {LIMIT})")
+        self.assertLess(size, LIMIT)
 
 
 if __name__ == "__main__":
