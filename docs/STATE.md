@@ -3,10 +3,10 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-29 00:15 (giờ Việt Nam)
-- HEAD: 20b0c36 | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG LÀM — vslt-coder kế hoạch 05 chặng [B7, B8] (giao 00:15, HEAD 20b0c36, 5h 0%, cổng 30 ≤ 90).
-  Sau đó: vslt-reviewer toàn bộ kế hoạch 05 (xác minh HIGH ở B3, CRITICAL ở B4; AC10-c).
+- Cập nhật lần cuối: 2026-09-29 00:41 (giờ Việt Nam)
+- HEAD: 4adbe41 | Nhánh: feat/vslt-complete
+- Trạng thái phiên: ĐANG LÀM — vslt-reviewer kế hoạch 05, phần 1/3 (mục 1–4 + chạy lại AC2), giao 00:41, HEAD 4adbe41.
+  Hạn mức KHÔNG BIẾT (vslt_usage.json cũ > 20 phút) → review chia 3 phần (1–4, 5–9, 10–13), ghi file sau mỗi phần.
 - Hạn mức (00:13): 5 giờ 0% (reset 05:50 giờ VN), 7 ngày 17% (reset 1790820000). Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
@@ -37,7 +37,9 @@
     AC10-d (V1–V6 True, JSON khớp) và AC10-e (restore root tạm 13/13 khớp; root mặc định không ghi đè) PASS. AC10-c để reviewer.
     f4d38f0: progress — tạm dừng sau B6. Bản nháp test AC11 (B7) để NGOÀI repo:
     ../_plan05_tmp/test_private_artifacts.py.draft (chưa chạy; ca AC11-g chỉ pass sau commit B7).
-  - Còn lại: B7 (git rm --cached alphabet_real_best.pt, KHÔNG viết lại lịch sử),
+  - Coder XONG B7 (684402e: alphabet_real_best.pt gỡ khỏi index, file trên đĩa giữ nguyên, AC11 8/8) và B8 (4adbe41: AC2 25 module
+    383 OK, 0 skip; dòng progress_log). Review: đang làm, đầu ra docs/reviews/05-review.md.
+  - (cũ) Còn lại: B7 (git rm --cached alphabet_real_best.pt, KHÔNG viết lại lịch sử),
     B8 (AC2 25 module + progress_log), rồi review kế hoạch 05.
     Nếu bị ngắt: giao lại coder với kế hoạch + 05-progress.md, tiếp tục từ bước dở.
 
