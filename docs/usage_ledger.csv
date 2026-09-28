@@ -1,3 +1,4 @@
 time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-09-28T04:33Z,vslt-reviewer,04,full review 1-13,34,53,19,2,stale (before read ~6 min after launch; after includes orchestrator work)
 2026-09-28T04:53Z,vslt-planner,05,full plan,54,73,19,3,ok
+2026-09-28T06:44Z,vslt-coder,05,B0+B1,74,,,,stale (after not updated: written_at 13:28 VN = right after launch; reading 82 predates coder work)

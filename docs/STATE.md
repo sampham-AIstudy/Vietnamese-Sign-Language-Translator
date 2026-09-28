@@ -3,10 +3,11 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-28 13:30 (giờ Việt Nam)
-- HEAD: 6f47597 | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG LÀM (vượt cổng theo lệnh người dùng 13:27) — vslt-coder kế hoạch 05 chặng B0+B1.
-  5h 74%, reset 15:50 giờ VN (five_hour_resets_at 1790585400; bản trước ghi nhầm 14:30).
+- Cập nhật lần cuối: 2026-09-28 13:46 (giờ Việt Nam)
+- HEAD: 22f891c (+ commit state) | Nhánh: feat/vslt-complete
+- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h ≥ 82% (số cuối 13:28, chưa tính lượt coder B0+B1), reset lúc 15:50 giờ VN.
+  Việc kế tiếp: chạy `node .gitnexus/run.cjs analyze --index-only`, rồi vslt-coder kế hoạch 05 chặng [B2] hoặc [B2,B3,B4]
+  (est 20; cần 5h ≤ 60% để qua cổng).
 - Hạn mức: không biết (chưa có `%USERPROFILE%\.claude\vslt_usage.json` thật)
 
 ## Đã xong (đã APPROVE)
@@ -25,8 +26,9 @@
   Không có CẦN NGƯỜI DÙNG trước khi code; 6 điểm dừng có điều kiện ở §7. Lưu trữ: dataset private MỚI phmvnsm33/vslt-provenance-artifacts
   (script mới scripts/archive_private_kaggle.py); planner thêm checkpoints/alphabet_best.pt vào lưu trữ — orchestrator CHẤP NHẬN.
   Chặng coder: [B0,B1,B2] → [B3,B4] → [B5] → [B6,B7,B8].
-  - vslt-coder ĐÃ GIAO 13:30 (HEAD 6f47597) chỉ B0 + B1, dừng sau commit B1; tiến độ ghi ở docs/plans/05-progress.md.
-    Nếu bị ngắt: giao lại coder với kế hoạch + 05-progress.md, tiếp tục từ bước dở.
+  - Coder XONG B0 + B1 (commit 22f891c; tiến độ docs/plans/05-progress.md). B0: không điểm dừng nào kích hoạt; Kaggle xác thực được;
+    (e) xác nhận; file nhị phân track duy nhất = alphabet_real_best.pt. B1: status chỉ {source, n_signers}; 73 test OK (4 module).
+    Mốc B0: 20 module cũ 334 OK, 0 skip. Còn: B2–B8. Ghi chú cho reviewer: 05-progress.md nằm trong commit B1 (ngoài danh sách AC1).
 
 ## Quyết định của người dùng (không hỏi lại)
 - 4c: chọn B (giữ model gộp). Chưa đổi model mặc định — đó là GATE riêng.
@@ -91,3 +93,4 @@
 - 2026-09-28 11:10 | đối chiếu sau bootstrap | STATE ghi HEAD 2807a8a, progress_log 04 chưa commit, review chưa giao — thực tế HEAD af6d384 (dòng progress_log đã commit), reviewer 04 đã được giao trước khi orchestrator đọc giao thức mới | Sửa mục Đang chạy, ghi hạn mức, commit bootstrap.
 - 2026-09-28 11:55 | cổng ngân sách (không phải ngắt) | planner 05 xong; coder 05 chặng 1 chưa giao: 73 + 1.5×20 = 103 > 90 | Dừng sạch theo usage_guard §5, chờ reset 14:30.
 - 2026-09-28 13:30 | người dùng yêu cầu dùng nốt hạn mức | sửa giờ reset 14:30 → 15:50 (quy đổi sai trước đó) | Giao coder 05 chặng B0+B1.
+- 2026-09-28 13:46 | dừng theo hạn mức (không phải ngắt) | coder 05 B0+B1 xong; số hạn mức chưa cập nhật sau lượt coder | Dừng sạch, chờ 15:50.
