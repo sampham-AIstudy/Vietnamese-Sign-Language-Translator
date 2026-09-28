@@ -8,3 +8,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-09-28T17:40Z,vslt-coder,05,B7+B8,0,,,,stale (usage file older than 20 min at return)
 2026-09-28T17:55Z,vslt-reviewer,05,part 1/3 (items 1-4 + AC2 rerun),27,,,,stale (after not updated)
 2026-09-28T18:00Z,vslt-reviewer,05,part 2/3 (items 5-9),27,33,6,1,noisy (before read 00:40, after 00:55 before part 2 end)
+2026-09-28T18:20Z,vslt-reviewer,05,part 3/3 (items 10-13 + Kaggle),33,,,,stale (after not updated)

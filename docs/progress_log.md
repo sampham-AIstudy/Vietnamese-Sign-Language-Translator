@@ -102,3 +102,9 @@ Ghi chú (coder, kế hoạch 05; chi tiết và output nguyên văn ở `docs/p
 - REPORT bước 4 chưa sinh lại (việc theo sau).
 - AC10-d: provenance chạy lại == JSON đã commit (True). AC10-e: restore vào root tạm exit 0, 13 file sha256 đúng; restore root mặc định exit 0, 13 "đã có", repo không đổi (sha256, mtime, git status).
 - `git status --porcelain` sau AC2 so với file B0: chỉ khác `docs/plans/05-progress.md` (lúc B0 là `??`, sau đó được commit theo lệnh orchestrator); 3 file data của người dùng vẫn ` D`.
+
+ngày | việc | kế hoạch | commit | kết luận review | việc tiếp theo
+--- | --- | --- | --- | --- | ---
+2026-09-29 | Kế hoạch 05: thực thi quyết định người dùng 2026-09-28 — HOÀN TẤT | `docs/plans/05-thuc-thi-quyet-dinh-0928.md` | 22f891c, 77f4da3, 0e1d737, 9e2c64a, 46674ab, 8a73e9d, f4d38f0, 684402e, 4adbe41 + commit ghi dòng này (review) | APPROVE — vòng 1/3 (`docs/reviews/05-review.md`, review chia 3 phần); reviewer tự chạy AC2 383 OK, 0 skip; 4 đột biến AC14 đều bị bắt; AC10-c private xác minh độc lập (ẩn danh 403, đối chứng public 200) | Việc 5 (frontend + WS v2 + CORS)
+
+Ghi chú (orchestrator): detect-changes HIGH ở B3 (0e1d737) và CRITICAL ở B4 (9e2c64a) đã được reviewer xác minh: B3 chỉ đổi 10/1 dòng backend/main.py trên đường live harmonized, `seq` không ảnh hưởng cắt đoạn; B4 chỉ thêm test (báo động giả do gộp symbol trùng tên). Dataset private mới có thêm checkpoints/alphabet_best.pt (planner bổ sung, orchestrator chấp nhận). alphabet_real_best.pt vẫn còn trong lịch sử đã push (hệ quả quyết định không viết lại lịch sử).

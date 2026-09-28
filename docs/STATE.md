@@ -3,12 +3,9 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-29 01:01 (giờ Việt Nam)
-- HEAD: 4adbe41 | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG LÀM — vslt-reviewer kế hoạch 05, phần 3/3 (mục 10–13 + Kaggle AC10-c + HIGH/CRITICAL), giao 01:01.
-  Phần 1/3 (mục 1–4) và 2/3 (mục 5–9) PASS; AC2 383 OK tự chạy lại;
-  file docs/reviews/05-review.md (untracked, ghi dần).
-  Hạn mức KHÔNG BIẾT (vslt_usage.json cũ > 20 phút) → review chia 3 phần (1–4, 5–9, 10–13), ghi file sau mỗi phần.
+- Cập nhật lần cuối: 2026-09-29 01:20 (giờ Việt Nam)
+- HEAD: fc1f2b2 (+ commit ghi review 05) | Nhánh: feat/vslt-complete
+- Trạng thái phiên: ĐANG LÀM — kế hoạch 05 APPROVE; kế tiếp: vslt-planner cho Việc 5 (backlog mục 2).
 - Hạn mức (00:13): 5 giờ 0% (reset 05:50 giờ VN), 7 ngày 17% (reset 1790820000). Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
@@ -19,31 +16,15 @@
   sửa 3 góp ý nhỏ G1–G3. Review: docs/reviews/02-review.md (APPROVE vòng 3); commit cuối 4fbc1a2.
 - Việc 4 (kế hoạch 03) — endpoint chuỗi landmark Cấp 1: APPROVE vòng 2 (docs/reviews/03-review.md), commit 8bba04e, 253 test pass.
   Hợp đồng API: tọa độ chuẩn hóa MediaPipe |v| ≤ 10; khung không có tay gửi null/[]; khung 21 điểm trùng hệt → 422; endpoint ảnh cũ trả 409.
+- Kế hoạch 05 — thực thi quyết định 2026-09-28: APPROVE vòng 1 (docs/reviews/05-review.md), commit cuối 4adbe41, AC2 383 OK, 0 skip.
+  status chỉ {source, n_signers}; /api/classes 503; dropped_frames không đếm lỗi/control; AC5 không PASS rỗng;
+  dataset PRIVATE phmvnsm33/vslt-provenance-artifacts (manifest reports/private_archive_2026-09-28/kaggle_archive_manifest.json);
+  alphabet_real_best.pt gỡ khỏi index (còn trên đĩa + lịch sử đã push); README mục "Artifact không nằm trong git".
 - Kế hoạch 04 — harmonize() vào đường live "Ký từ" (360px, CleanHolisticExtractor, SignSegmenter, WS v2): APPROVE vòng 1
   (docs/reviews/04-review.md), commit af6d384, 310 test pass. Model mặc định KHÔNG đổi (ứng viên: VSL_MODEL_TYPE=stgcn_h360).
 
 ## Đang chạy / dở dang
-- Kế hoạch 05 (thực thi quyết định 2026-09-28): planner XONG — docs/plans/05-thuc-thi-quyet-dinh-0928.md (commit cùng lượt này).
-  Không có CẦN NGƯỜI DÙNG trước khi code; 6 điểm dừng có điều kiện ở §7. Lưu trữ: dataset private MỚI phmvnsm33/vslt-provenance-artifacts
-  (script mới scripts/archive_private_kaggle.py); planner thêm checkpoints/alphabet_best.pt vào lưu trữ — orchestrator CHẤP NHẬN.
-  Chặng coder: [B0,B1,B2] → [B3,B4] → [B5] → [B6,B7,B8].
-  - Coder XONG B0 + B1 (commit 22f891c; tiến độ docs/plans/05-progress.md). B0: không điểm dừng nào kích hoạt; Kaggle xác thực được;
-    (e) xác nhận; file nhị phân track duy nhất = alphabet_real_best.pt. B1: status chỉ {source, n_signers}; 73 test OK (4 module).
-    Mốc B0: 20 module cũ 334 OK, 0 skip. Còn: B2–B8. Ghi chú cho reviewer: 05-progress.md nằm trong commit B1 (ngoài danh sách AC1).
-  - Coder XONG B2 (77f4da3, /api/classes 503), B3 (0e1d737, dropped_frames; detect-changes HIGH — 11 luồng /ws/live-stream, thay đổi 1 biểu thức + docstring),
-    B4 (9e2c64a, AC5 không PASS rỗng; CRITICAL trên đồ thị do gộp symbol trùng tên trong test, 0 dòng production). Reviewer phải xác minh HIGH/CRITICAL.
-  - Coder XONG B5 (46674ab): scripts/archive_private_kaggle.py + 27 test API giả; 13 file, 8.36 MB; chưa chạy lệnh Kaggle nào.
-  - Coder XONG B6 (8a73e9d): dataset PRIVATE phmvnsm33/vslt-provenance-artifacts đã upload + verify, manifest đã commit.
-    Chi tiết lệnh Kaggle + exit code: docs/plans/05-progress.md mục B6. Dừng trước B7 theo yêu cầu người dùng.
-    Verify: private từ 2 nguồn (dataset_list_mine + dataset_metadata), 13 file, 8363141 byte, sha256 sau tải khớp 13/13.
-    AC10-d (V1–V6 True, JSON khớp) và AC10-e (restore root tạm 13/13 khớp; root mặc định không ghi đè) PASS. AC10-c để reviewer.
-    f4d38f0: progress — tạm dừng sau B6. Bản nháp test AC11 (B7) để NGOÀI repo:
-    ../_plan05_tmp/test_private_artifacts.py.draft (chưa chạy; ca AC11-g chỉ pass sau commit B7).
-  - Coder XONG B7 (684402e: alphabet_real_best.pt gỡ khỏi index, file trên đĩa giữ nguyên, AC11 8/8) và B8 (4adbe41: AC2 25 module
-    383 OK, 0 skip; dòng progress_log). Review: đang làm, đầu ra docs/reviews/05-review.md.
-  - (cũ) Còn lại: B7 (git rm --cached alphabet_real_best.pt, KHÔNG viết lại lịch sử),
-    B8 (AC2 25 module + progress_log), rồi review kế hoạch 05.
-    Nếu bị ngắt: giao lại coder với kế hoạch + 05-progress.md, tiếp tục từ bước dở.
+- (không có)
 
 ## Quyết định của người dùng (không hỏi lại)
 - 4c: chọn B (giữ model gộp). Chưa đổi model mặc định — đó là GATE riêng.
@@ -72,14 +53,7 @@
 - (không có)
 
 ## Backlog còn lại (thứ tự)
-1. Thực thi quyết định người dùng 2026-09-28 (planner → coder → reviewer, một kế hoạch nhỏ, số 05):
-   a) bỏ alphabet_real_best.pt khỏi git (git rm --cached, .gitignore), KHÔNG viết lại lịch sử;
-   b) /api/fingerspelling/status chỉ trả nguồn dữ liệu + số người ký;
-   c) lưu bằng chứng nguồn gốc (2 .pt nested + nested_predictions.csv) + alphabet_real_best.pt lên Kaggle dataset PRIVATE,
-      kèm mở rộng §7.2 (log kernel, run_seed43/history.json, đầu vào không track); ghi slug + sha256;
-   e) xác nhận REPORT_partial.md đã ra ../_backup_step4/ và .gitignore có reports/**/*.pt, reports/**/*.npz.
-   f) việc nhỏ từ review 04 (triển khai, thấp): AC5 assert ≥ 1 event; test backend checkpoint `features` lạ → 503/1011;
-      `dropped_frames` không đếm message lỗi/control; /api/classes trả 503 thay vì 500 khi model không dùng được.
+1. (xong — kế hoạch 05)
 2. Việc 5: nối frontend với endpoint mới (hợp đồng WS v2, Cấp 1 gửi null/[] cho khung không có tay; tọa độ chuẩn hóa MediaPipe);
    chạy backend + frontend cùng nhau; WebSocket qua proxy /ws; thu hẹp CORS chỉ origin dev, không "*" kèm credentials
    (cùng đợt: kiểm Origin WS, bind); sửa scripts/smoke_test_phase12.py cho WS v2; ghi hợp đồng vào docs/phase12_api.md.
@@ -90,7 +64,8 @@
 6. Bước 5: bộ test webcam (script quay + đánh giá; việc QUAY là của người dùng).
 7. Đo độ trễ (DoD 8; ≥ 3 lần qua WebSocket thật, ghi cấu hình máy + tải). reports/audit_round2/v1_latency_benchmark.json: phần tách
    thành phần dựa trên tỷ lệ bịa 0.4/0.6 → đánh dấu không dùng; 90.78 ms "chưa xác minh lại" trong EVALUATION/VERIFY/AUDIT_ROUND2.
-8. Dọn dẹp: report_step4.py đọc thêm manifest vslt-provenance-artifacts để REPORT bước 4 không còn ghi 8 đầu vào 'không lưu trữ';
+8. Dọn dẹp (thấp, từ review 05): restore kiểm archive_name == local_path.replace('/', '__'); manifest ghi code_dirty; README nêu
+   alphabet_real_best.pt còn trong lịch sử đã push; planner đưa file <số>-progress.md vào danh sách AC1; report_step4.py đọc thêm manifest vslt-provenance-artifacts để REPORT bước 4 không còn ghi 8 đầu vào 'không lưu trữ';
    configs/alphabet_config.yaml (hỏi trước khi xóa); sửa câu chữ AC7-e kế hoạch 04; phương án (ii) (đăng ký trước tiêu chí).
 
 ## Tài nguyên
