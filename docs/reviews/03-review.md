@@ -1,3 +1,57 @@
+# Vòng 2
+
+- Commit review: b9fd11c (R5–R8 + AC15-a/b, kèm commit review vòng 1 và kế hoạch Lần sửa 2), fe1856a (R9, progress_log). Hai commit nối
+  tiếp 9f4eb68. HEAD `fe1856a`.
+- Kế hoạch: `docs/plans/03-viec4-endpoint-chuoi-cap1.md`, mục §0' "Lần sửa 2" (AC11–AC15, AC8, AC9).
+- Reviewer: vslt-reviewer, vòng 2/3, ngày 2026-09-28. Tôi tự đọc diff và tự chạy lại mọi lệnh. Tôi không sửa file nào ngoài file này.
+  Không dùng dữ liệu tổng hợp. `git status`: chỉ còn 3 file " D" của người dùng, chưa staged.
+
+**Kết luận vòng 2: APPROVE.** Không còn FAIL.
+- FAIL mục 11 của vòng 1 đã được sửa thật. Tôi tự gửi `3e38`, `-3e38`, `3.4e38` và `1e35` với khung 8192:1: tất cả đều trả 422, không ca nào 500.
+- Xác suất không hữu hạn → 503, body là JSON hợp lệ, không chứa NaN.
+- AC12 là thay đổi hợp đồng theo hướng CHẶT hơn. Nó không chặn khung thật nào: tôi kiểm độc lập 0/51 973 khung thật, biên an toàn khoảng 8 lần.
+  Nó cũng không làm lệch train–realtime: AC5 với 106 clip vẫn cho kết quả giống hệt.
+
+## Bảng 1–13 (vòng 2, HEAD fe1856a)
+
+| # | Mục | Kết quả | Bằng chứng |
+|---|---|---|---|
+| 1 | Đúng kế hoạch, test thật | PASS | Mỗi ý của AC11–AC15 đều có test, và từng test phân biệt được đúng/sai. **AC11-a**: `mock.patch` thay `src.data.alphabet_preprocessing.alphabet_clip_features` (backend import hàm này lúc gọi, nên patch có hiệu lực), cho ra NaN/inf/-inf → 422, body qua `json.loads(parse_constant=fail)`. Bỏ bước kiểm đặc trưng thì request đi tới model và ra 503, nên test sẽ FAIL. **AC11-b**: fixture có 1 trọng số NaN → 503, có `assertLogs(ERROR)`, detail chứa "model output is invalid". Bỏ bước kiểm xác suất thì ra 500, test FAIL. **AC11-c**: chạy với cả fixture lẫn checkpoint triển khai. **AC11-d, AC11-e**: có hàm quét MỚI; `test_no_500_on_bad_input` không đổi. **AC12-a..c**: hằng số; cận có dấu bằng trên 3 trục × 2 dấu, thông điệp nêu `landmarks[5]`; khung trùng hệt / khung toàn 0 ("null") → 422; khung 20 + 1 điểm → 200. **AC12-d**: xem mục 9. **AC13-a..d**: `len(r.content) ≤ 1024`, thông điệp ≤ 200 ký tự, vẫn giữ nguyên `'x1'` và `tokens[i]`. **AC14-a..e**: xem mục 11. **AC15-a**: docstring. **AC15-b**: chỉ đo kích thước, 515 232 byte, nhỏ hơn 1 048 576. |
+| 2 | Tự chạy lại test | PASS | Lệnh AC8 đầy đủ (14 module) ở HEAD fe1856a: **Ran 253 tests, OK**, 0 skip. Theo module: provenance 16, preprocessing 6, aspect 3, api 11, compose 28, deployed 9, limits 48, realtime 3, report_step4 105, split_guards 6, translation_core 8, unified_split 4, vsl_system 6, **ws_throughput 0** (script thủ công). Output in ra: `[AC12-d] clips=686 detected_frames=51973 over_bound=0 degenerate=0 other_rejections=0` và `[AC15-b] … 515232 bytes`. Khớp commit message và progress_log (232 → 253). |
+| 3 | Test không bị sửa/nới | PASS | `git diff 9f4eb68 HEAD -- tests/`: chỉ có đúng 2 dòng bị xóa, cả hai nằm trong docstring của `largest_valid_payload` (`… as long as floats can make it, while the palm` / `length stays > 0."""`). Đây đúng là ngoại lệ AC15-a; không dòng code nào của test bị đổi. `git diff 09d4057 HEAD -- tests/test_fingerspelling_api.py tests/test_alphabet_preprocessing.py`: rỗng. |
+| 4 | Nguồn dữ liệu | PASS | Không có dữ liệu mới. AC12-d dùng manifest thật (hauuto 640 + qipedc 46, MediaPipe 0.10.14). Không dùng `data/vsl_alphabet_pilot`. |
+| 5 | Rò rỉ | PASS (không áp dụng) | Không train, không đo độ chính xác. |
+| 6 | VAL/TEST | PASS (không áp dụng) | Không đổi model mặc định. `test_a_sha256_pinned_by_provenance` vẫn pass. |
+| 7 | Số liệu truy được | PASS | Số trong progress_log (686 / 51 973 / 0, 515 232, 253) đều là output của test mà tôi chạy lại được, và khớp. provenance.json không đổi: `git diff 9f4eb68 HEAD --name-only` không có file này. |
+| 8 | Cỡ mẫu | PASS (không áp dụng) | Không có số liệu mới trong API. |
+| 9 | Nhất quán train–realtime | PASS | **AC12-d, tôi kiểm độc lập.** Với mọi khung có tay của 686 clip, tôi gọi `api.validate_hand_frame` trên list float Python, tức dạng mà endpoint nhận sau khi parse JSON (test của coder thì truyền mảng float32). Kết quả: 51 973 khung (hauuto 49 853, qipedc 2 120), **0 bị từ chối**. Biên: min theo trục x/y/z = -0.178 / -0.213 / -0.772; max = 0.931 / 1.236 / 0.263. Như vậy |v| lớn nhất là 1.24, cách cận 10 khoảng 8 lần. Có 4 098 khung (7.9%) mang x/y nằm ngoài [0, 1], nên nếu đặt cận chặt kiểu [0, 1] thì sẽ chặn nhầm tay thật; cận 10 thì không. Độ lệch lớn nhất so với điểm 0, xét trên khung "gần suy biến nhất", vẫn là 0.032, rất xa luật trùng hệt. **Không lệch train–realtime:** luật mới chỉ từ chối, không đổi phép tính nào. AC5 (106 clip thật, checkpoint triển khai) vẫn pass không đổi (AC12-e). Luật còn xóa một lệch cũ: trước đây backend coi khung toàn 0 là "có tay", trong khi dữ liệu train đánh dấu khung toàn 0 là không có tay (tôi đếm được 4 037 khung như vậy trong dữ liệu). Rủi ro còn lại thuộc Việc 5: nếu client gửi tọa độ pixel hoặc world landmark thay cho tọa độ chuẩn hóa thì sẽ nhận 422. Đây là hành vi đúng, vì model được train trên tọa độ chuẩn hóa, nhưng Việc 5 cần ghi rõ điều này. |
+| 10 | Mock / kết quả giả / hard-code | PASS | Mock chỉ có trong test. Mã mới không có `random` hay số liệu gõ tay; hằng duy nhất là `ALPHABET_MAX_ABS_COORD = 10.0`, có lý do ghi trong §0'.2. Khung suy biến giờ nhận 422 thay vì 200 với confidence 0.8566. Giới hạn đã ghi ở §6: input GẦN suy biến vẫn nhận 200. Tôi đo: 21 điểm dưới chuẩn (bội của 1e-45) → 200 với 0.8566, giống ca suy biến cũ; 21 điểm lệch nhau 1e-7 → 200 với 0.2891. Kế hoạch cho phép cả hai ({200, 422}); không chặn. |
+| 11 | Bảo mật | PASS | **FAIL vòng 1 đã được sửa.** Tôi tự gửi tới checkpoint triển khai: `3e38`, `-3e38`, `3.4e38` → 422 ("coordinates must satisfy \|x\|, \|y\|, \|z\| <= 10.0"); `1e35` với 8192:1 → 422; z = 10.0 → 200; z = -10.000001 → 422 `landmarks[3]`; ±10 với 8192:1 → 200 (không tràn số). Với fixture time-resample và `timestamps_ms` = ±1e308, đặc trưng thành NaN → 422 "landmarks give non-finite model features". Như vậy bước kiểm của R5 bắt được cả con đường tràn số không đi qua tọa độ. Xác suất không hữu hạn → 503 với JSON sạch (AC11-b). **AC13:** `/compose` với token 900 KB → 422, body 81 byte; handedness 2 × 400 KB → 422, body 154 byte (`short_repr` cắt còn 40 ký tự + "…"). **AC14 thật sự chứng minh WebSocket/lifespan đi thẳng qua:** `inner` nhận ĐÚNG object `receive` gốc (`assertIs`), được gọi đúng 1 lần, middleware không gửi message nào (`sent == []`). Nếu middleware bọc hay đọc message của WebSocket/lifespan thì các assert này FAIL. HTTP `/api/translate` 100 byte được đọc đủ và vẫn nhận `receive` gốc. Chunked 6 + 5 byte tới `/compose` → 413, và `inner` không được gọi. Middleware có trên app với `max_bytes = 1 048 576`. Mã middleware không đổi kể từ 7366274. Còn tồn từ trước, ngoài phạm vi, đã chuyển người dùng ở vòng 1: CORS mở toàn bộ và WebSocket không giới hạn kích thước message. |
+| 12 | Công bằng / không nới | PASS | AC12 là thay đổi hợp đồng theo hướng CHẶT hơn: thêm lý do từ chối, không bỏ ca 200 hợp lệ nào (AC12-d, AC5). Thay đổi này đến từ finding của reviewer, không đến từ việc thấy kết quả model. Kế hoạch §7 đặt sẵn điểm dừng "không nới cận tại chỗ" nếu gặp vi phạm. Mọi AC cũ giữ nguyên, và test cũ không bị sửa (mục 3). |
+| 13 | Kết luận vượt bằng chứng | PASS | Câu G5 đã được sửa (kế hoạch §0.3 và progress_log fe1856a): ghi rõ `tests.test_ws_throughput` có 0 test tự động, bằng chứng là AC14 cùng thực nghiệm của reviewer. Docstring AC1-e đã được sửa (AC15-a), và AC15-b đo trường hợp `e-300`. progress_log chỉ nêu những gì test in ra. Kế hoạch §6 ghi rõ "server không chứng minh được input là bàn tay", đúng với thực nghiệm ở mục 10. |
+
+## Kiểm tra riêng vòng 2
+- **detect-changes HIGH (b9fd11c).** Tôi chạy `node .gitnexus/run.cjs detect-changes --scope compare --base-ref 9f4eb68`: 11 file
+  (gồm 3 CSV của người dùng), 82 symbol (phần lớn là mục của kế hoạch/review và test mới), risk high, **10 luồng**. Tất cả là
+  `Compose_fingerspelling -> {_nfc, Tone_vowel_index, Short_repr}` hoặc
+  `Predict_fingerspelling_sequence -> {Validate_hand_frame, _nfc, Short_repr, Is_valid_frame, Resample_by_index, Resample_by_time, Normalize_hand_landmarks}`.
+  Không có luồng nào ngoài Cấp 1. Text search `validate_hand_frame|short_repr|ALPHABET_MAX_ABS_COORD` (toàn repo, trừ `clone/`, `.venv`)
+  chỉ thấy `backend/main.py:445-593`, `src/inference/fingerspelling_compose.py:50-126` và test. `PathBodyLimitMiddleware` không đổi
+  (diff chỉ có test).
+- **Phạm vi file:** `git diff 9f4eb68 HEAD --name-only` gồm `backend/main.py`, kế hoạch, progress_log, review, `fingerspelling_compose.py`
+  và 3 file test. Không có `frontend/`, checkpoint, `.pt` hay `.npz`. `git diff 09d4057 HEAD -- frontend/` rỗng. progress_log chỉ thêm dòng
+  (0 dòng bị xóa). Review vòng 1 được commit nguyên văn (0 dòng bị xóa; bản trong working tree trùng HEAD).
+- **Ghi nhận nhỏ, không chặn:**
+  - AC12-d của coder truyền mảng float32 thay vì list float. Tôi đã chạy lại bằng list float và kết quả giống hệt.
+  - 503 cho model hỏng là lựa chọn đã ghi ở §0'.2; hợp lý, vì đây là lỗi phía server.
+
+## CẦN NGƯỜI DÙNG QUYẾT ĐỊNH (chỉ mục mới)
+- Không có câu hỏi mới. Năm câu hỏi của vòng 1 vẫn đang chờ người dùng và không chặn kế hoạch này.
+- Để người dùng biết: hợp đồng API Cấp 1 đổi theo hướng chặt hơn (AC12). Tọa độ có |v| > 10 và khung có 21 điểm trùng hệt giờ nhận 422.
+  Việc 5 (frontend) phải gửi `null`/`[]` cho khung không có tay, và gửi tọa độ chuẩn hóa của MediaPipe (không phải pixel).
+
+---
+
 # Review kế hoạch 03: Việc 4, endpoint chuỗi landmark Cấp 1 (vòng 1)
 
 - Kế hoạch: `docs/plans/03-viec4-endpoint-chuoi-cap1.md` (bản gốc ở f903980, cùng §0 "Lần sửa 1" ở 9be36e4).
