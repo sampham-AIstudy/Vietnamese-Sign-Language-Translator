@@ -3,9 +3,11 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-29 01:20 (giờ Việt Nam)
-- HEAD: 431a290 | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG LÀM — vslt-planner kế hoạch 06 (Việc 5).
+- Cập nhật lần cuối: 2026-09-29 01:35 (giờ Việt Nam)
+- HEAD: 19d02bf (+ commit state: tắt máy) | Nhánh: feat/vslt-complete
+- Trạng thái phiên: DỪNG — người dùng đi ngủ, yêu cầu lưu và tắt máy (01:35). Không có agent nào đang chạy.
+  Việc kế tiếp khi "tiếp tục": giao thức khôi phục → cổng ngân sách → vslt-coder kế hoạch 06 chặng 1 = [B0, B1, B2]
+  (mốc ban đầu; CORS/Origin/bind; hand_live.py + WS /ws/hand-landmarks). Chặng sau: [B3,B4] → [B5,B6,B7] → [B8,B9] → review.
 - Hạn mức (01:06): 5 giờ 45% (reset 05:50 giờ VN), 7 ngày 23%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
@@ -24,8 +26,11 @@
   (docs/reviews/04-review.md), commit af6d384, 310 test pass. Model mặc định KHÔNG đổi (ứng viên: VSL_MODEL_TYPE=stgcn_h360).
 
 ## Đang chạy / dở dang
-- vslt-planner → kế hoạch 06 = Việc 5 (backlog mục 2). Giao 01:08, HEAD 431a290, 5h 45% (est 20, cổng 75 ≤ 90).
-  Đầu ra: docs/plans/06-viec5-frontend.md (ghi dần theo mục). Nếu bị ngắt: giao lại planner hoàn thiện phần còn thiếu.
+- Kế hoạch 06 = Việc 5 (frontend + WS v2 + CORS + fullstack e2e): planner XONG — docs/plans/06-viec5-frontend.md (commit cùng lượt này).
+  Không CẦN NGƯỜI DÙNG trước khi code; điểm dừng có điều kiện ở §7 (AC5 không bằng hệt; e2e stgcn_h360 0 sự kiện; test cũ vỡ;
+  cần cài gói / Edge không có / cần xóa file). Thiết kế chính: Cấp 1 dùng MediaPipe phía SERVER qua WS /ws/hand-landmarks (không
+  MediaPipe JS); client WS v2 reducer thuần qua proxy /ws; CORS từ VSL_CORS_ORIGINS, allow_credentials=False, WS kiểm Origin (1008),
+  bind 127.0.0.1; e2e_fullstack.py dùng puppeteer-core + Edge webcam giả (clip thật, y4m ngoài repo). Chưa giao coder.
 
 ## Quyết định của người dùng (không hỏi lại)
 - 4c: chọn B (giữ model gộp). Chưa đổi model mặc định — đó là GATE riêng.
@@ -59,13 +64,15 @@
    chạy backend + frontend cùng nhau; WebSocket qua proxy /ws; thu hẹp CORS chỉ origin dev, không "*" kèm credentials
    (cùng đợt: kiểm Origin WS, bind); sửa scripts/smoke_test_phase12.py cho WS v2; ghi hợp đồng vào docs/phase12_api.md.
    Planner quyết chính sách ký hiệu phát lặp (W03251B) và tốc độ segmenter theo dt từng frame (review 04, mục 8–9).
+2b. Segmenter live (tách từ Việc 5 theo kế hoạch 06 §3.8): tốc độ theo dt từng frame; chính sách ký hiệu phát lặp (W03251B).
 3. Việc 6: nút chọn chế độ; Ký từ; Ký câu (kiểm tra ViT5 đã học câu nào trước khi đo trên S06).
 4. Từ điển 3 miền (SQLite: words, recordings, clips, signers).
 5. GATE đổi model mặc định Cấp 2 (chỉ sau Việc 5 — UI mới dùng được đường h360): bảng so sánh model cũ vs H-keepz-360 trên cùng tập test sạch.
 6. Bước 5: bộ test webcam (script quay + đánh giá; việc QUAY là của người dùng).
 7. Đo độ trễ (DoD 8; ≥ 3 lần qua WebSocket thật, ghi cấu hình máy + tải). reports/audit_round2/v1_latency_benchmark.json: phần tách
    thành phần dựa trên tỷ lệ bịa 0.4/0.6 → đánh dấu không dùng; 90.78 ms "chưa xác minh lại" trong EVALUATION/VERIFY/AUDIT_ROUND2.
-8. Dọn dẹp (thấp, từ review 05): restore kiểm archive_name == local_path.replace('/', '__'); manifest ghi code_dirty; README nêu
+8. Dọn dẹp: hỏi người dùng có xóa frontend/src/components/RealtimeStream.jsx (mã chết) không; `detail` của 503 có thể lộ tên file.
+   Thấp, từ review 05: restore kiểm archive_name == local_path.replace('/', '__'); manifest ghi code_dirty; README nêu
    alphabet_real_best.pt còn trong lịch sử đã push; planner đưa file <số>-progress.md vào danh sách AC1; report_step4.py đọc thêm manifest vslt-provenance-artifacts để REPORT bước 4 không còn ghi 8 đầu vào 'không lưu trữ';
    configs/alphabet_config.yaml (hỏi trước khi xóa); sửa câu chữ AC7-e kế hoạch 04; phương án (ii) (đăng ký trước tiêu chí).
 
@@ -90,3 +97,4 @@
 - 2026-09-28 16:46 | khôi phục sau chờ hạn mức (người dùng nhắn "tiếp tục") | STATE khớp git (HEAD e0e2365); dòng "Hạn mức" còn ghi "không biết" do sửa trước không áp được → sửa | Giao coder 05 chặng B2–B4.
 - 2026-09-28 17:47 | tạm dừng theo yêu cầu người dùng | kế hoạch 05 xong B0–B6, còn AC10-d/e, B7, B8, review | Coder được báo dừng sau B6; STATE lưu việc kế tiếp.
 - 2026-09-29 00:15 | khôi phục sau tạm dừng (người dùng nhắn "tiếp tục") | STATE khớp git (HEAD 20b0c36), bản nháp AC11 còn ở ../_plan05_tmp | Giao coder 05 chặng B7–B8.
+- 2026-09-29 01:35 | dừng theo yêu cầu người dùng (đi ngủ, tắt máy) | planner 06 xong, coder 06 chưa giao | Lưu STATE, commit, tắt máy.
