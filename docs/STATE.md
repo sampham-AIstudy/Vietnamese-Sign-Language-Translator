@@ -5,7 +5,7 @@
 
 - Cập nhật lần cuối: 2026-09-28 11:40 (giờ Việt Nam)
 - HEAD: d329801 (+ commit ghi review 04) | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG LÀM — kế hoạch 04 APPROVE; kế tiếp: planner cho backlog mục 1 (quyết định 2026-09-28)
+- Trạng thái phiên: ĐANG LÀM — planner kế hoạch 05
 - Hạn mức: không biết (chưa có `%USERPROFILE%\.claude\vslt_usage.json` thật)
 
 ## Đã xong (đã APPROVE)
@@ -20,7 +20,9 @@
   (docs/reviews/04-review.md), commit af6d384, 310 test pass. Model mặc định KHÔNG đổi (ứng viên: VSL_MODEL_TYPE=stgcn_h360).
 
 ## Đang chạy / dở dang
-- (không có)
+- vslt-planner → kế hoạch 05 (thực thi quyết định người dùng 2026-09-28, backlog mục 1 a–f).
+  Giao lúc 11:42 giờ VN, HEAD bfe2946, 5h 54% (est 20, cổng 84 ≤ 90). Đầu ra: docs/plans/05-thuc-thi-quyet-dinh-0928.md.
+  Nếu bị ngắt: giao lại planner với đường dẫn file, hoàn thiện phần còn thiếu.
 
 ## Quyết định của người dùng (không hỏi lại)
 - 4c: chọn B (giữ model gộp). Chưa đổi model mặc định — đó là GATE riêng.
