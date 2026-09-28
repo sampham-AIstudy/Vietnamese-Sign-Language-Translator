@@ -8,6 +8,7 @@ Provides:
   (POST /api/fingerspelling with an image returns 409)
 - POST /api/fingerspelling/compose: Level 1 accepted tokens (letters, tone marks, spaces) -> Vietnamese text
 - GET /api/fingerspelling/status: Level 1 model availability, preprocessing and training-data provenance
+  (`trained_on` is null or only {"source", "n_signers"}; signer names are never returned)
 
 Level 2 ("Ký từ") model and live path (plan 04):
 - The default model is unchanged: VSL_MODEL_TYPE unset -> "stgcn" = checkpoints/stgcn_tier2_indomain.pt, served by
@@ -607,6 +608,22 @@ def alphabet_data_provenance(trained_on: Any) -> Dict[str, Any]:
     return {"status": "unknown"}
 
 
+def public_trained_on(trained_on: Any) -> Optional[Dict[str, Any]]:
+    """Public view of a checkpoint's `trained_on`: only the data source and the number of distinct signers.
+
+    Never copies any other key (signer names, clip counts, ...). Returns None when nothing public is left."""
+    if not isinstance(trained_on, dict):
+        return None
+    out: Dict[str, Any] = {}
+    source = trained_on.get("source")
+    if isinstance(source, str):
+        out["source"] = source
+    signers = trained_on.get("signers")
+    if isinstance(signers, (list, tuple)) and all(isinstance(x, str) for x in signers):
+        out["n_signers"] = len(set(signers))
+    return out or None
+
+
 def class_kind(name: str) -> Optional[str]:
     """'letter' | 'tone' for a Level 1 class name; None for a class outside the Level 1 vocabulary."""
     try:
@@ -708,7 +725,8 @@ def parse_fingerspelling_sequence(req: FingerspellingSequenceRequest, preprocess
 @app.get("/api/fingerspelling/status")
 def get_fingerspelling_status():
     """Returns availability status of Level 1 Fingerspelling model, with the provenance of its
-    training data (`trained_on` from the checkpoint; licence/usage from docs/data_registry.md)."""
+    training data (`trained_on` = public_trained_on(checkpoint trained_on): null or only {"source", "n_signers"},
+    never signer names; licence/usage from docs/data_registry.md)."""
     model, meta = get_or_load_alphabet_model()
     if model is not None:
         return {
@@ -721,7 +739,7 @@ def get_fingerspelling_status():
             "endpoint": ALPHABET_SEQUENCE_ENDPOINT,
             "compose_endpoint": ALPHABET_COMPOSE_ENDPOINT,
             "input": "landmark_sequence",
-            "trained_on": meta["trained_on"],
+            "trained_on": public_trained_on(meta["trained_on"]),
             "data_provenance": alphabet_data_provenance(meta["trained_on"]),
             "evaluation_report": ALPHABET_EVALUATION_REPORT,
             "message": "Mô hình Cấp 1 đã sẵn sàng",
