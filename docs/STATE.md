@@ -3,10 +3,10 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-28 11:55 (giờ Việt Nam)
-- HEAD: b337aee (+ commit state: chờ hạn mức) | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h dùng 73%, reset lúc 14:30 giờ VN (five_hour_resets_at 1790585400).
-  Việc kế tiếp: vslt-coder kế hoạch 05, chặng 1 = [B0, B1, B2]; est 20 (chưa đủ 3 dòng ok cho coder) → cần 5h ≤ 60% để qua cổng.
+- Cập nhật lần cuối: 2026-09-28 13:30 (giờ Việt Nam)
+- HEAD: 6f47597 | Nhánh: feat/vslt-complete
+- Trạng thái phiên: ĐANG LÀM (vượt cổng theo lệnh người dùng 13:27) — vslt-coder kế hoạch 05 chặng B0+B1.
+  5h 74%, reset 15:50 giờ VN (five_hour_resets_at 1790585400; bản trước ghi nhầm 14:30).
 - Hạn mức: không biết (chưa có `%USERPROFILE%\.claude\vslt_usage.json` thật)
 
 ## Đã xong (đã APPROVE)
@@ -24,7 +24,9 @@
 - Kế hoạch 05 (thực thi quyết định 2026-09-28): planner XONG — docs/plans/05-thuc-thi-quyet-dinh-0928.md (commit cùng lượt này).
   Không có CẦN NGƯỜI DÙNG trước khi code; 6 điểm dừng có điều kiện ở §7. Lưu trữ: dataset private MỚI phmvnsm33/vslt-provenance-artifacts
   (script mới scripts/archive_private_kaggle.py); planner thêm checkpoints/alphabet_best.pt vào lưu trữ — orchestrator CHẤP NHẬN.
-  Chặng coder: [B0,B1,B2] → [B3,B4] → [B5] → [B6,B7,B8]. CHƯA giao coder (cổng ngân sách không đạt lúc 11:53).
+  Chặng coder: [B0,B1,B2] → [B3,B4] → [B5] → [B6,B7,B8].
+  - vslt-coder ĐÃ GIAO 13:30 (HEAD 6f47597) chỉ B0 + B1, dừng sau commit B1; tiến độ ghi ở docs/plans/05-progress.md.
+    Nếu bị ngắt: giao lại coder với kế hoạch + 05-progress.md, tiếp tục từ bước dở.
 
 ## Quyết định của người dùng (không hỏi lại)
 - 4c: chọn B (giữ model gộp). Chưa đổi model mặc định — đó là GATE riêng.
@@ -42,6 +44,9 @@
 - (2026-09-28) CORS: thu hẹp ở Việc 5, chỉ origin dev, không dùng "*" kèm credentials.
 - (2026-09-28) A3: alphabet_real_best.pt → git rm --cached + .gitignore + lưu dataset private, KHÔNG viết lại lịch sử git.
   §7.2: mở rộng lưu trữ private (log kernel, run_seed43/history.json, các đầu vào không track).
+
+- (2026-09-28 13:27) "mới 74% tận dụng nốt đi": cho phép giao việc nhỏ khi cổng ngân sách chưa đạt, trong cửa sổ 5h hiện tại.
+  Orchestrator vẫn giao đơn vị nhỏ nhất, đọc hạn mức sau mỗi đơn vị, không cố ý chạm giới hạn.
 
 ## Câu hỏi chờ người dùng
 - (không chặn) Tên người ký hauuto còn trong reports/alphabet_deploy_2026-09-27/provenance.json:49–54 (đã commit)
@@ -85,3 +90,4 @@
   "3 góp ý nhỏ" đã làm ở kế hoạch 02 → bỏ khỏi backlog; chuyển 5 câu hỏi sang "Quyết định" và đưa việc thực thi vào backlog mục 2–3.
 - 2026-09-28 11:10 | đối chiếu sau bootstrap | STATE ghi HEAD 2807a8a, progress_log 04 chưa commit, review chưa giao — thực tế HEAD af6d384 (dòng progress_log đã commit), reviewer 04 đã được giao trước khi orchestrator đọc giao thức mới | Sửa mục Đang chạy, ghi hạn mức, commit bootstrap.
 - 2026-09-28 11:55 | cổng ngân sách (không phải ngắt) | planner 05 xong; coder 05 chặng 1 chưa giao: 73 + 1.5×20 = 103 > 90 | Dừng sạch theo usage_guard §5, chờ reset 14:30.
+- 2026-09-28 13:30 | người dùng yêu cầu dùng nốt hạn mức | sửa giờ reset 14:30 → 15:50 (quy đổi sai trước đó) | Giao coder 05 chặng B0+B1.
