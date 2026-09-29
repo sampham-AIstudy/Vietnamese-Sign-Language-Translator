@@ -2,9 +2,10 @@
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
 - Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474), B5 (34a527d), B6 (0328c1b), B7 (commit "06: B7 — ...")
-- Bước đang làm: **DỪNG — CẦN PLANNER** (AC12: socket HMR của Vite dev không qua `/ws/`, xem B8). B8: script 7e38118 + 3 JSON
-  e3d0df8 (mọi kiểm tra khác đạt). B9: đã chạy các lệnh kiểm tra (xem mục B9), CHƯA thêm dòng `docs/progress_log.md` (AC13).
-- Bước còn lại: sau quyết định planner về AC12 → (nếu cần) chạy lại 3 kịch bản, rồi đóng B9 (dòng progress_log, backlog).
+- Bước đang làm: **B8b ĐANG LÀM** (Lần sửa 2 của kế hoạch, commit f52de6f; 0B.5 bước 1–3), sau đó B9b.
+  Trước đó (giữ để tra): B8 script 7e38118 + 3 JSON e3d0df8 (1 kiểm tra đỏ: socket HMR Vite → CẦN PLANNER, planner đã quyết
+  ở 0B.1/0B.2); B9 đã chạy kiểm trước (mục B9).
+- Bước còn lại: B8b-1 (test AC12-t), B8b-2 (hàm thuần + 4 kiểm mới, AC2 31 module), B8b-3 (chạy lại 3 kịch bản), B9b (đóng).
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
