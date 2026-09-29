@@ -1,4 +1,4 @@
-ĐANG LÀM
+Trạng thái: XONG (chờ orchestrator)
 
 # Kế hoạch 09 — Dọn dẹp 3 góp ý mức thấp từ review 05
 
@@ -197,7 +197,7 @@ Không đổi dòng nào khác của README. Nội dung khẳng định có bằ
 `tests/test_private_artifacts.py:95-103` (`test_h_history_not_rewritten`), review 05 S1/S3.
 
 ### 3.5 Test mới — file MỚI `tests/test_archive_private_kaggle_r05.py`
-Lựa chọn: file mới (không thêm vào file cũ) để ba file test cũ giữ nguyên từng byte; lệnh AC2 thêm 1 module.
+Lựa chọn: file mới (không thêm vào file cũ) để ba file test cũ giữ nguyên từng byte; lệnh AC8 thêm 1 module.
 - Import fixture dưới dạng MODULE: `import tests.test_archive_private_kaggle as T0`, `import tests.test_archive_step4_kaggle as S4`,
   `import archive_private_kaggle as P`, `import archive_step4_kaggle as A` (cùng cách chèn `sys.path` như file cũ). KHÔNG
   `from ... import TestRestore`/lớp có `test_*` (loader sẽ chạy lặp). Lớp mới kế thừa `T0.Base` / `S4.Base` (không có test).
@@ -206,13 +206,172 @@ Lựa chọn: file mới (không thêm vào file cũ) để ba file test cũ gi�
 - Danh sách test bắt buộc: §5 AC3, AC4.
 
 ## 4. Chia việc
-(đang viết)
 
-## 5. Tiêu chí chấp nhận
-(đang viết)
+**Quy tắc chung mọi bước**
+- Trước khi sửa hàm CÓ SẴN: `npx --yes gitnexus@1.6.12 impact <symbol> --direction upstream --repo .` (B1: `restore`; B2: `verify`).
+  `verify` trùng tên với `archive_step4_kaggle.verify` → ghi rõ kết quả thuộc file nào; nếu công cụ gộp hoặc trả `UNKNOWN`/0 caller →
+  bổ sung text search (`grep -rn "restore(" scripts tests`, `grep -rn "verify(" scripts tests`) và ghi cả hai. HIGH/CRITICAL → ghi
+  cảnh báo + giải thích. Hàm MỚI (`expected_archive_name`, `code_status`) không cần impact. Index cũ → chạy analyze theo
+  `.claude/skills/gitnexus-cli/SKILL.md` trước. GitNexus không chạy được → DỪNG, báo orchestrator (§7), không sửa hàm.
+- Trước MỖI commit: `npx --yes gitnexus@1.6.12 detect-changes --scope all --repo .`; `partial`/`truncated: true` → chạy lại; ghi
+  risk vào message commit (HIGH/CRITICAL phải có giải thích).
+- Test trước: viết test → chạy → ghi id test FAIL/ERROR vào `docs/plans/09-progress.md` và message commit → sửa mã → chạy lại OK.
+- `git add` theo đường dẫn cụ thể (không `git add -A`/`git add .`). Không sửa `docs/STATE.md`, `docs/progress_log.md` (orchestrator).
+- Log và file tạm: `/home/user/_plan09_tmp/` (ngoài repo).
+
+| Bước | Nội dung | Phụ thuộc | Ước lượng |
+|---|---|---|---|
+| **B0** | Mốc. `P9=$(git rev-parse --short HEAD)`; kiểm P9 là commit chứa kế hoạch này (`git log -1 --format=%h -- docs/plans/09-don-dep-review05.md`). `mkdir -p /home/user/_plan09_tmp`; `git status --porcelain > /home/user/_plan09_tmp/b0_status.txt`; `sha256sum reports/private_archive_2026-09-28/kaggle_archive_manifest.json reports/step4_2026-09-26/archive/kaggle_archive_manifest.json > /home/user/_plan09_tmp/b0_sha.txt`. Chạy lệnh AC6 với 3 module CŨ (bỏ module mới) → `b0_ac6.log` (phải OK, 0 skip). Chạy lệnh AC8 với 29 module (bỏ module mới) → `b0_ac8.log`; trích danh sách id FAIL / ERROR / skipped (sort) → `b0_fail.txt`, `b0_error.txt`, `b0_skip.txt`. Tạo `docs/plans/09-progress.md` (P9, dòng tổng kết của 2 log, đường dẫn log). detect-changes. Commit `09 B0: mốc`. | — | 0.25 giờ |
+| **B1** | Restore kiểm `archive_name` (§3.2). impact `restore`. Viết test E1, E2, R1, R2, R3, R4, R6, R7 (§5 AC3) → chạy → ghi FAIL/ERROR trước sửa (R6 được phép PASS trước sửa: đó là test không hồi quy). Sửa `restore` + thêm `STEP4_SCRIPT`, `expected_archive_name`, docstring mã thoát. Chạy lệnh AC6 (4 module) → OK, 0 skip. detect-changes. Commit `09 B1: restore kiểm archive_name theo script sinh manifest`. | B0 | 0.75 giờ |
+| **B2** | `code_dirty` (§3.3). impact `verify`. Viết test C1–C5, R5 (§5 AC4) → FAIL trước sửa → thêm `CODE_DIRS`, `code_status`, 2 khóa trong `verify`, docstring. Lệnh AC6 → OK, 0 skip. detect-changes. Commit `09 B2: verify ghi code_dirty vào manifest`. | B1 (cùng file) | 0.5 giờ |
+| **B3** | README 1 dòng (§3.4, AC5). Đột biến AC7 (script ngoài repo). Lệnh AC8 đầy đủ (30 module) → so với B0. `git status --porcelain` so `b0_status.txt`; sha256 hai manifest so `b0_sha.txt`. Cập nhật `09-progress.md`: bảng AC1–AC9 (PASS/FAIL + bằng chứng: lệnh + dòng output). detect-changes. Commit `09 B3: README + đóng việc`. Orchestrator gọi vslt-reviewer. | B2 | 0.5 giờ |
+
+Tổng ước lượng ≈ 2 giờ; GPU 0; không Kaggle; không cài gói; mạng chỉ cho `npx gitnexus` (theo CLAUDE.md).
+
+## 5. Tiêu chí chấp nhận (hợp đồng — coder KHÔNG được đổi; chỉ planner đổi, có ghi lý do)
+
+Ký hiệu: `P9` = HEAD lúc B0 (commit chứa kế hoạch này). `ROOT` = gốc repo. Mọi lệnh chạy từ `ROOT` trên cloud.
+
+**AC1 — Phạm vi file.**
+- `git diff --name-status P9 HEAD` đúng bằng tập (không thừa, không thiếu):
+  ```
+  M	README.md
+  A	docs/plans/09-progress.md
+  M	scripts/archive_private_kaggle.py
+  A	tests/test_archive_private_kaggle_r05.py
+  ```
+- `git diff --numstat P9 HEAD -- README.md` → `1	1	README.md`.
+- `git diff --stat P9 HEAD -- scripts/archive_step4_kaggle.py tests/test_archive_private_kaggle.py tests/test_archive_step4_kaggle.py
+  tests/test_private_artifacts.py reports/ docs/data_registry.md backend/ frontend/ src/ docs/STATE.md docs/progress_log.md
+  docs/phase12_api.md scripts/smoke_test_phase12.py docs/plans/` → chỉ có `docs/plans/09-progress.md` (không file nào khác).
+- `git diff P9 HEAD -- tests/ | grep '^-' | grep -v '^---' | wc -l` → `0`.
+
+**AC2 — Hai manifest đã commit không đổi.** `sha256sum` hai file ở B3 == `b0_sha.txt` (`diff` rỗng); cả hai không xuất hiện trong
+`git diff --name-only P9 HEAD`.
+
+**AC3 — Test mới cho (1) `restore`** (trong `tests/test_archive_private_kaggle_r05.py`; mỗi mục ≥ 1 method, biến thể dùng `subTest`):
+- **E1** `P.expected_archive_name`: `(P.SCRIPT, "a/b/c.pt")` → `"a__b__c.pt"`;
+  `(P.STEP4_SCRIPT, "reports/step4_x/runs/run_a/stgcn_unified_best.pt")` → `"step4_x__runs__run_a__stgcn_unified_best.pt"`;
+  `(P.STEP4_SCRIPT, "checkpoints/x.pt")` → `"checkpoints__x.pt"`; generator `"scripts/other.py"`, `None`, `123` → `ArchiveError`
+  với `code == 2`. `P.SCRIPT == "scripts/archive_private_kaggle.py"`, `P.STEP4_SCRIPT == "scripts/archive_step4_kaggle.py"`.
+- **E2** hai manifest THẬT đã commit (chỉ đọc file): `generated_by.script` lần lượt == `P.SCRIPT` (private 2026-09-28) và
+  `P.STEP4_SCRIPT` (bước 4); `len(files) > 0`; với MỌI phần tử `P.expected_archive_name(script, f["local_path"]) == f["archive_name"]`;
+  `"code_dirty" not in generated_by` (định dạng cũ). Với manifest bước 4: có ≥ 1 phần tử `archive_name != local_path.replace("/", "__")`.
+- **R1** (lớp kế thừa `T0.Base`; setUp: `stage` + `verify(created_api())` như `T0.TestRestore`; `root`, `rdl` là thư mục tạm chưa
+  tồn tại). 3 subTest, mỗi cái ghi manifest đã sửa ra file riêng, đổi `archive_name` của phần tử có `local_path == T0.REAL_RUN` thành:
+  (a) `"evil__copy.pt"`, file này được THÊM vào staging (FakeApi tải mọi file staging) với đúng byte của REAL_RUN trong fixture;
+  (b) `"../evil_rel.bin"`, tạo trước `<rdl>/evil_rel.bin` với đúng byte đó;
+  (c) đường dẫn tuyệt đối `<self.d>/evil_abs.bin` với đúng byte đó.
+  Mỗi subTest dùng FakeApi mới: mã trả về `2`; `api.calls == []`; `<root>` không có file nào; (a),(c): `<rdl>` không tồn tại;
+  (b): `os.listdir(<rdl>) == ["evil_rel.bin"]`. (Fixture được dựng để khi BỎ kiểm thì cả 3 ca trả 0 và ghi file — AC7 M1 chứng minh.)
+- **R2** `--only`: sai `archive_name` (như R1a) ở phần tử `checkpoints/alphabet_best.pt` (KHÔNG được chọn), gọi `only=[T0.REAL_RUN]`
+  → `2`, `api.calls == []`, `<root>` rỗng.
+- **R3** script sinh manifest: `generated_by.script = "scripts/other.py"` → `2`; xóa hẳn khóa `generated_by` → `2`; cả hai
+  `api.calls == []`.
+- **R4** CLI: `P.main(["restore", "--manifest", <M của R1a>, "--download-dir", <rdl>, "--root", <root>], api=<FakeApi>)` → `2`;
+  stderr bắt đầu bằng `archive_private_kaggle:` và chứa `T0.REAL_RUN`.
+- **R6** manifest bước 4 (lớp kế thừa `S4.Base`; setUp: `A.stage` + `A.verify` với `S4.FakeApi` đã created, như `S4.TestVerify`):
+  `P.restore(<manifest bước 4>, <rdl tạm>, S4.FakeApi(staging=self.staging), root=<root tạm>)` → `0`; mọi `files[*]` có mặt dưới
+  root với sha256 == manifest; assert fixture có ≥ 1 phần tử `archive_name != local_path.replace("/", "__")`.
+- **R7** manifest bước 4 bị sửa: 1 phần tử đổi `archive_name` thành `local_path.replace("/", "__")` → `2`, `api.calls == []`, root rỗng.
+
+**AC4 — Test mới cho (2) `code_dirty` + tương thích manifest cũ** (cùng file):
+- **C1** `P.code_status(run=fake)`, fake trả `returncode=0, stdout=""` → `(False, [])` (`assertIs(r[0], False)`); fake ghi đối số:
+  đối số vị trí đầu == `["git", "status", "--porcelain", "--", "scripts", "src", "tests", "backend"]`;
+  `os.path.normcase(kwargs["cwd"]) == os.path.normcase(ROOT)`; `"timeout" in kwargs`.
+- **C2** stdout `" M scripts/a.py\n?? tests/b.py\n\n"` → `(True, [" M scripts/a.py", "?? tests/b.py"])` (giữ dấu cách đầu dòng).
+- **C3** không biết → `(None, None)` (`assertIsNone` cả hai), 4 subTest: returncode `128`; fake raise `FileNotFoundError`; raise
+  `subprocess.TimeoutExpired(cmd, 60)`; raise `OSError`.
+- **C4** git thật, không mock: `r = P.code_status()`; `assertIsInstance(r[0], bool)`; `r == (bool(lines), lines)` với `lines` tính
+  độc lập trong test bằng `subprocess.run` cùng lệnh, `cwd=ROOT`, lọc dòng rỗng như §3.3. Không assert giá trị (repo có thể bẩn lúc chạy).
+- **C5** `verify` ghi manifest (lớp kế thừa `T0.Base`, setUp: `stage`): với mỗi `v` trong `(True, [" M scripts/x.py"])`,
+  `(False, [])`, `(None, None)` (subTest), `with mock.patch.object(P, "code_status", return_value=v)`: verify với `created_api()` →
+  `0`; `assertIs(m["generated_by"]["code_dirty"], v[0])`; `m["generated_by"]["code_dirty_files"] == v[1]`;
+  `set(m["generated_by"]) == {"script", "command", "git_commit", "kaggle_version", "kagglesdk_version", "verified_at_utc",
+  "code_dirty", "code_dirty_files"}`; `set(m) == {"generated_by", "dataset", "files", "sha256sums_file", "verified"}`; với
+  `(None, None)`: nội dung file manifest chứa chuỗi `"code_dirty": null`.
+- **R5** tương thích: manifest do `verify` (fixture) sinh, XÓA `code_dirty` và `code_dirty_files` khỏi `generated_by` (`pop(..., None)`)
+  → `P.restore` → `0`, mọi file ghi dưới root với sha256 == manifest.
+
+**AC5 — README.** `git diff -U0 P9 HEAD -- README.md`: đúng 1 dòng `-` BẰNG dòng cũ §3.4 và đúng 1 dòng `+` BẰNG dòng mới §3.4
+(so chuỗi nguyên văn). `grep -c 'xem `docs/data_registry.md` §1b' README.md` → `1`.
+
+**AC6 — Các module lưu trữ, 0 skip.**
+`PYTHONIOENCODING=utf-8 .venv/bin/python -m unittest tests.test_archive_private_kaggle tests.test_archive_private_kaggle_r05 tests.test_archive_step4_kaggle tests.test_private_artifacts -v`
+→ dòng cuối `OK` (không `(skipped=`), 0 dòng `... skipped`, 0 `FAIL`/`ERROR`; `Ran` = (số test 3 module cũ ở `b0_ac6.log`) + (số test
+module mới, đếm trong output). Ghi cả hai số vào progress (lấy từ output, không gõ tay ước lượng).
+
+**AC7 — Đột biến (trong bộ nhớ, không sửa file repo).** Script ngoài repo `/home/user/_plan09_tmp/mut.py`: đọc
+`scripts/archive_private_kaggle.py`, mỗi đột biến áp thay thế chuỗi (assert đoạn gốc xuất hiện đúng 1 lần), `exec` mã đã đổi vào
+`P.__dict__` của module đã import, chạy các test của `tests.test_archive_private_kaggle_r05` trong tiến trình, ghi id FAIL/ERROR; nạp
+lại mã gốc trước đột biến kế tiếp. Không đột biến → mọi test module mới OK. Mỗi đột biến phải làm FAIL/ERROR ít nhất các test ghi:
+
+| # | Đột biến | Test phải bắt |
+|---|---|---|
+| M1 | bỏ kiểm `archive_name` trong `restore` (lệnh raise không bao giờ chạy) | R1 (cả 3 subTest a, b, c), R2, R4, R7 |
+| M2 | `expected_archive_name` luôn trả `local_path.replace("/", "__")` | E1, E2, R6 |
+| M3 | chuyển vòng kiểm `archive_name` ra SAU lọc `--only` | R2 |
+| M4 | chuyển kiểm `archive_name` ra SAU `api.dataset_download_files` (vẫn trước khi ghi) | R1 |
+| M5 | `code_status` trả `(False, [])` khi returncode ≠ 0 và khi có ngoại lệ | C3 |
+| M6 | pathspec thiếu `"backend"` | C1 |
+| M7 | `verify` ghi `"code_dirty": False`, `"code_dirty_files": []` cố định (không gọi `code_status`) | C5 |
+
+Ghi `mut.py` (đường dẫn) và output từng đột biến vào progress. `git status --porcelain` trước và sau khi chạy đột biến giống hệt.
+
+**AC8 — Không hồi quy toàn bộ** (lệnh AC2 kế hoạch 06, đổi sang `.venv/bin/python`, + module mới):
+`PYTHONIOENCODING=utf-8 .venv/bin/python -m unittest tests.test_alphabet_preprocessing tests.test_aspect_correction tests.test_realtime tests.test_split_guards tests.test_translation_core tests.test_vsl_system tests.test_ws_throughput tests.test_fingerspelling_api tests.test_unified_split_integrity tests.test_report_step4 tests.test_fingerspelling_limits tests.test_fingerspelling_compose tests.test_fingerspelling_deployed tests.test_alphabet_ckpt_provenance tests.test_harmonized tests.test_sign_segmenter tests.test_harmonized_live tests.test_ws_live_contract tests.test_live_harmonized_equivalence tests.test_archive_step4_kaggle tests.test_status_privacy tests.test_backend_model_unavailable tests.test_ws_dropped_frames tests.test_archive_private_kaggle tests.test_private_artifacts tests.test_cors_origin_bind tests.test_hand_landmarks_ws tests.test_hand_live_equivalence tests.test_frontend_contract tests.test_archive_private_kaggle_r05 -v`
+- Mốc: `b0_ac8.log` (cùng lệnh, bỏ module cuối). Orchestrator đã đo ở HEAD 04ec565: `Ran 414`, failures=1
+  (`TestFrontendSourceGuard.test_no_violation`, đỏ có chủ đích — kế hoạch 06 sửa ở nhánh local), errors=1 (`setUpClass` của
+  `test_translation_core`, thiếu checkpoint ViT5 bị gitignore), skipped=30 (thiếu dữ liệu gitignore). B0 đo lại, số của B0 là mốc.
+- Sau B3: `Ran` = `Ran` B0 + số test module mới; tập id FAIL == `b0_fail.txt`; tập id ERROR (kể cả dòng `ERROR: setUpClass ...`)
+  == `b0_error.txt`; tập id skipped == `b0_skip.txt` (so bằng `diff` trên file đã sort; trích từ output `-v` bằng
+  `grep -E '\.\.\. (FAIL|ERROR)$|^(FAIL|ERROR): '` và `grep -E '\.\.\. skipped'`). Module mới: 0 skip, 0 FAIL, 0 ERROR.
+
+**AC9 — Quy trình.**
+- a. impact trước khi sửa `restore` (B1) và `verify` (B2): lệnh, risk, caller (và text search nếu UNKNOWN) có trong progress.
+- b. detect-changes trước mỗi commit B0–B3; risk có trong message; HIGH/CRITICAL có giải thích.
+- c. Id test FAIL/ERROR trước khi sửa (B1, B2) có trong progress và message commit.
+- d. Không lệnh Kaggle thật: progress không có lệnh `kaggle ...` hay `archive_private_kaggle.py stage|upload|verify|restore` chạy thật;
+  trong file test mới, mọi lời gọi `P.main(`, `P.restore(`, `P.verify(` đều truyền API giả; không có `kaggle_api(`.
+- e. `git status --porcelain` sau B3 == `b0_status.txt`.
+- f. 4 commit (B0–B3), mỗi commit chỉ chứa file của bước đó; `git add` theo đường dẫn.
 
 ## 6. Rủi ro dữ liệu/ML
-(đang viết)
+
+- **Không có phần ML.** Không train, không đánh giá, không đọc TEST, không chọn model, không đổi tiền xử lý → rò rỉ, lệch
+  train–realtime, cỡ mẫu/CI: không áp dụng. Không sinh số liệu mới; mọi con số trong progress (số test, id FAIL/skip) phải trích
+  từ log của lệnh đã ghi.
+- **Nguồn dữ liệu trong test:** chỉ byte fixture nhỏ tự tạo trong thư mục tạm ngoài repo (không phải dữ liệu thật) và HAI manifest
+  thật đã commit, chỉ ĐỌC (đường dẫn, sha256, kích thước; không landmark/per-clip). Không thêm file dữ liệu/nhị phân nào vào git.
+  Không tải, không upload.
+- **R1 — Quyết định D1 lệch chữ yêu cầu.** Reviewer có thể coi là lệch phạm vi. Giảm thiểu: bằng chứng §2.3 (manifest bước 4 dùng
+  `flat_name`; `docs/CLOUD.md` §3 và kế hoạch 08 dựa vào restore bước 4), test E2/R6 chạy trên manifest bước 4 thật và fixture bước 4,
+  M2 chứng minh cách áp nguyên văn làm hỏng luồng đó. Với manifest của chính script này, quy tắc đúng nguyên văn review.
+- **R2 — Script sinh manifest thứ ba trong tương lai** sẽ bị restore từ chối (exit 2) cho tới khi thêm quy tắc đặt tên. Chủ đích
+  (không đoán tên); ghi trong docstring.
+- **R3 — Phạm vi `code_dirty` hẹp:** chỉ 4 thư mục (không `configs/`, `docs/`, `frontend/`) và chỉ tại thời điểm `verify` (không lúc
+  `stage`/`upload`). `false` không chứng minh staging được tạo từ mã sạch; tính đúng của nội dung lưu trữ vẫn dựa vào sha256 so với
+  JSON đã commit. Ghi rõ trong docstring.
+- **R4 — Manifest cũ không có `code_dirty`:** không bổ sung hồi tố (không sửa bằng chứng lịch sử). Với manifest 2026-09-28, bằng chứng
+  mã sạch vẫn là review 05 mục 7 (`git diff --stat 46674ab HEAD -- scripts src backend` rỗng tại lúc review).
+- **R5 — C4 dùng git thật:** chỉ kiểm nhất quán với một lời gọi git độc lập, không kiểm giá trị → không phụ thuộc repo sạch/bẩn.
+  Git thiếu trên máy chạy test → C4 sẽ FAIL (không skip); trên cloud và local git có sẵn (các test cũ đã gọi git).
+- **R6 — Câu README là khẳng định về lịch sử git:** có bằng chứng (`docs/data_registry.md:44`, `test_h_history_not_rewritten`,
+  review 05 S1/S3); không nói "đã gỡ khỏi repo công khai" hay "đã xóa".
+- **R7 — Guard chuỗi cấm** (`TestSourceGuard.test_12`): docstring/chú thích mới trong script không được chứa chuỗi cấm; AC6 bắt.
+- **R8 — Cloud thiếu dữ liệu gitignore** → 30 skip + 1 error ở module khác (mốc); không liên quan phạm vi, không được coi là pass
+  cho module của kế hoạch này (AC6 yêu cầu 0 skip cho 4 module lưu trữ).
 
 ## 7. Điểm dừng
-(đang viết)
+
+**Không chạm điểm dừng bắt buộc** (`docs/prompts/autopilot.md` §5): không đổi model mặc định; không cần dữ liệu người dùng; không
+đụng thay đổi chưa commit của người dùng (`git add` theo đường dẫn; các xóa file dữ liệu ghi trong STATE là của máy local); không
+hành động không hoàn tác (không gọi Kaggle, không xóa file, không viết lại lịch sử, không push lên main); không phát hiện vấn đề dữ
+liệu mới. → KHÔNG cần người dùng trước khi code.
+
+**Điểm dừng có điều kiện** (coder dừng, ghi vào `09-progress.md`, báo orchestrator — "CẦN PLANNER"; không tự đổi tiêu chí):
+1. B0: lệnh AC6 (3 module cũ) không OK hoặc có skip; hoặc tập FAIL/ERROR của `b0_ac8.log` khác mô tả mốc của orchestrator (§5 AC8).
+2. GitNexus `impact`/`detect-changes` không chạy được (CLAUDE.md cấm sửa hàm khi chưa có impact).
+3. Muốn đạt AC mà phải sửa test cũ, `scripts/archive_step4_kaggle.py`, hay manifest đã commit.
+4. Một đột biến AC7 không bị bắt: không nới test; bổ sung test đúng AC; nếu AC có lỗ thì báo planner.
+5. Phát hiện tài liệu/luồng nào khác dựa vào `restore` với manifest sinh bởi script ngoài hai script ở §3.2.
