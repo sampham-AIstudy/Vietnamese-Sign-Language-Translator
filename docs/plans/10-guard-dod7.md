@@ -1,8 +1,9 @@
 # Kế hoạch 10 — Guard DoD 7 phía backend (không random / mock / giả lập / số hard-code trong đường chính)
 
-ĐANG LÀM
+Trạng thái: XONG (chờ orchestrator)
 
 - Nhánh: cloud/2026-09-29-viec-a-d (việc D trong docs/STATE.md) | HEAD khi lập (theo orchestrator): 04ec565 | Ngày: 2026-09-29
+- **Không có điểm dừng CẦN NGƯỜI DÙNG** (§7; chỉ có điểm dừng có điều kiện trong lúc làm).
 - Planner chỉ đọc mã nguồn, không chạy lệnh (không có Bash). Mọi danh sách "ứng viên" ở §2 là kết quả Grep/đọc tay của
   planner, KHÔNG phải số liệu: danh sách chính thức là output của guard (§5 AC5), coder sinh ra.
 
@@ -183,7 +184,7 @@ Chỗ dùng module tiền xử lý chung: KHÔNG áp dụng (guard không đọc
   phục vụ (augment lúc train, input giả để trace ONNX ở `src/export` là hợp lệ ngoài đường phục vụ); mock và số liệu gõ
   tay thì không có chỗ hợp lệ nào trong mã nguồn chính.
 
-### 3.2 Phân tích AST: qualname, docstring, chuỗi
+### 3.2 Phân tích AST: qualname, docstring, chuỗi, cách đếm
 - Mỗi file: `open(..., encoding="utf-8")` → `ast.parse(text, filename=path)`. `SyntaxError`/`UnicodeDecodeError` →
   test FAIL (không skip).
 - `qualname`: ghép tên các `ClassDef`/`FunctionDef`/`AsyncFunctionDef` bao quanh bằng `.` (ví dụ
@@ -192,12 +193,16 @@ Chỗ dùng module tiền xử lý chung: KHÔNG áp dụng (guard không đọc
   và D-string, TRỪ docstring của hàm có decorator route FastAPI (`@<obj>.get|post|put|patch|delete|websocket|api_route(...)`)
   — FastAPI hiển thị chúng ở `/docs`, tức là chữ người dùng thấy.
 - Comment: AST không chứa → tự động không xét (ví dụ §2.3 #14).
-- Chuỗi được xét ở C-string/D-string: mọi `ast.Constant` kiểu `str` (không phải docstring như trên), gồm các phần hằng
-  trong f-string (`ast.JoinedStr.values`); KHÔNG xét phần `format_spec` (ví dụ `.1f`) và biểu thức nội suy (là mã, đã
-  được luật khác xét). `bytes` không xét.
+- **Đơn vị chuỗi** (xét ở C-string/D-string): một `ast.Constant` kiểu `str` đứng riêng (không phải docstring như trên),
+  hoặc MỘT `ast.JoinedStr` (f-string; các f-string viết liền nhau được Python gộp thành một nút) với các phần hằng nối
+  lại, mỗi chỗ nội suy thay bằng `{}`. KHÔNG xét phần `format_spec` (ví dụ `.1f`) và biểu thức nội suy (là mã, luật khác
+  xét). `bytes` không xét. Mỗi đơn vị khớp một luật → đúng 1 Finding (dù khớp nhiều mẫu), `line` = `lineno` của nút.
+- **Cách đếm Finding:** A-*: mỗi lời gọi; B-import: mỗi câu import; B-name: mỗi lần xuất hiện tên; C-name: mỗi điểm gán;
+  C-string/D-string: mỗi đơn vị chuỗi; C-result: mỗi cặp khóa–giá trị / phép gán / `return`; D-binding: mỗi đích gán /
+  khóa dict / keyword / tham số mặc định.
 - Tách token định danh (dùng cho C-name, C-result, D-binding): tách theo `_` và ranh giới camelCase, hạ chữ thường; ghép
-  một token 1–3 chữ cái đứng NGAY trước một token toàn số thành một token (`top_1`/`top1` → `top1`, `f1`, `p95`,
-  `bleu_4` → `bleu`,`4`); số nhiều: token kết thúc `s` mà bỏ `s` thì thuộc tập → coi là thuộc tập.
+  một token 1–3 chữ cái đứng NGAY trước một token toàn số thành một token (`top_1`/`top1` → `top1`, `f1`, `p95`;
+  `bleu_4` → `bleu`, `4`); số nhiều: token kết thúc `s` mà bỏ `s` thì thuộc tập → coi là thuộc tập.
 - Bí danh import (theo file, gom từ mọi Import/ImportFrom): `import random [as r]`, `from random import f [as g]`;
   `import numpy [as np]`, `import numpy.random [as npr]`, `from numpy import random [as npr]`,
   `from numpy.random import f [as g]`; `import torch [as t]`, `from torch import f [as g]`, `from torch import nn`,
@@ -221,17 +226,17 @@ Hằng dùng chung: `SENTINELS = {0, -1}` (so bằng số, gồm 0.0/-1.0; `bool
 | **B-import** | MAIN | `import unittest.mock`, `from unittest import mock`, `from unittest.mock import ...`, `import mock`, `from mock import ...`, `import pytest_mock`/`from pytest_mock ...`, `import asynctest` | `import unittest` (không có mock) |
 | **B-name** | MAIN | `Name.id` hoặc `Attribute.attr` ∈ {Mock, MagicMock, AsyncMock, NonCallableMock, NonCallableMagicMock, PropertyMock, create_autospec, mock_open}; `Attribute.attr == "patch"` với giá trị là tên `mock` hoặc chuỗi thuộc tính kết thúc bằng `mock` | hàm tên `patch_image`; chuỗi `"mock"` (thuộc C-string) |
 | **C-name** | SERVING | ĐIỂM GÁN TÊN có token ∈ FAKE = {fake, dummy, mock, mocked, stub, simulate, simulated, simulation, simulator, synthetic, synthesized, synthesised, placeholder, fabricated}: đích Assign/AnnAssign/AugAssign (Name, `Attribute.attr`, phần tử tuple), đích for/comprehension, `with ... as`, tên def/class, tham số hàm, bí danh `import ... as` | dùng lại tên (chỉ đếm điểm gán); `random_scale`, `sample_id`, `example` |
-| **C-string** | SERVING | chuỗi (§3.2) khớp `(?i)\b(fake|dummy|mock(?:ed)?|stub(?:bed)?|simulat(?:e|ed|ion|or)|synthe(?:tic|sized|sised)|placeholder|fabricated)\b` hoặc `(?i)giả\s+lập|dữ\s+liệu\s+giả|kết\s+quả\s+giả|số\s+liệu\s+giả` | docstring thường; comment; `"giải"` |
+| **C-string** | SERVING | đơn vị chuỗi (§3.2) khớp `(?i)\b(fake|dummy|mock(?:ed)?|stub(?:bed)?|simulat(?:e|ed|ion|or)|synthe(?:tic|sized|sised)|placeholder|fabricated)\b` hoặc `(?i)giả\s+lập|dữ\s+liệu\s+giả|kết\s+quả\s+giả|số\s+liệu\s+giả` | docstring thường; comment; `"giải"` |
 | **C-result** | SERVING | giá trị CỐ ĐỊNH (F) gán vào khóa/tên kết quả. F = str có ≥ 1 ký tự `\w`; số (không bool) ∉ SENTINELS; list/tuple khác rỗng mà mọi phần tử là F (dict: mọi value là F). Vị trí: (1) dict literal có khóa str ∈ RESULT_KEYS = {gloss, glosses, prediction, predictions, translation, translated_text, confidence, top5, candidates, sentence}; (2) Assign/AnnAssign vào Name/Attribute có token CUỐI ∈ {gloss, glosses, prediction, predictions, translation, confidence} hoặc tên ∈ RESULT_KEYS; (3) gán `x["<khóa ∈ RESULT_KEYS>"] = F`; (4) `return F` trong hàm có token tên ∈ {predict, translate, classify, recognize, recognise, infer} | `"gloss": "..."`, `"translation": ""`, `"confidence": 0.0`, `"prediction": None`, `"top5": []`, `"gloss": pred["gloss"]`; `confidence_threshold = 0.45`; tham số mặc định và keyword khi gọi (`min_detection_confidence=0.5`) KHÔNG xét |
-| **D-binding** | MAIN | tên/khóa có token ∈ METRIC = {accuracy, acc, top1, top5, topk, precision, recall, f1, wer, cer, bleu, rouge, meteor, latency, fps, throughput, speedup, p50, p90, p95, p99, ms} nhận giá trị H (hoặc "tỉ lệ gõ tay": `BinOp` Mult/Div có một toán hạng là hằng số ∉ UNIT_FACTORS — dạng `latency_ms * 0.4` đã từng bịa, review 04 mục 10). Vị trí: đích Assign/AnnAssign/AugAssign (Name, `Attribute.attr`, `Subscript` khóa str); khóa str của dict literal; keyword khi gọi hàm; giá trị mặc định của tham số | `infer_ms = 0.0`; `best_top1 = -1.0`; `latency_ms = (t1 - t0) * 1000.0`; `fps = 1.0 / dt`; `"top1": round(top1, 2)`; `.get("latency_ms", 0.0)` (đối số `.get` không xét) |
-| **D-string** | MAIN | chuỗi (§3.2) khớp một trong: (i) phần trăm `(?<![\w.])\d+(?:[.,]\d+)?\s*%`; (ii) số kèm đơn vị `(?i)(?<![\w.])\d+(?:[.,]\d+)?\s*(?:ms|fps)\b`; (iii) từ khóa số liệu rồi tới một số trong ≤ 20 ký tự không phải chữ số: `(?i)\b(?:accuracy|acc|top-?[15]|precision|recall|f1|wer|cer|bleu|rouge|latency|fps|throughput|độ\s+chính\s+xác|độ\s+trễ)\b[^\d\n]{0,20}(?<![\w-])\d` | `f"{fps:.1f} FPS"` (phần hằng không có số); `"%.2f"`, `"%d%%"`; `"Top-5 Dự đoán:"`; `"precision, recall, f1-score"` (số `1` dính chữ `f`) |
+| **D-binding** | MAIN | tên/khóa có token ∈ METRIC = {accuracy, acc, top1, top5, topk, precision, recall, f1, wer, cer, bleu, rouge, meteor, latency, fps, throughput, speedup, p50, p90, p95, p99, ms} nhận giá trị H, hoặc giá trị có "tỉ lệ gõ tay" (một nút `BinOp` Mult/Div bất kỳ trong biểu thức giá trị — `ast.walk` — có toán hạng là hằng số ∉ UNIT_FACTORS; dạng `latency_ms * 0.4` từng bịa, review 04 mục 10). Vị trí: đích Assign/AnnAssign/AugAssign (Name, `Attribute.attr`, `Subscript` khóa str); khóa str của dict literal; keyword khi gọi hàm; giá trị mặc định của tham số | `infer_ms = 0.0`; `best_top1 = -1.0`; `latency_ms = (t1 - t0) * 1000.0`; `fps = 1.0 / dt`; `"top1": round(top1, 2)`; `.get("latency_ms", 0.0)` (đối số vị trí của `.get` không xét) |
+| **D-string** | MAIN | đơn vị chuỗi (§3.2) khớp một trong: (i) phần trăm `(?<![\w.])\d+(?:[.,]\d+)?\s*%`; (ii) số kèm đơn vị `(?i)(?<![\w.])\d+(?:[.,]\d+)?\s*(?:ms|fps)\b`; (iii) từ khóa số liệu rồi tới một số trong ≤ 20 ký tự không phải chữ số: `(?i)\b(?:accuracy|acc|top-?[15]|precision|recall|f1|wer|cer|bleu|rouge|latency|fps|throughput|độ\s+chính\s+xác|độ\s+trễ)\b[^\d\n]{0,20}(?<![\w-])\d` | `f"{fps:.1f} FPS"` (phần hằng không có số); `"%.2f"`, `"%d%%"`; `"Top-5 Dự đoán:"`; `"precision, recall, f1-score"` (số `1` dính chữ `f`) |
 
 Ghi chú thiết kế luật:
 - "Seed trước trong cùng phạm vi": một lượt rút loại K (stdlib/numpy/torch) KHÔNG bị báo nếu trong cùng hàm trong cùng
   nhất (hoặc cùng mã cấp module) có lời gọi seed cùng loại (`random.seed(x)`, `np.random.seed(x)`, `torch.manual_seed(x)`)
   với ≥ 1 đối số không phải hằng `None`, ở DÒNG NHỎ HƠN. Seed ở hàm khác KHÔNG tính (ví dụ `set_seed()` ở một hàm, rút ở
   hàm khác → vẫn báo). Chính lời gọi seed có đối số không bị báo.
-- Mỗi điểm khớp là một Finding; một dòng có thể có nhiều Finding khác mã. Không gộp theo dòng.
+- Mỗi điểm khớp là một Finding (§3.2 "Cách đếm"); một dòng có thể có nhiều Finding khác mã. Không gộp theo dòng.
 - Không có cơ chế ngoại lệ tại chỗ (`# guard: allow ...`): (1) ngoại lệ tại chỗ buộc sửa mã nguồn chính (cấm trong việc
   này); (2) ngoại lệ rải rác khó đếm và dễ lạm dụng. Ngoại lệ DUY NHẤT là sổ `ALLOWED` trong file test (§3.6), đếm được,
   mỗi mục có lý do, chỉ planner thêm được.
@@ -241,7 +246,7 @@ Ghi chú thiết kế luật:
   sửa — backend/main.py đang được sửa ở local), nhưng số lượng phải khớp đúng → thêm một vi phạm vào cùng hàm cũng FAIL.
 - `compare_registry` (§3.0): nhóm hiện có mà không có trong `ALLOWED` ∪ `KNOWN_VIOLATIONS` → `unregistered` (báo từng
   Finding kèm dòng); nhóm đăng ký có số hiện tại khác → `changed`; nhóm đăng ký mà hiện tại 0 → `stale`.
-- `ALLOWED` và `KNOWN_VIOLATIONS` không được chung khóa (assert). Mỗi mục có chuỗi `reason`/`fix` không rỗng.
+- `ALLOWED` và `KNOWN_VIOLATIONS` không được chung khóa (assert). Mỗi mục có chuỗi `text` (lý do / hướng sửa) không rỗng.
 
 ### 3.5 Vi phạm có sẵn: chọn phương án (ii) — sổ `KNOWN_VIOLATIONS` đăng ký cứng, không phải (i) để test đỏ
 - **(i) Test đỏ tới khi sửa** (tiền lệ 06 §0.3). Ưu: đúng nghĩa đen "guard FAIL khi có vi phạm". Nhược: ở 06 §0.3, đỏ
@@ -267,11 +272,13 @@ Ghi chú thiết kế luật:
 
 ### 3.6 Sổ `ALLOWED` (planner duyệt trước) và `KNOWN_VIOLATIONS` (từ output guard)
 Dạng: `dict[(path, rule, qualname)] -> (count, text)`; `count` chép từ output guard ở B1 (không gõ theo dự báo).
+Test giữ thêm hằng `PLAN10_APPROVED_ALLOWED` = đúng tập khóa của bảng dưới (16 khóa) và assert
+`set(ALLOWED) <= PLAN10_APPROVED_ALLOWED` (reviewer đối chiếu hằng này với bảng).
 - **ALLOWED — chỉ những khóa sau được phép** (DTG ở §2.3), lý do phải ghi nguyên ý trong `text`:
 
 | Khóa (path, rule, qualname) | Lý do (ghi vào `text`) |
 |---|---|
-| `src/data/augment.py`, A-numpy, `KeypointAugmenter.{add_jitter, random_scale, random_rotate_2d, time_warp, keypoint_mask, augment_sequence, augment_static, augment_vsl_sequence}` (tối đa 8 khóa) | augmentation lúc train; chỉ tạo khi `augment=True`; module vào bao đóng phục vụ qua import đầu module `src/inference/ensemble.py` → `src/data/vsl_dataset.py`, không hàm phục vụ nào gọi |
+| `src/data/augment.py`, A-numpy, `KeypointAugmenter.{add_jitter, random_scale, random_rotate_2d, time_warp, keypoint_mask, augment_sequence, augment_static, augment_vsl_sequence}` (8 khóa) | augmentation lúc train; chỉ tạo khi `augment=True`; module vào bao đóng phục vụ qua import đầu module `src/inference/ensemble.py` → `src/data/vsl_dataset.py`, không hàm phục vụ nào gọi |
 | `src/data/harmonized.py`, A-torch, `HarmonizedDataset.__getitem__` | nhánh augment của Dataset train; live gọi `harmonize(rng=None)` |
 | `src/data/harmonized.py`, D-binding, `HarmonizedDataset.__getitem__` | fps ĐẦU VÀO mặc định khi npz thiếu metadata; không phải số đo |
 | `src/data/harmonized.py`, D-binding, `harmonize` | fps ĐẦU VÀO mặc định; tham số tiền xử lý dùng chung |
@@ -281,7 +288,8 @@ Dạng: `dict[(path, rule, qualname)] -> (count, text)`; `count` chép từ outp
 | `src/inference/predictor.py`, C-name, `VSLPredictor.warmup` | tensor warmup, đầu ra bỏ (`_ = self.model(...)`) |
 | `src/inference/realtime_extractor.py`, C-name, `RealtimeLandmarkExtractor.__init__` | khung warmup MediaPipe, đầu ra bỏ |
 
-  - Khóa trong bảng mà guard KHÔNG báo → không thêm (ghi trong 10-progress "dự báo không xảy ra" + lý do từ output).
+  - Khóa trong bảng mà guard KHÔNG báo → không thêm vào `ALLOWED` (vẫn để trong `PLAN10_APPROVED_ALLOWED`); ghi trong
+    10-progress "dự báo không xảy ra" + lý do từ output.
   - Mỗi khóa ALLOWED phải kèm bằng chứng trong 10-progress: `npx --yes gitnexus@1.6.12 context <symbol>` (caller) và, nếu
     `UNKNOWN`/rỗng, text search `Grep` (ví dụ `KeypointAugmenter(`, `HarmonizedDataset(`, `augment=True`) cho thấy không
     có caller trên đường phục vụ.
@@ -308,13 +316,175 @@ Mọi con số về vi phạm trong 10-progress/commit/báo cáo cuối đều t
   ALLOWED như §3.6.
 
 ## 4. Chia việc
-(đang viết)
 
-## 5. Tiêu chí chấp nhận
-(đang viết)
+Ký hiệu: `P10` = HEAD lúc bắt đầu B1 (ghi hash vào 10-progress). Thư mục tạm NGOÀI repo: `../_plan10_tmp/`.
+
+| Bước | Nội dung | Phụ thuộc | Ước lượng |
+|---|---|---|---|
+| **B1** | (1) Mốc: tại `P10` chạy lệnh AC8 KHÔNG có module mới → `../_plan10_tmp/b0_ac8.txt`; `git status --porcelain` → `../_plan10_tmp/b0_status.txt`; tạo `docs/plans/10-progress.md`, ghi tóm tắt B0 (Ran / failures / errors / skipped + id test đỏ/lỗi, chép từ output). (2) Viết `tests/test_backend_source_guard.py` theo §3: hàm §3.0, lớp `TestRuleSelfCheck` (AC2, AC3), `TestScope` (AC4), `TestRegistryComparator` (AC6), `TestImportLight` (AC7-a), `TestBackendSourceGuard` (AC5); `ALLOWED`/`KNOWN_VIOLATIONS` ban đầu rỗng. (3) Chạy chế độ báo cáo ra `../_plan10_tmp/b1_first_scan.json` (output thô đầu tiên), chép bảng nhóm vào 10-progress. (4) Điền `ALLOWED` (chỉ khóa §3.6 mà guard báo; `count` từ output) và `KNOWN_VIOLATIONS` (mọi nhóm còn lại). Ghi bằng chứng `context`/Grep cho từng khóa ALLOWED. (5) Chạy module 2 lần → OK cả hai. (6) `detect-changes`; commit `test(guard): DoD 7 backend source guard (plan 10 B1)`, message có dòng `[DoD7-guard] known=… allowed=…` chép từ output test. | — | 2 giờ |
+| **B2** | (1) Tại HEAD của B1, cây sạch với các đường của `code_dirty`: chạy lệnh báo cáo §3.7 → `reports/guard_dod7_<YYYY-MM-DD>/guard_findings.json`; chạy lại ra `../_plan10_tmp/b2_rerun.json`, so phần thân (bỏ `generated_by`) → giống hệt. (2) Chạy lệnh AC8 đầy đủ → `../_plan10_tmp/b2_ac8.txt`; so với B0 theo AC8. (3) `git status --porcelain` trước/sau chạy test giống hệt (ngoài file báo cáo chưa commit). (4) Cập nhật 10-progress (số chép từ JSON/output, kèm lệnh + commit). (5) `detect-changes`; commit `docs(guard): DoD 7 findings report (plan 10 B2)`. | B1 | 1 giờ |
+| **B3** | (1) 10-progress: đối chiếu dự báo §2.3 #1–#13 (xảy ra / không, mã luật thực tế, lý do); danh sách "vi phạm có sẵn" = mọi finding `status: known` (file:dòng, chép từ JSON B2); đề xuất sửa cho kế hoạch sau (mục dưới); danh sách "đề xuất DTG" (nếu có). (2) Kiểm AC1, AC9, AC10. (3) `detect-changes`; commit `docs(plan10): progress + proposals (plan 10 B3)`. Orchestrator gọi vslt-reviewer. KHÔNG sửa `docs/progress_log.md`/`docs/STATE.md` (orchestrator làm khi hợp nhất). | B2 | 0.5 giờ |
+
+**Sau kế hoạch này (KHÔNG làm ở đây; đề xuất kế hoạch 11 — sửa vi phạm):**
+- `realtime_demo.py`: bỏ chế độ `--source mock` (khung tổng hợp) khỏi điểm vào người dùng (hoặc chuyển thành fixture chỉ
+  trong `tests/`); bỏ `else 30.0` của `avg_fps` (hiển thị "—"/0 khi chưa đo). Caller: `run_core.py:116-124` chỉ truyền
+  webcam/video; `scripts/generate_slide_images.py:19` chỉ import `RealtimeHUD`. Sau khi sửa: nhóm KNOWN thành `STALE`
+  → xóa khỏi sổ (sổ co lại), `known` giảm.
+- (Tùy chọn, cần `impact` trên `src/inference/ensemble.py`) import lười `get_vsl_dataloaders` trong hàm đánh giá của
+  `ensemble.py` để `augment.py` ra khỏi bao đóng phục vụ → 8 khóa ALLOWED thành `STALE` → xóa.
+- `backend/main.py:531` docstring "(487 classes for Tier 2)" → bỏ số cứng (SAU khi nhánh local của kế hoạch 06 hợp nhất).
+- Guard thứ hai cho scripts đo/báo cáo (§2.4).
+- Hợp nhất nhánh: khi `feat/vslt-complete` (kế hoạch 06 B6–B9, gồm 0328c1b) hợp nhất với nhánh này, orchestrator chạy
+  `tests.test_backend_source_guard` ngay sau merge; nhóm mới → KNOWN (mặc định) hoặc planner "Lần sửa" cho ALLOWED.
+
+## 5. Tiêu chí chấp nhận (hợp đồng; coder không được đổi)
+
+Lệnh chạy module trên cloud: `PYTHONIOENCODING=utf-8 .venv/bin/python -m unittest tests.test_backend_source_guard -v`
+(máy local Windows: `.venv/Scripts/python`).
+
+**AC1 — Phạm vi thay đổi.** `git diff --name-status P10 HEAD` chỉ gồm: `A tests/test_backend_source_guard.py`,
+`A docs/plans/10-progress.md`, `A reports/guard_dod7_<YYYY-MM-DD>/guard_findings.json` (file kế hoạch này do orchestrator
+commit, ngoài danh sách). `git diff P10 HEAD -- tests/` chỉ là file mới, 0 dòng `-`. KHÔNG đổi: `backend/`, `src/`,
+`scripts/`, `frontend/`, `realtime_demo.py`, `run_core.py`, `start_fullstack.ps1`, `README.md`, `docs/STATE.md`,
+`docs/progress_log.md`, `docs/plans/06-*`, `docs/phase12_api.md`, `docs/reviews/*`, mọi test có sẵn. Không thêm dữ liệu,
+nhị phân, `.pt/.npz/.mp4/.log`.
+
+**AC2 — Tự kiểm dương: mỗi luật bắt được (`TestRuleSelfCheck`, chuỗi trong bộ nhớ, không file).** Dict `POSITIVE`
+(mã luật → danh sách mẫu mã nguồn); assert `set(POSITIVE) == set(RULES)` (đủ 10 mã). Mỗi mẫu chạy
+`scan_source(mẫu, "mem/x.py", ALL_RULES)` phải cho ≥ 1 Finding đúng mã đó (subTest theo mẫu). Tối thiểu các mẫu sau (câu
+chữ có thể khác, nội dung phải phủ từng gạch):
+- A-stdlib: `import random` + `x = random.random()`; bí danh `import random as r` + `r.choice(xs)` trong một `def`;
+  `from random import shuffle` + `shuffle(xs)`; `random.seed()`; seed ở `def a()` rồi rút ở `def b()` → vẫn báo ở `b`.
+- A-numpy: `np.random.rand(3)`; `import numpy` + `numpy.random.normal(0, 1)`; `from numpy import random as npr` +
+  `npr.uniform()`; `np.random.default_rng()`; `np.random.default_rng(None)`; `from numpy.random import randn` + `randn(2)`.
+- A-torch: `torch.rand(3)`; `torch.randn_like(x)`; `np.random.default_rng(int(torch.randint(0, 5, (1,))))` → có A-torch
+  và KHÔNG có A-numpy; `x.uniform_(0, 1)`; `g = torch.Generator()` không `manual_seed`.
+- B-import: `from unittest import mock`; `import unittest.mock`; `from unittest.mock import patch`; `import mock`.
+- B-name: `m = MagicMock()`; `AsyncMock()`; `from unittest import mock` + `mock.patch("a.b")` → có B-name.
+- C-name: `fake_result = 1`; `def simulate_landmarks(): pass`; `class SyntheticStream: pass`;
+  `def f(placeholder_gloss): pass`; `for mock_frame in frames: pass`; `mockPredictor = 1`; `dummies = []`.
+- C-string: `print("Using synthetic frames")`; `if src == "mock": pass`; `f"dummy {x}"`; `msg = "dữ liệu giả lập"`;
+  docstring route `@app.get("/x")` + `def h():` + `"""Returns simulated results."""`.
+- C-result: `def f():` + `return {"gloss": "xin chào", "confidence": 0.9}` (đúng 2 Finding C-result);
+  `self.last_gloss = "cảm ơn"`; `confidence = 0.87`; `out["translation"] = "Tôi đi học"`; `def predict(x):` +
+  `return "a"`; `r = {"top5": [("a", 0.9)]}`.
+- D-binding: `latency_ms = 12.5`; `ACCURACY = 0.751`; `{"top1": 75.1}`; `self.fps = 30`; `stats["latency_ms"] = 42`;
+  `wer = 100.0 if x else 0.0`; `top5_acc: float = 0.9`; `server_preprocess_ms = latency_ms * 0.4`; `hud.draw(fps=30.0)`;
+  `def f(latency_ms=12.0): pass`; `{"accuracy": "75.1"}`.
+- D-string: `"Độ chính xác 92%"`; `f"Top-1: 75.1 ({n} clip)"`; `"latency 35 ms"`; `"~30 FPS"`; `"accuracy=0.87"`;
+  `print("WER 23.4")`; docstring route `"""Mô hình đạt 87% trên tập test."""`.
+- Cách đếm: `a = "mock"` + `b = "mock"` → đúng 2 Finding C-string; một f-string liền nhau trải 3 dòng khớp D-string →
+  đúng 1 Finding, `line` = dòng đầu; mẫu nhiều dòng có dòng vi phạm đã biết → `line` đúng dòng đó.
+
+**AC3 — Tự kiểm âm: mẫu hợp lệ không bị báo (`TestRuleSelfCheck`).** Mỗi mẫu sau (kèm import cần thiết để bí danh phân
+giải) chạy với `ALL_RULES` → 0 Finding:
+`rng = np.random.default_rng(0)` + `v = rng.normal()`; `np.random.default_rng(seed)`; `random.Random(42).random()`;
+`def f():` + `np.random.seed(0)` + `return np.random.randn(2)`; `def g():` + `torch.manual_seed(0)` + `return torch.rand(2)`;
+`torch.rand(2, generator=g)`; `g = torch.Generator()` + `g.manual_seed(1)`; `nn.init.trunc_normal_(w, std=0.02)`;
+`from torch.nn import init` + `init.normal_(w)`; `self.random_scale(x)`; comment `# np.random.rand()`; docstring MODULE
+`"""Synthetic dummy data, 87% accuracy, sub-10ms latency."""`; docstring của hàm KHÔNG phải route có chữ "dummy";
+`infer_ms = 0.0`; `best_top1 = -1.0`; `latency_ms = (t1 - t0) * 1000.0`; `fps = 1.0 / dt`;
+`fps = float(np.mean(t)) if t else 0.0`; `{"top1": round(top1, 2)}`; `prediction.get("latency_ms", 0.0)`;
+`f"{fps:.1f} FPS | {lat:.1f}ms"`; `"%.2f"`; `"Top-5 Dự đoán:"`; `"precision, recall, f1-score"`;
+`{"gloss": "...", "confidence": 0.0, "prediction": None, "top5": [], "translation": ""}`; `{"gloss": pred["gloss"]}`;
+`confidence_threshold = 0.45`; `def f(min_detection_confidence: float = 0.5): pass`;
+`Holistic(min_detection_confidence=0.5)`; `WS_MAX_MESSAGE_BYTES = 1_048_576`; `ALPHABET_MAX_ABS_COORD = 10.0`;
+`import unittest`; `def patch_image(x): pass`; `"giải mã CTC"`; `sample_id = 3`.
+
+**AC4 — Phạm vi (`TestScope`).**
+- a. Resolver trên repo mẫu tạm (`tempfile.mkdtemp()` NGOÀI repo, xóa ở tearDown): `entry.py` có `import pkg.a` ở đầu,
+  `def f(): from pkg import b` (lười), `import json`, `import tool`; `pkg/__init__.py`; `pkg/a.py` có `from .c import d`;
+  `pkg/b.py`; `pkg/c.py`; `pkg/unused.py`; `scripts/tool.py`. `serving_closure(tmp, ("entry.py",))` == đúng tập
+  {`entry.py`, `pkg/__init__.py`, `pkg/a.py`, `pkg/b.py`, `pkg/c.py`, `scripts/tool.py`} (không có `pkg/unused.py`).
+- b. Cây thật: SERVING ⊇ `MIN_SERVING` (§3.1); SERVING ∩ {`src/training/trainer.py`, `src/export/export_onnx.py`} = ∅;
+  SERVING ⊆ MAIN; MAIN ⊇ mọi `backend/**/*.py` và `src/**/*.py`.
+- c. Mọi file của MAIN đọc UTF-8 và `ast.parse` được.
+- d. `start_fullstack.ps1` chứa `backend.main:app`; tập scripts-realtime tính được == `set(SCRIPTS_REALTIME)` == ∅.
+- e. In `[scope] serving=<n> main=<m>` (số tính được, không gõ tay).
+
+**AC5 — Cây thật khớp sổ (`TestBackendSourceGuard`).**
+- a. `compare_registry(scan_repo()[0], ALLOWED, KNOWN_VIOLATIONS)` → `unregistered`, `changed`, `stale` đều rỗng; nếu không,
+  thông điệp FAIL theo §3.0.
+- b. `set(ALLOWED) <= PLAN10_APPROVED_ALLOWED` (= 16 khóa §3.6); `set(ALLOWED) & set(KNOWN_VIOLATIONS) == set()`; mọi mục
+  có `count ≥ 1` và `text` khác rỗng.
+- c. In `[DoD7-guard] known=<tổng count KNOWN> allowed=<tổng count ALLOWED>`.
+- d. File `reports/guard_dod7_<YYYY-MM-DD>/guard_findings.json` (B2): `generated_by.git_commit` là commit B1 (tổ tiên HEAD,
+  và `git diff <commit> HEAD -- tests/test_backend_source_guard.py backend src realtime_demo.py` rỗng), `code_dirty: false`,
+  `summary.by_status.unregistered == 0`, tổng `known`/`allowed` trong JSON == số in ở (c). Reviewer chạy lại lệnh báo cáo
+  ra thư mục tạm → phần thân (bỏ `generated_by`) giống hệt.
+- e. **Danh sách vi phạm có sẵn** = các finding `status: "known"` của JSON đó (file:dòng:mã:qualname). Không danh sách
+  nào khác được coi là chính thức; không gõ tay số lượng.
+
+**AC6 — Đột biến trên sổ thật (`TestRegistryComparator`).** Gọi `F = scan_repo()[0]`:
+- a. Với MỖI đột biến sau: đọc `backend/main.py` từ đĩa, NỐI chuỗi vào cuối TRONG BỘ NHỚ, quét lại riêng file đó bằng
+  `scan_source` với bộ luật của nó (file ∈ SERVING → đủ 10 mã), thay các Finding của file này trong `F` →
+  `compare_registry` có `unregistered` chứa Finding đúng mã, `path == "backend/main.py"`:
+  `import random` + `_v = random.random()` (A-stdlib); `from unittest.mock import MagicMock` (B-import);
+  `_r = {"gloss": "xin chào", "confidence": 0.9}` (C-result); `_fake_latency_ms = 12.5` (C-name và D-binding);
+  `def _h():` + `return "Độ chính xác 92%"` (D-string). sha256 của `backend/main.py` trước/sau test bằng nhau.
+- b. Nhân đôi: thêm một bản sao của một Finding thuộc một khóa đã đăng ký (ưu tiên KNOWN; nếu KNOWN rỗng dùng ALLOWED) →
+  `changed` chứa khóa đó.
+- c. Xóa: bỏ mọi Finding của một khóa đã đăng ký → `stale` chứa khóa đó.
+- d. `F` nguyên vẹn → cả 3 rỗng (trùng AC5-a).
+
+**AC7 — Nhẹ, nhanh, tất định.**
+- a. (`TestImportLight`) subprocess `[sys.executable, "-c", "import sys, tests.test_backend_source_guard; print(sorted(m for m
+  in ('torch','numpy','cv2','mediapipe','fastapi','backend.main') if m in sys.modules))"]`, `cwd=PROJECT_ROOT` → stdout
+  đúng `[]`.
+- b. Lệnh module ở đầu §5 → `OK`, không có `skipped`, `Ran N tests in X s` với X < 10 trên cloud (báo N, X từ output).
+- c. Hai lần chạy chế độ báo cáo liên tiếp ra 2 file tạm → `findings` và `summary` giống hệt.
+
+**AC8 — Không hồi quy.** Lệnh (29 module của kế hoạch 06 AC2 + module mới):
+`PYTHONIOENCODING=utf-8 .venv/bin/python -m unittest tests.test_alphabet_preprocessing tests.test_aspect_correction tests.test_realtime tests.test_split_guards tests.test_translation_core tests.test_vsl_system tests.test_ws_throughput tests.test_fingerspelling_api tests.test_unified_split_integrity tests.test_report_step4 tests.test_fingerspelling_limits tests.test_fingerspelling_compose tests.test_fingerspelling_deployed tests.test_alphabet_ckpt_provenance tests.test_harmonized tests.test_sign_segmenter tests.test_harmonized_live tests.test_ws_live_contract tests.test_live_harmonized_equivalence tests.test_archive_step4_kaggle tests.test_status_privacy tests.test_backend_model_unavailable tests.test_ws_dropped_frames tests.test_archive_private_kaggle tests.test_private_artifacts tests.test_cors_origin_bind tests.test_hand_landmarks_ws tests.test_hand_live_equivalence tests.test_frontend_contract tests.test_backend_source_guard -v`
+- Mốc B0 = cùng lệnh BỎ module cuối, chạy tại `P10`. Tham chiếu do orchestrator chạy tại 04ec565 (không phải số của
+  planner): `Ran 414`, failures=1 (`TestFrontendSourceGuard.test_no_violation` — đỏ có chủ đích; local đã sửa ở 0328c1b,
+  chưa hợp nhất vào nhánh này), errors=1 (`setUpClass` của `test_translation_core`: thiếu checkpoint ViT5, dữ liệu
+  gitignore), skipped=30 (thiếu dữ liệu gitignore). B0 của coder là số chính thức; nếu khác tham chiếu → ghi cả hai.
+- Sau B2: `Ran` = B0 + số test của module mới; tập id test FAIL == của B0; tập id test ERROR == của B0; số skipped == B0;
+  module mới: mọi test OK, 0 fail, 0 error, 0 skip. `git status --porcelain` trước/sau lệnh giống hệt.
+
+**AC9 — Quy trình.** Mỗi commit có kết quả `detect-changes` (risk) trong message; commit B1 có dòng `[DoD7-guard] ...` chép
+từ output; 10-progress có output `context` cho symbol của mỗi khóa ALLOWED (+ Grep nếu `UNKNOWN`). Không amend/rebase/
+force-push. Không đụng thay đổi chưa commit có sẵn (so `b0_status.txt`).
+
+**AC10 — Tài liệu `docs/plans/10-progress.md`.** Có: `P10`; tóm tắt B0; bảng output thô đầu tiên (từ
+`../_plan10_tmp/b1_first_scan.json`); phân loại từng nhóm (ALLOWED + lý do + bằng chứng; KNOWN + hướng sửa); đối chiếu dự báo
+§2.3 #1–#13; danh sách vi phạm có sẵn (file:dòng, chép từ JSON B2, ghi đường dẫn + commit); đề xuất kế hoạch 11; "đề xuất
+DTG" nếu có. Mọi số đều có nguồn (lệnh + commit hoặc đường dẫn JSON).
 
 ## 6. Rủi ro dữ liệu/ML
-(đang viết)
+- **Không đụng dữ liệu/model:** guard chỉ đọc mã → không rò rỉ, không cỡ mẫu, không chọn model, không TEST. Con số của guard
+  là số dòng mã khớp luật, KHÔNG phải số liệu ML (JSON ghi rõ trong `note`).
+- **Âm tính giả (guard không thấy):** import động (`importlib`, `__import__`); RNG nằm trong thư viện ngoài (MediaPipe,
+  sklearn `random_state=None`, `DataLoader(shuffle=True)`); model quên `eval()` (dropout) — được phủ bởi test tương
+  đương (kế hoạch 04 AC4, kế hoạch 06 AC5), không phải guard; trọng số khởi tạo ngẫu nhiên nếu nạp checkpoint không chặt
+  (`nn.init.*` bị loại khỏi luật A) — hiện `src/inference/predictor.py:144,162,177`, `src/inference/ensemble.py:112,133`,
+  `src/translation/cslr_recognizer.py:76`, `backend/main.py:629` đều `load_state_dict` với `strict` mặc định (True);
+  RNG CÓ seed nhưng dùng để SINH kết quả (`confidence = rng.uniform()`) — luật A cho qua, C-result chỉ bắt hằng; số liệu
+  gõ tay qua biểu thức phức tạp hoặc đọc từ file cấu hình gõ tay; scripts đo/báo cáo ngoài phạm vi (đề xuất §2.4).
+- **Dương tính giả:** xử lý bằng `ALLOWED` do planner duyệt; rủi ro sổ phình → chính sách §3.5 (2) và AC5-b.
+- **Lý do ALLOWED phụ thuộc hành vi hiện tại:** "đường phục vụ không tạo dataset với `augment=True`" và "live gọi
+  `harmonize(rng=None)`". Nếu sau này backend tạo dataset (ví dụ Ký câu offline từ clip), phải xét lại; bằng chứng caller
+  được chốt trong 10-progress ở commit B1.
+- **Lệch train–realtime:** guard không thay test tương đương. `fps = 30.0` mặc định trong `harmonize` là giả định DÙNG CHUNG
+  train/live (cùng một hàm) nên không tự gây lệch; nhưng nếu live có lúc truyền fps ≤ 0 thì đó là giả định cần nêu ở mục
+  "Giới hạn" của GATE (ghi nhận, không thuộc việc này).
+- **Hợp nhất nhánh:** local đang sửa `backend/main.py`, frontend, `scripts/smoke_test_phase12.py` (kế hoạch 06). Sau merge,
+  phát hiện/bao đóng có thể đổi → guard đỏ (đúng thiết kế). Khóa theo qualname nên dời dòng không gây đỏ; đổi tên hàm
+  hoặc thêm chuỗi khớp luật thì đỏ → xử lý theo §3.6, không sửa sổ tùy tiện.
+- **Nguồn gốc dữ liệu:** chế độ `--source mock` của `realtime_demo.py` là đầu vào tổng hợp trong một điểm vào người dùng
+  (DoD 6/7) — ghi nhận, sửa ở kế hoạch sau; không phát hiện dữ liệu tổng hợp nào đi vào backend.
 
 ## 7. Điểm dừng
-(đang viết)
+**Không có điểm dừng bắt buộc** → không cần người dùng trước khi code: không đổi model mặc định; không cần dữ liệu người
+dùng; không đụng thay đổi chưa commit (chỉ thêm 3 file mới); không xóa file, không hành động không hoàn tác.
+
+Điểm dừng có điều kiện trong lúc làm (coder dừng, ghi 10-progress, báo orchestrator):
+1. Guard báo nhóm trong `backend/main.py` → CHỈ liệt kê vào KNOWN (yêu cầu người dùng: không sửa file này); không dừng.
+2. Guard cho thấy kết quả/dữ liệu giả THẬT SỰ tới người dùng qua backend (ví dụ C-result/C-string trong một route, không
+   phải `realtime_demo.py` mock đã biết) → DỪNG, báo orchestrator: "vấn đề dữ liệu mới" + DoD 6 (autopilot §5).
+3. Tập scripts-realtime tính được ≠ ∅ hoặc không thỏa `MIN_SERVING` → CẦN PLANNER (quyết định phạm vi); không tự sửa hằng.
+4. Muốn xanh mà phải sửa test cũ, sửa mã nguồn chính, nới luật §3.3 hay thêm ALLOWED ngoài §3.6 → CẦN PLANNER.
+5. AC8 có failure/error MỚI so với B0 → dừng, không sửa test cũ; báo planner.
+6. Kế hoạch sau (sửa `realtime_demo.py`): nếu cần xóa file hay bỏ tính năng người dùng có thể đang dùng → hỏi người dùng
+   LÚC ĐÓ (không phải bây giờ).
