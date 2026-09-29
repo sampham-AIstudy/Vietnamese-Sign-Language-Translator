@@ -3,11 +3,11 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-29 10:58 (giờ Việt Nam)
+- Cập nhật lần cuối: 2026-09-29 10:57 (giờ Việt Nam)
 - HEAD: 34a527d (+ commit cloud/state) | Nhánh: feat/vslt-complete (đã push lên origin)
-- Trạng thái phiên: ĐANG LÀM (local vẫn là chính) — vslt-coder kế hoạch 06 bước B6 (dùng bản nháp ../_plan06_tmp/Fingerspelling.jsx).
+- Trạng thái phiên: ĐANG LÀM (local vẫn là chính) — B6 XONG (0328c1b: UI Đánh vần, guard 0 vi phạm, AC2 423 OK, npm test 26 pass);
+  vslt-coder kế hoạch 06 bước B7 (smoke_test_phase12 WS v2 + docs/phase12_api.md + Giới hạn AC6), giao 10:57, 5h 69%.
   Cloud chạy song song các việc A–D trên nhánh riêng (không đụng file của kế hoạch 06).
-  HEAD có 1 test đỏ CÓ CHỦ ĐÍCH: TestFrontendSourceGuard.test_no_violation (2 vi phạm trong Fingerspelling.jsx, B6 sẽ sửa).
   Kế hoạch 06: xong B0–B5 (34a527d); còn B6 (UI Đánh vần), B7 (smoke_test_phase12 + phase12_api.md), B8 (e2e — cần Edge,
   video thật: làm ở LOCAL), B9 (đóng việc) → review. Bản nháp B6 ở ../_plan06_tmp/Fingerspelling.jsx (chỉ có trên máy local).
   Việc gợi ý cho cloud (mỗi việc một phiên, nhánh riêng, orchestrator local review rồi merge):
