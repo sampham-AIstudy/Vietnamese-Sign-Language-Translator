@@ -2,10 +2,10 @@
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
 - Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474), B5 (34a527d), B6 (0328c1b), B7 (commit "06: B7 — ...")
-- Bước đang làm: **B8b ĐANG LÀM** (Lần sửa 2 của kế hoạch, commit f52de6f; 0B.5 bước 1–3), sau đó B9b.
-  Trước đó (giữ để tra): B8 script 7e38118 + 3 JSON e3d0df8 (1 kiểm tra đỏ: socket HMR Vite → CẦN PLANNER, planner đã quyết
-  ở 0B.1/0B.2); B9 đã chạy kiểm trước (mục B9).
-- Bước còn lại: B8b-1 (test AC12-t), B8b-2 (hàm thuần + 4 kiểm mới, AC2 31 module), B8b-3 (chạy lại 3 kịch bản), B9b (đóng).
+- Bước đang làm: **DỪNG — CẦN PLANNER (§7-8)** ở B8b-3: chạy thử tại eb379fa, kịch bản Đánh vần đỏ
+  `strictmode_orphan_rule` (path `/ws/live-stream`: 2 socket 0 message do Phase12Pipeline bị gỡ khi chuyển tab). Xem mục B8b-3.
+  B8b-1 xong (302072c), B8b-2 xong (eb379fa). Chưa chạy lượt chính thức, chưa ghi đè `reports/e2e_2026-09-29/*.json`.
+- Bước còn lại: sau quyết định planner → (sửa theo quyết định nếu có) → B8b-3 chạy chính thức 3 kịch bản → B9b.
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
@@ -332,3 +332,32 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
 - detect-changes --scope staged (`../_plan06_tmp/b8b2_detect.txt`): risk medium (1 file; symbol cũ đổi: `evaluate`, `main`,
   `_find_forbidden` (chỉ do dòng lân cận), `checks`; 2 process `Main → Fps_fraction`, `Main → Is_inside_repo` của chính script).
   Index GitNexus ở f702b1a nên symbol mới chưa được thấy trong kết quả này.
+
+### B8b-3 — DỪNG theo §7-8: CẦN PLANNER (`strictmode_orphan_rule` đỏ ở kịch bản Đánh vần)
+- Trước lượt chính thức, chạy THỬ cả 3 kịch bản tại HEAD sạch eb379fa (`git status --porcelain -- backend src frontend
+  scripts tests` rỗng), đầu ra NGOÀI repo (`../_plan06_tmp/b8b3_trial_*.json`, log `../_plan06_tmp/b8b3_trial_*.log`); mỗi JSON
+  có `generated_by.git_commit` eb379fa…, `code_dirty: false`. `reports/e2e_2026-09-29/*.json` KHÔNG bị ghi đè, không commit JSON.
+  - `fingerspell`: **exit 1, `checks 22/23 pass; FAILED: ['strictmode_orphan_rule']`**.
+  - `word` mặc định: exit 0, 21/21, `all_checks_pass: true` (HMR loại 1: `ws://localhost:3000/?token=5tA751TjzxVE`,
+    `vite-hmr`, `{connected: 1}`; mồ côi `/ws/live-stream`: 1; ran_loops 1.01).
+  - `word --model-type stgcn_h360`: exit 0, 24/24, `all_checks_pass: true` (HMR loại 1; mồ côi `/ws/live-stream`: 1;
+    ran_loops 1.026; 1 sign_result).
+- Chi tiết đỏ (nguyên văn JSON Đánh vần): `strictmode_orphan_rule.detail` = `/ws/live-stream: {n_sockets: 2, orphans: [0],
+  violations: ["socket 1: 0 messages and it is the last socket of the path"]}`, `/ws/hand-landmarks: {n_sockets: 2,
+  orphans: [0], violations: []}`. Các socket: HMR (101, 1 msg `connected`); `/ws/live-stream` ×2 (`handshake_status: null`,
+  `closed: true`, 0 message); `/ws/hand-landmarks` ×2 (mồ côi 0 message đã đóng; socket dùng 101, session_info → reset_done →
+  76 hand_frame). Mọi kiểm URL mới xanh (`ws_no_8000_any_socket`, `ws_app_urls_via_proxy`, `vite_hmr_socket_rule`),
+  `hand_ws_session_info` xanh.
+- Nguyên nhân (đọc code, không suy từ số): `frontend/src/App.jsx:9` tab mặc định là `'realtime'` → `Phase12Pipeline` mount
+  (StrictMode: mount → unmount → mount = 2 socket `/ws/live-stream`); kịch bản Đánh vần của `e2e_browser.cjs` bấm tab "Bảng Chữ
+  Cái" ngay sau `goto` (step `tab_alphabet` t=2.21 s) → `Phase12Pipeline` unmount, socket thứ 2 đóng trước khi bắt tay xong.
+  Như vậy path `/ws/live-stream` của kịch bản Đánh vần KHÔNG phải trường hợp "mỗi component chỉ mount 1 lần trong kịch bản"
+  mà 0B.2 giả định: component bị gỡ do chuyển tab, không có socket "được dùng". 3 JSON e3d0df8 cũng có đúng 2 socket này
+  (planner ghi "socket đầu của mỗi path … 0 message" nhưng ở Đánh vần cả 2 socket `/ws/live-stream` đều 0 message).
+- Coder KHÔNG sửa luật, KHÔNG đổi luồng trình duyệt, KHÔNG đổi clip/`App.jsx` (App.jsx thuộc danh sách "KHÔNG đổi" của AC1).
+  Cài đặt hiện tại áp `strictmode_orphan_rule` cho MỌI path socket app đúng chữ AC12 ("với mỗi path app").
+- Câu hỏi cho planner (chọn một, hoặc khác): (a) luật mồ côi chỉ áp cho path mà kịch bản kiểm `session_info`
+  (Đánh vần: `/ws/hand-landmarks`; Ký từ: `/ws/live-stream`) — path còn lại cần luật riêng; (b) thêm loại "socket của component
+  bị gỡ do chuyển tab": path KHÔNG được kịch bản dùng, ≤ 2 socket (cặp StrictMode), tất cả 0 message, `closed: true`, tạo trước
+  lúc bấm tab — vẫn chịu `:8000` và `/ws/`; (c) giữ nguyên chữ → AC12 Đánh vần không đạt được với luồng hiện tại (tab mặc định
+  không đổi được vì `App.jsx` bị khóa).
