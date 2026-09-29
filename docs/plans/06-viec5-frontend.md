@@ -2,9 +2,11 @@
 
 - Nhánh: feat/vslt-complete | HEAD khi lập: 19d02bf | Ngày: 2026-09-29
 - Lần sửa 1: 2026-09-29, sau chặng 2 (B0–B4 xong, commit tới 026f474), coder trả "CẦN PLANNER" (§0).
+- Lần sửa 2: 2026-09-29, sau B8/B9 (HEAD e801209), coder trả "CẦN PLANNER" (AC12 socket HMR Vite, 4 giả định, AC1 sau
+  merge cloud) — §0B.
 - Backlog: docs/STATE.md "Backlog còn lại" mục 2; autopilot.md backlog gốc mục 3.
 - **Không có điểm dừng CẦN NGƯỜI DÙNG trước khi code** (xem §7; chỉ có điểm dừng có điều kiện trong lúc làm). Lần sửa 1
-  cũng không tạo điểm dừng mới.
+  và Lần sửa 2 cũng không tạo điểm dừng CẦN NGƯỜI DÙNG mới.
 
 ## 0. Lần sửa 1 (sau chặng 2; nguồn: `docs/plans/06-progress.md` mục B3, B4)
 
@@ -62,6 +64,157 @@ Các commit đã có giữ nguyên, không viết lại lịch sử. Không tiê
 ### 0.5 Thay đổi so với bản gốc
 - §4 bảng: dòng B4 (lệnh test); B5/B6 (mốc guard). §5: AC1 (RealtimeStream), AC2 (lệnh + mốc trung gian), AC7 (lệnh),
   AC11 (Giới hạn thêm lệch AC6). §6: thêm mục lệch nguồn đo được. Không bỏ hay nới tiêu chí nào.
+
+## 0B. Lần sửa 2 (sau B8/B9; nguồn: `docs/plans/06-progress.md` mục B8, B9; 3 JSON `reports/e2e_2026-09-29/*.json` — commit e3d0df8, chạy tại 15200d9; `docs/reviews/cloud-2026-09-29-review.md`)
+
+Các commit đã có giữ nguyên, không viết lại lịch sử. Chỗ đổi đánh dấu "(Lần sửa 2)" tại mục tương ứng. Một mệnh đề của AC12
+được định nghĩa lại (0B.1); lý do dựa trên MỤC ĐÍCH gốc của mệnh đề, không dựa trên việc cho pass; phần cấm `:8000` giữ
+nguyên không ngoại lệ, và thêm kiểm âm (test) để phần loại trừ không thành lỗ hổng.
+
+### 0B.1 AC12 — socket HMR của Vite dev: chọn phương án (a), định nghĩa chặt, PHẢI chạy lại 3 kịch bản
+- **Hiện tượng (từ 3 JSON e3d0df8):** mỗi lượt có đúng 1 socket `ws://localhost:3000/?token=<12 ký tự>`, protocol
+  `vite-hmr`, bắt tay 101, nhận đúng 1 message `type == "connected"`. Mọi socket còn lại có URL
+  `ws://localhost:3000/ws/live-stream` hoặc `ws://localhost:3000/ws/hand-landmarks`; 0 URL chứa `:8000`. Kiểm
+  `ws_urls_all_via_proxy_no_8000` đỏ ở cả 3 lượt chỉ vì socket HMR; các kiểm khác đều đạt (19/20, 17/18, 20/21).
+- **Nguyên nhân gốc (lỗi kế hoạch):** tôi viết "Mọi URL WS" với ý "mọi WS do app mở" (§3.4: mọi WS trong `frontend/src`
+  dùng `wsUrl`; AC8 là guard tĩnh cho `frontend/src`) nhưng không tính tới socket do client Vite dev (`/@vite/client`,
+  được Vite chèn vào trang khi chạy `npm run dev`; không nằm trong `frontend/src`, không có trong bản build) tự mở — dù §3.7
+  đã biết e2e chạy qua `start_fullstack.ps1` (dev server). Không phải lỗi coder; coder dừng đúng quy tắc.
+- **Mục đích gốc của mệnh đề** (bằng chứng runtime bổ sung cho AC8 và §3.5): (1) trình duyệt KHÔNG nối thẳng backend `:8000`
+  (Origin check + bind 127.0.0.1 + proxy chỉ có nghĩa khi app đi qua proxy); (2) mọi WS của APP đi qua đường `/ws/` của
+  proxy Vite. Socket HMR cùng origin `:3000`, không tới backend, không mang dữ liệu app → không vi phạm (1) hay (2).
+- **Chọn (a).** Loại (b) tắt HMR: là sửa hệ thống được kiểm cho vừa phép kiểm; đổi `frontend/vite.config.js` ngoài thiết kế
+  §3.5 và đổi trải nghiệm dev; không làm bằng chứng cho (1)(2) mạnh hơn. Loại (c) `vite preview`: DoD 1 và §3.7 kiểm đúng
+  đường người dùng chạy (`start_fullstack.ps1` → dev server + proxy); preview là cấu hình khác (cần build trước, khối
+  `preview` riêng) → e2e mất giá trị bằng chứng cho DoD 1.
+- **Định nghĩa chặt (Lần sửa 2, thay mệnh đề URL WS của AC12).** Một socket là "socket HMR của Vite" CHỈ KHI thỏa đồng thời:
+  1. URL khớp TOÀN BỘ regex `^ws://localhost:3000/\?token=[A-Za-z0-9_-]+$` (host đúng `localhost:3000` như trang, path
+     đúng `/`, đúng một tham số `token`);
+  2. header `Sec-WebSocket-Protocol` của bắt tay (CDP `Network.webSocketWillSendHandshakeRequest`) bằng đúng `vite-hmr`;
+  3. mọi message nhận là JSON có `type == "connected"` (đúng như 3 JSON e3d0df8); có message khác (vd. reload, lỗi) → KHÔNG
+     được xếp HMR.
+  Ba kiểm mới thay cho `ws_urls_all_via_proxy_no_8000`:
+  - `ws_no_8000_any_socket`: KHÔNG socket nào — kể cả socket HMR và socket mồ côi StrictMode (0B.2) — có URL chứa `:8000`.
+    Không ngoại lệ.
+  - `ws_app_urls_via_proxy`: có ≥ 1 socket không phải HMR; MỌI socket không phải HMR có URL bắt đầu bằng
+    `ws://localhost:3000/ws/`.
+  - `vite_hmr_socket_rule`: số socket HMR ≤ 1 mỗi lượt; mọi socket có protocol `vite-hmr` phải thỏa đủ 1–3 (không thỏa →
+    đỏ, liệt kê).
+  JSON ghi riêng danh sách socket HMR đã loại (`url`, `protocol`, `count_by_type`) để reviewer thấy chính xác cái gì bị loại.
+  Việc phân loại nằm trong MỘT hàm thuần của `scripts/e2e_fullstack.py` (không mở trình duyệt/server), có test âm AC12-t.
+- **Có phải chạy lại: CÓ.** Logic kiểm của `scripts/e2e_fullstack.py` đổi → 3 JSON e3d0df8 không còn là đầu ra của script
+  cuối. Phải chạy lại CẢ 3 kịch bản tại HEAD sạch chứa script mới, ghi 3 JSON mới. KHÔNG tính lại kiểm từ JSON cũ bằng tay
+  hay bằng script (bằng chứng phải có lệnh + commit).
+
+### 0B.2 Bốn giả định coder tự đặt ở B8 — quyết định
+1. **Clip Ký từ `qipedc_D0120T`: CHẤP NHẬN.** §3.7 viết mơ hồ ("clip đầu tiên (thứ tự của hàm)" không nói tham số `n`).
+   Mục đích: 1 clip TRAIN chọn tất định bằng hàm có sẵn, KHÁC W03251B (ca phát lặp đã biết, tách sang kế hoạch "segmenter
+   live" — để số sự kiện không bị nhiễu bởi lỗi đó). D0120T thỏa: `scripts/e2e_fullstack.py` (`clip_identity`) từ chối clip
+   VAL/TEST của `data/splits/unified`, JSON ghi `split: "train"`. §3.7 nay ghi đích danh (Lần sửa 2). Lượt chạy lại dùng ĐÚNG
+   clip này (không đổi clip sau khi đã thấy kết quả). Ghi nhận: smoke B7 dùng `select_train_clips(1, 0)` → W03292N; AC10
+   không quy định clip → không mâu thuẫn, không sửa.
+2. **Socket app đóng trước khi có message do React.StrictMode: CHẤP NHẬN CÓ ĐIỀU KIỆN.** Căn cứ: `frontend/src/main.jsx:7`
+   bọc `<React.StrictMode>`; ở dev React chạy effect mount → unmount → mount nên component mở socket, đóng, mở lại; JSON:
+   socket đầu của mỗi path có `handshake_status: null`, `closed: true`, 0 message. Điều kiện để một socket được coi là "mồ côi
+   StrictMode" (không phải kiểm `session_info` đầu tiên) — cũng nằm trong hàm thuần, có test AC12-t:
+   - nhận 0 message; đã đóng trong lượt chạy (`closed: true`);
+   - KHÔNG phải socket cuối cùng của path đó (socket cuối phải là socket được dùng, nhận `session_info` đầu tiên);
+   - tối đa 1 socket mồ côi cho mỗi path trong một lượt (mỗi component chỉ mount 1 lần trong kịch bản).
+   Vi phạm bất kỳ điều kiện → kiểm `strictmode_orphan_rule` đỏ. Socket mồ côi VẪN chịu `ws_no_8000_any_socket` và
+   `ws_app_urls_via_proxy`; message `error` trên MỌI socket của path vẫn được tính. JSON ghi số socket mồ côi theo path.
+3. **Cửa sổ 180 s gộp: CHẤP NHẬN.** Đo "health 200 và trang 3000 200" trong CÙNG 180 s tính từ lúc khởi chạy
+   `start_fullstack.ps1` chặt hơn hoặc bằng cách đo riêng từng cái. AC12 nay ghi rõ (Lần sửa 2).
+4. **Độ dài lượt ghi: CHẤP NHẬN.** Đánh vần: bấm `fs-record`, chờ đúng 1 vòng clip (thời lượng y4m), bấm `fs-stop` — 1 clip
+   hauuto là 1 ký hiệu, dưới giới hạn 300 frame. Ký từ: chạy ≥ 1 vòng clip, dừng sớm khi đủ điều kiện kịch bản (legacy
+   ≥ 30 `frame_result`; harmonized ≥ 1 `sign_result`/`sign_discarded`), tối đa 3 vòng (khớp "tối đa 3 vòng lặp clip").
+   Ghi nhận: webcam giả lặp clip từ lúc mở trang nên lượt ghi Đánh vần bắt đầu ở pha clip không kiểm soát → `prediction`
+   chỉ là `info_not_accuracy`; không thêm tiêu chí nào về nhãn. JSON phải ghi số `hand_frame` của lượt ghi và `ran_loops`
+   (đang có).
+
+### 0B.3 AC1 khi `P6..HEAD` chứa commit không thuộc kế hoạch 06
+- **Nguyên nhân (lỗi kế hoạch, không phải coder):** AC1 viết khi nhánh chỉ có commit của 06; sau đó nhánh nhận thêm commit
+  của orchestrator (`state:`), bàn giao cloud (8628948 "chore: cloud handoff", 296b12e, f62dd45 "cloud: …" — CLAUDE.md,
+  docs/CLOUD.md, scripts/cloud_setup.sh), merge cloud bbfdff3 (14 file, đã review ở `docs/reviews/cloud-2026-09-29-review.md`)
+  và commit ghi review đó (6a6538c, nếu nằm trên first-parent của P6..HEAD). `git diff --name-status P6 HEAD` gộp tất cả →
+  không dùng nguyên văn được.
+- **Cách đánh giá (Lần sửa 2; KHÔNG nới phạm vi của coder 06):**
+  - `C06` = commit trong `git log --first-parent --no-merges -E --grep='^(WIP )?06:' --format='%h %s' P6..HEAD` (commit của
+    coder 06). File của từng commit: `git show --name-status --format= <c>`.
+  - **AC1-a:** hợp file của `C06` ⊆ danh sách AC1, với đúng các điều kiện từng file như cũ (start_fullstack.ps1 chỉ `--host`;
+    RealtimeStream.jsx ≤ 3 dòng; `frontend/package.json` chỉ thêm khóa `scripts.test` — dòng khóa đứng trước chỉ đổi vì thêm
+    dấu phẩy được tính là một phần của việc thêm khóa, không dòng nào khác đổi). Không commit nào trong `C06` chạm danh sách
+    "KHÔNG đổi".
+  - **AC1-b:** MỌI commit first-parent khác trong `P6..HEAD` được liệt kê (hash + subject + file) trong 06-progress và thuộc
+    đúng một nhóm, chỉ chạm tập file của nhóm đó:
+    (i) orchestrator `state:` — docs/STATE.md, docs/usage_ledger.csv, docs/progress_log.md (chỉ thêm dòng: numstat cột xóa = 0);
+    (ii) planner kế hoạch 06 (facffea = Lần sửa 1; commit chứa Lần sửa 2 này) — docs/plans/06-viec5-frontend.md
+         (+ docs/STATE.md, docs/usage_ledger.csv);
+    (iii) bàn giao cloud 8628948, 296b12e, f62dd45 — CLAUDE.md, docs/CLOUD.md, scripts/cloud_setup.sh
+         (+ docs/STATE.md, docs/usage_ledger.csv);
+    (iv) merge bbfdff3 — đúng tập `git diff --name-status bbfdff3^1 bbfdff3`; commit review cloud 6a6538c — chỉ
+         docs/reviews/cloud-2026-09-29-review.md (+ docs/STATE.md, docs/usage_ledger.csv).
+    Commit không thuộc nhóm nào, hoặc chạm file ngoài tập của nhóm → DỪNG, báo planner (§7-9).
+  - **AC1-c:** không commit ngoài `C06` chạm file "của 06" (các file code/test/report/tài liệu trong danh sách AC1), trừ
+    docs/progress_log.md (nhóm i, chỉ thêm) và docs/plans/06-viec5-frontend.md (nhóm ii). Lệnh:
+    `git log --first-parent --format='%h %s' P6..HEAD -- <các file của 06>` chỉ được ra commit `C06` (+ các ngoại lệ vừa nêu).
+  - **AC1-d:** mỗi dòng của `git diff --name-status P6 HEAD` được quy về commit nguồn (bảng trong 06-progress); dòng không
+    quy được → FAIL.
+  - Giữ nguyên: `git diff P6 HEAD -- tests/` 0 dòng `-` với mọi test có ở P6; `git diff --diff-filter=D --name-only P6 HEAD`
+    rỗng; 3 file ` D` của người dùng chưa staged; không thêm file `.pt/.npz/.mp4/.y4m/.png/.jpg/.log`.
+- Coder đã làm phần lớn ở 06-progress B9 (tại 0e506c3); phải làm lại tại HEAD cuối (sau commit Lần sửa 2 và commit B8 lần 2)
+  theo đúng các lệnh trên.
+
+### 0B.4 AC2 đóng việc: dùng lệnh 31 module
+- **Có.** `docs/reviews/cloud-2026-09-29-review.md` (mục cuối) quy định từ sau merge bbfdff3 mọi lệnh không hồi quy (gồm 06
+  B8/B9 và review 06) thêm `tests.test_archive_private_kaggle_r05 tests.test_backend_source_guard`. Lý do theo mục đích của
+  AC2: đo không hồi quy trên đúng cây sẽ được review; cây đó có 2 module này; `tests.test_backend_source_guard` quét mã
+  backend mà kế hoạch 06 sửa (`backend/main.py`) nên là bằng chứng liên quan trực tiếp.
+- Lệnh đóng việc = lệnh 29 module cũ + 2 module (AC2, Lần sửa 2). Lệnh 29 module là tập con, không bắt chạy riêng.
+- Số test báo theo module, so với mốc có nguồn: 25 module cũ = B0 (06-progress B0); 4 module của 06 = B7 cộng số test
+  AC12-t thêm ở Lần sửa 2; 2 module merge = số đo trên cây merge (review cloud: 2 module mới `Ran 38` OK). Chênh ở module
+  nào phải giải thích bằng commit.
+
+### 0B.5 Việc coder làm tiếp (đóng B8/B9) và điều reviewer kiểm
+Coder (chặng 4, tiếp):
+1. **B8b-1 (test trước).** Thêm vào `tests/test_frontend_contract.py` lớp test AC12-t (§5) cho hàm thuần phân loại socket
+   và luật mồ côi StrictMode trong `scripts/e2e_fullstack.py` (nạp module theo đường dẫn, không mở trình duyệt/server).
+   Chạy → đỏ (hàm chưa có) là đúng.
+2. **B8b-2.** `impact evaluate --direction upstream` (và symbol mới nếu có); sửa `scripts/e2e_fullstack.py`: hàm thuần
+   (gợi ý `classify_ws(ws_list)` + `strictmode_orphans(sockets_of_path)`), thay kiểm `ws_urls_all_via_proxy_no_8000` bằng
+   `ws_no_8000_any_socket`, `ws_app_urls_via_proxy`, `vite_hmr_socket_rule`, thêm `strictmode_orphan_rule`; dùng luật mồ côi
+   cho `hand_ws_session_info` và `live_ws_first_message_session_info_v2`. `scripts/e2e_browser.cjs` chỉ sửa nếu thiếu dữ liệu
+   quan sát (đang có `protocol`, `count_by_type`, `closed`, `n_messages`). Chạy AC12-t → xanh; chạy lệnh AC2 31 module → 0
+   failure/error/skip. `detect-changes --scope all`; commit (message có impact/detect-changes).
+3. **B8b-3.** Tại HEAD đó, `git status --porcelain -- backend src frontend scripts tests` rỗng; chạy đúng 3 lệnh (như
+   `generated_by.command` của 3 JSON cũ, clip giữ nguyên):
+   - `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/e2e_fullstack.py --scenario fingerspell --video data/external/hauuto_raw/raw/raw/hau/a_hau_A_001.mp4 --out reports/e2e_<YYYY-MM-DD>/fingerspell_default.json`
+   - `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/e2e_fullstack.py --scenario word --video data/Dataset/Videos/D0120T.mp4 --out reports/e2e_<YYYY-MM-DD>/word_default.json`
+   - `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/e2e_fullstack.py --scenario word --model-type stgcn_h360 --video data/Dataset/Videos/D0120T.mp4 --out reports/e2e_<YYYY-MM-DD>/word_stgcn_h360.json`
+   `<YYYY-MM-DD>` = ngày chạy. Nếu vẫn là 2026-09-29 → ghi đè 3 file cũ (M). Nếu khác ngày → thư mục mới; thư mục cũ GIỮ
+   NGUYÊN (không xóa file), 06-progress ghi 3 JSON cũ là "bản chạy trước Lần sửa 2, bị thay thế". Mỗi lệnh exit 0,
+   `all_checks_pass: true`. Có kiểm nào đỏ (kể cả luật HMR/mồ côi gặp trường hợp khác 3 JSON cũ) → DỪNG, báo planner, KHÔNG
+   sửa luật (§7-8). Commit CHỈ 3 JSON (+ 06-progress).
+4. **B9b.** Tại HEAD cuối: lệnh AC2 31 module (log `../_plan06_tmp/b9b_ac2_31.log`), `cd frontend && npm test` (+ đếm file),
+   `npm run build`, `npm ls --depth=0` so với B0; `git status --porcelain` so với B0; AC1-a..d theo 0B.3 (bảng quy nguồn
+   trong 06-progress); `git diff --name-only <git_commit của 3 JSON mới> HEAD -- backend src frontend scripts tests` rỗng.
+   THÊM 1 dòng `docs/progress_log.md` (AC13; nêu cả Lần sửa 2 và commit của 3 JSON mới). Ghi backlog đề xuất như B9 cũ.
+   Commit. Orchestrator gọi vslt-reviewer.
+
+Reviewer kiểm (ngoài các AC khác):
+- Quyết định (a) và định nghĩa ở 0B.1 được cài ĐÚNG như chữ: regex neo đầu–cuối, host `localhost:3000`, protocol đúng
+  `vite-hmr`, types chỉ `connected`, ≤ 1 socket HMR; `:8000` cấm ở mọi socket; test AC12-t có đủ ca âm và không skip.
+- 3 JSON mới: `all_checks_pass: true`; `generated_by.git_commit` là commit chứa script mới (`git merge-base --is-ancestor
+  <commit script B8b-2> <git_commit>`), `code_dirty: false`; không đổi code sau lượt chạy (lệnh ở bước 4); danh sách socket
+  HMR bị loại đúng 0 hoặc 1 phần tử/lượt; clip Ký từ là `qipedc_D0120T`.
+- Luật mồ côi StrictMode: ≤ 1 mỗi path, 0 message, đã đóng, không phải socket cuối.
+- AC1 theo 0B.3 (tự chạy lại lệnh, không tin bảng của coder); AC2 31 module theo 0B.4.
+- Các mục reviewer còn nợ từ STATE (impact CRITICAL/HIGH ở B2/B3/B5/B6/B8, 050d337 thiếu detect-changes, B7 sửa
+  `tests/test_frontend_contract.py` không nới) vẫn giữ.
+
+### 0B.6 Thay đổi so với bản trước
+- §3.7: clip Ký từ ghi đích danh; luật socket HMR + mồ côi. §4 bảng: B8, B9 (thêm B8b/B9b). §5: AC1 (cách đánh giá 0B.3),
+  AC2 (31 module), AC12 (mệnh đề URL WS thay bằng 3 kiểm + luật mồ côi + cửa sổ 180 s gộp + độ dài lượt ghi + code không đổi
+  sau lượt chạy; thêm AC12-t). §7: thêm điểm dừng 8, 9. Không bỏ tiêu chí nào; cấm `:8000` giữ nguyên không ngoại lệ.
 
 ## 1. Mục tiêu và DoD
 
@@ -140,6 +293,8 @@ duyệt thật, webcam giả nạp clip thật).
   `frontend/node_modules`) và tiền lệ `scripts/take_screenshots.cjs` chạy Edge
   (`C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe`) với `--use-fake-device-for-media-stream`.
   → Unit test JS dùng `node --test` (có sẵn trong Node), e2e dùng puppeteer-core: KHÔNG cần cài gói mới.
+- (Lần sửa 2) `frontend/src/main.jsx:7` bọc app trong `<React.StrictMode>` → ở dev mỗi component mở WS hai lần (lần đầu
+  đóng ngay). `start_fullstack.ps1` chạy `npm run dev` → trang có thêm socket HMR của Vite (`/?token=…`, `vite-hmr`).
 
 ### 2.3 Còn thiếu (việc này làm)
 1. Đường trích landmark bàn tay Cấp 1 từ webcam, nhất quán với extractor train.
@@ -277,6 +432,7 @@ Server → client:
 - Qua proxy Vite, trình duyệt thấy `/api` và `/ws` là cùng origin → CORS không tham gia; backend vẫn thấy
   `Origin: http://localhost:3000` ở bắt tay WS nên Origin check vẫn có hiệu lực. CORS chỉ còn ý nghĩa khi một trang
   origin khác gọi thẳng :8000.
+- (Lần sửa 2) KHÔNG tắt HMR / không đổi `server.hmr`/`server.ws` của Vite (xem 0B.1).
 
 ### 3.6 Smoke test Phase 12 và tài liệu
 - `scripts/smoke_test_phase12.py` (sửa, vẫn là script thủ công dùng `TestClient`): message đầu phải là `session_info`
@@ -309,9 +465,12 @@ Server → client:
   4. dừng cây tiến trình (`taskkill /T /F /PID`), kiểm cổng 8000/3000 đã rảnh;
   5. ghi JSON: `generated_by{command, git_commit, code_dirty}`, phiên bản node/Edge/mediapipe, clip id (không đường dẫn
      tuyệt đối, không landmark), kết quả kịch bản, danh sách lỗi console (nguyên văn, cắt 300 ký tự).
+- (Lần sửa 2) Phân loại socket trong một hàm thuần của `scripts/e2e_fullstack.py`: socket HMR của Vite theo định nghĩa
+  0B.1 (loại khỏi kiểm "qua `/ws/`", KHÔNG loại khỏi kiểm `:8000`); socket mồ côi StrictMode theo 0B.2.
 - Clip: Đánh vần — `data/external/hauuto_raw/raw/raw/hau/a_hau_A_001.mp4` (640×480, cỡ webcam; clip TRAIN của model Cấp
-  1 → chỉ kiểm chạy được, KHÔNG phải độ chính xác). Ký từ — clip đầu tiên (thứ tự của hàm) của mẫu
-  `scripts/live_clip_sample.py` (seed 0, split TRAIN), KHÁC `qipedc_W03251B`. KHÔNG dùng clip TEST/VAL nào.
+  1 → chỉ kiểm chạy được, KHÔNG phải độ chính xác). Ký từ — (Lần sửa 2, ghi đích danh) `qipedc_D0120T`
+  (`data/Dataset/Videos/D0120T.mp4`) = phần tử đầu tiên KHÁC `qipedc_W03251B` của `scripts/live_clip_sample.py`
+  `select_train_clips()` với tham số mặc định (n=8, seed=0, split TRAIN). KHÔNG dùng clip TEST/VAL nào.
 
 ### 3.8 Quyết định review 04 mục 8–9: TÁCH khỏi Việc 5
 - **Mục 8 (tốc độ theo dt từng frame) và mục 9 (ký hiệu có nhịp nghỉ bị phát lặp, W03251B): KHÔNG làm trong kế hoạch này.**
@@ -335,6 +494,7 @@ Server → client:
 - `detail` 503 có thể chứa tên file (review 04 mục 6 / review 05): KHÔNG sửa ở đây — sửa sẽ đổi body mà test cũ đang
   kiểm, và sau khi bind 127.0.0.1 phạm vi lộ chỉ còn máy cục bộ. Đưa vào backlog 8.
 - (Lần sửa 1) Đo lệch Kaggle↔cục bộ trên toàn bộ clip hauuto: đề xuất backlog (§0.4), không làm ở đây.
+- (Lần sửa 2) Tắt HMR / chạy e2e trên `vite preview`: không làm (0B.1).
 
 ## 4. Chia việc
 
@@ -347,6 +507,7 @@ Quy ước chung cho mọi bước:
   (lệnh đã chạy + output thật rút gọn + hash).
 - Thư mục tạm ngoài repo: `../_plan06_tmp/`.
 - (Lần sửa 1) AC2 ở mốc trung gian B4–B6 theo §0.3; từ B7 trở đi AC2 phải xanh hoàn toàn.
+- (Lần sửa 2) Từ B8b trở đi, lệnh AC2 là bản 31 module (0B.4).
 
 | Bước | Nội dung | Phụ thuộc | Ước lượng |
 |---|---|---|---|
@@ -358,13 +519,14 @@ Quy ước chung cho mọi bước:
 | **B5** | UI "Ký từ" (§3.4): `Phase12Pipeline.jsx`, `CameraCapture.jsx`, `PredictionDisplay.jsx`, `Navbar.jsx`, dòng URL + chuỗi báo lỗi của `RealtimeStream.jsx`; `data-testid`: `live-connection`, `live-pipeline`, `live-model`, `live-status`, `live-recording`, `live-gloss`, `live-confidence`, `live-top5`, `live-discard`, `live-error`, `live-words`, `live-undo`, `camera-start`, `camera-stop`. `npm run build` (AC9). Sau B5 guard chỉ còn vi phạm trong `Fingerspelling.jsx` (§0.3). Commit. | B4 | 2 giờ |
 | **B6** | UI "Đánh vần" (§3.2): viết lại `Fingerspelling.jsx`; `data-testid`: `fs-status`, `fs-ws`, `fs-record`, `fs-stop`, `fs-frames`, `fs-prediction`, `fs-confidence`, `fs-candidates`, `fs-error`, `fs-add`, `fs-space`, `fs-backspace`, `fs-clear`, `fs-composed`, `fs-warnings`. `npm run build`. Sau B6 guard xanh (0 vi phạm). Commit. | B4 | 2 giờ |
 | **B7** | `scripts/smoke_test_phase12.py` (AC10) chạy với model mặc định VÀ `VSL_MODEL_TYPE=stgcn_h360`; viết lại `docs/phase12_api.md` (AC11, test thêm vào `tests/test_frontend_contract.py`). AC2 phải xanh hoàn toàn. Commit. | B2, B5, B6 | 1.5 giờ |
-| **B8** | E2E: `scripts/make_fake_webcam_y4m.py`, `scripts/e2e_browser.cjs`, `scripts/e2e_fullstack.py`; chạy 3 kịch bản AC12 (Đánh vần mặc định, Ký từ mặc định, Ký từ `stgcn_h360`) tại HEAD sạch; commit script + 3 JSON. | B5, B6, B7 | 2 giờ |
-| **B9** | Đóng: chạy AC2 đầy đủ + `npm test` + build; so `git status --porcelain` với B0; THÊM 1 dòng progress_log (AC13), ghi backlog đề xuất (kế hoạch "segmenter live"; hỏi người dùng trước khi xóa `RealtimeStream.jsx`; `detail` 503; đo lệch Kaggle↔cục bộ toàn bộ hauuto). Commit. Orchestrator gọi vslt-reviewer. | B0–B8 | 0.5 giờ |
+| **B8** | E2E: `scripts/make_fake_webcam_y4m.py`, `scripts/e2e_browser.cjs`, `scripts/e2e_fullstack.py`; chạy 3 kịch bản AC12 (Đánh vần mặc định, Ký từ mặc định, Ký từ `stgcn_h360`) tại HEAD sạch; commit script + 3 JSON. (Đã làm: 7e38118, e3d0df8 — bị thay thế bởi B8b theo Lần sửa 2.) | B5, B6, B7 | 2 giờ |
+| **B8b** | (Lần sửa 2, 0B.5 bước 1–3) Test AC12-t trước trong `tests/test_frontend_contract.py` → hàm thuần phân loại socket HMR/mồ côi + 4 kiểm mới trong `scripts/e2e_fullstack.py` → AC2 31 module xanh → commit; tại HEAD sạch đó chạy lại 3 kịch bản (clip giữ nguyên) → 3 JSON `all_checks_pass: true` → commit 3 JSON. Kiểm nào đỏ → DỪNG (§7-8). | B8 | 1.5 giờ |
+| **B9** | Đóng: chạy AC2 đầy đủ + `npm test` + build; so `git status --porcelain` với B0; THÊM 1 dòng progress_log (AC13), ghi backlog đề xuất (kế hoạch "segmenter live"; hỏi người dùng trước khi xóa `RealtimeStream.jsx`; `detail` 503; đo lệch Kaggle↔cục bộ toàn bộ hauuto). Commit. Orchestrator gọi vslt-reviewer. (Lần sửa 2: làm theo 0B.5 bước 4 — AC2 31 module, AC1 theo 0B.3, code không đổi sau lượt e2e — tại HEAD cuối sau B8b.) | B0–B8b | 0.5 giờ |
 
-Tổng ước lượng ≈ 16 giờ, GPU 0 giờ, không Kaggle, không cài gói.
+Tổng ước lượng ≈ 16 giờ (+ 1.5 giờ B8b), GPU 0 giờ, không Kaggle, không cài gói.
 
-**Chặng giao gợi ý:** chặng 1 = B0–B2 (xong); chặng 2 = B3–B4 (xong); chặng 3 = B5–B7 (UI hai chế độ + smoke + tài
-liệu); chặng 4 = B8–B9 (e2e fullstack + đóng việc).
+**Chặng giao gợi ý:** chặng 1 = B0–B2 (xong); chặng 2 = B3–B4 (xong); chặng 3 = B5–B7 (xong); chặng 4 = B8–B9 (B8 xong;
+còn B8b + B9 theo Lần sửa 2).
 
 ## 5. Tiêu chí chấp nhận (hợp đồng — coder KHÔNG được đổi; chỉ planner đổi và phải ghi lý do)
 
@@ -372,7 +534,8 @@ Mọi lệnh Python chạy qua `.venv/Scripts/python` với `PYTHONIOENCODING=ut
 hoạch này thêm. Test mới không cần mạng, không ghi file trong repo (chỉ thư mục tạm), và KHÔNG skip trên máy này (được
 `skipUnless` cho clone sạch, lý do nêu rõ file thiếu).
 
-**AC1 — Phạm vi thay đổi.** `git diff --name-status P6 HEAD` chỉ chứa:
+**AC1 — Phạm vi thay đổi.** (Lần sửa 2: đánh giá theo 0B.3 — danh sách dưới áp cho hợp file của các commit `C06` của coder;
+commit không thuộc 06 được quy nhóm theo AC1-b..d.) `git diff --name-status P6 HEAD` (phần thuộc `C06`) chỉ chứa:
 - `backend/main.py` (M); `src/inference/hand_live.py` (A); `start_fullstack.ps1` (M, chỉ tham số `--host`);
 - `frontend/vite.config.js` (M); `frontend/package.json` (M, CHỈ thêm khóa `scripts.test`); `frontend/index.html` (M, chỉ
   nếu cần để hết lỗi console ở AC12, ghi lý do);
@@ -383,7 +546,8 @@ hoạch này thêm. Test mới không cần mạng, không ghi file trong repo (
 - `scripts/smoke_test_phase12.py` (M); `scripts/{hand_live_check,make_fake_webcam_y4m,e2e_fullstack}.py`,
   `scripts/e2e_browser.cjs` (A);
 - `tests/{test_cors_origin_bind,test_hand_landmarks_ws,test_hand_live_equivalence,test_frontend_contract}.py` (A);
-- `reports/fingerspell_live_<YYYY-MM-DD>/hand_live_check.json`, `reports/e2e_<YYYY-MM-DD>/*.json` (A);
+- `reports/fingerspell_live_<YYYY-MM-DD>/hand_live_check.json`, `reports/e2e_<YYYY-MM-DD>/*.json` (A; (Lần sửa 2) M nếu
+  ghi đè cùng ngày);
 - `docs/phase12_api.md` (M); `docs/progress_log.md` (M, chỉ thêm); `docs/plans/06-progress.md` (A/M);
   `docs/plans/06-viec5-frontend.md` (chỉ planner).
 
@@ -392,10 +556,12 @@ KHÔNG đổi: `frontend/package-lock.json`, `frontend/src/App.jsx`, `Dictionary
 đã có, `docs/reviews/*`. Không xóa file nào. 3 file data của người dùng vẫn ` D` chưa staged. Không file `.pt/.npz/.mp4/.y4m/
 .png/.jpg/.log` nào được thêm vào git; `frontend/dist` và `node_modules` không vào git.
 
-**AC2 — Không hồi quy.** Lệnh (25 module của kế hoạch 05 + 4 module mới):
-`PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_alphabet_preprocessing tests.test_aspect_correction tests.test_realtime tests.test_split_guards tests.test_translation_core tests.test_vsl_system tests.test_ws_throughput tests.test_fingerspelling_api tests.test_unified_split_integrity tests.test_report_step4 tests.test_fingerspelling_limits tests.test_fingerspelling_compose tests.test_fingerspelling_deployed tests.test_alphabet_ckpt_provenance tests.test_harmonized tests.test_sign_segmenter tests.test_harmonized_live tests.test_ws_live_contract tests.test_live_harmonized_equivalence tests.test_archive_step4_kaggle tests.test_status_privacy tests.test_backend_model_unavailable tests.test_ws_dropped_frames tests.test_archive_private_kaggle tests.test_private_artifacts tests.test_cors_origin_bind tests.test_hand_landmarks_ws tests.test_hand_live_equivalence tests.test_frontend_contract -v`
-- **Đóng việc (B7, B8, B9):** 0 failure, 0 error, 0 skip. Số test = số B0 (25 module) + số test mới; báo theo module,
-  trước → sau.
+**AC2 — Không hồi quy.** (Lần sửa 2) Lệnh đóng việc — 31 module (25 của kế hoạch 05 + 4 module mới của 06 + 2 module từ merge
+cloud bbfdff3, xem 0B.4):
+`PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_alphabet_preprocessing tests.test_aspect_correction tests.test_realtime tests.test_split_guards tests.test_translation_core tests.test_vsl_system tests.test_ws_throughput tests.test_fingerspelling_api tests.test_unified_split_integrity tests.test_report_step4 tests.test_fingerspelling_limits tests.test_fingerspelling_compose tests.test_fingerspelling_deployed tests.test_alphabet_ckpt_provenance tests.test_harmonized tests.test_sign_segmenter tests.test_harmonized_live tests.test_ws_live_contract tests.test_live_harmonized_equivalence tests.test_archive_step4_kaggle tests.test_status_privacy tests.test_backend_model_unavailable tests.test_ws_dropped_frames tests.test_archive_private_kaggle tests.test_private_artifacts tests.test_cors_origin_bind tests.test_hand_landmarks_ws tests.test_hand_live_equivalence tests.test_frontend_contract tests.test_archive_private_kaggle_r05 tests.test_backend_source_guard -v`
+(Lệnh 29 module trước Lần sửa 2 là tập con; áp cho B7/B8 đã làm.)
+- **Đóng việc (B7, B8, B8b, B9):** 0 failure, 0 error, 0 skip. Số test báo theo module, trước → sau: 25 module cũ = B0;
+  4 module của 06 = B7 + số test AC12-t; 2 module merge = số trên cây merge (review cloud). Chênh phải giải thích.
 - **(Lần sửa 1) Mốc trung gian B4–B6:** như trên, ngoại trừ failure DUY NHẤT được phép là
   `TestFrontendSourceGuard.test_no_violation`, với tập vi phạm (cặp file + mẫu) là tập con của 14 vi phạm ghi ở
   06-progress B4, không tăng qua các mốc; sau B5 chỉ còn trong `Fingerspelling.jsx`; sau B6 = 0. Commit có guard đỏ ghi
@@ -504,7 +670,7 @@ JPEG và Kaggle — chỉ ghi nhận. Reviewer chạy lại → phần thân gi�
 
 **AC9 — Build, không thêm gói.** `cd frontend && npm run build` exit 0 (build vào `frontend/dist`, đã bị ignore);
 `npm ls --depth=0` giống hệt file B0; `git diff P6 HEAD -- frontend/package-lock.json` rỗng; diff `frontend/package.json`
-chỉ thêm `"test"`.
+chỉ thêm `"test"` ((Lần sửa 2) dòng khóa đứng trước chỉ đổi vì thêm dấu phẩy được chấp nhận; không dòng nào khác đổi).
 
 **AC10 — Smoke test Phase 12.** `.venv/Scripts/python scripts/smoke_test_phase12.py` exit 0 và in dòng PASSED, chạy 2
 lần: model mặc định và `VSL_MODEL_TYPE=stgcn_h360`. Output (cả mã lỗi thật của bước text rác và số message theo `type`)
@@ -527,31 +693,61 @@ chép vào `06-progress.md`.
 
 **AC12 — E2E fullstack trên clip thật (`scripts/e2e_fullstack.py`).** 3 lần chạy tại HEAD sạch
 (`git status --porcelain -- backend src frontend scripts tests` rỗng), mỗi lần 1 JSON trong `reports/e2e_<YYYY-MM-DD>/`:
-`fingerspell_default.json`, `word_default.json`, `word_stgcn_h360.json`. Chung cho cả 3:
-- `/api/health` 200 (`status == "ok"`) và trang 3000 200 trong 180 s; ghi `model_type`, `is_default` từ health.
+`fingerspell_default.json`, `word_default.json`, `word_stgcn_h360.json`. (Lần sửa 2) Mỗi lệnh exit 0 và JSON có
+`all_checks_pass: true`; 3 JSON là của lượt chạy B8b (script chứa luật 0B.1/0B.2), không phải e3d0df8. Chung cho cả 3:
+- `/api/health` 200 (`status == "ok"`) và trang 3000 200, (Lần sửa 2) cả hai trong CÙNG cửa sổ 180 s tính từ lúc khởi chạy
+  `start_fullstack.ps1`; ghi thời gian chờ từng cái; ghi `model_type`, `is_default` từ health.
 - 0 console `error`, 0 `pageerror`, 0 `requestfailed`, 0 HTTP ≥ 400 (lỗi nguyên văn được liệt kê nếu có).
-- Mọi URL WS bắt đầu bằng `ws://localhost:3000/ws/`; không URL nào chứa `:8000`. Không request nào tới
-  `POST /api/fingerspelling` (endpoint ảnh cũ).
+- (Lần sửa 2, thay mệnh đề "Mọi URL WS bắt đầu bằng `ws://localhost:3000/ws/`…"; lý do 0B.1):
+  - `ws_no_8000_any_socket`: KHÔNG socket nào (kể cả socket HMR, kể cả socket mồ côi) có URL chứa `:8000`.
+  - `ws_app_urls_via_proxy`: có ≥ 1 socket không phải HMR; mọi socket không phải HMR có URL bắt đầu bằng
+    `ws://localhost:3000/ws/`.
+  - `vite_hmr_socket_rule`: tối đa 1 socket HMR mỗi lượt; socket HMR = thỏa đồng thời (1) URL khớp toàn bộ
+    `^ws://localhost:3000/\?token=[A-Za-z0-9_-]+$`, (2) `Sec-WebSocket-Protocol` bắt tay == `vite-hmr`, (3) mọi message nhận
+    có `type == "connected"`; mọi socket có protocol `vite-hmr` mà không thỏa (1) hoặc (3) → đỏ. JSON liệt kê riêng socket
+    HMR đã loại.
+  - `strictmode_orphan_rule`: với mỗi path app, socket "mồ côi" (không phải kiểm message đầu `session_info`) chỉ khi: 0
+    message, `closed: true`, không phải socket cuối của path; tối đa 1 mồ côi mỗi path. Message `error` trên mọi socket
+    của path vẫn tính.
+  - Không request nào tới `POST /api/fingerspelling` (endpoint ảnh cũ).
 - Sau khi dừng: cổng 8000 và 3000 rảnh; không còn tiến trình con.
 - **Đánh vần** (`a_hau_A_001.mp4`): status `available: true`; WS hand-landmarks nhận `session_info`; ≥ 1
   `POST /sequence` 200; MỌI body gửi đi: `len(landmarks) == len(handedness) == len(timestamps_ms) ≤ 300`, ≥ 3 khung
   không null, không khung nào có 21 điểm trùng hệt, mọi |v| ≤ 10, `timestamps_ms` không giảm, `source_mirrored == false`;
   text `fs-prediction` == `prediction` của response cuối; `fs-confidence` hiển thị đúng `confidence` đó; bấm `fs-add` →
   `POST /compose` 200 và `fs-composed` == `text` của response. Ghi `prediction` và nhãn clip vào JSON dưới khóa
-  `info_not_accuracy`.
-- **Ký từ mặc định (legacy)**: message WS đầu là `session_info` với `protocol_version == 2`, `pipeline == "legacy"`;
-  ≥ 30 `frame_result`; 0 message `error`; `live-pipeline` hiện "legacy"; sau `camera-stop`, danh sách `live-top5` ==
-  `top5` của `frame_result` cuối cùng nhận được.
-- **Ký từ `VSL_MODEL_TYPE=stgcn_h360`**: `pipeline == "harmonized_v1"`; mọi `frame_result.prediction is null`; thấy ≥ 1
-  `frame_result.status == "RECORDING"` và `live-recording` hiện ra ít nhất một lần; ≥ 1 `sign_result` hoặc
-  `sign_discarded` trong tối đa 3 vòng lặp clip; nếu có `sign_result`: `live-gloss` == `gloss` và `live-top5` == `top5`
-  của nó; 0 message `error`. Nếu 0 sự kiện: DỪNG, báo planner (KHÔNG chỉnh segmenter hay tham số).
+  `info_not_accuracy`. (Lần sửa 2) Lượt ghi: bấm `fs-record`, chờ 1 vòng clip, bấm `fs-stop`; JSON ghi số `hand_frame`.
+- **Ký từ mặc định (legacy)** (Lần sửa 2: clip `qipedc_D0120T`): message WS đầu là `session_info` với
+  `protocol_version == 2`, `pipeline == "legacy"`; ≥ 30 `frame_result`; 0 message `error`; `live-pipeline` hiện "legacy";
+  sau `camera-stop`, danh sách `live-top5` == `top5` của `frame_result` cuối cùng nhận được.
+- **Ký từ `VSL_MODEL_TYPE=stgcn_h360`** (Lần sửa 2: clip `qipedc_D0120T`): `pipeline == "harmonized_v1"`; mọi
+  `frame_result.prediction is null`; thấy ≥ 1 `frame_result.status == "RECORDING"` và `live-recording` hiện ra ít nhất một
+  lần; ≥ 1 `sign_result` hoặc `sign_discarded` trong tối đa 3 vòng lặp clip; nếu có `sign_result`: `live-gloss` == `gloss`
+  và `live-top5` == `top5` của nó; 0 message `error`. Nếu 0 sự kiện: DỪNG, báo planner (KHÔNG chỉnh segmenter hay tham số).
+- (Lần sửa 2) Độ dài chạy Ký từ: ≥ 1 vòng clip, dừng sớm khi đủ điều kiện kịch bản, tối đa 3 vòng; JSON ghi `ran_loops`.
 - JSON có `generated_by{command, git_commit, code_dirty: false}`; không chứa đường dẫn tuyệt đối, landmark, hay ảnh.
+- (Lần sửa 2) Lúc đóng việc: `git diff --name-only <generated_by.git_commit> HEAD -- backend src frontend scripts tests`
+  rỗng (không đổi code sau lượt e2e).
+- **(Lần sửa 2) AC12-t — test luật phân loại socket** (lớp mới trong `tests/test_frontend_contract.py`, gọi hàm thuần của
+  `scripts/e2e_fullstack.py`, không mở trình duyệt/server, không skip). Đầu vào là danh sách socket dạng quan sát của
+  `e2e_browser.cjs` (`url`, `protocol`, `count_by_type`, `n_messages`, `closed`, `first_type`). Phải có đủ các ca:
+  1. `ws://localhost:3000/?token=AAsU3M2Axbsn` + `vite-hmr` + `{connected: 1}` + 1 socket app `/ws/live-stream` → HMR bị
+     loại, cả 3 kiểm URL xanh;
+  2. cùng URL nhưng protocol `null` → không phải HMR → `ws_app_urls_via_proxy` đỏ;
+  3. `vite-hmr` với URL `ws://localhost:3000/?token=x&a=1`, `ws://localhost:3000/foo?token=x`, `ws://127.0.0.1:3000/?token=x`
+     → mỗi ca đỏ;
+  4. `ws://localhost:8000/?token=x` + `vite-hmr` → `ws_no_8000_any_socket` đỏ; `ws://localhost:8000/ws/live-stream` → đỏ;
+  5. socket HMR có thêm message type khác `connected` (vd. `full-reload`) → đỏ;
+  6. 2 socket HMR hợp lệ → `vite_hmr_socket_rule` đỏ;
+  7. chỉ có socket HMR, không có socket app → `ws_app_urls_via_proxy` đỏ;
+  8. socket app `ws://localhost:3000/api/x` → đỏ;
+  9. path có [mồ côi (0 message, closed), socket dùng (first_type `session_info`)] → xanh; 2 mồ côi cùng path → đỏ;
+     socket 0 message là socket cuối/duy nhất của path → đỏ; socket 0 message chưa đóng (không phải cuối) → đỏ.
 
 **AC13 — Quy trình.** Mỗi commit có output `impact`/`detect-changes` (risk thật) trong message; không amend; 3 file ` D`
 của người dùng vẫn chưa staged; `docs/plans/06-progress.md` có output thật cho từng bước; `docs/progress_log.md` THÊM 1
-dòng (không sửa dòng cũ) nêu: commit, số test trước → sau, 3 JSON e2e, quyết định §3.8, lệch nguồn AC6 (§0.4), các việc
-theo sau đề xuất. Kết luận vslt-reviewer = APPROVE.
+dòng (không sửa dòng cũ) nêu: commit, số test trước → sau, 3 JSON e2e ((Lần sửa 2) của B8b, kèm commit), quyết định §3.8,
+lệch nguồn AC6 (§0.4), Lần sửa 2 (loại socket HMR theo 0B.1), các việc theo sau đề xuất. Kết luận vslt-reviewer = APPROVE.
 
 ## 6. Rủi ro dữ liệu/ML
 
@@ -580,11 +776,13 @@ mục 13 (JPEG q0.75, rơi frame thật, nhiều ký hiệu một phiên, webcam
 có ở Cấp 2 (plan 04 chưa so) — ghi vào Giới hạn của GATE.
 
 **Rò rỉ / TEST.** Không train, không chọn model. E2E và AC5 chỉ dùng clip TRAIN (hauuto là dữ liệu train của model Cấp 1;
-clip Ký từ lấy từ split TRAIN); KHÔNG chạm clip TEST/VAL (TEST chỉ chạy một lần, để dành cho GATE).
+clip Ký từ lấy từ split TRAIN); KHÔNG chạm clip TEST/VAL (TEST chỉ chạy một lần, để dành cho GATE). (Lần sửa 2) Clip Ký từ
+cố định là `qipedc_D0120T` trước khi chạy lại; không đổi clip theo kết quả.
 
 **Cỡ mẫu.** AC5 10 clip là kiểm tương đương CODE (tất định), không phải tỉ lệ. AC6 10 clip chỉ là ghi nhận, không suy ra
 tỉ lệ lệch cho toàn bộ dữ liệu. E2E 1 clip/kịch bản chỉ chứng minh "chạy được". `prediction` trong JSON e2e ghi dưới khóa
-`info_not_accuracy`; không suy ra độ chính xác từ đó.
+`info_not_accuracy`; không suy ra độ chính xác từ đó. (Lần sửa 2) Webcam giả là Y4M chuyển từ mp4 (không bằng hệt frame cv2)
+và lặp từ lúc mở trang (pha ghi không kiểm soát) — thêm lý do không đọc `prediction` như độ chính xác.
 
 **Nguồn gốc / giấy phép.** hauuto: giấy phép unknown, chỉ dùng nội bộ (`docs/data_registry.md` 1b); mã người ký trong id
 clip giữ nguyên theo quyết định (a) 2026-09-28; y4m/video/frame KHÔNG vào git; JSON không chứa landmark. QIPEDC video
@@ -593,14 +791,17 @@ chỉ đọc.
 **Bảo mật.** Origin check chỉ chặn trang web khác origin trong trình duyệt, không chặn client tự viết; bảo vệ chính là bind
 127.0.0.1. Endpoint mới mở thêm bề mặt: mỗi kết nối giữ 1 graph MediaPipe và xử lý tuần tự; chưa có giới hạn số kết nối
 (giống `/ws/live-stream` hiện tại) — chấp nhận vì chỉ nghe cục bộ; ghi vào `docs/phase12_api.md` mục Giới hạn nếu coder
-thấy cần. `VSL_CORS_ORIGINS` sai → backend không khởi động (fail-fast, không lặng lẽ mở rộng).
+thấy cần. `VSL_CORS_ORIGINS` sai → backend không khởi động (fail-fast, không lặng lẽ mở rộng). (Lần sửa 2) Socket HMR của
+Vite dev chỉ tồn tại khi chạy dev server (bind localhost, `strictPort`); không có trong bản build.
 
 **Trung thực UI (DoD 6).** Mọi chữ/từ/câu hiển thị lấy từ response server; khi model không sẵn sàng thì khóa chức năng và
 nói rõ; không còn frame giả lập; `confidence` ghi là độ tin cậy của model.
 
 ## 7. Điểm dừng
 
-**Không có điểm dừng CẦN NGƯỜI DÙNG trước khi code** (Lần sửa 1 không đổi điều này). Lý do:
+**Không có điểm dừng CẦN NGƯỜI DÙNG trước khi code** (Lần sửa 1 và Lần sửa 2 không đổi điều này: Lần sửa 2 không đổi
+model mặc định, không cần dữ liệu người dùng, không xóa file, không đụng thay đổi chưa commit, không có hành động không
+hoàn tác). Lý do:
 - CORS/Origin/bind đã có quyết định (2026-09-28): chỉ origin dev, không `*` kèm credentials.
 - Model mặc định KHÔNG đổi; `VSL_MODEL_TYPE=stgcn_h360` chỉ đặt trong môi trường của tiến trình e2e/smoke.
 - Không cần dữ liệu mới từ người dùng (dùng video cục bộ đã có; webcam thật là Bước 5).
@@ -617,3 +818,7 @@ nói rõ; không còn frame giả lập; `confidence` ghi là độ tin cậy c�
    planner (điểm dừng "vấn đề dữ liệu mới" của autopilot mục 5). (Lần sửa 1: lệch Kaggle↔cục bộ ở §0.4 đã được đánh giá,
    KHÔNG kích hoạt điểm này.)
 7. (Lần sửa 1) Sau B6 guard AC8 vẫn đỏ mà không sửa được bằng code → báo planner (không sửa guard).
+8. (Lần sửa 2) Ở B8b, bất kỳ kiểm AC12 nào đỏ ở lượt chạy lại — gồm luật HMR gặp message type khác `connected` hoặc > 1
+   socket HMR, hay luật mồ côi gặp > 1 mồ côi/path — → báo planner; KHÔNG sửa luật, KHÔNG tắt HMR, KHÔNG đổi clip.
+9. (Lần sửa 2) Khi đánh giá AC1 theo 0B.3, có commit first-parent trong `P6..HEAD` không thuộc `C06` và không thuộc nhóm
+   (i)–(iv), hoặc thuộc nhóm nhưng chạm file ngoài tập của nhóm → báo planner.
