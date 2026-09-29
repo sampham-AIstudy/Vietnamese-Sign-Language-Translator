@@ -18,3 +18,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-09-29T10:29Z,vslt-reviewer,cloud A-D,review merge,0,15,15,2,noisy (includes orchestrator turns)
 2026-09-29T11:02Z,vslt-coder,06,stage 4 (B8-B9 pre-check),15,31,16,2,ok
 2026-09-29T11:16Z,vslt-planner,06,revision 2,31,44,13,2,ok
+2026-09-29T11:31Z,vslt-coder,06,B8b-1..B8b-3 trial,44,53,9,1,ok

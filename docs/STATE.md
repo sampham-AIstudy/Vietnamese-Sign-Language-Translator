@@ -21,8 +21,12 @@
   Planner Lần sửa 2 XONG (§0B của kế hoạch 06, commit cùng lượt này): AC12 chọn (a) — loại socket HMR theo luật chặt
   (regex neo, protocol vite-hmr, chỉ type connected, ≤1/lượt; :8000 cấm mọi socket); luật socket mồ côi StrictMode; chấp nhận 4 giả định;
   AC1 chỉ áp cho commit `^(WIP )?06:`, commit khác quy về 4 nhóm; AC2 đóng việc = 31 module. PHẢI chạy lại 3 kịch bản e2e.
-  ĐANG GIAO: vslt-coder kế hoạch 06 B8b + B9b (0B.5) — 18:18, HEAD (+state).
-- Hạn mức (18:16): 5 giờ 44% (reset 22:10 giờ VN), 7 ngày 44%. Sổ đo: docs/usage_ledger.csv
+  Coder B8b-1/B8b-2 XONG (302072c, eb379fa: 16 test AC12-t; AC2 31 module Ran 483 OK, 0 skip). B8b-3 DỪNG §7-8 (1a4e182):
+  chạy thử tại eb379fa (JSON ngoài repo ../_plan06_tmp/b8b3_trial_*.json): Ký từ 21/21, h360 24/24 xanh; Đánh vần 22/23 đỏ
+  strictmode_orphan_rule — App.jsx tab mặc định 'realtime' mount Phase12Pipeline (2 socket /ws/live-stream do StrictMode),
+  kịch bản chuyển tab ở 2.21 s → cả 2 socket đóng 0 message. App.jsx thuộc danh sách KHÔNG đổi.
+  ĐANG GIAO: vslt-planner kế hoạch 06 Lần sửa 3 (luật socket của component bị gỡ khi chuyển tab) — 18:33.
+- Hạn mức (18:31): 5 giờ 53% (reset 22:10 giờ VN), 7 ngày 45%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
