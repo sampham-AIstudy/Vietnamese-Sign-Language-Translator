@@ -3,11 +3,16 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-29 10:35 (giờ Việt Nam)
-- HEAD: 026f474 | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG LÀM — vslt-coder kế hoạch 06 chặng 3 [B5, B6, B7], giao 10:35, 5h 45% (cổng 75 ≤ 90).
-  Tiến độ: docs/plans/06-progress.md. Nếu bị ngắt: giao lại coder với kế hoạch + 06-progress.md, tiếp tục từ bước dở.
-- Hạn mức (10:33): 5 giờ 45% (reset 14:40 giờ VN), 7 ngày 32%. Sổ đo: docs/usage_ledger.csv
+- Cập nhật lần cuối: 2026-09-29 10:50 (giờ Việt Nam)
+- HEAD: 34a527d (+ commit cloud/state) | Nhánh: feat/vslt-complete (đã push lên origin)
+- Trạng thái phiên: DỪNG LOCAL — bàn giao sang Claude Code on the web (docs/CLOUD.md). Không agent local nào đang chạy.
+  HEAD có 1 test đỏ CÓ CHỦ ĐÍCH: TestFrontendSourceGuard.test_no_violation (2 vi phạm trong Fingerspelling.jsx, B6 sẽ sửa).
+  Kế hoạch 06: xong B0–B5 (34a527d); còn B6 (UI Đánh vần), B7 (smoke_test_phase12 + phase12_api.md), B8 (e2e — cần Edge,
+  video thật: làm ở LOCAL), B9 (đóng việc) → review. Bản nháp B6 ở ../_plan06_tmp/Fingerspelling.jsx (chỉ có trên máy local).
+  Việc gợi ý cho cloud (mỗi việc một phiên, nhánh riêng, orchestrator local review rồi merge):
+  A) planner Việc 6 → docs/plans/07-viec6-che-do.md; B) planner segmenter live (backlog 2b); C) dọn dẹp review 05
+  (scripts/archive_private_kaggle.py, README); D) test guard DoD 7 cho backend/src. Không làm kế hoạch 06 song song ở 2 nơi.
+- Hạn mức (10:48, local): xem docs/usage_ledger.csv. Trên cloud không có vslt_usage.json → "không biết".
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -108,3 +113,4 @@
 - 2026-09-29 00:15 | khôi phục sau tạm dừng (người dùng nhắn "tiếp tục") | STATE khớp git (HEAD 20b0c36), bản nháp AC11 còn ở ../_plan05_tmp | Giao coder 05 chặng B7–B8.
 - 2026-09-29 01:35 | dừng theo yêu cầu người dùng (đi ngủ, tắt máy) | planner 06 xong, coder 06 chưa giao | Lưu STATE, commit, tắt máy.
 - 2026-09-29 09:44 | khôi phục sau tắt máy (người dùng nhắn "tiếp tục") | STATE khớp git (HEAD dbec36c), không có việc dở | Giao coder 06 chặng 1.
+- 2026-09-29 10:50 | bàn giao cloud theo yêu cầu người dùng (sắp hết quota) | coder 06 dừng sau B5 (34a527d) | Thêm docs/CLOUD.md, scripts/cloud_setup.sh, CLAUDE.md bước 0; push feat/vslt-complete.

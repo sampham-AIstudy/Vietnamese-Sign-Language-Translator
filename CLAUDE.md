@@ -49,6 +49,7 @@ This project is indexed by GitNexus as **Vietnamese-Sign-Language-Translator** (
 (giới hạn API, thoát chương trình, nén context). Mọi thứ cần để tiếp tục nằm trong FILE, không nằm trong trí nhớ hội thoại.
 
 ### Khi bắt đầu phiên, hoặc khi người dùng nhắn "tiếp tục" / "continue"
+0. Nếu `CLAUDE_CODE_REMOTE=true` (Claude Code on the web): đọc và làm mục 2 của `docs/CLOUD.md` trước (venv, npm ci, dữ liệu).
 1. Đọc `docs/STATE.md` (trạng thái duy nhất cần tin), rồi `docs/progress_log.md` (10 dòng cuối).
 2. Đối chiếu với thực tế, không tin STATE.md mù quáng:
    - `git status`, `git branch --show-current`, `git log --oneline -15`
