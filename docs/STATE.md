@@ -3,18 +3,16 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-29 11:08 (giờ Việt Nam)
-- HEAD: dbd79f2 (+ commit state: tắt máy) | Nhánh: feat/vslt-complete (đã push lên origin)
-- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 77% lúc 11:03, reset 14:40 giờ VN. Người dùng HỦY tắt máy (11:07): chờ reset, làm tiếp
-  trong cửa sổ mới, xong/hết hạn mức thì lưu + push + TẮT MÁY. Hẹn giờ nền tự đánh thức orchestrator lúc ~14:42.
-  Kế hoạch 06: XONG B0–B7 (B5 34a527d, B6 0328c1b, B7 dbd79f2). AC2 429 OK, 0 fail, 0 skip; npm test 26 pass; guard frontend 0 vi phạm;
-  smoke_test_phase12 PASSED (legacy + stgcn_h360). Việc kế tiếp khi "tiếp tục" (LOCAL — cần Edge + video thật):
-  B8 e2e fullstack (3 kịch bản, JSON có commit) → B9 đóng việc (progress_log) → vslt-reviewer toàn bộ kế hoạch 06 (chia phần).
-  Reviewer cần xác minh: CRITICAL impact ở B5/B6 (component React, GitNexus nhầm tên JS↔Python), HIGH ở B2/B3 (symbol mới),
+- Cập nhật lần cuối: 2026-09-29 17:20 (giờ Việt Nam)
+- HEAD: 353c46d (+ commit state này) | Nhánh: feat/vslt-complete
+- Trạng thái phiên: ĐANG CHẠY — cửa sổ 5h mới (0% lúc 17:16, reset 22:10 giờ VN), 7 ngày 38%.
+  Kế hoạch 06: XONG B0–B7 (B5 34a527d, B6 0328c1b, B7 dbd79f2). Còn: B8 e2e fullstack (LOCAL, Edge + video thật) → B9 → review 06.
+  Reviewer 06 cần xác minh: CRITICAL impact ở B5/B6 (component React, GitNexus nhầm tên JS↔Python), HIGH ở B2/B3 (symbol mới),
   B7 sửa tests/test_frontend_contract.py (file do chính kế hoạch 06 tạo ở B4 — kiểm không nới), 050d337 thiếu detect-changes.
-  CLOUD: phiên claude.ai/code đang làm A (plan 07 Việc 6) + B (plan 08 segmenter); push bị 403 (GitHub app chưa cấp quyền ghi —
-  người dùng đang sửa). Khi "tiếp tục": `git fetch origin`, xem nhánh cloud mới + docs/cloud_reports/*.md, review trước khi merge.
-- Hạn mức (11:03): 5 giờ 77% (reset 14:40 giờ VN), 7 ngày 36%. Sổ đo: docs/usage_ledger.csv
+  CLOUD: nhánh origin/cloud/2026-09-29-viec-a-d (HEAD ab40a82, base f3a7371, merge-tree KHÔNG xung đột) — báo cáo
+  docs/cloud_reports/viec-A-D-2026-09-29.md: plan 07 (Việc 6), plan 08 (segmenter live) = chỉ kế hoạch; plan 09 (dọn dẹp review 05)
+  và plan 10 (guard DoD 7 backend, 9 vi phạm có sẵn, chưa sửa) đã code + reviewer cloud APPROVE vòng 1. Chưa merge: chờ vslt-reviewer local.
+- Hạn mức (17:16): 5 giờ 0% (reset 22:10 giờ VN), 7 ngày 38%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -77,7 +75,11 @@
 - (2026-09-29 11:07) Không tắt máy lúc 11:05; chờ hạn mức reset 14:40, chạy tiếp phiên sau reset, xong thì lưu + tắt máy.
 
 ## Câu hỏi chờ người dùng
-- (không có)
+- (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
+  reports/PHASE4B_REPORT.md:112 ghi "unseen / zero leakage" là sai; mặc định: ghi nhãn đúng, không viết lại báo cáo cũ.
+  Có thêm backlog train lại CSLR chia theo câu (tốn GPU Kaggle)? Có lưu checkpoint CSLR/ViT5 lên Kaggle dataset private?
+  (2) Việc C: kiểm archive_name chỉ áp đúng luật cho manifest do script tự sinh (manifest bước 4 không có tiền tố reports/) — giữ hay áp nguyên văn?
+  (3) KAGGLE_KEY trong môi trường cloud còn là chữ mẫu — người dùng tự điền (không đưa vào chat/repo).
 
 ## Backlog còn lại (thứ tự)
 1. (xong — kế hoạch 05)
@@ -123,3 +125,4 @@
 - 2026-09-29 09:44 | khôi phục sau tắt máy (người dùng nhắn "tiếp tục") | STATE khớp git (HEAD dbec36c), không có việc dở | Giao coder 06 chặng 1.
 - 2026-09-29 10:50 | bàn giao cloud theo yêu cầu người dùng (sắp hết quota) | coder 06 dừng sau B5 (34a527d) | Thêm docs/CLOUD.md, scripts/cloud_setup.sh, CLAUDE.md bước 0; push feat/vslt-complete.
 - 2026-09-29 11:05 | dừng theo ngân sách + yêu cầu tắt máy | kế hoạch 06 xong B0–B7, còn B8–B9 + review; cloud A/B chưa push được (403) | Lưu STATE, commit, push, tắt máy.
+- 2026-09-29 17:20 | khôi phục sau chờ hạn mức (lệnh sleep nền bị dừng khi phiên cũ kết thúc; người dùng báo cloud xong) | STATE khớp git (HEAD 353c46d), cloud đã push nhánh cloud/2026-09-29-viec-a-d | Giao vslt-reviewer kiểm nhánh cloud trước khi merge; sau đó B8.
