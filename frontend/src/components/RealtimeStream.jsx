@@ -19,6 +19,7 @@ import {
   Zap,
   Sparkles,
 } from 'lucide-react';
+import { wsUrl as buildWsUrl } from '../lib/ws';
 
 export default function RealtimeStream({ onSaveHistory }) {
   // Streaming state
@@ -140,7 +141,7 @@ export default function RealtimeStream({ onSaveHistory }) {
     setErrorMessage('');
 
     // Determine WS URL (default port 8000 for Python AI service)
-    const wsUrl = `ws://${window.location.hostname}:8000/ws/live-stream`;
+    const wsUrl = buildWsUrl(window.location, '/ws/live-stream');
     const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
 
@@ -200,7 +201,7 @@ export default function RealtimeStream({ onSaveHistory }) {
     ws.onerror = (err) => {
       console.error('WebSocket Error:', err);
       setConnectionStatus('error');
-      setErrorMessage('Không thể kết nối đến Python AI Backend (:8000/ws/live-stream). Vui lòng đảm bảo FastAPI backend đang chạy.');
+      setErrorMessage('Không thể kết nối đến Python AI Backend (/ws/live-stream). Vui lòng đảm bảo FastAPI backend đang chạy.');
     };
 
     ws.onclose = () => {

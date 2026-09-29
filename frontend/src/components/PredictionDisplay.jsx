@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import {
   Activity,
-  CheckCircle2,
   Clock,
   Volume2,
   Copy,
   Trash2,
+  Undo2,
   Wifi,
   WifiOff,
   AlertCircle,
@@ -15,26 +15,30 @@ import {
 } from 'lucide-react';
 
 /**
- * PredictionDisplay Component (Phase 12)
- * Renders real-time sign language predictions, top-5 candidates,
- * telemetry metrics (FPS, Latency), status badges, and sentence history.
+ * PredictionDisplay Component ("Ký từ")
+ * Renders what the server sent: top-1 gloss + model confidence, top-5 candidates, telemetry, status and the word
+ * list. Every value comes from a /ws/live-stream message (frame_result on the legacy path, sign_result on the
+ * harmonized_v1 path); nothing is computed or invented here.
  */
 export default function PredictionDisplay({
-  gloss = '...',
-  confidence = 0.0,
-  status = 'IDLE', // 'IDLE' | 'DETECTING' | 'CONFIRMED'
+  gloss = null,
+  confidence = null,
+  status = 'IDLE', // legacy: IDLE | DETECTING | CONFIRMED; harmonized_v1: IDLE | RECORDING | WAIT_REST
   top5 = [],
-  fps = 0,
-  latencyMs = 0,
+  fps = null,
+  latencyMs = null,
   connectionStatus = 'disconnected', // 'disconnected' | 'connecting' | 'connected' | 'error'
   errorMessage = '',
   sentence = [],
   onClearSentence,
+  onUndoWord,
   onSpeakSentence,
-  bufferFill = 0,
-  bufferCapacity = 60,
+  bufferFill = null,
+  bufferCapacity = null,
+  resultLabel = 'Từ Nhận Diện (Top-1 Gloss)',
 }) {
   const [copied, setCopied] = useState(false);
+  const hasConfidence = typeof confidence === 'number' && Number.isFinite(confidence);
 
   const handleCopy = () => {
     if (sentence.length === 0) return;
@@ -58,6 +62,18 @@ export default function PredictionDisplay({
           dot: 'bg-amber-400 animate-ping',
           text: 'Đang nhận diện...',
         };
+      case 'RECORDING':
+        return {
+          bg: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
+          dot: 'bg-rose-400 animate-pulse',
+          text: 'Đang ghi ký hiệu',
+        };
+      case 'WAIT_REST':
+        return {
+          bg: 'bg-amber-500/20 text-amber-400 border-amber-500/40',
+          dot: 'bg-amber-400',
+          text: 'Chờ hạ tay',
+        };
       case 'IDLE':
       default:
         return {
@@ -78,7 +94,7 @@ export default function PredictionDisplay({
           <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <Wifi className="w-3.5 h-3.5" />
-            WebSocket Online (:8000)
+            WebSocket đã kết nối
           </span>
         );
       case 'connecting':
@@ -109,26 +125,28 @@ export default function PredictionDisplay({
     <div className="flex flex-col gap-4">
       {/* 1. Connection & Performance Telemetry Bar */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" data-testid="live-connection" data-status={connectionStatus}>
           {getConnectionBadge()}
         </div>
 
         <div className="flex items-center gap-4 text-xs font-mono text-slate-400">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5" title="Thời gian xử lý phía server của frame gần nhất">
             <Clock className="w-3.5 h-3.5 text-brand-400" />
-            <span>Độ trễ: </span>
-            <span className="text-white font-semibold">{latencyMs} ms</span>
+            <span>Server: </span>
+            <span className="text-white font-semibold">{latencyMs ?? '—'} ms</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Zap className="w-3.5 h-3.5 text-emerald-400" />
             <span>Tốc độ: </span>
-            <span className="text-white font-semibold">{fps} FPS</span>
+            <span className="text-white font-semibold">{fps ?? '—'} FPS</span>
           </div>
-          <div className="hidden sm:flex items-center gap-1.5">
-            <Layers className="w-3.5 h-3.5 text-purple-400" />
-            <span>Buffer: </span>
-            <span className="text-white font-semibold">{bufferFill}/{bufferCapacity}</span>
-          </div>
+          {bufferCapacity !== null && (
+            <div className="hidden sm:flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-purple-400" />
+              <span>Buffer: </span>
+              <span className="text-white font-semibold">{bufferFill ?? 0}/{bufferCapacity}</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -142,46 +160,47 @@ export default function PredictionDisplay({
 
       {/* 2. Primary Recognition Result Card */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl relative overflow-hidden">
-        {/* Background glow when confirmed */}
         {status === 'CONFIRMED' && (
           <div className="absolute -right-12 -top-12 w-36 h-36 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
         )}
 
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-            Từ Nhận Diện (Top-1 Gloss)
+            {resultLabel}
           </span>
-          <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border flex items-center gap-1.5 ${statusBadge.bg}`}>
+          <span data-testid="live-status" data-status={status}
+                className={`px-2.5 py-0.5 rounded-full text-xs font-medium border flex items-center gap-1.5 ${statusBadge.bg}`}>
             <span className={`w-1.5 h-1.5 rounded-full ${statusBadge.dot}`} />
             {statusBadge.text}
           </span>
         </div>
 
-        {/* Large Gloss Text */}
+        {/* Large Gloss Text (exactly the gloss sent by the server) */}
         <div className="my-3">
-          <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight capitalize">
-            {gloss !== '...' ? gloss : '...'}
+          <div data-testid="live-gloss" className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+            {gloss || '...'}
           </div>
         </div>
 
-        {/* Confidence Gauge Bar */}
+        {/* Model confidence */}
         <div className="mt-4">
           <div className="flex items-center justify-between text-xs mb-1.5">
-            <span className="text-slate-400">Độ Tin Cậy (Confidence)</span>
-            <span className="font-mono font-bold text-brand-400">
-              {(confidence * 100).toFixed(1)}%
+            <span className="text-slate-400">Độ tin cậy của mô hình</span>
+            <span data-testid="live-confidence" data-value={hasConfidence ? String(confidence) : ''}
+                  className="font-mono font-bold text-brand-400">
+              {hasConfidence ? `${(confidence * 100).toFixed(1)}%` : '—'}
             </span>
           </div>
           <div className="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
             <div
               className={`h-full transition-all duration-200 rounded-full ${
-                confidence >= 0.7
+                hasConfidence && confidence >= 0.7
                   ? 'bg-gradient-to-r from-emerald-500 to-teal-400'
-                  : confidence >= 0.4
+                  : hasConfidence && confidence >= 0.4
                   ? 'bg-gradient-to-r from-amber-500 to-yellow-400'
                   : 'bg-slate-700'
               }`}
-              style={{ width: `${Math.min(100, Math.max(0, confidence * 100))}%` }}
+              style={{ width: `${hasConfidence ? Math.min(100, Math.max(0, confidence * 100)) : 0}%` }}
             />
           </div>
         </div>
@@ -198,19 +217,20 @@ export default function PredictionDisplay({
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2" data-testid="live-top5">
           {top5.length === 0 ? (
             <div className="py-4 text-center text-xs text-slate-500">
-              Chưa có dữ liệu dự đoán từ mô hình
+              Chưa có dự đoán từ mô hình
             </div>
           ) : (
             top5.slice(0, 5).map((item, idx) => {
-              const itemGloss = typeof item === 'object' ? item.gloss : item[0];
-              const itemConf = typeof item === 'object' ? item.confidence : item[1];
+              const itemGloss = typeof item === 'object' && !Array.isArray(item) ? item.gloss : item[0];
+              const itemConf = typeof item === 'object' && !Array.isArray(item) ? item.confidence : item[1];
               const isTop1 = idx === 0;
 
               return (
-                <div key={idx} className="flex items-center gap-3 text-xs">
+                <div key={idx} className="flex items-center gap-3 text-xs" data-testid="live-top5-item"
+                     data-gloss={itemGloss} data-confidence={String(itemConf)}>
                   <span className={`w-5 font-mono text-center font-bold ${isTop1 ? 'text-brand-400' : 'text-slate-500'}`}>
                     #{idx + 1}
                   </span>
@@ -233,18 +253,27 @@ export default function PredictionDisplay({
         </div>
       </div>
 
-      {/* 4. Accumulated Sentence History */}
+      {/* 4. Word list (every word reported by the server, in order) */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
-            Câu Đã Ghép (Sentence Stream)
+            Các từ đã nhận
           </span>
           <div className="flex items-center gap-1.5">
+            <button
+              data-testid="live-undo"
+              onClick={onUndoWord}
+              disabled={sentence.length === 0}
+              className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed text-xs transition-colors"
+              title="Xóa từ cuối"
+            >
+              <Undo2 className="w-3.5 h-3.5" />
+            </button>
             <button
               onClick={() => onSpeakSentence && onSpeakSentence(sentence.join(' '))}
               disabled={sentence.length === 0}
               className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed text-xs transition-colors"
-              title="Đọc to câu tiếng Việt (TTS)"
+              title="Đọc to (TTS)"
             >
               <Volume2 className="w-3.5 h-3.5" />
             </button>
@@ -260,22 +289,24 @@ export default function PredictionDisplay({
               onClick={onClearSentence}
               disabled={sentence.length === 0}
               className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/40 text-slate-300 hover:text-rose-400 disabled:opacity-40 disabled:cursor-not-allowed text-xs transition-colors"
-              title="Xóa lịch sử câu"
+              title="Xóa hết"
             >
               <Trash2 className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
-        <div className="min-h-[52px] p-3 rounded-xl bg-slate-950 border border-slate-800/80 flex flex-wrap items-center gap-1.5">
+        <div data-testid="live-words"
+             className="min-h-[52px] p-3 rounded-xl bg-slate-950 border border-slate-800/80 flex flex-wrap items-center gap-1.5">
           {sentence.length === 0 ? (
             <span className="text-xs text-slate-500 italic">
-              Các từ ký hiệu được xác nhận sẽ tự động nối thành câu tại đây...
+              Các từ server nhận ra sẽ hiện tại đây (không gộp, không khử trùng)...
             </span>
           ) : (
             sentence.map((word, i) => (
               <span
                 key={i}
+                data-testid="live-word"
                 className="px-2.5 py-1 rounded-lg bg-brand-500/10 text-brand-300 border border-brand-500/20 text-xs font-medium"
               >
                 {word}

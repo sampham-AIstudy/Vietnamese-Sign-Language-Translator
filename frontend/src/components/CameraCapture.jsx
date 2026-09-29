@@ -1,23 +1,27 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Camera, CameraOff, RefreshCw, Eye, EyeOff, Radio } from 'lucide-react';
+import { Camera, CameraOff, Eye, EyeOff } from 'lucide-react';
+import { nowMs } from '../lib/ws';
 
 /**
- * CameraCapture Component (Phase 12)
- * Handles live webcam capture via navigator.mediaDevices.getUserMedia,
- * captures video frames onto HTML5 canvas, compresses to Base64 or Binary JPEG,
- * and streams frames over WebSocket to the FastAPI backend.
+ * CameraCapture Component ("Ký từ", /ws/live-stream protocol_version 2)
+ * Captures webcam frames onto a canvas (NOT mirrored: the mirror is display-only CSS, as in training) and sends
+ * each one as JSON {image: JPEG data URL, timestamp} over the WebSocket returned by getSocket().
+ * - timestamp = nowMs() (performance clock, monotonic): the harmonized path requires strictly increasing client
+ *   timestamps, and sign_result.metrics.trigger_client_timestamp lets the client measure end-to-end latency.
+ * - Frames always carry a timestamp (no binary mode): a session must not mix frames with and without timestamps.
+ * - getSocket() is read at every tick, so a reconnected socket is used (no stale socket captured at render time).
  */
 export default function CameraCapture({
-  ws,
+  getSocket,
   isConnected,
   targetFps = 25,
+  jpegQuality = 0.75,
   drawSkeleton = true,
   landmarks = null,
   onFpsUpdate,
   onError,
 }) {
   const [isActive, setIsActive] = useState(false);
-  const [sendFormat, setSendFormat] = useState('base64'); // 'base64' | 'binary'
   const [showOverlay, setShowOverlay] = useState(drawSkeleton);
 
   const videoRef = useRef(null);
@@ -26,8 +30,8 @@ export default function CameraCapture({
   const streamRef = useRef(null);
   const timerRef = useRef(null);
   const frameCountRef = useRef(0);
-  const fpsTimerRef = useRef(Date.now());
-  const isEncodingRef = useRef(false);
+  const fpsTimerRef = useRef(nowMs());
+  const tickRef = useRef(null);
 
   // 1. Draw MediaPipe skeleton keypoints onto overlay canvas
   const renderSkeleton = useCallback(() => {
@@ -83,8 +87,9 @@ export default function CameraCapture({
     renderSkeleton();
   }, [landmarks, renderSkeleton]);
 
-  // 2. Frame capture and send loop
+  // 2. Frame capture and send (one tick of the capture timer)
   const grabAndSendFrame = useCallback(() => {
+    const ws = getSocket ? getSocket() : null;
     if (!videoRef.current || !canvasRef.current || !ws) return;
     if (ws.readyState !== WebSocket.OPEN) return;
 
@@ -102,52 +107,30 @@ export default function CameraCapture({
       }
     }
 
+    // Guard: skip capture if the socket buffer is backed up
+    if (ws.bufferedAmount && ws.bufferedAmount > 65536) return;
+
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Calculate Client FPS
+    // Client FPS (frames actually sent)
+    const now = nowMs();
     frameCountRef.current += 1;
-    const now = Date.now();
     const elapsed = now - fpsTimerRef.current;
     if (elapsed >= 1000) {
-      const calcFps = Math.round((frameCountRef.current * 1000) / elapsed);
-      if (onFpsUpdate) onFpsUpdate(calcFps);
+      if (onFpsUpdate) onFpsUpdate(Math.round((frameCountRef.current * 1000) / elapsed));
       frameCountRef.current = 0;
       fpsTimerRef.current = now;
     }
 
-    // Guard: Skip capture if previous frame encoding is in-flight or socket buffer is backed up
-    if (isEncodingRef.current) return;
-    if (ws.bufferedAmount && ws.bufferedAmount > 65536) {
-      return;
-    }
+    const dataUrl = canvas.toDataURL('image/jpeg', jpegQuality);
+    ws.send(JSON.stringify({ image: dataUrl, timestamp: nowMs() }));
+  }, [getSocket, jpegQuality, onFpsUpdate]);
 
-    // Transmit frame
-    if (sendFormat === 'binary') {
-      isEncodingRef.current = true;
-      canvas.toBlob(
-        (blob) => {
-          try {
-            if (blob && ws.readyState === WebSocket.OPEN) {
-              ws.send(blob);
-            }
-          } finally {
-            isEncodingRef.current = false;
-          }
-        },
-        'image/jpeg',
-        0.75
-      );
-    } else {
-      // Base64 JPEG (Quality 0.75)
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
-      const payload = {
-        image: dataUrl,
-        timestamp: Date.now(),
-      };
-      ws.send(JSON.stringify(payload));
-    }
-  }, [ws, sendFormat, onFpsUpdate]);
+  // the timer always calls the latest grabAndSendFrame
+  useEffect(() => {
+    tickRef.current = grabAndSendFrame;
+  }, [grabAndSendFrame]);
 
   // 3. Start Webcam
   const startCamera = async () => {
@@ -172,7 +155,9 @@ export default function CameraCapture({
 
       // Start capture timer
       const intervalMs = Math.round(1000 / targetFps);
-      timerRef.current = setInterval(grabAndSendFrame, intervalMs);
+      timerRef.current = setInterval(() => {
+        if (tickRef.current) tickRef.current();
+      }, intervalMs);
     } catch (err) {
       console.error('Camera access error:', err);
       if (onError) onError('Không thể truy cập camera. Vui lòng cấp quyền sử dụng camera trong trình duyệt.');
@@ -214,15 +199,10 @@ export default function CameraCapture({
           <h2 className="text-sm font-semibold text-white">Camera Capture (Webcam)</h2>
         </div>
         <div className="flex items-center gap-2">
-          {/* Format Toggle (Base64 vs Binary) */}
-          <button
-            onClick={() => setSendFormat((prev) => (prev === 'base64' ? 'binary' : 'base64'))}
-            className="px-2 py-1 text-xs font-mono rounded bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700 flex items-center gap-1.5"
-            title="Định dạng truyền frame qua WebSocket"
-          >
-            <Radio className="w-3 h-3 text-brand-400" />
-            <span>{sendFormat.toUpperCase()}</span>
-          </button>
+          <span className="px-2 py-1 text-xs font-mono rounded bg-slate-800 text-slate-300 border border-slate-700"
+                title="Frame gửi dạng JPEG (data URL) kèm timestamp của client">
+            JPEG {Math.round(jpegQuality * 100)}
+          </span>
 
           {/* Skeleton Overlay Toggle */}
           <button
@@ -241,10 +221,10 @@ export default function CameraCapture({
 
       {/* Video Viewport Container */}
       <div className="relative aspect-video bg-slate-950 rounded-xl overflow-hidden border border-slate-800/80 flex items-center justify-center">
-        {/* Hidden internal capture canvas */}
+        {/* Hidden internal capture canvas (never mirrored) */}
         <canvas ref={canvasRef} className="hidden" />
 
-        {/* Live Camera Video */}
+        {/* Live Camera Video (mirrored for display only) */}
         <video
           ref={videoRef}
           playsInline
@@ -271,7 +251,7 @@ export default function CameraCapture({
             <div>
               <p className="text-sm font-medium text-slate-300">Camera đang tắt</p>
               <p className="text-xs text-slate-500 mt-1">
-                Nhấn nút "Bật Camera" bên dưới để bắt đầu gửi frame tới FastAPI
+                Nhấn nút "Bật Camera" bên dưới để bắt đầu gửi frame tới backend
               </p>
             </div>
           </div>
@@ -282,7 +262,7 @@ export default function CameraCapture({
           <div className="absolute top-3 left-3 flex items-center gap-2 bg-slate-950/80 backdrop-blur-md px-2.5 py-1 rounded-full border border-slate-800 text-xs">
             <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
             <span className="text-white font-medium">LIVE</span>
-            <span className="text-slate-400 font-mono">| {targetFps} FPS</span>
+            <span className="text-slate-400 font-mono">| mục tiêu {targetFps} FPS</span>
           </div>
         )}
       </div>
@@ -291,6 +271,7 @@ export default function CameraCapture({
       <div className="mt-4 flex items-center justify-between gap-3">
         {!isActive ? (
           <button
+            data-testid="camera-start"
             onClick={startCamera}
             disabled={!isConnected}
             className={`w-full py-2.5 px-4 rounded-xl font-medium text-sm flex items-center justify-center gap-2 transition-all shadow-lg ${
@@ -304,6 +285,7 @@ export default function CameraCapture({
           </button>
         ) : (
           <button
+            data-testid="camera-stop"
             onClick={stopCamera}
             className="w-full py-2.5 px-4 rounded-xl font-medium text-sm bg-rose-600/90 hover:bg-rose-500 text-white flex items-center justify-center gap-2 transition-all shadow-lg shadow-rose-600/20"
           >

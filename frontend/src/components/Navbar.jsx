@@ -68,7 +68,7 @@ export default function Navbar({ activeTab, setActiveTab, systemStatus }) {
               <span className={`w-2 h-2 rounded-full ${isAiOnline ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'}`} />
               <span className="text-slate-400">Python AI:</span>
               <span className={isAiOnline ? 'text-emerald-400 font-medium' : 'text-rose-400 font-medium'}>
-                {isAiOnline ? ':8000' : 'Offline'}
+                {isAiOnline ? 'Online' : 'Offline'}
               </span>
             </div>
           </div>

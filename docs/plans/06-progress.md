@@ -1,9 +1,10 @@
 # Kế hoạch 06 — tiến độ (coder; chặng 1: B0–B2; chặng 2: B3–B4; chặng 3: B5–B7)
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
-- Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474)
-- Bước đang làm: B5 (chặng 3 = B5–B7, theo Lần sửa 1 của kế hoạch, facffea)
-- Bước còn lại: B5, B6, B7 (chặng 3); B8–B9 (chặng 4)
+- Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474), B5 (commit "06: B5 — ...")
+- Bước đang làm: (không; DỪNG SỚM theo lệnh orchestrator — người dùng chuyển sang môi trường cloud)
+- Bước còn lại: B6 (CHƯA commit gì; bản nháp `Fingerspelling.jsx` nằm NGOÀI repo ở `../_plan06_tmp/Fingerspelling.jsx`,
+  chưa build, chưa test — không có trên máy cloud, coi như chưa làm), B7 (chưa bắt đầu); B8–B9 (chặng 4)
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
@@ -135,3 +136,34 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
 - AC2 (25 module cũ + 4 mới), log `../_plan06_tmp/b4_ac2.log`: `Ran 423 tests in 281.254s` `FAILED (failures=1)` — lỗi duy
   nhất là TestFrontendSourceGuard ở trên; 0 error, 0 skip. 423 = 383 + cors_origin_bind 21 + hand_landmarks_ws 9 +
   hand_live_equivalence 4 + frontend_contract 6. `git status --porcelain` trước/sau: giống hệt (`SAME`).
+
+## B5 — UI "Ký từ" (§3.4)
+
+- impact upstream (GitNexus, trước khi sửa): `Phase12Pipeline`, `CameraCapture`, `PredictionDisplay`, `Navbar` đều risk
+  **CRITICAL** (processes_affected 18–21) — nhưng caller thật chỉ là d=1 `App.jsx` (Phase12Pipeline, Navbar) hoặc
+  `Phase12Pipeline.jsx` (CameraCapture, PredictionDisplay); các nút d=3 là hàm Python (`src/training/train_cslr.py`,
+  `scripts/evaluate_cslr_s06.py`, `clone/...`) do phân giải tên sai ngôn ngữ (name-fallback), không phải phụ thuộc thật.
+  `App.jsx` render `<Phase12Pipeline />` không prop → đổi prop của CameraCapture/PredictionDisplay chỉ ảnh hưởng Phase12Pipeline.
+  RealtimeStream.jsx không import CameraCapture/PredictionDisplay.
+- Sửa:
+  - `Phase12Pipeline.jsx` viết lại: `wsUrl(window.location, '/ws/live-stream')` + `useReducer` bọc `reduceLive`; huy hiệu
+    `live-pipeline`/`live-model`; `live-recording` (harmonized, `recording_s / max_sign_s`); `live-discard` (lý do tiếng Việt);
+    `live-error` (theo `code`); top-5/confidence từ `sign_result` (harmonized) hoặc `frame_result` (legacy); nút "Xóa từ cuối";
+    bỏ nút "Test Frame" và chuỗi base64 1×1; `bufferCapacity` lấy từ message; hiện `client_e2e_ms` của sign_result.
+  - `CameraCapture.jsx`: nhận `getSocket()` (đọc mỗi tick, không giữ socket cũ); `timestamp = nowMs()`; bỏ chế độ binary
+    (mọi frame là JSON có timestamp — phiên harmonized không được trộn frame có/không timestamp); `camera-start`/`camera-stop`;
+    chất lượng JPEG giữ 0.75 như cũ (prop `jpegQuality`).
+  - `PredictionDisplay.jsx`: bỏ ":8000", bỏ mặc định 60; trạng thái RECORDING/WAIT_REST; `live-connection`, `live-status`,
+    `live-gloss`, `live-confidence` (`data-value`), `live-top5` (+ `live-top5-item` `data-gloss`), `live-words`, `live-undo`.
+  - `Navbar.jsx`: ':8000' → 'Online'. `RealtimeStream.jsx`: đúng 3 dòng (import `wsUrl as buildWsUrl`, dòng URL, chuỗi báo lỗi bỏ
+    ":8000") — `git diff --numstat` → `3 2`.
+- `cd frontend && npm run build` → `✓ 1597 modules transformed`, `✓ built in 1.79s` (exit 0). `package-lock.json` không đổi.
+- `cd frontend && npm test` (Node v25.9.0) → `tests 26, pass 26, fail 0`; `git ls-files "tests/*.test.mjs"` = 3 file, cả 3
+  file đều có test trong output (ws 4, liveProtocol 12, fingerspelling 10).
+- Guard AC8: **đỏ có chủ đích, còn 2 vi phạm** (14 → 2), chỉ trong `Fingerspelling.jsx` (:69 '/api/fingerspelling', :130 '25 lớp')
+  — đúng mốc §0.3 sau B5.
+- AC2 (25 cũ + 4 mới), log `../_plan06_tmp/b5_ac2.log`: `Ran 423 tests in 217.217s` `FAILED (failures=1)` — failure duy nhất là
+  `TestFrontendSourceGuard.test_no_violation` (2 vi phạm trên); 0 error, 0 skip.
+  `git status --porcelain` trước/sau KHÁC nhưng không do test: trong lúc chạy có người khác sửa `CLAUDE.md` và thêm
+  `docs/CLOUD.md`, `scripts/cloud_setup.sh` (thay đổi của người dùng/orchestrator — coder KHÔNG đụng, KHÔNG commit).
+- Chưa kiểm UI bằng trình duyệt (việc của B8).
