@@ -24,6 +24,7 @@ import datetime as dt
 import importlib.metadata
 import json
 import os
+import re
 import shutil
 import socket
 import subprocess
@@ -192,6 +193,98 @@ def check(checks: dict, name: str, ok: bool, detail=None) -> None:
     checks[name] = {"pass": bool(ok), "detail": detail}
 
 
+# Plan 06 revision 2, 0B.1: the Vite dev client (/@vite/client, injected by `npm run dev`; not in frontend/src, not
+# in the build) opens its own HMR socket on the page origin. A socket is that HMR socket ONLY when all three hold:
+# (1) the URL matches the whole regex below, (2) the handshake Sec-WebSocket-Protocol is exactly "vite-hmr",
+# (3) every message received is JSON with type == "connected". It is excluded from the "via /ws/" check only;
+# the ":8000" ban applies to every socket without exception.
+VITE_HMR_URL_RE = re.compile(r"^ws://localhost:3000/\?token=[A-Za-z0-9_-]+$")
+VITE_HMR_PROTOCOL = "vite-hmr"
+VITE_HMR_MESSAGE_TYPES = frozenset({"connected"})
+MAX_HMR_SOCKETS = 1
+
+
+def _ws_brief(w: dict) -> dict:
+    return {"url": w.get("url"), "protocol": w.get("protocol"), "count_by_type": dict(w.get("count_by_type") or {})}
+
+
+def _hmr_rule_failures(w: dict) -> list:
+    """Which of the conditions (1)-(3) of 0B.1 a socket fails (empty list = Vite HMR socket)."""
+    fails = []
+    # fullmatch: the WHOLE URL must match (a trailing newline, which "$" alone would let through, is refused)
+    url = w.get("url") or ""
+    if not VITE_HMR_URL_RE.fullmatch(url):
+        fails.append("url")
+    if w.get("protocol") != VITE_HMR_PROTOCOL:
+        fails.append("protocol")
+    cbt = w.get("count_by_type") or {}
+    # every message must be JSON with type "connected": no other type, and no message outside count_by_type
+    # (non-JSON messages are counted in n_messages only)
+    if set(cbt) - VITE_HMR_MESSAGE_TYPES or w.get("n_messages", 0) != sum(cbt.values()):
+        fails.append("message_types")
+    return fails
+
+
+def classify_ws(ws_list: list) -> dict:
+    """Pure: split the observed sockets into the Vite HMR socket(s) and the app sockets, and evaluate the three
+    URL checks of AC12 (revision 2): ws_no_8000_any_socket, ws_app_urls_via_proxy, vite_hmr_socket_rule."""
+    hmr, app, protocol_violations = [], [], []
+    for w in ws_list:
+        fails = _hmr_rule_failures(w)
+        if not fails:
+            hmr.append(w)
+        else:
+            app.append(w)
+            if w.get("protocol") == VITE_HMR_PROTOCOL:
+                protocol_violations.append({**_ws_brief(w), "fails": fails})
+    checks: dict = {}
+    with_8000 = [_ws_brief(w) for w in ws_list if ":8000" in (w.get("url") or "")]
+    check(checks, "ws_no_8000_any_socket", not with_8000,
+          {"n_sockets": len(ws_list), "violations": with_8000})
+    outside = [_ws_brief(w) for w in app if not (w.get("url") or "").startswith(WS_PREFIX)]
+    check(checks, "ws_app_urls_via_proxy", len(app) >= 1 and not outside,
+          {"app_urls": [w.get("url") for w in app], "violations": outside})
+    check(checks, "vite_hmr_socket_rule", len(hmr) <= MAX_HMR_SOCKETS and not protocol_violations,
+          {"n_hmr": len(hmr), "max_hmr": MAX_HMR_SOCKETS, "hmr_excluded": [_ws_brief(w) for w in hmr],
+           "vite_hmr_protocol_but_not_hmr": protocol_violations})
+    return {"hmr": hmr, "app": app, "hmr_excluded": [_ws_brief(w) for w in hmr], "checks": checks}
+
+
+def strictmode_orphans(sockets_of_path: list) -> dict:
+    """Pure (0B.2): React.StrictMode mounts, unmounts and mounts again in dev, so a component opens a socket, closes
+    it and opens another. On ONE path (sockets in creation order) a socket is a StrictMode orphan -- exempt from the
+    "first message is session_info" check -- only when it received 0 messages, is closed, and is not the last
+    socket of the path; at most one orphan per path. Every other socket is `checked` (its first message must be
+    session_info; the caller checks that). The last socket must have received messages."""
+    n = len(sockets_of_path)
+    orphans, checked, violations = [], [], []
+    if n == 0:
+        violations.append("no socket on this path")
+    for i, w in enumerate(sockets_of_path):
+        last = i == n - 1
+        if w.get("n_messages", 0) == 0:
+            if last:
+                violations.append(f"socket {i}: 0 messages and it is the last socket of the path")
+            elif not w.get("closed"):
+                violations.append(f"socket {i}: 0 messages but not closed")
+            else:
+                orphans.append(i)
+                continue
+        checked.append(w)
+    if len(orphans) > 1:
+        violations.append(f"{len(orphans)} orphans on one path (at most 1)")
+    return {"n_sockets": n, "orphans": orphans, "checked": checked, "violations": violations,
+            "pass": not violations}
+
+
+def app_ws_by_path(ws_list: list) -> dict:
+    """App sockets (every socket that is not the Vite HMR socket of 0B.1) grouped by URL path, creation order."""
+    by_path: dict = {}
+    for w in classify_ws(ws_list)["app"]:
+        by_path.setdefault(urllib.parse.urlparse(w["url"]).path, []).append(w)
+    return by_path
+
+
 def evaluate(args, obs: dict, ready: dict, stop: dict, clip: dict) -> dict:
     checks: dict = {}
     h = ready.get("health") or {}
@@ -207,11 +300,9 @@ def evaluate(args, obs: dict, ready: dict, stop: dict, clip: dict) -> dict:
         check(checks, "pageerror_0", len(obs["page_errors"]) == 0, obs["page_errors"])
         check(checks, "requestfailed_0", len(obs["request_failed"]) == 0, obs["request_failed"])
         check(checks, "http_ge_400_0", len(obs["http_errors"]) == 0, obs["http_errors"])
-        urls = [w["url"] for w in obs["ws"]]
-        bad = [{"url": w["url"], "sec_websocket_protocol": w["protocol"]} for w in obs["ws"]
-               if not w["url"].startswith(WS_PREFIX) or ":8000" in w["url"]]
-        # AC12 literally: EVERY WebSocket URL of the page (the Vite dev client's own HMR socket included).
-        check(checks, "ws_urls_all_via_proxy_no_8000", len(urls) > 0 and not bad, {"urls": urls, "violations": bad})
+        # AC12 revision 2 (0B.1): the Vite HMR socket is excluded from the "via /ws/" check only
+        cls = classify_ws(obs["ws"])
+        checks.update(cls["checks"])
         check(checks, "no_request_to_old_image_endpoint", len(obs["requests_old_image_endpoint"]) == 0,
               obs["requests_old_image_endpoint"])
     check(checks, "ports_8000_3000_free_after_stop", not any(stop["ports_listening_after_stop"].values()),
@@ -220,20 +311,25 @@ def evaluate(args, obs: dict, ready: dict, stop: dict, clip: dict) -> dict:
 
     if obs is None:
         return checks
-    ws_by_path = {}
-    for w in obs["ws"]:
-        ws_by_path.setdefault(urllib.parse.urlparse(w["url"]).path, []).append(w)
+    ws_by_path = app_ws_by_path(obs["ws"])
+    # AC12 revision 2 (0B.2): StrictMode orphan rule on every app path
+    orph = {p: strictmode_orphans(socks) for p, socks in ws_by_path.items()}
+    check(checks, "strictmode_orphan_rule", all(o["pass"] for o in orph.values()),
+          {p: {"n_sockets": o["n_sockets"], "orphans": o["orphans"], "violations": o["violations"]}
+           for p, o in orph.items()})
 
     if args.scenario == "fingerspell":
         st = obs.get("fingerspelling_status") or {}
         check(checks, "status_available_true", st.get("available") is True and obs["dom"].get("fs_status_available") == "true",
               {"api": st, "fs_status_data_available": obs["dom"].get("fs_status_available")})
         hws = ws_by_path.get("/ws/hand-landmarks", [])
-        # sockets closed before any message = React.StrictMode double mount in dev (listed, not counted)
-        used = [w for w in hws if w["n_messages"] > 0]
-        check(checks, "hand_ws_session_info", bool(used) and all(w["first_type"] == "session_info" for w in used),
-              [{"first_type": w["first_type"], "count_by_type": w["count_by_type"], "closed": w["closed"]}
-               for w in hws])
+        # every socket but a StrictMode orphan (0B.2) must receive session_info first
+        ho = strictmode_orphans(hws)
+        check(checks, "hand_ws_session_info",
+              bool(ho["checked"]) and all(w["first_type"] == "session_info" for w in ho["checked"]),
+              {"orphans": ho["orphans"],
+               "sockets": [{"first_type": w["first_type"], "count_by_type": w["count_by_type"], "closed": w["closed"]}
+                           for w in hws]})
         seq = obs["sequence_posts"]
         ok200 = [p for p in seq if p["status"] == 200]
         check(checks, "sequence_post_200_at_least_1", len(ok200) >= 1, [p["status"] for p in seq])
@@ -283,16 +379,17 @@ def evaluate(args, obs: dict, ready: dict, stop: dict, clip: dict) -> dict:
     else:
         lws = ws_by_path.get("/ws/live-stream", [])
         w = lws[-1] if lws else None
-        early = [x for x in lws[:-1] if x["n_messages"] > 0]
+        # every socket but a StrictMode orphan (0B.2) must receive session_info first
+        lo = strictmode_orphans(lws)
         si = (w or {}).get("session_info") or {}
         want_pipeline = "harmonized_v1" if args.model_type == "stgcn_h360" else "legacy"
         check(checks, "live_ws_first_message_session_info_v2",
               w is not None and w["first_type"] == "session_info" and si.get("protocol_version") == 2
               and si.get("pipeline") == want_pipeline
-              and all(x["first_type"] == "session_info" for x in early),
+              and bool(lo["checked"]) and all(x["first_type"] == "session_info" for x in lo["checked"]),
               {"first_type": (w or {}).get("first_type"), "protocol_version": si.get("protocol_version"),
-               "pipeline": si.get("pipeline"), "sockets": len(lws),
-               "earlier_sockets_first_types": [x["first_type"] for x in lws[:-1]]})
+               "pipeline": si.get("pipeline"), "sockets": len(lws), "orphans": lo["orphans"],
+               "sockets_first_types": [x["first_type"] for x in lws]})
         errors = [e for x in lws for e in x["errors"]]
         check(checks, "ws_error_messages_0", w is not None and not errors, errors)
         dom = obs["dom"]
@@ -327,6 +424,16 @@ def evaluate(args, obs: dict, ready: dict, stop: dict, clip: dict) -> dict:
                       {"dom_gloss": dom.get("live_gloss"), "gloss": ls["gloss"], "dom_top5": dom.get("live_top5"),
                        "top5": ls["top5_js_strings"]})
     return checks
+
+
+def ws_classification(obs) -> dict:
+    """JSON summary (0B.1 / 0B.2): the Vite HMR socket(s) excluded from the "via /ws/" check, and the number of
+    StrictMode orphans per app path."""
+    if obs is None:
+        return None
+    return {"vite_hmr_excluded": classify_ws(obs["ws"])["hmr_excluded"],
+            "strictmode_orphans_by_path": {p: len(strictmode_orphans(s)["orphans"])
+                                           for p, s in app_ws_by_path(obs["ws"]).items()}}
 
 
 def _find_forbidden(obj, path="") -> list:
@@ -433,6 +540,7 @@ def main(argv=None) -> int:
         "shutdown": stop,
         "browser_exit_code": browser_exit,
         "observations": obs,
+        "ws_classification": ws_classification(obs),
         "checks": checks,
     }
     if obs is not None and args.scenario == "fingerspell":
@@ -441,7 +549,7 @@ def main(argv=None) -> int:
         result["info_not_accuracy"] = {"clip_id": clip["clip_id"], "clip_label": clip["label"],
                                        "prediction": resp.get("prediction"), "confidence": resp.get("confidence")}
     elif obs is not None:
-        lws = [w for w in obs["ws"] if urllib.parse.urlparse(w["url"]).path == "/ws/live-stream"]
+        lws = app_ws_by_path(obs["ws"]).get("/ws/live-stream", [])
         w = lws[-1] if lws else {}
         result["info_not_accuracy"] = {
             "clip_id": clip["clip_id"], "clip_label": clip["label"],

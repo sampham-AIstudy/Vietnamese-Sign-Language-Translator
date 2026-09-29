@@ -298,3 +298,37 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
     hand_live_check.json + reports/e2e_2026-09-29/{fingerspell_default,word_default,word_stgcn_h360}.json (A), docs/phase12_api.md (M),
     docs/plans/06-progress.md (A) — tất cả nằm trong danh sách AC1. frontend/index.html không đổi; package-lock không đổi;
     không file bị xóa; không .pt/.npz/.mp4/.y4m/.png/.jpg/.log nào được thêm; 3 file ` D` của người dùng vẫn chưa staged.
+
+## B8b — Lần sửa 2 (0B.5 bước 1–3): luật socket HMR Vite + mồ côi StrictMode, chạy lại 3 kịch bản
+
+### B8b-1 — test AC12-t trước (commit 302072c)
+- `tests/test_frontend_contract.py` thêm lớp `TestE2eSocketRules` (16 test; nạp `scripts/e2e_fullstack.py` theo đường dẫn bằng
+  `importlib.util.spec_from_file_location`, không mở trình duyệt/server, không skip). Đủ 9 ca của AC12-t, thêm vài ca âm:
+  URL HMR sai (`?token=x&a=1`, `/foo?token=x`, `127.0.0.1`, token rỗng, xuống dòng cuối, `wss://`, `#f`, cổng 3001),
+  protocol khác `vite-hmr`, message không phải JSON trên socket HMR, `:8000` trên socket mồ côi, socket app `127.0.0.1:3000`,
+  path rỗng, socket có message không bao giờ là mồ côi.
+- Chạy trước khi có hàm: `Ran 16 tests` `FAILED (errors=26)` — 26/26 là `AttributeError` (`classify_ws`/`strictmode_orphans`
+  chưa có). Log `../_plan06_tmp/b8b1_red.log`. detect-changes --scope staged: risk critical theo đồ thị (25 symbol mới trong
+  file test; 36 process "bị ảnh hưởng" do trùng tên) — không symbol cũ nào đổi.
+
+### B8b-2 — hàm thuần + 4 kiểm mới trong `scripts/e2e_fullstack.py`
+- impact `evaluate` (`-f scripts/e2e_fullstack.py`, `../_plan06_tmp/b8b2_impact_evaluate.txt`): risk **CRITICAL** theo đồ thị
+  (direct 1 = `main` của chính script; độ sâu 3: 14 do trùng tên `main` với các script khác; 23 process). Text search: caller
+  duy nhất là `main()` của `scripts/e2e_fullstack.py` (script chạy tay; test chỉ gọi hàm thuần mới). Symbol mới:
+  `classify_ws`, `strictmode_orphans`, `app_ws_by_path`, `ws_classification`, `_hmr_rule_failures`, `_ws_brief`.
+- Cài đặt: `VITE_HMR_URL_RE = ^ws://localhost:3000/\?token=[A-Za-z0-9_-]+$` (`fullmatch`), protocol đúng `vite-hmr`, mọi message
+  là JSON `type == "connected"` (`count_by_type` chỉ có `connected` và `n_messages == tổng count_by_type`), ≤ 1 socket HMR.
+  `ws_urls_all_via_proxy_no_8000` bị thay bằng `ws_no_8000_any_socket` (mọi socket), `ws_app_urls_via_proxy` (≥ 1 socket không
+  phải HMR, tất cả bắt đầu `ws://localhost:3000/ws/`), `vite_hmr_socket_rule`; thêm `strictmode_orphan_rule` áp cho MỌI path
+  của socket app (đúng chữ "với mỗi path app" của AC12). `hand_ws_session_info` và `live_ws_first_message_session_info_v2`
+  dùng `strictmode_orphans`: mọi socket không phải mồ côi phải có message đầu `session_info`. JSON thêm khóa
+  `ws_classification{vite_hmr_excluded[{url, protocol, count_by_type}], strictmode_orphans_by_path}`.
+  `scripts/e2e_browser.cjs` không sửa (đã có `protocol`, `count_by_type`, `closed`, `n_messages`, `first_type`).
+- AC12-t: `Ran 16 tests` `OK`.
+- AC2 31 module (log `../_plan06_tmp/b8b2_ac2_31.log`): **`Ran 483 tests in 273.728s` `OK`**, 0 failure, 0 error, 0 skip.
+  Theo module (`../_plan06_tmp/b8b2_counts.txt`): 25 module cũ = 383 (bằng B0); 4 module của 06 = cors_origin_bind 21 +
+  hand_landmarks_ws 9 + hand_live_equivalence 4 + frontend_contract 28 = 62 (= B7 46 + 16 test AC12-t); 2 module merge =
+  archive_private_kaggle_r05 14 + backend_source_guard 24 = 38 (bằng review cloud). `git status --porcelain` trước/sau: SAME.
+- detect-changes --scope staged (`../_plan06_tmp/b8b2_detect.txt`): risk medium (1 file; symbol cũ đổi: `evaluate`, `main`,
+  `_find_forbidden` (chỉ do dòng lân cận), `checks`; 2 process `Main → Fps_fraction`, `Main → Is_inside_repo` của chính script).
+  Index GitNexus ở f702b1a nên symbol mới chưa được thấy trong kết quả này.
