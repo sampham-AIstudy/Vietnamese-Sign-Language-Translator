@@ -1,7 +1,9 @@
 # Kế hoạch 07 — Việc 6: Bộ chọn chế độ (Đánh vần / Ký từ / Ký câu) + chế độ Ký câu (CSLR → gloss → ViT5)
 
-**ĐANG LÀM** (planner đang viết mục 4–7; mục 1–3 đã xong)
+**Trạng thái: XONG (chờ orchestrator)**
 
+- **Điểm dừng bắt buộc trước khi code: KHÔNG.** Có 2 câu hỏi cho người dùng KHÔNG chặn bước nào (§7.2, đã có mặc định) và
+  các điểm dừng có điều kiện trong lúc làm (§7.3; mục 1 và 6 có thể cần người dùng).
 - Nhánh lập kế hoạch: `cloud/2026-09-29-viec-a-d` (cloud). Ngày: 2026-09-29.
 - Backlog: `docs/STATE.md` "Backlog còn lại" mục 3; `docs/prompts/autopilot.md` §2 mục 4.
 - Nối tiếp kế hoạch 06 (`docs/plans/06-viec5-frontend.md`, đang làm dở ở local: còn B6–B9). MỌI bước của kế hoạch này chỉ
@@ -110,7 +112,8 @@ S06, kiểm và công bố ViT5 đã học những câu/cặp gloss nào của S
 - Kế hoạch 06 đã/đang làm: `frontend/src/lib/{ws,liveProtocol,fingerspelling}.js` + `frontend/tests/*.test.mjs`
   (`npm test`), `Phase12Pipeline.jsx` WS v2 (B5, xong), `Fingerspelling.jsx` (B6, chưa commit), guard
   `tests/test_frontend_contract.py` (AC8 kế hoạch 06), e2e `scripts/e2e_{browser.cjs,fullstack.py}` (B8, chưa có).
-- `RealtimeStream.jsx` là mã chết (kế hoạch 06 §3.4) và là nơi duy nhất đọc `translated_text`/`oov_warning`.
+- `RealtimeStream.jsx` là mã chết (kế hoạch 06 §3.4) và là nơi duy nhất đọc `translated_text`/`oov_warning` (Grep
+  `frontend/src` ở HEAD cloud).
 
 ### 2.5 Dữ liệu/checkpoint cần cho việc này (đều KHÔNG có trên cloud)
 | Thứ cần | Đường dẫn | Có trong git? | Lấy ở đâu |
@@ -174,7 +177,7 @@ nạp model). Tập train/val lấy bằng cách IMPORT đúng lớp đã dùng 
 `Clean10kDataset(split="train"|"val", val_ratio=0.1, seed=42)` và `VSLGHTextDataset(split="train"|"val"|"test")`.
 - **Kiểm nhất quán với lần train (điều kiện dừng):** `len(Clean10k train/val)` phải bằng `train_samples`/`val_samples` đọc
   từ `reports/vit5_stage1_history.json`; `len(VSLGHText train/val)` phải bằng `reports/vit5_stage2_history.json`. Lệch → dữ
-  liệu đã đổi sau khi train → DỪNG (§7).
+  liệu đã đổi sau khi train → DỪNG (§7.3-1).
 - **Chuẩn hóa so khớp** (đúng hàm train dùng): nguồn `normalize_vsl_source`, đích `normalize_vietnamese_target`.
   - L1 = bằng nhau sau chuẩn hóa train.
   - L2 = L1 + chữ thường + bỏ mọi ký tự `.,!?;:"'()[]{}…` + gộp khoảng trắng.
@@ -201,12 +204,11 @@ nạp model). Tập train/val lấy bằng cách IMPORT đúng lớp đã dùng 
   thế bởi JSON C1 và vì sao.
 
 ### 3.3 C2/C3 — Tiền xử lý dùng chung, giải mã có độ tin cậy, căn chỉnh
-- `src/translation/cslr_preprocess.py` (chỉ numpy; không import torch): `preprocess_vslgh_137(raw: ndarray[T,411],
-  conversion_mode="semantic", normalize=True) -> (kps float32[T,67,3], joint_mask float32[T,67])`. Gọi
-  `convert_137_to_67` (import từ `src/data/vsl_gh_dataset.py`, không chép); mask và chuẩn hóa vai là bản sao nguyên văn
-  `:444-458`; KHÔNG có velocity/subsample/truncation (train không dùng: `src/training/train_cslr.py:359-366`). Kiểm đầu vào:
-  2 chiều, cột 411, hữu hạn → `ValueError` có mã. (Nếu import `src.data.vsl_gh_dataset` kéo theo torch thì chấp nhận,
-  nhưng ghi vào 07-progress; AC4-a khi đó chỉ kiểm module mới không tự import torch — xem AC4-a.)
+- `src/translation/cslr_preprocess.py`: `preprocess_vslgh_137(raw: ndarray[T,411], conversion_mode="semantic",
+  normalize=True) -> (kps float32[T,67,3], joint_mask float32[T,67])`. Gọi `convert_137_to_67` (import từ
+  `src/data/vsl_gh_dataset.py`, không chép); mask và chuẩn hóa vai là bản sao nguyên văn `:444-458`; KHÔNG có
+  velocity/subsample/truncation (train không dùng: `src/training/train_cslr.py:359-366`). File mới không tự `import torch`
+  (module `vsl_gh_dataset` có thể kéo torch — chấp nhận). Kiểm đầu vào: 2 chiều, cột 411, hữu hạn, T ≥ 1 → `ValueError` có mã.
 - `src/translation/sentence_scoring.py`:
   - `ctc_greedy_with_confidence(log_probs_btc, lengths, blank_id) -> List[List[(token_id, confidence)]]`. Token phải BẰNG
     `ctc_greedy_decode` (`src/metrics/cslr_metrics.py:16-75`). **Độ tin cậy (đăng ký trước):** với mỗi token phát ra, lấy
@@ -265,7 +267,7 @@ class SentencePipeline:
   `signer_id == "S05"`), gán nhãn token bằng `align_hypothesis` với `gloss_sequence`. Dương tính = token sai (substitution
   hoặc insertion).
 - Lưới τ ∈ {0.00, 0.01, …, 1.00}; cờ = confidence < τ; chọn τ làm cực đại J = TPR − FPR; hòa → τ nhỏ nhất. Không lớp nào
-  được rỗng (0 token đúng hoặc 0 token sai → DỪNG, §7).
+  được rỗng (0 token đúng hoặc 0 token sai → DỪNG, §7.3-4).
 - Ghi: `tau`, luật (chuỗi mô tả), toàn bộ điểm ROC `{tau, tpr, fpr, j}`, `n_tokens`, `n_incorrect`, `n_samples`,
   `split: "val"`, `sample_ids_sha256` (sha256 của danh sách `sample_id` đã sắp xếp, nối bằng `\n`), `cslr_sha256`, phân
   bố `display` trên VAL (chỉ báo cáo, dùng kho OOV của C1), `generated_by{command, git_commit, code_dirty: false}`.
@@ -277,7 +279,7 @@ HEAD (`git status --porcelain` rỗng cho hai file), `code_dirty == false`; ghi 
 `scripts/evaluate_sentence_s06.py --device cpu --out reports/sentence_s06_<YYYY-MM-DD>/eval.json`:
 - Chạy `run_137` (đúng lõi sản phẩm) trên 300 mẫu `split == "test"` (assert `signer_id == "S06"`). Kiểm chéo trong script:
   token của lõi == token của đường dataset (`VSLGHContinuousDataset(split="test", normalize=True)` + cùng model, batch 1)
-  cho MỌI mẫu; lệch 1 mẫu → thoát lỗi, không ghi JSON (§7). Ghi `pipeline_equals_dataset_path: true`, `n_checked`.
+  cho MỌI mẫu; lệch 1 mẫu → thoát lỗi, không ghi JSON (§7.3-5). Ghi `pipeline_equals_dataset_path: true`, `n_checked`.
 - Cho mỗi tập con của C1 (`S06_all`, `S06_vit5_train`, `S06_vit5_val`, `S06_vit5_heldout`, `S06_vit5_clean`): `n`; CSLR
   WER (`compute_wer`, S/D/I); dịch từ gloss CSLR (mode B) và từ gloss nhãn (mode A, oracle) bằng CÙNG `VSLTranslator` cấu
   hình sản phẩm, chấm `compute_translation_metrics` (`src/translation/metrics.py:16`); phân bố `display`; mode B chỉ trên
@@ -347,15 +349,18 @@ HEAD (`git status --porcelain` rỗng cho hai file), `code_dirty == false`; ghi 
 - `frontend/src/components/ModeSelector.jsx`: 3 nút `data-testid` `mode-fingerspell`, `mode-word`, `mode-sentence`,
   `aria-pressed`. `frontend/src/App.jsx`: tab `translate` ("Dịch ký hiệu") chứa ModeSelector + component của chế độ đã
   chọn (`mode == null` → chỉ có dòng hướng dẫn `data-testid="mode-none"`); bỏ 2 tab `realtime`, `alphabet`; giữ
-  `dictionary`, `reports`. `Navbar.jsx`: chỉ sửa mảng `navItems`.
+  `dictionary`, `reports`. `Navbar.jsx`: chỉ sửa mảng `navItems` (và dòng import icon nếu cần).
 - `frontend/src/components/SentenceMode.jsx`: gọi status (không sẵn sàng → khóa nút, hiện `reason` tiếng Việt); luôn hiện
   `OFFLINE_LABEL` (`sentence-offline`); khung "Clip mẫu VSL-GH (người ký S06)" (select + nút dịch; hiện tag: "ViT5 đã học
-  câu này" / "ViT5 chưa học (sạch)" / "CSLR đã học câu này qua người ký khác"); khung "Webcam — thử nghiệm" (Ghi/Dừng; dùng
-  lại cách chụp của B6 kế hoạch 06, không viết bản thứ hai nếu B6 đã tách được hook/hàm); kết quả theo `sentenceView`;
-  "Nhãn gốc" hiện TÁCH BIỆT với kết quả, có tiêu đề riêng. `data-testid`: `sentence-status`, `sentence-offline`,
-  `sentence-sample-select`, `sentence-sample-run`, `sentence-tags`, `sentence-record`, `sentence-stop`, `sentence-frames`,
-  `sentence-headline`, `sentence-gloss`, `sentence-translation` (chỉ render khi `showTranslation`), `sentence-warnings`,
-  `sentence-reference`, `sentence-error`.
+  câu này" / "ViT5 chưa học (sạch)" / "CSLR đã học câu này qua người ký khác"); khung "Webcam — thử nghiệm" (Ghi/Dừng);
+  kết quả theo `sentenceView`; "Nhãn gốc" hiện TÁCH BIỆT với kết quả, có tiêu đề riêng. `data-testid`: `sentence-status`,
+  `sentence-offline`, `sentence-sample-select`, `sentence-sample-run`, `sentence-tags`, `sentence-record`, `sentence-stop`,
+  `sentence-frames`, `sentence-headline`, `sentence-gloss`, `sentence-translation` (chỉ render khi `showTranslation`),
+  `sentence-warnings`, `sentence-reference`, `sentence-error`.
+- Chụp webcam cho Ký câu: dùng lại cơ chế chụp có giới hạn frame đang bay của B6 kế hoạch 06 (§3.2 của 06: canvas không
+  lật, JPEG, `nowMs()`, tối đa N frame chưa được ack). Nếu B6 viết nó bên trong `Fingerspelling.jsx`, C10 được tách ra
+  `frontend/src/lib/capture.js` và sửa `Fingerspelling.jsx` CHỈ để gọi hàm đã tách (e2e `fingerspell_default` ở AC14 chạy
+  lại chứng minh hành vi không đổi). Không viết bản chụp thứ hai.
 - Ký từ: `Phase12Pipeline` gắn nguyên trạng; không hiện `translated_text`/`oov_warning` ở bất kỳ component nào còn dùng.
 
 ### 3.10 Ngoài phạm vi (reviewer không tính là thiếu)
@@ -369,10 +374,11 @@ HEAD (`git status --porcelain` rỗng cho hai file), `code_dirty == false`; ghi 
 **Quy ước chung**
 - **Phụ thuộc kế hoạch 06:** MỌI bước (kể cả C0) chỉ bắt đầu sau khi kế hoạch 06 APPROVE (review 06 = APPROVE và dòng
   progress_log của 06 đã commit). Lý do: C7/C8 sửa `backend/main.py` và `docs/phase12_api.md` (06 B7 đang viết lại file
-  này); C10 sửa `App.jsx`/`Navbar.jsx` (06 AC1 cấm 06 đổi `App.jsx`, 06 B5 đang sửa `Navbar.jsx`); C10 dùng lại cách chụp
+  này); C10 sửa `App.jsx`/`Navbar.jsx` (06 AC1 cấm 06 đổi `App.jsx`, 06 B5 đã sửa `Navbar.jsx`); C10 dùng lại cách chụp
   của 06 B6; C11 sửa `scripts/e2e_*.{cjs,py}` do 06 B8 tạo; AC2 cần mốc đã xanh của 06 (guard 06 chỉ xanh từ B7). Các bước
   dữ liệu (C1–C6) không đụng file của 06 nhưng vẫn đợi, để P7/AC1/AC2 đo trên một nền cố định và không có hai coder cùng
-  commit vào một nhánh.
+  commit vào một nhánh. Không trùng việc với 06: 06 giữ nguyên B6–B9 (UI Đánh vần, smoke + phase12_api, e2e 3 kịch bản,
+  đóng việc); 07 chỉ THÊM.
 - `P7` = HEAD lúc coder bắt đầu C0 (đã có kế hoạch này + APPROVE của 06); ghi vào `docs/plans/07-progress.md`.
 - Bước làm được trên cloud (phần fixture của C3, C9, C10) chỉ sau P7, trên nhánh tách từ P7; orchestrator merge bằng merge
   commit (không rebase, không amend).
@@ -387,7 +393,7 @@ HEAD (`git status --porcelain` rỗng cho hai file), `code_dirty == false`; ghi 
 | Bước | Nội dung | Phụ thuộc | Nơi | Ước lượng |
 |---|---|---|---|---|
 | **C0** | Mốc: `git status --porcelain` → `../_plan07_tmp/c0_status.txt`; lệnh AC2 của kế hoạch 06 (29 module) → số test theo module; chạy thêm `tests.data.test_vsl_gh_dataset` (ghi kết quả; chỉ đưa vào AC2 nếu xanh ở P7); `cd frontend && npm test`, `node --version`, `npm ls --depth=0` → tmp; sha256 của `checkpoints/cslr_best.pt` và từng file trong `checkpoints/vit5_stage{1,2}/best_model/`; đếm `keypoints_frontal/*.npy`; có/không `clone/.../source/extract_keypoints.py`; `mediapipe.__version__`; `impact` cho `root`, `App`, `Navbar`, hàm chính của `scripts/e2e_browser.cjs`/`e2e_fullstack.py`. Tạo `07-progress.md`. Commit. | 06 APPROVE | local | 0.5 h |
-| **C1** | Kiểm chồng lấn (3.2): `tests/test_vit5_s06_overlap.py` trước → `scripts/vit5_s06_overlap.py` → commit mã (sạch) → sinh JSON ở HEAD sạch → chạy lại lần 2 vào tmp (thân giống hệt) → commit JSON. Kiểm điều kiện dừng §7. | C0 | local | 2 h |
+| **C1** | Kiểm chồng lấn (3.2): `tests/test_vit5_s06_overlap.py` trước → `scripts/vit5_s06_overlap.py` → commit mã (sạch) → sinh JSON ở HEAD sạch → chạy lại lần 2 vào tmp (thân giống hệt) → commit JSON. Kiểm điều kiện dừng §7.3-1, -2. | C0 | local | 2 h |
 | **C2** | `src/translation/cslr_preprocess.py` + `tests/test_cslr_preprocess_equivalence.py` (AC4). | C0 | local | 1.5 h |
 | **C3** | `src/translation/sentence_scoring.py` + `tests/test_sentence_scoring.py` (AC5): phần fixture (cloud được) + phần dữ liệu thật trên VAL (local). | C0 (phần thật: C2) | cloud + local | 1.5 h |
 | **C4a** | `SentencePipeline` phần CSLR (`recognize_137`, sha256, giới hạn T, `SentenceUnavailable`) + `tests/test_sentence_pipeline.py` AC6-a, e, g. | C2, C3 | local | 2 h |
@@ -395,11 +401,11 @@ HEAD (`git status --porcelain` rỗng cho hai file), `code_dirty == false`; ghi 
 | **C5** | `tests/test_sentence_calibration.py` (logic) trước → `scripts/sentence_calibrate.py` → commit mã → JSON ở HEAD sạch → commit (AC7). | C4b | local | 1 h |
 | **C6** | `tests/test_sentence_eval_report.py` + `scripts/evaluate_sentence_s06.py` → commit mã → chạy ĐÚNG 1 lần ở HEAD sạch → commit JSON (AC8). | C1, C5 | local | 1.5 h |
 | **C7** | REST (3.7) + `tests/test_sentence_api.py` (AC9); ghi RAM (và VRAM nếu CUDA) sau khi nạp pipeline vào 07-progress (chỉ ghi nhận). | C6 | local | 2 h |
-| **C8a** | `src/inference/sentence_live.py` + `tests/test_sentence_live.py` AC10-a, c, d. Thiếu script gốc → DỪNG C8 (§7), làm tiếp C9–C10. | C4b | local | 1.5 h |
+| **C8a** | `src/inference/sentence_live.py` + `tests/test_sentence_live.py` AC10-a, c, d. Thiếu script gốc → DỪNG C8 (§7.3-6), làm tiếp C9–C10. | C4b | local | 1.5 h |
 | **C8b** | WS `/ws/sentence-landmarks` + `tests/test_sentence_ws.py` (AC11) + AC10-b; thêm mục WS mới vào `docs/phase12_api.md`. | C7, C8a | local | 2 h |
 | **C9** | `frontend/src/lib/{modes,sentence}.js` + `frontend/tests/{modes,sentence}.test.mjs` + `tests/test_frontend_modes.py` (AC12). Được đỏ có chủ đích tới C10 theo đúng luật 06 §0.3 (chỉ `tests.test_frontend_modes`, vi phạm chỉ ở `App.jsx`/`Navbar.jsx`, không tăng; message ghi "guard đỏ có chủ đích, còn N vi phạm"). | P7 | cloud được | 1.5 h |
-| **C10** | `ModeSelector.jsx`, `SentenceMode.jsx`, sửa `App.jsx`, `navItems` của `Navbar.jsx`; `npm run build` (AC13); guard xanh. | C9 (+ C7, C8b để xem thử ở local) | cloud (build) / local | 2 h |
-| **C11** | E2E: sửa `scripts/e2e_browser.cjs`, `scripts/e2e_fullstack.py` (vào chế độ bằng nút `mode-*`; thêm kịch bản) → chạy 7 kịch bản AC14 ở HEAD sạch → commit 7 JSON. | C7, C8b, C10 | local (Edge) | 2 h |
+| **C10** | `ModeSelector.jsx`, `SentenceMode.jsx`, (tùy chọn) `lib/capture.js`, sửa `App.jsx`, `navItems` của `Navbar.jsx`; `npm run build` (AC13); guard xanh. | C9 (+ C7, C8b để xem thử ở local) | cloud (build) / local | 2 h |
+| **C11** | E2E: sửa `scripts/e2e_browser.cjs`, `scripts/e2e_fullstack.py` (vào chế độ bằng nút `mode-*`; thêm kịch bản) → chạy 7 kịch bản AC14 ở HEAD sạch → commit 7 JSON vào `reports/e2e_07_<ngày>/` (thư mục riêng, không ghi đè JSON e2e của 06). | C7, C8b, C10 | local (Edge) | 2 h |
 | **C12** | `docs/sentence_mode.md` + ghi chú README + `tests/test_sentence_docs.py` (AC15); AC2 đầy đủ + `npm test` + build; so `git status` với C0; THÊM 1 dòng progress_log (AC16); ghi backlog đề xuất (§6 cuối). Orchestrator gọi vslt-reviewer. | C1–C11 | local | 1.5 h |
 
 Tổng ước lượng ≈ 23.5 giờ; GPU 0 giờ (mọi lần chạy đo dùng CPU), không Kaggle, không cài gói.
@@ -407,10 +413,331 @@ Tổng ước lượng ≈ 23.5 giờ; GPU 0 giờ (mọi lần chạy đo dùng
 cloud được); 5 = C11–C12 (e2e + đóng việc, local).
 
 ## 5. Tiêu chí chấp nhận (hợp đồng — coder KHÔNG được đổi; chỉ planner đổi và phải ghi lý do)
-(đang viết)
+
+Lệnh Python chạy từ gốc repo với `PYTHONIOENCODING=utf-8 .venv/Scripts/python` (local). "Mới" = file/lớp test do kế hoạch
+này thêm. Test mới không cần mạng, không ghi file trong repo (chỉ thư mục tạm), và KHÔNG skip trên máy local (được
+`skipUnless` cho clone sạch/cloud, lý do nêu rõ file thiếu). Mọi số trong các tiêu chí dưới đây được test ĐỌC từ dữ liệu
+hoặc JSON, không gõ tay.
+
+**AC1 — Phạm vi thay đổi.** `git diff --name-status P7 HEAD` chỉ chứa:
+- Mới (A): `src/translation/{cslr_preprocess,sentence_scoring,sentence_pipeline}.py`, `src/inference/sentence_live.py`;
+  `scripts/{vit5_s06_overlap,sentence_calibrate,evaluate_sentence_s06}.py`;
+  `tests/{test_vit5_s06_overlap,test_cslr_preprocess_equivalence,test_sentence_scoring,test_sentence_pipeline,
+  test_sentence_calibration,test_sentence_eval_report,test_sentence_api,test_sentence_live,test_sentence_ws,
+  test_frontend_modes,test_sentence_docs}.py`;
+  `frontend/src/lib/{modes,sentence}.js`, (tùy chọn) `frontend/src/lib/capture.js`, `frontend/tests/{modes,sentence}.test.mjs`,
+  `frontend/src/components/{ModeSelector,SentenceMode}.jsx`;
+  `reports/vit5_s06_overlap_<ngày>/overlap.json`, `reports/sentence_calibration_<ngày>/threshold.json`,
+  `reports/sentence_s06_<ngày>/eval.json`, `reports/e2e_07_<ngày>/{mode_initial,fingerspell_default,word_default,
+  word_stgcn_h360,sentence_sample,sentence_webcam,mode_switch}.json`; `docs/sentence_mode.md`, `docs/plans/07-progress.md`.
+- Sửa (M): `backend/main.py`; `frontend/src/App.jsx`; `frontend/src/components/Navbar.jsx` (chỉ `navItems` + dòng import
+  icon); `frontend/src/components/Fingerspelling.jsx` (CHỈ khi tách hàm chụp sang `lib/capture.js`, diff chỉ là thay khối
+  chụp bằng lời gọi); `frontend/src/components/{Phase12Pipeline,Fingerspelling}.jsx` thêm tối đa 10 dòng trong hàm dọn dẹp
+  `useEffect` CHỈ khi e2e `mode_switch` chứng minh WS/camera không được giải phóng (ghi lý do + output e2e trước/sau);
+  `scripts/e2e_browser.cjs`, `scripts/e2e_fullstack.py` (thêm điều hướng bằng nút và kịch bản mới; mọi assert cũ giữ nguyên);
+  `docs/phase12_api.md`, `README.md`, `docs/progress_log.md` (cả ba CHỈ thêm dòng); `docs/plans/07-viec6-che-do.md` (chỉ planner).
+- KHÔNG đổi: `src/data/**`, `src/training/**`, `src/models/**`, `src/metrics/**`,
+  `src/translation/{__init__,translator,cslr_recognizer,end_to_end,dataset,text_normalizer,metrics}.py`, các file có sẵn
+  trong `src/inference/`, `scripts/{train_*,prepare_*,evaluate_cslr_s06,extract_cslr_predictions,evaluate_translation_phase4b,
+  simulate_cslr_streaming,smoke_test_phase12}.py`, `frontend/package.json`, `frontend/package-lock.json`,
+  `frontend/src/components/{PredictionDisplay,CameraCapture,RealtimeStream,Dictionary,Reports}.jsx`, `frontend/src/lib/{ws,
+  liveProtocol,fingerspelling}.js`, mọi test đã có ở P7, mọi file `reports/` đã có (kể cả JSON e2e của 06), `docs/reviews/*`,
+  `configs/`, `checkpoints/`, `data/`, `clone/`. Không xóa file. 3 file ` D` của người dùng vẫn chưa staged. Không file
+  `.pt/.npz/.npy/.mp4/.y4m/.png/.jpg/.log` nào vào git.
+
+**AC2 — Không hồi quy.** Lệnh (29 module AC2 của kế hoạch 06 + module mới; thêm `tests.data.test_vsl_gh_dataset` nếu xanh ở C0):
+`PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_alphabet_preprocessing tests.test_aspect_correction tests.test_realtime tests.test_split_guards tests.test_translation_core tests.test_vsl_system tests.test_ws_throughput tests.test_fingerspelling_api tests.test_unified_split_integrity tests.test_report_step4 tests.test_fingerspelling_limits tests.test_fingerspelling_compose tests.test_fingerspelling_deployed tests.test_alphabet_ckpt_provenance tests.test_harmonized tests.test_sign_segmenter tests.test_harmonized_live tests.test_ws_live_contract tests.test_live_harmonized_equivalence tests.test_archive_step4_kaggle tests.test_status_privacy tests.test_backend_model_unavailable tests.test_ws_dropped_frames tests.test_archive_private_kaggle tests.test_private_artifacts tests.test_cors_origin_bind tests.test_hand_landmarks_ws tests.test_hand_live_equivalence tests.test_frontend_contract tests.test_vit5_s06_overlap tests.test_cslr_preprocess_equivalence tests.test_sentence_scoring tests.test_sentence_pipeline tests.test_sentence_calibration tests.test_sentence_eval_report tests.test_sentence_api tests.test_sentence_live tests.test_sentence_ws tests.test_frontend_modes tests.test_sentence_docs -v`
+- Đóng việc (C11, C12): 0 failure, 0 error, 0 skip. Số test = số C0 + số test mới; báo theo module, trước → sau.
+- Mốc trung gian: mỗi bước chạy các module đã tồn tại tới bước đó, 0 failure; ngoại lệ DUY NHẤT là guard của C9 theo luật
+  ở bảng §4 (hết ở C10).
+- `git diff P7 HEAD -- tests/` với mọi file test đã có ở P7: 0 dòng `-`.
+- `git status --porcelain` trước và sau khi chạy giống hệt.
+- `cd frontend && npm test` → 0 fail; số file test Node báo đã chạy == số dòng của `git ls-files "frontend/tests/*.test.mjs"`;
+  ghi `node --version`.
+
+**AC3 — Kiểm chồng lấn ViT5 ↔ S06 (C1).** Lệnh:
+`.venv/Scripts/python scripts/vit5_s06_overlap.py --out reports/vit5_s06_overlap_<YYYY-MM-DD>/overlap.json`.
+`tests/test_vit5_s06_overlap.py`:
+- a. Logic (fixture trong thư mục tạm, docstring ghi rõ là fixture): cặp bằng nhau sau chuẩn hóa train → L1; chỉ khác hoa/
+  thường/dấu câu → L1 false, L2 true; Jaccard ≥ 0.8 và chênh 1 từ → gần trùng; chênh 2 từ → không; `heldout` có bất kỳ
+  khớp stage 1 nào → không vào `S06_vit5_clean`; mẫu `train`/`val` không bao giờ vào `clean`.
+- b. `ast` của script: import `Clean10kDataset` và `VSLGHTextDataset` từ `src.translation.dataset`; KHÔNG có tên `random`,
+  `shuffle`, `SENT240`/`SENT270` (không tự chia lại).
+- c. Dữ liệu thật: gọi hàm chính của script vào thư mục tạm → JSON bỏ `generated_by` == JSON đã commit bỏ `generated_by`;
+  độ dài train/val stage 1/2 == history JSON (đọc file); `summary.S06_all` == số mẫu `split == "test"` trong
+  `dataset_canonical.json` và mỗi mẫu đó xuất hiện đúng 1 lần; `S06_vit5_train`/`val`/`heldout` rời nhau và hợp lại bằng
+  `S06_all`; `S06_vit5_clean ⊆ S06_vit5_heldout`; mọi `sample_id` chứa `_S06_`.
+- d. JSON không có khóa `keypoints`, `landmarks`, `coords`, `vsl`, `vi`; mọi phần tử `stage1_match_ids` khớp `^PAR_10K_\d{5}$`.
+- e. `generated_by.code_dirty == false`; `input_sha256.dataset_canonical` == sha256 file cục bộ; reviewer kiểm
+  `git_commit` là tổ tiên HEAD.
+
+**AC4 — Tiền xử lý dùng chung == train (`tests/test_cslr_preprocess_equivalence.py`).**
+- a. `ast` của `src/translation/cslr_preprocess.py`: không có `import torch`/`from torch`.
+- b. Với MỌI mẫu split `val` và mọi mẫu split `train` có chỉ số (thứ tự của dataset) chia hết cho 10:
+  `preprocess_vslgh_137(np.load(npy))` so với `VSLGHContinuousDataset(split=…, conversion_mode="semantic", normalize=True,
+  vocabulary=VSLGlossVocabulary.from_file(vocab))[i]` → `np.array_equal` cho keypoints VÀ joint_mask. Test in số mẫu đã so
+  và assert bằng số tính từ dataset.
+- c. Danh sách mẫu của test không có id chứa `_S06_` (assert).
+- d. Đầu vào sai (cột 410, có NaN, T = 0) → `ValueError` có mã.
+- e. (07-progress, không phải test) Đột biến trong bộ nhớ `normalize=False` → test b FAIL (chứng minh test nhạy).
+
+**AC5 — Giải mã có độ tin cậy + căn chỉnh (`tests/test_sentence_scoring.py`).**
+- a. Fixture log_probs (dựng tay, docstring ghi rõ): toàn blank → `[]`; A A blank A → [A, A]; A B B → [A, B]; T = 1;
+  `lengths` < T bỏ phần đuôi. Token == `ctc_greedy_decode`; confidence == trung bình tính tay (|Δ| ≤ 1e-7).
+- b. Dữ liệu thật: 20 mẫu VAL đầu tiên (sắp theo `sample_id`), log_probs qua đường dataset: token ==
+  `ctc_greedy_decode`; mọi confidence ∈ [0, 1]; |exp(log_probs).sum(-1) − 1| ≤ 1e-4 trên frame hợp lệ.
+- c. `align_hypothesis`: trên fixture và trên cả 300 cặp (ref, hyp) VAL: số `substitution` == S, số `insertion` == I của
+  `levenshtein_distance`; `len(labels) == len(hyp)`.
+
+**AC6 — `SentencePipeline` (`tests/test_sentence_pipeline.py`).**
+- a. Mọi mẫu VAL + mẫu train chỉ số chia hết cho 10: token của `recognize_137(np.load(npy))` == token đường dataset (cùng
+  checkpoint, CPU, batch 1); max|Δlog_probs| ≤ 1e-5 trên bước hợp lệ. Không mẫu S06.
+- b. `VSLTranslator` được dựng đúng 1 lần với `model_path` trỏ `checkpoints/vit5_stage2/best_model` (spy); vá cho thư mục
+  stage 2 "không tồn tại" → `SentenceUnavailable("model_unavailable")` và không lời gọi `from_pretrained` nào có đường dẫn
+  chứa `vit5_stage1` (spy).
+- c. Luật (vá `recognize_137`): 0 token → `display == "empty"`, `translation is None`, `translate` không được gọi, có cảnh báo
+  `no_gloss`; `<unk>` → `oov`; gloss ngoài kho → `oov`; confidence < τ → `low_confidence`; confidence == τ → không; mọi
+  gloss ổn → `"translation"`; `raw_gloss` → `translation` là chuỗi và `translate` được gọi đúng 1 lần; `source="webcam"` →
+  có `unverified_input_domain`; fps ngoài khoảng → `fps_out_of_range`, trong khoảng → không.
+- d. Thiếu JSON C5 (`require_calibration=True`) → `calibration_missing`; thiếu JSON C1 → `data_unavailable`; cả hai ca
+  không nạp ViT5.
+- e. [`SENTENCE_MIN_FRAMES`, `SENTENCE_MAX_FRAMES`] chứa T của MỌI file `.npy` (đọc shape bằng `mmap_mode="r"`; số file ==
+  số mẫu trong `dataset_canonical.json`); T ngoài khoảng → `ValueError` mã `clip_too_short`/`clip_too_long`.
+- f. Tập khóa của kết quả đúng §3.4 (không có `reference`); `models.cslr_sha256` == sha256 file; không `message` nào chứa
+  `/`, `\`, `checkpoints`.
+- g. Subprocess `import src.translation.sentence_pipeline` → `'fastapi' in sys.modules` là False.
+- h. (Chỉ ghi nhận) Nếu có CUDA: số mẫu VAL có token khác nhau giữa CPU và CUDA — in ra, ghi 07-progress, không ngưỡng.
+
+**AC7 — Chọn τ trên VAL (C5).** Lệnh:
+`.venv/Scripts/python scripts/sentence_calibrate.py --split val --device cpu --out reports/sentence_calibration_<YYYY-MM-DD>/threshold.json`.
+`tests/test_sentence_calibration.py`:
+- a. Hàm luật trên ROC fixture: chọn cực đại J; hòa → τ nhỏ nhất; lớp rỗng → lỗi.
+- b. JSON: `tau` thuộc lưới (`round(tau*100)` nguyên, 0..100); `tau` == luật áp lên các điểm ROC đã lưu (test tính lại);
+  `0 < n_incorrect < n_tokens`; `split == "val"`; `sample_ids_sha256` == sha256 danh sách id VAL đọc từ dữ liệu, mọi id chứa
+  `_S05_`; chuỗi `_S06_` không xuất hiện ở đâu trong JSON; `cslr_sha256` == sha256 file; `code_dirty == false`.
+- c. Reviewer chạy lại lệnh vào thư mục tạm → thân JSON (bỏ `generated_by`) giống hệt.
+
+**AC8 — Đo S06 một lần (C6).** Lệnh (chạy 1 lần cho JSON chính thức):
+`.venv/Scripts/python scripts/evaluate_sentence_s06.py --device cpu --out reports/sentence_s06_<YYYY-MM-DD>/eval.json`.
+- a. (Reviewer, git) Đúng 1 commit thêm `reports/sentence_s06_*/eval.json` và file không bị sửa sau đó
+  (`git log --format=%H -- <file>` có 1 dòng); commit thêm JSON C1 và commit thêm JSON C5 là tổ tiên của nó
+  (`git merge-base --is-ancestor`); commit của script C6 có trước commit JSON.
+- b. JSON: `inputs.overlap_sha256`/`inputs.threshold_sha256` == sha256 hai file đã commit; `note` đúng nguyên văn §3.6;
+  `pipeline_equals_dataset_path is True` và `n_checked` == số mẫu `split == "test"` (đọc từ dữ liệu); `n` từng tập con ==
+  `summary` của JSON C1; mọi `sample_id` chứa `_S06_`.
+- c. `tests/test_sentence_eval_report.py` (không nạp model): tính lại WER từng tập con từ ref/hyp đã lưu bằng `compute_wer`
+  == giá trị lưu (bằng hệt dict S/D/I/wer); tính lại `compute_translation_metrics` từ chuỗi đã lưu == giá trị lưu
+  (|Δ| ≤ 1e-9); tổng phân bố `display` == `n`; không khóa nào chứa "accuracy"; CI là `null` ⇔ `n < 10`.
+- d. Reviewer chạy lại (CPU) vào thư mục tạm → thân JSON giống hệt (bỏ `generated_by`, thời gian). Không giống → FAIL, báo planner.
+
+**AC9 — REST Ký câu (`tests/test_sentence_api.py`).**
+- a. Pipeline giả (vá loader): `/api/sentence/status` đủ khóa §3.7; `/samples` đúng thứ tự, tag == JSON C1 (test đọc);
+  `/sample` → 200 đủ khóa + `reference`; id `SENT001_S05_R01_F`, `nope`, `../x` → 404 `unknown_sample`; id 65 ký tự hoặc
+  thiếu `sample_id` → 422.
+- b. Loader ném lỗi có thông điệp chứa `C:\x\checkpoints\cslr_best.pt` → 503, `status` ∈ {model_unavailable,
+  data_unavailable, calibration_missing}, `detail` không chứa `\`, `/`, `.pt`, `.json`, `checkpoints` hay thông điệp gốc;
+  `/status` → 200, `available: false`, `reason` đúng mã.
+- c. Spy: `get_or_load_translator` và `get_or_load_predictor` KHÔNG được gọi bởi request `/api/sentence/*` nào.
+- d. Lỗi nạp không bị cache: lần 1 lỗi (vá), bỏ vá → lần 2 thành công.
+- e. Thật (local): mẫu đầu tiên (sắp xếp) của `S06_vit5_heldout` và của `S06_vit5_train` → 200; `glosses`, `translation`,
+  `display` == `SentencePipeline.run_137` trên cùng `.npy` trong cùng tiến trình; `reference` == `dataset_canonical.json`;
+  `tags` == JSON C1.
+- f. `GET /` có `"sentence": "/api/sentence/status"`. Reviewer: `git diff P7 HEAD -- backend/main.py` không có dòng `-` nào
+  chứa `MODEL_TYPE`, `STGCN_VARIANTS`, `ALPHABET_CKPT`, `def get_or_load_predictor`, `def get_or_load_translator`,
+  `BODY_LIMITED_PATHS`, `allow_origins`.
+
+**AC10 — Extractor 137 điểm (`tests/test_sentence_live.py`, MediaPipe thật).**
+- a. `ast` của `clone/Vietnamese-Sign-Language-Translation/source/extract_keypoints.py` → kwargs Holistic, danh sách chỉ số
+  pose, danh sách chỉ số face, thứ tự khối == hằng trong `sentence_live.py`. Subprocess import `sentence_live` → không có
+  `torch`, `fastapi` trong `sys.modules`. (Trên local PHẢI chạy; C0 đã ghi file có.)
+- b. 2 clip đầu của `scripts/live_clip_sample.py` (seed 0, split TRAIN): `run_137(extract_vslgh137_from_video(v), "webcam",
+  fps)` == `sentence_result` nhận qua WS (frame PNG, `reset` đầu clip, `finish` cuối) — bằng hệt `glosses` (gloss và
+  confidence), `translation`, `display`, `num_frames`; cờ `hands`/`pose` từng frame bằng cờ của phiên offline.
+- c. Frame đen 640×480 → vector toàn 0, `hands` cả hai false, `pose` false; output float32, shape (411,), hữu hạn.
+- d. `preprocess_vslgh_137(extract(video))` cho joint_mask đúng luật `(|x|+|y|+|z|) > 1e-6` của dataset.
+
+**AC11 — `WS /ws/sentence-landmarks` (`tests/test_sentence_ws.py`; MediaPipe thật; pipeline giả trừ khi ghi khác).**
+- a. Origin ∈ {`http://evil.example`, `null`, `http://localhost:3001`, `http://localhost:3000.evil.example`,
+  `HTTP://LOCALHOST:3000`} → `WebSocketDisconnect` mã 1008; `Vslgh137Session` và loader không được gọi.
+- b. Message đầu `session_info` đủ khóa §3.8; `extractor.mediapipe_version == mediapipe.__version__`; `limits` == hằng.
+- c. `reset` → `reset_done` với `clip_id` 1, 2, …; `frame_seq` về 0; spy constructor Holistic: số lần = 1 + số reset;
+  graph cũ `close()` đúng 1 lần mỗi reset.
+- d. Gửi liền 5 frame rồi mới đọc → đúng 5 `sentence_frame`, `frame_seq` 0..4, `received_seq` tăng ngặt, `client_timestamp`
+  bằng hệt; không message nào có khóa `landmarks`/`keypoints`.
+- e. `finish` với `min_frames − 1` frame → `clip_too_short`; `min_frames` frame đen → `no_hands`; hai ca pipeline không
+  được gọi. Vá `max_frames` nhỏ (ví dụ 20) rồi gửi 21 frame → frame thứ 21 nhận `clip_too_long`, `buffer_fill` == 20.
+- f. Text rác → `code` ∈ {bad_message, decode_failed, unsupported_format}; PNG khai 4000×10 → `frame_too_large` và
+  `cv2.imdecode` không được gọi; `timestamp: "x"` → `bad_timestamp`; message > 1 MiB → `message_too_large` + đóng 1009;
+  loader ném lỗi ở `finish` → `model_unavailable` + đóng 1011; lỗi không làm tăng `frame_seq`; lỗi không fatal không đóng phiên.
+- g. Spy: `get_or_load_predictor`, `get_or_load_translator` không được gọi.
+- h. `SENTENCE_WS_ERROR_CODES` ⊇ mọi chuỗi mã truyền vào `_ws_error(`/`WsError(` trong `websocket_sentence_landmarks` và
+  hàm phụ của nó (trích bằng `inspect`/`ast`).
+
+**AC12 — Thư viện JS + guard.**
+- `frontend/tests/modes.test.mjs`: `MODES` đúng id/nhãn/thứ tự §3.9; `INITIAL_MODE === null`; `selectMode` thuần (deepFreeze).
+- `frontend/tests/sentence.test.mjs`: `sentenceView` cho 3 giá trị `display`; `raw_gloss` kèm `translation` khác rỗng →
+  `showTranslation === false` và `headline === gloss_str`; mọi mã cảnh báo ở §3.4 có câu tiếng Việt khác rỗng; mã lạ → câu
+  chung (không bị bỏ); `OFFLINE_LABEL` chứa "Chế độ offline"; `reduceSentenceWs` cho `session_info`, `reset_done`,
+  `sentence_frame`, `sentence_result`, `error`, type lạ (`unknownMessages` +1); state đầu vào deepFreeze không bị sửa.
+- Guard của kế hoạch 06 (`TestFrontendSourceGuard` trong `tests/test_frontend_contract.py`, chạy trong AC2, không sửa) phải
+  xanh với mọi file mới/sửa trong `frontend/src`.
+- `tests/test_frontend_modes.py`: (i) `translated_text`, `oov_warning` không xuất hiện trong `frontend/src/**` trừ
+  `components/RealtimeStream.jsx`; (ii) `App.jsx` không còn id tab `'realtime'`/`'alphabet'` và có import `ModeSelector`;
+  (iii) `lib/sentence.js`, `components/SentenceMode.jsx` không khớp regex `/\b(tau|threshold)\w*\s*[:=]\s*[0-9.]/i`;
+  (iv) tự kiểm: đưa chuỗi vi phạm mẫu vào từng luật (i)–(iii) → bị bắt.
+
+**AC13 — Build, không thêm gói.** `cd frontend && npm run build` exit 0; `npm ls --depth=0` giống hệt file C0;
+`git diff P7 HEAD -- frontend/package.json frontend/package-lock.json` rỗng.
+
+**AC14 — E2E fullstack (local, Edge; C11).** Chạy ở HEAD sạch (`git status --porcelain -- backend src frontend scripts
+tests` rỗng), 7 JSON trong `reports/e2e_07_<YYYY-MM-DD>/`. Chung cho cả 7: như phần "Chung" của AC12 kế hoạch 06 (health
+200 trong 180 s; 0 console `error`/`pageerror`/`requestfailed`/HTTP ≥ 400; mọi URL WS bắt đầu `ws://localhost:3000/ws/`,
+không `:8000`; không `POST /api/fingerspelling`; cổng 8000/3000 rảnh sau khi dừng; `generated_by` sạch; không đường dẫn
+tuyệt đối, landmark, ảnh).
+- `mode_initial`: tải trang, chờ 5 s không thao tác → 0 WS được tạo; 0 phần tử `<video>`; thấy `mode-fingerspell`,
+  `mode-word`, `mode-sentence`, `mode-none`.
+- `fingerspell_default`, `word_default`, `word_stgcn_h360`: vào chế độ bằng `mode-fingerspell`/`mode-word`; MỌI assert
+  của kịch bản tương ứng ở AC12 kế hoạch 06 giữ nguyên và đạt.
+- `sentence_sample`: bấm `mode-sentence`; `sentence-offline` hiện và chứa "Chế độ offline"; số mẫu trong select ==
+  `summary.S06_all` của JSON C1; chọn id đầu tiên (sắp xếp) của `S06_vit5_heldout` (script đọc JSON C1); `POST
+  /api/sentence/sample` 200; `sentence-headline` == `translation` (nếu `display == translation`) / == `gloss_str` (nếu
+  `raw_gloss`) / == câu "Không nhận ra gloss nào" (nếu `empty`); `sentence-translation` tồn tại ⇔ `display == translation`;
+  số mục trong `sentence-warnings` == `len(warnings)`; `sentence-reference` chứa câu nhãn; `sentence-tags` hiện. Response
+  ghi dưới khóa `info_not_accuracy`.
+- `sentence_webcam`: webcam giả = clip Ký từ của kế hoạch 06 §3.7 (QIPEDC TRAIN); bấm `mode-sentence` → `sentence-record`
+  → chờ hết độ dài clip (đọc từ video) → `sentence-stop`; WS nhận `session_info`, `reset_done`, ≥ `min_frames`
+  `sentence_frame`, rồi đúng 1 `sentence_result`, 0 `error`; `warnings` có `unverified_input_domain` và `sentence-warnings`
+  hiện câu tương ứng. Kết quả ghi dưới `info_not_accuracy`. Không đạt → DỪNG, báo planner (§7.3-7), không chỉnh tham số.
+- `mode_switch`: Ký từ (chờ `session_info`) → Ký câu → Đánh vần → Ký câu: khi rời Ký từ, socket `/ws/live-stream` đóng
+  trong 2 s (CDP `Network.webSocketClosed`); ở mọi thời điểm ≤ 1 WS đang mở (tính từ sự kiện created/closed) và ≤ 1 `<video>`.
+
+**AC15 — Tài liệu (`tests/test_sentence_docs.py`).**
+- `docs/sentence_mode.md` chứa: mọi mã trong `SENTENCE_WS_ERROR_CODES`; `unknown_sample`, `model_unavailable`,
+  `data_unavailable`, `calibration_missing`; mọi mã cảnh báo §3.4; các `type` `session_info`, `reset_done`,
+  `sentence_frame`, `sentence_result`; đường dẫn 3 JSON (C1, C5, C6) kèm `generated_by.git_commit` của từng file; chữ
+  "offline"; mục "Giới hạn" có đủ 9 ý (test kiểm bằng từ khóa cố định cho từng ý): (1) S06 là 1 người ký; (2) CSLR đã học
+  cả 300 câu qua người ký khác; (3) chỉ `S06_vit5_clean` là "câu ViT5 chưa học"; (4) S06 đã được đo nhiều lần trước kế
+  hoạch này; (5) τ chọn trên 1 người ký (S05); (6) đường webcam chưa kiểm chứng tương đương với dữ liệu train (không có
+  video VSL-GH; extractor gốc chạy Linux, phiên bản không rõ); (7) ngữ liệu stage 1 sinh bằng luật; (8) số Cấp 3 cũ trong
+  README / `PHASE4B_REPORT.md` / `cslr_streaming_simulation.json` đo bằng cấu hình giải mã khác hoặc đường không chuẩn hóa
+  → không dùng; (9) `reports/vslgh_translation_overlap.json` được thay bằng JSON C1.
+- Mọi số thập phân trong mục "Kết quả" và "Giới hạn" của `docs/sentence_mode.md` có mặt trong một trong 3 JSON (test đọc file).
+- `git diff P7 HEAD -- docs/phase12_api.md README.md` có 0 dòng `-`; dòng thêm ở README không chứa chữ số nào ngoài bên
+  trong đường dẫn `docs/…`/`reports/…`, và có nhắc `docs/sentence_mode.md`. Test AC11 của kế hoạch 06 vẫn xanh (trong AC2).
+
+**AC16 — Quy trình.** Mỗi commit có output `impact`/`detect-changes` (risk thật) trong message; không amend; 3 file ` D` của
+người dùng vẫn chưa staged; `docs/plans/07-progress.md` có output thật cho từng bước; `docs/progress_log.md` THÊM 1 dòng (không
+sửa dòng cũ) nêu commit, số test trước → sau, 3 JSON C1/C5/C6 + 7 JSON e2e, câu trả lời của người dùng cho §7.2 (nếu có),
+backlog đề xuất. Model mặc định không đổi: Cấp 2 (`test_a_default_is_unchanged` trong AC2 + AC9-f), Cấp 1 (AC9-f), Cấp 3
+phục vụ đúng đường mặc định có sẵn (AC6-b). Kết luận vslt-reviewer = APPROVE.
 
 ## 6. Rủi ro dữ liệu/ML
-(đang viết)
+
+**Rò rỉ / nhiễm test (quan trọng nhất cho số liệu Cấp 3).**
+- ViT5 stage 2 học cặp của 240 câu S06 (gloss + câu đích) và chọn epoch trên 30 câu khác → mode A (oracle) trên các câu đó
+  đo khả năng NHỚ, không phải dịch. Chỉ `S06_vit5_clean` được gọi "câu ViT5 chưa học"; cỡ tập này chưa biết (C1 sinh), theo
+  mã tối đa là số câu heldout → CI rộng hoặc `null`.
+- CSLR đã học MỌI câu S06 qua 4 người ký khác (3 lần lặp/người): BiGRU + CTC có thể học thứ tự gloss của câu → WER S06 là
+  "người ký mới, câu đã biết", lạc quan so với câu mới thật. VSL-GH không có tập nào đo được "câu mới" cho CSLR (mọi người ký
+  ký cùng 300 câu) → Giới hạn + câu hỏi Q1 (§7.2).
+- Stage 1 (10k, sinh bằng luật): chồng lấn với S06 CHƯA được đo trên đúng file/split train (JSON cũ đo trên 9.405 cặp chưa
+  làm sạch, không nguồn) → C1 đo lại, kể cả gần trùng.
+- S06 đã bị đo nhiều lần trước đây; τ và luật OOV cố định trước C6 (VAL/JSON C1); C6 chạy 1 lần; không chọn gì theo S06.
+- Mẫu S06 hiện trong UI (clip mẫu) chỉ để minh họa; tag trên UI nói rõ ViT5/CSLR đã học câu nào; không dùng UI để chỉnh gì.
+
+**Lệch train–suy luận.**
+- Đường clip mẫu: cùng `.npy` + tiền xử lý chứng minh bằng hệt (AC4) + cùng model/forward (AC6-a, kiểm chéo trong C6) →
+  không lệch trong mã. CPU vs GPU fp16 (backend có thể chạy CUDA): chỉ ghi nhận (AC6-h); số chính thức đo trên CPU.
+- **Đường webcam — lệch lớn và KHÔNG đo được:** VSL-GH quay phông xanh, camera/độ phân giải/fps không rõ, extractor chạy
+  Linux, phiên bản MediaPipe không ghi; ta chạy mediapipe (bản trong `.venv`, ghi ở C0) trên Windows. Kế hoạch 06 đã đo lệch
+  Linux↔Windows ở Cấp 1 là KHÁC 0 (`reports/fingerspell_live_2026-09-29/hand_live_check.json`, commit e58d025, trích ở 06 §0.4).
+  Không có video VSL-GH → không thể kiểm extractor 137 điểm của ta so với `.npy` gốc; AC10-b chỉ chứng minh nhất quán NỘI BỘ
+  (live == offline của chính ta). Người dùng tự cắt câu (Ghi/Dừng) nên đầu/cuối có thể dài hơn clip train; fps khác.
+  → Luôn có cảnh báo `unverified_input_domain`; không báo độ chính xác webcam; e2e webcam dùng clip QIPEDC (một TỪ, không
+  phải câu VSL-GH) chỉ chứng minh "chạy được".
+- Bố cục: mẫu semantic chỉ dùng 2 điểm FaceMesh (61/291) cho khớp 9/10, nhưng extractor vẫn phải xuất đủ [T,411] đúng thứ
+  tự gốc để `convert_137_to_67` chọn đúng điểm.
+- Đường cũ `CSLRRecognizer`/`translate_keypoints`/`translate_video`/`simulate_cslr_streaming.py` lệch train (không chuẩn
+  hóa; bố cục QIPEDC + NaN) — không dùng; ghi Giới hạn + backlog; số của chúng không được trích.
+
+**Ngưỡng và OOV.**
+- τ chọn trên S05 = 1 người ký, 300 câu, và S05 cũng là tập đã dùng chọn epoch CSLR → τ có thể lạc quan và không chuyển
+  được sang người khác. Độ tin cậy CTC (trung bình softmax trên đoạn argmax) không phải xác suất đã hiệu chuẩn; chỉ dùng xếp hạng.
+- Kho OOV = gloss của stage-2 train → gloss chỉ có ở SENT241–300 luôn bị cờ; trên `S06_vit5_heldout` nhiều câu sẽ ở
+  `raw_gloss`. Đó là hành vi mong muốn (trung thực), không được nới luật sau khi thấy tỉ lệ.
+
+**Cỡ mẫu.**
+- S06: 300 mẫu, 1 người ký, mỗi câu 1 lần; bootstrap theo mẫu = theo câu; CI chỉ phản ánh biến thiên theo câu, không theo
+  người ký (n người ký = 1). `S06_vit5_clean` có thể < 10 → CI `null`. E2E 1 clip/kịch bản chỉ chứng minh "chạy được".
+- AC4/AC6-a (≈ 660 mẫu train+VAL) là kiểm tương đương CODE (tất định), không phải tỉ lệ.
+
+**Nguồn gốc / giấy phép.**
+- VSL-GH: MIT theo `docs/data_registry.md:56`; JSON C1/C6 chứa văn bản câu/gloss VSL-GH (được phép, ghi nguồn trong
+  `docs/sentence_mode.md`); không commit keypoint.
+- Bộ 10k: "Open access for research and educational purposes" (`docs/data_registry.md:90`), cột `vsl` sinh bằng luật; JSON
+  chỉ chứa ID.
+- 2 nhãn tái dựng (train CSLR): C1 ghi nếu một trong hai là nguồn cặp của ViT5.
+- Checkpoint CSLR/ViT5 chỉ có trên đĩa local, không có bản lưu trữ → mất máy = không tái lập (Q2). sha256 ghi ở C0 và trong
+  mọi JSON.
+
+**Tài nguyên.** Backend có thể giữ 2 bản ViT5 (translator legacy của Ký từ + lõi Ký câu) → RAM/VRAM máy laptop; C7 ghi
+nhận, không tối ưu ở đây. C6 chạy ViT5 beam 4 trên CPU cho 600 lần dịch (mode A + B) — thời gian chưa đo, chấp nhận.
+
+**Trung thực UI (DoD 6).** Nhãn gốc tách biệt khỏi kết quả; câu dịch không hiện khi `raw_gloss`; "Chế độ offline" luôn
+hiện; webcam gắn nhãn "thử nghiệm" + cảnh báo; mọi chữ kết quả lấy từ response server.
+
+**Backlog đề xuất (C12 ghi vào progress_log, KHÔNG làm ở đây).**
+1. Dọn đường Cấp 3 cũ lệch train (`CSLRRecognizer.predict`, `VSLEndToEndTranslator.translate_keypoints/translate_video`,
+   `scripts/simulate_cslr_streaming.py`) — hỏi người dùng trước khi xóa.
+2. `oov_warning` của đường legacy không bao giờ được tạo (`backend/main.py:1127`) — sửa hoặc bỏ cùng đổi hợp đồng legacy
+   (cần planner, vì `tests/test_ws_live_contract.py:37` khóa tập khóa).
+3. Lưu trữ private checkpoint Cấp 3 (nếu Q2 = có).
+4. Train lại CSLR với tập chia theo câu (nếu Q1 = có) để có số "câu mới" thật.
+5. Streaming CSLR chỉ sau khi có model nhân quả (`docs/cslr_streaming_design.md` §4); đo lại mô phỏng trên đường đã chuẩn hóa.
+6. Đo độ trễ Ký câu (mở rộng DoD 8) từ `timing_ms`.
 
 ## 7. Điểm dừng
-(đang viết)
+
+### 7.1 Trước khi code: KHÔNG có điểm dừng bắt buộc
+- Đổi model mặc định: KHÔNG. Cấp 2 giữ nguyên (AC9-f, AC16); Cấp 1 không đụng; Cấp 3 dùng đúng đường mặc định đang có trong mã
+  (`checkpoints/cslr_best.pt`, `checkpoints/vit5_stage2/best_model`) và BỎ đường lùi lặng lẽ sang stage 1 (D4).
+- Cần dữ liệu người dùng cung cấp: KHÔNG (VSL-GH, bộ 10k, checkpoint, video QIPEDC, script trích gốc đều ở máy local).
+  Ngoại lệ có điều kiện: §7.3-6.
+- Đụng thay đổi chưa commit của người dùng / xóa file / hành động không hoàn tác: KHÔNG.
+- GPU/Kaggle: 0.
+- Vấn đề dữ liệu mới: phát hiện khi lập kế hoạch — (a) CSLR đã học mọi câu S06 trong khi README/`PHASE4B_REPORT.md`/`VERIFY.md`
+  ghi "30 câu unseen / zero leakage"; (b) JSON chồng lấn cũ không có nguồn và đo trên bộ chưa làm sạch; (c) đường suy luận
+  Cấp 3 cũ không chuẩn hóa. Đánh giá: KHÔNG đổi hướng kế hoạch — việc này vốn được giao để kiểm rò rỉ trước khi đo; (a) chỉ
+  đổi cách GỌI TÊN số liệu (đã khóa vào AC8-b, AC15), (b) và (c) được thay/né bằng C1 và lõi mới. Vì vậy không kích hoạt
+  điểm dừng bắt buộc; nhưng người dùng cần biết vì các số Cấp 3 đang có trong README bị nói quá → Q1.
+
+### 7.2 Câu hỏi cho người dùng (KHÔNG chặn bước nào; kế hoạch chạy theo mặc định nếu chưa có trả lời)
+- **Q1.** CSLR đã học cả 300 câu của S06 qua người ký khác, nên hiện KHÔNG có số Cấp 3 nào đo "câu mới" cho cả hệ thống;
+  README (`:56-60`) và `reports/PHASE4B_REPORT.md:112` đang ghi "30 câu unseen / zero leakage". **Mặc định:** giữ CSLR hiện
+  tại, gọi đúng tên ("người ký chưa gặp, câu CSLR đã học"), thêm ghi chú ở README trỏ `docs/sentence_mode.md` (không sửa báo
+  cáo lịch sử). Người dùng có muốn thêm vào backlog việc train lại CSLR với tập chia theo câu (GPU Kaggle, sau DoD 1–7) không?
+- **Q2.** `checkpoints/cslr_best.pt` và `checkpoints/vit5_stage{1,2}/best_model/` chỉ có trên máy local, chưa có trong dataset
+  private nào. **Mặc định:** chỉ ghi sha256 (C0 + các JSON), không tải lên. Có muốn lưu trữ vào một dataset Kaggle PRIVATE
+  như kế hoạch 02/05 (việc riêng, sau kế hoạch này) không?
+
+### 7.3 Điểm dừng có điều kiện trong lúc làm (coder DỪNG, báo; KHÔNG tự nới tiêu chí)
+1. C1: độ dài `Clean10kDataset`/`VSLGHTextDataset` ≠ history JSON (dữ liệu đã đổi sau khi train) → DỪNG, CẦN NGƯỜI DÙNG
+   (vấn đề dữ liệu mới).
+2. C1: có câu mà các lần lặp mang > 1 biến thể cặp (gloss/translation), hoặc cặp ViT5 học cho một câu ≠ cặp của mẫu S06, hoặc
+   câu heldout khớp L1/L2 với stage 1, hoặc `S06_vit5_clean` rỗng → báo planner (planner đánh giá có phải "vấn đề dữ liệu
+   mới"; coder không tự đổi định nghĩa tập con hay ngưỡng).
+3. C2 (AC4-b) hoặc C4a (AC6-a) không bằng hệt → báo planner (không nới sang dung sai).
+4. C5: một lớp rỗng (0 token đúng hoặc 0 token sai trên VAL) → báo planner.
+5. C6: kiểm chéo lõi ≠ đường dataset trên S06 → không ghi JSON, báo planner. Muốn chạy lại C6 lần 2 vì bất kỳ lý do gì →
+   planner quyết và ghi lý do (không tự chạy lại để lấy số khác).
+6. C8a: không có `clone/.../source/extract_keypoints.py` ở local, hoặc script gốc có bước không tái hiện được (tham số
+   không đọc được bằng `ast`, tiền xử lý ảnh không rõ) → dừng C8, CẦN NGƯỜI DÙNG (cung cấp script gốc, hoặc đồng ý Ký câu
+   chỉ có nguồn "clip mẫu" trong đợt này); các bước khác làm tiếp; AC10, AC11, `sentence_webcam` khi đó ghi BLOCKED, không
+   tính là PASS.
+7. C11: `sentence_webcam` không ra đúng 1 `sentence_result`, hoặc `mode_switch` cho thấy WS/camera không được giải phóng mà
+   sửa ≤ 10 dòng dọn dẹp không đủ → báo planner.
+8. Một test đã có bị vỡ → báo planner (không sửa test cũ). Riêng test AC11 của kế hoạch 06 (`docs/phase12_api.md`) xử lý
+   bằng cách THÊM tài liệu (§3.8), không sửa test.
+9. Cần cài gói npm/pip, tải model/trình duyệt từ mạng, cần GPU/Kaggle, cần xóa file, hoặc cần đổi model mặc định → báo
+   orchestrator (hỏi người dùng).
+10. Trên cloud: bước cần dữ liệu/checkpoint không chạy được → ghi "cần local", không thay bằng dữ liệu khác, không coi skip là pass.
