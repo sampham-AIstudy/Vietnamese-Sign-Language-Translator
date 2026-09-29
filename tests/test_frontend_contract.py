@@ -295,5 +295,163 @@ class TestCrossLanguageBody(unittest.TestCase):
         self.assertEqual(r.json(), self.client.post(H.SEQ_PATH, json=body_py).json())
 
 
+# ---------------------------------------------------------------------------------------------------------------
+# AC12-t (plan 06, revision 2, 0B.1 / 0B.2): socket classification rules of scripts/e2e_fullstack.py.
+# The module is loaded from its path; no browser, no server. Inputs have the shape e2e_browser.cjs records.
+E2E_FULLSTACK = os.path.join(PROJECT_ROOT, "scripts", "e2e_fullstack.py")
+HMR_URL = "ws://localhost:3000/?token=AAsU3M2Axbsn"
+LIVE_URL = "ws://localhost:3000/ws/live-stream"
+HAND_URL = "ws://localhost:3000/ws/hand-landmarks"
+
+
+def _load_e2e_fullstack():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("_plan06_e2e_fullstack", E2E_FULLSTACK)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _sock(url, protocol=None, count_by_type=None, closed=False, n_messages=None, first_type=None):
+    cbt = dict(count_by_type or {})
+    if n_messages is None:
+        n_messages = sum(cbt.values())
+    if first_type is None and cbt:
+        first_type = next(iter(cbt))
+    return {"url": url, "protocol": protocol, "count_by_type": cbt, "n_messages": n_messages, "closed": closed,
+            "first_type": first_type}
+
+
+def _hmr(url=HMR_URL, protocol="vite-hmr", count_by_type=None):
+    return _sock(url, protocol, {"connected": 1} if count_by_type is None else count_by_type)
+
+
+def _used(url=LIVE_URL):
+    return _sock(url, None, {"session_info": 1, "frame_result": 40})
+
+
+def _orphan(url=LIVE_URL, closed=True):
+    return _sock(url, None, {}, closed=closed, n_messages=0)
+
+
+class TestE2eSocketRules(unittest.TestCase):
+    """AC12-t: Vite HMR socket definition (0B.1) and React.StrictMode orphan rule (0B.2)."""
+
+    URL_CHECKS = ("ws_no_8000_any_socket", "ws_app_urls_via_proxy", "vite_hmr_socket_rule")
+
+    @classmethod
+    def setUpClass(cls):
+        cls.E = _load_e2e_fullstack()
+
+    def _checks(self, sockets):
+        res = self.E.classify_ws(sockets)
+        self.assertEqual(set(res["checks"]), set(self.URL_CHECKS))
+        return res, {k: v["pass"] for k, v in res["checks"].items()}
+
+    # case 1
+    def test_hmr_socket_excluded_and_all_url_checks_pass(self):
+        res, ok = self._checks([_hmr(), _used()])
+        self.assertEqual(ok, {k: True for k in self.URL_CHECKS})
+        self.assertEqual(res["hmr_excluded"],
+                         [{"url": HMR_URL, "protocol": "vite-hmr", "count_by_type": {"connected": 1}}])
+        self.assertEqual([w["url"] for w in res["app"]], [LIVE_URL])
+
+    # case 2
+    def test_same_url_without_protocol_is_not_hmr(self):
+        res, ok = self._checks([_hmr(protocol=None), _used()])
+        self.assertEqual(res["hmr_excluded"], [])
+        self.assertFalse(ok["ws_app_urls_via_proxy"])
+
+    def test_other_protocol_is_not_hmr(self):
+        res, ok = self._checks([_hmr(protocol="vite-hmr2"), _used()])
+        self.assertEqual(res["hmr_excluded"], [])
+        self.assertFalse(ok["ws_app_urls_via_proxy"])
+
+    # case 3
+    def test_vite_hmr_protocol_with_other_url_is_red(self):
+        for url in ("ws://localhost:3000/?token=x&a=1", "ws://localhost:3000/foo?token=x", "ws://127.0.0.1:3000/?token=x",
+                    "ws://localhost:3000/?token=", "ws://localhost:3000/?token=x\n", "wss://localhost:3000/?token=x",
+                    "ws://localhost:3000/?token=x#f", "ws://localhost:3001/?token=x"):
+            with self.subTest(url=url):
+                res, ok = self._checks([_hmr(url=url), _used()])
+                self.assertEqual(res["hmr_excluded"], [])
+                self.assertFalse(ok["vite_hmr_socket_rule"])
+                self.assertFalse(all(ok.values()))
+
+    # case 4
+    def test_port_8000_is_red_for_every_socket(self):
+        res, ok = self._checks([_hmr(url="ws://localhost:8000/?token=x"), _used()])
+        self.assertFalse(ok["ws_no_8000_any_socket"])
+        res, ok = self._checks([_hmr(), _sock("ws://localhost:8000/ws/live-stream", None, {"session_info": 1})])
+        self.assertFalse(ok["ws_no_8000_any_socket"])
+        res, ok = self._checks([_hmr(), _used(), _orphan(url="ws://127.0.0.1:8000/ws/live-stream")])
+        self.assertFalse(ok["ws_no_8000_any_socket"])
+
+    # case 5
+    def test_hmr_socket_with_other_message_type_is_red(self):
+        for cbt in ({"connected": 1, "full-reload": 1}, {"update": 1}, {"connected": 1, "error": 1}):
+            with self.subTest(count_by_type=cbt):
+                res, ok = self._checks([_hmr(count_by_type=cbt), _used()])
+                self.assertEqual(res["hmr_excluded"], [])
+                self.assertFalse(ok["vite_hmr_socket_rule"])
+        # a non-JSON message is not a JSON message with type "connected"
+        res, ok = self._checks([_sock(HMR_URL, "vite-hmr", {"connected": 1}, n_messages=2), _used()])
+        self.assertEqual(res["hmr_excluded"], [])
+        self.assertFalse(ok["vite_hmr_socket_rule"])
+
+    # case 6
+    def test_two_hmr_sockets_are_red(self):
+        res, ok = self._checks([_hmr(), _hmr(url="ws://localhost:3000/?token=bbbbbbbbbbbb"), _used()])
+        self.assertFalse(ok["vite_hmr_socket_rule"])
+
+    # case 7
+    def test_only_hmr_socket_is_red(self):
+        res, ok = self._checks([_hmr()])
+        self.assertFalse(ok["ws_app_urls_via_proxy"])
+        res, ok = self._checks([])
+        self.assertFalse(ok["ws_app_urls_via_proxy"])
+
+    # case 8
+    def test_app_socket_outside_ws_prefix_is_red(self):
+        res, ok = self._checks([_hmr(), _used(), _sock("ws://localhost:3000/api/x", None, {})])
+        self.assertFalse(ok["ws_app_urls_via_proxy"])
+        res, ok = self._checks([_hmr(), _sock("ws://127.0.0.1:3000/ws/live-stream", None, {"session_info": 1})])
+        self.assertFalse(ok["ws_app_urls_via_proxy"])
+
+    # case 9 — StrictMode orphans of one path
+    def test_orphan_then_used_socket_is_green(self):
+        res = self.E.strictmode_orphans([_orphan(), _used()])
+        self.assertTrue(res["pass"], res)
+        self.assertEqual(res["orphans"], [0])
+        self.assertEqual([w["first_type"] for w in res["checked"]], ["session_info"])
+
+    def test_single_used_socket_is_green(self):
+        res = self.E.strictmode_orphans([_used(HAND_URL)])
+        self.assertTrue(res["pass"], res)
+        self.assertEqual(res["orphans"], [])
+
+    def test_two_orphans_on_one_path_are_red(self):
+        self.assertFalse(self.E.strictmode_orphans([_orphan(), _orphan(), _used()])["pass"])
+
+    def test_zero_message_last_or_only_socket_is_red(self):
+        self.assertFalse(self.E.strictmode_orphans([_orphan()])["pass"])
+        self.assertFalse(self.E.strictmode_orphans([_used(), _orphan()])["pass"])
+        self.assertFalse(self.E.strictmode_orphans([_orphan(), _orphan()])["pass"])
+
+    def test_zero_message_socket_not_closed_is_red(self):
+        self.assertFalse(self.E.strictmode_orphans([_orphan(closed=False), _used()])["pass"])
+
+    def test_empty_path_is_red(self):
+        self.assertFalse(self.E.strictmode_orphans([])["pass"])
+
+    def test_socket_with_messages_is_never_an_orphan(self):
+        # an earlier socket that received messages stays subject to the session_info check
+        early = _sock(LIVE_URL, None, {"error": 1}, closed=True)
+        res = self.E.strictmode_orphans([early, _used()])
+        self.assertEqual(res["orphans"], [])
+        self.assertEqual(len(res["checked"]), 2)
+        self.assertEqual(res["checked"][0]["first_type"], "error")
+
+
 if __name__ == "__main__":
     unittest.main()
