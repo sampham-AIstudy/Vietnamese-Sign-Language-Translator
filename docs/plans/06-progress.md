@@ -1,9 +1,9 @@
 # Kế hoạch 06 — tiến độ (coder; chặng 1: B0–B2)
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
-- Bước đã xong: B0
-- Bước đang làm: B1
-- Bước còn lại: B1, B2 (chặng 1); B3–B9 (chặng sau, không làm trong phiên này)
+- Bước đã xong: B0 (8e7b09b), B1 (commit "06: B1 — ...")
+- Bước đang làm: B2
+- Bước còn lại: B2 (chặng 1); B3–B9 (chặng sau, không làm trong phiên này)
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
@@ -38,3 +38,28 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
    - `_decode_frame`: risk LOW (direct 2: `_process_frame_worker`, `_process_frame_worker_harmonized`/`run_harmonized`).
    - `health`: risk UNKNOWN (0 caller resolve). Text search `/api/health`: `frontend/src/App.jsx`,
      `tests/test_backend_model_unavailable.py`, `tests/test_ws_live_contract.py`. B0–B2 không sửa `health`.
+
+## B1 — CORS / Origin / bind (§3.5, AC3)
+
+- impact trước khi sửa: `websocket_live_stream` UNKNOWN (text search ở B0: route WS, gọi qua URL từ frontend, smoke,
+  5 module test). CORS middleware, `uvicorn.run` là mã cấp module (không có symbol trong đồ thị) — text search:
+  `grep -n "0\.0\.0\.0\|allow_origins\|Origin" backend/main.py` → chỉ `:330 allow_origins=["*"]` và `:1519 uvicorn.run(... "0.0.0.0" ...)`.
+  Không test cũ nào kiểm header CORS/Origin (`grep -i "access-control\|origin" tests/*.py` chỉ ra chữ "origin" trong
+  ngữ cảnh khác). TestClient không gửi header Origin → các test WS cũ đi nhánh "không có Origin → cho qua".
+- Test viết trước: `tests/test_cors_origin_bind.py`. Chạy TRƯỚC khi sửa: `Ran 18 tests` `FAILED (failures=13, errors=12)`
+  (errors: `parse_cors_origins`/`DEFAULT_DEV_ORIGINS`/`ws_origin_allowed` chưa có; failures: bind, CORS header, WS Origin).
+  Trong B1 `WS_PATHS = ("/ws/live-stream",)`; phần `/ws/hand-landmarks` của AC3-d/e thêm ở B2 cùng endpoint.
+- Sửa: `backend/main.py` (`DEFAULT_DEV_ORIGINS`, `parse_cors_origins`, `ALLOWED_ORIGINS`, `ws_origin_allowed`,
+  `CORSMiddleware(allow_origins=list(ALLOWED_ORIGINS), allow_credentials=False, allow_methods=["GET","POST"],
+  allow_headers=["Content-Type"])` ở đúng vị trí cũ (CORS vẫn ngoài cùng), `_ws_check_origin` + `WS_CLOSE_POLICY_VIOLATION
+  = 1008` gọi TRƯỚC `accept()` trong `websocket_live_stream`, `uvicorn.run(host="127.0.0.1")`);
+  `start_fullstack.ps1` chỉ `--host 0.0.0.0` → `--host 127.0.0.1`; `frontend/vite.config.js` `strictPort: true` cho
+  `server` và `preview` (không khóa `host`). `node --check frontend/vite.config.js` → OK.
+- Sau khi sửa: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_cors_origin_bind tests.test_ws_live_contract
+  tests.test_fingerspelling_limits tests.test_fingerspelling_api tests.test_ws_dropped_frames tests.test_backend_model_unavailable
+  tests.test_live_harmonized_equivalence tests.test_status_privacy -v` → `Ran 117 tests in 165.445s` `OK`, 0 skip
+  (cors_origin_bind 18 mới; ws_live_contract 18, fingerspelling_limits 48, fingerspelling_api 11, ws_dropped_frames 3,
+  backend_model_unavailable 5, live_harmonized_equivalence 9, status_privacy 5 = như B0).
+- detect-changes --scope all (sau analyze --index-only): risk **medium**, 7 symbol (DEFAULT_DEV_ORIGINS, parse_cors_origins,
+  ALLOWED_ORIGINS, ws_origin_allowed, WS_CLOSE_POLICY_VIOLATION, _ws_check_origin, websocket_live_stream), 4 process
+  (đều bắt đầu từ websocket_live_stream).

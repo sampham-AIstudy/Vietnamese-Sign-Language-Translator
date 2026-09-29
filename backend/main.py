@@ -324,13 +324,48 @@ async def _validation_error_handler(request, exc: RequestValidationError):
 # Registered before CORS so that CORS stays the outermost layer (413s keep their CORS headers).
 app.add_middleware(PathBodyLimitMiddleware, max_bytes=ALPHABET_MAX_BODY_BYTES)
 
-# Enable CORS for React frontend (Vite port 3000, 5173, etc.)
+# CORS / WebSocket Origin policy (decision 2026-09-28: dev origins only, never "*" with credentials).
+# The Vite dev/preview server (port 3000, strictPort) proxies /api and /ws, so the browser sees them as same-origin;
+# CORS only matters when a page of another origin calls :8000 directly. VSL_CORS_ORIGINS="<origin>,<origin>"
+# replaces the default list; an invalid value stops the backend at import (fail fast, never silently widened).
+DEFAULT_DEV_ORIGINS: Tuple[str, ...] = ("http://localhost:3000", "http://127.0.0.1:3000")
+
+
+def parse_cors_origins(value: Optional[str]) -> Tuple[str, ...]:
+    """VSL_CORS_ORIGINS -> tuple of exact origins. None / "" -> DEFAULT_DEV_ORIGINS. Comma separated, whitespace
+    stripped; an element that is empty, "*", not http(s)://..., or ends with "/" raises ValueError."""
+    if value is None or not value.strip():
+        return DEFAULT_DEV_ORIGINS
+    origins = []
+    for part in value.split(","):
+        origin = part.strip()
+        if not origin or origin == "*":
+            raise ValueError(f"VSL_CORS_ORIGINS: empty or wildcard origin in {_short(value, 100)!r}")
+        if not origin.startswith(("http://", "https://")):
+            raise ValueError(f"VSL_CORS_ORIGINS: origin must start with http:// or https:// ({_short(origin, 100)!r})")
+        if origin.endswith("/"):
+            raise ValueError(f"VSL_CORS_ORIGINS: origin must not end with '/' ({_short(origin, 100)!r})")
+        origins.append(origin)
+    return tuple(origins)
+
+
+ALLOWED_ORIGINS: Tuple[str, ...] = parse_cors_origins(os.environ.get("VSL_CORS_ORIGINS"))
+
+
+def ws_origin_allowed(origin: Optional[str]) -> bool:
+    """WebSocket handshake Origin check (browsers always send Origin). No header -> True (non-browser client: smoke
+    test, measurement scripts); otherwise an exact match with one of ALLOWED_ORIGINS ("null" is never allowed)."""
+    if origin is None:
+        return True
+    return origin in ALLOWED_ORIGINS
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=list(ALLOWED_ORIGINS),
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
 )
 
 # Mount video directories for dictionary preview
@@ -1294,6 +1329,19 @@ class _SessionClock:
         return (value - self.first) / scale
 
 
+WS_CLOSE_POLICY_VIOLATION = 1008
+
+
+async def _ws_check_origin(websocket: WebSocket) -> bool:
+    """True when the handshake Origin is allowed; otherwise closes before accept (1008 -> HTTP 403) and logs."""
+    origin = websocket.headers.get("origin")
+    if ws_origin_allowed(origin):
+        return True
+    logger.warning(f"[WebSocket] {websocket.url.path}: Origin {_short(origin, 80)!r} rejected (close 1008)")
+    await websocket.close(code=WS_CLOSE_POLICY_VIOLATION)
+    return False
+
+
 @app.websocket("/ws/live-stream")
 async def websocket_live_stream(websocket: WebSocket):
     """
@@ -1310,7 +1358,11 @@ async def websocket_live_stream(websocket: WebSocket):
       bad_message, bad_config, bad_timestamp, decode_failed, unsupported_format, frame_too_small, frame_too_large),
       control messages and empty messages are NOT counted. `received_seq` and `frame_result.dropped_frames`
       (cumulative slot overwrites of the session) keep their meaning.
+    - Origin: checked BEFORE accept (ws_origin_allowed); a foreign Origin gets close 1008 (handshake 403), no
+      session_info and no model load.
     """
+    if not await _ws_check_origin(websocket):
+        return
     await websocket.accept()
     client_addr = f"{websocket.client.host}:{websocket.client.port}" if websocket.client else "unknown"
     logger.info(f"[WebSocket] Client connected: {client_addr}")
@@ -1516,4 +1568,4 @@ async def websocket_live_stream(websocket: WebSocket):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True, ws_max_size=WS_MAX_MESSAGE_BYTES)
+    uvicorn.run("backend.main:app", host="127.0.0.1", port=8000, reload=True, ws_max_size=WS_MAX_MESSAGE_BYTES)
