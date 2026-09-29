@@ -1,4 +1,4 @@
-Trạng thái: ĐANG LÀM
+Trạng thái: XONG (chờ orchestrator gọi vslt-reviewer)
 
 # Tiến độ kế hoạch 09 — Dọn dẹp review 05
 
@@ -7,9 +7,9 @@ Trạng thái: ĐANG LÀM
 - P9 (HEAD lúc B0, commit chứa kế hoạch): `59d3509` (`git rev-parse --short HEAD` = `git log -1 --format=%h -- docs/plans/09-don-dep-review05.md` = `59d3509`)
 - Log/file tạm: `/home/user/_plan09_tmp/` (ngoài repo)
 
-**Bước đã xong:** B0, B1, B2
-**Bước đang làm:** B3 (README + đột biến + AC8 + đóng việc)
-**Bước còn lại:** B3
+**Bước đã xong:** B0, B1, B2, B3
+**Bước đang làm:** (không)
+**Bước còn lại:** (không) — chờ review
 
 ## B0 — Mốc (HEAD 59d3509)
 
@@ -92,3 +92,56 @@ Trạng thái: ĐANG LÀM
     → `Changes: 3 files, 26 symbols` / `Risk level: medium` / symbol script: `Variable CODE_DIRS`, `Function code_status`, `Function verify`;
     flows `Verify → Expected_manifest_rel/Parse_sums/Sha256_file/Inside`; phần còn lại là symbol của file test mới và các Section của
     `docs/plans/10-guard-dod7.md` (planner song song, không add) (`/home/user/_plan09_tmp/b2_detect2.txt`). Không HIGH/CRITICAL.
+
+## B3 — README + đột biến + không hồi quy
+
+- README (§3.4): thay đúng dòng `README.md:258`. Kiểm AC5 bằng script so chuỗi với dòng 190/194 của kế hoạch:
+  `git diff -U0 59d3509 -- README.md` → 1 dòng `-` == dòng cũ (True), 1 dòng `+` == dòng mới (True);
+  `git diff --numstat 59d3509 -- README.md` → `1	1	README.md`; `grep -c 'xem \`docs/data_registry.md\` §1b' README.md` → `1`.
+- Đột biến AC7: script `/home/user/_plan09_tmp/mut.py` (ngoài repo), lệnh `PYTHONIOENCODING=utf-8 .venv/bin/python /home/user/_plan09_tmp/mut.py`
+  (từ ROOT) → output `/home/user/_plan09_tmp/mut_output.txt`, JSON `/home/user/_plan09_tmp/mut_result.json`; exit 0.
+  Mỗi đột biến: thay chuỗi (assert xuất hiện đúng 1 lần) → `exec` vào `P.__dict__` → chạy 14 test module mới trong tiến trình → nạp lại mã gốc.
+  - Không đột biến: `ran=14 failures=0 errors=0 skipped=0 bad=[]`; sau khi nạp lại mã gốc: như trên.
+  - M1 (bỏ raise): `failures=6` — `test_r1_...` (case='a'), (case='b'), (case='c') đều `AssertionError: 0 != 2` (tức cả 3 ca trả 0 khi bỏ kiểm),
+    `test_r2_checked_before_only_filter` (`0 != 2`), `test_r4_cli_exit_2_message` (`0 != 2`), `test_r7_...` (`3 != 2`) → bắt đủ R1 a/b/c, R2, R4, R7.
+  - M2 (luôn replace): `failures=7` — `test_e1_rules` (4 subTest), `test_e2_committed_manifests` (manifest bước 4), `test_r3_...` (other_script),
+    `test_r6_step4_manifest_restores` (`2 != 0`) → bắt đủ E1, E2, R6.
+  - M3 (kiểm sau --only): `failures=1` — `test_r2_checked_before_only_filter` (`0 != 2`) → bắt R2.
+  - M4 (kiểm sau tải): `failures=7` — `test_r1_...` (a, b, c: `api.calls` khác `[]`), `test_r2_...`, `test_r3_...` (other_script), `test_r4_...`,
+    `test_r7_...` → bắt R1.
+  - M5 ((False, []) khi không biết): `failures=4` — `test_c3_...` (4 case: `False is not None`) → bắt C3.
+  - M6 (thiếu backend): `failures=1` — `test_c1_clean_and_arguments` → bắt C1.
+  - M7 (ghi cố định False/[]): `failures=2` — `test_c5_...` (code_status=(True, ...): `False is not True`; (None, None): `False is not None`) → bắt C5.
+  - `ALL MUTATIONS CAUGHT: True`. `git status --porcelain` trước/sau chạy đột biến giống hệt (`diff` rỗng;
+    `/home/user/_plan09_tmp/mut_status_before.txt`, `mut_status_after.txt`).
+- AC8 (30 module): log `/home/user/_plan09_tmp/b3_ac8.log` → `Ran 428 tests in 31.046s` / `FAILED (failures=1, errors=1, skipped=30)`.
+  `diff` tập id với B0: `b3_fail.txt` == `b0_fail.txt` (2 dòng: `test_no_violation`), `b3_error.txt` == `b0_error.txt` (2 dòng: `setUpClass
+  (tests.test_translation_core.TestVSLTranslationCore)`), `b3_skip.txt` == `b0_skip.txt` (30 dòng). Module mới: 14 dòng `... ok`,
+  0 skip/FAIL/ERROR. 428 = 414 (B0) + 14 (module mới).
+- AC6 cuối (4 module): log `/home/user/_plan09_tmp/b3_ac6.log` → `Ran 73 tests in 0.852s` / `OK`; `... skipped` = 0; FAIL/ERROR = 0.
+- AC2: `sha256sum` hai manifest → `/home/user/_plan09_tmp/b3_sha.txt`; `diff b0_sha.txt b3_sha.txt` rỗng.
+- detect-changes trước commit B3 (index `lastCommit 90159bb`): `Changes: 2 files, 10 symbols` / `Affected processes: 0` / `Risk level: low`;
+  symbol của kế hoạch 09: `Section Artifact không nằm trong git`, `Section Kiểm thử toàn bộ Phase 12 (REST API + WebSocket Stream)` (README;
+  chỉ 1 dòng đổi, section thứ 2 bị gắn do khoảng dòng của index); 8 symbol còn lại là Section của `docs/plans/10-guard-dod7.md`
+  (planner song song, không add). Output `/home/user/_plan09_tmp/b3_detect.txt`.
+
+## Bảng tiêu chí chấp nhận (tại lúc commit B3)
+
+AC1 đo bằng `git diff --cached` sau khi `git add` các file B3 (= trạng thái HEAD sau commit B3); orchestrator/reviewer chạy lại với `HEAD`.
+
+| AC | Kết quả | Bằng chứng (lệnh → output) |
+|---|---|---|
+| AC1 | ĐẠT | `git diff --cached --name-status 59d3509` → `M README.md`, `A docs/plans/09-progress.md`, `M scripts/archive_private_kaggle.py`, `A tests/test_archive_private_kaggle_r05.py`; `--numstat -- README.md` → `1	1	README.md`; `--stat` các đường dẫn cấm → chỉ `docs/plans/09-progress.md`; dòng `-` trong `tests/` → `0` |
+| AC2 | ĐẠT | `diff b0_sha.txt b3_sha.txt` rỗng; hai manifest không có trong `--name-status` |
+| AC3 | ĐẠT | E1, E2, R1 (a, b, c), R2, R3, R4, R6, R7 có trong `tests/test_archive_private_kaggle_r05.py`, đều `ok` ở `b3_ac6.log` |
+| AC4 | ĐẠT | C1, C2, C3 (4 case), C4, C5 (3 case), R5 đều `ok` ở `b3_ac6.log` |
+| AC5 | ĐẠT | so chuỗi `-`/`+` với kế hoạch: True/True; `grep -c` → `1` |
+| AC6 | ĐẠT | `Ran 73` (= 59 ở `b0_ac6.log` + 14 module mới) / `OK`; 0 `... skipped`; 0 FAIL/ERROR |
+| AC7 | ĐẠT | `mut_output.txt`: M1–M7 đều bắt đủ test yêu cầu; `ALL MUTATIONS CAUGHT: True`; git status trước/sau giống hệt |
+| AC8 | ĐẠT | `Ran 428` = 414 + 14; tập FAIL/ERROR/skipped == B0 (`diff` rỗng); module mới 0 skip/FAIL/ERROR |
+| AC9a | ĐẠT | impact `restore` (B1) và `verify` (B2) ghi ở mục B1/B2 (UID + text search) |
+| AC9b | ĐẠT | detect-changes trước commit B0, B1, B2, B3; risk trong message commit; HIGH lần 1 của B2 đã giải thích (index cũ) |
+| AC9c | ĐẠT | id FAIL/ERROR trước sửa ở mục B1/B2 và message commit B1/B2 |
+| AC9d | ĐẠT | không chạy lệnh `kaggle` hay `archive_private_kaggle.py stage/upload/verify/restore` thật; file test mới: `P.restore(` (qua `run_restore`, luôn nhận `T0.FakeApi`/`S4.FakeApi`), `P.main(` với `api=T0.FakeApi`, `P.verify` qua `Base.verify(created_api())`; 0 `kaggle_api(` |
+| AC9e | ĐẠT cho file của kế hoạch 09 (xem ghi chú) | `git status --porcelain` sau B3 chỉ có ` M docs/plans/10-guard-dod7.md` — thay đổi chưa commit của planner song song (kế hoạch 10), không thuộc kế hoạch 09, không được add; `b0_status.txt` rỗng |
+| AC9f | ĐẠT | 4 commit `09 B0`…`09 B3`, mỗi commit `git add` theo đường dẫn |

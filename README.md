@@ -255,7 +255,7 @@ Chi tiết pipeline, cách chia dữ liệu và Colab: xem [docs/cloud_training.
 
 ### Artifact không nằm trong git
 
-Checkpoint, logit và log có dữ liệu giấy phép chưa rõ không được commit; chúng nằm trong 2 dataset Kaggle private:
+Checkpoint, logit và log có dữ liệu giấy phép chưa rõ không được commit (riêng `alphabet_real_best.pt` đã từng được commit và vẫn còn trong lịch sử git đã push, xem `docs/data_registry.md` §1b); chúng nằm trong 2 dataset Kaggle private:
 - `phmvnsm33/vslt-step4-artifacts`: manifest `reports/step4_2026-09-26/archive/kaggle_archive_manifest.json`.
 - `phmvnsm33/vslt-provenance-artifacts`: manifest `reports/private_archive_2026-09-28/kaggle_archive_manifest.json`
   (bằng chứng nguồn gốc Cấp 1, gồm `alphabet_real_best.pt`, và các đầu vào không track của REPORT bước 4).
