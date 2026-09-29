@@ -12,8 +12,14 @@
   CLOUD A–D: ĐÃ MERGE (bbfdff3, --no-ff) sau review local APPROVE (docs/reviews/cloud-2026-09-29-review.md, 6a6538c).
   Sau merge: 31 module (29 của AC2-06 + test_archive_private_kaggle_r05 + test_backend_source_guard) Ran 467 OK, 0 skip.
   TỪ NAY mọi lệnh không hồi quy phải có thêm 2 module mới. Planner phải xử lý K1+P2 trước khi code 08/11; P1,P3,P4,P5 trước khi code 07.
-  ĐANG GIAO: vslt-coder kế hoạch 06 B8 (e2e fullstack, Edge + clip thật) — 17:40, HEAD bbfdff3 (+state).
-- Hạn mức (17:30): 5 giờ 15% (reset 22:10 giờ VN), 7 ngày 40%. Sổ đo: docs/usage_ledger.csv
+  Coder 06 chặng 4 (B8–B9): B8 xong (7e38118 script, e3d0df8 3 JSON e2e tại 15200d9 sạch; 19/20, 17/18, 20/21 đạt);
+  B9 kiểm tra trước xong (001e020: AC2 29 module 429 OK, 31 module 467 OK, npm test 26/26, build OK, AC1 tách phần) nhưng CHƯA ĐÓNG.
+  CẦN PLANNER (Lần sửa 2): AC12 mệnh đề "mọi URL WS bắt đầu bằng ws://localhost:3000/ws/" đỏ ở cả 3 kịch bản chỉ do socket HMR
+  của Vite dev (ws://localhost:3000/?token=…, protocol vite-hmr); app socket đều qua proxy, không :8000. Coder đề xuất (a)/(b)/(c).
+  Cần planner xét luôn 4 giả định coder tự đặt (clip Ký từ qipedc_D0120T; socket đóng trước message do StrictMode; cửa sổ 180 s gộp;
+  độ dài lượt ghi) và AC1 có file từ commit cloud-handoff 8628948/296b12e/f62dd45 ngoài danh sách.
+  ĐANG GIAO: vslt-planner kế hoạch 06 Lần sửa 2 — 18:05, HEAD 001e020 (+state).
+- Hạn mức (18:02): 5 giờ 31% (reset 22:10 giờ VN), 7 ngày 42%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
