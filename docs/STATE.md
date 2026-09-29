@@ -3,9 +3,10 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-29 10:50 (giờ Việt Nam)
+- Cập nhật lần cuối: 2026-09-29 10:58 (giờ Việt Nam)
 - HEAD: 34a527d (+ commit cloud/state) | Nhánh: feat/vslt-complete (đã push lên origin)
-- Trạng thái phiên: DỪNG LOCAL — bàn giao sang Claude Code on the web (docs/CLOUD.md). Không agent local nào đang chạy.
+- Trạng thái phiên: ĐANG LÀM (local vẫn là chính) — vslt-coder kế hoạch 06 bước B6 (dùng bản nháp ../_plan06_tmp/Fingerspelling.jsx).
+  Cloud chạy song song các việc A–D trên nhánh riêng (không đụng file của kế hoạch 06).
   HEAD có 1 test đỏ CÓ CHỦ ĐÍCH: TestFrontendSourceGuard.test_no_violation (2 vi phạm trong Fingerspelling.jsx, B6 sẽ sửa).
   Kế hoạch 06: xong B0–B5 (34a527d); còn B6 (UI Đánh vần), B7 (smoke_test_phase12 + phase12_api.md), B8 (e2e — cần Edge,
   video thật: làm ở LOCAL), B9 (đóng việc) → review. Bản nháp B6 ở ../_plan06_tmp/Fingerspelling.jsx (chỉ có trên máy local).
@@ -67,6 +68,10 @@
 
 - (2026-09-28) Mã người ký hauuto (hauuto_hau/khoi/tai/vy) trong file báo cáo, provenance.json, data_registry.md: GIỮ NGUYÊN (lựa chọn a).
   Chỉ API không trả tên (đã làm ở 22f891c). Không đổi sang S1–S4, không sửa file đã commit.
+
+- (2026-09-29 10:55) Local vẫn là chính; chạy tới khi dùng hết hạn mức 5h (reset 14:40), cho phép vượt cổng ngân sách như 13:27 hôm qua,
+  nhưng không cố ý chạm giới hạn thật: dừng khi đơn vị việc tiếp theo có thể không xong. Xong thì lưu STATE, commit, TẮT MÁY.
+  Cloud (claude.ai/code) làm việc A–D ở nhánh riêng; orchestrator local kéo về, review, merge.
 
 ## Câu hỏi chờ người dùng
 - (không có)
