@@ -1,9 +1,9 @@
 # Kế hoạch 06 — tiến độ (coder; chặng 1: B0–B2; chặng 2: B3–B4; chặng 3: B5–B7)
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
-- Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474), B5 (34a527d), B6 (commit "06: B6 — ...")
-- Bước đang làm: (không; B6 xong, dừng theo giao việc)
-- Bước còn lại: B7 (chặng 3); B8–B9 (chặng 4)
+- Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474), B5 (34a527d), B6 (0328c1b), B7 (commit "06: B7 — ...")
+- Bước đang làm: (không; B7 xong, dừng theo giao việc)
+- Bước còn lại: B8–B9 (chặng 4)
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
@@ -188,3 +188,36 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
 - AC2 (25 cũ + 4 mới), log `../_plan06_tmp/b6_ac2.log`: `Ran 423 tests in 224.958s` `OK`, 0 skip, 0 failure, 0 error;
   `git status --porcelain` trước/sau giống hệt (`SAME`).
 - Chưa kiểm UI bằng trình duyệt (B8).
+
+## B7 — smoke test WS v2 (AC10) + `docs/phase12_api.md` (AC11)
+
+- impact: `scripts/smoke_test_phase12.py` là script thủ công (không có caller trong code/test; text search: chỉ tài liệu).
+  Không sửa symbol nào của backend/src.
+- `scripts/smoke_test_phase12.py` viết lại cho WS v2: [1/6] REST /health + /model/info; [2/6] message đầu `session_info`
+  (`protocol_version == 2`, pipeline ∈ {legacy, harmonized_v1}), frame_result theo pipeline (legacy: đủ khóa cũ; harmonized:
+  `prediction is None`); [3/6] text rác → 1 message `error` với `code` thuộc bảng §3.6 kế hoạch 04 (in mã thật), frame tiếp
+  vẫn được trả lời; frame binary ở phiên mới; [4/6] 30 frame của clip TRAIN đầu tiên của `live_clip_sample.select_train_clips(1, 0)`
+  (thay cho W00009N.mp4 cũ — không chạm TEST/VAL), đếm message theo `type`, 0 `error`; [5/6] `/ws/hand-landmarks`
+  session_info → reset_done → hand_frame trên frame đầu của `a_hau_A_001.mp4`; [6/6] Origin lạ → 1008 ở cả hai WS.
+- AC10, chạy 2 lần (log `../_plan06_tmp/b7_smoke_default.log`, `../_plan06_tmp/b7_smoke_h360.log`), cả hai exit 0 và in
+  `>>> PHASE 12 SMOKE TEST PASSED <<<`:
+  - Mặc định: `model_type=stgcn num_classes=487 device=cuda`; `session_info: pipeline=legacy model=stgcn is_default=True`;
+    text rác → `error code=decode_failed detail='image is not valid base64'`; clip `qipedc_W03292N`: 30 frame,
+    `messages by type: {'frame_result': 30}`; hand_frame `640x480 points=21 handedness='Left'`; 1008 ở cả hai WS.
+  - `VSL_MODEL_TYPE=stgcn_h360`: `model_type=stgcn num_classes=876`; `session_info: pipeline=harmonized_v1 model=stgcn_h360
+    is_default=False`; text rác → `error code=bad_timestamp detail='this session uses client timestamps; the frame has none'`
+    (phiên đã cố định nguồn timestamp client; text trần = frame không timestamp); clip `qipedc_W03292N`: 30 frame,
+    `{'frame_result': 30}` (0 sign_result/sign_discarded trong 30 frame — chỉ ghi nhận, AC12 là nơi kiểm sự kiện);
+    hand_frame 640x480 21 điểm; 1008 ở cả hai WS.
+- `docs/phase12_api.md` viết lại: cách chạy (127.0.0.1, proxy /api /ws, strictPort), CORS/Origin/`VSL_CORS_ORIGINS`, REST,
+  `/ws/live-stream` v2 đầy đủ (+ `dropped_frames` kế hoạch 05, thay đổi legacy review 04 mục 11), `/ws/hand-landmarks`,
+  trường đo DoD 8, mục "Giới hạn" + tiểu mục AC6 (số lấy nguyên văn từ JSON e58d025: Kaggle↔cục bộ 1 clip lệch cờ,
+  max 0.2297654151916504; JPEG q90↔PNG 2 clip lệch cờ, max 0.24034595489501953; top-1 trùng 10 clip TRAIN, không chứng
+  minh bền vững). Không số đo hiệu năng nào.
+- `tests/test_frontend_contract.py` thêm `TestPhase12ApiDoc` (6 test): mã lỗi trích bằng regex từ `_ws_error("…"`/`WsError("…"`
+  (9 mã), lý do bỏ đoạn trích từ `_discard(...)` của sign_segmenter + `"reason": "…"` (6 lý do), type message, thuật ngữ,
+  mục Giới hạn, và mọi số thập phân trong đoạn AC6 phải có trong JSON (+ đường dẫn JSON và `git_commit`). 6 → 12 test, OK.
+- AC2 (25 cũ + 4 mới), log `../_plan06_tmp/b7_ac2.log`: **`Ran 429 tests in 224.030s` `OK`**, 0 failure, 0 error, 0 skip
+  (429 = 383 + cors 21 + hand_landmarks_ws 9 + hand_live_equivalence 4 + frontend_contract 12); `git status --porcelain`
+  trước/sau giống hệt.
+- `cd frontend && npm test` (Node v25.9.0) → `tests 26, pass 26, fail 0` (3 file).

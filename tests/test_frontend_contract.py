@@ -140,6 +140,106 @@ class TestHandLiveCheckReport(unittest.TestCase):
                 self.assertNotRegex(json.dumps(rep), r"[A-Za-z]:\\\\|/Users/|\\\\Users\\\\")
 
 
+API_DOC = os.path.join(PROJECT_ROOT, "docs", "phase12_api.md")
+AC6_JSON_REL = "reports/fingerspell_live_2026-09-29/hand_live_check.json"
+AC6_HEADING = "### Lệch nguồn landmark Cấp 1 đo được (AC6)"
+
+
+def _read_rel(rel):
+    with open(os.path.join(PROJECT_ROOT, rel), encoding="utf-8") as f:
+        return f.read()
+
+
+def emitted_error_codes():
+    """Error codes emitted by backend/main.py (_ws_error("...") / WsError("...")), extracted from the code."""
+    return set(re.findall(r'(?:_ws_error|WsError)\(\s*"([a-z_]+)"', _read_rel("backend/main.py")))
+
+
+def discard_reasons():
+    """sign_discarded reasons: every literal passed to _discard(...) in sign_segmenter.py and every literal
+    "reason": "..." of a sign_discarded built in harmonized_live.py / backend/main.py."""
+    reasons = set()
+    for call in re.findall(r"_discard\(([^)]*)\)", _read_rel("src/inference/sign_segmenter.py")):
+        reasons |= set(re.findall(r'"([a-z_]+)"', call))
+    for rel in ("src/inference/harmonized_live.py", "backend/main.py"):
+        reasons |= set(re.findall(r'"reason":\s*"([a-z_]+)"', _read_rel(rel)))
+    return reasons
+
+
+def _section(text, heading):
+    start = text.index(heading)
+    nxt = re.search(r"^#{1,3} ", text[start + len(heading):], flags=re.M)
+    return text[start: start + len(heading) + (nxt.start() if nxt else len(text))]
+
+
+class TestPhase12ApiDoc(unittest.TestCase):
+    """AC11: docs/phase12_api.md covers what the code emits (codes/reasons extracted from the code, not typed)."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.doc = _read_rel("docs/phase12_api.md")
+
+    def test_no_stale_bind_or_url(self):
+        self.assertNotIn("0.0.0.0", self.doc)
+        self.assertNotIn("ws://localhost:8000", self.doc)
+
+    def test_every_error_code(self):
+        codes = emitted_error_codes()
+        self.assertGreaterEqual(len(codes), 9, codes)
+        for code in sorted(codes):
+            with self.subTest(code):
+                self.assertIn(f"`{code}`", self.doc)
+
+    def test_every_discard_reason(self):
+        reasons = discard_reasons()
+        self.assertGreaterEqual(len(reasons), 6, reasons)
+        for reason in sorted(reasons):
+            with self.subTest(reason):
+                self.assertIn(f"`{reason}`", self.doc)
+
+    def test_message_types_and_terms(self):
+        for term in ("session_info", "frame_result", "sign_result", "sign_discarded", "error", "reset_done",
+                     "hand_frame", "VSL_CORS_ORIGINS", "1008", "1009", "1011", "dropped_frames",
+                     "trigger_client_timestamp", "/ws/hand-landmarks"):
+            with self.subTest(term):
+                self.assertIn(term, self.doc)
+
+    def test_limits_section(self):
+        lim = _section(self.doc, "## 7. Giới hạn")
+        for term in ("W03251B", "segmenter", "JPEG", "Origin", "không phải trình duyệt"):
+            with self.subTest(term):
+                self.assertIn(term, lim)
+
+    def test_ac6_paragraph_numbers_come_from_the_json(self):
+        with open(os.path.join(PROJECT_ROOT, AC6_JSON_REL), encoding="utf-8") as f:
+            rep = json.load(f)
+        para = _section(self.doc, AC6_HEADING)
+        self.assertIn(AC6_JSON_REL, para)
+        self.assertIn(rep["generated_by"]["git_commit"], para)
+        self.assertIn("không chứng minh bền vững", para)
+        floats = set()
+
+        def walk(o):
+            if isinstance(o, float):
+                floats.add(o)
+            elif isinstance(o, dict):
+                for v in o.values():
+                    walk(v)
+            elif isinstance(o, list):
+                for v in o:
+                    walk(v)
+        walk(rep)
+        decimals = re.findall(r"(?<![\w.])\d+\.\d+(?![\w.])", para)
+        self.assertTrue(decimals, "no decimal number in the AC6 paragraph")
+        for d in decimals:
+            with self.subTest(d):
+                self.assertIn(float(d), floats)
+        # the maxima quoted are the maxima of the JSON
+        clips = rep["clips"]
+        self.assertIn(repr(max(c["kaggle_npz_vs_local_offline"]["max_abs_diff_both"] for c in clips)), para)
+        self.assertIn(repr(max(c["live_jpeg90_vs_live_png"]["max_abs_diff_both"] for c in clips)), para)
+
+
 _NODE = shutil.which("node")
 
 
