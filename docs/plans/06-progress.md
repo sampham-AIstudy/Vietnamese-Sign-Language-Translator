@@ -236,3 +236,27 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
 - Chạy thử trên code chưa commit (ra `../_plan06_tmp/b8_dev_*.json`): cả 3 kịch bản đạt mọi kiểm tra AC12 TRỪ
   `ws_urls_all_via_proxy_no_8000`: trang dev có thêm socket HMR của Vite `ws://localhost:3000/?token=…`
   (`Sec-WebSocket-Protocol: vite-hmr`) — không bắt đầu bằng `ws://localhost:3000/ws/` → **CẦN PLANNER** (xem dưới).
+- **Chạy chính thức** tại HEAD 15200d9 (`git status --porcelain -- backend src frontend scripts tests` rỗng; JSON ghi
+  `git_commit` 15200d9…, `code_dirty: false`), commit JSON e3d0df8. Log: `../_plan06_tmp/b8_run_{fingerspell,word_default,word_h360}.log`.
+  Chung: node v25.9.0, `Edg/146.0.3856.72`, mediapipe 0.10.14; health 200 `status ok` sau 7.1 / 8.7 / 8.7 s, trang 3000 200 sau
+  7.2 / 8.7 / 8.7 s; 0 console error, 0 pageerror, 0 requestfailed, 0 HTTP ≥ 400; 0 request tới `/api/fingerspelling`;
+  sau khi dừng cổng 8000/3000 rảnh, 0 tiến trình còn sống (cây: powershell, uvicorn, 3 python, cmd, 2 node, esbuild).
+  - `reports/e2e_2026-09-29/fingerspell_default.json`: 19/20 kiểm tra đạt. status available true (bigru, 34 lớp); WS
+    hand-landmarks: session_info → reset_done → 76 hand_frame; 1 POST /sequence 200, body 76/76/76 frame, 76 khung không null,
+    0 khung 21 điểm trùng, max |v| trong JSON, timestamps không giảm, source_mirrored false; `fs-prediction` "a" == response;
+    `fs-confidence` data-value "0.9688", chữ "96.9%" == kỳ vọng; fs-add → POST /compose 200 tokens ["a"], `fs-composed` "a" ==
+    text. `info_not_accuracy`: clip hauuto_a_hau_A_001 nhãn "a", prediction "a", confidence 0.9688 (clip TRAIN, không phải độ
+    chính xác).
+  - `reports/e2e_2026-09-29/word_default.json`: 17/18. session_info v2 `legacy` (stgcn, is_default true); 44 frame_result;
+    0 error; `live-pipeline` "legacy"; sau camera-stop + 2 s im lặng, `live-top5` == top5 của frame_result cuối.
+  - `reports/e2e_2026-09-29/word_stgcn_h360.json`: 20/21. session_info v2 `harmonized_v1` (is_default false); 72 frame_result,
+    mọi prediction null; status RECORDING 45 / IDLE 27; `live-recording` hiện 1 lần; 1 sign_result (0 sign_discarded) trong
+    1.01 vòng clip → §7-2 KHÔNG kích hoạt; `live-gloss` + `live-top5` == sign_result cuối; 0 error.
+  - **Kiểm tra đỏ duy nhất ở cả 3: `ws_urls_all_via_proxy_no_8000`.** Danh sách URL WS mỗi lần gồm socket HMR của Vite dev
+    `ws://localhost:3000/?token=…` (`Sec-WebSocket-Protocol: vite-hmr`, do `start_fullstack.ps1` chạy `npm run dev`), không bắt đầu
+    bằng `ws://localhost:3000/ws/`. Mọi socket của app (`/ws/live-stream`, `/ws/hand-landmarks`) đều qua proxy, 0 URL chứa `:8000`.
+    (Socket app thứ 2 cùng path đóng trước khi có message = React.StrictMode mount 2 lần ở dev.)
+    → **CẦN PLANNER**: AC12 viết "Mọi URL WS" — coder KHÔNG tự loại socket HMR khỏi kiểm tra, KHÔNG tắt HMR trong
+    vite.config.js (ngoài thiết kế §3.5). Lựa chọn cho planner: (a) loại socket có protocol `vite-hmr` khỏi mệnh đề;
+    (b) tắt HMR/ws của Vite dev (`server.hmr`/`server.ws`) — đổi trải nghiệm dev; (c) chạy e2e trên `vite preview` (không có
+    HMR) — lệch với "chạy start_fullstack.ps1".
