@@ -21,6 +21,7 @@ docs/prompts/orchestrator.md + hai phụ lục, docs/prompts/autopilot.md.
 ## 2. Việc đầu phiên (agent cloud tự làm, mỗi phiên)
 ```bash
 cd "$CLAUDE_PROJECT_DIR" 2>/dev/null || true
+git fetch --unshallow origin 2>/dev/null || true    # clone cloud là shallow; test_private_artifacts (AC11-g) cần lịch sử (429b289)
 [ -e .venv ] || ln -s /opt/vslt-venv .venv          # đường dẫn Python trên cloud: .venv/bin/python (local Windows: .venv/Scripts/python)
 (cd frontend && npm ci --no-audit --no-fund)       # node 22 có sẵn; dự án đã chạy local với node 25
 .venv/bin/kaggle datasets list --mine | head -3    # kiểm credential (cần network Custom như mục 1)

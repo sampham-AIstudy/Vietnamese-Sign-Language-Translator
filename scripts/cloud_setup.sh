@@ -29,6 +29,7 @@ fi
   "opencv-python-headless==5.0.0.93" "pillow==12.3.0" "protobuf==4.25.9" \
   "fastapi==0.141.1" "starlette==1.6.0" "uvicorn[standard]==0.52.4" "websockets==16.1.1" \
   "pydantic==2.13.5" "python-multipart==0.0.32" "httpx==0.28.1" \
-  "PyYAML==6.0.3" "matplotlib==3.11.1" "kaggle==2.2.4"
+  "PyYAML==6.0.3" "matplotlib==3.11.1" "seaborn==0.13.2" "kaggle==2.2.4" \
+  "transformers==4.57.6" "tokenizers==0.22.2" "sentencepiece==0.2.2" "safetensors==0.8.0" "accelerate==1.15.0"
 
 /opt/vslt-venv/bin/python -c "import mediapipe, torch, cv2, numpy; print('vslt-venv ok', mediapipe.__version__, torch.__version__, cv2.__version__, numpy.__version__)"
