@@ -9,10 +9,11 @@
   Kế hoạch 06: XONG B0–B7 (B5 34a527d, B6 0328c1b, B7 dbd79f2). Còn: B8 e2e fullstack (LOCAL, Edge + video thật) → B9 → review 06.
   Reviewer 06 cần xác minh: CRITICAL impact ở B5/B6 (component React, GitNexus nhầm tên JS↔Python), HIGH ở B2/B3 (symbol mới),
   B7 sửa tests/test_frontend_contract.py (file do chính kế hoạch 06 tạo ở B4 — kiểm không nới), 050d337 thiếu detect-changes.
-  CLOUD: nhánh origin/cloud/2026-09-29-viec-a-d (HEAD ab40a82, base f3a7371, merge-tree KHÔNG xung đột) — báo cáo
-  docs/cloud_reports/viec-A-D-2026-09-29.md: plan 07 (Việc 6), plan 08 (segmenter live) = chỉ kế hoạch; plan 09 (dọn dẹp review 05)
-  và plan 10 (guard DoD 7 backend, 9 vi phạm có sẵn, chưa sửa) đã code + reviewer cloud APPROVE vòng 1. Chưa merge: chờ vslt-reviewer local.
-- Hạn mức (17:16): 5 giờ 0% (reset 22:10 giờ VN), 7 ngày 38%. Sổ đo: docs/usage_ledger.csv
+  CLOUD A–D: ĐÃ MERGE (bbfdff3, --no-ff) sau review local APPROVE (docs/reviews/cloud-2026-09-29-review.md, 6a6538c).
+  Sau merge: 31 module (29 của AC2-06 + test_archive_private_kaggle_r05 + test_backend_source_guard) Ran 467 OK, 0 skip.
+  TỪ NAY mọi lệnh không hồi quy phải có thêm 2 module mới. Planner phải xử lý K1+P2 trước khi code 08/11; P1,P3,P4,P5 trước khi code 07.
+  ĐANG GIAO: vslt-coder kế hoạch 06 B8 (e2e fullstack, Edge + clip thật) — 17:40, HEAD bbfdff3 (+state).
+- Hạn mức (17:30): 5 giờ 15% (reset 22:10 giờ VN), 7 ngày 40%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -80,6 +81,7 @@
   Có thêm backlog train lại CSLR chia theo câu (tốn GPU Kaggle)? Có lưu checkpoint CSLR/ViT5 lên Kaggle dataset private?
   (2) Việc C: kiểm archive_name chỉ áp đúng luật cho manifest do script tự sinh (manifest bước 4 không có tiền tố reports/) — giữ hay áp nguyên văn?
   (3) KAGGLE_KEY trong môi trường cloud còn là chữ mẫu — người dùng tự điền (không đưa vào chat/repo).
+  (4) (review cloud) Kế hoạch 11: có bỏ chế độ `--source mock` của realtime_demo.py (4/9 vi phạm guard DoD 7) không?
 
 ## Backlog còn lại (thứ tự)
 1. (xong — kế hoạch 05)
