@@ -1,0 +1,560 @@
+{
+  "generated_by": {
+    "command": "PYTHONIOENCODING=utf-8 .venv/bin/python -m tests.test_backend_source_guard --report reports/guard_dod7_2026-09-29/guard_findings.json",
+    "git_commit": "319ddcdb344572fa4d0878ae9922e60062f202a2",
+    "code_dirty": false,
+    "generated_at_utc": "2026-09-29T05:11:18Z"
+  },
+  "note": "static source guard for DoD 7; counts are code findings, not model metrics",
+  "scope": {
+    "entrypoints": [
+      "backend/main.py",
+      "realtime_demo.py"
+    ],
+    "serving_files": [
+      "backend/main.py",
+      "realtime_demo.py",
+      "src/__init__.py",
+      "src/data/__init__.py",
+      "src/data/alphabet_preprocessing.py",
+      "src/data/augment.py",
+      "src/data/collate.py",
+      "src/data/harmonized.py",
+      "src/data/landmark_extractor.py",
+      "src/data/lexicon_bank.py",
+      "src/data/preprocessing/__init__.py",
+      "src/data/preprocessing/missing.py",
+      "src/data/preprocessing/pipeline.py",
+      "src/data/preprocessing/spatial.py",
+      "src/data/preprocessing/temporal.py",
+      "src/data/vsl_dataset.py",
+      "src/data/vsl_gh_dataset.py",
+      "src/inference/__init__.py",
+      "src/inference/ensemble.py",
+      "src/inference/fingerspelling_compose.py",
+      "src/inference/hand_live.py",
+      "src/inference/harmonized_live.py",
+      "src/inference/predictor.py",
+      "src/inference/realtime_extractor.py",
+      "src/inference/realtime_pipeline.py",
+      "src/inference/sign_segmenter.py",
+      "src/inference/smoother.py",
+      "src/metrics/__init__.py",
+      "src/metrics/cslr_metrics.py",
+      "src/metrics/metrics.py",
+      "src/models/__init__.py",
+      "src/models/alphabet_mlp.py",
+      "src/models/alphabet_temporal.py",
+      "src/models/baseline_bigru.py",
+      "src/models/cslr_stgcn_bigru.py",
+      "src/models/graph.py",
+      "src/models/stgcn.py",
+      "src/models/stgcn_model.py",
+      "src/models/transformer_model.py",
+      "src/translation/__init__.py",
+      "src/translation/cslr_recognizer.py",
+      "src/translation/end_to_end.py",
+      "src/translation/text_normalizer.py",
+      "src/translation/translator.py"
+    ],
+    "main_files": [
+      "backend/main.py",
+      "realtime_demo.py",
+      "src/__init__.py",
+      "src/data/__init__.py",
+      "src/data/alphabet_preprocessing.py",
+      "src/data/augment.py",
+      "src/data/collate.py",
+      "src/data/dataset.py",
+      "src/data/extract_landmarks.py",
+      "src/data/harmonized.py",
+      "src/data/landmark_extractor.py",
+      "src/data/lexicon_bank.py",
+      "src/data/preprocessing/__init__.py",
+      "src/data/preprocessing/missing.py",
+      "src/data/preprocessing/pipeline.py",
+      "src/data/preprocessing/spatial.py",
+      "src/data/preprocessing/temporal.py",
+      "src/data/sequence_generator.py",
+      "src/data/vsl_dataset.py",
+      "src/data/vsl_gh_dataset.py",
+      "src/export/__init__.py",
+      "src/export/export_onnx.py",
+      "src/export/onnx_predictor.py",
+      "src/inference/__init__.py",
+      "src/inference/ensemble.py",
+      "src/inference/fingerspelling_compose.py",
+      "src/inference/hand_live.py",
+      "src/inference/harmonized_live.py",
+      "src/inference/predictor.py",
+      "src/inference/realtime_extractor.py",
+      "src/inference/realtime_pipeline.py",
+      "src/inference/sign_segmenter.py",
+      "src/inference/smoother.py",
+      "src/metrics/__init__.py",
+      "src/metrics/cslr_metrics.py",
+      "src/metrics/metrics.py",
+      "src/models/__init__.py",
+      "src/models/alphabet_mlp.py",
+      "src/models/alphabet_temporal.py",
+      "src/models/baseline_bigru.py",
+      "src/models/cslr_stgcn_bigru.py",
+      "src/models/graph.py",
+      "src/models/stgcn.py",
+      "src/models/stgcn_model.py",
+      "src/models/transformer_model.py",
+      "src/training/__init__.py",
+      "src/training/modal_runner.py",
+      "src/training/train_cslr.py",
+      "src/training/trainer.py",
+      "src/translation/__init__.py",
+      "src/translation/cslr_recognizer.py",
+      "src/translation/dataset.py",
+      "src/translation/end_to_end.py",
+      "src/translation/metrics.py",
+      "src/translation/text_normalizer.py",
+      "src/translation/translator.py"
+    ],
+    "scripts_realtime": []
+  },
+  "rules": {
+    "A-stdlib": "SERVING: unseeded stdlib random draw (random.<f>, Random()/Random(None), seed()/seed(None), SystemRandom) not preceded by random.seed(<not None>) in the same function scope",
+    "A-numpy": "SERVING: numpy global-state draw (numpy.random.<f>) not preceded by numpy.random.seed(<not None>) in the same scope; default_rng/RandomState/seed/bit generator called without a seed or with None",
+    "A-torch": "SERVING: torch.<rand...>/normal/bernoulli/multinomial/poisson/seed or in-place <t>.uniform_()... without generator= and not after torch.manual_seed(<not None>) in the same scope (torch.nn.init.* excluded); torch.Generator() never manual_seed-ed in the same scope",
+    "B-import": "MAIN: import of a mock library (unittest.mock, mock, pytest_mock, asynctest)",
+    "B-name": "MAIN: use of Mock / MagicMock / AsyncMock / NonCallableMock / NonCallableMagicMock / PropertyMock / create_autospec / mock_open, or <...mock>.patch",
+    "C-name": "SERVING: name binding (assignment/for/with/def/class/parameter/import alias) with a fake/dummy/mock/stub/simulated/synthetic/placeholder/fabricated token",
+    "C-string": "SERVING: string (non-docstring, or FastAPI route docstring) saying fake/dummy/mock/stub/simulated/synthetic/placeholder/fabricated or 'giả lập'/'dữ liệu giả'/'kết quả giả'/'số liệu giả'",
+    "C-result": "SERVING: fixed literal bound to a result key/name (gloss, prediction, translation, confidence, top5, ...) or returned by a predict/translate/classify/recognize/infer function",
+    "D-binding": "MAIN: metric-named binding (accuracy/top1/f1/wer/bleu/latency/fps/ms/...) receiving a hand-typed number or a hand-typed ratio (x * 0.4)",
+    "D-string": "MAIN: string (non-docstring, or FastAPI route docstring) with a percentage, a number with ms/fps, or a metric keyword followed by a number"
+  },
+  "findings": [
+    {
+      "path": "realtime_demo.py",
+      "line": 52,
+      "rule": "C-result",
+      "qualname": "RealtimeHUD._locate_vietnamese_font",
+      "snippet": "candidates = [",
+      "status": "known",
+      "text": "đề xuất DTG (planner xét): 'candidates' là danh sách đường dẫn font, không phải kết quả nhận dạng; hướng sửa nếu không duyệt: đổi tên biến (ví dụ font_paths) — kế hoạch sau"
+    },
+    {
+      "path": "realtime_demo.py",
+      "line": 266,
+      "rule": "C-string",
+      "qualname": "RealtimeDemo._open_stream",
+      "snippet": "elif self.source == \"mock\":",
+      "status": "known",
+      "text": "nguồn giả '--source mock' (khung tổng hợp) trong điểm vào người dùng; hướng sửa: bỏ chế độ mock khỏi realtime_demo.py (hoặc chuyển thành fixture chỉ trong tests/) — kế hoạch sau"
+    },
+    {
+      "path": "realtime_demo.py",
+      "line": 267,
+      "rule": "C-string",
+      "qualname": "RealtimeDemo._open_stream",
+      "snippet": "print(\"Using Synthetic Mock Video Stream for Smoke Test...\")",
+      "status": "known",
+      "text": "nguồn giả '--source mock' (khung tổng hợp) trong điểm vào người dùng; hướng sửa: bỏ chế độ mock khỏi realtime_demo.py (hoặc chuyển thành fixture chỉ trong tests/) — kế hoạch sau"
+    },
+    {
+      "path": "realtime_demo.py",
+      "line": 294,
+      "rule": "C-string",
+      "qualname": "RealtimeDemo.run",
+      "snippet": "if self.source == \"mock\":",
+      "status": "known",
+      "text": "nhánh vẽ khung giả khi source == 'mock'; hướng sửa: bỏ cùng chế độ mock — kế hoạch sau"
+    },
+    {
+      "path": "realtime_demo.py",
+      "line": 330,
+      "rule": "D-binding",
+      "qualname": "RealtimeDemo.run",
+      "snippet": "avg_fps = 1.0 / (sum(fps_tracker) / len(fps_tracker)) if fps_tracker else 30.0",
+      "status": "known",
+      "text": "avg_fps '... else 30.0' là FPS gõ tay hiển thị trên HUD; hướng sửa: hiển thị '—'/0 khi chưa đo — kế hoạch sau"
+    },
+    {
+      "path": "realtime_demo.py",
+      "line": 395,
+      "rule": "C-string",
+      "qualname": "main",
+      "snippet": "parser.add_argument(\"--source\", type=str, default=\"0\", help=\"Webcam device index ('0', '1') or video path ('path.mp4') or 'mock'\")",
+      "status": "known",
+      "text": "help của --source quảng cáo 'mock'; hướng sửa: bỏ cùng chế độ mock — kế hoạch sau"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 34,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.add_jitter",
+      "snippet": "noise = np.random.normal(0, self.jitter_std, size=keypoints.shape).astype(np.float32)",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 41,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.random_scale",
+      "snippet": "scale = np.random.uniform(self.scale_range[0], self.scale_range[1])",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 49,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.random_rotate_2d",
+      "snippet": "angle = np.radians(np.random.uniform(-self.rotate_angle_range, self.rotate_angle_range))",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 76,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.time_warp",
+      "snippet": "warp_factor = np.random.uniform(1.0 - self.time_warp_ratio, 1.0 + self.time_warp_ratio)",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 95,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.keypoint_mask",
+      "snippet": "if np.random.rand() < self.mask_prob:",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 97,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.keypoint_mask",
+      "snippet": "hand_choice = np.random.choice([\"left\", \"right\"])",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 107,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_sequence",
+      "snippet": "if np.random.rand() > 0.5:",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 109,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_sequence",
+      "snippet": "if np.random.rand() > 0.5:",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 111,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_sequence",
+      "snippet": "if np.random.rand() > 0.5:",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 113,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_sequence",
+      "snippet": "if np.random.rand() > 0.5:",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 115,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_sequence",
+      "snippet": "if np.random.rand() > 0.3:",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 122,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_static",
+      "snippet": "if np.random.rand() > 0.5:",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 124,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_static",
+      "snippet": "if np.random.rand() > 0.5:",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 126,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_static",
+      "snippet": "if np.random.rand() > 0.5:",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 147,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_vsl_sequence",
+      "snippet": "if np.random.rand() > 0.3:",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 148,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_vsl_sequence",
+      "snippet": "scale = np.random.uniform(self.scale_range[0], self.scale_range[1])",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 152,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_vsl_sequence",
+      "snippet": "if np.random.rand() > 0.3:",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 153,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_vsl_sequence",
+      "snippet": "angle = np.radians(np.random.uniform(-self.rotate_angle_range, self.rotate_angle_range))",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 161,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_vsl_sequence",
+      "snippet": "if np.random.rand() > 0.5:",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 162,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_vsl_sequence",
+      "snippet": "shear = np.random.uniform(-self.shear_range, self.shear_range)",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 166,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_vsl_sequence",
+      "snippet": "if np.random.rand() > 0.4:",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 167,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_vsl_sequence",
+      "snippet": "warp_factor = np.random.uniform(1.0 - self.time_warp_ratio, 1.0 + self.time_warp_ratio)",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 181,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_vsl_sequence",
+      "snippet": "if np.random.rand() > 0.3:",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 182,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_vsl_sequence",
+      "snippet": "noise = np.random.normal(0, self.jitter_std, size=seq.shape).astype(np.float32)",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 186,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_vsl_sequence",
+      "snippet": "if np.random.rand() < self.mask_prob:",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/augment.py",
+      "line": 188,
+      "rule": "A-numpy",
+      "qualname": "KeypointAugmenter.augment_vsl_sequence",
+      "snippet": "drop_hand = np.random.choice([\"lh\", \"rh\"])",
+      "status": "allowed",
+      "text": "augmentation lúc train; chỉ tạo khi augment=True; module vào bao đóng phục vụ qua import đầu module src/inference/ensemble.py -> src/data/vsl_dataset.py, không hàm phục vụ nào gọi"
+    },
+    {
+      "path": "src/data/harmonized.py",
+      "line": 129,
+      "rule": "D-binding",
+      "qualname": "harmonize",
+      "snippet": "fps = float(fps) if fps and fps > 0 else 30.0",
+      "status": "allowed",
+      "text": "fps ĐẦU VÀO mặc định; tham số tiền xử lý dùng chung"
+    },
+    {
+      "path": "src/data/harmonized.py",
+      "line": 175,
+      "rule": "D-binding",
+      "qualname": "HarmonizedDataset.__getitem__",
+      "snippet": "fps = 30.0",
+      "status": "allowed",
+      "text": "fps ĐẦU VÀO mặc định khi npz thiếu metadata; không phải số đo"
+    },
+    {
+      "path": "src/data/harmonized.py",
+      "line": 178,
+      "rule": "A-torch",
+      "qualname": "HarmonizedDataset.__getitem__",
+      "snippet": "rng = np.random.default_rng(int(torch.randint(0, 2**31 - 1, (1,)))) if self.augment else None",
+      "status": "allowed",
+      "text": "nhánh augment của Dataset train; live gọi harmonize(rng=None)"
+    },
+    {
+      "path": "src/data/landmark_extractor.py",
+      "line": 121,
+      "rule": "D-binding",
+      "qualname": "CleanHolisticExtractor.extract_from_video",
+      "snippet": "fps = cap.get(cv2.CAP_PROP_FPS) or 25.0",
+      "status": "known",
+      "text": "đề xuất DTG (planner xét): 'or 25.0' là fps ĐẦU VÀO mặc định khi video thiếu metadata, không phải số đo; hướng sửa nếu không duyệt: hằng có tên/tham số cấu hình — kế hoạch sau"
+    },
+    {
+      "path": "src/data/vsl_dataset.py",
+      "line": 176,
+      "rule": "D-string",
+      "qualname": "validate_split_guards",
+      "snippet": "f\"Split integrity violation: Train split is confounded with 100% dialect '{dominant}' \"",
+      "status": "allowed",
+      "text": "câu báo lỗi kiểm toàn vẹn split (\"100% dialect\")"
+    },
+    {
+      "path": "src/data/vsl_gh_dataset.py",
+      "line": 31,
+      "rule": "D-string",
+      "qualname": "<module>",
+      "snippet": "\"\"\"",
+      "status": "known",
+      "text": "đề xuất DTG (planner xét): chuỗi ghi chú cấp module (sau import, không phải docstring) nói thứ tự landmark '100% identical', không phải số đo; hướng sửa nếu không duyệt: chuyển thành comment — kế hoạch sau"
+    },
+    {
+      "path": "src/inference/ensemble.py",
+      "line": 303,
+      "rule": "D-string",
+      "qualname": "run_ensemble_benchmark",
+      "snippet": "print(\"\\n--- Equal Average Ensemble (50% ST-GCN + 50% Transformer) ---\")",
+      "status": "allowed",
+      "text": "mô tả trọng số 0.5/0.5 của hàm đánh giá offline"
+    },
+    {
+      "path": "src/inference/predictor.py",
+      "line": 185,
+      "rule": "C-name",
+      "qualname": "VSLPredictor.warmup",
+      "snippet": "dummy_seq = torch.zeros((1, 60, 67, 3), dtype=torch.float32, device=self.device)",
+      "status": "allowed",
+      "text": "tensor warmup, đầu ra bỏ (_ = self.model(...))"
+    },
+    {
+      "path": "src/inference/predictor.py",
+      "line": 186,
+      "rule": "C-name",
+      "qualname": "VSLPredictor.warmup",
+      "snippet": "dummy_jm = torch.ones((1, 60, 67), dtype=torch.float32, device=self.device)",
+      "status": "allowed",
+      "text": "tensor warmup, đầu ra bỏ (_ = self.model(...))"
+    },
+    {
+      "path": "src/inference/predictor.py",
+      "line": 187,
+      "rule": "C-name",
+      "qualname": "VSLPredictor.warmup",
+      "snippet": "dummy_tm = torch.ones((1, 60), dtype=torch.float32, device=self.device)",
+      "status": "allowed",
+      "text": "tensor warmup, đầu ra bỏ (_ = self.model(...))"
+    },
+    {
+      "path": "src/inference/realtime_extractor.py",
+      "line": 66,
+      "rule": "C-name",
+      "qualname": "RealtimeLandmarkExtractor.__init__",
+      "snippet": "dummy = np.zeros((256, 256, 3), dtype=np.uint8)",
+      "status": "allowed",
+      "text": "khung warmup MediaPipe, đầu ra bỏ"
+    },
+    {
+      "path": "src/inference/sign_segmenter.py",
+      "line": 141,
+      "rule": "D-binding",
+      "qualname": "SignSegmenter._activity",
+      "snippet": "fps = (n - 1) / (t1 - t0) if n >= 2 and t1 > t0 else 30.0   # n == 1: speed is 0 whatever fps is",
+      "status": "known",
+      "text": "đề xuất DTG (planner xét): fps suy từ timestamp; '30.0' chỉ dùng khi n < 2 (tốc độ = 0 bất kể fps), không phải số đo hiển thị; hướng sửa nếu không duyệt: hằng có tên — kế hoạch sau"
+    },
+    {
+      "path": "src/metrics/cslr_metrics.py",
+      "line": 216,
+      "rule": "D-binding",
+      "qualname": "compute_wer",
+      "snippet": "wer = 100.0 if total_hyp_words > 0 else 0.0",
+      "status": "allowed",
+      "text": "quy ước công thức WER khi không có từ tham chiếu"
+    }
+  ],
+  "summary": {
+    "by_status": {
+      "known": 9,
+      "allowed": 36,
+      "unregistered": 0
+    },
+    "by_rule": {
+      "A-stdlib": 0,
+      "A-numpy": 26,
+      "A-torch": 1,
+      "B-import": 0,
+      "B-name": 0,
+      "C-name": 4,
+      "C-string": 4,
+      "C-result": 1,
+      "D-binding": 6,
+      "D-string": 3
+    },
+    "n_serving_files": 44,
+    "n_main_files": 56
+  }
+}
