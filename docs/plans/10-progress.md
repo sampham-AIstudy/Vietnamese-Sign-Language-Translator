@@ -7,9 +7,9 @@ Trạng thái: ĐANG LÀM
 - P10 (HEAD lúc bắt đầu B1, commit chứa kế hoạch): `f16d0a9` (`f16d0a9d9f717af6c50381732152a58d9ad3c953`)
 - Log/file tạm: `/home/user/_plan10_tmp/` (ngoài repo; `../_plan10_tmp/` của kế hoạch)
 
-**Bước đã xong:** B1
-**Bước đang làm:** B2 (báo cáo JSON + AC8)
-**Bước còn lại:** B2, B3
+**Bước đã xong:** B1, B2
+**Bước đang làm:** B3 (đối chiếu dự báo, danh sách vi phạm, đề xuất)
+**Bước còn lại:** B3
 
 ## B1(1) — Mốc B0 (HEAD f16d0a9)
 
@@ -120,3 +120,21 @@ src backend realtime_demo.py` rỗng → index khớp mã). Tóm tắt `incoming
 `unregistered` đúng mã (A-stdlib, B-import, C-result ×2, C-name + D-binding, D-string); nhân đôi → `CHANGED realtime_demo.py
 C-result RealtimeHUD._locate_vietnamese_font: đăng ký 1, hiện 2`; xóa → `STALE ...: đăng ký 1, hiện 0`; nguyên vẹn → rỗng.
 `sha256sum -c` `backend/main.py` sau khi chạy: OK; `git status --porcelain` trước/sau giống hệt.
+
+## B2 — Báo cáo JSON + không hồi quy (HEAD B1 = `319ddcd`)
+
+- Cây sạch với các đường của `code_dirty` (`git status --porcelain -- backend src tests realtime_demo.py start_fullstack.ps1` → 0 dòng).
+- Lệnh: `PYTHONIOENCODING=utf-8 .venv/bin/python -m tests.test_backend_source_guard --report reports/guard_dod7_2026-09-29/guard_findings.json` → `reports/guard_dod7_2026-09-29/guard_findings.json`:
+  `generated_by.git_commit = 319ddcdb344572fa4d0878ae9922e60062f202a2` (commit B1), `code_dirty = false`,
+  `generated_at_utc = 2026-09-29T05:11:18Z`.
+  `summary.by_status = {"known": 9, "allowed": 36, "unregistered": 0}`; `by_rule = {"A-stdlib": 0, "A-numpy": 26, "A-torch": 1, "B-import": 0, "B-name": 0, "C-name": 4, "C-string": 4, "C-result": 1, "D-binding": 6, "D-string": 3}`;
+  `n_serving_files = 44`, `n_main_files = 56`.
+  Tổng `known`/`allowed` trong JSON khớp dòng in của test `[DoD7-guard] known=9 allowed=36` (AC5-c/d).
+- Chạy lại ra `/home/user/_plan10_tmp/b2_rerun.json`: thân (bỏ `generated_by`) giống hệt (`findings` và `summary` giống hệt; AC7-c).
+  File báo cáo không chứa đường dẫn tuyệt đối.
+- AC8 (30 module, lệnh §5 AC8) → `/home/user/_plan10_tmp/b2_ac8.txt`: `Ran 438 tests in 34.411s` / `FAILED (failures=1, errors=1, skipped=30)`.
+  So B0 (`Ran 414`): 438 = 414 + 24 (module mới); tập id FAIL/ERROR (`b2_failerr.txt`) == B0 (`b0_failerr.txt`):
+  `TestFrontendSourceGuard.test_no_violation` (FAIL), `setUpClass (tests.test_translation_core.TestVSLTranslationCore)` (ERROR);
+  tập id skip (`b2_skip.txt`, 30) == B0 (`b0_skip.txt`); module mới 24/24 `ok`, 0 fail, 0 error, 0 skip.
+  Giữa B0 và B2 nhánh không nhận commit ngoài kế hoạch này (`git log f16d0a9..HEAD`: chỉ `5b979a5`, `319ddcd`).
+- `git status --porcelain` trước/sau lệnh AC8 giống hệt (chỉ `?? reports/guard_dod7_2026-09-29/`); `sha256sum -c backend/main.py`: OK.
