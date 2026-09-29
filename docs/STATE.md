@@ -3,11 +3,11 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-29 09:44 (giờ Việt Nam)
-- HEAD: dbec36c | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG LÀM — vslt-coder kế hoạch 06 chặng 1 [B0, B1, B2], giao 09:44, HEAD dbec36c, 5h 0% (cổng 30 ≤ 90).
+- Cập nhật lần cuối: 2026-09-29 10:09 (giờ Việt Nam)
+- HEAD: ed5c4c9 | Nhánh: feat/vslt-complete
+- Trạng thái phiên: ĐANG LÀM — vslt-coder kế hoạch 06 chặng 2 [B3, B4], giao 10:09, HEAD ed5c4c9, 5h 20% (cổng 50 ≤ 90).
   Tiến độ: docs/plans/06-progress.md. Nếu bị ngắt: giao lại coder với kế hoạch + 06-progress.md, tiếp tục từ bước dở.
-- Hạn mức (09:42): 5 giờ 0% (reset 14:40 giờ VN), 7 ngày 26% (reset 1790820000). Sổ đo: docs/usage_ledger.csv
+- Hạn mức (10:07): 5 giờ 20% (reset 14:40 giờ VN), 7 ngày 29%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -30,7 +30,10 @@
   cần cài gói / Edge không có / cần xóa file). Thiết kế chính: Cấp 1 dùng MediaPipe phía SERVER qua WS /ws/hand-landmarks (không
   MediaPipe JS); client WS v2 reducer thuần qua proxy /ws; CORS từ VSL_CORS_ORIGINS, allow_credentials=False, WS kiểm Origin (1008),
   bind 127.0.0.1; e2e_fullstack.py dùng puppeteer-core + Edge webcam giả (clip thật, y4m ngoài repo).
-  Coder chặng 1 [B0,B1,B2] ĐÃ GIAO 09:44.
+  Coder XONG chặng 1: 050d337/8e7b09b (B0, mốc 383 OK), 4924502 (B1 CORS/Origin 1008/bind 127.0.0.1/strictPort),
+  ed5c4c9 (B2 hand_live.py + WS /ws/hand-landmarks). AC2 413 OK, 0 skip. detect-changes B2 HIGH (17 symbol đều mới) — reviewer xác minh;
+  050d337 commit không chạy detect-changes trước (chỉ file tiến độ) — sai sót quy trình mức thấp.
+  Coder chặng 2 [B3,B4] ĐÃ GIAO 10:09.
 
 ## Quyết định của người dùng (không hỏi lại)
 - 4c: chọn B (giữ model gộp). Chưa đổi model mặc định — đó là GATE riêng.
