@@ -221,3 +221,18 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
   (429 = 383 + cors 21 + hand_landmarks_ws 9 + hand_live_equivalence 4 + frontend_contract 12); `git status --porcelain`
   trước/sau giống hệt.
 - `cd frontend && npm test` (Node v25.9.0) → `tests 26, pass 26, fail 0` (3 file).
+
+## B8 — e2e fullstack (AC12) — ĐANG LÀM
+
+- Commit script: 7e38118 (`scripts/make_fake_webcam_y4m.py`, `scripts/e2e_browser.cjs`, `scripts/e2e_fullstack.py`; 3 file mới,
+  không sửa symbol cũ). detect-changes --scope staged: risk CRITICAL theo đồ thị (105 symbol mới; 41 process "bị ảnh hưởng"
+  do trùng tên `ROOT`/`main` với file khác — không symbol cũ nào đổi). Guard backend + frontend contract: `Ran 36` `OK`
+  (script mới không nằm trong phạm vi SERVING của guard DoD 7: không được import từ backend, không được start_fullstack.ps1 gọi).
+- Clip: Đánh vần `a_hau_A_001.mp4` (hauuto_a_hau_A_001, 75 frame, 23.584 fps, 640×480). Ký từ: `qipedc_D0120T`
+  (TRAIN, 113 frame, 29.97 fps, 1280×720) — **giả định của coder**: "clip đầu tiên (thứ tự của hàm) của mẫu
+  live_clip_sample.py (seed 0, TRAIN), KHÁC W03251B" = phần tử đầu của `select_train_clips()` mặc định (n=8, seed 0) sau khi bỏ
+  `qipedc_W03251B` (phần tử đầu là W03251B; thứ 2 là D0120T). (B7 smoke dùng `select_train_clips(1, 0)` → W03292N.)
+- y4m ở `%TEMP%\vslt_e2e\` (ngoài repo; script từ chối đường ra trong repo).
+- Chạy thử trên code chưa commit (ra `../_plan06_tmp/b8_dev_*.json`): cả 3 kịch bản đạt mọi kiểm tra AC12 TRỪ
+  `ws_urls_all_via_proxy_no_8000`: trang dev có thêm socket HMR của Vite `ws://localhost:3000/?token=…`
+  (`Sec-WebSocket-Protocol: vite-hmr`) — không bắt đầu bằng `ws://localhost:3000/ws/` → **CẦN PLANNER** (xem dưới).
