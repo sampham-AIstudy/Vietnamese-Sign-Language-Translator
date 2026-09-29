@@ -18,8 +18,11 @@
   của Vite dev (ws://localhost:3000/?token=…, protocol vite-hmr); app socket đều qua proxy, không :8000. Coder đề xuất (a)/(b)/(c).
   Cần planner xét luôn 4 giả định coder tự đặt (clip Ký từ qipedc_D0120T; socket đóng trước message do StrictMode; cửa sổ 180 s gộp;
   độ dài lượt ghi) và AC1 có file từ commit cloud-handoff 8628948/296b12e/f62dd45 ngoài danh sách.
-  ĐANG GIAO: vslt-planner kế hoạch 06 Lần sửa 2 — 18:05, HEAD 001e020 (+state).
-- Hạn mức (18:02): 5 giờ 31% (reset 22:10 giờ VN), 7 ngày 42%. Sổ đo: docs/usage_ledger.csv
+  Planner Lần sửa 2 XONG (§0B của kế hoạch 06, commit cùng lượt này): AC12 chọn (a) — loại socket HMR theo luật chặt
+  (regex neo, protocol vite-hmr, chỉ type connected, ≤1/lượt; :8000 cấm mọi socket); luật socket mồ côi StrictMode; chấp nhận 4 giả định;
+  AC1 chỉ áp cho commit `^(WIP )?06:`, commit khác quy về 4 nhóm; AC2 đóng việc = 31 module. PHẢI chạy lại 3 kịch bản e2e.
+  ĐANG GIAO: vslt-coder kế hoạch 06 B8b + B9b (0B.5) — 18:18, HEAD (+state).
+- Hạn mức (18:16): 5 giờ 44% (reset 22:10 giờ VN), 7 ngày 44%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
