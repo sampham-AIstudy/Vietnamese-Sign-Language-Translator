@@ -11,3 +11,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-09-28T18:20Z,vslt-reviewer,05,part 3/3 (items 10-13 + Kaggle),33,,,,stale (after not updated)
 2026-09-28T18:35Z,vslt-planner,06,full plan,45,,,,stale (usage: five_hour_used_pct":64)
 2026-09-29T03:07Z,vslt-coder,06,stage 1 (B0-B2),0,20,20,3,ok
+2026-09-29T03:28Z,vslt-coder,06,stage 2 (B3-B4),20,35,15,2,ok

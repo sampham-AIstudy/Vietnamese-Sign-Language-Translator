@@ -3,11 +3,11 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-29 10:09 (giờ Việt Nam)
-- HEAD: ed5c4c9 | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG LÀM — vslt-coder kế hoạch 06 chặng 2 [B3, B4], giao 10:09, HEAD ed5c4c9, 5h 20% (cổng 50 ≤ 90).
+- Cập nhật lần cuối: 2026-09-29 10:30 (giờ Việt Nam)
+- HEAD: 026f474 | Nhánh: feat/vslt-complete
+- Trạng thái phiên: ĐANG LÀM — coder 06 trả CẦN PLANNER sau chặng 2; vslt-planner sửa kế hoạch 06 (Lần sửa 1), giao 10:31.
   Tiến độ: docs/plans/06-progress.md. Nếu bị ngắt: giao lại coder với kế hoạch + 06-progress.md, tiếp tục từ bước dở.
-- Hạn mức (10:07): 5 giờ 20% (reset 14:40 giờ VN), 7 ngày 29%. Sổ đo: docs/usage_ledger.csv
+- Hạn mức (10:28): 5 giờ 35% (reset 14:40 giờ VN), 7 ngày 31%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -33,7 +33,10 @@
   Coder XONG chặng 1: 050d337/8e7b09b (B0, mốc 383 OK), 4924502 (B1 CORS/Origin 1008/bind 127.0.0.1/strictPort),
   ed5c4c9 (B2 hand_live.py + WS /ws/hand-landmarks). AC2 413 OK, 0 skip. detect-changes B2 HIGH (17 symbol đều mới) — reviewer xác minh;
   050d337 commit không chạy detect-changes trước (chỉ file tiến độ) — sai sót quy trình mức thấp.
-  Coder chặng 2 [B3,B4] ĐÃ GIAO 10:09.
+  Coder XONG chặng 2: 2a45403, e58d025 (B3 test tương đương Cấp 1: AC5 bằng hệt 10/10 clip), 5fcf295 (JSON AC6), 026f474 (B4 lib JS
+  + node --test 26 pass + guard). AC2 423, 1 failure CÓ CHỦ ĐÍCH (TestFrontendSourceGuard — chờ B5/B6 sửa component cũ).
+  CẦN PLANNER: (1) `node --test tests/` lỗi trên Node 25 → coder dùng `node --test tests/*.test.mjs`; (2) AC1 vs AC8 mâu thuẫn ở
+  RealtimeStream.jsx (':8000' trong câu báo lỗi dòng 203). Ghi nhận AC6: Kaggle npz vs trích cục bộ lệch detected 1 clip, max 0.230.
 
 ## Quyết định của người dùng (không hỏi lại)
 - 4c: chọn B (giữ model gộp). Chưa đổi model mặc định — đó là GATE riêng.
