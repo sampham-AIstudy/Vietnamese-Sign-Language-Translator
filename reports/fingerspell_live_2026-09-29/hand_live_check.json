@@ -1,0 +1,264 @@
+{
+  "generated_by": {
+    "command": "PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/hand_live_check.py --n-clips 8 --seed 0 --out reports/fingerspell_live_2026-09-29/hand_live_check.json",
+    "git_commit": "e58d02535fde94a36a1613798f1675509ae4f139",
+    "code_dirty": false,
+    "generated_at_utc": "2026-09-29T03:14:55Z",
+    "mediapipe": "0.10.14",
+    "cv2": "5.0.0",
+    "numpy": "2.4.6",
+    "checkpoint": "checkpoints/alphabet_best.pt",
+    "checkpoint_sha256": "a6311820ba778b6b38a33cffffd58602b2bb840b8b35326b5bf46086e5b708a2"
+  },
+  "note": "report only; hauuto clips are training data of the deployed Level 1 model; not accuracy",
+  "sample": "np.random.default_rng(0) picks 8 hauuto clips of manifest.csv with a local video + the first 2 qipedc clips (by sample_id) with a local video",
+  "definitions": {
+    "detected_agree": "frames (over the common length) whose hand-detected flag is equal",
+    "max_abs_diff": "max |a - b| of raw landmark coordinates over frames with a hand in both (null if none)",
+    "jpeg90": "cv2.imencode JPEG quality 90 (not the browser encoder)",
+    "sequence_top1": "prediction of POST /api/fingerspelling/sequence (deployed checkpoint); 'HTTP <code>' when not 200"
+  },
+  "n_clips": 10,
+  "clips": [
+    {
+      "sample_id": "hauuto_a_tai_B_001",
+      "source": "hauuto",
+      "n_frames": 45,
+      "n_detected_local_offline": 45,
+      "live_png_vs_local_offline": {
+        "detected_equal": true,
+        "max_abs_diff": 0.0
+      },
+      "live_jpeg90_vs_live_png": {
+        "detected_agree": 45,
+        "max_abs_diff_both": 0.005520418286323547
+      },
+      "kaggle_npz_vs_local_offline": {
+        "n_frames_equal": true,
+        "detected_agree": 45,
+        "max_abs_diff_both": 0.004216626286506653
+      },
+      "sequence_top1": {
+        "live_png": "a",
+        "live_jpeg90": "a",
+        "kaggle_npz": "a"
+      }
+    },
+    {
+      "sample_id": "hauuto_aa_khoi_B_002",
+      "source": "hauuto",
+      "n_frames": 91,
+      "n_detected_local_offline": 87,
+      "live_png_vs_local_offline": {
+        "detected_equal": true,
+        "max_abs_diff": 0.0
+      },
+      "live_jpeg90_vs_live_png": {
+        "detected_agree": 91,
+        "max_abs_diff_both": 0.17609348893165588
+      },
+      "kaggle_npz_vs_local_offline": {
+        "n_frames_equal": true,
+        "detected_agree": 91,
+        "max_abs_diff_both": 0.1354949027299881
+      },
+      "sequence_top1": {
+        "live_png": "â",
+        "live_jpeg90": "â",
+        "kaggle_npz": "â"
+      }
+    },
+    {
+      "sample_id": "hauuto_aw_khoi_A_003",
+      "source": "hauuto",
+      "n_frames": 90,
+      "n_detected_local_offline": 84,
+      "live_png_vs_local_offline": {
+        "detected_equal": true,
+        "max_abs_diff": 0.0
+      },
+      "live_jpeg90_vs_live_png": {
+        "detected_agree": 86,
+        "max_abs_diff_both": 0.24034595489501953
+      },
+      "kaggle_npz_vs_local_offline": {
+        "n_frames_equal": true,
+        "detected_agree": 88,
+        "max_abs_diff_both": 0.2297654151916504
+      },
+      "sequence_top1": {
+        "live_png": "ă",
+        "live_jpeg90": "ă",
+        "kaggle_npz": "ă"
+      }
+    },
+    {
+      "sample_id": "hauuto_ee_vy_A_002",
+      "source": "hauuto",
+      "n_frames": 90,
+      "n_detected_local_offline": 90,
+      "live_png_vs_local_offline": {
+        "detected_equal": true,
+        "max_abs_diff": 0.0
+      },
+      "live_jpeg90_vs_live_png": {
+        "detected_agree": 90,
+        "max_abs_diff_both": 0.08124011754989624
+      },
+      "kaggle_npz_vs_local_offline": {
+        "n_frames_equal": true,
+        "detected_agree": 90,
+        "max_abs_diff_both": 0.0794912576675415
+      },
+      "sequence_top1": {
+        "live_png": "ê",
+        "live_jpeg90": "ê",
+        "kaggle_npz": "ê"
+      }
+    },
+    {
+      "sample_id": "hauuto_h_khoi_A_001",
+      "source": "hauuto",
+      "n_frames": 91,
+      "n_detected_local_offline": 77,
+      "live_png_vs_local_offline": {
+        "detected_equal": true,
+        "max_abs_diff": 0.0
+      },
+      "live_jpeg90_vs_live_png": {
+        "detected_agree": 91,
+        "max_abs_diff_both": 0.013234071433544159
+      },
+      "kaggle_npz_vs_local_offline": {
+        "n_frames_equal": true,
+        "detected_agree": 91,
+        "max_abs_diff_both": 0.0062586660496890545
+      },
+      "sequence_top1": {
+        "live_png": "h",
+        "live_jpeg90": "h",
+        "kaggle_npz": "h"
+      }
+    },
+    {
+      "sample_id": "hauuto_oo_vy_A_003",
+      "source": "hauuto",
+      "n_frames": 91,
+      "n_detected_local_offline": 91,
+      "live_png_vs_local_offline": {
+        "detected_equal": true,
+        "max_abs_diff": 0.0
+      },
+      "live_jpeg90_vs_live_png": {
+        "detected_agree": 91,
+        "max_abs_diff_both": 0.04011976718902588
+      },
+      "kaggle_npz_vs_local_offline": {
+        "n_frames_equal": true,
+        "detected_agree": 91,
+        "max_abs_diff_both": 0.04816347360610962
+      },
+      "sequence_top1": {
+        "live_png": "ô",
+        "live_jpeg90": "ô",
+        "kaggle_npz": "ô"
+      }
+    },
+    {
+      "sample_id": "hauuto_s_hau_B_002",
+      "source": "hauuto",
+      "n_frames": 74,
+      "n_detected_local_offline": 74,
+      "live_png_vs_local_offline": {
+        "detected_equal": true,
+        "max_abs_diff": 0.0
+      },
+      "live_jpeg90_vs_live_png": {
+        "detected_agree": 74,
+        "max_abs_diff_both": 0.00582112604752183
+      },
+      "kaggle_npz_vs_local_offline": {
+        "n_frames_equal": true,
+        "detected_agree": 74,
+        "max_abs_diff_both": 0.0040011327946558595
+      },
+      "sequence_top1": {
+        "live_png": "s",
+        "live_jpeg90": "s",
+        "kaggle_npz": "s"
+      }
+    },
+    {
+      "sample_id": "hauuto_tone_x_khoi_B_002",
+      "source": "hauuto",
+      "n_frames": 90,
+      "n_detected_local_offline": 86,
+      "live_png_vs_local_offline": {
+        "detected_equal": true,
+        "max_abs_diff": 0.0
+      },
+      "live_jpeg90_vs_live_png": {
+        "detected_agree": 90,
+        "max_abs_diff_both": 0.022486865520477295
+      },
+      "kaggle_npz_vs_local_offline": {
+        "n_frames_equal": true,
+        "detected_agree": 90,
+        "max_abs_diff_both": 0.01882040500640869
+      },
+      "sequence_top1": {
+        "live_png": "dấu ngã",
+        "live_jpeg90": "dấu ngã",
+        "kaggle_npz": "dấu ngã"
+      }
+    },
+    {
+      "sample_id": "qipedc_D0489",
+      "source": "qipedc",
+      "n_frames": 93,
+      "n_detected_local_offline": 45,
+      "live_png_vs_local_offline": {
+        "detected_equal": true,
+        "max_abs_diff": 0.0
+      },
+      "live_jpeg90_vs_live_png": {
+        "detected_agree": 87,
+        "max_abs_diff_both": 0.04101085662841797
+      },
+      "kaggle_npz_vs_local_offline": {
+        "n_frames_equal": true,
+        "detected_agree": 93,
+        "max_abs_diff_both": 0.0028810501098632812
+      },
+      "sequence_top1": {
+        "live_png": "a",
+        "live_jpeg90": "a",
+        "kaggle_npz": "a"
+      }
+    },
+    {
+      "sample_id": "qipedc_D0490B",
+      "source": "qipedc",
+      "n_frames": 89,
+      "n_detected_local_offline": 51,
+      "live_png_vs_local_offline": {
+        "detected_equal": true,
+        "max_abs_diff": 0.0
+      },
+      "live_jpeg90_vs_live_png": {
+        "detected_agree": 89,
+        "max_abs_diff_both": 0.006323695182800293
+      },
+      "kaggle_npz_vs_local_offline": {
+        "n_frames_equal": true,
+        "detected_agree": 89,
+        "max_abs_diff_both": 0.0006983280181884766
+      },
+      "sequence_top1": {
+        "live_png": "dấu huyền",
+        "live_jpeg90": "dấu huyền",
+        "kaggle_npz": "dấu huyền"
+      }
+    }
+  ]
+}

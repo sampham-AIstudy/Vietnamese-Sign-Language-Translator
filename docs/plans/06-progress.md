@@ -1,9 +1,9 @@
 # Kế hoạch 06 — tiến độ (coder; chặng 1: B0–B2; chặng 2: B3–B4)
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
-- Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9)
-- Bước đang làm: B3 (chặng 2 = B3–B4, giao ở 8e1c85a)
-- Bước còn lại: B3, B4 (chặng 2); B5–B9 (chặng 3–4)
+- Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + commit JSON "06: B3 — JSON AC6 ...")
+- Bước đang làm: B4 (chặng 2 = B3–B4, giao ở 8e1c85a)
+- Bước còn lại: B4 (chặng 2); B5–B9 (chặng 3–4)
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
@@ -102,3 +102,11 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
   hauuto_a_tai_B_001 frames=45 detected=45; hauuto_aa_khoi_B_002 91/87; hauuto_aw_khoi_A_003 90/84; hauuto_ee_vy_A_002 90/90;
   hauuto_h_khoi_A_001 91/77; hauuto_oo_vy_A_003 91/91; hauuto_s_hau_B_002 74/74; hauuto_tone_x_khoi_B_002 90/86;
   qipedc_D0489 93/45; qipedc_D0490B 89/51.
+- Commit code B3: e58d025. Sau đó (code sạch: `git status --porcelain -- src scripts backend tests frontend` rỗng) chạy AC6:
+  `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/hand_live_check.py --n-clips 8 --seed 0 --out reports/fingerspell_live_2026-09-29/hand_live_check.json`
+  → `wrote ...: 10 clips; live_png == local offline (detected): 10/10`; `generated_by.git_commit` = e58d025…, `code_dirty: false`.
+  Chạy lại lần 2 ra `../_plan06_tmp/hlc_run2.json`: phần thân (bỏ `generated_by`) giống hệt lần 1 (`body identical: True`).
+  Tóm tắt (đọc từ JSON, chỉ ghi nhận, không có ngưỡng): live_png vs offline cục bộ: detected_equal 10/10, max_abs_diff 0.0 cả 10;
+  jpeg90 vs png: detected_agree < n_frames ở 2 clip (aw_khoi_A_003 86/90, qipedc_D0489 87/93), max_abs_diff_both lớn nhất 0.2403
+  (aw_khoi_A_003); Kaggle npz vs offline cục bộ: n_frames_equal 10/10, detected_agree < n_frames ở 1 clip (aw_khoi_A_003 88/90),
+  max_abs_diff_both lớn nhất 0.2298 (aw_khoi_A_003); sequence_top1 live_png = live_jpeg90 = kaggle_npz ở cả 10 clip.
