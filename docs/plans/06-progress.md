@@ -1,9 +1,9 @@
-# Kế hoạch 06 — tiến độ (coder; chặng 1: B0–B2; chặng 2: B3–B4)
+# Kế hoạch 06 — tiến độ (coder; chặng 1: B0–B2; chặng 2: B3–B4; chặng 3: B5–B7)
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
-- Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (commit "06: B4 — ...")
-- Bước đang làm: (không; chặng 2 xong, dừng theo giao việc)
-- Bước còn lại: B5–B9 (chặng 3–4)
+- Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474)
+- Bước đang làm: B5 (chặng 3 = B5–B7, theo Lần sửa 1 của kế hoạch, facffea)
+- Bước còn lại: B5, B6, B7 (chặng 3); B8–B9 (chặng 4)
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
