@@ -1,9 +1,9 @@
 # Kế hoạch 06 — tiến độ (coder; chặng 1: B0–B2; chặng 2: B3–B4)
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
-- Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + commit JSON "06: B3 — JSON AC6 ...")
-- Bước đang làm: B4 (chặng 2 = B3–B4, giao ở 8e1c85a)
-- Bước còn lại: B4 (chặng 2); B5–B9 (chặng 3–4)
+- Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (commit "06: B4 — ...")
+- Bước đang làm: (không; chặng 2 xong, dừng theo giao việc)
+- Bước còn lại: B5–B9 (chặng 3–4)
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
@@ -110,3 +110,28 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
   jpeg90 vs png: detected_agree < n_frames ở 2 clip (aw_khoi_A_003 86/90, qipedc_D0489 87/93), max_abs_diff_both lớn nhất 0.2403
   (aw_khoi_A_003); Kaggle npz vs offline cục bộ: n_frames_equal 10/10, detected_agree < n_frames ở 1 clip (aw_khoi_A_003 88/90),
   max_abs_diff_both lớn nhất 0.2298 (aw_khoi_A_003); sequence_top1 live_png = live_jpeg90 = kaggle_npz ở cả 10 clip.
+
+## B4 — thư viện JS thuần + `node --test` + guard + test chéo ngôn ngữ (AC7, AC8)
+
+- File mới: `frontend/src/lib/ws.js` (`wsUrl`, `nowMs`), `frontend/src/lib/liveProtocol.js` (`initialLiveState`,
+  `reduceLive`, `undoLastWord`, `discardReasonText`), `frontend/src/lib/fingerspelling.js` (FS_TARGET_FPS 24,
+  FS_JPEG_QUALITY 0.9, FS_MAX_IN_FLIGHT 2 — "giá trị thiết kế, chưa đo"; `buildSequenceBody` ném `SequenceBodyError`
+  code ∈ {empty, too_many_frames, frame_size_changed, bad_timestamps}; `recordingStats`, `errorDetailText`);
+  `frontend/tests/{ws,liveProtocol,fingerspelling}.test.mjs`, `frontend/tests/build_body_cli.mjs`;
+  `tests/test_frontend_contract.py`. `frontend/package.json`: CHỈ thêm `scripts.test`. `package-lock.json` không đổi.
+  Chưa component nào import lib (B5/B6).
+- **Lệch với kế hoạch (cần planner):** lệnh `node --test tests/` của bảng B4/AC2 KHÔNG chạy được với Node v25.9.0:
+  `cd frontend && node --test tests/` → `✖ tests ... MODULE_NOT_FOUND` (Node ≥ 22 coi đối số là glob/đường dẫn file, không
+  duyệt thư mục). Đã dùng `"test": "node --test tests/*.test.mjs"` (Node tự mở glob; chạy được cả cmd.exe lẫn sh).
+  `cd frontend && npm test` → `tests 26, pass 26, fail 0` (ws 4, liveProtocol 12, fingerspelling 10);
+  `node --test` (không đối số, mẫu mặc định) cũng ra 26/26.
+- `tests.test_frontend_contract` (6 test): TestGuardSelfCheck 3 OK; TestHandLiveCheckReport OK; TestCrossLanguageBody OK
+  (in `[AC7-d] hauuto_a_tai_B_001: frames=45 with_hand=45`; body JS == body Python từ npz offline, POST 200, response bằng
+  hệt); **TestFrontendSourceGuard.test_no_violation FAIL (đỏ có chủ đích, test viết trước cho B5/B6)** — 14 vi phạm:
+  Fingerspelling.jsx:69 ('/api/fingerspelling'), :130 (25 lớp); Navbar.jsx:71 (:8000); Phase12Pipeline.jsx:8, :52 (×2), :98 (×2),
+  :129 (base64 /9j/), :201 (bufferCapacity={60}); PredictionDisplay.jsx:81 (:8000); RealtimeStream.jsx:143 (:8000, ws://), :203 (:8000).
+  **Mâu thuẫn cần planner:** `RealtimeStream.jsx:203` có ":8000" trong câu báo lỗi (không phải dòng URL), nhưng AC1 chỉ cho
+  sửa "dòng URL + 1 dòng import" của file này → AC8 và AC1 không thể cùng đạt nếu không nới một trong hai.
+- AC2 (25 module cũ + 4 mới), log `../_plan06_tmp/b4_ac2.log`: `Ran 423 tests in 281.254s` `FAILED (failures=1)` — lỗi duy
+  nhất là TestFrontendSourceGuard ở trên; 0 error, 0 skip. 423 = 383 + cors_origin_bind 21 + hand_landmarks_ws 9 +
+  hand_live_equivalence 4 + frontend_contract 6. `git status --porcelain` trước/sau: giống hệt (`SAME`).
