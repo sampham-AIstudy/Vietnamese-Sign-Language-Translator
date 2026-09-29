@@ -1,4 +1,4 @@
-Trạng thái: ĐANG LÀM
+Trạng thái: XONG (chờ orchestrator gọi vslt-reviewer)
 
 # Tiến độ kế hoạch 10 — Guard DoD 7 phía backend
 
@@ -7,9 +7,9 @@ Trạng thái: ĐANG LÀM
 - P10 (HEAD lúc bắt đầu B1, commit chứa kế hoạch): `f16d0a9` (`f16d0a9d9f717af6c50381732152a58d9ad3c953`)
 - Log/file tạm: `/home/user/_plan10_tmp/` (ngoài repo; `../_plan10_tmp/` của kế hoạch)
 
-**Bước đã xong:** B1, B2
-**Bước đang làm:** B3 (đối chiếu dự báo, danh sách vi phạm, đề xuất)
-**Bước còn lại:** B3
+**Bước đã xong:** B1, B2, B3
+**Bước đang làm:** (không)
+**Bước còn lại:** (không) — chờ review
 
 ## B1(1) — Mốc B0 (HEAD f16d0a9)
 
@@ -138,3 +138,120 @@ C-result RealtimeHUD._locate_vietnamese_font: đăng ký 1, hiện 2`; xóa → 
   tập id skip (`b2_skip.txt`, 30) == B0 (`b0_skip.txt`); module mới 24/24 `ok`, 0 fail, 0 error, 0 skip.
   Giữa B0 và B2 nhánh không nhận commit ngoài kế hoạch này (`git log f16d0a9..HEAD`: chỉ `5b979a5`, `319ddcd`).
 - `git status --porcelain` trước/sau lệnh AC8 giống hệt (chỉ `?? reports/guard_dod7_2026-09-29/`); `sha256sum -c backend/main.py`: OK.
+
+## B3 — Đối chiếu, danh sách vi phạm, đề xuất
+
+### Đối chiếu dự báo §2.3 #1–#13 (bảng do script sinh từ `reports/guard_dod7_2026-09-29/guard_findings.json`, commit `319ddcd`)
+
+| # §2.3 | Vị trí dự báo | Luật dự báo | Xảy ra? | Mã luật thực tế (JSON) | Dòng thực tế (JSON) | status JSON |
+|---|---|---|---|---|---|---|
+| 1 | `realtime_demo.py:266-267` | C-string (VI PHẠM) | có (2 finding, 1/1 nhóm) | C-string | 266, 267 | known |
+| 2 | `realtime_demo.py:294` | C-string (VI PHẠM) | có (1 finding, 1/1 nhóm) | C-string | 294 | known |
+| 3 | `realtime_demo.py:395` | C-string (VI PHẠM) | có (1 finding, 1/1 nhóm) | C-string | 395 | known |
+| 4 | `realtime_demo.py:330` | D-binding (VI PHẠM) | có (1 finding, 1/1 nhóm) | D-binding | 330 | known |
+| 5 | `src/data/augment.py:34..188` | A-numpy (DTG) | có (26 finding, 8/8 nhóm) | A-numpy | 34, 41, 49, 76, 95, 97, 107, 109, 111, 113, 115, 122, 124, 126, 147, 148, 152, 153, 161, 162, 166, 167, 181, 182, 186, 188 | allowed |
+| 6 | `src/data/harmonized.py:178` | A-torch (DTG) | có (1 finding, 1/1 nhóm) | A-torch | 178 | allowed |
+| 7 | `src/data/harmonized.py:175` | D-binding (DTG) | có (1 finding, 1/1 nhóm) | D-binding | 175 | allowed |
+| 8 | `src/data/harmonized.py:129` | D-binding (DTG) | có (1 finding, 1/1 nhóm) | D-binding | 129 | allowed |
+| 9 | `src/metrics/cslr_metrics.py:216` | D-binding (DTG) | có (1 finding, 1/1 nhóm) | D-binding | 216 | allowed |
+| 10 | `src/data/vsl_dataset.py:176` | D-string (DTG) | có (1 finding, 1/1 nhóm) | D-string | 176 | allowed |
+| 11 | `src/inference/ensemble.py:303` | D-string (DTG) | có (1 finding, 1/1 nhóm) | D-string | 303 | allowed |
+| 12 | `src/inference/predictor.py:185-187` | C-name (DTG) | có (3 finding, 1/1 nhóm) | C-name | 185, 186, 187 | allowed |
+| 13 | `src/inference/realtime_extractor.py:66` | C-name (DTG) | có (1 finding, 1/1 nhóm) | C-name | 66 | allowed |
+
+Cả 13 dự báo đều xảy ra, đúng mã luật dự báo, đúng dòng dự báo (#5: 26 finding trải 8 nhóm, dòng 34..188).
+Mục "ngoài luật" #14–#18 kiểm trong cùng JSON: `backend/main.py` 0 finding (#14 comment, #15 docstring route "(487 classes for
+Tier 2)" không khớp D-string, #16 `*_ms = 0.0` là sentinel); `src/export/*`, `src/training/*`, `src/translation/dataset.py` 0 finding
+và KHÔNG thuộc SERVING (#17, #18).
+
+Ngoài dự báo (nhóm guard báo mà §2.3 không có) — cả 4 vào KNOWN kèm "đề xuất DTG" (§3.6: coder không tự thêm ALLOWED):
+- `realtime_demo.py` C-result `RealtimeHUD._locate_vietnamese_font`: dòng 52, status=known
+- `src/data/landmark_extractor.py` D-binding `CleanHolisticExtractor.extract_from_video`: dòng 121, status=known
+- `src/data/vsl_gh_dataset.py` D-string `<module>`: dòng 31, status=known
+- `src/inference/sign_segmenter.py` D-binding `SignSegmenter._activity`: dòng 141, status=known
+
+### Danh sách vi phạm có sẵn (CHÍNH THỨC, AC5-e) — mọi finding `status: "known"` của
+`reports/guard_dod7_2026-09-29/guard_findings.json` (`generated_by.git_commit = 319ddcdb344572fa4d0878ae9922e60062f202a2`); bảng do script chép từ JSON
+
+| # | file:dòng | mã | qualname | snippet |
+|---|---|---|---|---|
+| 1 | `realtime_demo.py:52` | C-result | `RealtimeHUD._locate_vietnamese_font` | `candidates = [` |
+| 2 | `realtime_demo.py:266` | C-string | `RealtimeDemo._open_stream` | `elif self.source == "mock":` |
+| 3 | `realtime_demo.py:267` | C-string | `RealtimeDemo._open_stream` | `print("Using Synthetic Mock Video Stream for Smoke Test...")` |
+| 4 | `realtime_demo.py:294` | C-string | `RealtimeDemo.run` | `if self.source == "mock":` |
+| 5 | `realtime_demo.py:330` | D-binding | `RealtimeDemo.run` | `avg_fps = 1.0 / (sum(fps_tracker) / len(fps_tracker)) if fps_tracker else 30.0` |
+| 6 | `realtime_demo.py:395` | C-string | `main` | `parser.add_argument("--source", type=str, default="0", help="Webcam device index ('0', '1') or video path ('path.mp4') or 'mock'")` |
+| 7 | `src/data/landmark_extractor.py:121` | D-binding | `CleanHolisticExtractor.extract_from_video` | `fps = cap.get(cv2.CAP_PROP_FPS) or 25.0` |
+| 8 | `src/data/vsl_gh_dataset.py:31` | D-string | `<module>` | `"""` |
+| 9 | `src/inference/sign_segmenter.py:141` | D-binding | `SignSegmenter._activity` | `fps = (n - 1) / (t1 - t0) if n >= 2 and t1 > t0 else 30.0   # n == 1: speed is 0 whatever fps is` |
+
+Số finding status=known (đếm từ JSON): 9; summary.by_status.known = 9
+
+DoD 7 phần backend sau kế hoạch này: **guard có, CHƯA ĐẠT** (`known = 9` ≠ 0, theo JSON trên; §3.5 ý 4).
+
+### Đề xuất DTG (planner xét ở "Lần sửa" — coder KHÔNG thêm vào ALLOWED)
+
+1. `realtime_demo.py` C-result `RealtimeHUD._locate_vietnamese_font` (dòng 52): `candidates = [...]` là danh sách đường dẫn font
+   (tên `candidates` ∈ RESULT_KEYS nên luật C-result (2) khớp), không phải kết quả nhận dạng. Phương án khác: đổi tên biến ở kế hoạch 11.
+2. `src/data/landmark_extractor.py` D-binding `CleanHolisticExtractor.extract_from_video` (dòng 121): `fps = cap.get(...) or 25.0`
+   — fps ĐẦU VÀO mặc định khi video thiếu metadata; cùng bản chất với khóa ALLOWED `harmonized.py` D-binding (#7, #8).
+3. `src/data/vsl_gh_dataset.py` D-string `<module>` (dòng 31): chuỗi ghi chú cấp module đứng sau import (không phải docstring)
+   chứa "Hand landmark ordering is 100% identical" (dòng 58) — mô tả ánh xạ landmark, không phải số đo.
+4. `src/inference/sign_segmenter.py` D-binding `SignSegmenter._activity` (dòng 141): `... else 30.0` chỉ khi n < 2 (tốc độ = 0 bất
+   kể fps, theo comment trong mã); tham số nội bộ bộ tách ký hiệu, không hiển thị.
+
+### Đề xuất kế hoạch 11 (sửa vi phạm; KHÔNG làm ở đây)
+
+- `realtime_demo.py`: bỏ chế độ `--source mock` (dòng 266–267, 294, 395; khung tổng hợp) khỏi điểm vào người dùng, hoặc chuyển
+  thành fixture chỉ trong `tests/` (caller: `run_core.py:116-124` chỉ truyền webcam/video; `scripts/generate_slide_images.py:19` chỉ
+  import `RealtimeHUD`); bỏ `else 30.0` của `avg_fps` (dòng 330; hiển thị "—"/0 khi chưa đo). Sau khi sửa: nhóm tương ứng thành
+  `STALE` → xóa khỏi `KNOWN_VIOLATIONS` (sổ co lại). Nếu bỏ tính năng người dùng có thể đang dùng → hỏi người dùng lúc đó (§7.6).
+- 4 nhóm "đề xuất DTG" ở trên: planner quyết định ALLOWED (Lần sửa) hoặc sửa mã (đổi tên / hằng có tên / comment).
+- (Tùy chọn, cần `impact` trên `src/inference/ensemble.py`) import lười `get_vsl_dataloaders` trong hàm đánh giá để `augment.py`
+  ra khỏi bao đóng phục vụ → 8 khóa ALLOWED augment thành `STALE` → xóa.
+- `backend/main.py` docstring route `/api/classes` "(487 classes for Tier 2)" → bỏ số cứng (sau khi nhánh local kế hoạch 06 hợp nhất).
+- Guard thứ hai cho scripts đo/báo cáo (luật D + kiểm `generated_by`), §2.4.
+- Khi hợp nhất với `feat/vslt-complete`: chạy `tests.test_backend_source_guard` ngay sau merge; nhóm mới → KNOWN (mặc định) hoặc
+  planner "Lần sửa" cho ALLOWED.
+
+### Tự kiểm AC
+
+- AC1: `git diff --name-status f16d0a9 HEAD` (xem mục "Kiểm cuối" dưới) chỉ gồm 3 file `A`; `git diff f16d0a9 HEAD -- tests/`
+  chỉ là file mới, 0 dòng `-`; không đổi `backend/ src/ scripts/ frontend/ realtime_demo.py run_core.py start_fullstack.ps1
+  README.md docs/STATE.md docs/progress_log.md docs/plans/06-* docs/phase12_api.md docs/reviews/*` hay test có sẵn; không có dữ liệu/nhị phân.
+- AC2/AC3/AC4/AC6/AC7-a: các lớp test tương ứng OK (B1(5), B2 AC8). AC7-b: `Ran 24 tests in 2.572s` / `2.688s` / `OK`, 0 skip (< 10 s).
+  AC7-c: B2 (2 lần chạy báo cáo, thân giống hệt) + `TestReportMode`.
+- AC5: a–c OK; d: JSON `git_commit` = commit B1 `319ddcd` (tổ tiên HEAD), `code_dirty: false`, `unregistered: 0`, known/allowed =
+  9/36 = dòng in; `git diff 319ddcd HEAD -- tests/test_backend_source_guard.py backend src realtime_demo.py` rỗng (mục "Kiểm cuối").
+- AC8: B2 (438 = 414 + 24, tập FAIL/ERROR/skip == B0).
+- AC9: mọi commit của kế hoạch có kết quả `detect-changes` trong message; commit B1 có `[DoD7-guard] known=9 allowed=36`; không
+  amend/rebase/force-push; `b0_status.txt` rỗng → không có thay đổi chưa commit nào của người dùng để đụng.
+- AC10: P10, B0, bảng output thô đầu tiên, phân loại + bằng chứng, đối chiếu dự báo, danh sách vi phạm có sẵn, đề xuất kế hoạch 11,
+  đề xuất DTG — đều ở file này; mọi số có nguồn (lệnh + commit hoặc đường dẫn JSON/log).
+
+### Giả định coder tự đặt (để reviewer xét)
+
+1. qualname của phần đầu `def`/`class` (tên, tham số, giá trị mặc định) = chính hàm/lớp đó; decorator thuộc mã bao ngoài;
+   phạm vi "seed trước" của giá trị mặc định = phạm vi bao ngoài (vì Python tính mặc định lúc định nghĩa).
+2. Số nhiều: ngoài "bỏ `s`" của §3.2, thêm "`ies` → `y`" — cần để mẫu AC2 `dummies = []` (C-name) được báo.
+3. C-name còn xét 2 dạng gán tên ngoài danh sách liệt kê: walrus (`:=`, đích là `Name` Store) và `except ... as <tên>`
+   (chặt hơn, không nới; hiện 0 finding từ 2 dạng này).
+4. B-import còn bắt `from asynctest import ...` (cùng thư viện với `import asynctest`).
+5. `torch.seed()` luôn báo (không được miễn bởi `manual_seed` trước), giống `random.seed()`/`np.random.seed()` không đối số.
+6. Chuẩn hóa NFC trước khi so regex C-string/D-string (tiếng Việt có thể ở dạng NFD); dùng thêm `shutil`, `unicodedata` (thư viện chuẩn).
+7. `generated_by.command` dựng lại từ `PYTHONIOENCODING` + đường dẫn tương đối của `sys.executable` + argv (khớp nguyên văn lệnh §3.7
+   khi chạy từ gốc repo bằng `.venv/bin/python`).
+8. Thêm lớp `TestReportMode` (ngoài 5 lớp của B1) để máy kiểm §3.7/AC7-c; nó chạy `--report` 2 lần ra thư mục tạm ngoài repo.
+
+### Kiểm cuối (chạy trên cây đã stage cho commit B3; commit B3 chỉ thêm file này)
+
+```
+$ git diff --cached --name-status f16d0a9
+A	docs/plans/10-progress.md
+A	reports/guard_dod7_2026-09-29/guard_findings.json
+A	tests/test_backend_source_guard.py
+$ git diff --cached f16d0a9 -- tests/ | grep -c "^-[^-]"
+0
+$ git diff --cached 319ddcd -- tests/test_backend_source_guard.py backend src realtime_demo.py | wc -l
+0
+```
