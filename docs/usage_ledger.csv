@@ -14,3 +14,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-09-29T03:28Z,vslt-coder,06,stage 2 (B3-B4),20,35,15,2,ok
 2026-09-29T03:33Z,vslt-planner,06,revision 1,35,45,10,1,ok
 2026-09-29T03:55Z,vslt-coder,06,B6,65,69,4,1,noisy (includes orchestrator turns)
+2026-09-29T04:03Z,vslt-coder,06,B7,69,77,8,1,noisy (includes orchestrator turns)

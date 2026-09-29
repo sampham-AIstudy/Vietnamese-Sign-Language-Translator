@@ -3,17 +3,17 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-29 10:57 (giờ Việt Nam)
-- HEAD: 34a527d (+ commit cloud/state) | Nhánh: feat/vslt-complete (đã push lên origin)
-- Trạng thái phiên: ĐANG LÀM (local vẫn là chính) — B6 XONG (0328c1b: UI Đánh vần, guard 0 vi phạm, AC2 423 OK, npm test 26 pass);
-  vslt-coder kế hoạch 06 bước B7 (smoke_test_phase12 WS v2 + docs/phase12_api.md + Giới hạn AC6), giao 10:57, 5h 69%.
-  Cloud chạy song song các việc A–D trên nhánh riêng (không đụng file của kế hoạch 06).
-  Kế hoạch 06: xong B0–B5 (34a527d); còn B6 (UI Đánh vần), B7 (smoke_test_phase12 + phase12_api.md), B8 (e2e — cần Edge,
-  video thật: làm ở LOCAL), B9 (đóng việc) → review. Bản nháp B6 ở ../_plan06_tmp/Fingerspelling.jsx (chỉ có trên máy local).
-  Việc gợi ý cho cloud (mỗi việc một phiên, nhánh riêng, orchestrator local review rồi merge):
-  A) planner Việc 6 → docs/plans/07-viec6-che-do.md; B) planner segmenter live (backlog 2b); C) dọn dẹp review 05
-  (scripts/archive_private_kaggle.py, README); D) test guard DoD 7 cho backend/src. Không làm kế hoạch 06 song song ở 2 nơi.
-- Hạn mức (10:48, local): xem docs/usage_ledger.csv. Trên cloud không có vslt_usage.json → "không biết".
+- Cập nhật lần cuối: 2026-09-29 11:05 (giờ Việt Nam)
+- HEAD: dbd79f2 (+ commit state: tắt máy) | Nhánh: feat/vslt-complete (đã push lên origin)
+- Trạng thái phiên: DỪNG — hết ngân sách an toàn (5h 77% lúc 11:03, reset 14:40); người dùng yêu cầu lưu + TẮT MÁY. Không agent nào chạy.
+  Kế hoạch 06: XONG B0–B7 (B5 34a527d, B6 0328c1b, B7 dbd79f2). AC2 429 OK, 0 fail, 0 skip; npm test 26 pass; guard frontend 0 vi phạm;
+  smoke_test_phase12 PASSED (legacy + stgcn_h360). Việc kế tiếp khi "tiếp tục" (LOCAL — cần Edge + video thật):
+  B8 e2e fullstack (3 kịch bản, JSON có commit) → B9 đóng việc (progress_log) → vslt-reviewer toàn bộ kế hoạch 06 (chia phần).
+  Reviewer cần xác minh: CRITICAL impact ở B5/B6 (component React, GitNexus nhầm tên JS↔Python), HIGH ở B2/B3 (symbol mới),
+  B7 sửa tests/test_frontend_contract.py (file do chính kế hoạch 06 tạo ở B4 — kiểm không nới), 050d337 thiếu detect-changes.
+  CLOUD: phiên claude.ai/code đang làm A (plan 07 Việc 6) + B (plan 08 segmenter); push bị 403 (GitHub app chưa cấp quyền ghi —
+  người dùng đang sửa). Khi "tiếp tục": `git fetch origin`, xem nhánh cloud mới + docs/cloud_reports/*.md, review trước khi merge.
+- Hạn mức (11:03): 5 giờ 77% (reset 14:40 giờ VN), 7 ngày 36%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -119,3 +119,4 @@
 - 2026-09-29 01:35 | dừng theo yêu cầu người dùng (đi ngủ, tắt máy) | planner 06 xong, coder 06 chưa giao | Lưu STATE, commit, tắt máy.
 - 2026-09-29 09:44 | khôi phục sau tắt máy (người dùng nhắn "tiếp tục") | STATE khớp git (HEAD dbec36c), không có việc dở | Giao coder 06 chặng 1.
 - 2026-09-29 10:50 | bàn giao cloud theo yêu cầu người dùng (sắp hết quota) | coder 06 dừng sau B5 (34a527d) | Thêm docs/CLOUD.md, scripts/cloud_setup.sh, CLAUDE.md bước 0; push feat/vslt-complete.
+- 2026-09-29 11:05 | dừng theo ngân sách + yêu cầu tắt máy | kế hoạch 06 xong B0–B7, còn B8–B9 + review; cloud A/B chưa push được (403) | Lưu STATE, commit, push, tắt máy.
