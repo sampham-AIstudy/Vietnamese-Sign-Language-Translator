@@ -2,8 +2,9 @@
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
 - Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474), B5 (34a527d), B6 (0328c1b), B7 (commit "06: B7 — ...")
-- Bước đang làm: **B8 ĐANG LÀM** (chặng 4, HEAD lúc bắt đầu 2f5d3f2, sau merge cloud bbfdff3)
-- Bước còn lại: B8–B9 (chặng 4)
+- Bước đang làm: **DỪNG — CẦN PLANNER** (AC12: socket HMR của Vite dev không qua `/ws/`, xem B8). B8: script 7e38118 + 3 JSON
+  e3d0df8 (mọi kiểm tra khác đạt). B9: đã chạy các lệnh kiểm tra (xem mục B9), CHƯA thêm dòng `docs/progress_log.md` (AC13).
+- Bước còn lại: sau quyết định planner về AC12 → (nếu cần) chạy lại 3 kịch bản, rồi đóng B9 (dòng progress_log, backlog).
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
@@ -222,7 +223,7 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
   trước/sau giống hệt.
 - `cd frontend && npm test` (Node v25.9.0) → `tests 26, pass 26, fail 0` (3 file).
 
-## B8 — e2e fullstack (AC12) — ĐANG LÀM
+## B8 — e2e fullstack (AC12) — chạy xong, 1 mệnh đề CẦN PLANNER
 
 - Commit script: 7e38118 (`scripts/make_fake_webcam_y4m.py`, `scripts/e2e_browser.cjs`, `scripts/e2e_fullstack.py`; 3 file mới,
   không sửa symbol cũ). detect-changes --scope staged: risk CRITICAL theo đồ thị (105 symbol mới; 41 process "bị ảnh hưởng"
@@ -260,3 +261,39 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
     vite.config.js (ngoài thiết kế §3.5). Lựa chọn cho planner: (a) loại socket có protocol `vite-hmr` khỏi mệnh đề;
     (b) tắt HMR/ws của Vite dev (`server.hmr`/`server.ws`) — đổi trải nghiệm dev; (c) chạy e2e trên `vite preview` (không có
     HMR) — lệch với "chạy start_fullstack.ps1".
+
+## B9 — kiểm tra đóng việc (CHẠY TRƯỚC; CHƯA đóng vì AC12 chờ planner)
+
+- AC2 hợp đồng (29 module), HEAD 0e506c3, log `../_plan06_tmp/b9_ac2.log`: **`Ran 429 tests in 272.291s` `OK`**, 0 skip,
+  0 failure, 0 error (= B0 383 + cors_origin_bind 21 + hand_landmarks_ws 9 + hand_live_equivalence 4 + frontend_contract 12;
+  25 module cũ không đổi số so với B0).
+- AC2 mở rộng (31 module = 29 + test_archive_private_kaggle_r05 14 + test_backend_source_guard 24), log
+  `../_plan06_tmp/b9_ac2_31.log`: **`Ran 467 tests in 248.873s` `OK`**, 0 skip (bằng mốc sau merge 467).
+  Guard DoD 7 backend xanh: script B8 không thuộc SERVING (không import từ backend, start_fullstack.ps1 không gọi scripts/*.py).
+- `git status --porcelain` trước / sau cả hai lần chạy: giống hệt (`SAME`).
+- `git diff 797d0af HEAD -- tests/`: chỉ file mới (numstat cột xóa = 0 ở cả 6 file A); không file test cũ nào bị sửa.
+- `cd frontend && npm test` (node v25.9.0): `tests 26, pass 26, fail 0`; `git ls-files "tests/*.test.mjs"` = 3 file, chạy
+  riêng từng file: ws 4, liveProtocol 12, fingerspelling 10 (tổng 26, cả 3 file đều chạy).
+- `npm run build`: exit 0 (`✓ built in 2.51s`). `npm ls --depth=0` giống hệt file B0 (bỏ dòng đầu chứa đường dẫn):
+  `NPM_LS_SAME`. `git diff 797d0af HEAD -- frontend/package-lock.json` rỗng; `frontend/package.json` +2/−1 (thêm `"test"`,
+  dấu phẩy dòng `preview`).
+- AC1 — `git diff --name-status 797d0af HEAD`: 56 dòng. Tách nguồn:
+  - Do merge bbfdff3 (`git diff --name-status bbfdff3^1 bbfdff3`, 14 file): README.md (M), docs/cloud_reports/viec-A-D-2026-09-29.md,
+    docs/plans/{07-viec6-che-do,08-segmenter-live,09-don-dep-review05,09-progress,10-guard-dod7,10-progress}.md,
+    docs/reviews/{09-review,10-review}.md, reports/guard_dod7_2026-09-29/guard_findings.json, scripts/archive_private_kaggle.py (M),
+    tests/test_archive_private_kaggle_r05.py, tests/test_backend_source_guard.py.
+  - Do commit orchestrator/cloud trên nhánh chính (không phải merge, không phải coder 06): docs/STATE.md, docs/usage_ledger.csv
+    (các commit `state:` 2f5d3f2 be0aac0 353c46d 49a9f22 bae0eaf f3a7371 4e98c48 8e1c85a + facffea + 8628948);
+    docs/progress_log.md (chỉ 2f5d3f2 `state:`, 0 dòng xóa); CLAUDE.md, docs/CLOUD.md, scripts/cloud_setup.sh (8628948 "chore: cloud
+    handoff", 296b12e, f62dd45 "cloud: ..."); docs/cloud_reports/ (merge). docs/plans/06-viec5-frontend.md: chỉ facffea (planner).
+    Lưu ý: CLAUDE.md, docs/CLOUD.md, scripts/cloud_setup.sh KHÔNG nằm trong danh sách merge orchestrator nêu — chúng đến từ 8628948/
+    296b12e/f62dd45 trên first-parent.
+  - Do coder 06 (`git log --name-only --grep "^(WIP )?06:"` trừ facffea): backend/main.py, src/inference/hand_live.py (A),
+    start_fullstack.ps1 (chỉ `--host 0.0.0.0` → `127.0.0.1`), frontend/vite.config.js, frontend/package.json, 6 component
+    (RealtimeStream.jsx: đúng 3 dòng — import, URL, chuỗi báo lỗi), frontend/src/lib/{ws,liveProtocol,fingerspelling}.js (A),
+    frontend/tests/{ws,liveProtocol,fingerspelling}.test.mjs + build_body_cli.mjs (A), scripts/smoke_test_phase12.py (M),
+    scripts/{hand_live_check,make_fake_webcam_y4m,e2e_fullstack}.py + scripts/e2e_browser.cjs (A), tests/{test_cors_origin_bind,
+    test_hand_landmarks_ws,test_hand_live_equivalence,test_frontend_contract}.py (A), reports/fingerspell_live_2026-09-29/
+    hand_live_check.json + reports/e2e_2026-09-29/{fingerspell_default,word_default,word_stgcn_h360}.json (A), docs/phase12_api.md (M),
+    docs/plans/06-progress.md (A) — tất cả nằm trong danh sách AC1. frontend/index.html không đổi; package-lock không đổi;
+    không file bị xóa; không .pt/.npz/.mp4/.y4m/.png/.jpg/.log nào được thêm; 3 file ` D` của người dùng vẫn chưa staged.
