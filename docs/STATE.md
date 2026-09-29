@@ -3,9 +3,10 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-29 11:05 (giờ Việt Nam)
+- Cập nhật lần cuối: 2026-09-29 11:08 (giờ Việt Nam)
 - HEAD: dbd79f2 (+ commit state: tắt máy) | Nhánh: feat/vslt-complete (đã push lên origin)
-- Trạng thái phiên: DỪNG — hết ngân sách an toàn (5h 77% lúc 11:03, reset 14:40); người dùng yêu cầu lưu + TẮT MÁY. Không agent nào chạy.
+- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 77% lúc 11:03, reset 14:40 giờ VN. Người dùng HỦY tắt máy (11:07): chờ reset, làm tiếp
+  trong cửa sổ mới, xong/hết hạn mức thì lưu + push + TẮT MÁY. Hẹn giờ nền tự đánh thức orchestrator lúc ~14:42.
   Kế hoạch 06: XONG B0–B7 (B5 34a527d, B6 0328c1b, B7 dbd79f2). AC2 429 OK, 0 fail, 0 skip; npm test 26 pass; guard frontend 0 vi phạm;
   smoke_test_phase12 PASSED (legacy + stgcn_h360). Việc kế tiếp khi "tiếp tục" (LOCAL — cần Edge + video thật):
   B8 e2e fullstack (3 kịch bản, JSON có commit) → B9 đóng việc (progress_log) → vslt-reviewer toàn bộ kế hoạch 06 (chia phần).
@@ -72,6 +73,8 @@
 - (2026-09-29 10:55) Local vẫn là chính; chạy tới khi dùng hết hạn mức 5h (reset 14:40), cho phép vượt cổng ngân sách như 13:27 hôm qua,
   nhưng không cố ý chạm giới hạn thật: dừng khi đơn vị việc tiếp theo có thể không xong. Xong thì lưu STATE, commit, TẮT MÁY.
   Cloud (claude.ai/code) làm việc A–D ở nhánh riêng; orchestrator local kéo về, review, merge.
+
+- (2026-09-29 11:07) Không tắt máy lúc 11:05; chờ hạn mức reset 14:40, chạy tiếp phiên sau reset, xong thì lưu + tắt máy.
 
 ## Câu hỏi chờ người dùng
 - (không có)
