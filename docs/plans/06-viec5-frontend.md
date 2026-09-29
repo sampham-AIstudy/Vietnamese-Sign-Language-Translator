@@ -1,8 +1,67 @@
 # Kế hoạch 06 — Việc 5: nối frontend với backend (Đánh vần Cấp 1 + Ký từ WS v2)
 
 - Nhánh: feat/vslt-complete | HEAD khi lập: 19d02bf | Ngày: 2026-09-29
+- Lần sửa 1: 2026-09-29, sau chặng 2 (B0–B4 xong, commit tới 026f474), coder trả "CẦN PLANNER" (§0).
 - Backlog: docs/STATE.md "Backlog còn lại" mục 2; autopilot.md backlog gốc mục 3.
-- **Không có điểm dừng CẦN NGƯỜI DÙNG trước khi code** (xem §7; chỉ có điểm dừng có điều kiện trong lúc làm).
+- **Không có điểm dừng CẦN NGƯỜI DÙNG trước khi code** (xem §7; chỉ có điểm dừng có điều kiện trong lúc làm). Lần sửa 1
+  cũng không tạo điểm dừng mới.
+
+## 0. Lần sửa 1 (sau chặng 2; nguồn: `docs/plans/06-progress.md` mục B3, B4)
+
+Các commit đã có giữ nguyên, không viết lại lịch sử. Không tiêu chí nào bị nới về bản chất; các chỗ đổi được đánh dấu
+"(Lần sửa 1)" ngay tại mục tương ứng.
+
+### 0.1 Lệnh `node --test tests/` không chạy trên Node v25.9.0
+- **Nguyên nhân gốc (lỗi kế hoạch):** tôi viết lệnh dạng thư mục mà không kiểm với bản Node trên máy. Từ Node 22, đối số
+  của `node --test` là đường dẫn file/glob, không duyệt thư mục → `MODULE_NOT_FOUND` (06-progress B4). B0 đã ghi
+  `node --version` nhưng kế hoạch không yêu cầu đối chiếu cú pháp lệnh với phiên bản đó.
+- **Sửa:** lệnh chính thức là `cd frontend && npm test`, với `frontend/package.json` `"test": "node --test tests/*.test.mjs"`
+  (đúng như coder đã làm). Để lệnh không lặng lẽ bỏ sót file test, AC2 thêm yêu cầu: số file test Node báo đã chạy ==
+  số file `frontend/tests/*.test.mjs` trong git (đếm bằng `git ls-files frontend/tests/*.test.mjs`), 0 fail, và ghi
+  `node --version` cạnh kết quả. Áp dụng ở bảng B4, AC2, AC7.
+- Không nới: cùng bộ test, cùng yêu cầu 0 fail; chỉ đổi cú pháp gọi.
+
+### 0.2 Mâu thuẫn AC1 ↔ AC8 ở `RealtimeStream.jsx`
+- **Nguyên nhân gốc (lỗi kế hoạch):** khi lập §2.2 tôi chỉ ghi `:8000` ở dòng URL (`:143`), không grep hết file; dòng `:203`
+  còn `:8000` trong chuỗi báo lỗi tiếng Việt. AC1 lại khóa file này ở mức "dòng URL + 1 dòng import" → không thể vừa đạt
+  AC1 vừa đạt AC8.
+- **Sửa (AC1):** được sửa thêm CHỈ phần chữ trong chuỗi báo lỗi có `:8000` (hiện ở `:203`) — bỏ số cổng, ví dụ
+  "…FastAPI backend (/ws/live-stream)…"; không đổi logic, không đổi dòng nào khác. Reviewer kiểm bằng
+  `git diff P6 HEAD -- frontend/src/components/RealtimeStream.jsx`: tối đa 3 dòng bị đổi (URL, chuỗi báo lỗi, import), mọi
+  dòng khác nguyên vẹn.
+- AC8 giữ nguyên toàn bộ (guard áp cho MỌI file trong `frontend/src`, không có ngoại lệ cho `RealtimeStream.jsx`).
+- KHÔNG xóa `RealtimeStream.jsx` (xóa file là điểm dừng hỏi người dùng; đã có trong đề xuất backlog ở B9).
+
+### 0.3 Test guard đỏ có chủ đích ở B4
+- Hợp lệ: đây là "viết test trước" (autopilot vòng lặp bước 2), guard không bị nới hay skip. Nhưng kế hoạch cũ không nói
+  AC2 áp ở mốc nào → **Nguyên nhân gốc:** AC2 chỉ được viết cho trạng thái đóng việc, không có quy định cho mốc trung gian.
+- **Sửa (AC2):** AC2 đầy đủ (0 failure) là tiêu chí ĐÓNG VIỆC, bắt buộc từ B7 trở đi (B7, B8 chạy trên HEAD mà AC2 đã xanh;
+  B9 chạy lại). Ở mốc trung gian B4–B6, AC2 được phép có failure DUY NHẤT là
+  `TestFrontendSourceGuard.test_no_violation`, với điều kiện:
+  - 0 error, 0 skip, mọi test khác OK;
+  - tập vi phạm (so theo cặp file + mẫu, không theo số dòng) là tập con của 14 vi phạm ghi ở 06-progress B4, và không
+    tăng qua các mốc;
+  - sau B5: chỉ còn vi phạm trong `Fingerspelling.jsx`; sau B6: 0 vi phạm (guard xanh);
+  - commit có test đỏ ghi rõ trong message "guard đỏ có chủ đích, còn N vi phạm" và danh sách ở 06-progress.
+- Nếu sau B6 guard vẫn đỏ → coder sửa code (không sửa guard); không sửa được → báo planner.
+
+### 0.4 Kết quả AC6: lệch nguồn Kaggle/Linux và JPEG (ghi nhận, không chặn)
+- Nguồn: `reports/fingerspell_live_2026-09-29/hand_live_check.json` (`generated_by.git_commit` e58d025, `code_dirty: false`;
+  coder chạy lại lần 2 ra phần thân giống hệt). Theo 06-progress B3: live PNG == offline cục bộ 10/10 (max diff 0.0);
+  JPEG q90 vs PNG: cờ detected lệch ở 2/10 clip, max diff lớn nhất 0.2403; npz Kaggle vs trích lại cục bộ: detected lệch ở
+  1/10 clip (`hauuto_aw_khoi_A_003`, 88/90), max diff lớn nhất 0.2298; top-1 `/sequence` trùng nhau ở cả 10 clip.
+- **Đánh giá:** không làm hỏng AC5 (tương đương code trên cùng máy vẫn bằng hệt), nhưng bác bỏ giả định ngầm "landmark train
+  (Kaggle/Linux) = landmark live (Windows)". Chênh 0.23 đơn vị ảnh chuẩn hóa là cỡ cả bàn tay, tức ở vài frame tracker
+  bắt/nhả tay khác nhau, không phải sai số làm tròn. Top-1 trùng 10/10 là trên 10 clip TRAIN — KHÔNG chứng minh bền vững.
+- **Có đưa vào Giới hạn/rủi ro: CÓ.** §6 thêm mục; AC11 thêm yêu cầu `docs/phase12_api.md` mục "Giới hạn" nêu hai lệch này,
+  trích số từ JSON kèm đường dẫn + commit (không gõ số khác). Không phải điểm dừng "vấn đề dữ liệu mới": kế hoạch 04 §6 đã
+  nêu rủi ro Linux↔cục bộ; lần này chỉ là đo được, không đổi hướng kế hoạch.
+- Đề xuất backlog (không làm ở đây): đo lệch Kaggle↔cục bộ trên TOÀN BỘ clip hauuto (không chỉ 10) trước khi báo cáo độ
+  chính xác Cấp 1 trên webcam, để biết tỉ lệ frame bị lệch cờ detected.
+
+### 0.5 Thay đổi so với bản gốc
+- §4 bảng: dòng B4 (lệnh test); B5/B6 (mốc guard). §5: AC1 (RealtimeStream), AC2 (lệnh + mốc trung gian), AC7 (lệnh),
+  AC11 (Giới hạn thêm lệch AC6). §6: thêm mục lệch nguồn đo được. Không bỏ hay nới tiêu chí nào.
 
 ## 1. Mục tiêu và DoD
 
@@ -73,7 +132,8 @@ duyệt thật, webcam giả nạp clip thật).
   frame KHÔNG lật (chỉ CSS `-scale-x-100` khi hiển thị, `:252,260`) — khớp train, giữ nguyên. `timestamp: Date.now()`
   (`:146`) — đồng hồ tường, có thể lùi khi hệ thống chỉnh giờ → `bad_timestamp`. Nhận `ws` qua prop `wsRef.current`.
 - `frontend/src/components/PredictionDisplay.jsx:81` và `Navbar.jsx:71`: chữ cứng ":8000".
-- `frontend/src/components/RealtimeStream.jsx`: KHÔNG được import ở đâu (mã chết); cũng nối cứng `ws://…:8000` (`:143`).
+- `frontend/src/components/RealtimeStream.jsx`: KHÔNG được import ở đâu (mã chết); nối cứng `ws://…:8000` (`:143`) và
+  (Lần sửa 1) còn `:8000` trong chuỗi báo lỗi (`:203`).
 - `frontend/src/components/Fingerspelling.jsx:58-88`: tải MỘT ảnh lên `POST /api/fingerspelling` (nay 409 → `alert`);
   không có webcam, không gửi chuỗi; ghép chữ bằng cộng chuỗi thô (`:207`) thay vì `/compose`; "25 lớp" cứng (`:130`).
 - Không có framework test frontend. Có `puppeteer-core` trong `devDependencies` (`frontend/package.json:26`, đã có trong
@@ -197,8 +257,8 @@ Server → client:
 - `CameraCapture.jsx`: `timestamp = nowMs()` (`performance.timeOrigin + performance.now()`, đơn điệu, dùng chung với
   reducer); lấy socket qua ref/getter thay vì giá trị `wsRef.current` lúc render (tránh socket cũ sau khi nối lại).
 - `PredictionDisplay.jsx`, `Navbar.jsx`: bỏ ":8000".
-- `RealtimeStream.jsx` (mã chết): CHỈ thay dòng URL bằng `wsUrl(...)`. KHÔNG xóa file (xóa file là điểm dừng); ghi vào
-  backlog "hỏi người dùng trước khi xóa RealtimeStream.jsx".
+- `RealtimeStream.jsx` (mã chết): CHỈ thay dòng URL bằng `wsUrl(...)` và (Lần sửa 1) bỏ `:8000` khỏi chuỗi báo lỗi.
+  KHÔNG xóa file (xóa file là điểm dừng); ghi vào backlog "hỏi người dùng trước khi xóa RealtimeStream.jsx".
 
 ### 3.5 CORS, Origin của WS, bind
 - `backend/main.py`: `DEFAULT_DEV_ORIGINS = ("http://localhost:3000", "http://127.0.0.1:3000")`;
@@ -229,7 +289,7 @@ Server → client:
   CORS/Origin/`VSL_CORS_ORIGINS`; REST (health 200/503, fingerspelling status/sequence/compose/409, 413/422/503); WS
   `/ws/live-stream` v2 đầy đủ (chép bảng §3.6 kế hoạch 04 + nghĩa `dropped_frames` của kế hoạch 05 + thay đổi legacy ở
   review 04 mục 11); WS `/ws/hand-landmarks` (§3.3); các trường để đo DoD 8 (Ký từ: `trigger_client_timestamp`; Đánh vần:
-  mốc client từ lúc bấm Dừng tới khi có phản hồi `/sequence` + `metrics` của hand_frame). Không ghi số đo nào.
+  mốc client từ lúc bấm Dừng tới khi có phản hồi `/sequence` + `metrics` của hand_frame). Không ghi số đo độ trễ nào.
 
 ### 3.7 Kiểm tự động fullstack + e2e trên clip thật
 - `scripts/make_fake_webcam_y4m.py --video <mp4> --out <y4m> [--max-frames N]`: đọc video bằng cv2, ghi Y4M 4:2:0 cùng
@@ -274,6 +334,7 @@ Server → client:
   (GATE); đo độ trễ DoD 8; clone sạch; số liệu cứng trong `Reports.jsx` (DoD 9).
 - `detail` 503 có thể chứa tên file (review 04 mục 6 / review 05): KHÔNG sửa ở đây — sửa sẽ đổi body mà test cũ đang
   kiểm, và sau khi bind 127.0.0.1 phạm vi lộ chỉ còn máy cục bộ. Đưa vào backlog 8.
+- (Lần sửa 1) Đo lệch Kaggle↔cục bộ trên toàn bộ clip hauuto: đề xuất backlog (§0.4), không làm ở đây.
 
 ## 4. Chia việc
 
@@ -285,6 +346,7 @@ Quy ước chung cho mọi bước:
 - Viết test trước (hoặc cùng lúc) với code. Mỗi bước kết thúc bằng 1 commit và 1 đoạn trong `docs/plans/06-progress.md`
   (lệnh đã chạy + output thật rút gọn + hash).
 - Thư mục tạm ngoài repo: `../_plan06_tmp/`.
+- (Lần sửa 1) AC2 ở mốc trung gian B4–B6 theo §0.3; từ B7 trở đi AC2 phải xanh hoàn toàn.
 
 | Bước | Nội dung | Phụ thuộc | Ước lượng |
 |---|---|---|---|
@@ -292,17 +354,17 @@ Quy ước chung cho mọi bước:
 | **B1** | CORS/Origin/bind (§3.5): test `tests/test_cors_origin_bind.py` (AC3) trước → sửa `backend/main.py`, `start_fullstack.ps1`, `frontend/vite.config.js`. Chạy AC3 + `tests.test_ws_live_contract tests.test_fingerspelling_limits tests.test_fingerspelling_api tests.test_ws_dropped_frames`. Commit. | B0 | 1.5 giờ |
 | **B2** | `src/inference/hand_live.py` + endpoint `/ws/hand-landmarks` (§3.3): test `tests/test_hand_landmarks_ws.py` (AC4) trước. Commit. | B1 (dùng `ws_origin_allowed`) | 2 giờ |
 | **B3** | Tương đương Cấp 1 train↔live: `tests/test_hand_live_equivalence.py` (AC5) + `scripts/hand_live_check.py` và JSON (AC6). Nếu AC5-a không bằng hệt → DỪNG, báo planner (§7). Commit. | B2 | 2 giờ |
-| **B4** | Thư viện JS thuần `frontend/src/lib/{ws,liveProtocol,fingerspelling}.js` + `frontend/tests/*.test.mjs` (`node --test`) + `frontend/tests/build_body_cli.mjs`; thêm script `"test": "node --test tests/"` vào `frontend/package.json`; Python `tests/test_frontend_contract.py` (AC7-d, AC8). Commit. | B2 (định dạng hand_frame) | 2 giờ |
-| **B5** | UI "Ký từ" (§3.4): `Phase12Pipeline.jsx`, `CameraCapture.jsx`, `PredictionDisplay.jsx`, `Navbar.jsx`, dòng URL của `RealtimeStream.jsx`; `data-testid`: `live-connection`, `live-pipeline`, `live-model`, `live-status`, `live-recording`, `live-gloss`, `live-confidence`, `live-top5`, `live-discard`, `live-error`, `live-words`, `live-undo`, `camera-start`, `camera-stop`. `npm run build` (AC9). Commit. | B4 | 2 giờ |
-| **B6** | UI "Đánh vần" (§3.2): viết lại `Fingerspelling.jsx`; `data-testid`: `fs-status`, `fs-ws`, `fs-record`, `fs-stop`, `fs-frames`, `fs-prediction`, `fs-confidence`, `fs-candidates`, `fs-error`, `fs-add`, `fs-space`, `fs-backspace`, `fs-clear`, `fs-composed`, `fs-warnings`. `npm run build`. Commit. | B4 | 2 giờ |
-| **B7** | `scripts/smoke_test_phase12.py` (AC10) chạy với model mặc định VÀ `VSL_MODEL_TYPE=stgcn_h360`; viết lại `docs/phase12_api.md` (AC11, test thêm vào `tests/test_frontend_contract.py`). Commit. | B2, B5 | 1.5 giờ |
+| **B4** | Thư viện JS thuần `frontend/src/lib/{ws,liveProtocol,fingerspelling}.js` + `frontend/tests/*.test.mjs` + `frontend/tests/build_body_cli.mjs`; thêm script `"test": "node --test tests/*.test.mjs"` vào `frontend/package.json` (Lần sửa 1; lệnh chạy chính thức: `cd frontend && npm test`); Python `tests/test_frontend_contract.py` (AC7-d, AC8; guard được phép đỏ theo §0.3). Commit. | B2 (định dạng hand_frame) | 2 giờ |
+| **B5** | UI "Ký từ" (§3.4): `Phase12Pipeline.jsx`, `CameraCapture.jsx`, `PredictionDisplay.jsx`, `Navbar.jsx`, dòng URL + chuỗi báo lỗi của `RealtimeStream.jsx`; `data-testid`: `live-connection`, `live-pipeline`, `live-model`, `live-status`, `live-recording`, `live-gloss`, `live-confidence`, `live-top5`, `live-discard`, `live-error`, `live-words`, `live-undo`, `camera-start`, `camera-stop`. `npm run build` (AC9). Sau B5 guard chỉ còn vi phạm trong `Fingerspelling.jsx` (§0.3). Commit. | B4 | 2 giờ |
+| **B6** | UI "Đánh vần" (§3.2): viết lại `Fingerspelling.jsx`; `data-testid`: `fs-status`, `fs-ws`, `fs-record`, `fs-stop`, `fs-frames`, `fs-prediction`, `fs-confidence`, `fs-candidates`, `fs-error`, `fs-add`, `fs-space`, `fs-backspace`, `fs-clear`, `fs-composed`, `fs-warnings`. `npm run build`. Sau B6 guard xanh (0 vi phạm). Commit. | B4 | 2 giờ |
+| **B7** | `scripts/smoke_test_phase12.py` (AC10) chạy với model mặc định VÀ `VSL_MODEL_TYPE=stgcn_h360`; viết lại `docs/phase12_api.md` (AC11, test thêm vào `tests/test_frontend_contract.py`). AC2 phải xanh hoàn toàn. Commit. | B2, B5, B6 | 1.5 giờ |
 | **B8** | E2E: `scripts/make_fake_webcam_y4m.py`, `scripts/e2e_browser.cjs`, `scripts/e2e_fullstack.py`; chạy 3 kịch bản AC12 (Đánh vần mặc định, Ký từ mặc định, Ký từ `stgcn_h360`) tại HEAD sạch; commit script + 3 JSON. | B5, B6, B7 | 2 giờ |
-| **B9** | Đóng: chạy AC2 đầy đủ + `node --test` + build; so `git status --porcelain` với B0; THÊM 1 dòng progress_log (AC13), ghi backlog đề xuất (kế hoạch "segmenter live"; hỏi người dùng trước khi xóa `RealtimeStream.jsx`; `detail` 503). Commit. Orchestrator gọi vslt-reviewer. | B0–B8 | 0.5 giờ |
+| **B9** | Đóng: chạy AC2 đầy đủ + `npm test` + build; so `git status --porcelain` với B0; THÊM 1 dòng progress_log (AC13), ghi backlog đề xuất (kế hoạch "segmenter live"; hỏi người dùng trước khi xóa `RealtimeStream.jsx`; `detail` 503; đo lệch Kaggle↔cục bộ toàn bộ hauuto). Commit. Orchestrator gọi vslt-reviewer. | B0–B8 | 0.5 giờ |
 
 Tổng ước lượng ≈ 16 giờ, GPU 0 giờ, không Kaggle, không cài gói.
 
-**Chặng giao gợi ý:** chặng 1 = B0–B2 (backend: CORS/Origin/bind + endpoint mới); chặng 2 = B3–B4 (tương đương + thư
-viện JS); chặng 3 = B5–B7 (UI hai chế độ + smoke + tài liệu); chặng 4 = B8–B9 (e2e fullstack + đóng việc).
+**Chặng giao gợi ý:** chặng 1 = B0–B2 (xong); chặng 2 = B3–B4 (xong); chặng 3 = B5–B7 (UI hai chế độ + smoke + tài
+liệu); chặng 4 = B8–B9 (e2e fullstack + đóng việc).
 
 ## 5. Tiêu chí chấp nhận (hợp đồng — coder KHÔNG được đổi; chỉ planner đổi và phải ghi lý do)
 
@@ -315,7 +377,8 @@ hoạch này thêm. Test mới không cần mạng, không ghi file trong repo (
 - `frontend/vite.config.js` (M); `frontend/package.json` (M, CHỈ thêm khóa `scripts.test`); `frontend/index.html` (M, chỉ
   nếu cần để hết lỗi console ở AC12, ghi lý do);
 - `frontend/src/components/{Phase12Pipeline,CameraCapture,PredictionDisplay,Navbar,Fingerspelling}.jsx` (M);
-  `frontend/src/components/RealtimeStream.jsx` (M, chỉ dòng URL + 1 dòng import);
+  `frontend/src/components/RealtimeStream.jsx` (M, chỉ: dòng URL, 1 dòng import, và (Lần sửa 1) phần chữ của chuỗi báo lỗi
+  có `:8000`; `git diff P6 HEAD -- frontend/src/components/RealtimeStream.jsx` đổi tối đa 3 dòng, không đổi logic);
   `frontend/src/lib/{ws,liveProtocol,fingerspelling}.js` (A); `frontend/tests/*.mjs` (A);
 - `scripts/smoke_test_phase12.py` (M); `scripts/{hand_live_check,make_fake_webcam_y4m,e2e_fullstack}.py`,
   `scripts/e2e_browser.cjs` (A);
@@ -331,10 +394,16 @@ KHÔNG đổi: `frontend/package-lock.json`, `frontend/src/App.jsx`, `Dictionary
 
 **AC2 — Không hồi quy.** Lệnh (25 module của kế hoạch 05 + 4 module mới):
 `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_alphabet_preprocessing tests.test_aspect_correction tests.test_realtime tests.test_split_guards tests.test_translation_core tests.test_vsl_system tests.test_ws_throughput tests.test_fingerspelling_api tests.test_unified_split_integrity tests.test_report_step4 tests.test_fingerspelling_limits tests.test_fingerspelling_compose tests.test_fingerspelling_deployed tests.test_alphabet_ckpt_provenance tests.test_harmonized tests.test_sign_segmenter tests.test_harmonized_live tests.test_ws_live_contract tests.test_live_harmonized_equivalence tests.test_archive_step4_kaggle tests.test_status_privacy tests.test_backend_model_unavailable tests.test_ws_dropped_frames tests.test_archive_private_kaggle tests.test_private_artifacts tests.test_cors_origin_bind tests.test_hand_landmarks_ws tests.test_hand_live_equivalence tests.test_frontend_contract -v`
-- 0 failure, 0 error, 0 skip. Số test = số B0 (25 module) + số test mới; báo theo module, trước → sau.
+- **Đóng việc (B7, B8, B9):** 0 failure, 0 error, 0 skip. Số test = số B0 (25 module) + số test mới; báo theo module,
+  trước → sau.
+- **(Lần sửa 1) Mốc trung gian B4–B6:** như trên, ngoại trừ failure DUY NHẤT được phép là
+  `TestFrontendSourceGuard.test_no_violation`, với tập vi phạm (cặp file + mẫu) là tập con của 14 vi phạm ghi ở
+  06-progress B4, không tăng qua các mốc; sau B5 chỉ còn trong `Fingerspelling.jsx`; sau B6 = 0. Commit có guard đỏ ghi
+  "guard đỏ có chủ đích, còn N vi phạm" trong message.
 - `git diff P6 HEAD -- tests/` với mọi file test đã có ở `P6`: 0 dòng `-`.
 - `git status --porcelain` trước và sau khi chạy giống hệt.
-- `cd frontend && node --test tests/` → 0 fail; báo số test.
+- **(Lần sửa 1) Test JS:** `cd frontend && npm test` (script `"test": "node --test tests/*.test.mjs"`) → 0 fail; số file
+  test Node báo đã chạy == số dòng của `git ls-files "frontend/tests/*.test.mjs"`; báo số test và `node --version`.
 
 **AC3 — CORS / Origin / bind (`tests/test_cors_origin_bind.py`).**
 - a. `parse_cors_origins`: `None`→`DEFAULT_DEV_ORIGINS`; `""`→`DEFAULT_DEV_ORIGINS`; `" http://a:1 , https://b "`→
@@ -411,7 +480,7 @@ training data of the deployed Level 1 model; not accuracy"), và mỗi clip: `sa
 `tests/test_frontend_contract.py` cấm các khóa `landmarks`/`raw_landmarks`/`coords`). Không có ngưỡng pass cho hai so sánh
 JPEG và Kaggle — chỉ ghi nhận. Reviewer chạy lại → phần thân giống hệt, trừ `generated_by`/thời gian.
 
-**AC7 — Thư viện JS (`frontend/tests/*.test.mjs`, `node --test`).**
+**AC7 — Thư viện JS (`frontend/tests/*.test.mjs`; chạy bằng `cd frontend && npm test` — Lần sửa 1).**
 - a. `wsUrl({protocol: 'http:', host: 'localhost:3000'}, '/ws/live-stream') === 'ws://localhost:3000/ws/live-stream'`;
   `https:` → `wss://`; giữ nguyên port của host.
 - b. `reduceLive` với message mẫu viết theo lược đồ §3.6 kế hoạch 04 (mẫu giao thức, không phải dữ liệu):
@@ -427,11 +496,11 @@ JPEG và Kaggle — chỉ ghi nhận. Reviewer chạy lại → phần thân gi�
   test như AC5) → ghi JSON tạm → `node frontend/tests/build_body_cli.mjs <in> <out>` → body bằng hệt body Python dựng
   từ npz offline (AC5-b), rồi POST → 200. `skipUnless(shutil.which("node"))`; trên máy này không skip.
 
-**AC8 — Guard mã nguồn frontend (`tests/test_frontend_contract.py`).** Duyệt mọi file `frontend/src/**/*.{js,jsx}`:
-không chứa `Math.random`; không chứa `:8000`; không có literal `ws://`/`wss://`; không có `data:image/jpeg;base64,/9j/`;
-không có chuỗi `'/api/fingerspelling'` đứng riêng (endpoint ảnh cũ; regex khớp dấu nháy đóng ngay sau `fingerspelling`);
-không có `bufferCapacity={60}` và `25 lớp`. Test tự kiểm: đưa từng mẫu vi phạm (chuỗi trong bộ nhớ) vào hàm guard → hàm
-báo lỗi.
+**AC8 — Guard mã nguồn frontend (`tests/test_frontend_contract.py`).** Duyệt mọi file `frontend/src/**/*.{js,jsx}`
+(không ngoại lệ, kể cả `RealtimeStream.jsx`): không chứa `Math.random`; không chứa `:8000`; không có literal
+`ws://`/`wss://`; không có `data:image/jpeg;base64,/9j/`; không có chuỗi `'/api/fingerspelling'` đứng riêng (endpoint
+ảnh cũ; regex khớp dấu nháy đóng ngay sau `fingerspelling`); không có `bufferCapacity={60}` và `25 lớp`. Test tự kiểm:
+đưa từng mẫu vi phạm (chuỗi trong bộ nhớ) vào hàm guard → hàm báo lỗi. Mốc được phép đỏ: xem AC2 (Lần sửa 1).
 
 **AC9 — Build, không thêm gói.** `cd frontend && npm run build` exit 0 (build vào `frontend/dist`, đã bị ignore);
 `npm ls --depth=0` giống hệt file B0; `git diff P6 HEAD -- frontend/package-lock.json` rỗng; diff `frontend/package.json`
@@ -449,6 +518,12 @@ chép vào `06-progress.md`.
   `VSL_CORS_ORIGINS`, `1008`, `1009`, `1011`, `dropped_frames`, `trigger_client_timestamp`, `/ws/hand-landmarks`.
 - Có mục "Giới hạn" nêu: ký hiệu có nhịp nghỉ có thể bị phát 2 lần (W03251B), segmenter chưa chỉnh tham số, landmark
   Cấp 1 live dùng JPEG (ảnh hưởng ghi ở AC6), Origin check không chặn client không phải trình duyệt.
+- (Lần sửa 1) Mục "Giới hạn" còn phải nêu hai lệch đo được ở AC6, trích từ
+  `reports/fingerspell_live_2026-09-29/hand_live_check.json` (ghi đường dẫn + `generated_by.git_commit`): (i) landmark
+  train (Kaggle/Linux) và landmark trích lại trên máy này KHÔNG bằng hệt — số clip có cờ detected lệch và max diff lớn nhất;
+  (ii) JPEG q90 so với PNG — số clip lệch cờ detected và max diff lớn nhất; kèm câu "top-1 trùng trên 10 clip TRAIN, không
+  chứng minh bền vững". Test kiểm: tài liệu chứa đường dẫn JSON và giá trị `git_commit` của nó, và mọi số thập phân trong
+  đoạn này có mặt trong JSON (đọc từ file, không gõ tay trong test).
 
 **AC12 — E2E fullstack trên clip thật (`scripts/e2e_fullstack.py`).** 3 lần chạy tại HEAD sạch
 (`git status --porcelain -- backend src frontend scripts tests` rỗng), mỗi lần 1 JSON trong `reports/e2e_<YYYY-MM-DD>/`:
@@ -475,8 +550,8 @@ chép vào `06-progress.md`.
 
 **AC13 — Quy trình.** Mỗi commit có output `impact`/`detect-changes` (risk thật) trong message; không amend; 3 file ` D`
 của người dùng vẫn chưa staged; `docs/plans/06-progress.md` có output thật cho từng bước; `docs/progress_log.md` THÊM 1
-dòng (không sửa dòng cũ) nêu: commit, số test trước → sau, 3 JSON e2e, quyết định §3.8, các việc theo sau đề xuất.
-Kết luận vslt-reviewer = APPROVE.
+dòng (không sửa dòng cũ) nêu: commit, số test trước → sau, 3 JSON e2e, quyết định §3.8, lệch nguồn AC6 (§0.4), các việc
+theo sau đề xuất. Kết luận vslt-reviewer = APPROVE.
 
 ## 6. Rủi ro dữ liệu/ML
 
@@ -485,6 +560,11 @@ Kết luận vslt-reviewer = APPROVE.
   chứng minh (chỉ ghi nhận ở AC6 hoặc chưa đo):
   - **Nén JPEG** (client gửi JPEG `FS_JPEG_QUALITY`) so với frame giải mã từ mp4 lúc train: AC6 ghi `live_jpeg90_vs_live_png`.
   - **Nền tảng:** landmark train trích trên Kaggle (Linux), live chạy Windows: AC6 ghi `kaggle_npz_vs_local_offline`.
+  - **(Lần sửa 1) Đã đo, ghi nhận:** theo JSON AC6 (commit e58d025), cả hai lệch trên đều KHÁC 0: lệch nền tảng làm đổi cờ
+    detected ở 1/10 clip và max diff lớn nhất 0.2298; JPEG q90 so với PNG đổi cờ detected ở 2/10 clip, max diff lớn nhất
+    0.2403. Cỡ lệch này là tracker bắt/nhả tay khác nhau ở vài frame, không phải sai số làm tròn. Top-1 trùng 10/10 chỉ
+    trên 10 clip TRAIN (n nhỏ, dữ liệu model đã học) → không kết luận được về độ bền. Hệ quả: tương đương "train = live"
+    chỉ đúng khi cùng nền tảng và cùng định dạng ảnh; mọi số độ chính xác Cấp 1 trên webcam về sau phải nêu điều này.
   - **Tốc độ khung:** train hauuto ≈ 23.6 fps, mọi frame; live phụ thuộc webcam và `FS_MAX_IN_FLIGHT`. Với
     `resample: "frame_index"`, ít frame hơn → lấy mẫu thời gian khác. UI hiện fps hiệu dụng và `client_skipped`; chưa đo
     ảnh hưởng lên nhãn.
@@ -496,13 +576,15 @@ Kết luận vslt-reviewer = APPROVE.
 
 **Lệch train–realtime, Cấp 2.** Không đổi gì ở đường live (kế hoạch 04 giữ nguyên). Các thí nghiệm còn thiếu của review 04
 mục 13 (JPEG q0.75, rơi frame thật, nhiều ký hiệu một phiên, webcam người dùng) vẫn thiếu; e2e của việc này KHÔNG phải
-đánh giá chất lượng và không được trích như vậy.
+đánh giá chất lượng và không được trích như vậy. (Lần sửa 1) Kết quả AC6 cho Cấp 1 gợi ý lệch Linux↔Windows cũng có thể
+có ở Cấp 2 (plan 04 chưa so) — ghi vào Giới hạn của GATE.
 
 **Rò rỉ / TEST.** Không train, không chọn model. E2E và AC5 chỉ dùng clip TRAIN (hauuto là dữ liệu train của model Cấp 1;
 clip Ký từ lấy từ split TRAIN); KHÔNG chạm clip TEST/VAL (TEST chỉ chạy một lần, để dành cho GATE).
 
-**Cỡ mẫu.** AC5 10 clip là kiểm tương đương CODE (tất định), không phải tỉ lệ. E2E 1 clip/kịch bản chỉ chứng minh "chạy
-được". `prediction` trong JSON e2e ghi dưới khóa `info_not_accuracy`; không suy ra độ chính xác từ đó.
+**Cỡ mẫu.** AC5 10 clip là kiểm tương đương CODE (tất định), không phải tỉ lệ. AC6 10 clip chỉ là ghi nhận, không suy ra
+tỉ lệ lệch cho toàn bộ dữ liệu. E2E 1 clip/kịch bản chỉ chứng minh "chạy được". `prediction` trong JSON e2e ghi dưới khóa
+`info_not_accuracy`; không suy ra độ chính xác từ đó.
 
 **Nguồn gốc / giấy phép.** hauuto: giấy phép unknown, chỉ dùng nội bộ (`docs/data_registry.md` 1b); mã người ký trong id
 clip giữ nguyên theo quyết định (a) 2026-09-28; y4m/video/frame KHÔNG vào git; JSON không chứa landmark. QIPEDC video
@@ -518,7 +600,7 @@ nói rõ; không còn frame giả lập; `confidence` ghi là độ tin cậy c�
 
 ## 7. Điểm dừng
 
-**Không có điểm dừng CẦN NGƯỜI DÙNG trước khi code.** Lý do:
+**Không có điểm dừng CẦN NGƯỜI DÙNG trước khi code** (Lần sửa 1 không đổi điều này). Lý do:
 - CORS/Origin/bind đã có quyết định (2026-09-28): chỉ origin dev, không `*` kèm credentials.
 - Model mặc định KHÔNG đổi; `VSL_MODEL_TYPE=stgcn_h360` chỉ đặt trong môi trường của tiến trình e2e/smoke.
 - Không cần dữ liệu mới từ người dùng (dùng video cục bộ đã có; webcam thật là Bước 5).
@@ -526,10 +608,12 @@ nói rõ; không còn frame giả lập; `confidence` ghi là độ tin cậy c�
   động không hoàn tác được; không cài gói; không Kaggle.
 
 **Điểm dừng có điều kiện trong lúc làm (coder DỪNG, báo planner/orchestrator; KHÔNG tự nới tiêu chí):**
-1. AC5-a không bằng hệt (landmark live ≠ `_extract_one` trên cùng máy) → báo planner.
+1. AC5-a không bằng hệt (landmark live ≠ `_extract_one` trên cùng máy) → báo planner. (B3: không kích hoạt.)
 2. AC12 kịch bản `stgcn_h360` có 0 `sign_result`/`sign_discarded` → báo planner (không chỉnh segmenter/tham số).
 3. Một test đã có bị vỡ do CORS/Origin/bind hoặc endpoint mới → báo planner (không sửa test cũ).
 4. Cần cài gói npm/pip, cần tải trình duyệt/model từ mạng, hoặc Edge không có ở máy → báo orchestrator (hỏi người dùng).
 5. Cần xóa file, hoặc đổi policy hệ thống (ExecutionPolicy toàn máy) để chạy `start_fullstack.ps1` → hỏi người dùng.
 6. Phát hiện vấn đề dữ liệu mới (ví dụ `manifest.csv` có nhiều `mediapipe_version`, video hauuto không khớp npz) → báo
-   planner (điểm dừng "vấn đề dữ liệu mới" của autopilot mục 5).
+   planner (điểm dừng "vấn đề dữ liệu mới" của autopilot mục 5). (Lần sửa 1: lệch Kaggle↔cục bộ ở §0.4 đã được đánh giá,
+   KHÔNG kích hoạt điểm này.)
+7. (Lần sửa 1) Sau B6 guard AC8 vẫn đỏ mà không sửa được bằng code → báo planner (không sửa guard).

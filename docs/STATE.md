@@ -3,11 +3,11 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-29 10:30 (giờ Việt Nam)
+- Cập nhật lần cuối: 2026-09-29 10:35 (giờ Việt Nam)
 - HEAD: 026f474 | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG LÀM — coder 06 trả CẦN PLANNER sau chặng 2; vslt-planner sửa kế hoạch 06 (Lần sửa 1), giao 10:31.
+- Trạng thái phiên: ĐANG LÀM — vslt-coder kế hoạch 06 chặng 3 [B5, B6, B7], giao 10:35, 5h 45% (cổng 75 ≤ 90).
   Tiến độ: docs/plans/06-progress.md. Nếu bị ngắt: giao lại coder với kế hoạch + 06-progress.md, tiếp tục từ bước dở.
-- Hạn mức (10:28): 5 giờ 35% (reset 14:40 giờ VN), 7 ngày 31%. Sổ đo: docs/usage_ledger.csv
+- Hạn mức (10:33): 5 giờ 45% (reset 14:40 giờ VN), 7 ngày 32%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -37,6 +37,8 @@
   + node --test 26 pass + guard). AC2 423, 1 failure CÓ CHỦ ĐÍCH (TestFrontendSourceGuard — chờ B5/B6 sửa component cũ).
   CẦN PLANNER: (1) `node --test tests/` lỗi trên Node 25 → coder dùng `node --test tests/*.test.mjs`; (2) AC1 vs AC8 mâu thuẫn ở
   RealtimeStream.jsx (':8000' trong câu báo lỗi dòng 203). Ghi nhận AC6: Kaggle npz vs trích cục bộ lệch detected 1 clip, max 0.230.
+  Planner Lần sửa 1 (§0, commit cùng lượt này): lệnh chính thức `cd frontend && npm test` + đếm file test; AC1 cho sửa chuỗi báo lỗi
+  dòng 203 (≤ 3 dòng, không xóa file); guard được đỏ ở B4–B6 (chỉ test đó, vi phạm không tăng), xanh từ B7; phase12_api.md ghi Giới hạn AC6.
 
 ## Quyết định của người dùng (không hỏi lại)
 - 4c: chọn B (giữ model gộp). Chưa đổi model mặc định — đó là GATE riêng.
@@ -70,6 +72,7 @@
    chạy backend + frontend cùng nhau; WebSocket qua proxy /ws; thu hẹp CORS chỉ origin dev, không "*" kèm credentials
    (cùng đợt: kiểm Origin WS, bind); sửa scripts/smoke_test_phase12.py cho WS v2; ghi hợp đồng vào docs/phase12_api.md.
    Planner quyết chính sách ký hiệu phát lặp (W03251B) và tốc độ segmenter theo dt từng frame (review 04, mục 8–9).
+2c. Đo lệch landmark Kaggle (Linux) ↔ trích cục bộ trên toàn bộ clip hauuto; ghi rủi ro tương tự cho Cấp 2 vào Giới hạn của GATE.
 2b. Segmenter live (tách từ Việc 5 theo kế hoạch 06 §3.8): tốc độ theo dt từng frame; chính sách ký hiệu phát lặp (W03251B).
 3. Việc 6: nút chọn chế độ; Ký từ; Ký câu (kiểm tra ViT5 đã học câu nào trước khi đo trên S06).
 4. Từ điển 3 miền (SQLite: words, recordings, clips, signers).
