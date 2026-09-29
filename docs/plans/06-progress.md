@@ -1,8 +1,8 @@
-# Kế hoạch 06 — tiến độ (coder; chặng 1: B0–B2; chặng 2: B3–B4; chặng 3: B5–B7)
+# Kế hoạch 06 — tiến độ (coder; chặng 1: B0–B2; chặng 2: B3–B4; chặng 3: B5–B7; chặng 4: B8–B9)
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
 - Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474), B5 (34a527d), B6 (0328c1b), B7 (commit "06: B7 — ...")
-- Bước đang làm: (không; B7 xong, dừng theo giao việc)
+- Bước đang làm: **B8 ĐANG LÀM** (chặng 4, HEAD lúc bắt đầu 2f5d3f2, sau merge cloud bbfdff3)
 - Bước còn lại: B8–B9 (chặng 4)
 
 ## B0 (P6 = 797d0af, 2026-09-29)
