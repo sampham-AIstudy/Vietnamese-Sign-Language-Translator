@@ -10,8 +10,10 @@ import contextlib
 import io
 import json
 import os
+import subprocess
 import sys
 import unittest
+from unittest import mock
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 for p in (ROOT, os.path.join(ROOT, "scripts")):
@@ -26,6 +28,9 @@ PRIVATE_MANIFEST = os.path.join(ROOT, "reports", "private_archive_2026-09-28", "
 STEP4_MANIFEST = os.path.join(ROOT, "reports", "step4_2026-09-26", "archive", "kaggle_archive_manifest.json")
 REAL_RUN_BYTES = T0.A_FILES["known.real_run"][1]
 DEPLOYED = T0.A_FILES["deployed"][0]
+GIT_STATUS = ["git", "status", "--porcelain", "--", "scripts", "src", "tests", "backend"]
+GENERATED_BY_KEYS = {"script", "command", "git_commit", "kaggle_version", "kagglesdk_version", "verified_at_utc",
+                     "code_dirty", "code_dirty_files"}
 
 
 def load(path):
@@ -175,6 +180,18 @@ class TestRestoreArchiveName(T0.Base):
         self.assertEqual(api.calls, [])
         self.assertEqual(files_under(root), [])
 
+    def test_r5_manifest_without_code_dirty_restores(self):
+        m = json.loads(json.dumps(self.m))
+        self.assertIn("code_dirty", m["generated_by"])            # written by verify since plan 09
+        m["generated_by"].pop("code_dirty", None)
+        m["generated_by"].pop("code_dirty_files", None)
+        manifest = dump(m, os.path.join(self.d, "manifests", "r5.json"))
+        root, rdl = self.dirs("r5")
+        self.assertEqual(run_restore(manifest, rdl, T0.FakeApi(staging=self.staging), root), 0)
+        for f in m["files"]:
+            self.assertEqual(A.sha256_file(os.path.join(root, *f["local_path"].split("/"))), f["sha256"])
+        self.assertEqual(len(files_under(root)), len(m["files"]))
+
 
 # ------------------------------------------------------------------------------------------------ R6, R7 (step-4 manifest)
 class TestRestoreStep4Manifest(S4.Base):
@@ -208,6 +225,82 @@ class TestRestoreStep4Manifest(S4.Base):
         self.assertEqual(run_restore(manifest, self.rdl, api, self.root), 2)
         self.assertEqual(api.calls, [])
         self.assertEqual(files_under(self.root), [])
+
+
+# ------------------------------------------------------------------------------------------------ C1-C4 code_status
+class FakeRun:
+    """Stands in for subprocess.run: records (args, kwargs); returns a CompletedProcess or raises `exc`."""
+
+    def __init__(self, returncode=0, stdout="", exc=None):
+        self.returncode, self.stdout, self.exc, self.calls = returncode, stdout, exc, []
+
+    def __call__(self, *args, **kwargs):
+        self.calls.append((args, kwargs))
+        if self.exc is not None:
+            raise self.exc
+        return subprocess.CompletedProcess(args[0], self.returncode, stdout=self.stdout, stderr="")
+
+
+class TestCodeStatus(unittest.TestCase):
+    def test_c1_clean_and_arguments(self):
+        fake = FakeRun(returncode=0, stdout="")
+        r = P.code_status(run=fake)
+        self.assertIs(r[0], False)
+        self.assertEqual(r[1], [])
+        self.assertEqual(len(fake.calls), 1)
+        args, kwargs = fake.calls[0]
+        self.assertEqual(args[0], GIT_STATUS)
+        self.assertEqual(os.path.normcase(kwargs["cwd"]), os.path.normcase(ROOT))
+        self.assertIn("timeout", kwargs)
+
+    def test_c2_dirty_lines_kept_verbatim(self):
+        r = P.code_status(run=FakeRun(returncode=0, stdout=" M scripts/a.py\n?? tests/b.py\n\n"))
+        self.assertEqual(r, (True, [" M scripts/a.py", "?? tests/b.py"]))
+        self.assertIs(r[0], True)
+
+    def test_c3_unknown_is_none_never_false(self):
+        for case, fake in (("returncode_128", FakeRun(returncode=128, stdout="")),
+                           ("FileNotFoundError", FakeRun(exc=FileNotFoundError("git"))),
+                           ("TimeoutExpired", FakeRun(exc=subprocess.TimeoutExpired(GIT_STATUS, 60))),
+                           ("OSError", FakeRun(exc=OSError("exec failed")))):
+            with self.subTest(case=case):
+                r = P.code_status(run=fake)
+                self.assertIsNone(r[0])
+                self.assertIsNone(r[1])
+
+    def test_c4_real_git_consistent(self):
+        r = P.code_status()
+        self.assertIsInstance(r[0], bool)
+        g = subprocess.run(GIT_STATUS, cwd=ROOT, capture_output=True, text=True, encoding="utf-8", timeout=60)
+        self.assertEqual(g.returncode, 0, g.stderr)
+        lines = [ln for ln in g.stdout.splitlines() if ln.strip()]
+        self.assertEqual(r, (bool(lines), lines))
+
+
+# ------------------------------------------------------------------------------------------------ C5 verify writes it
+class TestVerifyCodeDirty(T0.Base):
+    def setUp(self):
+        super().setUp()
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(self.stage(), 0)
+
+    def test_c5_manifest_generated_by(self):
+        for v in ((True, [" M scripts/x.py"]), (False, []), (None, None)):
+            with self.subTest(code_status=v):
+                if os.path.exists(self.manifest):
+                    os.remove(self.manifest)
+                with mock.patch.object(P, "code_status", return_value=v), \
+                        contextlib.redirect_stdout(io.StringIO()):
+                    self.assertEqual(self.verify(self.created_api()), 0)
+                with open(self.manifest, encoding="utf-8") as f:
+                    text = f.read()
+                m = json.loads(text)
+                self.assertIs(m["generated_by"]["code_dirty"], v[0])
+                self.assertEqual(m["generated_by"]["code_dirty_files"], v[1])
+                self.assertEqual(set(m["generated_by"]), GENERATED_BY_KEYS)
+                self.assertEqual(set(m), {"generated_by", "dataset", "files", "sha256sums_file", "verified"})
+                if v == (None, None):
+                    self.assertIn('"code_dirty": null', text)
 
 
 if __name__ == "__main__":
