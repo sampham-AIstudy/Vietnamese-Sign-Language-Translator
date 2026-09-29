@@ -1,9 +1,9 @@
 # Kế hoạch 06 — tiến độ (coder; chặng 1: B0–B2)
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
-- Bước đã xong: B0 (8e7b09b), B1 (commit "06: B1 — ...")
-- Bước đang làm: B2
-- Bước còn lại: B2 (chặng 1); B3–B9 (chặng sau, không làm trong phiên này)
+- Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (commit "06: B2 — ...")
+- Bước đang làm: (không; chặng 1 xong, dừng theo giao việc)
+- Bước còn lại: B3–B9 (chặng 2–4)
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
@@ -63,3 +63,28 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
 - detect-changes --scope all (sau analyze --index-only): risk **medium**, 7 symbol (DEFAULT_DEV_ORIGINS, parse_cors_origins,
   ALLOWED_ORIGINS, ws_origin_allowed, WS_CLOSE_POLICY_VIOLATION, _ws_check_origin, websocket_live_stream), 4 process
   (đều bắt đầu từ websocket_live_stream).
+
+## B2 — `src/inference/hand_live.py` + `WS /ws/hand-landmarks` (§3.3, AC4; phần hand-landmarks của AC3-d/e)
+
+- impact: các symbol B2 đều MỚI (`HandLandmarkSession`, `LEVEL1_HANDS_KWARGS`, `extractor_info`, `_hand_session_info`,
+  `_hand_frame_worker`, `websocket_hand_landmarks`); dùng lại không sửa `_parse_ws_message` (LOW), `_decode_frame` (LOW),
+  `_ws_error`, `_ws_check_origin` (B1), `THREAD_POOL`. Trong `backend/main.py` chỉ thêm 1 dòng docstring module, 1 dòng
+  import, và khối endpoint mới trước `if __name__`. `scripts/extract_hands_batch.py` KHÔNG sửa.
+- Dữ liệu: `manifest.csv` có 686 dòng, cột `mediapipe_version` = {`0.10.14`} (1 giá trị) → §7-6 KHÔNG kích hoạt.
+  `a_hau_A_001.mp4` có cục bộ (185716 byte).
+- Test: `tests/test_hand_landmarks_ws.py` (AC4 a–g, 9 test, MediaPipe thật CPU); `tests/test_cors_origin_bind.py`
+  thêm `/ws/hand-landmarks` vào AC3-d (HandLandmarkSession vá MagicMock, `assert_not_called`) và lớp AC3-e hand-landmarks
+  (Origin localhost:3000, 127.0.0.1:3000, không Origin → `session_info`), 18 → 21 test.
+  Test viết cùng lúc với code (không chạy trước khi có code). Kiểm đột biến thay cho bằng chứng "đỏ trước":
+  `min_detection_confidence` 0.5→0.7 trong hand_live → `FAIL test_kwargs_equal_training_extractor` (1/9);
+  bỏ `self.close()` trong `reset()` → `FAIL test_reset_segments_and_graphs` (1/9); file đã khôi phục (`cmp` OK).
+- `.venv/Scripts/python -m unittest tests.test_hand_landmarks_ws tests.test_cors_origin_bind -v` → `Ran 30 tests in 2.006s` `OK`;
+  in `a_hau_A_001: frame 0 (first detected by _extract_one), handedness Left`.
+- AC2 (25 module cũ + 2 module mới đã có), log `../_plan06_tmp/b2_ac2.log`:
+  `Ran 413 tests in 193.855s` `OK`, 0 skip (= 383 của B0 + cors_origin_bind 21 + hand_landmarks_ws 9).
+  `git status --porcelain` trước/sau khi chạy: giống hệt (`SAME`).
+- detect-changes --scope all (sau analyze --index-only): risk **HIGH** — theo luật ">15 symbol": 17 symbol, tất cả là
+  symbol MỚI của B2 (backend: HAND_WS_PROTOCOL_VERSION, _hand_session_info, _hand_frame_worker, websocket_hand_landmarks,
+  hàm lồng `unavailable`, biến cục bộ `session`) và test mới của kế hoạch này (tests/test_cors_origin_bind.py); không symbol
+  cũ nào bị sửa (`websocket_live_stream` không nằm trong danh sách). 6 process, đều bắt đầu từ
+  `websocket_hand_landmarks`/`_hand_frame_worker`.

@@ -4,6 +4,7 @@ Provides:
 - GET /health: System health and hardware telemetry
 - GET /model/info: Active VSL deep learning model specifications and vocabulary
 - WebSocket /ws/live-stream: Low-latency live video streaming & sign language recognition
+- WebSocket /ws/hand-landmarks: Level 1 raw hand landmarks of webcam frames (training extractor settings)
 - POST /api/fingerspelling/sequence: Level 1 letters/tone marks from a hand-landmark sequence
   (POST /api/fingerspelling with an image returns 409)
 - POST /api/fingerspelling/compose: Level 1 accepted tokens (letters, tone marks, spaces) -> Vietnamese text
@@ -101,6 +102,7 @@ from src.inference.smoother import TemporalSmoother
 from src.inference.harmonized_live import (  # noqa: E402
     PIPELINE_HARMONIZED, PIPELINE_LEGACY, HarmonizedLiveSession, live_pipeline_for)
 from src.inference.sign_segmenter import SEGMENTER_DEFAULT  # noqa: E402
+from src.inference.hand_live import HandLandmarkSession, extractor_info as hand_extractor_info  # noqa: E402
 from fastapi.staticfiles import StaticFiles
 from fastapi import Query, UploadFile, File
 
@@ -1564,6 +1566,137 @@ async def websocket_live_stream(websocket: WebSocket):
                     session.close()
             await loop.run_in_executor(THREAD_POOL, _close_session)
         logger.info(f"[WebSocket] Session cleaned up gracefully for {client_addr}")
+
+
+# -------------------------------------------------------------
+# /ws/hand-landmarks, protocol_version 1 (plan 06 §3.3): Level 1 ("Đánh vần") raw hand landmarks of webcam frames,
+# extracted exactly like the training extractor (src/inference/hand_live.py). The client collects the hand_frame
+# messages of one recorded sign and posts them to /api/fingerspelling/sequence (contract of plan 03, unchanged).
+# -------------------------------------------------------------
+HAND_WS_PROTOCOL_VERSION = 1
+
+
+def _hand_session_info() -> Dict[str, Any]:
+    return {
+        "type": "session_info",
+        "endpoint": "hand-landmarks",
+        "protocol_version": HAND_WS_PROTOCOL_VERSION,
+        "extractor": hand_extractor_info(),
+        "limits": {"max_message_bytes": WS_MAX_MESSAGE_BYTES, "max_frame_side": WS_MAX_FRAME_SIDE,
+                   "max_frames_per_segment": ALPHABET_MAX_FRAMES},
+    }
+
+
+def _hand_frame_worker(item: Dict[str, Any], session: HandLandmarkSession, state: Dict[str, int]) -> Dict[str, Any]:
+    """Executed in a worker thread: decode (header checked first) -> session.process -> hand_frame, or error.
+    A rejected frame does not advance frame_seq and never reaches the tracker."""
+    t0 = time.perf_counter()
+    try:
+        frame_bgr = _decode_frame(item["image"], min_height=None)
+    except WsError as e:
+        return _ws_error(e.code, e.detail, item["received_seq"])
+    t1 = time.perf_counter()
+    landmarks, label, score = session.process(frame_bgr)
+    t2 = time.perf_counter()
+    frame_seq = state["frame_seq"]
+    state["frame_seq"] += 1
+    fh, fw = frame_bgr.shape[:2]
+    return {
+        "type": "hand_frame",
+        "segment_id": state["segment_id"],
+        "frame_seq": frame_seq,
+        "received_seq": item["received_seq"],
+        "client_timestamp": item["client_ts"],
+        "frame_width": int(fw),
+        "frame_height": int(fh),
+        # float32 values of MediaPipe as Python floats (exact, not rounded): JSON round trip keeps them
+        "landmarks": landmarks.tolist() if landmarks is not None else None,
+        "handedness": label,
+        "handedness_score": score,
+        "metrics": {"decode_ms": _round_ms((t1 - t0) * 1000.0), "extract_ms": _round_ms((t2 - t1) * 1000.0),
+                    "server_total_ms": _round_ms((time.perf_counter() - t0) * 1000.0)},
+    }
+
+
+@app.websocket("/ws/hand-landmarks")
+async def websocket_hand_landmarks(websocket: WebSocket):
+    """
+    Level 1 hand landmarks of webcam frames (protocol_version 1).
+    - Origin checked before accept (as /ws/live-stream): foreign Origin -> close 1008, nothing created.
+    - First message `session_info` (extractor, limits). Segment 0 starts with a fresh tracker.
+    - Client messages as /ws/live-stream: frame (JSON {"image", "timestamp"?}, bare base64 / data URL text, binary
+      JPEG/PNG) and {"type": "control", "action": "reset"} -> new tracker, `reset_done{segment_id + 1}`,
+      frame_seq restarts at 0. A valid `config` is ignored.
+    - Messages are handled SEQUENTIALLY (no latest-frame slot, no frame is dropped by the server): one `hand_frame`
+      per valid frame, in order. Errors: `error{code}`; only message_too_large (close 1009) and
+      model_unavailable (close 1011) end the session.
+    """
+    if not await _ws_check_origin(websocket):
+        return
+    await websocket.accept()
+    client_addr = f"{websocket.client.host}:{websocket.client.port}" if websocket.client else "unknown"
+    logger.info(f"[WebSocket hand-landmarks] Client connected: {client_addr}")
+    loop = asyncio.get_running_loop()
+    session: Optional[HandLandmarkSession] = None
+
+    async def unavailable(e: Exception):
+        logger.error(f"[WebSocket hand-landmarks] MediaPipe Hands unavailable for {client_addr}: {e}")
+        try:
+            await websocket.send_json(_ws_error("model_unavailable", f"hand landmark extractor unavailable: {e}"))
+            await websocket.close(code=WS_CLOSE_MODEL_UNAVAILABLE)
+        except Exception:
+            pass
+
+    try:
+        try:
+            session = await loop.run_in_executor(THREAD_POOL, HandLandmarkSession)
+        except Exception as e:
+            await unavailable(e)
+            return
+        state = {"segment_id": 0, "frame_seq": 0}
+        received = 0
+        await websocket.send_json(_hand_session_info())
+        while True:
+            try:
+                message = await websocket.receive()
+            except (WebSocketDisconnect, RuntimeError):
+                break
+            if message.get("type") == "websocket.disconnect":
+                break
+            if message.get("text") is None and message.get("bytes") is None:
+                continue
+            received += 1
+            try:
+                parsed = _parse_ws_message(message)
+            except WsError as e:
+                await websocket.send_json(_ws_error(e.code, e.detail, received))
+                if e.fatal:
+                    await websocket.close(code=WS_CLOSE_MESSAGE_TOO_LARGE)
+                    break
+                continue
+            if parsed["kind"] == "empty":
+                continue
+            if parsed["kind"] == "control":
+                try:
+                    await loop.run_in_executor(THREAD_POOL, session.reset)
+                except Exception as e:
+                    await unavailable(e)
+                    break
+                state["segment_id"] += 1
+                state["frame_seq"] = 0
+                await websocket.send_json({"type": "reset_done", "segment_id": state["segment_id"]})
+                continue
+            item = {"image": parsed["image"], "client_ts": parsed["timestamp"], "received_seq": received}
+            response = await loop.run_in_executor(THREAD_POOL, _hand_frame_worker, item, session, state)
+            await websocket.send_json(response)
+    except WebSocketDisconnect:
+        logger.info(f"[WebSocket hand-landmarks] Client disconnected: {client_addr}")
+    except Exception as e:
+        logger.error(f"[WebSocket hand-landmarks] Session error for {client_addr}: {_short(e)}")
+    finally:
+        if session is not None:
+            await loop.run_in_executor(THREAD_POOL, session.close)
+        logger.info(f"[WebSocket hand-landmarks] Session closed for {client_addr}")
 
 
 if __name__ == "__main__":

@@ -3,7 +3,8 @@ Plan 06 AC3: CORS allow-list, Origin check of the WebSockets, loopback bind (dec
 never "*" with credentials).
 
 No model is loaded: `_active_model` is replaced by a MagicMock (it must not even be called for a rejected Origin),
-and the Level 1 hand-landmark session is replaced by a MagicMock for the rejected-Origin cases.
+and the Level 1 hand-landmark session is replaced by a MagicMock for the rejected-Origin cases (the
+accepted-Origin cases of /ws/hand-landmarks use the real MediaPipe Hands session).
 """
 import os
 import re
@@ -21,7 +22,7 @@ from starlette.websockets import WebSocketDisconnect  # noqa: E402
 
 import backend.main as api  # noqa: E402
 
-WS_PATHS = ("/ws/live-stream",)  # "/ws/hand-landmarks" is added with the endpoint (B2)
+WS_PATHS = ("/ws/live-stream", "/ws/hand-landmarks")
 BAD_ORIGINS = ("http://evil.example", "null", "http://localhost:3001", "http://localhost:3000.evil.example",
                "HTTP://LOCALHOST:3000")
 GOOD_ORIGIN = "http://localhost:3000"
@@ -139,10 +140,8 @@ class _WsCase(unittest.TestCase):
     def setUp(self):
         self.active_model = mock.MagicMock(side_effect=api.ModelUnavailable("test fixture: no model"))
         patches = [mock.patch.object(api, "_active_model", self.active_model)]
-        self.hand_session = None
-        if hasattr(api, "HandLandmarkSession"):
-            self.hand_session = mock.MagicMock()
-            patches.append(mock.patch.object(api, "HandLandmarkSession", self.hand_session))
+        self.hand_session = mock.MagicMock()
+        patches.append(mock.patch.object(api, "HandLandmarkSession", self.hand_session))
         for p in patches:
             p.start()
             self.addCleanup(p.stop)
@@ -161,6 +160,7 @@ class TestWsOriginRejected(_WsCase):
                             ws.receive_json()
                     self.assertEqual(cm.exception.code, 1008)
         self.active_model.assert_not_called()
+        self.hand_session.assert_not_called()
 
 
 class TestWsOriginAccepted(_WsCase):
@@ -180,6 +180,27 @@ class TestWsOriginAccepted(_WsCase):
     def test_live_stream_no_origin(self):
         self._live_stream_unavailable({})
         self.assertEqual(self.active_model.call_count, 1)
+
+
+class TestWsOriginAcceptedHandLandmarks(unittest.TestCase):
+    """AC3-e for /ws/hand-landmarks, with the real MediaPipe Hands session (no Level 2 model involved)."""
+
+    def setUp(self):
+        self.client = TestClient(api.app)
+
+    def _session_info(self, headers):
+        with self.client.websocket_connect("/ws/hand-landmarks", headers=headers) as ws:
+            m = ws.receive_json()
+            self.assertEqual(m["type"], "session_info", m)
+
+    def test_allowed_origin(self):
+        self._session_info({"origin": GOOD_ORIGIN})
+
+    def test_allowed_origin_127(self):
+        self._session_info({"origin": "http://127.0.0.1:3000"})
+
+    def test_no_origin(self):
+        self._session_info({})
 
 
 class TestBindLoopback(unittest.TestCase):
