@@ -25,6 +25,13 @@ cd "$CLAUDE_PROJECT_DIR" 2>/dev/null || true
 (cd frontend && npm ci --no-audit --no-fund)       # node 22 có sẵn; dự án đã chạy local với node 25
 .venv/bin/kaggle datasets list --mine | head -3    # kiểm credential (cần network Custom như mục 1)
 ```
+GitNexus (CLAUDE.md bắt buộc impact/detect-changes): `.gitnexus/` không nằm trong git → trên cloud chạy
+`npx -y gitnexus@latest analyze` một lần đầu phiên, rồi dùng `npx -y gitnexus@latest impact ...` / `detect-changes --scope all --repo .`
+thay cho `node .gitnexus/run.cjs ...`. Nếu không cài được: dùng text search + `git diff`, và GHI RÕ trong báo cáo là không có GitNexus.
+
+MCP: nếu environment có connector Kaggle (đi qua máy chủ Anthropic, không cần network Custom), dùng nó cho lệnh CHỈ ĐỌC
+(trạng thái kernel, danh sách file); upload/tạo dataset vẫn theo scripts/archive_private_kaggle.py và phải xác minh private.
+
 Không có `vslt_usage.json` trên cloud → theo usage_guard_addendum: hạn mức "KHÔNG BIẾT" → chỉ giao đơn vị việc nhỏ nhất,
 ghi STATE.md + commit sau mỗi đơn vị.
 
