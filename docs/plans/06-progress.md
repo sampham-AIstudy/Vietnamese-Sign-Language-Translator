@@ -1,10 +1,9 @@
 # Kế hoạch 06 — tiến độ (coder; chặng 1: B0–B2; chặng 2: B3–B4; chặng 3: B5–B7)
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
-- Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474), B5 (commit "06: B5 — ...")
-- Bước đang làm: (không; DỪNG SỚM theo lệnh orchestrator — người dùng chuyển sang môi trường cloud)
-- Bước còn lại: B6 (CHƯA commit gì; bản nháp `Fingerspelling.jsx` nằm NGOÀI repo ở `../_plan06_tmp/Fingerspelling.jsx`,
-  chưa build, chưa test — không có trên máy cloud, coi như chưa làm), B7 (chưa bắt đầu); B8–B9 (chặng 4)
+- Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474), B5 (34a527d), B6 (commit "06: B6 — ...")
+- Bước đang làm: (không; B6 xong, dừng theo giao việc)
+- Bước còn lại: B7 (chặng 3); B8–B9 (chặng 4)
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
@@ -167,3 +166,25 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
   `git status --porcelain` trước/sau KHÁC nhưng không do test: trong lúc chạy có người khác sửa `CLAUDE.md` và thêm
   `docs/CLOUD.md`, `scripts/cloud_setup.sh` (thay đổi của người dùng/orchestrator — coder KHÔNG đụng, KHÔNG commit).
 - Chưa kiểm UI bằng trình duyệt (việc của B8).
+
+## B6 — UI "Đánh vần" (§3.2)
+
+- impact upstream `Fingerspelling`: risk CRITICAL theo GitNexus (19 process) — caller thật chỉ d=1 `App.jsx`
+  (`<Fingerspelling />` không prop); d=3 là hàm Python do name-fallback sai ngôn ngữ (như B5).
+- `Fingerspelling.jsx` viết lại (từ bản nháp `../_plan06_tmp/Fingerspelling.jsx` + 3 sửa: `sessionInfoRef` khai báo trước
+  `connectWs`; bỏ điều kiện thừa; không gọi `/compose` khi danh sách token rỗng — chữ hiện rỗng):
+  GET `/api/fingerspelling/status` (không available → khóa Ghi, hiện message); WS `wsUrl(window.location, '/ws/hand-landmarks')`
+  → `session_info` (lấy `limits.max_frames_per_segment`); [Ghi] bật camera → gửi `control/reset` → chờ `reset_done` → chụp
+  FS_TARGET_FPS, canvas KHÔNG lật, JPEG FS_JPEG_QUALITY, `timestamp = nowMs()`, tối đa FS_MAX_IN_FLIGHT frame đang bay (vượt →
+  `client_skipped`); đủ `max_frames_per_segment` frame → tự dừng; [Dừng] → chờ frame đang bay tối đa 2 s → `buildSequenceBody`
+  (chỉ segment hiện tại) → POST `/sequence` → prediction, confidence ("độ tin cậy của mô hình"), candidates (class, confidence,
+  kind); lỗi 413/422/503 hiện `detail` (cả 2 dạng) và KHÔNG hiện kết quả. Hiện độ phân giải, số frame, số frame có tay,
+  client_skipped, fps hiệu dụng, thời gian từ Dừng tới phản hồi (mốc DoD 8, không đo ở đây). Bộ ghép: tokens trong state,
+  Thêm (ứng viên đang chọn, mặc định top-1) / Dấu cách / Xóa lùi / Xóa hết; mỗi lần đổi → POST `/compose`, chữ hiện CHỈ lấy
+  từ `text` của server + `warnings`. Đủ 15 `data-testid` fs-*. Không còn gọi endpoint ảnh cũ, không còn "25 lớp".
+- `cd frontend && npm run build` → `✓ 1598 modules transformed`, `✓ built in 1.30s`. `package-lock.json` không đổi.
+- `cd frontend && npm test` (Node v25.9.0) → `tests 26, pass 26, fail 0` (3 file = `git ls-files "tests/*.test.mjs"`).
+- Guard AC8: **0 vi phạm** (14 → 2 → 0) — `tests.test_frontend_contract` `Ran 6` `OK`.
+- AC2 (25 cũ + 4 mới), log `../_plan06_tmp/b6_ac2.log`: `Ran 423 tests in 224.958s` `OK`, 0 skip, 0 failure, 0 error;
+  `git status --porcelain` trước/sau giống hệt (`SAME`).
+- Chưa kiểm UI bằng trình duyệt (B8).
