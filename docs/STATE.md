@@ -7,7 +7,7 @@
 - HEAD: 717aa3e (+ commit state này) | Nhánh: feat/vslt-complete (đã push lên origin)
 - Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h dùng 71% lúc 18:46, reset 22:10 giờ VN. Việc kế tiếp: vslt-coder kế hoạch 06 B8c-1..B8c-3
   rồi B9b (est coder 16 → 71 + 1.5×16 = 95 > 90, không qua cổng). Sau đó vslt-reviewer toàn bộ kế hoạch 06 (chia 1–4 / 5–9 / 10–13).
-  Theo lệnh người dùng: lưu STATE, commit, push, tắt máy.
+  Đã lưu STATE, commit, push. KHÔNG tắt máy (quyết định người dùng 18:55).
   Kế hoạch 06: XONG B0–B7 (B5 34a527d, B6 0328c1b, B7 dbd79f2). Còn: B8 e2e fullstack (LOCAL, Edge + video thật) → B9 → review 06.
   Reviewer 06 cần xác minh: CRITICAL impact ở B5/B6 (component React, GitNexus nhầm tên JS↔Python), HIGH ở B2/B3 (symbol mới),
   B7 sửa tests/test_frontend_contract.py (file do chính kế hoạch 06 tạo ở B4 — kiểm không nới), 050d337 thiếu detect-changes.
@@ -95,6 +95,9 @@
 
 - (2026-09-29 11:07) Không tắt máy lúc 11:05; chờ hạn mức reset 14:40, chạy tiếp phiên sau reset, xong thì lưu + tắt máy.
 
+- (2026-09-29 18:55) BỎ tự tắt máy: chỉ tắt máy khi người dùng yêu cầu rõ trong lượt đó. Các quyết định "xong thì tắt máy" trước đây hết hiệu lực.
+  Khi hết hạn mức: lưu STATE, commit, push, rồi dừng (không shutdown).
+
 ## Câu hỏi chờ người dùng
 - (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
   reports/PHASE4B_REPORT.md:112 ghi "unseen / zero leakage" là sai; mặc định: ghi nhãn đúng, không viết lại báo cáo cũ.
@@ -149,3 +152,4 @@
 - 2026-09-29 11:05 | dừng theo ngân sách + yêu cầu tắt máy | kế hoạch 06 xong B0–B7, còn B8–B9 + review; cloud A/B chưa push được (403) | Lưu STATE, commit, push, tắt máy.
 - 2026-09-29 17:20 | khôi phục sau chờ hạn mức (lệnh sleep nền bị dừng khi phiên cũ kết thúc; người dùng báo cloud xong) | STATE khớp git (HEAD 353c46d), cloud đã push nhánh cloud/2026-09-29-viec-a-d | Giao vslt-reviewer kiểm nhánh cloud trước khi merge; sau đó B8.
 - 2026-09-29 18:50 | dừng theo ngân sách (không phải ngắt) | planner Lần sửa 3 xong; coder B8c chưa giao (71 + 1.5×16 = 95 > 90) | Lưu STATE, commit, push, tắt máy theo lệnh người dùng.
+- 2026-09-29 18:55 | người dùng hủy tắt máy (đã chạy shutdown /a) | không có việc dở | Ghi quyết định: chỉ tắt máy khi được yêu cầu.
