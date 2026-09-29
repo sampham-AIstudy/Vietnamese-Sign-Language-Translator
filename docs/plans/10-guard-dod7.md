@@ -70,7 +70,7 @@ thiết kế (ghi để reviewer thấy planner đã xét).
 | 3 | `realtime_demo.py:395` `main` | help `"... or 'mock'"` | C-string | **VI PHẠM** (cùng tính năng #1) |
 | 4 | `realtime_demo.py:330` `RealtimeDemo.run` | `avg_fps = ... if fps_tracker else 30.0` | D-binding (nhánh IfExp) | **VI PHẠM**: FPS 30 gõ tay hiển thị trên HUD nếu nhánh đó chạy (hiện không tới được vì vừa `append`, nhưng vẫn là số hiển thị không đo) |
 | 5 | `src/data/augment.py:34..188` `KeypointAugmenter.{add_jitter, random_scale, random_rotate_2d, time_warp, keypoint_mask, augment_sequence, augment_static, augment_vsl_sequence}` | `np.random.normal/uniform/rand/choice(...)` | A-numpy | **DTG**: augmentation chỉ khi `augment=True` (`src/data/vsl_dataset.py:256`, `src/data/dataset.py:45,113`); đường phục vụ không tạo dataset; module chỉ nằm trong bao đóng do import đầu module (§2.2) |
-| 6 | `src/data/harmonized.py:178` `HarmonizedDataset.__getitem__` | `np.random.default_rng(int(torch.randint(...))) if self.augment else None` | A-torch | **DTG**: nhánh augment của Dataset train; live gọi `harmonize(..., rng=None)` (`src/inference/harmonized_live.py`, kế hoạch 04 AC2) |
+| 6 | `src/data/harmonized.py:178` `HarmonizedDataset.__getitem__` | `np.random.default_rng(int(torch.randint(...))) if self.augment else None` | A-torch | **DTG**: nhánh augment của Dataset train; live gọi `harmonize(..., rng=None)` (`src/inference/harmonized_live.py`, kế hoạch 04) |
 | 7 | `src/data/harmonized.py:175` `HarmonizedDataset.__getitem__` | `fps = 30.0` | D-binding | **DTG**: tốc độ khung hình ĐẦU VÀO mặc định khi npz thiếu metadata, không phải số đo |
 | 8 | `src/data/harmonized.py:129` `harmonize` | `fps = float(fps) if fps and fps > 0 else 30.0` | D-binding (IfExp) | **DTG**: như #7 (tham số tiền xử lý dùng chung train/live) |
 | 9 | `src/metrics/cslr_metrics.py:216` `compute_wer` | `wer = 100.0 if total_hyp_words > 0 else 0.0` | D-binding (IfExp) | **DTG**: quy ước công thức WER khi không có từ tham chiếu, không phải số gõ tay |
@@ -131,7 +131,7 @@ Các nhóm ngoài phạm vi (công cụ offline; lý do: không chạy khi phụ
 
 ### 3.0 Tổng quan, luồng dữ liệu, hợp đồng
 Một file mới `tests/test_backend_source_guard.py`, CHỈ dùng thư viện chuẩn (`ast`, `re`, `os`, `glob`, `json`,
-`collections`, `tempfile`, `subprocess`, `sys`, `datetime`, `unittest`). Không import `numpy`, `torch`, `cv2`,
+`hashlib`, `collections`, `tempfile`, `subprocess`, `sys`, `datetime`, `unittest`). Không import `numpy`, `torch`, `cv2`,
 `mediapipe`, `fastapi`, không import `backend.main` hay bất kỳ module nào của `src/` (chỉ ĐỌC file dạng văn bản).
 
 Luồng: `ENTRYPOINTS` → `serving_closure()` → tập SERVING → hợp với glob `backend/**/*.py`, `src/**/*.py` → tập MAIN →
@@ -165,8 +165,8 @@ Chỗ dùng module tiền xử lý chung: KHÔNG áp dụng (guard không đọc
   - duyệt MỌI nút `ast.Import`/`ast.ImportFrom` trong file, kể cả trong thân hàm (import lười như `backend/main.py:218`);
   - `import a.b.c` → thử các module `a`, `a.b`, `a.b.c`; `from a.b import x` → thử `a`, `a.b`, `a.b.x` (x có thể là module
     con); import tương đối (`level ≥ 1`) giải theo gói của file hiện tại;
-  - module → file: `<root>/a/b.py` hoặc `<root>/a/b/__init__.py`, thử lần lượt 2 gốc `PROJECT_ROOT` và
-    `PROJECT_ROOT/scripts` (gốc thứ hai mô phỏng `sys.path.insert(scripts)`); không tìm thấy → bỏ qua (thư viện ngoài/chuẩn);
+  - module → file: `<root>/a/b.py` hoặc `<root>/a/b/__init__.py`, thử lần lượt 2 gốc `<root>` và `<root>/scripts` (gốc
+    thứ hai mô phỏng `sys.path.insert(scripts)`); không tìm thấy → bỏ qua (thư viện ngoài/chuẩn);
   - khi thêm `a/b/c.py` thì thêm cả `a/__init__.py`, `a/b/__init__.py` nếu tồn tại (Python chạy chúng khi import);
   - lặp tới điểm bất động; KHÔNG giải `importlib.import_module`/`__import__` động (giới hạn ghi ở §6; bảng lười của
     `src/inference/__init__.py:12-17` trỏ tới các module vốn đã nằm trong bao đóng).
@@ -189,6 +189,8 @@ Chỗ dùng module tiền xử lý chung: KHÔNG áp dụng (guard không đọc
   test FAIL (không skip).
 - `qualname`: ghép tên các `ClassDef`/`FunctionDef`/`AsyncFunctionDef` bao quanh bằng `.` (ví dụ
   `KeypointAugmenter.add_jitter`, `validate_split_guards.get_dialects`); mã cấp module → `<module>`; lambda thuộc hàm bao.
+- **Phạm vi (scope) cho các luật "cùng phạm vi"** = hàm (`FunctionDef`/`AsyncFunctionDef`) trong cùng nhất chứa nút; mã
+  không nằm trong hàm nào (cấp module hoặc thân class) thuộc phạm vi module.
 - Docstring = câu lệnh đầu `Expr(Constant(str))` của Module/ClassDef/FunctionDef/AsyncFunctionDef → KHÔNG xét ở C-string
   và D-string, TRỪ docstring của hàm có decorator route FastAPI (`@<obj>.get|post|put|patch|delete|websocket|api_route(...)`)
   — FastAPI hiển thị chúng ở `/docs`, tức là chữ người dùng thấy.
@@ -220,9 +222,9 @@ Hằng dùng chung: `SENTINELS = {0, -1}` (so bằng số, gồm 0.0/-1.0; `bool
 
 | Mã | Phạm vi | Khớp khi | Không khớp (ví dụ hợp lệ) |
 |---|---|---|---|
-| **A-stdlib** | SERVING | gọi `random.<f>` (qua bí danh) với f ∈ {random, randint, randrange, choice, choices, shuffle, sample, uniform, triangular, gauss, normalvariate, lognormvariate, expovariate, vonmisesvariate, gammavariate, betavariate, paretovariate, weibullvariate, binomialvariate, getrandbits, randbytes}; `random.Random()`/`Random(None)`; `random.seed()`/`seed(None)`; `random.SystemRandom(...)` | `random.Random(42).random()`; `random.Random(seed)`; lượt rút SAU `random.seed(<khác None>)` trong CÙNG hàm (hoặc cùng mã cấp module) |
-| **A-numpy** | SERVING | gọi `numpy.random.<f>` với f ∉ {default_rng, Generator, SeedSequence, RandomState, seed, BitGenerator, PCG64, PCG64DXSM, MT19937, Philox, SFC64} (hàm dùng trạng thái toàn cục); `default_rng()`/`default_rng(None)`, `RandomState()`/`(None)`, `seed()`/`seed(None)`, bit generator không đối số/None | `np.random.default_rng(0)`, `default_rng(seed)` (đối số bất kỳ khác hằng None — nhưng mọi lượt rút RNG BÊN TRONG biểu thức đối số vẫn bị luật của nó bắt, ví dụ §2.3 #6); `rng.normal()`; lượt rút sau `np.random.seed(<khác None>)` trong cùng hàm |
-| **A-torch** | SERVING | gọi `torch.<f>` với f ∈ {rand, randn, randint, randperm, rand_like, randn_like, randint_like, normal, bernoulli, multinomial, poisson, seed} mà KHÔNG có keyword `generator=`; gọi phương thức `<expr>.<m>(...)` với m ∈ {uniform_, normal_, bernoulli_, random_, exponential_, geometric_, cauchy_, log_normal_} không có `generator=` và `<expr>` không phân giải thành `torch.nn.init`; `torch.Generator(...)` trừ khi nối ngay `.manual_seed(x)` hoặc cùng hàm có `<tên đã gán>.manual_seed(x)` | `torch.rand(2, generator=g)`; lượt rút sau `torch.manual_seed(<khác None>)` trong cùng hàm; `nn.init.trunc_normal_(w)` / `nn.init.normal_(w)` (khởi tạo trọng số, bị checkpoint ghi đè — rủi ro §6) |
+| **A-stdlib** | SERVING | gọi `random.<f>` (qua bí danh) với f ∈ {random, randint, randrange, choice, choices, shuffle, sample, uniform, triangular, gauss, normalvariate, lognormvariate, expovariate, vonmisesvariate, gammavariate, betavariate, paretovariate, weibullvariate, binomialvariate, getrandbits, randbytes}; `random.Random()`/`Random(None)`; `random.seed()`/`seed(None)`; `random.SystemRandom(...)` | `random.Random(42).random()`; `random.Random(seed)`; lượt rút SAU `random.seed(<khác None>)` trong cùng phạm vi (§3.2) |
+| **A-numpy** | SERVING | gọi `numpy.random.<f>` với f ∉ {default_rng, Generator, SeedSequence, RandomState, seed, BitGenerator, PCG64, PCG64DXSM, MT19937, Philox, SFC64} (hàm dùng trạng thái toàn cục); `default_rng()`/`default_rng(None)`, `RandomState()`/`(None)`, `seed()`/`seed(None)`, bit generator không đối số/None. Chỉ xét LỜI GỌI (chú thích kiểu `np.random.Generator` không phải lời gọi) | `np.random.default_rng(0)`, `default_rng(seed)` (đối số bất kỳ khác hằng None — nhưng mọi lượt rút RNG BÊN TRONG biểu thức đối số vẫn bị luật của nó bắt, ví dụ §2.3 #6); `rng.normal()`; lượt rút sau `np.random.seed(<khác None>)` trong cùng phạm vi |
+| **A-torch** | SERVING | gọi `torch.<f>` với f ∈ {rand, randn, randint, randperm, rand_like, randn_like, randint_like, normal, bernoulli, multinomial, poisson, seed} mà KHÔNG có keyword `generator=`; gọi phương thức `<expr>.<m>(...)` với m ∈ {uniform_, normal_, bernoulli_, random_, exponential_, geometric_, cauchy_, log_normal_} không có `generator=` và `<expr>` không phân giải thành `torch.nn.init`; `torch.Generator(...)` trừ khi nối ngay `.manual_seed(x)` hoặc trong cùng phạm vi (§3.2) có `<tên đã gán>.manual_seed(x)` | `torch.rand(2, generator=g)`; lượt rút sau `torch.manual_seed(<khác None>)` trong cùng phạm vi; `nn.init.trunc_normal_(w)` / `nn.init.normal_(w)` (khởi tạo trọng số, bị checkpoint ghi đè — rủi ro §6) |
 | **B-import** | MAIN | `import unittest.mock`, `from unittest import mock`, `from unittest.mock import ...`, `import mock`, `from mock import ...`, `import pytest_mock`/`from pytest_mock ...`, `import asynctest` | `import unittest` (không có mock) |
 | **B-name** | MAIN | `Name.id` hoặc `Attribute.attr` ∈ {Mock, MagicMock, AsyncMock, NonCallableMock, NonCallableMagicMock, PropertyMock, create_autospec, mock_open}; `Attribute.attr == "patch"` với giá trị là tên `mock` hoặc chuỗi thuộc tính kết thúc bằng `mock` | hàm tên `patch_image`; chuỗi `"mock"` (thuộc C-string) |
 | **C-name** | SERVING | ĐIỂM GÁN TÊN có token ∈ FAKE = {fake, dummy, mock, mocked, stub, simulate, simulated, simulation, simulator, synthetic, synthesized, synthesised, placeholder, fabricated}: đích Assign/AnnAssign/AugAssign (Name, `Attribute.attr`, phần tử tuple), đích for/comprehension, `with ... as`, tên def/class, tham số hàm, bí danh `import ... as` | dùng lại tên (chỉ đếm điểm gán); `random_scale`, `sample_id`, `example` |
@@ -232,10 +234,10 @@ Hằng dùng chung: `SENTINELS = {0, -1}` (so bằng số, gồm 0.0/-1.0; `bool
 | **D-string** | MAIN | đơn vị chuỗi (§3.2) khớp một trong: (i) phần trăm `(?<![\w.])\d+(?:[.,]\d+)?\s*%`; (ii) số kèm đơn vị `(?i)(?<![\w.])\d+(?:[.,]\d+)?\s*(?:ms|fps)\b`; (iii) từ khóa số liệu rồi tới một số trong ≤ 20 ký tự không phải chữ số: `(?i)\b(?:accuracy|acc|top-?[15]|precision|recall|f1|wer|cer|bleu|rouge|latency|fps|throughput|độ\s+chính\s+xác|độ\s+trễ)\b[^\d\n]{0,20}(?<![\w-])\d` | `f"{fps:.1f} FPS"` (phần hằng không có số); `"%.2f"`, `"%d%%"`; `"Top-5 Dự đoán:"`; `"precision, recall, f1-score"` (số `1` dính chữ `f`) |
 
 Ghi chú thiết kế luật:
-- "Seed trước trong cùng phạm vi": một lượt rút loại K (stdlib/numpy/torch) KHÔNG bị báo nếu trong cùng hàm trong cùng
-  nhất (hoặc cùng mã cấp module) có lời gọi seed cùng loại (`random.seed(x)`, `np.random.seed(x)`, `torch.manual_seed(x)`)
-  với ≥ 1 đối số không phải hằng `None`, ở DÒNG NHỎ HƠN. Seed ở hàm khác KHÔNG tính (ví dụ `set_seed()` ở một hàm, rút ở
-  hàm khác → vẫn báo). Chính lời gọi seed có đối số không bị báo.
+- "Seed trước trong cùng phạm vi": một lượt rút loại K (stdlib/numpy/torch) KHÔNG bị báo nếu trong cùng phạm vi (§3.2) có
+  lời gọi seed cùng loại (`random.seed(x)`, `np.random.seed(x)`, `torch.manual_seed(x)`) với ≥ 1 đối số không phải hằng
+  `None`, ở DÒNG NHỎ HƠN. Seed ở hàm khác KHÔNG tính (ví dụ `set_seed()` ở một hàm, rút ở hàm khác → vẫn báo). Chính lời
+  gọi seed có đối số không bị báo.
 - Mỗi điểm khớp là một Finding (§3.2 "Cách đếm"); một dòng có thể có nhiều Finding khác mã. Không gộp theo dòng.
 - Không có cơ chế ngoại lệ tại chỗ (`# guard: allow ...`): (1) ngoại lệ tại chỗ buộc sửa mã nguồn chính (cấm trong việc
   này); (2) ngoại lệ rải rác khó đếm và dễ lạm dụng. Ngoại lệ DUY NHẤT là sổ `ALLOWED` trong file test (§3.6), đếm được,
@@ -350,9 +352,9 @@ commit, ngoài danh sách). `git diff P10 HEAD -- tests/` chỉ là file mới, 
 nhị phân, `.pt/.npz/.mp4/.log`.
 
 **AC2 — Tự kiểm dương: mỗi luật bắt được (`TestRuleSelfCheck`, chuỗi trong bộ nhớ, không file).** Dict `POSITIVE`
-(mã luật → danh sách mẫu mã nguồn); assert `set(POSITIVE) == set(RULES)` (đủ 10 mã). Mỗi mẫu chạy
-`scan_source(mẫu, "mem/x.py", ALL_RULES)` phải cho ≥ 1 Finding đúng mã đó (subTest theo mẫu). Tối thiểu các mẫu sau (câu
-chữ có thể khác, nội dung phải phủ từng gạch):
+(mã luật → danh sách mẫu mã nguồn; mỗi mẫu kèm câu import cần thiết để bí danh phân giải, ví dụ `import numpy as np`,
+`import torch`); assert `set(POSITIVE) == set(RULES)` (đủ 10 mã). Mỗi mẫu chạy `scan_source(mẫu, "mem/x.py", ALL_RULES)`
+phải cho ≥ 1 Finding đúng mã đó (subTest theo mẫu). Tối thiểu các mẫu sau (câu chữ có thể khác, nội dung phải phủ từng gạch):
 - A-stdlib: `import random` + `x = random.random()`; bí danh `import random as r` + `r.choice(xs)` trong một `def`;
   `from random import shuffle` + `shuffle(xs)`; `random.seed()`; seed ở `def a()` rồi rút ở `def b()` → vẫn báo ở `b`.
 - A-numpy: `np.random.rand(3)`; `import numpy` + `numpy.random.normal(0, 1)`; `from numpy import random as npr` +
@@ -380,7 +382,7 @@ chữ có thể khác, nội dung phải phủ từng gạch):
 giải) chạy với `ALL_RULES` → 0 Finding:
 `rng = np.random.default_rng(0)` + `v = rng.normal()`; `np.random.default_rng(seed)`; `random.Random(42).random()`;
 `def f():` + `np.random.seed(0)` + `return np.random.randn(2)`; `def g():` + `torch.manual_seed(0)` + `return torch.rand(2)`;
-`torch.rand(2, generator=g)`; `g = torch.Generator()` + `g.manual_seed(1)`; `nn.init.trunc_normal_(w, std=0.02)`;
+`torch.rand(2, generator=g)`; `g = torch.Generator()` + `g.manual_seed(1)` (cùng phạm vi module); `nn.init.trunc_normal_(w, std=0.02)`;
 `from torch.nn import init` + `init.normal_(w)`; `self.random_scale(x)`; comment `# np.random.rand()`; docstring MODULE
 `"""Synthetic dummy data, 87% accuracy, sub-10ms latency."""`; docstring của hàm KHÔNG phải route có chữ "dummy";
 `infer_ms = 0.0`; `best_top1 = -1.0`; `latency_ms = (t1 - t0) * 1000.0`; `fps = 1.0 / dt`;
@@ -440,6 +442,8 @@ giải) chạy với `ALL_RULES` → 0 Finding:
   planner): `Ran 414`, failures=1 (`TestFrontendSourceGuard.test_no_violation` — đỏ có chủ đích; local đã sửa ở 0328c1b,
   chưa hợp nhất vào nhánh này), errors=1 (`setUpClass` của `test_translation_core`: thiếu checkpoint ViT5, dữ liệu
   gitignore), skipped=30 (thiếu dữ liệu gitignore). B0 của coder là số chính thức; nếu khác tham chiếu → ghi cả hai.
+- Nếu giữa B0 và B2 nhánh nhận commit KHÔNG thuộc kế hoạch này (ví dụ hợp nhất từ local) → chạy lại B0 trên nền mới
+  (checkout tạm cây không có file test mới, hoặc bỏ module cuối) trước khi so; ghi cả hai lần.
 - Sau B2: `Ran` = B0 + số test của module mới; tập id test FAIL == của B0; tập id test ERROR == của B0; số skipped == B0;
   module mới: mọi test OK, 0 fail, 0 error, 0 skip. `git status --porcelain` trước/sau lệnh giống hệt.
 
@@ -454,7 +458,7 @@ DTG" nếu có. Mọi số đều có nguồn (lệnh + commit hoặc đường 
 
 ## 6. Rủi ro dữ liệu/ML
 - **Không đụng dữ liệu/model:** guard chỉ đọc mã → không rò rỉ, không cỡ mẫu, không chọn model, không TEST. Con số của guard
-  là số dòng mã khớp luật, KHÔNG phải số liệu ML (JSON ghi rõ trong `note`).
+  là số điểm mã khớp luật, KHÔNG phải số liệu ML (JSON ghi rõ trong `note`).
 - **Âm tính giả (guard không thấy):** import động (`importlib`, `__import__`); RNG nằm trong thư viện ngoài (MediaPipe,
   sklearn `random_state=None`, `DataLoader(shuffle=True)`); model quên `eval()` (dropout) — được phủ bởi test tương
   đương (kế hoạch 04 AC4, kế hoạch 06 AC5), không phải guard; trọng số khởi tạo ngẫu nhiên nếu nạp checkpoint không chặt
