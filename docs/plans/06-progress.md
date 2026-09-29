@@ -88,3 +88,17 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
   hàm lồng `unavailable`, biến cục bộ `session`) và test mới của kế hoạch này (tests/test_cors_origin_bind.py); không symbol
   cũ nào bị sửa (`websocket_live_stream` không nằm trong danh sách). 6 process, đều bắt đầu từ
   `websocket_hand_landmarks`/`_hand_frame_worker`.
+
+## B3 — tương đương Cấp 1 train↔live (AC5) + báo cáo lệch nguồn (AC6)
+
+- impact: không sửa symbol cũ nào; file mới `scripts/hand_live_check.py` (helper dùng chung: `select_clips`,
+  `video_path_for`, `offline_extract` gọi `_extract_one` import nguyên văn, `live_hand_frames` qua TestClient WS,
+  `body_from_hand_frames` = bản Python của buildSequenceBody §3.2, `body_from_npz`) và `tests/test_hand_live_equivalence.py`.
+- Kích thước message: PNG data URL lớn nhất của 2 clip qipedc 1280×720 = 375494 byte (< 1048576) → gửi được qua text.
+- `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_hand_live_equivalence -v` → `Ran 4 tests in 36.881s` `OK`
+  (0 skip). **AC5-a bằng hệt trên cả 10 clip** (landmark `np.array_equal` float32, detected, nhãn, score) → §7-1 KHÔNG kích hoạt.
+  Output in (d):
+  `[AC5] hauuto candidates with local video: 640`;
+  hauuto_a_tai_B_001 frames=45 detected=45; hauuto_aa_khoi_B_002 91/87; hauuto_aw_khoi_A_003 90/84; hauuto_ee_vy_A_002 90/90;
+  hauuto_h_khoi_A_001 91/77; hauuto_oo_vy_A_003 91/91; hauuto_s_hau_B_002 74/74; hauuto_tone_x_khoi_B_002 90/86;
+  qipedc_D0489 93/45; qipedc_D0490B 89/51.
