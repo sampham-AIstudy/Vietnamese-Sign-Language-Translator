@@ -361,3 +361,27 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
   bị gỡ do chuyển tab": path KHÔNG được kịch bản dùng, ≤ 2 socket (cặp StrictMode), tất cả 0 message, `closed: true`, tạo trước
   lúc bấm tab — vẫn chịu `:8000` và `/ws/`; (c) giữ nguyên chữ → AC12 Đánh vần không đạt được với luồng hiện tại (tab mặc định
   không đổi được vì `App.jsx` bị khóa).
+
+## B8c — Lần sửa 3 (§0C.5): vai trò path theo kịch bản + `tab_unmounted_socket_rule`, chạy chính thức 3 kịch bản
+
+### B8c-1 — test AC12-t mục 10 trước (commit 85ef325, `WIP 06:`)
+- `tests/test_frontend_contract.py` thêm lớp `TestE2eScenarioRoles` (30 test; chỉ thêm dòng cuối file).
+  `git diff eb379fa HEAD -- tests/test_frontend_contract.py | grep -c '^-[^-]'` → `0` (16 test cũ không sửa).
+  Ca: bảng vai trò là hằng (+ kịch bản lạ → ValueError); 10a (dạng lượt thử), 10a biến thể socket 0 đóng trước T, 10b, 10c;
+  âm `tab_unmounted_socket_rule` (3 socket; `closed: false`; `closed_t_s` null; `closed_t_s > R` (+ dương `= R`);
+  `created_t_s` = T / > T / null; thiếu `tab_alphabet`; `clicked: false`; thiếu `record_clicked`; `{error:1}`,
+  `{session_info:1, frame_result:1}`, `{session_info:2}`, `{frame_result:1}`; `n_non_json: 1`; protocol 3; `first_type`
+  khác session_info; handshake 403; path lạ `/ws/other`; `word` + `/ws/hand-landmarks`); âm `strictmode_orphan_rule`
+  (word 2 socket 0 message; fingerspell hand 2 socket 0 message; fingerspell vắng `/ws/hand-landmarks`); âm URL trên path
+  `tab_unmounted` (`:8000`, `127.0.0.1:3000`); 2 dạng `word` xanh; nối dây `evaluate` và `ws_classification`.
+  Mỗi ca assert đủ 5 kiểm (3 kiểm URL + 2 luật path): đúng kiểm ghi bị đỏ, còn lại xanh.
+- Chạy trước khi có hàm (log `../_plan06_tmp/b8c1_red.log`): `Ran 46 tests` `FAILED (failures=1, errors=35)` — 16 cũ OK;
+  mọi ca mới đỏ (AttributeError `scenario_ws_roles`/`SCENARIO_WS_ROLES`; FAIL duy nhất là `test_evaluate_uses_the_role_rules`
+  tái hiện đúng lỗi lượt thử: `/ws/live-stream` "socket 1: 0 messages and it is the last socket of the path").
+- impact (index tại 8a2f5a2, `../_plan06_tmp/b8c2_impact*.txt`): `evaluate` (`-f scripts/e2e_fullstack.py`) CRITICAL theo đồ
+  thị — d1 = `main` của chính script, d3 = 13 nút do trùng tên `main`; `strictmode_orphans` CRITICAL (d1 = 2), `app_ws_by_path`
+  CRITICAL (d1 = 3), `ws_classification` CRITICAL (d1 = 1), `newWs` (JS) CRITICAL (d1 = 1) — đều do trùng tên ở độ sâu 3.
+  Text search (`grep -rn` trong scripts tests backend src frontend/src): caller thật chỉ trong `scripts/e2e_fullstack.py`
+  (`evaluate`←`main`; `strictmode_orphans`←`evaluate`,`ws_classification`, test; `app_ws_by_path`←`evaluate`,
+  `ws_classification`, `main`; `ws_classification`←`main`), `newWs`←handler `webSocketCreated` của `e2e_browser.cjs`.
+- detect-changes --scope staged: "no indexed symbols overlap those hunks" (chỉ code mới cuối file test).
