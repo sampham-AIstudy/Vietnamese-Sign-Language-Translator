@@ -6,9 +6,14 @@
   merge cloud) — §0B.
 - Lần sửa 3: 2026-09-29, sau B8b-3 (HEAD 94c51ed), coder dừng §7-8 (`strictmode_orphan_rule` đỏ ở Đánh vần do socket
   `/ws/live-stream` của tab mặc định bị gỡ khi chuyển tab) — §0C.
+- Lần sửa 4 (LẦN CUỐI cho luật socket AC12): 2026-09-30, sau B8c-3 (HEAD 0a80ddd), coder dừng §7-10(c)
+  (`tab_unmounted_socket_rule` đỏ vì điều kiện thời điểm "socket tạo trước `click_t_s`") — §0D.
 - Backlog: docs/STATE.md "Backlog còn lại" mục 2; autopilot.md backlog gốc mục 3.
 - **Không có điểm dừng CẦN NGƯỜI DÙNG trước khi code** (xem §7; chỉ có điểm dừng có điều kiện trong lúc làm). Lần sửa 1,
   Lần sửa 2 và Lần sửa 3 cũng không tạo điểm dừng CẦN NGƯỜI DÙNG mới.
+- **(Lần sửa 4) Điểm dừng CÓ ĐIỀU KIỆN → CẦN NGƯỜI DÙNG (§7-11):** nếu lượt chạy e2e kế tiếp (thử B8d-3 sau tối đa một
+  vòng sửa lỗi cài đặt, hoặc chính thức B8d-4) đỏ ở BẤT KỲ kiểm nào → dừng, hỏi người dùng (câu hỏi soạn sẵn ở §7-11).
+  KHÔNG có Lần sửa 5 cho luật e2e của kế hoạch này.
 
 ## 0. Lần sửa 1 (sau chặng 2; nguồn: `docs/plans/06-progress.md` mục B3, B4)
 
@@ -150,8 +155,8 @@ nguyên không ngoại lệ, và thêm kiểm âm (test) để phần loại tr�
   - **AC1-b:** MỌI commit first-parent khác trong `P6..HEAD` được liệt kê (hash + subject + file) trong 06-progress và thuộc
     đúng một nhóm, chỉ chạm tập file của nhóm đó:
     (i) orchestrator `state:` — docs/STATE.md, docs/usage_ledger.csv, docs/progress_log.md (chỉ thêm dòng: numstat cột xóa = 0);
-    (ii) planner kế hoạch 06 (facffea = Lần sửa 1; commit chứa Lần sửa 2 này; (Lần sửa 3) commit chứa Lần sửa 3) —
-         docs/plans/06-viec5-frontend.md (+ docs/STATE.md, docs/usage_ledger.csv);
+    (ii) planner kế hoạch 06 (facffea = Lần sửa 1; commit chứa Lần sửa 2 này; (Lần sửa 3) commit chứa Lần sửa 3; (Lần sửa 4)
+         commit chứa Lần sửa 4) — docs/plans/06-viec5-frontend.md (+ docs/STATE.md, docs/usage_ledger.csv);
     (iii) bàn giao cloud 8628948, 296b12e, f62dd45 — CLAUDE.md, docs/CLOUD.md, scripts/cloud_setup.sh
          (+ docs/STATE.md, docs/usage_ledger.csv);
     (iv) merge bbfdff3 — đúng tập `git diff --name-status bbfdff3^1 bbfdff3`; commit review cloud 6a6538c — chỉ
@@ -203,6 +208,7 @@ Coder (chặng 4, tiếp):
    THÊM 1 dòng `docs/progress_log.md` (AC13; nêu cả Lần sửa 2 và commit của 3 JSON mới). Ghi backlog đề xuất như B9 cũ.
    Commit. Orchestrator gọi vslt-reviewer.
 (Lần sửa 3: bước 3 đã chạy và dừng đúng §7-8; phần còn lại làm theo 0C.5 — B8c thay cho phần chạy chính thức của B8b-3.)
+(Lần sửa 4: phần chạy chính thức và B9b nay làm theo 0D.11 — B8d thay cho B8c-3; thư mục ra `reports/e2e_<YYYY-MM-DD>_r4/`.)
 
 Reviewer kiểm (ngoài các AC khác):
 - Quyết định (a) và định nghĩa ở 0B.1 được cài ĐÚNG như chữ: regex neo đầu–cuối, host `localhost:3000`, protocol đúng
@@ -263,6 +269,8 @@ Mỗi path app (socket không phải HMR, gom theo path như `app_ws_by_path`) c
    - a. số socket ≤ 2 (đúng một cặp StrictMode mount → unmount → mount);
    - b. mỗi socket được TẠO trước lúc bấm tab: `created_t_s < click_t_s` của bước `tab_alphabet` (mốc lấy NGAY TRƯỚC lệnh
      click, xem 0C.4); bước `tab_alphabet` phải có và `clicked: true`, nếu không → đỏ;
+     **(Lần sửa 4) Phép so sánh `created_t_s < click_t_s` BỊ BỎ, thay bằng kiểm nguồn tạo `tab_unmounted_owner_rule`
+     (0D.3). Vẫn giữ: bước `tab_alphabet` có đúng 1 lần, `clicked: true`, `click_t_s` là số; mỗi socket có `created_t_s` là số.**
    - c. mỗi socket đã ĐÓNG trong lượt (`closed: true`) và `closed_t_s` không null, `closed_t_s ≤ t_s` của bước
      `record_clicked` (đóng trước khi kịch bản bắt đầu thao tác dữ liệu); không có bước `record_clicked` → đỏ;
    - d. message: `n_non_json == 0`; `count_by_type` rỗng, HOẶC đúng `{session_info: 1}` với `first_type == "session_info"` và
@@ -280,7 +288,8 @@ Mỗi path app (socket không phải HMR, gom theo path như `app_ws_by_path`) c
 **Mức chặt so với các lựa chọn.**
 - Chặt hơn (b) của coder ở: vai trò path cố định theo kịch bản (không phải "bất kỳ path nào không được dùng"); ràng buộc thời
   điểm tạo/đóng theo mốc bước (bắt được socket sai path mở SAU khi chuyển tab, vd. `Fingerspelling` lỡ mở `/ws/live-stream`);
-  kiểm `handshake_status`; path lạ → đỏ; path `used` vắng → đỏ.
+  kiểm `handshake_status`; path lạ → đỏ; path `used` vắng → đỏ. ((Lần sửa 4) phần "thời điểm tạo" được thay bằng nguồn tạo,
+  0D.3; phần "thời điểm đóng" giữ.)
 - Nới hơn (b) của coder ĐÚNG một điểm: cho phép một message `session_info` hợp lệ (d). Lý do (quyết định TRƯỚC lượt chạy chính
   thức, không dựa trên kết quả): đây là cuộc đua thời gian, không phải tính chất của app — ở lượt thử Ký từ mặc định,
   `/ws/live-stream` sẵn sàng (bước `ready`) khoảng 1.5 s sau `goto`, còn ở lượt thử Đánh vần kịch bản bấm tab khoảng 1.1 s sau
@@ -317,6 +326,8 @@ Mỗi path app (socket không phải HMR, gom theo path như `app_ws_by_path`) c
   lọt socket mở sau khi chuyển tab.
 - KHÔNG đổi thứ tự thao tác, không thêm chờ, không đổi selector, không đổi cách chọn clip. Diff của file này ở B8c chỉ gồm
   các dòng ghi 3 trường trên (reviewer kiểm bằng `git diff eb379fa HEAD -- scripts/e2e_browser.cjs`).
+- (Lần sửa 4) Ba trường trên GIỮ (vẫn ghi, vẫn vào JSON) nhưng `created_t_s`/`click_t_s` không còn được so với nhau trong luật.
+  Ở B8d được thêm đúng các ghi nhận của 0D.5; reviewer kiểm diff theo 0D.5.
 
 ### 0C.5 Việc coder làm tiếp (B8c thay phần chạy chính thức của B8b-3, rồi B9b)
 1. **B8c-1 (test trước).** Thêm vào `tests/test_frontend_contract.py` các ca AC12-t mục 10 (§5) cho hàm thuần mới (gợi ý
@@ -341,6 +352,8 @@ Mỗi path app (socket không phải HMR, gom theo path như `app_ws_by_path`) c
    `06: B8c-3 …`.
 4. **B9b** như 0B.5 bước 4, tại HEAD cuối sau B8c-3; progress_log (AC13) nêu thêm Lần sửa 3 (luật path tab mặc định bị gỡ)
    và commit của 3 JSON mới. AC1-b nhóm (ii) gồm cả commit chứa Lần sửa 3.
+(Lần sửa 4: B8c-1, B8c-2 xong — 85ef325, e1d13d2; B8c-3 đã chạy Đánh vần 1 lần tại 1b05851, ĐỎ, dừng đúng §7-10(c), JSON đỏ
+commit ở d2752c3; 2 kịch bản Ký từ chưa chạy chính thức. Phần còn lại làm theo 0D.11 — B8d thay cho B8c-3, rồi B9b.)
 
 ### 0C.6 Reviewer kiểm (thêm vào 0B.5)
 - `tab_unmounted_socket_rule` cài đúng 0C.2: vai trò path là hằng theo kịch bản (không suy từ dữ liệu); `tab_unmounted` chỉ
@@ -352,6 +365,8 @@ Mỗi path app (socket không phải HMR, gom theo path như `app_ws_by_path`) c
   JSON Đánh vần có `role_by_path` đúng bảng 0C.2 và số socket `tab_unmounted` ≤ 2; 3 JSON thử ngoài repo KHÔNG được trích như
   bằng chứng.
 - Không file nào trong danh sách "KHÔNG đổi" của AC1 (nhất là `frontend/src/App.jsx`) bị chạm; `frontend/src/main.jsx` không đổi.
+- (Lần sửa 4) Điều (b) "tạo trước `click_t_s`" nay bị thay theo 0D.3; mục "3 JSON mới" ở trên áp cho 3 JSON của B8d-4
+  (`reports/e2e_<YYYY-MM-DD>_r4/`), con cháu của commit B8d-2; reviewer kiểm thêm theo 0D.12.
 
 ### 0C.7 Thay đổi so với bản trước
 - Đầu file (dòng Lần sửa 3). §0B.2 mục 2, §0B.3 AC1-b (ii), §0B.5 (ghi chú trỏ sang 0C). §3.7: luật theo vai trò path + trường
@@ -359,6 +374,289 @@ Mỗi path app (socket không phải HMR, gom theo path như `app_ws_by_path`) c
   3 JSON của B8c), AC12-t (thêm mục 10), AC13 (nêu Lần sửa 3). §7: thêm điểm dừng 10. Không bỏ tiêu chí nào; kiểm URL/HMR/
   `:8000` giữ nguyên chữ; điểm nới duy nhất (một `session_info` hợp lệ trên socket tab mặc định bị gỡ) nêu lý do ở 0C.2 và
   được quyết trước lượt chạy chính thức.
+
+## 0D. Lần sửa 4 — LẦN CUỐI (sau B8c-3; nguồn: `docs/plans/06-progress.md` mục B8c-1..B8c-3; JSON chính thức ĐỎ `reports/e2e_2026-09-30/fingerspell_default.json` — commit d2752c3, chạy tại 1b05851; bản sao + log ngoài repo `../_plan06_tmp/b8c3_official_fingerspell{,_browser}.json`, `b8c3_official_fingerspell_{browser,stack}.log`; code `scripts/e2e_browser.cjs:316-343,384-393`, `scripts/e2e_fullstack.py:288-401`, `frontend/src/components/Phase12Pipeline.jsx:74-128`, `frontend/src/App.jsx:9,53-54`, `frontend/src/main.jsx:7`, `tests/test_frontend_contract.py:456-757`)
+
+Các commit đã có giữ nguyên (85ef325, 2fa59e0, e1d13d2, 1b05851, d2752c3, 0a80ddd). Chỗ đổi đánh dấu "(Lần sửa 4)" tại mục
+tương ứng. Phạm vi hẹp: đúng một điều kiện của `tab_unmounted_socket_rule` (b) được thay bằng một kiểm cấu trúc mới; thêm
+ghi nhận trong `e2e_browser.cjs` (chỉ ghi nhận); lượt thử có cổng dừng; chạy chính thức lại cả 3 kịch bản.
+
+**ĐÂY LÀ LẦN SỬA CUỐI CỦA LUẬT E2E (AC12) TRONG KẾ HOẠCH 06.** Nếu lượt chạy kế tiếp — lượt thử chẩn đoán B8d-3 (sau tối đa
+MỘT vòng sửa lỗi cài đặt theo 0D.6) hoặc lượt chính thức B8d-4 — đỏ ở BẤT KỲ kiểm nào của AC12 (không chỉ kiểm socket) → coder
+DỪNG, orchestrator hỏi người dùng (CẦN NGƯỜI DÙNG, §7-11, câu hỏi soạn sẵn). KHÔNG có Lần sửa 5; planner không được gọi lại để
+đổi luật, mốc, hằng, clip hay luồng kịch bản e2e của kế hoạch này.
+
+### 0D.1 Hiện tượng, cơ chế, nguyên nhân gốc
+- **Hiện tượng (JSON chính thức đỏ, commit d2752c3; trích nguyên văn):** exit 1, `checks 23/24 pass; FAILED:
+  ['tab_unmounted_socket_rule']`. `/ws/live-stream` (vai trò `tab_unmounted`): 2 socket, violations `"socket 0: created_t_s
+  3.185 not before click_t_s 3.092"`, `"socket 1: created_t_s 3.185 not before click_t_s 3.092"`; `closed_t_s` 3.201 và 3.213,
+  `record_clicked` 3.606, 0 message, `handshake_status` null. Mọi điều kiện khác của 0C.2 mục 2 và mọi kiểm khác đạt.
+- **Thứ tự quan sát trong JSON (đồng hồ Node):** `click_t_s` 3.092 → cả 2 socket `/ws/live-stream` 3.185 (cùng giá trị) →
+  `t_s` của bước `tab_alphabet` 3.196 (Node ghi SAU khi `page.evaluate` bấm tab trả về) → 2 socket `/ws/hand-landmarks` 3.2.
+  Tức Node nhận `webSocketCreated` của `/ws/live-stream` trước lúc ghi `t_s` của bước bấm tab. Điều này hợp với H2 (socket
+  được tạo trong lúc trình duyệt xử lý click) và cũng hợp với H1 (socket tạo trước click, sự kiện CDP tới trễ ~93 ms). Dữ liệu
+  hiện có KHÔNG tách được H1/H2: `created_t_s` là giờ Node nhận sự kiện (sự kiện không mang timestamp), không phải giờ trình
+  duyệt tạo socket.
+- **Cơ chế (đọc code):** `Phase12Pipeline.jsx:121-128` mở WS trong `useEffect` (passive effect), `main.jsx:7` StrictMode →
+  mount/unmount/mount = 2 socket. React 18 lập lịch passive effect của lần render đầu sau commit, và xả passive effect còn treo
+  trước khi xử lý cập nhật của một sự kiện rời rạc (click). Không có gì trong app hay kịch bản bảo đảm passive effect đã chạy
+  trước khi `goto` (chờ `load`) trả về và kịch bản bấm tab. Nếu H2 đúng thì điều kiện "tạo trước `click_t_s`" không thỏa được
+  với luồng hiện tại, ở mọi mốc đo chính xác hơn — luật sai về cơ chế, không phải sai số đo.
+- **Nguyên nhân gốc (lỗi kế hoạch, không phải coder):** ở Lần sửa 3 tôi nhận diện "socket của component tab mặc định" bằng
+  THỜI ĐIỂM tạo so với lúc bấm, mặc nhiên coi passive effect của lần render đầu đã chạy xong trước khi kịch bản bấm tab. Tôi đã
+  nêu cơ chế StrictMode (0C.1) nhưng không suy ra hệ quả về thời điểm effect chạy, và đặt mốc bằng giờ Node nhận sự kiện CDP
+  trong khi khoảng cần phân biệt (~100 ms) cùng cỡ với độ trễ giao sự kiện — không đo trước khi chốt luật. Mục đích của (b)
+  (bắt socket do component khác mở trên path này) đúng; đại lượng đo sai. Coder cài đúng chữ, dừng đúng §7-10(c), không chạy
+  lại, không tiêu lượt của 2 kịch bản Ký từ — đúng quy tắc.
+- **Lần thứ 3 cùng nhóm kiểm đỏ, lần thứ 3 sửa luật sau khi thấy kết quả** (B8: URL của socket HMR — 0B; B8b-3: mồ côi trên
+  path tab mặc định — 0C; B8c-3: thời điểm tạo — 0D). Nguyên nhân chung: tôi viết luật socket từ hình dung về hành vi của
+  Vite/React/CDP rồi mới đối chiếu với quan sát thô. Biện pháp của Lần sửa 4: (i) chỉ dùng đại lượng CẤU TRÚC (ai tạo socket,
+  socket nhận gì, đã đóng chưa), không thêm điều kiện thời gian mới nào; (ii) luật chốt trong kế hoạch này, trước mọi lượt
+  chạy; lượt thử chẩn đoán có cổng dừng; (iii) là lần cuối (§7-11).
+
+### 0D.2 Mục đích của luật path `tab_unmounted` và điều kiện nào phục vụ mục đích nào
+Mục đích (suy từ yêu cầu, không từ số quan sát): socket của component tab mặc định bị gỡ khi chuyển tab
+(M1) không vượt proxy / không tới `:8000`; (M2) không làm gì có hại cho kịch bản — không bị từ chối, không nhận dữ liệu
+(`frame_result`, `sign_result`, `sign_discarded`, `error`, …), đã đóng trước khi kịch bản bắt đầu ghi; (M3) đúng là socket của
+component đó — không phải socket do component mới (`Fingerspelling`) hay mã khác mở sai path.
+
+| Điều kiện | Phục vụ | Lần sửa 4 |
+|---|---|---|
+| 3 kiểm URL của 0B.1 | M1 | GIỮ nguyên chữ |
+| a. ≤ 2 socket | M2, M3 (đúng một cặp StrictMode; socket thừa, vd. component đã gỡ còn kết nối lại, → đỏ) | GIỮ |
+| b. `created_t_s < click_t_s` | M3, đo bằng thời điểm | BỎ phép so sánh; M3 do `tab_unmounted_owner_rule` (0D.3) |
+| bước `tab_alphabet` đúng 1 lần, `clicked: true`, `click_t_s` là số; `created_t_s` là số | tiền đề vai trò; toàn vẹn dữ liệu | GIỮ |
+| c. `closed: true`, `closed_t_s` không null, `≤ t_s` của `record_clicked` | M2 ("đóng trước khi kịch bản ghi") | GIỮ nguyên chữ |
+| d. message: rỗng hoặc đúng 1 `session_info` v2; `n_non_json == 0`; `n_messages` khớp | M2 | GIỮ |
+| e. `handshake_status` ∈ {null, 101} | M2 | GIỮ |
+
+Ghi chú về (c) (không đổi, nêu để reviewer đánh giá): (c) cũng so hai giờ Node, nhưng quan hệ của nó có tính cấu trúc — bước
+`record_clicked` chỉ xảy ra sau khi `Fingerspelling` đã mount (cùng commit React với việc gỡ `Phase12Pipeline` và gọi
+`ws.close()`), socket `/ws/hand-landmarks` đã nhận `session_info` từ server (một vòng mạng tới backend) và Node đã nhận sự kiện
+đó. Không nới, không đổi (c) vì nó không đỏ và vì "đóng trước khi kịch bản ghi" là chính mục đích M2.
+
+### 0D.3 Quyết định: thay (b) bằng kiểm NGUỒN TẠO socket; H1/H2 chỉ chẩn đoán, không quyết luật
+**Kiểm mới `tab_unmounted_owner_rule`** (tên cố định; có trong `checks` của cả 3 JSON). Nguồn tạo của một socket = module mã
+nguồn của app đã gọi `new WebSocket(...)`, đọc từ call stack trong trang ngay lúc gọi constructor (ghi nhận 0D.5). Đây là thuộc
+tính cấu trúc: không phụ thuộc thời điểm, độ trễ CDP, hay việc passive effect chạy trước/sau click.
+- **Hằng** (trong `scripts/e2e_fullstack.py`, KHÔNG suy từ quan sát): `SCENARIO_TAB_UNMOUNTED_OWNER = {"fingerspell":
+  "/src/components/Phase12Pipeline.jsx", "word": None}`. Căn cứ tĩnh: `App.jsx:9` tab mặc định `'realtime'`; `App.jsx:53`
+  `realtime` → `<Phase12Pipeline />`; `Phase12Pipeline.jsx:86` là lời gọi `new WebSocket` duy nhất của component đó.
+  `SCENARIO_WS_ROLES` KHÔNG đổi.
+- **Hàm thuần `ws_owner(frames) -> str | None`:** `frames` là list chuỗi theo thứ tự stack (trong cùng → ngoài); trả phần tử
+  ĐẦU TIÊN bắt đầu bằng `/src/`, cắt bỏ phần từ `?` trở đi (phòng hờ); không có phần tử như vậy, hoặc `frames` không phải list
+  → `None`.
+- **Hàm thuần `tab_unmounted_owner_check(ws_by_path, page_ws, scenario) -> {"pass": bool, "detail": dict}`:**
+  1. `scenario` không có trong `SCENARIO_TAB_UNMOUNTED_OWNER` → `ValueError`.
+  2. `page_ws` không phải list → đỏ ở MỌI kịch bản ("page hook data missing"): không có dữ liệu nguồn tạo = không chứng minh được.
+  3. Kịch bản không có path `tab_unmounted` (`word`) → xanh khi (2) đạt; `detail` có `"applies": false` và số bản ghi.
+  4. `fingerspell`, P = `SCENARIO_WS_ROLES["fingerspell"]["tab_unmounted"]` (`/ws/live-stream`): R = các bản ghi của `page_ws`
+     có path của `url` == P (tách path đúng cách `app_ws_by_path` làm). Đỏ nếu `len(R) != len(ws_by_path.get(P, []))` (mỗi
+     socket CDP của P phải có đúng một bản ghi nguồn tạo; 0 == 0 là xanh). Đỏ nếu có r ∈ R mà `ws_owner(r["frames"]) !=
+     SCENARIO_TAB_UNMOUNTED_OWNER["fingerspell"]` (gồm `None`, bản ghi có `hook_error`, hay module khác, vd.
+     `/src/components/Fingerspelling.jsx`). `detail`: số socket CDP, số bản ghi, danh sách owner, danh sách vi phạm.
+- **`tab_unmounted_violations`:** bỏ ĐÚNG phép so sánh `created_t_s < click_t_s` và thông điệp "not before click_t_s" của nó.
+  Mọi điều kiện khác (xem bảng 0D.2) giữ nguyên chữ, gồm "created_t_s missing" khi `created_t_s` không phải số. Docstring
+  sửa cho khớp.
+- **`scenario_ws_roles` KHÔNG thêm kiểm** (vẫn trả đúng 2 kiểm; test cũ kiểm tập này). `evaluate` thêm kiểm
+  `tab_unmounted_owner_rule` từ `tab_unmounted_owner_check(ws_by_path, obs.get("ws_page"), args.scenario)`, ngay sau dòng
+  `checks.update(scenario_ws_roles(...)["checks"])`.
+- **Thông tin chẩn đoán, KHÔNG phải kiểm** (không vào `checks`, không ảnh hưởng `all_checks_pass`): `ws_classification` thêm
+  `page_hook = {"n_records_by_path", "n_cdp_by_path", "tab_unmounted_owners", "tab_unmounted_click_phase"}`, với hàm thuần
+  `click_phase(t_page_ms, before_ms, after_ms)` → `"before_click"` (t < before), `"during_click"` (before ≤ t ≤ after),
+  `"after_click"` (t > after), `"unknown"` (thiếu số). `before_ms`/`after_ms` lấy từ bước `tab_alphabet`
+  (`click_page_ms_before`/`click_page_ms_after`, 0D.5). Ở `word`: `tab_unmounted_owners`/`tab_unmounted_click_phase` rỗng.
+
+**Các phương án bị loại (và vì sao):**
+- (a) của coder — giữ luật thời điểm, đổi nguồn mốc (`timestamp`/`wallTime` của `Network.webSocketWillSendHandshakeRequest`,
+  đồng hồ trình duyệt): vẫn là luật thời điểm. Nếu H2 đúng, mốc chính xác hơn vẫn đỏ ở mọi lượt; nếu H1 đúng, xanh nhưng biên an
+  toàn là khoảng lập lịch effect của React (~100 ms) — đúng loại điều kiện mong manh cần tránh. Luật sẽ phụ thuộc kết quả chẩn
+  đoán → trái yêu cầu "chốt trước". Loại.
+- (b) của coder — thứ tự CDP (`/ws/live-stream` trước `/ws/hand-landmarks`) và/hoặc `created_t_s ≤ t_s`: 0C.4 đã loại `t_s`
+  vì lọt socket mở sau khi chuyển tab; thứ tự giữa hai path không nói ai tạo socket (một `Fingerspelling` lỡ mở `/ws/live-stream`
+  trước `/ws/hand-landmarks` vẫn lọt). Loại.
+- (c) của coder — giữ chữ: dưới H2 không bao giờ đạt với luồng/app bị khóa; đo sai hiện tượng. Loại.
+- Nguồn tạo từ CDP `initiator` của `Network.webSocketCreated` (thụ động hơn hook): chưa chắc sự kiện mang `stack` trong cấu hình
+  puppeteer-core + Edge hiện có; chốt luật trên một trường chưa chắc có sẽ buộc chọn luật theo kết quả chẩn đoán. `new
+  Error().stack` của V8 trong trang luôn có. Không dùng, không bắt ghi.
+- Sửa luồng kịch bản (chờ trước khi bấm tab), đổi `App.jsx`, bỏ `StrictMode`, cho `Phase12Pipeline` chỉ nối WS khi bật camera:
+  KHÔNG (như 0C.2 — sửa đối tượng được kiểm cho vừa phép kiểm; chạm file bị khóa). Các hướng này được đưa vào câu hỏi soạn sẵn
+  ở §7-11 để NGƯỜI DÙNG quyết nếu lượt kế tiếp đỏ.
+- Hỏi người dùng NGAY (chấp nhận ghi Đánh vần e2e là giới hạn): chưa cần — có điều kiện cấu trúc suy từ mục đích, kiểm được,
+  không nới M1/M2; nhưng vì đây là lần cuối, câu hỏi được soạn sẵn ở §7-11.
+
+**Mức chặt so với Lần sửa 3 (nêu thẳng):**
+- NỚI đúng một điểm: socket do `Phase12Pipeline.jsx` tạo sau lúc bắt đầu bấm tab (dạng H2, hay bất kỳ lúc nào) không còn đỏ chỉ
+  vì thời điểm. Lý do: theo cơ chế 0D.1 đây là hành vi đúng của app khi người dùng bấm tab sớm; không vi phạm M1, M2, M3.
+- CHẶT hơn: M3 được kiểm trực tiếp — socket do `Fingerspelling.jsx` (hay module khác, hay mã không thuộc `/src/`) mở trên P là
+  đỏ ở MỌI thời điểm, kể cả khi tạo trước lúc bấm (điều (b) cũ không bắt được); mỗi socket CDP của P phải có đúng một bản ghi
+  nguồn tạo (socket không đi qua `new WebSocket` của trang — vd. từ worker — không có bản ghi → đỏ); thiếu dữ liệu hook → đỏ.
+
+### 0D.4 Vì sao luật mới không thành lỗ hổng (mỗi dòng có ca âm ở AC12-t mục 11)
+Socket trên P (`/ws/live-stream`, Đánh vần) mở SAU khi chuyển tab:
+- do `Fingerspelling.jsx` hay module khác → `tab_unmounted_owner_rule` đỏ;
+- do `Phase12Pipeline.jsx` (component đã gỡ vẫn kết nối lại — lỗi rò): nếu là socket thứ 3 → (a) đỏ; nhận `frame_result`/
+  `sign_result`/`error`/> 1 message/message không JSON → (d) đỏ; chưa đóng, `closed_t_s` null, hay đóng sau `record_clicked`
+  → (c) đỏ; bắt tay bị từ chối → (e) đỏ;
+- mở sau `record_clicked` → không thể đóng ≤ `record_clicked` → (c) đỏ;
+- URL `:8000` hoặc không qua `ws://localhost:3000/ws/` → kiểm URL 0B.1 đỏ.
+Phần còn lọt duy nhất: socket do `Phase12Pipeline.jsx` tạo, tổng ≤ 2, 0 message hoặc đúng 1 `session_info` v2, đóng trước
+`record_clicked`, bắt tay không bị từ chối, URL qua proxy — đúng định nghĩa "không gây hại" (M2) và đúng nguồn (M3).
+
+### 0D.5 Ghi nhận thêm (`scripts/e2e_browser.cjs`) — danh sách thay đổi ĐƯỢC PHÉP (chỉ ghi nhận)
+1. Một `page.evaluateOnNewDocument` mới, đăng ký trước `goto`: tạo `window.__e2eWs = []` và thay `window.WebSocket` bằng một
+   `Proxy` của constructor gốc CHỈ có bẫy `construct`. Bẫy ghi `{url: String(args[0]), t_page_ms: performance.now(), frames}`
+   vào `window.__e2eWs` rồi trả `Reflect.construct(target, args, newTarget)` (hành vi constructor, thuộc tính tĩnh như
+   `WebSocket.OPEN`, `prototype`, `instanceof` giữ nguyên nhờ Proxy chuyển tiếp). Việc ghi bọc trong try/catch: lỗi ghi nhận
+   KHÔNG được ném vào app; khi lỗi, ghi `{url, t_page_ms, frames: null, hook_error: <≤ 200 ký tự>}`.
+   `frames`: từ `new Error().stack` (KHÔNG đổi `Error.stackTraceLimit`), bỏ dòng tiêu đề; mỗi dòng frame → `pathname` của URL
+   http(s) trong dòng nếu `pathname` bắt đầu bằng `/src/`; `"<node_modules>"` nếu bắt đầu bằng `/node_modules/`; `"<other>"`
+   cho mọi trường hợp còn lại (script của puppeteer, `/@vite/…`, `/@fs/…`, dòng không có URL). KHÔNG ghi host, query, số
+   dòng/cột, hay đường dẫn hệ thống tệp (kiểm `json_has_no_absolute_path_landmark_or_image` vẫn áp).
+2. Lệnh bấm tab (`page.evaluate` hiện có, cùng selector, cùng `b.click()`) trả thêm `before_page_ms`/`after_page_ms` =
+   `performance.now()` trong trang ngay trước/ngay sau `b.click()`; bước `tab_alphabet` ghi thêm `click_page_ms_before`,
+   `click_page_ms_after` (giữ `t_s`, `clicked`, `click_t_s`).
+3. `obs.ws_page` (khởi tạo `null` cùng các khóa khác của `obs`) = `await page.evaluate(() => window.__e2eWs ?? null)` (lỗi →
+   `null`), gọi đúng một lần ngay trước `step('done')`, áp cho cả 2 kịch bản.
+KHÔNG đổi thứ tự thao tác, không thêm chờ, không đổi selector, không đổi clip hay tham số. Reviewer:
+`git diff e1d13d2 HEAD -- scripts/e2e_browser.cjs` chỉ gồm đúng 3 mục trên.
+
+### 0D.6 Chẩn đoán H1/H2 (thông tin, KHÔNG quyết luật) và cổng trước lượt chính thức
+- **B8d-3 (thử, ngoài repo):** sau commit B8d-2, tại HEAD sạch, chạy THỬ cả 3 lệnh của 0D.8 nhưng `--out
+  ../_plan06_tmp/b8d3_trial_<fingerspell_default|word_default|word_stgcn_h360>.json`. JSON thử không commit, không phải bằng
+  chứng AC12, không trích như kết quả.
+- **Ghi vào 06-progress (trích nguyên văn từ JSON thử):** mỗi kịch bản `ws_classification.page_hook` (`n_records_by_path`,
+  `n_cdp_by_path`, `tab_unmounted_owners`, `tab_unmounted_click_phase`); `created_t_s`/`closed_t_s` các socket P, `click_t_s`,
+  `click_page_ms_before/after`, `t_s` của `record_clicked`; danh sách kiểm đỏ (nếu có).
+- **Kết luận chẩn đoán theo luật đặt trước:** mọi socket P `before_click` → H1 (trễ giao sự kiện CDP); có socket P
+  `during_click` → H2 (socket tạo trong lúc xử lý click); có `after_click` → cả H1 lẫn H2 đều không mô tả đúng (ghi nhận);
+  `unknown` → ghi nhận thiếu dữ liệu. Kết luận này chỉ để ghi vào progress/JSON cho reviewer; KHÔNG đổi luật, hằng, lượt chạy.
+- **Cổng:**
+  - Cả 3 JSON thử `all_checks_pass: true` → sang B8d-4.
+  - Có kiểm đỏ, và coder chỉ ra được đó là **lỗi cài đặt** — code không làm đúng chữ 0D.3/0D.5 (trích câu chữ bị lệch + bằng
+    chứng trong JSON thử), hoặc ghi nhận ném lỗi/làm hỏng trang (vd. `pageerror` do hook) — thì được sửa ĐÚNG MỘT vòng: thêm ca
+    AC12-t tái hiện lỗi (đỏ trước), sửa, AC12-t + lệnh AC2 31 module xanh, `detect-changes`, commit `06: B8d-2b …`, chạy thử
+    lại cả 3 (`../_plan06_tmp/b8d3b_trial_*.json`). Vòng sửa KHÔNG được đổi hằng, điều kiện, tên kiểm, luồng thao tác, clip.
+  - Mọi trường hợp khác (luật đúng chữ vẫn đỏ; hoặc vòng sửa đã dùng mà vẫn đỏ) → DỪNG, CẦN NGƯỜI DÙNG (§7-11). KHÔNG chạy
+    lượt chính thức.
+
+### 0D.7 Bằng chứng hook không đổi hành vi của app
+Hook `Proxy` (0D.5) chạy trong trang được kiểm nên phải có bằng chứng nó không đổi hành vi app (nếu có, mọi kết luận e2e mất
+giá trị). Bằng chứng được yêu cầu, không thêm kiểm mới:
+- Thiết kế: chỉ bẫy `construct`, gọi đúng constructor gốc với đúng đối số; ghi nhận trong try/catch; không đổi
+  `Error.stackTraceLimit`; không thêm listener nào lên socket.
+- Trong 3 JSON (thử và chính thức): `console_error_0`, `pageerror_0`, `requestfailed_0` xanh và mọi kiểm chức năng của kịch bản
+  (health, `/sequence`, compose, `session_info`, `frame_result`, sự kiện harmonized, DOM) xanh — cùng tập kiểm đã có trước
+  Lần sửa 4.
+- Reviewer so tập kiểm chức năng của JSON Đánh vần `_r4` với JSON đỏ B8c-3 (chạy không có hook): mọi kiểm chức năng xanh ở B8c-3
+  phải xanh ở `_r4`. Một kiểm chức năng đổi xanh → đỏ là dấu hiệu hook đổi hành vi → theo §7-11.
+
+### 0D.8 Lượt chính thức B8d-4 và bằng chứng đỏ cũ
+- **Chạy lại CẢ 3** (script đổi → mọi JSON trước không phải đầu ra của script cuối; 2 kịch bản Ký từ chưa từng chạy chính thức
+  với script có luật 0C.2), mỗi kịch bản ĐÚNG 1 lần, theo thứ tự fingerspell → word → word stgcn_h360, tại HEAD sạch
+  (`git status --porcelain -- backend src frontend scripts tests` rỗng) là con cháu của commit B8d-2 (hoặc B8d-2b nếu có):
+  - `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/e2e_fullstack.py --scenario fingerspell --video data/external/hauuto_raw/raw/raw/hau/a_hau_A_001.mp4 --out reports/e2e_<YYYY-MM-DD>_r4/fingerspell_default.json`
+  - `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/e2e_fullstack.py --scenario word --video data/Dataset/Videos/D0120T.mp4 --out reports/e2e_<YYYY-MM-DD>_r4/word_default.json`
+  - `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/e2e_fullstack.py --scenario word --model-type stgcn_h360 --video data/Dataset/Videos/D0120T.mp4 --out reports/e2e_<YYYY-MM-DD>_r4/word_stgcn_h360.json`
+  `<YYYY-MM-DD>` = ngày chạy; hậu tố `_r4` BẤT KỂ ngày (thư mục luôn mới).
+- **Bằng chứng đỏ cũ giữ nguyên:** KHÔNG ghi đè, đổi tên hay xóa `reports/e2e_2026-09-30/fingerspell_default.json` (lượt chính
+  thức B8c-3, đỏ theo luật Lần sửa 3; d2752c3) và `reports/e2e_2026-09-29/*` (trước Lần sửa 2/3). 06-progress ghi bảng:
+  `e2e_2026-09-29/*` = chạy trước Lần sửa 2 (e3d0df8), bị thay; `e2e_2026-09-30/fingerspell_default.json` = lượt chính thức
+  B8c-3, ĐỎ theo luật Lần sửa 3, là bằng chứng lượt đỏ, KHÔNG phải bằng chứng AC12; bằng chứng AC12 = `e2e_<date>_r4/*`.
+- **Chạy đủ 3 kể cả khi một kịch bản đỏ** (khác B8c-3: không còn lần sửa luật nào để dành lượt; người dùng cần đủ 3 JSON cùng
+  một commit để quyết). Commit MỌI JSON đã sinh (xanh hay đỏ) + 06-progress: `06: B8d-4 …`. Nếu có kiểm đỏ → sau commit DỪNG,
+  CẦN NGƯỜI DÙNG (§7-11); không chạy lại, không sửa gì.
+
+### 0D.9 Giả định coder tự đặt ở B8c (06-progress B8c-1..B8c-3; planner tách ra) — quyết định
+1. **Bước mốc (`tab_alphabet`, `record_clicked`) phải có ĐÚNG 1 lần (`_single_step`), kế hoạch chỉ nói "phải có": CHẤP NHẬN.**
+   Kịch bản ghi mỗi bước một lần; hai bước cùng tên thì mốc mơ hồ → đỏ là đúng mục đích. Giữ.
+2. **`n_messages` phải bằng tổng `count_by_type` + `n_non_json` (socket `tab_unmounted`): CHẤP NHẬN.** Kiểm toàn vẹn dữ liệu,
+   chặt hơn chữ, cùng tinh thần 0C.3 mục 3. Giữ.
+3. **`role_by_path` luôn có path khai báo của kịch bản (kể cả 0 socket), path quan sát khác = `"other"`: CHẤP NHẬN.** Khớp
+   0C.2 (path `used` vắng → đỏ; ca 10c `tab_unmounted_by_path {"/ws/live-stream": 0}`). Giữ.
+4. **`created_t_s` không phải số → đỏ: CHẤP NHẬN, GIỮ ở Lần sửa 4** (toàn vẹn dữ liệu; CDP luôn phát `webSocketCreated`).
+5. **`closed_t_s == t_s(record_clicked)` là xanh (≤ bao gồm bằng): CHẤP NHẬN** — đúng chữ "≤" của 0C.2 (c). Giữ.
+6. **`count_by_type == {session_info: 1}` nhưng `first_type` khác `session_info` → đỏ: CHẤP NHẬN** — đúng chữ 0C.2 (d). Giữ.
+7. **Mỗi ca AC12-t mục 10 assert đủ 5 kiểm (đúng kiểm ghi bị đỏ, còn lại xanh): CHẤP NHẬN** — đúng chữ "các kiểm khác vẫn xanh".
+   Mục 11 làm tương tự với 6 kiểm (0D.10).
+8. **`ws_classification.strictmode_orphans_by_path` chỉ còn path `used`: CHẤP NHẬN** — đúng 0C.2 (luật mồ côi chỉ cho `used`).
+9. **B8c-3 ngày 2026-09-30 → thư mục mới `reports/e2e_2026-09-30/`, giữ `reports/e2e_2026-09-29/`: CHẤP NHẬN** — đúng 0C.5
+   bước 3. Lượt B8d dùng thư mục `_r4` (0D.8) nên không đụng thư mục này.
+10. **Dừng ngay sau Đánh vần đỏ, KHÔNG chạy 2 kịch bản Ký từ: CHẤP NHẬN** — đúng §7-10 và giữ lượt "đúng 1 lần" cho luật cuối.
+    (Ở B8d-4 quy định khác: chạy đủ 3, lý do ở 0D.8.)
+11. **Commit JSON đỏ (d2752c3, `WIP 06:`) làm bằng chứng lượt chính thức: CHẤP NHẬN** — không giấu lượt đỏ; file thuộc mẫu
+    `reports/e2e_<YYYY-MM-DD>/*.json` của AC1; giữ nguyên (0D.8).
+12. **Ghi nhận quy trình, KHÔNG phải giả định về luật:** commit 1b05851 (progress B8c-2) ghi "risk low" trong message trong khi
+    output thật là "no indexed symbols overlap those hunks"; commit 2fa59e0 chạy detect-changes SAU commit. Không chặn (chỉ
+    docs), nhưng reviewer ghi vào mục quy trình (AC13); từ B8d mọi commit phải chép đúng output `detect-changes` chạy TRƯỚC commit.
+
+### 0D.10 Test AC12-t — thay đúng MỘT test cũ, thêm mục 11
+- **Test cũ bị thay (luật bị thay):** `TestE2eScenarioRoles.test_live_socket_created_at_or_after_click_is_red`
+  (`tests/test_frontend_contract.py:614-619` tại e1d13d2; 3 subTest `created_t_s` = T, T+0.001, T+1.0 → kỳ vọng đỏ). Lý do: test
+  này kiểm đúng phép so sánh (b) bị bỏ ở 0D.3; giữ nó thì luật cũ vẫn là hợp đồng. Thay TẠI CHỖ bằng
+  `test_live_socket_created_at_or_after_click_is_not_a_socket_rule_violation` (cùng 3 giá trị → `tab_unmounted_socket_rule` và
+  4 kiểm khác của `_run` xanh). Khả năng bắt socket sai nguồn mà test cũ nhắm tới chuyển sang mục 11 (11e).
+- **Không test cũ nào khác được sửa/xóa:** 16 test `TestE2eSocketRules` và 29 test còn lại của `TestE2eScenarioRoles` (gồm
+  `test_live_socket_created_t_s_missing_is_red`, `test_evaluate_uses_the_role_rules`, `test_ws_classification_has_roles`) giữ
+  nguyên chữ; helper cũ (`_ws`, `_live_tab`, `_fs_steps`, `_case_10a`, …) giữ nguyên chữ (test mới được thêm helper MỚI).
+  Kiểm: `git diff e1d13d2 HEAD -- tests/test_frontend_contract.py` có dòng `-` CHỈ là 6 dòng của method bị thay. Nếu một test cũ
+  khác không giữ được → DỪNG, CẦN NGƯỜI DÙNG (§7-11; không có Lần sửa 5).
+- **Thêm lớp `TestE2eTabOwner`** (AC12-t mục 11, §5) cuối file.
+
+### 0D.11 Việc coder làm tiếp (B8d thay cho B8c-3, rồi B9b)
+1. **B8d-1 (test trước).** Thay test cũ theo 0D.10 và thêm `TestE2eTabOwner` (AC12-t mục 11). Chạy lớp AC12-t → các ca mới
+   đỏ vì hàm/hằng chưa có (và test thay thế đỏ vì (b) còn) là đúng; ghi log `../_plan06_tmp/b8d1_red.log`. Kiểm diff theo
+   0D.10. Commit `WIP 06: B8d-1 …` (message có detect-changes chạy trước commit).
+2. **B8d-2.** `impact` upstream cho `tab_unmounted_violations`, `evaluate`, `ws_classification` (và symbol JS nếu index thấy);
+   `risk: UNKNOWN`/nhầm tên → xác nhận bằng text search, ghi 06-progress. Sửa `scripts/e2e_browser.cjs` đúng 0D.5 và
+   `scripts/e2e_fullstack.py` đúng 0D.3 (+ docstring đầu module nêu kiểm mới). Chạy AC12-t → xanh; `cd frontend && npm test` →
+   0 fail; lệnh AC2 31 module → 0 failure/error/skip, số test theo module = mốc B8c-2 (25 cũ = 383; 4 module 06 = 21 + 9 + 4 +
+   58; 2 module merge = 38 — 06-progress B8c-2) cộng số test mới của mục 11 (test bị thay tính 1 đổi 1; chỉ
+   `tests.test_frontend_contract` đổi). `node --check scripts/e2e_browser.cjs`. `detect-changes --scope all` TRƯỚC commit;
+   commit `06: B8d-2 …` (message có impact/detect-changes thật).
+3. **B8d-3 (thử + chẩn đoán + cổng)** theo 0D.6. Ghi 06-progress. Cổng không qua → DỪNG, CẦN NGƯỜI DÙNG.
+4. **B8d-4 (chính thức)** theo 0D.8. Ghi 06-progress (exit code, `checks n/m`, kiểm đỏ nếu có, `page_hook` và kết luận H1/H2 từ
+   JSON chính thức, so sánh kiểm chức năng theo 0D.7, bảng các thư mục e2e). Commit `06: B8d-4 …`. Có kiểm đỏ → DỪNG, CẦN
+   NGƯỜI DÙNG.
+5. **B9b** như 0B.5 bước 4 tại HEAD cuối sau B8d-4, với: `git diff --name-only <generated_by.git_commit của 3 JSON _r4> HEAD --
+   backend src frontend scripts tests` rỗng; AC1-b nhóm (ii) gồm commit chứa Lần sửa 4; AC1 danh sách gồm
+   `reports/e2e_<YYYY-MM-DD>_r4/*.json`; progress_log (AC13) nêu thêm Lần sửa 4 (thay điều kiện thời điểm bằng nguồn tạo),
+   JSON đỏ B8c-3 được giữ, kết luận chẩn đoán H1/H2, commit của 3 JSON `_r4`. Commit. Orchestrator gọi vslt-reviewer.
+
+### 0D.12 Reviewer kiểm (thêm vào 0B.5, 0C.6)
+- **Tính hợp lý của việc đổi tiêu chí sau khi thấy kết quả (3 lần: 0B, 0C, 0D).** Reviewer đánh giá độc lập, cho từng lần:
+  (1) nguyên nhân gốc có được chỉ ra bằng code/cơ chế, không chỉ bằng con số quan sát; (2) luật mới có suy từ mục đích ghi TRƯỚC
+  (0B.1 (1)(2); 0C.2; 0D.2 M1–M3) không; (3) mỗi điểm nới có nêu rõ và có ca âm chứng minh phần còn lại vẫn bị bắt (0D.4) không;
+  (4) không có kiểm nào bị bỏ mà không thay bằng kiểm cùng mục đích; (5) mỗi lượt chính thức chạy đúng 1 lần/kịch bản và mọi
+  JSON đỏ còn trong repo. Nếu reviewer thấy lần sửa nào thực chất là hạ tiêu chí để pass → ghi FAIL với lý do, không phải
+  REQUEST_CHANGES nhẹ.
+- `tab_unmounted_owner_rule` cài đúng chữ 0D.3: hằng owner tĩnh, không suy từ dữ liệu; `ws_owner` lấy frame `/src/` đầu tiên;
+  thiếu `page_ws` → đỏ ở cả 2 loại kịch bản; so số bản ghi == số socket CDP trên P; owner khác/None/`hook_error` → đỏ;
+  `page_hook`/`click_phase` KHÔNG ảnh hưởng `all_checks_pass` (test 11k).
+- `tab_unmounted_violations` chỉ mất đúng phép so sánh (b) (`git diff e1d13d2 HEAD -- scripts/e2e_fullstack.py`); (a), (c),
+  (d), (e), điều kiện bước và `created_t_s` là số giữ nguyên; `scenario_ws_roles` vẫn trả đúng 2 kiểm.
+- `scripts/e2e_browser.cjs`: diff so với e1d13d2 chỉ gồm 3 mục 0D.5; hook không đổi hành vi app (0D.7: không `pageerror`, không
+  console error, kiểm chức năng không đổi xanh → đỏ so với JSON B8c-3); luồng thao tác không đổi.
+- Test: chỉ 1 test cũ bị thay (kiểm diff theo 0D.10); mục 11 đủ ca, không skip; AC2 số test theo module đúng công thức 0D.11.
+- 3 JSON `_r4`: mỗi lệnh chạy đúng 1 lần (đối chiếu 06-progress và `generated_at_utc`), `generated_by.git_commit` là con cháu
+  commit B8d-2 (hoặc B8d-2b), `code_dirty: false`, `all_checks_pass: true`, `checks` có `strictmode_orphan_rule`,
+  `tab_unmounted_socket_rule`, `tab_unmounted_owner_rule`; JSON Đánh vần có `page_hook` với số bản ghi P == số socket CDP P và
+  owner đúng hằng. Kết luận H1/H2 trong progress khớp `tab_unmounted_click_phase` của JSON chính thức. JSON thử ngoài repo KHÔNG
+  được trích như bằng chứng.
+- JSON đỏ `reports/e2e_2026-09-30/fingerspell_default.json` còn nguyên (so blob với d2752c3); `reports/e2e_2026-09-29/*` còn
+  nguyên.
+- Nếu có vòng sửa B8d-2b: lỗi có đúng là lệch chữ kế hoạch (không phải đổi luật), có ca AC12-t tái hiện, chỉ 1 vòng.
+- Quy trình: ghi chú 0D.9 mục 12; `App.jsx`, `main.jsx`, `Phase12Pipeline.jsx` không đổi từ P6..HEAD ngoài những gì AC1 cho phép
+  từ trước (Phase12Pipeline.jsx đã sửa ở B5; không commit B8d nào chạm nó).
+
+### 0D.13 Thay đổi so với bản trước
+- Đầu file (dòng Lần sửa 4 + điểm dừng có điều kiện CẦN NGƯỜI DÙNG). §0B.3 AC1-b (ii); §0B.5, §0C.2 (b), §0C.4, §0C.5, §0C.6
+  (ghi chú trỏ sang 0D). §2.2 (ghi chú cơ chế effect). §3.7 (kiểm nguồn tạo + ghi nhận). §3.9 (ngoài phạm vi). §4 (quy ước +
+  B8c/B8d/B9). §5: AC1 (thư mục `_r4`), AC2 (B8d), AC12 (điều (b) thay bằng `tab_unmounted_owner_rule`; 3 JSON của B8d-4),
+  AC12-t (mục 10: 1 test thay; thêm mục 11), AC13. §6 (Rò rỉ/TEST, Cỡ mẫu, Bảo mật). §7 (đầu mục; điểm dừng 2, 10 ghi chú;
+  thêm 11).
+- Không bỏ kiểm nào; M1 (URL/HMR/`:8000`) và M2 ((a), (c), (d), (e)) giữ nguyên chữ; điểm nới duy nhất (thời điểm tạo socket
+  của `Phase12Pipeline.jsx`) nêu lý do ở 0D.3 và được quyết TRƯỚC mọi lượt chạy của Lần sửa 4.
 
 ## 1. Mục tiêu và DoD
 
@@ -441,6 +739,10 @@ duyệt thật, webcam giả nạp clip thật).
   đóng ngay). `start_fullstack.ps1` chạy `npm run dev` → trang có thêm socket HMR của Vite (`/?token=…`, `vite-hmr`).
 - (Lần sửa 3) `frontend/src/App.jsx:9` tab mặc định `'realtime'` → khi mở trang, `Phase12Pipeline` luôn mount (2 socket
   `/ws/live-stream` do StrictMode) kể cả ở kịch bản Đánh vần; chuyển tab thì component bị gỡ và socket đóng.
+- (Lần sửa 4) Sau B5, `Phase12Pipeline.jsx:86` gọi `new WebSocket(url)` trong `connectWs`, được gọi từ `useEffect`
+  (`:121-128`, passive effect) — thời điểm tạo socket phụ thuộc lịch effect của React, có thể rơi vào lúc xử lý click chuyển
+  tab (0D.1). Lời gọi `new WebSocket` trong `frontend/src`: `Phase12Pipeline.jsx:86`, `Fingerspelling.jsx:187`,
+  `RealtimeStream.jsx:145` (mã chết).
 
 ### 2.3 Còn thiếu (việc này làm)
 1. Đường trích landmark bàn tay Cấp 1 từ webcam, nhất quán với extractor train.
@@ -616,6 +918,10 @@ Server → client:
 - (Lần sửa 3) Mỗi path app có vai trò cố định theo kịch bản (bảng 0C.2): `used` theo luật mồ côi 0B.2; `tab_unmounted`
   (chỉ `/ws/live-stream` ở Đánh vần) theo `tab_unmounted_socket_rule`; path khác → đỏ. `e2e_browser.cjs` ghi thêm
   `created_t_s`/`closed_t_s` mỗi socket và `click_t_s` ở bước `tab_alphabet` (0C.4); luồng thao tác không đổi.
+- (Lần sửa 4) `tab_unmounted_socket_rule` không còn so `created_t_s` với `click_t_s`; nguồn tạo của socket trên path
+  `tab_unmounted` được kiểm bằng `tab_unmounted_owner_rule` (0D.3) từ call stack ghi trong trang lúc `new WebSocket` (hook
+  `Proxy` chỉ ghi nhận, 0D.5); `e2e_browser.cjs` ghi thêm `obs.ws_page` và `click_page_ms_before/after`; JSON có
+  `ws_classification.page_hook` (thông tin chẩn đoán H1/H2, không phải kiểm). Luồng thao tác không đổi.
 - Clip: Đánh vần — `data/external/hauuto_raw/raw/raw/hau/a_hau_A_001.mp4` (640×480, cỡ webcam; clip TRAIN của model Cấp
   1 → chỉ kiểm chạy được, KHÔNG phải độ chính xác). Ký từ — (Lần sửa 2, ghi đích danh) `qipedc_D0120T`
   (`data/Dataset/Videos/D0120T.mp4`) = phần tử đầu tiên KHÁC `qipedc_W03251B` của `scripts/live_clip_sample.py`
@@ -646,6 +952,9 @@ Server → client:
 - (Lần sửa 2) Tắt HMR / chạy e2e trên `vite preview`: không làm (0B.1).
 - (Lần sửa 3) Đổi tab mặc định trong `App.jsx`, bỏ `StrictMode`, hay thêm bước chờ trong kịch bản trình duyệt để luật cũ tự
   xanh: không làm (0C.2).
+- (Lần sửa 4) Luật socket dựa trên thời điểm tạo (mọi nguồn đồng hồ), CDP `initiator`, `Phase12Pipeline` chỉ nối WS khi bật
+  camera: không làm (0D.3). Đề xuất backlog Việc 6: mở trang không nên tự mở phiên `/ws/live-stream` khi người dùng chỉ dùng
+  Đánh vần (đã ghi ở §6 Bảo mật, Lần sửa 3).
 
 ## 4. Chia việc
 
@@ -659,6 +968,8 @@ Quy ước chung cho mọi bước:
 - Thư mục tạm ngoài repo: `../_plan06_tmp/`.
 - (Lần sửa 1) AC2 ở mốc trung gian B4–B6 theo §0.3; từ B7 trở đi AC2 phải xanh hoàn toàn.
 - (Lần sửa 2) Từ B8b trở đi, lệnh AC2 là bản 31 module (0B.4).
+- (Lần sửa 4) Từ B8d: `detect-changes` chạy TRƯỚC commit và message chép đúng output (0D.9 mục 12). Mọi lượt e2e đỏ (thử sau
+  vòng sửa duy nhất, hoặc chính thức) → DỪNG, CẦN NGƯỜI DÙNG (§7-11); không gọi planner để đổi luật e2e.
 
 | Bước | Nội dung | Phụ thuộc | Ước lượng |
 |---|---|---|---|
@@ -672,13 +983,14 @@ Quy ước chung cho mọi bước:
 | **B7** | `scripts/smoke_test_phase12.py` (AC10) chạy với model mặc định VÀ `VSL_MODEL_TYPE=stgcn_h360`; viết lại `docs/phase12_api.md` (AC11, test thêm vào `tests/test_frontend_contract.py`). AC2 phải xanh hoàn toàn. Commit. | B2, B5, B6 | 1.5 giờ |
 | **B8** | E2E: `scripts/make_fake_webcam_y4m.py`, `scripts/e2e_browser.cjs`, `scripts/e2e_fullstack.py`; chạy 3 kịch bản AC12 (Đánh vần mặc định, Ký từ mặc định, Ký từ `stgcn_h360`) tại HEAD sạch; commit script + 3 JSON. (Đã làm: 7e38118, e3d0df8 — bị thay thế bởi B8b theo Lần sửa 2.) | B5, B6, B7 | 2 giờ |
 | **B8b** | (Lần sửa 2, 0B.5 bước 1–3) Test AC12-t trước trong `tests/test_frontend_contract.py` → hàm thuần phân loại socket HMR/mồ côi + 4 kiểm mới trong `scripts/e2e_fullstack.py` → AC2 31 module xanh → commit; tại HEAD sạch đó chạy lại 3 kịch bản (clip giữ nguyên) → 3 JSON `all_checks_pass: true` → commit 3 JSON. Kiểm nào đỏ → DỪNG (§7-8). (Lần sửa 3: B8b-1, B8b-2 xong — 302072c, eb379fa; B8b-3 dừng §7-8 ở 1a4e182; phần chạy chính thức chuyển sang B8c.) | B8 | 1.5 giờ |
-| **B8c** | (Lần sửa 3, 0C.5 bước 1–3) Test AC12-t mục 10 trước (16 test cũ không sửa) → `e2e_browser.cjs` ghi `created_t_s`/`closed_t_s`/`click_t_s` + `e2e_fullstack.py` vai trò path + `tab_unmounted_socket_rule` → AC12-t xanh, AC2 31 module xanh → commit; tại HEAD sạch đó chạy chính thức 3 kịch bản, mỗi kịch bản 1 lần → 3 JSON `all_checks_pass: true` → commit 3 JSON. Kiểm nào đỏ → DỪNG (§7-8, §7-10). | B8b-2 | 2 giờ |
-| **B9** | Đóng: chạy AC2 đầy đủ + `npm test` + build; so `git status --porcelain` với B0; THÊM 1 dòng progress_log (AC13), ghi backlog đề xuất (kế hoạch "segmenter live"; hỏi người dùng trước khi xóa `RealtimeStream.jsx`; `detail` 503; đo lệch Kaggle↔cục bộ toàn bộ hauuto). Commit. Orchestrator gọi vslt-reviewer. (Lần sửa 2: làm theo 0B.5 bước 4 — AC2 31 module, AC1 theo 0B.3, code không đổi sau lượt e2e — tại HEAD cuối sau B8b. Lần sửa 3: tại HEAD cuối sau B8c, 0C.5 bước 4.) | B0–B8c | 0.5 giờ |
+| **B8c** | (Lần sửa 3, 0C.5 bước 1–3) Test AC12-t mục 10 trước (16 test cũ không sửa) → `e2e_browser.cjs` ghi `created_t_s`/`closed_t_s`/`click_t_s` + `e2e_fullstack.py` vai trò path + `tab_unmounted_socket_rule` → AC12-t xanh, AC2 31 module xanh → commit; tại HEAD sạch đó chạy chính thức 3 kịch bản, mỗi kịch bản 1 lần → 3 JSON `all_checks_pass: true` → commit 3 JSON. Kiểm nào đỏ → DỪNG (§7-8, §7-10). (Lần sửa 4: B8c-1, B8c-2 xong — 85ef325, e1d13d2; B8c-3 dừng §7-10(c), JSON đỏ ở d2752c3; phần chạy chính thức chuyển sang B8d.) | B8b-2 | 2 giờ |
+| **B8d** | (Lần sửa 4, 0D.11 bước 1–4) B8d-1: thay đúng 1 test cũ + thêm AC12-t mục 11 (test trước) → commit; B8d-2: `e2e_browser.cjs` theo 0D.5 + `e2e_fullstack.py` theo 0D.3 → AC12-t, `npm test`, AC2 31 module xanh → commit; B8d-3: chạy thử 3 kịch bản ngoài repo, ghi chẩn đoán H1/H2, cổng (tối đa 1 vòng sửa lỗi cài đặt B8d-2b); B8d-4: chính thức 3 kịch bản vào `reports/e2e_<YYYY-MM-DD>_r4/`, mỗi kịch bản đúng 1 lần, chạy đủ 3 → commit mọi JSON. Đỏ ở bất kỳ đâu (sau cổng) → DỪNG, CẦN NGƯỜI DÙNG (§7-11). | B8c-2 | 2.5 giờ |
+| **B9** | Đóng: chạy AC2 đầy đủ + `npm test` + build; so `git status --porcelain` với B0; THÊM 1 dòng progress_log (AC13), ghi backlog đề xuất (kế hoạch "segmenter live"; hỏi người dùng trước khi xóa `RealtimeStream.jsx`; `detail` 503; đo lệch Kaggle↔cục bộ toàn bộ hauuto). Commit. Orchestrator gọi vslt-reviewer. (Lần sửa 2: làm theo 0B.5 bước 4 — AC2 31 module, AC1 theo 0B.3, code không đổi sau lượt e2e — tại HEAD cuối sau B8b. Lần sửa 3: tại HEAD cuối sau B8c, 0C.5 bước 4. Lần sửa 4: tại HEAD cuối sau B8d-4, 0D.11 bước 5.) | B0–B8d | 0.5 giờ |
 
-Tổng ước lượng ≈ 16 giờ (+ 1.5 giờ B8b, + 2 giờ B8c), GPU 0 giờ, không Kaggle, không cài gói.
+Tổng ước lượng ≈ 16 giờ (+ 1.5 giờ B8b, + 2 giờ B8c, + 2.5 giờ B8d), GPU 0 giờ, không Kaggle, không cài gói.
 
 **Chặng giao gợi ý:** chặng 1 = B0–B2 (xong); chặng 2 = B3–B4 (xong); chặng 3 = B5–B7 (xong); chặng 4 = B8–B9 (B8 xong;
-B8b-1/B8b-2 xong; còn B8c + B9b theo Lần sửa 3).
+B8b-1/B8b-2 xong; B8c-1/B8c-2 xong; còn B8d + B9b theo Lần sửa 4).
 
 ## 5. Tiêu chí chấp nhận (hợp đồng — coder KHÔNG được đổi; chỉ planner đổi và phải ghi lý do)
 
@@ -699,7 +1011,8 @@ commit không thuộc 06 được quy nhóm theo AC1-b..d.) `git diff --name-sta
   `scripts/e2e_browser.cjs` (A);
 - `tests/{test_cors_origin_bind,test_hand_landmarks_ws,test_hand_live_equivalence,test_frontend_contract}.py` (A);
 - `reports/fingerspell_live_<YYYY-MM-DD>/hand_live_check.json`, `reports/e2e_<YYYY-MM-DD>/*.json` (A; (Lần sửa 2) M nếu
-  ghi đè cùng ngày);
+  ghi đè cùng ngày); (Lần sửa 4) `reports/e2e_<YYYY-MM-DD>_r4/*.json` (A); `reports/e2e_2026-09-30/fingerspell_default.json`
+  (A ở d2752c3) KHÔNG được sửa/đổi tên/xóa sau đó;
 - `docs/phase12_api.md` (M); `docs/progress_log.md` (M, chỉ thêm); `docs/plans/06-progress.md` (A/M);
   `docs/plans/06-viec5-frontend.md` (chỉ planner).
 
@@ -707,15 +1020,15 @@ KHÔNG đổi: `frontend/package-lock.json`, `frontend/src/App.jsx`, `Dictionary
 `src/data/**`, `src/inference/{harmonized_live,sign_segmenter,predictor}.py`, `configs/`, `checkpoints/`, `data/`, mọi test
 đã có, `docs/reviews/*`. Không xóa file nào. 3 file data của người dùng vẫn ` D` chưa staged. Không file `.pt/.npz/.mp4/.y4m/
 .png/.jpg/.log` nào được thêm vào git; `frontend/dist` và `node_modules` không vào git. ((Lần sửa 3) `frontend/src/main.jsx`
-không nằm trong danh sách được sửa ở trên nên cũng KHÔNG đổi.)
+không nằm trong danh sách được sửa ở trên nên cũng KHÔNG đổi.) ((Lần sửa 4) Không commit B8d nào chạm `frontend/`.)
 
 **AC2 — Không hồi quy.** (Lần sửa 2) Lệnh đóng việc — 31 module (25 của kế hoạch 05 + 4 module mới của 06 + 2 module từ merge
 cloud bbfdff3, xem 0B.4):
 `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_alphabet_preprocessing tests.test_aspect_correction tests.test_realtime tests.test_split_guards tests.test_translation_core tests.test_vsl_system tests.test_ws_throughput tests.test_fingerspelling_api tests.test_unified_split_integrity tests.test_report_step4 tests.test_fingerspelling_limits tests.test_fingerspelling_compose tests.test_fingerspelling_deployed tests.test_alphabet_ckpt_provenance tests.test_harmonized tests.test_sign_segmenter tests.test_harmonized_live tests.test_ws_live_contract tests.test_live_harmonized_equivalence tests.test_archive_step4_kaggle tests.test_status_privacy tests.test_backend_model_unavailable tests.test_ws_dropped_frames tests.test_archive_private_kaggle tests.test_private_artifacts tests.test_cors_origin_bind tests.test_hand_landmarks_ws tests.test_hand_live_equivalence tests.test_frontend_contract tests.test_archive_private_kaggle_r05 tests.test_backend_source_guard -v`
 (Lệnh 29 module trước Lần sửa 2 là tập con; áp cho B7/B8 đã làm.)
-- **Đóng việc (B7, B8, B8b, B8c, B9):** 0 failure, 0 error, 0 skip. Số test báo theo module, trước → sau: 25 module cũ = B0;
-  4 module của 06 = B7 + số test AC12-t (Lần sửa 2 và (Lần sửa 3) mục 10); 2 module merge = số trên cây merge (review cloud).
-  Chênh phải giải thích.
+- **Đóng việc (B7, B8, B8b, B8c, B8d, B9):** 0 failure, 0 error, 0 skip. Số test báo theo module, trước → sau: 25 module cũ = B0;
+  4 module của 06 = B7 + số test AC12-t (Lần sửa 2, (Lần sửa 3) mục 10 và (Lần sửa 4) mục 11 — test bị thay ở mục 10 tính 1 đổi
+  1); 2 module merge = số trên cây merge (review cloud). Chênh phải giải thích.
 - **(Lần sửa 1) Mốc trung gian B4–B6:** như trên, ngoại trừ failure DUY NHẤT được phép là
   `TestFrontendSourceGuard.test_no_violation`, với tập vi phạm (cặp file + mẫu) là tập con của 14 vi phạm ghi ở
   06-progress B4, không tăng qua các mốc; sau B5 chỉ còn trong `Fingerspelling.jsx`; sau B6 = 0. Commit có guard đỏ ghi
@@ -850,7 +1163,10 @@ chép vào `06-progress.md`.
 `fingerspell_default.json`, `word_default.json`, `word_stgcn_h360.json`. (Lần sửa 2) Mỗi lệnh exit 0 và JSON có
 `all_checks_pass: true`; 3 JSON là của lượt chạy B8b (script chứa luật 0B.1/0B.2), không phải e3d0df8. ((Lần sửa 3) Thay
 "lượt chạy B8b" bằng "lượt chạy chính thức B8c" — script chứa luật 0B.1/0B.2 và 0C.2; mỗi kịch bản chạy đúng 1 lần; JSON thử
-ngoài repo của B8b-3 không phải bằng chứng.) Chung cho cả 3:
+ngoài repo của B8b-3 không phải bằng chứng.) ((Lần sửa 4) Thay "lượt chạy chính thức B8c" bằng "lượt chạy chính thức B8d-4" —
+script chứa luật 0B.1/0B.2, 0C.2 đã sửa theo 0D.3, và `tab_unmounted_owner_rule`; thư mục `reports/e2e_<YYYY-MM-DD>_r4/`; mỗi
+kịch bản đúng 1 lần, chạy đủ 3; JSON đỏ `reports/e2e_2026-09-30/fingerspell_default.json` (B8c-3) và JSON thử ngoài repo KHÔNG
+phải bằng chứng AC12. Có kiểm đỏ → DỪNG, CẦN NGƯỜI DÙNG, §7-11.) Chung cho cả 3:
 - `/api/health` 200 (`status == "ok"`) và trang 3000 200, (Lần sửa 2) cả hai trong CÙNG cửa sổ 180 s tính từ lúc khởi chạy
   `start_fullstack.ps1`; ghi thời gian chờ từng cái; ghi `model_type`, `is_default` từ health.
 - 0 console `error`, 0 `pageerror`, 0 `requestfailed`, 0 HTTP ≥ 400 (lỗi nguyên văn được liệt kê nếu có).
@@ -868,10 +1184,16 @@ ngoài repo của B8b-3 không phải bằng chứng.) Chung cho cả 3:
     socket của path vẫn tính.
   - **(Lần sửa 3) `tab_unmounted_socket_rule`** (có trong `checks` của cả 3 JSON): mọi path app KHÁC path `used` phải là
     path `tab_unmounted` của kịch bản (chỉ `/ws/live-stream` ở Đánh vần; Ký từ không có) và thỏa đủ 0C.2 mục 2: ≤ 2 socket;
-    mỗi socket `created_t_s < click_t_s` của bước `tab_alphabet` (bước có mặt, `clicked: true`); `closed: true`,
-    `closed_t_s` không null và `≤ t_s` của bước `record_clicked`; `n_non_json == 0` và `count_by_type` rỗng hoặc đúng
-    `{session_info: 1}` với `first_type == "session_info"`, `protocol_version == 2`; `handshake_status` ∈ {null, 101}.
-    Path khác → đỏ. JSON `ws_classification` có `role_by_path` và `tab_unmounted_by_path`.
+    bước `tab_alphabet` có đúng 1 lần, `clicked: true`, `click_t_s` là số, và mỗi socket có `created_t_s` là số ((Lần sửa 4)
+    KHÔNG còn so `created_t_s` với `click_t_s` — 0D.3); `closed: true`, `closed_t_s` không null và `≤ t_s` của bước
+    `record_clicked`; `n_non_json == 0`, `n_messages` khớp, và `count_by_type` rỗng hoặc đúng `{session_info: 1}` với
+    `first_type == "session_info"`, `protocol_version == 2`; `handshake_status` ∈ {null, 101}. Path khác → đỏ. JSON
+    `ws_classification` có `role_by_path` và `tab_unmounted_by_path`.
+  - **(Lần sửa 4) `tab_unmounted_owner_rule`** (có trong `checks` của cả 3 JSON; định nghĩa đủ ở 0D.3): `observations.ws_page`
+    là list (mọi kịch bản; không phải → đỏ); ở Đánh vần, số bản ghi `ws_page` có path `/ws/live-stream` == số socket CDP của
+    path đó, và mọi bản ghi đó có `ws_owner(frames) == "/src/components/Phase12Pipeline.jsx"`; ở Ký từ không áp thêm gì
+    (`applies: false`). JSON `ws_classification.page_hook` có `n_records_by_path`, `n_cdp_by_path`, `tab_unmounted_owners`,
+    `tab_unmounted_click_phase` — thông tin chẩn đoán, không phải kiểm.
   - Không request nào tới `POST /api/fingerspelling` (endpoint ảnh cũ).
 - Sau khi dừng: cổng 8000 và 3000 rảnh; không còn tiến trình con.
 - **Đánh vần** (`a_hau_A_001.mp4`): status `available: true`; WS hand-landmarks nhận `session_info`; ≥ 1
@@ -887,6 +1209,7 @@ ngoài repo của B8b-3 không phải bằng chứng.) Chung cho cả 3:
   `frame_result.prediction is null`; thấy ≥ 1 `frame_result.status == "RECORDING"` và `live-recording` hiện ra ít nhất một
   lần; ≥ 1 `sign_result` hoặc `sign_discarded` trong tối đa 3 vòng lặp clip; nếu có `sign_result`: `live-gloss` == `gloss`
   và `live-top5` == `top5` của nó; 0 message `error`. Nếu 0 sự kiện: DỪNG, báo planner (KHÔNG chỉnh segmenter hay tham số).
+  ((Lần sửa 4) ở B8d-3/B8d-4, mọi trường hợp đỏ kể cả trường hợp này → DỪNG, CẦN NGƯỜI DÙNG, §7-11.)
 - (Lần sửa 2) Độ dài chạy Ký từ: ≥ 1 vòng clip, dừng sớm khi đủ điều kiện kịch bản, tối đa 3 vòng; JSON ghi `ran_loops`.
 - JSON có `generated_by{command, git_commit, code_dirty: false}`; không chứa đường dẫn tuyệt đối, landmark, hay ảnh.
 - (Lần sửa 2) Lúc đóng việc: `git diff --name-only <generated_by.git_commit> HEAD -- backend src frontend scripts tests`
@@ -918,7 +1241,8 @@ ngoài repo của B8b-3 không phải bằng chứng.) Chung cho cả 3:
         `protocol_version 2`, `handshake_status 101` → xanh.
       - 10c (dương): `fingerspell`, không có socket `/ws/live-stream` nào → `tab_unmounted_socket_rule` xanh.
       - Âm, `tab_unmounted_socket_rule` đỏ, mỗi ca một ý: 3 socket `/ws/live-stream`; một socket `closed: false`; một socket
-        `closed_t_s` null; `closed_t_s > R`; `created_t_s ≥ T` (socket mở sau khi bấm tab); thiếu bước `tab_alphabet`;
+        `closed_t_s` null; `closed_t_s > R`; `created_t_s ≥ T` (socket mở sau khi bấm tab) ((Lần sửa 4) BỎ ca này — thay bằng
+        ca dương cùng giá trị, xem cuối mục 10 và 0D.10); thiếu bước `tab_alphabet`;
         `clicked: false`; thiếu bước `record_clicked`; `{error: 1}`; `{session_info: 1, frame_result: 1}`;
         `{session_info: 2}`; `{frame_result: 1}`; `n_non_json: 1`; `session_info.protocol_version: 3`;
         `handshake_status: 403`; một path app lạ `ws://localhost:3000/ws/other` ở `fingerspell`; `word` có thêm socket
@@ -930,14 +1254,54 @@ ngoài repo của B8b-3 không phải bằng chứng.) Chung cho cả 3:
         `ws_no_8000_any_socket` đỏ; `ws://127.0.0.1:3000/ws/live-stream` dạng 10a → `ws_app_urls_via_proxy` đỏ.
       - Hai kịch bản `word` dạng lượt thử (HMR + [mồ côi, socket dùng] trên `/ws/live-stream`, không có path khác) →
         `tab_unmounted_socket_rule` xanh, có mặt trong `checks`.
+      - **(Lần sửa 4) Thay test:** `test_live_socket_created_at_or_after_click_is_red` được thay tại chỗ bằng
+        `test_live_socket_created_at_or_after_click_is_not_a_socket_rule_violation`: `created_t_s` ∈ {T, T+0.001, T+1.0} ở
+        socket thứ hai của `/ws/live-stream` dạng 10a → cả 5 kiểm của `_run` xanh. Đây là test DUY NHẤT được sửa (0D.10).
   Test cũ của lớp (ca 1–9 và các ca âm thêm ở B8b-1) giữ nguyên: `git diff eb379fa HEAD -- tests/test_frontend_contract.py`
-  không có dòng `-` (Lần sửa 3).
+  không có dòng `-` (Lần sửa 3). ((Lần sửa 4) Từ e1d13d2: `git diff e1d13d2 HEAD -- tests/test_frontend_contract.py` có dòng
+  `-` CHỈ là 6 dòng của method bị thay; kể từ eb379fa, không dòng `-` nào khác.)
+  11. **(Lần sửa 4) Nguồn tạo socket — lớp mới `TestE2eTabOwner`** (gọi `ws_owner`, `tab_unmounted_owner_check`,
+      `click_phase`, `evaluate`, `ws_classification`; đầu vào thêm `page_ws` = list bản ghi `{url, t_page_ms, frames}` (hoặc
+      `{url, t_page_ms, frames: null, hook_error}`) và bước `tab_alphabet` có `click_page_ms_before/after`). "6 kiểm" = 5 kiểm
+      của mục 10 + `tab_unmounted_owner_rule`; mỗi ca assert đúng kiểm ghi bị đỏ, 5 kiểm còn lại xanh (trừ 11a, 11b, 11k):
+      - 11a (hằng): `SCENARIO_TAB_UNMOUNTED_OWNER == {"fingerspell": "/src/components/Phase12Pipeline.jsx", "word": None}`,
+        cùng tập khóa với `SCENARIO_WS_ROLES`; ràng buộc tĩnh với mã: `frontend/src/App.jsx` chứa `useState('realtime')` và
+        `activeTab === 'realtime' && <Phase12Pipeline`; `frontend/src/components/Phase12Pipeline.jsx` chứa `new WebSocket(`;
+        `tab_unmounted_owner_check({}, [], "sentence")` → `ValueError`.
+      - 11b (`ws_owner`): `["<other>", "/src/components/Phase12Pipeline.jsx", "/src/App.jsx"]` → Phase12Pipeline;
+        `["<other>", "<node_modules>", "/src/components/Fingerspelling.jsx"]` → Fingerspelling;
+        `["/src/components/Phase12Pipeline.jsx?t=1"]` → không có `?t=1`; `[]`, `["<other>", "<node_modules>"]`, `None` → None.
+      - 11c (dương): 10a + `page_ws` = HMR (frames chỉ `"<other>"`), 2 bản ghi `/ws/live-stream` owner Phase12Pipeline,
+        2 bản ghi `/ws/hand-landmarks` owner Fingerspelling → 6 kiểm xanh.
+      - 11d (dương, dạng lượt chính thức B8c-3; số lấy từ `reports/e2e_2026-09-30/fingerspell_default.json` làm dữ liệu vào):
+        `click_t_s` 3.092; 2 socket `/ws/live-stream` `created_t_s` 3.185, `closed_t_s` 3.201 và 3.213; `record_clicked`
+        3.606; `/ws/hand-landmarks` [mồ côi, socket dùng]; bản ghi live owner Phase12Pipeline → 6 kiểm xanh.
+      - 11e (âm, owner): như 11d nhưng một bản ghi live owner `/src/components/Fingerspelling.jsx` → chỉ owner đỏ; như 10a
+        (tạo TRƯỚC T) với một bản ghi live owner Fingerspelling → chỉ owner đỏ (điều (b) cũ không bắt được ca này).
+      - 11f (âm, owner): bản ghi live có frames không chứa `/src/` → đỏ; bản ghi live `frames: null` + `hook_error` → đỏ.
+      - 11g (số bản ghi): 2 socket CDP live + 1 bản ghi live → đỏ; 2 + 3 → đỏ; 10c (0 socket live) + 1 bản ghi live owner
+        Phase12Pipeline → đỏ; 10c + 0 bản ghi live → xanh.
+      - 11h (thiếu dữ liệu): `page_ws = None` ở `fingerspell` (dạng 10a) → owner đỏ; ở `word` (dạng lượt thử) → owner đỏ.
+      - 11i (`word` dương): 2 dạng lượt thử `word` + `page_ws` list (2 bản ghi live owner Phase12Pipeline) → 6 kiểm xanh,
+        `detail["applies"] is False`.
+      - 11j (socket mở SAU khi bấm tab bởi `Phase12Pipeline.jsx` vẫn bị bắt nếu có hại; bản ghi owner đúng, `created_t_s` > T):
+        thêm `{frame_result: 1}` (handshake 101) → `tab_unmounted_socket_rule` đỏ; `closed: false` → đỏ; `closed_t_s > R` → đỏ;
+        socket thứ 3 (+ bản ghi thứ 3 owner đúng) → đỏ; `{error: 1}` → đỏ. Owner xanh trong mọi ca này.
+      - 11k (thông tin không phải kiểm): `click_phase` — t < before → `before_click`; t == before, before < t < after, và
+        t == after → `during_click`; t > after → `after_click`; thiếu số → `unknown`. Cùng dữ liệu 11c với `t_page_ms` của
+        bản ghi live lần lượt ở 3 pha → `evaluate` trả `checks` có cờ `pass` giống hệt nhau ở cả 3.
+      - 11l (nối dây): `evaluate` với `obs` dạng 11c có `ws_page` → `checks["tab_unmounted_owner_rule"]["pass"]` True; bỏ
+        `ws_page` → False; `word` dạng 11i → True. `ws_classification(obs, "fingerspell")["page_hook"]` có đủ 4 khóa của
+        0D.3, `tab_unmounted_owners` == 2 lần Phase12Pipeline; ở `word` hai danh sách tab_unmounted rỗng. `scenario_ws_roles`
+        vẫn trả đúng 2 kiểm (không có `tab_unmounted_owner_rule`).
 
 **AC13 — Quy trình.** Mỗi commit có output `impact`/`detect-changes` (risk thật) trong message; không amend; 3 file ` D`
 của người dùng vẫn chưa staged; `docs/plans/06-progress.md` có output thật cho từng bước; `docs/progress_log.md` THÊM 1
 dòng (không sửa dòng cũ) nêu: commit, số test trước → sau, 3 JSON e2e ((Lần sửa 2) của B8b, kèm commit; (Lần sửa 3) của
-B8c), quyết định §3.8, lệch nguồn AC6 (§0.4), Lần sửa 2 (loại socket HMR theo 0B.1), (Lần sửa 3) luật socket của tab mặc
-định bị gỡ (0C.2), các việc theo sau đề xuất. Kết luận vslt-reviewer = APPROVE.
+B8c; (Lần sửa 4) của B8d-4 trong `reports/e2e_<YYYY-MM-DD>_r4/`, kèm commit, và JSON đỏ B8c-3 được giữ), quyết định §3.8,
+lệch nguồn AC6 (§0.4), Lần sửa 2 (loại socket HMR theo 0B.1), (Lần sửa 3) luật socket của tab mặc định bị gỡ (0C.2), (Lần sửa
+4) thay điều kiện thời điểm tạo bằng kiểm nguồn tạo (0D.3) và kết luận chẩn đoán H1/H2, các việc theo sau đề xuất. Kết luận
+vslt-reviewer = APPROVE.
 
 ## 6. Rủi ro dữ liệu/ML
 
@@ -971,13 +1335,20 @@ cố định là `qipedc_D0120T` trước khi chạy lại; không đổi clip t
 một lượt thử đỏ; để không thành "chỉnh tiêu chí theo kết quả": luật mới dựa trên cơ chế đọc từ code (`App.jsx:9`,
 `main.jsx:7`, `e2e_browser.cjs:380-388`), siết thêm ở mọi chỗ khác (thời điểm, handshake, path lạ, path `used` vắng), có ca âm
 cho từng điều kiện, quyết định trước lượt chính thức, và lượt chính thức chạy mỗi kịch bản đúng 1 lần (không chọn lượt).
+(Lần sửa 4) Lần thứ 3 đổi luật e2e sau khi thấy kết quả — rủi ro "chỉnh tiêu chí theo kết quả" là có thật và được nêu thẳng.
+Biện pháp: luật mới suy từ mục đích M1–M3 viết ra trước (0D.2), dùng đại lượng cấu trúc thay đại lượng thời gian, có ca âm cho
+mọi đường lọt (0D.4), chốt trước lượt thử/chính thức, kết luận chẩn đoán H1/H2 không được dùng để đổi luật, JSON đỏ cũ giữ
+trong repo, và đây là lần cuối: đỏ tiếp → người dùng quyết (§7-11), không phải planner. Reviewer đánh giá riêng tính hợp lý của
+3 lần đổi (0D.12).
 
 **Cỡ mẫu.** AC5 10 clip là kiểm tương đương CODE (tất định), không phải tỉ lệ. AC6 10 clip chỉ là ghi nhận, không suy ra
 tỉ lệ lệch cho toàn bộ dữ liệu. E2E 1 clip/kịch bản chỉ chứng minh "chạy được". `prediction` trong JSON e2e ghi dưới khóa
 `info_not_accuracy`; không suy ra độ chính xác từ đó. (Lần sửa 2) Webcam giả là Y4M chuyển từ mp4 (không bằng hệt frame cv2)
 và lặp từ lúc mở trang (pha ghi không kiểm soát) — thêm lý do không đọc `prediction` như độ chính xác. (Lần sửa 3) Kiểm thời
 điểm socket dựa trên 1 lượt/kịch bản và phụ thuộc tốc độ máy; khoảng cách giữa bấm tab và `record_clicked` chưa đo có kiểm
-soát — nếu đỏ vì thời điểm thì dừng báo planner, không nới mốc.
+soát — nếu đỏ vì thời điểm thì dừng báo planner, không nới mốc. (Lần sửa 4) Kết luận H1/H2 dựa trên 1 lượt thử + 1 lượt chính
+thức của Đánh vần — chỉ mô tả lượt đó, không khái quát; điều kiện (c) (đóng trước `record_clicked`) vẫn so hai giờ Node — biên
+của nó chưa đo có kiểm soát (quan hệ có tính cấu trúc, 0D.2); nếu (c) đỏ ở lượt kế tiếp thì theo §7-11 (người dùng quyết).
 
 **Nguồn gốc / giấy phép.** hauuto: giấy phép unknown, chỉ dùng nội bộ (`docs/data_registry.md` 1b); mã người ký trong id
 clip giữ nguyên theo quyết định (a) 2026-09-28; y4m/video/frame KHÔNG vào git; JSON không chứa landmark. QIPEDC video
@@ -989,16 +1360,19 @@ chỉ đọc.
 thấy cần. `VSL_CORS_ORIGINS` sai → backend không khởi động (fail-fast, không lặng lẽ mở rộng). (Lần sửa 2) Socket HMR của
 Vite dev chỉ tồn tại khi chạy dev server (bind localhost, `strictPort`); không có trong bản build. (Lần sửa 3) Ghi nhận cho
 backlog (không làm ở đây): mở trang ở tab mặc định luôn mở một phiên `/ws/live-stream` (nạp model Ký từ phía server) kể cả khi
-người dùng chỉ định dùng Đánh vần — thuộc Việc 6 (nút chọn chế độ).
+người dùng chỉ định dùng Đánh vần — thuộc Việc 6 (nút chọn chế độ). (Lần sửa 4) Hook `Proxy` của `WebSocket` chỉ tồn tại trong
+trình duyệt do e2e điều khiển (script kiểm), không có trong app; JSON chỉ ghi đường dẫn module `/src/...` và nhãn gộp, không
+ghi host/đường dẫn hệ thống tệp.
 
 **Trung thực UI (DoD 6).** Mọi chữ/từ/câu hiển thị lấy từ response server; khi model không sẵn sàng thì khóa chức năng và
 nói rõ; không còn frame giả lập; `confidence` ghi là độ tin cậy của model.
 
 ## 7. Điểm dừng
 
-**Không có điểm dừng CẦN NGƯỜI DÙNG trước khi code** (Lần sửa 1, Lần sửa 2 và Lần sửa 3 không đổi điều này: không đổi
+**Không có điểm dừng CẦN NGƯỜI DÙNG trước khi code** (Lần sửa 1, Lần sửa 2, Lần sửa 3 và Lần sửa 4 không đổi điều này: không đổi
 model mặc định, không cần dữ liệu người dùng, không xóa file, không đụng thay đổi chưa commit, không có hành động không
-hoàn tác; Lần sửa 3 không chạm `App.jsx`/`main.jsx`). Lý do:
+hoàn tác; Lần sửa 3 và Lần sửa 4 không chạm `App.jsx`/`main.jsx`). **(Lần sửa 4) Có một điểm dừng CÓ ĐIỀU KIỆN → CẦN NGƯỜI
+DÙNG: §7-11.** Lý do không có điểm dừng trước khi code:
 - CORS/Origin/bind đã có quyết định (2026-09-28): chỉ origin dev, không `*` kèm credentials.
 - Model mặc định KHÔNG đổi; `VSL_MODEL_TYPE=stgcn_h360` chỉ đặt trong môi trường của tiến trình e2e/smoke.
 - Không cần dữ liệu mới từ người dùng (dùng video cục bộ đã có; webcam thật là Bước 5).
@@ -1008,6 +1382,7 @@ hoàn tác; Lần sửa 3 không chạm `App.jsx`/`main.jsx`). Lý do:
 **Điểm dừng có điều kiện trong lúc làm (coder DỪNG, báo planner/orchestrator; KHÔNG tự nới tiêu chí):**
 1. AC5-a không bằng hệt (landmark live ≠ `_extract_one` trên cùng máy) → báo planner. (B3: không kích hoạt.)
 2. AC12 kịch bản `stgcn_h360` có 0 `sign_result`/`sign_discarded` → báo planner (không chỉnh segmenter/tham số).
+   ((Lần sửa 4) Ở B8d-3/B8d-4 → theo §7-11.)
 3. Một test đã có bị vỡ do CORS/Origin/bind hoặc endpoint mới → báo planner (không sửa test cũ).
 4. Cần cài gói npm/pip, cần tải trình duyệt/model từ mạng, hoặc Edge không có ở máy → báo orchestrator (hỏi người dùng).
 5. Cần xóa file, hoặc đổi policy hệ thống (ExecutionPolicy toàn máy) để chạy `start_fullstack.ps1` → hỏi người dùng.
@@ -1024,3 +1399,26 @@ hoàn tác; Lần sửa 3 không chạm `App.jsx`/`main.jsx`). Lý do:
     `e2e_browser.cjs` (ngoài ghi 3 trường thời gian) hoặc chạm `App.jsx`/`main.jsx`; (c) bất kỳ kiểm AC12 nào đỏ ở lượt
     chính thức — kể cả `tab_unmounted_socket_rule` đỏ vì thời điểm (`closed_t_s > record_clicked`), số socket > 2, message
     khác `session_info`, hay path lạ → báo planner; KHÔNG sửa luật, KHÔNG nới mốc thời gian, KHÔNG chạy lại để lấy lượt xanh.
+    (Lần sửa 4: (c) đã kích hoạt ở B8c-3 → xử lý ở 0D. Từ B8d, mọi trường hợp tương tự đi theo §7-11, KHÔNG về planner.)
+11. **(Lần sửa 4) CẦN NGƯỜI DÙNG — không có Lần sửa 5.** Coder DỪNG, ghi 06-progress, orchestrator hỏi người dùng khi:
+    (a) ở B8d-1/B8d-2 phải sửa/xóa một test cũ khác test được phép thay ở 0D.10, hoặc phải đổi luồng thao tác của
+        `e2e_browser.cjs` ngoài 0D.5, hoặc phải chạm `frontend/`;
+    (b) lượt thử B8d-3 đỏ ở bất kỳ kiểm nào mà không phải lỗi cài đặt theo 0D.6, hoặc vẫn đỏ sau vòng sửa B8d-2b duy nhất;
+    (c) lượt chính thức B8d-4 đỏ ở BẤT KỲ kiểm nào của AC12 (socket hay chức năng), sau khi đã chạy đủ 3 kịch bản và commit
+        mọi JSON.
+    Không sửa luật, không nới mốc, không chạy lại, không gọi planner đổi luật e2e.
+    **Câu hỏi soạn sẵn cho người dùng** (orchestrator điền `<…>` từ JSON/progress, không thêm số khác):
+    "Kế hoạch 06 (nối frontend–backend): e2e kịch bản `<kịch bản>` đỏ ở kiểm `<tên kiểm>` (`<chi tiết nguyên văn>`, JSON
+    `<đường dẫn>` @ `<commit>`), sau 4 lần sửa luật (3 lần đổi sau khi thấy kết quả). Các kiểm còn lại: `<n/m>` xanh. Chọn một:
+    (A) Đóng kế hoạch 06 với GIỚI HẠN ghi rõ: kiểm `<tên kiểm>` của `<kịch bản>` không đạt; ghi vào `docs/phase12_api.md` mục
+        Giới hạn và báo cáo cuối (DoD 1/DoD 7 'một phần'); reviewer review phần còn lại. Không đổi code.
+    (B) Cho phép sửa APP trong kế hoạch riêng (Việc 6 — vd. không tự mở `/ws/live-stream` ở tab mặc định, hoặc chỉ nối WS khi
+        người dùng bật camera; chạm `App.jsx`/`Phase12Pipeline.jsx`), rồi chạy lại e2e 06 sau đó.
+    (C) Cho phép đổi LUỒNG kịch bản e2e (vd. chờ trang ổn định trước khi bấm tab Đánh vần) — đổi kịch bản đã khóa từ Lần sửa 3;
+        chạy lại 3 kịch bản.
+    (D) Khác (người dùng nêu)."
+    Đề xuất của planner (ghi kèm câu hỏi): nếu MỌI kiểm đỏ đều thuộc nhóm luật socket (`strictmode_orphan_rule`,
+    `tab_unmounted_socket_rule`, `tab_unmounted_owner_rule`, 3 kiểm URL/HMR) và mọi kiểm chức năng xanh → đề xuất (A), vì
+    chức năng DoD 2/3 đã có bằng chứng và (B) thuộc Việc 6. Nếu có kiểm CHỨC NĂNG đỏ (health, console, `/sequence`, compose,
+    `session_info`, `frame_result`, sự kiện harmonized, …) → KHÔNG đề xuất (A); đề xuất điều tra lỗi app trước (người dùng
+    quyết phạm vi).
