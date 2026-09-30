@@ -2,9 +2,9 @@
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
 - Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474), B5 (34a527d), B6 (0328c1b), B7 (commit "06: B7 — ...")
-- Bước đang làm: **B9b** (kiểm tra đóng việc tại HEAD cuối, 0D.11 bước 5). B8d xong: B8d-1 828e472, B8d-2 0517c0a, B8d-3 b6c27b1
-  (thử xanh, cổng qua), B8d-4 024ec64 (3 JSON chính thức `reports/e2e_2026-09-30_r4/*` xanh, chạy tại b6c27b1).
-- Bước còn lại: B9b → orchestrator gọi vslt-reviewer.
+- Bước đang làm: không — coder 06 xong B8d (828e472, 0517c0a, b6c27b1, 024ec64) và B9b (commit "06: B9b …").
+  Chờ vslt-reviewer.
+- Bước còn lại: review (orchestrator gọi vslt-reviewer).
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
@@ -562,3 +562,79 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
   | `reports/e2e_2026-09-29/*` (e3d0df8, chạy tại 15200d9) | B8, trước Lần sửa 2 | bị thay; giữ nguyên, không phải bằng chứng AC12 |
   | `reports/e2e_2026-09-30/fingerspell_default.json` (d2752c3, chạy tại 1b05851) | chính thức B8c-3 | ĐỎ theo luật Lần sửa 3; bằng chứng lượt đỏ, KHÔNG phải bằng chứng AC12; giữ nguyên (blob c7a83cbc… == d2752c3) |
   | `reports/e2e_2026-09-30_r4/*` (chạy tại b6c27b1) | chính thức B8d-4 | **bằng chứng AC12** |
+
+## B9b — kiểm tra đóng việc tại HEAD cuối (0D.11 bước 5, 0B.5 bước 4)
+- HEAD lúc kiểm: 361c3af (code == b6c27b1: `git diff --name-only b6c27b1 HEAD -- backend src frontend scripts tests` rỗng — 3 JSON
+  `_r4` có `generated_by.git_commit` b6c27b1…). Commit B9b chỉ đổi docs (lệnh trên chạy lại sau commit, xem báo cáo coder).
+- AC2 31 module (lệnh AC2 §5, log `../_plan06_tmp/b9b_ac2_31.log`): **`Ran 526 tests in 710.597s` `OK`**, 0 failure/error/skip.
+  Theo module (`../_plan06_tmp/b9b_counts.txt`) giống hệt B8d-2: 25 cũ = 383 (= B0), 4 module 06 = 21 + 9 + 4 + 71 = 105
+  (frontend_contract: B7 12 → +16 AC12-t Lần sửa 2 = 28 → +30 mục 10 = 58 → +13 mục 11 = 71; test thay ở mục 10 tính 1 đổi 1),
+  2 module merge = 14 + 24 = 38. `git status --porcelain` trước/sau: SAME.
+- `cd frontend && npm test` (node v25.9.0): `tests 26, pass 26, fail 0, skipped 0`; `git ls-files "tests/*.test.mjs"` = 3 file,
+  chạy riêng: fingerspelling 10, liveProtocol 12, ws 4. `npm run build`: exit 0 (`✓ built in 4.18s`). `npm ls --depth=0` (bỏ dòng
+  đầu) giống hệt B0: `NPM_LS_SAME`. `git diff 797d0af HEAD -- frontend/package-lock.json`: 0 dòng; `frontend/package.json` +2/−1
+  (thêm `"test"`, dấu phẩy dòng `preview`).
+- `git status --porcelain` so với B0 (`../_plan06_tmp/b0_status_porcelain.txt` 66 dòng → 67 dòng): khác đúng 1 dòng
+  `?? docs/plans/_tmp_placeholder_ignore.md` (file 1 byte, mtime 2026-09-29 18:31, đã có trước B8d — có trong trạng thái trước
+  B8d-2; không do B8d/B9b tạo; không đụng). 3 dòng ` D` của người dùng vẫn chưa staged.
+- AC1 theo 0B.3 (script `../_plan06_tmp/b9b_ac1.py`, output `../_plan06_tmp/b9b_ac1.txt`, exit 0):
+  - `P6..HEAD` first-parent: 60 commit. Regex `^(WIP )?06:` bắt 38 commit, trong đó 4 commit PLANNER (nhóm (ii), message bắt đầu
+    "06:" nhưng không phải coder): facffea (Lần sửa 1), f52de6f (Lần sửa 2), 717aa3e (Lần sửa 3), 4a1bc31 (Lần sửa 4) → `C06` của
+    coder = 34 commit. 22 commit khác.
+  - **AC1-a:** hợp file của 34 commit `C06` = 37 file, tất cả trong danh sách AC1; vi phạm: `[]`. `start_fullstack.ps1` chỉ đổi
+    `--host 0.0.0.0` → `127.0.0.1`; `RealtimeStream.jsx` numstat +3/−2 (≤ 3 dòng); `package.json` +2/−1; `package-lock.json`,
+    `App.jsx`, `main.jsx`, `index.html`: 0 dòng diff. Commit B8d/B9b (4bf7b74, 828e472, 0517c0a, b6c27b1, 024ec64, 361c3af) chạm
+    `frontend/`: `[]`. `reports/e2e_2026-09-30/fingerspell_default.json` chỉ do d2752c3 (blob c7a83cbc… không đổi);
+    `git diff e3d0df8 HEAD -- reports/e2e_2026-09-29` rỗng.
+  - **AC1-b:** 22 commit khác đều thuộc đúng 1 nhóm, chỉ chạm tập file của nhóm: (i) `state:` 18 commit (docs/STATE.md,
+    docs/usage_ledger.csv; 2f5d3f2 thêm docs/progress_log.md, cột xóa 0); (iii) 8628948, 296b12e, f62dd45; (iv) merge bbfdff3
+    (14 file của `bbfdff3^1..bbfdff3`), review 6a6538c. Nhóm (ii): facffea (docs/plans/06-viec5-frontend.md + docs/STATE.md +
+    docs/usage_ledger.csv), f52de6f, 717aa3e, 4a1bc31 (chỉ docs/plans/06-viec5-frontend.md). Vi phạm: `[]`.
+  - **AC1-c:** `git log --first-parent P6..HEAD -- <37 file của 06 + docs/plans/06-viec5-frontend.md>` ngoài `C06` chỉ ra 4 commit
+    planner (ii) trên docs/plans/06-viec5-frontend.md. Vi phạm: `[]`.
+  - **AC1-d:** mọi dòng của `git diff --name-status 797d0af HEAD` quy được về commit nguồn (bảng dưới); không quy được: `[]`.
+  - `git diff --diff-filter=D --name-only 797d0af HEAD` rỗng; dòng `-` trong 26 file test có ở P6: 0; file thêm có đuôi
+    `.pt/.npz/.mp4/.y4m/.png/.jpg/.log`: `[]`; staged: `[]`.
+- Bảng quy nguồn AC1-d (nhóm: C06 = coder 06; i = `state:`; ii = planner 06; iii = bàn giao cloud; iv = merge/review cloud):
+
+  | File | Nhóm | Commit |
+  |---|---|---|
+  | CLAUDE.md (M) | iii | 8628948 |
+  | README.md (M) | iv-merge | bbfdff3 |
+  | backend/main.py (M) | C06 | ed5c4c9 4924502 |
+  | docs/CLOUD.md (A) | iii | f62dd45 296b12e 8628948 |
+  | docs/STATE.md (M) | i, ii, iii | 18 commit `state:`, facffea, 8628948 |
+  | docs/cloud_reports/viec-A-D-2026-09-29.md (A) | iv-merge | bbfdff3 |
+  | docs/phase12_api.md (M) | C06 | dbd79f2 |
+  | docs/plans/06-progress.md (A) | C06 | 29 commit coder (050d337 … 361c3af) + commit B9b |
+  | docs/plans/06-viec5-frontend.md (M) | ii | facffea f52de6f 717aa3e 4a1bc31 |
+  | docs/plans/{07-viec6-che-do,08-segmenter-live,09-don-dep-review05,09-progress,10-guard-dod7,10-progress}.md (A) | iv-merge | bbfdff3 |
+  | docs/progress_log.md (M, chỉ thêm) | i + C06 | 2f5d3f2 + commit B9b (dòng AC13) |
+  | docs/reviews/{09-review,10-review}.md (A) | iv-merge | bbfdff3 |
+  | docs/reviews/cloud-2026-09-29-review.md (A) | iv-review | 6a6538c |
+  | docs/usage_ledger.csv (M) | i, ii | 11 commit `state:`, facffea |
+  | frontend/package.json (M), frontend/src/lib/{ws,liveProtocol,fingerspelling}.js (A), frontend/tests/*.mjs (A) | C06 | 026f474 |
+  | frontend/src/components/{CameraCapture,Navbar,Phase12Pipeline,PredictionDisplay,RealtimeStream}.jsx (M) | C06 | 34a527d |
+  | frontend/src/components/Fingerspelling.jsx (M) | C06 | 0328c1b |
+  | frontend/vite.config.js (M), start_fullstack.ps1 (M) | C06 | 4924502 |
+  | reports/e2e_2026-09-29/*.json (A) | C06 | e3d0df8 |
+  | reports/e2e_2026-09-30/fingerspell_default.json (A) | C06 | d2752c3 |
+  | reports/e2e_2026-09-30_r4/*.json (A) | C06 | 024ec64 |
+  | reports/fingerspell_live_2026-09-29/hand_live_check.json (A) | C06 | 5fcf295 |
+  | reports/guard_dod7_2026-09-29/guard_findings.json (A), scripts/archive_private_kaggle.py (M), tests/test_archive_private_kaggle_r05.py (A), tests/test_backend_source_guard.py (A) | iv-merge | bbfdff3 |
+  | scripts/cloud_setup.sh (A) | iii | f62dd45 8628948 |
+  | scripts/e2e_browser.cjs (A) | C06 | 7e38118 e1d13d2 0517c0a |
+  | scripts/e2e_fullstack.py (A) | C06 | 7e38118 eb379fa e1d13d2 0517c0a |
+  | scripts/hand_live_check.py (A) | C06 | e58d025 |
+  | scripts/make_fake_webcam_y4m.py (A) | C06 | 7e38118 |
+  | scripts/smoke_test_phase12.py (M) | C06 | dbd79f2 |
+  | src/inference/hand_live.py (A), tests/test_hand_landmarks_ws.py (A) | C06 | ed5c4c9 |
+  | tests/test_cors_origin_bind.py (A) | C06 | ed5c4c9 4924502 |
+  | tests/test_frontend_contract.py (A) | C06 | 026f474 dbd79f2 302072c 85ef325 828e472 |
+  | tests/test_hand_live_equivalence.py (A) | C06 | e58d025 |
+
+- AC13: thêm 1 dòng cuối `docs/progress_log.md` (không sửa dòng cũ).
+- Việc theo sau đề xuất (backlog, không làm ở 06): (1) Việc 6 — trang không tự mở `/ws/live-stream` khi người dùng chỉ dùng Đánh
+  vần (§3.9, §6 Bảo mật); (2) kế hoạch "segmenter live" cho review 04 mục 8–9 (§3.8); (3) đo lệch Kaggle↔cục bộ trên toàn bộ clip
+  hauuto trước khi báo độ chính xác Cấp 1 trên webcam (§0.4); (4) hỏi người dùng trước khi xóa `RealtimeStream.jsx` (mã chết);
+  (5) `detail` 503 có thể chứa tên file (backlog 8, §3.9).
