@@ -2,10 +2,10 @@
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
 - Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474), B5 (34a527d), B6 (0328c1b), B7 (commit "06: B7 — ...")
-- Bước đang làm: **DỪNG — CẦN PLANNER (§7-8)** ở B8b-3: chạy thử tại eb379fa, kịch bản Đánh vần đỏ
-  `strictmode_orphan_rule` (path `/ws/live-stream`: 2 socket 0 message do Phase12Pipeline bị gỡ khi chuyển tab). Xem mục B8b-3.
-  B8b-1 xong (302072c), B8b-2 xong (eb379fa). Chưa chạy lượt chính thức, chưa ghi đè `reports/e2e_2026-09-29/*.json`.
-- Bước còn lại: sau quyết định planner → (sửa theo quyết định nếu có) → B8b-3 chạy chính thức 3 kịch bản → B9b.
+- Bước đang làm: **B8c ĐANG LÀM** (Lần sửa 3, §0C.5; commit kế hoạch 717aa3e). B8b-1 xong (302072c), B8b-2 xong (eb379fa);
+  B8b-3 đã dừng §7-8 (1a4e182) — phần chạy chính thức chuyển sang B8c. Chưa ghi đè `reports/e2e_2026-09-29/*.json`.
+- Bước còn lại: B8c-1 (test AC12-t mục 10) → B8c-2 (e2e_browser.cjs 3 trường thời gian + vai trò path +
+  `tab_unmounted_socket_rule`) → B8c-3 (chạy chính thức 3 kịch bản, mỗi kịch bản đúng 1 lần) → B9b.
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
