@@ -500,3 +500,24 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
   + 4 + 71, 2 module merge = 14 + 24 = 38 — đúng công thức 0D.11 (58 + 13 test mục 11; test thay tính 1 đổi 1).
   `git status --porcelain` trước/sau: SAME.
 - `cd frontend && npm test`: `tests 26, pass 26, fail 0`.
+
+### B8d-3 — chạy THỬ ngoài repo + chẩn đoán H1/H2 + cổng (0D.6)
+- Tại HEAD 0517c0a (commit B8d-2), `git status --porcelain -- backend src frontend scripts tests` rỗng. 3 lệnh 0D.8 với `--out
+  ../_plan06_tmp/b8d3_trial_<…>.json` (log `../_plan06_tmp/b8d3_trial_<…>.log`). JSON thử KHÔNG commit, KHÔNG phải bằng chứng AC12.
+  - `fingerspell`: exit 0, `checks 25/25 pass` (git_commit 0517c0a…, code_dirty false).
+  - `word` mặc định: exit 0, `checks 23/23 pass`.
+  - `word --model-type stgcn_h360`: exit 0, `checks 26/26 pass`.
+  - `console_error_0`, `pageerror_0`, `requestfailed_0` xanh ở cả 3 (hook không làm hỏng trang).
+- Trích nguyên văn (JSON thử):
+  - `fingerspell` `ws_classification.page_hook` = `{"n_records_by_path": {"/": 1, "/ws/live-stream": 2, "/ws/hand-landmarks": 2},
+    "n_cdp_by_path": {"/": 1, "/ws/live-stream": 2, "/ws/hand-landmarks": 2}, "tab_unmounted_owners":
+    ["/src/components/Phase12Pipeline.jsx", "/src/components/Phase12Pipeline.jsx"], "tab_unmounted_click_phase": ["before_click",
+    "before_click"]}`. Socket P (`/ws/live-stream`): created_t_s 2.75 / 2.75, closed_t_s 2.758 / 2.758; `click_t_s` 2.52;
+    `click_page_ms_before` 1054.7000000001863, `click_page_ms_after` 1056.2000000001863; `t_page_ms` bản ghi P 1041.7000000001863 /
+    1044.7000000001863; `record_clicked` t_s 3.205. Kiểm đỏ: không có.
+  - `word` mặc định: `page_hook` = `{"n_records_by_path": {"/": 1, "/ws/live-stream": 2}, "n_cdp_by_path": {"/": 1,
+    "/ws/live-stream": 2}, "tab_unmounted_owners": [], "tab_unmounted_click_phase": []}`; owner rule `applies: false`. Kiểm đỏ: không.
+  - `word stgcn_h360`: `page_hook` như `word` mặc định (1 + 2 bản ghi = 1 + 2 socket CDP; 2 danh sách rỗng). Kiểm đỏ: không.
+- Chẩn đoán theo luật đặt trước (0D.6), lượt thử: mọi socket P `before_click` → **H1** (socket được tạo trong trang TRƯỚC lúc bấm
+  tab, ~10–13 ms theo đồng hồ trang; Node nhận `webSocketCreated` sau `click_t_s` ~230 ms). Chỉ ghi nhận; không đổi luật/hằng/lượt.
+- Cổng: cả 3 JSON thử `all_checks_pass: true` → sang B8d-4. Vòng sửa B8d-2b KHÔNG dùng.
