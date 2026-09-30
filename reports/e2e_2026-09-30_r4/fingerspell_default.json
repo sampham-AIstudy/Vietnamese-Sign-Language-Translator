@@ -1,0 +1,785 @@
+{
+  "generated_by": {
+    "command": "PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/e2e_fullstack.py --scenario fingerspell --video data/external/hauuto_raw/raw/raw/hau/a_hau_A_001.mp4 --out reports/e2e_2026-09-30_r4/fingerspell_default.json",
+    "git_commit": "b6c27b135e12b2d61381ca50ae9146f50a34ec1d",
+    "code_dirty": false,
+    "code_dirty_paths": [
+      "backend",
+      "src",
+      "frontend",
+      "scripts",
+      "tests"
+    ],
+    "generated_at_utc": "2026-09-30T08:55:47Z"
+  },
+  "plan": "docs/plans/06-viec5-frontend.md AC12",
+  "note": "End-to-end run on ONE training clip per scenario: shows that backend + frontend run together through the Vite proxy with a fake webcam fed by a real clip. Not an accuracy measurement; the prediction is recorded under info_not_accuracy only. The fake webcam replays the clip converted to Y4M (cv2 BGR->I420), so the frames are not bit-identical to the mp4 decoded by cv2.",
+  "scenario": "fingerspell",
+  "model_type_env": null,
+  "versions": {
+    "node": "v25.9.0",
+    "browser": "Edg/146.0.3856.72",
+    "mediapipe": "0.10.14",
+    "python": "3.11.9"
+  },
+  "clip": {
+    "clip_id": "hauuto_a_hau_A_001",
+    "source": "hauuto",
+    "split": "Level 1 training data (hauuto)",
+    "label": "a",
+    "label_kind": "symbol (alphabet_hands manifest.csv)",
+    "video": "data/external/hauuto_raw/raw/raw/hau/a_hau_A_001.mp4",
+    "video_facts": {
+      "frames": 75,
+      "fps": 23.584,
+      "width": 640,
+      "height": 480
+    },
+    "y4m": {
+      "frames": 75,
+      "width": 640,
+      "height": 480,
+      "fps_num": 2948,
+      "fps_den": 125
+    },
+    "clip_loop_seconds": 3.1801
+  },
+  "startup": {
+    "health_status": 200,
+    "health": {
+      "status": "ok",
+      "model_type": "stgcn",
+      "is_default_model": true,
+      "pipeline": "legacy",
+      "checkpoint": "stgcn_tier2_indomain.pt",
+      "num_classes": 487,
+      "device": "cuda"
+    },
+    "health_wait_s": 11.2,
+    "page_status": 200,
+    "page_wait_s": 11.2
+  },
+  "health": {
+    "model_type": "stgcn",
+    "is_default": true,
+    "pipeline": "legacy"
+  },
+  "shutdown": {
+    "taskkill_exit": 0,
+    "process_tree_names": [
+      "cmd.exe",
+      "esbuild.exe",
+      "node.exe",
+      "node.exe",
+      "powershell.exe",
+      "python.exe",
+      "python.exe",
+      "python.exe",
+      "uvicorn.exe"
+    ],
+    "processes_alive_after_stop": [],
+    "ports_listening_after_stop": {
+      "8000": false,
+      "3000": false
+    }
+  },
+  "browser_exit_code": 0,
+  "observations": {
+    "scenario": "fingerspell",
+    "url": "http://localhost:3000/",
+    "clip_seconds": 3.180122,
+    "max_loops": 3,
+    "node_version": "v25.9.0",
+    "browser_version": "Edg/146.0.3856.72",
+    "steps": [
+      {
+        "t_s": 1.109,
+        "name": "goto"
+      },
+      {
+        "t_s": 2.178,
+        "name": "tab_alphabet",
+        "clicked": true,
+        "click_t_s": 2.021,
+        "click_page_ms_before": 1034.7999999998137,
+        "click_page_ms_after": 1036.5999999996275
+      },
+      {
+        "t_s": 2.604,
+        "name": "ready",
+        "available": "true",
+        "ws": "connected"
+      },
+      {
+        "t_s": 2.685,
+        "name": "record_clicked"
+      },
+      {
+        "t_s": 2.908,
+        "name": "recording",
+        "started": true
+      },
+      {
+        "t_s": 6.128,
+        "name": "stop_clicked",
+        "stop_button_enabled": true
+      },
+      {
+        "t_s": 6.272,
+        "name": "sequence_done",
+        "status": 200,
+        "hand_frames": 73
+      },
+      {
+        "t_s": 6.299,
+        "name": "add_clicked",
+        "add_button_enabled": true
+      },
+      {
+        "t_s": 6.425,
+        "name": "compose_done",
+        "status": 200
+      },
+      {
+        "t_s": 6.426,
+        "name": "done"
+      }
+    ],
+    "console_errors": [],
+    "page_errors": [],
+    "request_failed": [],
+    "http_errors": [],
+    "requests_old_image_endpoint": [],
+    "ws": [
+      {
+        "url": "ws://localhost:3000/?token=gH33M5vGXD-B",
+        "protocol": "vite-hmr",
+        "handshake_status": 101,
+        "closed": false,
+        "created_t_s": 1.85,
+        "closed_t_s": null,
+        "n_messages": 1,
+        "n_non_json": 0,
+        "first_type": "connected",
+        "count_by_type": {
+          "connected": 1
+        },
+        "session_info": null,
+        "frame_result": {
+          "status_counts": {},
+          "pipelines": {},
+          "prediction_non_null": 0,
+          "prediction_key_missing": 0
+        },
+        "last_frame_result": null,
+        "hand_frame": {
+          "n": 0,
+          "with_hand": 0
+        },
+        "reset_done": [],
+        "sign_results": [],
+        "sign_discarded": [],
+        "errors": []
+      },
+      {
+        "url": "ws://localhost:3000/ws/live-stream",
+        "protocol": null,
+        "handshake_status": null,
+        "closed": true,
+        "created_t_s": 2.185,
+        "closed_t_s": 2.333,
+        "n_messages": 0,
+        "n_non_json": 0,
+        "first_type": null,
+        "count_by_type": {},
+        "session_info": null,
+        "frame_result": {
+          "status_counts": {},
+          "pipelines": {},
+          "prediction_non_null": 0,
+          "prediction_key_missing": 0
+        },
+        "last_frame_result": null,
+        "hand_frame": {
+          "n": 0,
+          "with_hand": 0
+        },
+        "reset_done": [],
+        "sign_results": [],
+        "sign_discarded": [],
+        "errors": []
+      },
+      {
+        "url": "ws://localhost:3000/ws/live-stream",
+        "protocol": null,
+        "handshake_status": null,
+        "closed": true,
+        "created_t_s": 2.185,
+        "closed_t_s": 2.333,
+        "n_messages": 0,
+        "n_non_json": 0,
+        "first_type": null,
+        "count_by_type": {},
+        "session_info": null,
+        "frame_result": {
+          "status_counts": {},
+          "pipelines": {},
+          "prediction_non_null": 0,
+          "prediction_key_missing": 0
+        },
+        "last_frame_result": null,
+        "hand_frame": {
+          "n": 0,
+          "with_hand": 0
+        },
+        "reset_done": [],
+        "sign_results": [],
+        "sign_discarded": [],
+        "errors": []
+      },
+      {
+        "url": "ws://localhost:3000/ws/hand-landmarks",
+        "protocol": null,
+        "handshake_status": null,
+        "closed": true,
+        "created_t_s": 2.185,
+        "closed_t_s": 2.333,
+        "n_messages": 0,
+        "n_non_json": 0,
+        "first_type": null,
+        "count_by_type": {},
+        "session_info": null,
+        "frame_result": {
+          "status_counts": {},
+          "pipelines": {},
+          "prediction_non_null": 0,
+          "prediction_key_missing": 0
+        },
+        "last_frame_result": null,
+        "hand_frame": {
+          "n": 0,
+          "with_hand": 0
+        },
+        "reset_done": [],
+        "sign_results": [],
+        "sign_discarded": [],
+        "errors": []
+      },
+      {
+        "url": "ws://localhost:3000/ws/hand-landmarks",
+        "protocol": null,
+        "handshake_status": 101,
+        "closed": false,
+        "created_t_s": 2.186,
+        "closed_t_s": null,
+        "n_messages": 75,
+        "n_non_json": 0,
+        "first_type": "session_info",
+        "count_by_type": {
+          "session_info": 1,
+          "reset_done": 1,
+          "hand_frame": 73
+        },
+        "session_info": {
+          "type": "session_info",
+          "endpoint": "hand-landmarks",
+          "protocol_version": 1,
+          "extractor": {
+            "name": "mp.solutions.hands",
+            "mediapipe_version": "0.10.14",
+            "static_image_mode": false,
+            "max_num_hands": 1,
+            "model_complexity": 1,
+            "min_detection_confidence": 0.5,
+            "min_tracking_confidence": 0.5
+          },
+          "limits": {
+            "max_message_bytes": 1048576,
+            "max_frame_side": 1920,
+            "max_frames_per_segment": 300
+          }
+        },
+        "frame_result": {
+          "status_counts": {},
+          "pipelines": {},
+          "prediction_non_null": 0,
+          "prediction_key_missing": 0
+        },
+        "last_frame_result": null,
+        "hand_frame": {
+          "n": 73,
+          "with_hand": 73
+        },
+        "reset_done": [
+          1
+        ],
+        "sign_results": [],
+        "sign_discarded": [],
+        "errors": []
+      }
+    ],
+    "ws_page": [
+      {
+        "url": "ws://localhost:3000/?token=gH33M5vGXD-B",
+        "t_page_ms": 728.3999999994412,
+        "frames": [
+          "<other>",
+          "<other>",
+          "<other>",
+          "<other>",
+          "<other>",
+          "<other>",
+          "<other>"
+        ]
+      },
+      {
+        "url": "ws://localhost:3000/ws/live-stream",
+        "t_page_ms": 1037.5999999996275,
+        "frames": [
+          "<other>",
+          "/src/components/Phase12Pipeline.jsx",
+          "/src/components/Phase12Pipeline.jsx",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>"
+        ]
+      },
+      {
+        "url": "ws://localhost:3000/ws/live-stream",
+        "t_page_ms": 1041.0999999996275,
+        "frames": [
+          "<other>",
+          "/src/components/Phase12Pipeline.jsx",
+          "/src/components/Phase12Pipeline.jsx",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>"
+        ]
+      },
+      {
+        "url": "ws://localhost:3000/ws/hand-landmarks",
+        "t_page_ms": 1055.2999999998137,
+        "frames": [
+          "<other>",
+          "/src/components/Fingerspelling.jsx",
+          "/src/components/Fingerspelling.jsx",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>"
+        ]
+      },
+      {
+        "url": "ws://localhost:3000/ws/hand-landmarks",
+        "t_page_ms": 1057.3999999994412,
+        "frames": [
+          "<other>",
+          "/src/components/Fingerspelling.jsx",
+          "/src/components/Fingerspelling.jsx",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>"
+        ]
+      }
+    ],
+    "fingerspelling_status": {
+      "http_status": 200,
+      "available": true,
+      "num_classes": 34,
+      "model_type": "bigru"
+    },
+    "sequence_posts": [
+      {
+        "body_facts": {
+          "keys": [
+            "frame_height",
+            "frame_width",
+            "handedness",
+            "landmarks",
+            "source_mirrored",
+            "timestamps_ms",
+            "top_k"
+          ],
+          "n_landmarks": 73,
+          "n_handedness": 73,
+          "n_timestamps_ms": 73,
+          "n_non_null_frames": 73,
+          "n_frames_21_identical_points": 0,
+          "n_frames_all_zero": 0,
+          "n_frames_bad_shape": 0,
+          "n_non_finite_values": 0,
+          "max_abs_value": 0.8312155604362488,
+          "timestamps_non_decreasing": true,
+          "handedness_values": [
+            "Left"
+          ],
+          "source_mirrored": false,
+          "top_k": 5,
+          "frame_width": 640,
+          "frame_height": 480
+        },
+        "status": 200,
+        "response": {
+          "prediction": "a",
+          "prediction_kind": "letter",
+          "confidence": 0.9688,
+          "candidates": [
+            {
+              "class": "a",
+              "confidence": 0.9688,
+              "kind": "letter"
+            },
+            {
+              "class": "dấu hỏi",
+              "confidence": 0.0038,
+              "kind": "tone"
+            },
+            {
+              "class": "l",
+              "confidence": 0.0034,
+              "kind": "letter"
+            },
+            {
+              "class": "y",
+              "confidence": 0.0023,
+              "kind": "letter"
+            },
+            {
+              "class": "x",
+              "confidence": 0.002,
+              "kind": "letter"
+            }
+          ],
+          "frames": 73,
+          "detected_frames": 73,
+          "model_type": "bigru",
+          "checkpoint": "alphabet_best.pt"
+        }
+      }
+    ],
+    "compose_posts": [
+      {
+        "tokens": [
+          "a"
+        ],
+        "status": 200,
+        "response": {
+          "text": "a",
+          "warnings": [],
+          "keys": [
+            "syllables",
+            "text",
+            "tone_style",
+            "warnings"
+          ]
+        }
+      }
+    ],
+    "dom": {
+      "fs_status_available": "true",
+      "fs_ws_status": "connected",
+      "fs_prediction": "a",
+      "fs_confidence_value": "0.9688",
+      "fs_confidence_text": "96.9%",
+      "fs_frames": "73",
+      "fs_frames_text": "Độ phân giải: 640×480Số frame: 73 · có tay: 73 · bỏ qua phía client: 3FPS hiệu dụng: 22.8 · phản hồi sau Dừng: 71 ms",
+      "fs_error": null,
+      "expected_confidence_value": "0.9688",
+      "expected_confidence_text": "96.9%",
+      "fs_composed": "a",
+      "fs_warnings": ""
+    },
+    "fatal_error": null,
+    "page_status": 200
+  },
+  "ws_classification": {
+    "vite_hmr_excluded": [
+      {
+        "url": "ws://localhost:3000/?token=gH33M5vGXD-B",
+        "protocol": "vite-hmr",
+        "count_by_type": {
+          "connected": 1
+        }
+      }
+    ],
+    "role_by_path": {
+      "/ws/hand-landmarks": "used",
+      "/ws/live-stream": "tab_unmounted"
+    },
+    "strictmode_orphans_by_path": {
+      "/ws/hand-landmarks": 1
+    },
+    "tab_unmounted_by_path": {
+      "/ws/live-stream": 2
+    },
+    "page_hook": {
+      "n_records_by_path": {
+        "/": 1,
+        "/ws/live-stream": 2,
+        "/ws/hand-landmarks": 2
+      },
+      "n_cdp_by_path": {
+        "/": 1,
+        "/ws/live-stream": 2,
+        "/ws/hand-landmarks": 2
+      },
+      "tab_unmounted_owners": [
+        "/src/components/Phase12Pipeline.jsx",
+        "/src/components/Phase12Pipeline.jsx"
+      ],
+      "tab_unmounted_click_phase": [
+        "after_click",
+        "after_click"
+      ]
+    }
+  },
+  "checks": {
+    "health_200_status_ok_within_180s": {
+      "pass": true,
+      "detail": {
+        "http_status": 200,
+        "status": "ok",
+        "wait_s": 11.2
+      }
+    },
+    "page_3000_200_within_180s": {
+      "pass": true,
+      "detail": {
+        "http_status": 200,
+        "wait_s": 11.2
+      }
+    },
+    "browser_run_without_fatal_error": {
+      "pass": true,
+      "detail": null
+    },
+    "console_error_0": {
+      "pass": true,
+      "detail": []
+    },
+    "pageerror_0": {
+      "pass": true,
+      "detail": []
+    },
+    "requestfailed_0": {
+      "pass": true,
+      "detail": []
+    },
+    "http_ge_400_0": {
+      "pass": true,
+      "detail": []
+    },
+    "ws_no_8000_any_socket": {
+      "pass": true,
+      "detail": {
+        "n_sockets": 5,
+        "violations": []
+      }
+    },
+    "ws_app_urls_via_proxy": {
+      "pass": true,
+      "detail": {
+        "app_urls": [
+          "ws://localhost:3000/ws/live-stream",
+          "ws://localhost:3000/ws/live-stream",
+          "ws://localhost:3000/ws/hand-landmarks",
+          "ws://localhost:3000/ws/hand-landmarks"
+        ],
+        "violations": []
+      }
+    },
+    "vite_hmr_socket_rule": {
+      "pass": true,
+      "detail": {
+        "n_hmr": 1,
+        "max_hmr": 1,
+        "hmr_excluded": [
+          {
+            "url": "ws://localhost:3000/?token=gH33M5vGXD-B",
+            "protocol": "vite-hmr",
+            "count_by_type": {
+              "connected": 1
+            }
+          }
+        ],
+        "vite_hmr_protocol_but_not_hmr": []
+      }
+    },
+    "no_request_to_old_image_endpoint": {
+      "pass": true,
+      "detail": []
+    },
+    "ports_8000_3000_free_after_stop": {
+      "pass": true,
+      "detail": {
+        "8000": false,
+        "3000": false
+      }
+    },
+    "no_child_process_left": {
+      "pass": true,
+      "detail": []
+    },
+    "strictmode_orphan_rule": {
+      "pass": true,
+      "detail": {
+        "/ws/hand-landmarks": {
+          "n_sockets": 2,
+          "orphans": [
+            0
+          ],
+          "violations": []
+        }
+      }
+    },
+    "tab_unmounted_socket_rule": {
+      "pass": true,
+      "detail": {
+        "/ws/live-stream": {
+          "role": "tab_unmounted",
+          "n_sockets": 2,
+          "violations": [],
+          "sockets": [
+            {
+              "created_t_s": 2.185,
+              "closed_t_s": 2.333,
+              "closed": true,
+              "handshake_status": null,
+              "n_messages": 0,
+              "count_by_type": {}
+            },
+            {
+              "created_t_s": 2.185,
+              "closed_t_s": 2.333,
+              "closed": true,
+              "handshake_status": null,
+              "n_messages": 0,
+              "count_by_type": {}
+            }
+          ]
+        }
+      }
+    },
+    "tab_unmounted_owner_rule": {
+      "pass": true,
+      "detail": {
+        "applies": true,
+        "path": "/ws/live-stream",
+        "expected_owner": "/src/components/Phase12Pipeline.jsx",
+        "n_cdp_sockets": 2,
+        "n_records": 2,
+        "owners": [
+          "/src/components/Phase12Pipeline.jsx",
+          "/src/components/Phase12Pipeline.jsx"
+        ],
+        "violations": []
+      }
+    },
+    "status_available_true": {
+      "pass": true,
+      "detail": {
+        "api": {
+          "http_status": 200,
+          "available": true,
+          "num_classes": 34,
+          "model_type": "bigru"
+        },
+        "fs_status_data_available": "true"
+      }
+    },
+    "hand_ws_session_info": {
+      "pass": true,
+      "detail": {
+        "orphans": [
+          0
+        ],
+        "sockets": [
+          {
+            "first_type": null,
+            "count_by_type": {},
+            "closed": true
+          },
+          {
+            "first_type": "session_info",
+            "count_by_type": {
+              "session_info": 1,
+              "reset_done": 1,
+              "hand_frame": 73
+            },
+            "closed": false
+          }
+        ]
+      }
+    },
+    "sequence_post_200_at_least_1": {
+      "pass": true,
+      "detail": [
+        200
+      ]
+    },
+    "every_sequence_body_valid": {
+      "pass": true,
+      "detail": []
+    },
+    "fs_prediction_equals_last_response": {
+      "pass": true,
+      "detail": {
+        "dom": "a",
+        "response": "a"
+      }
+    },
+    "fs_confidence_shows_response_confidence": {
+      "pass": true,
+      "detail": {
+        "dom_value": "0.9688",
+        "dom_text": "96.9%",
+        "expected_value": "0.9688",
+        "expected_text": "96.9%"
+      }
+    },
+    "fs_add_compose_200_and_text_shown": {
+      "pass": true,
+      "detail": {
+        "status": 200,
+        "tokens": [
+          "a"
+        ],
+        "response_text": "a",
+        "dom": "a"
+      }
+    },
+    "json_has_no_absolute_path_landmark_or_image": {
+      "pass": true,
+      "detail": {
+        "path_leaks": 0,
+        "forbidden_keys": []
+      }
+    },
+    "code_clean_at_run": {
+      "pass": true,
+      "detail": false
+    }
+  },
+  "info_not_accuracy": {
+    "clip_id": "hauuto_a_hau_A_001",
+    "clip_label": "a",
+    "prediction": "a",
+    "confidence": 0.9688
+  },
+  "all_checks_pass": true
+}

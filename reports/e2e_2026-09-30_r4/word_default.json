@@ -1,0 +1,618 @@
+{
+  "generated_by": {
+    "command": "PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/e2e_fullstack.py --scenario word --video data/Dataset/Videos/D0120T.mp4 --out reports/e2e_2026-09-30_r4/word_default.json",
+    "git_commit": "b6c27b135e12b2d61381ca50ae9146f50a34ec1d",
+    "code_dirty": false,
+    "code_dirty_paths": [
+      "backend",
+      "src",
+      "frontend",
+      "scripts",
+      "tests"
+    ],
+    "generated_at_utc": "2026-09-30T08:56:10Z"
+  },
+  "plan": "docs/plans/06-viec5-frontend.md AC12",
+  "note": "End-to-end run on ONE training clip per scenario: shows that backend + frontend run together through the Vite proxy with a fake webcam fed by a real clip. Not an accuracy measurement; the prediction is recorded under info_not_accuracy only. The fake webcam replays the clip converted to Y4M (cv2 BGR->I420), so the frames are not bit-identical to the mp4 decoded by cv2.",
+  "scenario": "word",
+  "model_type_env": null,
+  "versions": {
+    "node": "v25.9.0",
+    "browser": "Edg/146.0.3856.72",
+    "mediapipe": "0.10.14",
+    "python": "3.11.9"
+  },
+  "clip": {
+    "clip_id": "qipedc_D0120T",
+    "source": "qipedc",
+    "split": "train",
+    "label": "phải không?",
+    "label_kind": "gloss (data/splits/unified/train.csv)",
+    "video": "data/Dataset/Videos/D0120T.mp4",
+    "video_facts": {
+      "frames": 113,
+      "fps": 29.97002997002997,
+      "width": 1280,
+      "height": 720
+    },
+    "y4m": {
+      "frames": 113,
+      "width": 1280,
+      "height": 720,
+      "fps_num": 30000,
+      "fps_den": 1001
+    },
+    "clip_loop_seconds": 3.7704
+  },
+  "startup": {
+    "health_status": 200,
+    "health": {
+      "status": "ok",
+      "model_type": "stgcn",
+      "is_default_model": true,
+      "pipeline": "legacy",
+      "checkpoint": "stgcn_tier2_indomain.pt",
+      "num_classes": 487,
+      "device": "cuda"
+    },
+    "health_wait_s": 12.2,
+    "page_status": 200,
+    "page_wait_s": 12.3
+  },
+  "health": {
+    "model_type": "stgcn",
+    "is_default": true,
+    "pipeline": "legacy"
+  },
+  "shutdown": {
+    "taskkill_exit": 0,
+    "process_tree_names": [
+      "cmd.exe",
+      "esbuild.exe",
+      "node.exe",
+      "node.exe",
+      "powershell.exe",
+      "python.exe",
+      "python.exe",
+      "python.exe",
+      "uvicorn.exe"
+    ],
+    "processes_alive_after_stop": [],
+    "ports_listening_after_stop": {
+      "8000": false,
+      "3000": false
+    }
+  },
+  "browser_exit_code": 0,
+  "observations": {
+    "scenario": "word",
+    "url": "http://localhost:3000/",
+    "clip_seconds": 3.770433,
+    "max_loops": 3,
+    "node_version": "v25.9.0",
+    "browser_version": "Edg/146.0.3856.72",
+    "steps": [
+      {
+        "t_s": 1.102,
+        "name": "goto"
+      },
+      {
+        "t_s": 2.958,
+        "name": "ready",
+        "connection": "connected"
+      },
+      {
+        "t_s": 3.003,
+        "name": "camera_started",
+        "harmonized": false
+      },
+      {
+        "t_s": 6.861,
+        "name": "camera_stopped",
+        "ran_s": 3.817,
+        "loops": 1.012
+      },
+      {
+        "t_s": 9.541,
+        "name": "done"
+      }
+    ],
+    "console_errors": [],
+    "page_errors": [],
+    "request_failed": [],
+    "http_errors": [],
+    "requests_old_image_endpoint": [],
+    "ws": [
+      {
+        "url": "ws://localhost:3000/?token=CXoZ_uHclvXB",
+        "protocol": "vite-hmr",
+        "handshake_status": 101,
+        "closed": false,
+        "created_t_s": 1.869,
+        "closed_t_s": null,
+        "n_messages": 1,
+        "n_non_json": 0,
+        "first_type": "connected",
+        "count_by_type": {
+          "connected": 1
+        },
+        "session_info": null,
+        "frame_result": {
+          "status_counts": {},
+          "pipelines": {},
+          "prediction_non_null": 0,
+          "prediction_key_missing": 0
+        },
+        "last_frame_result": null,
+        "hand_frame": {
+          "n": 0,
+          "with_hand": 0
+        },
+        "reset_done": [],
+        "sign_results": [],
+        "sign_discarded": [],
+        "errors": []
+      },
+      {
+        "url": "ws://localhost:3000/ws/live-stream",
+        "protocol": null,
+        "handshake_status": null,
+        "closed": true,
+        "created_t_s": 2.245,
+        "closed_t_s": 2.247,
+        "n_messages": 0,
+        "n_non_json": 0,
+        "first_type": null,
+        "count_by_type": {},
+        "session_info": null,
+        "frame_result": {
+          "status_counts": {},
+          "pipelines": {},
+          "prediction_non_null": 0,
+          "prediction_key_missing": 0
+        },
+        "last_frame_result": null,
+        "hand_frame": {
+          "n": 0,
+          "with_hand": 0
+        },
+        "reset_done": [],
+        "sign_results": [],
+        "sign_discarded": [],
+        "errors": []
+      },
+      {
+        "url": "ws://localhost:3000/ws/live-stream",
+        "protocol": null,
+        "handshake_status": 101,
+        "closed": false,
+        "created_t_s": 2.245,
+        "closed_t_s": null,
+        "n_messages": 34,
+        "n_non_json": 0,
+        "first_type": "session_info",
+        "count_by_type": {
+          "session_info": 1,
+          "frame_result": 33
+        },
+        "session_info": {
+          "type": "session_info",
+          "protocol_version": 2,
+          "pipeline": "legacy",
+          "model": {
+            "model_type": "stgcn",
+            "checkpoint": "stgcn_tier2_indomain.pt",
+            "checkpoint_sha256": "53c34cba43854c3e9820495bba3f93ffe18b5e1cb87ef44278a188ccafe2c826",
+            "is_default": true,
+            "num_classes": 487
+          },
+          "preprocessing": {
+            "target_len": 60
+          },
+          "segmenter": null,
+          "limits": {
+            "max_message_bytes": 1048576,
+            "max_frame_side": 1920,
+            "min_frame_height": null
+          }
+        },
+        "frame_result": {
+          "status_counts": {
+            "STATIC_HAND": 13,
+            "IDLE": 20
+          },
+          "pipelines": {
+            "legacy": 33
+          },
+          "prediction_non_null": 33,
+          "prediction_key_missing": 0
+        },
+        "last_frame_result": {
+          "pipeline": "legacy",
+          "status": "STATIC_HAND",
+          "gloss": "...",
+          "prediction": "...",
+          "confidence": 0,
+          "top5": [
+            {
+              "gloss": "phải không?",
+              "confidence": 0.2163
+            },
+            {
+              "gloss": "ai",
+              "confidence": 0.1741
+            },
+            {
+              "gloss": "đúng không?",
+              "confidence": 0.0857
+            },
+            {
+              "gloss": "đẹp không? (người)",
+              "confidence": 0.0471
+            },
+            {
+              "gloss": "vì sao?",
+              "confidence": 0.0459
+            }
+          ],
+          "top5_js_strings": [
+            [
+              "phải không?",
+              "0.2163"
+            ],
+            [
+              "ai",
+              "0.1741"
+            ],
+            [
+              "đúng không?",
+              "0.0857"
+            ],
+            [
+              "đẹp không? (người)",
+              "0.0471"
+            ],
+            [
+              "vì sao?",
+              "0.0459"
+            ]
+          ]
+        },
+        "hand_frame": {
+          "n": 0,
+          "with_hand": 0
+        },
+        "reset_done": [],
+        "sign_results": [],
+        "sign_discarded": [],
+        "errors": []
+      }
+    ],
+    "ws_page": [
+      {
+        "url": "ws://localhost:3000/?token=CXoZ_uHclvXB",
+        "t_page_ms": 748.0999999996275,
+        "frames": [
+          "<other>",
+          "<other>",
+          "<other>",
+          "<other>",
+          "<other>",
+          "<other>",
+          "<other>"
+        ]
+      },
+      {
+        "url": "ws://localhost:3000/ws/live-stream",
+        "t_page_ms": 1122,
+        "frames": [
+          "<other>",
+          "/src/components/Phase12Pipeline.jsx",
+          "/src/components/Phase12Pipeline.jsx",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>"
+        ]
+      },
+      {
+        "url": "ws://localhost:3000/ws/live-stream",
+        "t_page_ms": 1125.0999999996275,
+        "frames": [
+          "<other>",
+          "/src/components/Phase12Pipeline.jsx",
+          "/src/components/Phase12Pipeline.jsx",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>",
+          "<node_modules>"
+        ]
+      }
+    ],
+    "fingerspelling_status": null,
+    "sequence_posts": [],
+    "compose_posts": [],
+    "dom": {
+      "live_pipeline": "legacy",
+      "live_model_type": "stgcn",
+      "live_model_is_default": "true",
+      "live_status": "STATIC_HAND",
+      "live_gloss": "...",
+      "live_confidence_value": "0",
+      "live_top5": [
+        [
+          "phải không?",
+          "0.2163"
+        ],
+        [
+          "ai",
+          "0.1741"
+        ],
+        [
+          "đúng không?",
+          "0.0857"
+        ],
+        [
+          "đẹp không? (người)",
+          "0.0471"
+        ],
+        [
+          "vì sao?",
+          "0.0459"
+        ]
+      ],
+      "live_words": [],
+      "live_error": null,
+      "live_discard": null,
+      "live_recording_appearances": 0
+    },
+    "fatal_error": null,
+    "page_status": 200,
+    "ran_seconds": 3.817,
+    "ran_loops": 1.012,
+    "quiet_after_stop": true
+  },
+  "ws_classification": {
+    "vite_hmr_excluded": [
+      {
+        "url": "ws://localhost:3000/?token=CXoZ_uHclvXB",
+        "protocol": "vite-hmr",
+        "count_by_type": {
+          "connected": 1
+        }
+      }
+    ],
+    "role_by_path": {
+      "/ws/live-stream": "used"
+    },
+    "strictmode_orphans_by_path": {
+      "/ws/live-stream": 1
+    },
+    "tab_unmounted_by_path": {},
+    "page_hook": {
+      "n_records_by_path": {
+        "/": 1,
+        "/ws/live-stream": 2
+      },
+      "n_cdp_by_path": {
+        "/": 1,
+        "/ws/live-stream": 2
+      },
+      "tab_unmounted_owners": [],
+      "tab_unmounted_click_phase": []
+    }
+  },
+  "checks": {
+    "health_200_status_ok_within_180s": {
+      "pass": true,
+      "detail": {
+        "http_status": 200,
+        "status": "ok",
+        "wait_s": 12.2
+      }
+    },
+    "page_3000_200_within_180s": {
+      "pass": true,
+      "detail": {
+        "http_status": 200,
+        "wait_s": 12.3
+      }
+    },
+    "browser_run_without_fatal_error": {
+      "pass": true,
+      "detail": null
+    },
+    "console_error_0": {
+      "pass": true,
+      "detail": []
+    },
+    "pageerror_0": {
+      "pass": true,
+      "detail": []
+    },
+    "requestfailed_0": {
+      "pass": true,
+      "detail": []
+    },
+    "http_ge_400_0": {
+      "pass": true,
+      "detail": []
+    },
+    "ws_no_8000_any_socket": {
+      "pass": true,
+      "detail": {
+        "n_sockets": 3,
+        "violations": []
+      }
+    },
+    "ws_app_urls_via_proxy": {
+      "pass": true,
+      "detail": {
+        "app_urls": [
+          "ws://localhost:3000/ws/live-stream",
+          "ws://localhost:3000/ws/live-stream"
+        ],
+        "violations": []
+      }
+    },
+    "vite_hmr_socket_rule": {
+      "pass": true,
+      "detail": {
+        "n_hmr": 1,
+        "max_hmr": 1,
+        "hmr_excluded": [
+          {
+            "url": "ws://localhost:3000/?token=CXoZ_uHclvXB",
+            "protocol": "vite-hmr",
+            "count_by_type": {
+              "connected": 1
+            }
+          }
+        ],
+        "vite_hmr_protocol_but_not_hmr": []
+      }
+    },
+    "no_request_to_old_image_endpoint": {
+      "pass": true,
+      "detail": []
+    },
+    "ports_8000_3000_free_after_stop": {
+      "pass": true,
+      "detail": {
+        "8000": false,
+        "3000": false
+      }
+    },
+    "no_child_process_left": {
+      "pass": true,
+      "detail": []
+    },
+    "strictmode_orphan_rule": {
+      "pass": true,
+      "detail": {
+        "/ws/live-stream": {
+          "n_sockets": 2,
+          "orphans": [
+            0
+          ],
+          "violations": []
+        }
+      }
+    },
+    "tab_unmounted_socket_rule": {
+      "pass": true,
+      "detail": {}
+    },
+    "tab_unmounted_owner_rule": {
+      "pass": true,
+      "detail": {
+        "applies": false,
+        "n_records": 3,
+        "violations": []
+      }
+    },
+    "live_ws_first_message_session_info_v2": {
+      "pass": true,
+      "detail": {
+        "first_type": "session_info",
+        "protocol_version": 2,
+        "pipeline": "legacy",
+        "sockets": 2,
+        "orphans": [
+          0
+        ],
+        "sockets_first_types": [
+          null,
+          "session_info"
+        ]
+      }
+    },
+    "ws_error_messages_0": {
+      "pass": true,
+      "detail": []
+    },
+    "live_pipeline_shown": {
+      "pass": true,
+      "detail": "legacy"
+    },
+    "frame_result_at_least_30": {
+      "pass": true,
+      "detail": 33
+    },
+    "live_top5_equals_last_frame_result_top5": {
+      "pass": true,
+      "detail": {
+        "quiet_after_stop": true,
+        "dom": [
+          [
+            "phải không?",
+            "0.2163"
+          ],
+          [
+            "ai",
+            "0.1741"
+          ],
+          [
+            "đúng không?",
+            "0.0857"
+          ],
+          [
+            "đẹp không? (người)",
+            "0.0471"
+          ],
+          [
+            "vì sao?",
+            "0.0459"
+          ]
+        ],
+        "last_frame_result": [
+          [
+            "phải không?",
+            "0.2163"
+          ],
+          [
+            "ai",
+            "0.1741"
+          ],
+          [
+            "đúng không?",
+            "0.0857"
+          ],
+          [
+            "đẹp không? (người)",
+            "0.0471"
+          ],
+          [
+            "vì sao?",
+            "0.0459"
+          ]
+        ]
+      }
+    },
+    "json_has_no_absolute_path_landmark_or_image": {
+      "pass": true,
+      "detail": {
+        "path_leaks": 0,
+        "forbidden_keys": []
+      }
+    },
+    "code_clean_at_run": {
+      "pass": true,
+      "detail": false
+    }
+  },
+  "info_not_accuracy": {
+    "clip_id": "qipedc_D0120T",
+    "clip_label": "phải không?",
+    "last_frame_result_gloss": "...",
+    "sign_result_glosses": [],
+    "sign_discarded_reasons": []
+  },
+  "all_checks_pass": true
+}

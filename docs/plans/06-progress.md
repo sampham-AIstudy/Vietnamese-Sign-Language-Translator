@@ -521,3 +521,45 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
 - Chẩn đoán theo luật đặt trước (0D.6), lượt thử: mọi socket P `before_click` → **H1** (socket được tạo trong trang TRƯỚC lúc bấm
   tab, ~10–13 ms theo đồng hồ trang; Node nhận `webSocketCreated` sau `click_t_s` ~230 ms). Chỉ ghi nhận; không đổi luật/hằng/lượt.
 - Cổng: cả 3 JSON thử `all_checks_pass: true` → sang B8d-4. Vòng sửa B8d-2b KHÔNG dùng.
+
+### B8d-4 — lượt CHÍNH THỨC 3 kịch bản (0D.8), mỗi kịch bản đúng 1 lần
+- Trước khi chạy: HEAD b6c27b1 (con cháu 0517c0a = commit B8d-2: `git merge-base --is-ancestor` OK), `git status --porcelain --
+  backend src frontend scripts tests` rỗng; ngày 2026-09-30 → thư mục mới `reports/e2e_2026-09-30_r4/` (chưa tồn tại trước lượt).
+  Log `../_plan06_tmp/b8d4_run_{fingerspell,word_default,word_h360}.log`. Thứ tự fingerspell → word → word stgcn_h360, không chạy lại.
+- Kết quả (nguyên văn dòng cuối stdout + JSON):
+  | JSON | exit | checks | all_checks_pass | git_commit | code_dirty | generated_at_utc |
+  |---|---|---|---|---|---|---|
+  | `reports/e2e_2026-09-30_r4/fingerspell_default.json` | 0 | 25/25 pass | true | b6c27b135e12… | false | 2026-09-30T08:55:47Z |
+  | `reports/e2e_2026-09-30_r4/word_default.json` | 0 | 23/23 pass | true | b6c27b135e12… | false | 2026-09-30T08:56:10Z |
+  | `reports/e2e_2026-09-30_r4/word_stgcn_h360.json` | 0 | 26/26 pass | true | b6c27b135e12… | false | 2026-09-30T08:56:38Z |
+  Cả 3 có `strictmode_orphan_rule`, `tab_unmounted_socket_rule`, `tab_unmounted_owner_rule` trong `checks`. Kiểm đỏ: KHÔNG có.
+- Chung: node v25.9.0, `Edg/146.0.3856.72`, mediapipe 0.10.14; health/trang 200 sau 11.2/11.2 s, 12.2/12.3 s, 11.2/11.3 s; sau khi
+  dừng cổng 8000/3000 rảnh, 0 tiến trình còn sống.
+  - Đánh vần: 1 POST /sequence 200, compose 200; `fs-prediction` "a", `fs-confidence` "0.9688"/"96.9%", `fs-composed` "a";
+    `info_not_accuracy` clip hauuto_a_hau_A_001 nhãn "a", prediction "a", confidence 0.9688 (clip TRAIN, không phải độ chính xác).
+  - Ký từ mặc định: health `stgcn`, is_default true, `legacy`; socket dùng `{session_info: 1, frame_result: 33}`; ran_loops 1.012.
+  - Ký từ stgcn_h360: is_default false, `harmonized_v1`; socket dùng `{session_info: 1, frame_result: 31, sign_result: 1}` (gloss
+    "phải không?" == nhãn clip, clip TRAIN — không phải độ chính xác); ran_loops 1.006.
+- `page_hook` (JSON chính thức):
+  - Đánh vần: `{"n_records_by_path": {"/": 1, "/ws/live-stream": 2, "/ws/hand-landmarks": 2}, "n_cdp_by_path": {"/": 1,
+    "/ws/live-stream": 2, "/ws/hand-landmarks": 2}, "tab_unmounted_owners": ["/src/components/Phase12Pipeline.jsx",
+    "/src/components/Phase12Pipeline.jsx"], "tab_unmounted_click_phase": ["after_click", "after_click"]}`. `click_t_s` 2.021,
+    `click_page_ms_before` 1034.7999999998137, `click_page_ms_after` 1036.5999999996275; bản ghi P `t_page_ms` 1037.5999999996275 /
+    1041.0999999996275; socket P created_t_s 2.185 / 2.185, closed_t_s 2.333 / 2.333; `record_clicked` t_s 2.685.
+    `tab_unmounted_owner_rule.detail`: n_cdp_sockets 2, n_records 2, owners 2 × Phase12Pipeline.jsx, violations [].
+  - Ký từ (cả 2): `n_records_by_path` == `n_cdp_by_path` == `{"/": 1, "/ws/live-stream": 2}`; 2 danh sách tab_unmounted rỗng;
+    owner rule `applies: false`.
+- **Kết luận chẩn đoán theo luật đặt trước (0D.6), từ JSON CHÍNH THỨC:** socket P `after_click` (cả 2) → **cả H1 lẫn H2 đều không
+  mô tả đúng** (ghi nhận): 2 socket `/ws/live-stream` được tạo trong trang 1.0 ms và 4.5 ms SAU `performance.now()` ngay sau
+  `b.click()`, vẫn trong cùng lệnh `page.evaluate` bấm tab (trước khi Node ghi `t_s` 2.178 của bước). Lượt thử B8d-3 cho
+  `before_click` (H1). Hai lượt khác pha → thời điểm effect chạy so với click không ổn định giữa các lượt; đúng lý do 0D.3 bỏ luật
+  thời điểm. Không đổi luật/hằng/lượt; `click_phase` không ảnh hưởng `all_checks_pass`.
+- So kiểm chức năng theo 0D.7 (JSON Đánh vần `_r4` vs JSON đỏ B8c-3 chạy không có hook): tập kiểm B8c-3 ⊂ `_r4` (thêm đúng
+  `tab_unmounted_owner_rule`); kiểm xanh ở B8c-3 mà không xanh ở `_r4`: `[]`; kiểm đỏ ở B8c-3: `['tab_unmounted_socket_rule']`
+  (nay xanh vì điều (b) bị thay). `console_error_0`, `pageerror_0`, `requestfailed_0` xanh ở cả 3 JSON `_r4`.
+- Bảng thư mục e2e:
+  | Thư mục / file | Lượt | Vai trò |
+  |---|---|---|
+  | `reports/e2e_2026-09-29/*` (e3d0df8, chạy tại 15200d9) | B8, trước Lần sửa 2 | bị thay; giữ nguyên, không phải bằng chứng AC12 |
+  | `reports/e2e_2026-09-30/fingerspell_default.json` (d2752c3, chạy tại 1b05851) | chính thức B8c-3 | ĐỎ theo luật Lần sửa 3; bằng chứng lượt đỏ, KHÔNG phải bằng chứng AC12; giữ nguyên (blob c7a83cbc… == d2752c3) |
+  | `reports/e2e_2026-09-30_r4/*` (chạy tại b6c27b1) | chính thức B8d-4 | **bằng chứng AC12** |
