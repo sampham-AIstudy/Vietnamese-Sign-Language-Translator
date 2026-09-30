@@ -385,3 +385,24 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
   (`evaluate`←`main`; `strictmode_orphans`←`evaluate`,`ws_classification`, test; `app_ws_by_path`←`evaluate`,
   `ws_classification`, `main`; `ws_classification`←`main`), `newWs`←handler `webSocketCreated` của `e2e_browser.cjs`.
 - detect-changes --scope staged: "no indexed symbols overlap those hunks" (chỉ code mới cuối file test).
+- Ghi chú quy trình: commit 2fa59e0 (progress B8c-1) — detect-changes chạy SAU commit (`--scope compare --base-ref 85ef325`):
+  risk low, chỉ Section của docs/plans/06-progress.md.
+
+### B8c-2 — cài đặt (commit e1d13d2)
+- `scripts/e2e_fullstack.py`: hằng `SCENARIO_WS_ROLES` = bảng 0C.2; `tab_unmounted_violations(sockets, steps, tab_step,
+  first_action_step)` (0C.2 mục 2 a–e; bước mốc phải có đúng 1 lần; `n_messages` phải = tổng `count_by_type` + `n_non_json`);
+  `scenario_ws_roles(ws_by_path, scenario, steps)` → `role_by_path` (path khai báo của kịch bản luôn có mặt, path quan sát khác
+  = "other"), `tab_unmounted_by_path`, `checks{strictmode_orphan_rule (chỉ path used, vắng → đỏ), tab_unmounted_socket_rule}`;
+  `evaluate` dùng nó thay cho vòng lặp mồ côi trên mọi path; `ws_classification(obs, scenario)` thêm `role_by_path`,
+  `tab_unmounted_by_path`, `strictmode_orphans_by_path` chỉ còn path used. `strictmode_orphans` không đổi.
+- `scripts/e2e_browser.cjs` (`git diff eb379fa HEAD -- scripts/e2e_browser.cjs`): +6/−1 — `created_t_s: null`, `closed_t_s: null`
+  trong `newWs`; gán `created_t_s` ở `webSocketCreated`, `closed_t_s` ở `webSocketClosed`; `clickT` lấy ngay trước
+  `page.evaluate(...)` và `click_t_s: clickT` trong `step('tab_alphabet', …)` (dòng `-` duy nhất là dòng step cũ). `node --check` OK.
+- AC12-t: `Ran 46 tests` `OK`.
+- AC2 31 module (log `../_plan06_tmp/b8c2_ac2_31.log`): **`Ran 513 tests in 299.984s` `OK`**, 0 failure/error/skip; theo module
+  (`../_plan06_tmp/b8c2_counts.txt`): 25 cũ = 383 (= B0), 4 module 06 = 21 + 9 + 4 + 58 = 92 (frontend_contract 28 → 58 = +30 test
+  AC12-t mục 10), 2 module merge = 14 + 24 = 38. `git status --porcelain` trước/sau: SAME.
+- `cd frontend && npm test` (node v25.9.0): `tests 26, pass 26, fail 0`.
+- detect-changes --scope staged (`../_plan06_tmp/b8c2_detect.txt`): risk **HIGH** — 2 file, 8 symbol (newWs, main của cjs, evaluate,
+  checks, ws_classification, main của py), 8 process đều bắt đầu từ `evaluate`/`ws_classification`/`main` của chính script e2e
+  (index ở 8a2f5a2 nên symbol mới chưa hiện). Không symbol backend/src/frontend nào đổi.
