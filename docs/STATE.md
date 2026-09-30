@@ -18,7 +18,10 @@
   CHƯA khôi phục gì: chờ người dùng chọn (1) phần mềm khôi phục file (winfr/Recuva — cần hạn chế ghi ổ C trước) hay (2) khôi phục checkpoint
   từ _work + Kaggle có kiểm sha256; video/landmark: người dùng có bản gốc không, hay tải lại từ nguồn + trích lại trên Kaggle.
   Review 06: phần 1 xong (docs/reviews/06-review.md: 1–4 PASS; AC5 đột biến chỉ qua proxy do thiếu dữ liệu; V0 = sự cố trên).
-  Phần 2 (5–9) + phần 3 (10–13) + chạy lại AC2 chờ dữ liệu được khôi phục.
+  Review 06 phần 3 XONG (00:22): 10 PASS, 11 PASS (V6 thấp: Vite proxy tự trả CORS cho origin loopback; V7 thấp: detail lộ exception),
+  12 PASS (3 lần đổi tiêu chí AC12 hợp lý, không hạ tiêu chí; V9 trung bình: coder nới kiểm hand_ws_session_info ở 7e38118 và
+  06-progress.md:237-239 báo sai lượt dev B8), 13 FAIL (O1: phase12_api.md:32-33 "qua proxy CORS không tham gia" bị thí nghiệm bác; O2 = V9).
+  Kết luận tạm: CHANGES_REQUESTED — cần V0 (dữ liệu), V10/O1, V9/O2; thấp V6, V7, O3–O4. Phần 2 (5–9) đang giao — 00:24.
   Kế hoạch 06: XONG B0–B7 (B5 34a527d, B6 0328c1b, B7 dbd79f2). Còn: B8 e2e fullstack (LOCAL, Edge + video thật) → B9 → review 06.
   Reviewer 06 cần xác minh: CRITICAL impact ở B5/B6 (component React, GitNexus nhầm tên JS↔Python), HIGH ở B2/B3 (symbol mới),
   B7 sửa tests/test_frontend_contract.py (file do chính kế hoạch 06 tạo ở B4 — kiểm không nới), 050d337 thiếu detect-changes.
