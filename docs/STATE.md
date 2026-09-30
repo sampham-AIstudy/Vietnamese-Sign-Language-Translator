@@ -101,6 +101,11 @@
 - (2026-09-29 18:55) BỎ tự tắt máy: chỉ tắt máy khi người dùng yêu cầu rõ trong lượt đó. Các quyết định "xong thì tắt máy" trước đây hết hiệu lực.
   Khi hết hạn mức: lưu STATE, commit, push, rồi dừng (không shutdown).
 
+- (2026-09-30 15:10) Tận dụng cửa sổ 5h tới ~90%, không dừng khi mới dùng nửa. Cổng ngân sách THAY usage_guard §3.2:
+  bắt đầu đơn vị nếu `five_hour_used_pct + 1.0 × est ≤ 95` (thay `+ 1.5 × est ≤ 90`). Gần ngưỡng thì chia đơn vị nhỏ nhất
+  (coder 1 bước, reviewer 1 nhóm hạng mục). Dừng lưu (STATE, commit, push) khi used ≥ 90 hoặc đơn vị nhỏ nhất không lọt cổng.
+  Vẫn cấm cố ý chạm giới hạn thật; nếu dính 429 thì quay lại hệ số cũ và ghi limit_hit.
+
 ## Câu hỏi chờ người dùng
 - (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
   reports/PHASE4B_REPORT.md:112 ghi "unseen / zero leakage" là sai; mặc định: ghi nhãn đúng, không viết lại báo cáo cũ.
