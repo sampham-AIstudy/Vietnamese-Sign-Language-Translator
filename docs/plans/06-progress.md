@@ -638,3 +638,16 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
   vần (§3.9, §6 Bảo mật); (2) kế hoạch "segmenter live" cho review 04 mục 8–9 (§3.8); (3) đo lệch Kaggle↔cục bộ trên toàn bộ clip
   hauuto trước khi báo độ chính xác Cấp 1 trên webcam (§0.4); (4) hỏi người dùng trước khi xóa `RealtimeStream.jsx` (mã chết);
   (5) `detail` 503 có thể chứa tên file (backlog 8, §3.9).
+
+### Nhật ký `detect-changes --scope staged` (chạy TRƯỚC mỗi commit B8d/B9b; nguyên văn dòng tóm tắt)
+| Commit | Output |
+|---|---|
+| 4bf7b74 (WIP B8d progress) | `Changes: 1 files, 1 symbols` / `Affected processes: 0` / `Risk level: low` |
+| 828e472 (WIP B8d-1) | `Changes: 2 files, 29 symbols` / `Affected processes: 36` / `Risk level: critical` |
+| 0517c0a (B8d-2) | `Changes: 3 files, 22 symbols` / `Affected processes: 48` / `Risk level: critical`; `--scope all`: `Changes: 6 files, 22 symbols` / `Affected processes: 48` / `Risk level: critical` (thêm 3 file ` D` của người dùng) |
+| b6c27b1 (B8d-3) | `Changes: 1 files, 1 symbols` / `Affected processes: 34` / `Risk level: critical` |
+| 024ec64 (B8d-4) | `Diff touched 4 file(s) but no indexed symbols overlap those hunks — not a clean tree.` |
+| 361c3af (WIP B9b progress) | `Changes: 1 files, 1 symbols` / `Affected processes: 34` / `Risk level: critical` |
+| 505c1e6 (B9b) | `Changes: 2 files, 1 symbols` / `Affected processes: 18` / `Risk level: critical` |
+Ghi chú: "critical" ở các commit chỉ đổi docs do đồ thị gắn Section của 06-progress.md vào process trùng tên (không symbol code nào
+đổi); ở 828e472/0517c0a symbol đổi chỉ thuộc `tests/test_frontend_contract.py`, `scripts/e2e_fullstack.py`, `scripts/e2e_browser.cjs`.
