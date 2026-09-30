@@ -3,21 +3,12 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-30 14:50 (giờ Việt Nam)
-- HEAD: 2773b44 (+ commit state này) | Nhánh: feat/vslt-complete (đã push lên origin)
-- Trạng thái phiên: ĐANG CHẠY — 5h 0% lúc 14:47 (reset 19:40 giờ VN), 7 ngày 48%.
-  Coder B8c-1/B8c-2 XONG (85ef325, e1d13d2: +30 test AC12-t; AC2 31 module Ran 513 OK, 0 skip). B8c-3 DỪNG §7-10(c) (d2752c3):
-  lượt CHÍNH THỨC Đánh vần tại 1b05851 đỏ 23/24 — tab_unmounted_socket_rule: 2 socket /ws/live-stream created_t_s 3.185 > click_t_s 3.092
-  (H1 trễ sự kiện CDP / H2 useEffect StrictMode chạy sau khi click bắt đầu). JSON đỏ đã commit reports/e2e_2026-09-30/fingerspell_default.json.
-  2 kịch bản Ký từ chưa chạy chính thức; B9b chưa làm. LẦN THỨ 3 cùng một kiểm e2e đỏ → Lần sửa 4 là lần cuối; đỏ nữa → CẦN NGƯỜI DÙNG.
-  Planner Lần sửa 4 XONG (4a1bc31, §0D): bỏ điều kiện thời gian (b); kiểm mới tab_unmounted_owner_rule (owner = module gọi new WebSocket,
-  đọc call stack qua hook Proxy construct; /ws/live-stream ở Đánh vần phải do /src/components/Phase12Pipeline.jsx tạo); chạy thử B8d-3 ngoài
-  repo (1 vòng sửa B8d-2b chỉ cho lỗi cài đặt), chính thức B8d-4 cả 3 kịch bản vào reports/e2e_<ngày>_r4/, JSON đỏ cũ giữ nguyên.
-  Đỏ nữa → §7-11 CẦN NGƯỜI DÙNG (câu hỏi soạn sẵn A/B/C/D trong kế hoạch), không có Lần sửa 5.
-  Coder B8d + B9b XONG (828e472, 0517c0a, b6c27b1, 024ec64, 505c1e6, b84cefd): 3 JSON chính thức reports/e2e_2026-09-30_r4/
-  đều all_checks_pass (25/25, 23/23, 26/26) tại b6c27b1; AC2 31 module Ran 526 OK, 0 skip; npm test 26/26, build OK; AC1 theo 0B.3 sạch;
-  dòng progress_log AC13 (reviewer "CHỜ"). Chẩn đoán: lượt thử before_click, lượt chính thức after_click 1–4.5 ms (chỉ thông tin).
-  ĐANG GIAO: vslt-reviewer toàn bộ kế hoạch 06 — phần 1 (hạng mục 1–4) — 16:18, file docs/reviews/06-review.md.
+- Cập nhật lần cuối: 2026-09-30 23:50 (giờ Việt Nam)
+- HEAD: 0491877 (+ commit state này) | Nhánh: feat/vslt-complete
+- Trạng thái phiên: ĐANG CHẠY — 5h 0% lúc 23:40 (reset 04:40 ngày 1/10), 7 ngày 61% (reset 09:00 ngày 1/10).
+  16:18 reviewer 06 phần 1 dính 429 (limit_hit) ở 71% + est 20 → ước lượng sai; áp lại cổng chặt `used + 1.5×est ≤ 90` (theo quyết định 15:10).
+  docs/reviews/06-review.md (chưa commit trước đó) còn dở: hạng mục 2, 3, 4 PASS; hạng mục 1 ĐANG LÀM (còn AC10 smoke, đột biến AC5).
+  ĐANG GIAO: vslt-reviewer 06 phần 1 — hoàn thiện hạng mục 1 (không làm lại 2–4) — 23:52.
   Kế hoạch 06: XONG B0–B7 (B5 34a527d, B6 0328c1b, B7 dbd79f2). Còn: B8 e2e fullstack (LOCAL, Edge + video thật) → B9 → review 06.
   Reviewer 06 cần xác minh: CRITICAL impact ở B5/B6 (component React, GitNexus nhầm tên JS↔Python), HIGH ở B2/B3 (symbol mới),
   B7 sửa tests/test_frontend_contract.py (file do chính kế hoạch 06 tạo ở B4 — kiểm không nới), 050d337 thiếu detect-changes.
@@ -43,7 +34,7 @@
   e2e_browser.cjs chỉ thêm created_t_s/closed_t_s/click_t_s. Chạy chính thức mỗi kịch bản ĐÚNG 1 lần; đỏ → dừng §7-10.
   VIỆC KẾ TIẾP: vslt-coder B8c-1 (test mục 10 trước) → B8c-2 (script) → B8c-3 (3 JSON chính thức) → B9b (0B.5 bước 4, AC1 nhóm (ii)
   gồm facffea, f52de6f, 717aa3e) → vslt-reviewer toàn bộ 06 (thêm điểm §0B.6, §0C.6).
-- Hạn mức (16:16 ngày 30/9): 5 giờ 71% (reset 19:40 giờ VN), 7 ngày 57%. Sổ đo: docs/usage_ledger.csv
+- Hạn mức (23:40 ngày 30/9): 5 giờ 0% (reset 04:40 ngày 1/10), 7 ngày 61% (reset 09:00 ngày 1/10). Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -113,6 +104,12 @@
   (coder 1 bước, reviewer 1 nhóm hạng mục). Dừng lưu (STATE, commit, push) khi used ≥ 90 hoặc đơn vị nhỏ nhất không lọt cổng.
   Vẫn cấm cố ý chạm giới hạn thật; nếu dính 429 thì quay lại hệ số cũ và ghi limit_hit.
 
+- (2026-09-30 23:45) File tạm/log/JSON chạy thử/staging/backup KHÔNG đặt ngoài project nữa: đặt trong `_work/<tên>/` (đã thêm `_work/` vào
+  .gitignore). Đã chuyển các thư mục ../_plan05_tmp, ../_plan06_tmp, ../_cloud_review_tmp, ../_rev06_tmp, ../_kaggle_staging, ../_backup_step4,
+  ../_backup_audit_round2_rerun_2026-09-24 vào `_work/` (giữ nguyên tên). Tài liệu cũ ghi `../_X/...` ⇒ nay là `_work/_X/...`.
+  Đã gỡ worktree tạm ../_rev06_wt. Ngoại lệ: y4m webcam giả của e2e vẫn ở %TEMP%slt_e2e (script từ chối thư mục trong repo).
+  Việc theo sau (thấp): docstring scripts/archive_*_kaggle.py còn ví dụ `../_kaggle_staging` → đổi sang `_work/_kaggle_staging` ở đợt dọn dẹp.
+
 ## Câu hỏi chờ người dùng
 - (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
   reports/PHASE4B_REPORT.md:112 ghi "unseen / zero leakage" là sai; mặc định: ghi nhãn đúng, không viết lại báo cáo cũ.
@@ -169,3 +166,4 @@
 - 2026-09-29 18:50 | dừng theo ngân sách (không phải ngắt) | planner Lần sửa 3 xong; coder B8c chưa giao (71 + 1.5×16 = 95 > 90) | Lưu STATE, commit, push, tắt máy theo lệnh người dùng.
 - 2026-09-29 18:55 | người dùng hủy tắt máy (đã chạy shutdown /a) | không có việc dở | Ghi quyết định: chỉ tắt máy khi được yêu cầu.
 - 2026-09-30 14:50 | khôi phục sau chờ hạn mức (người dùng nhắn "continue") | STATE khớp git (HEAD 2773b44), không có nhánh cloud mới | Giao vslt-coder 06 B8c + B9b.
+- 2026-09-30 23:50 | 429 giữa lượt reviewer 06 phần 1 (16:18, 71% + est 20) | review dở: 2–4 PASS, 1 đang làm | Ghi limit_hit, cổng chặt lại; dời thư mục tạm vào _work/; giao lại reviewer hoàn thiện hạng mục 1.
