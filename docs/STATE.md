@@ -3,11 +3,10 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-29 18:50 (giờ Việt Nam)
-- HEAD: 717aa3e (+ commit state này) | Nhánh: feat/vslt-complete (đã push lên origin)
-- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h dùng 71% lúc 18:46, reset 22:10 giờ VN. Việc kế tiếp: vslt-coder kế hoạch 06 B8c-1..B8c-3
-  rồi B9b (est coder 16 → 71 + 1.5×16 = 95 > 90, không qua cổng). Sau đó vslt-reviewer toàn bộ kế hoạch 06 (chia 1–4 / 5–9 / 10–13).
-  Đã lưu STATE, commit, push. KHÔNG tắt máy (quyết định người dùng 18:55).
+- Cập nhật lần cuối: 2026-09-30 14:50 (giờ Việt Nam)
+- HEAD: 2773b44 (+ commit state này) | Nhánh: feat/vslt-complete (đã push lên origin)
+- Trạng thái phiên: ĐANG CHẠY — 5h 0% lúc 14:47 (reset 19:40 giờ VN), 7 ngày 48%.
+  ĐANG GIAO: vslt-coder kế hoạch 06 B8c-1..B8c-3 + B9b (§0C.5) — 14:50, HEAD 2773b44 (+state). Sau đó vslt-reviewer toàn bộ 06 (chia 1–4 / 5–9 / 10–13).
   Kế hoạch 06: XONG B0–B7 (B5 34a527d, B6 0328c1b, B7 dbd79f2). Còn: B8 e2e fullstack (LOCAL, Edge + video thật) → B9 → review 06.
   Reviewer 06 cần xác minh: CRITICAL impact ở B5/B6 (component React, GitNexus nhầm tên JS↔Python), HIGH ở B2/B3 (symbol mới),
   B7 sửa tests/test_frontend_contract.py (file do chính kế hoạch 06 tạo ở B4 — kiểm không nới), 050d337 thiếu detect-changes.
@@ -33,7 +32,7 @@
   e2e_browser.cjs chỉ thêm created_t_s/closed_t_s/click_t_s. Chạy chính thức mỗi kịch bản ĐÚNG 1 lần; đỏ → dừng §7-10.
   VIỆC KẾ TIẾP: vslt-coder B8c-1 (test mục 10 trước) → B8c-2 (script) → B8c-3 (3 JSON chính thức) → B9b (0B.5 bước 4, AC1 nhóm (ii)
   gồm facffea, f52de6f, 717aa3e) → vslt-reviewer toàn bộ 06 (thêm điểm §0B.6, §0C.6).
-- Hạn mức (18:46): 5 giờ 71% (reset 22:10 giờ VN), 7 ngày 47%. Sổ đo: docs/usage_ledger.csv
+- Hạn mức (14:47 ngày 30/9): 5 giờ 0% (reset 19:40 giờ VN), 7 ngày 48%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -153,3 +152,4 @@
 - 2026-09-29 17:20 | khôi phục sau chờ hạn mức (lệnh sleep nền bị dừng khi phiên cũ kết thúc; người dùng báo cloud xong) | STATE khớp git (HEAD 353c46d), cloud đã push nhánh cloud/2026-09-29-viec-a-d | Giao vslt-reviewer kiểm nhánh cloud trước khi merge; sau đó B8.
 - 2026-09-29 18:50 | dừng theo ngân sách (không phải ngắt) | planner Lần sửa 3 xong; coder B8c chưa giao (71 + 1.5×16 = 95 > 90) | Lưu STATE, commit, push, tắt máy theo lệnh người dùng.
 - 2026-09-29 18:55 | người dùng hủy tắt máy (đã chạy shutdown /a) | không có việc dở | Ghi quyết định: chỉ tắt máy khi được yêu cầu.
+- 2026-09-30 14:50 | khôi phục sau chờ hạn mức (người dùng nhắn "continue") | STATE khớp git (HEAD 2773b44), không có nhánh cloud mới | Giao vslt-coder 06 B8c + B9b.
