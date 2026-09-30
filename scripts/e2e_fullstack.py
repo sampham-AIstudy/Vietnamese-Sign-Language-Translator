@@ -285,6 +285,122 @@ def app_ws_by_path(ws_list: list) -> dict:
     return by_path
 
 
+# Plan 06 revision 3, 0C.2: every app path has ONE role, fixed by the scenario (a constant, never inferred from the
+# observations). `used`: the path the scenario works with -- StrictMode orphan rule of 0B.2, unchanged. `tab_unmounted`:
+# the path of the default tab ("Ký từ", App.jsx) that the fingerspell scenario leaves by clicking the "Bảng Chữ Cái"
+# tab -- tab_unmounted_socket_rule. Any other app path is red.
+SCENARIO_WS_ROLES = {
+    "fingerspell": {"used": "/ws/hand-landmarks", "tab_unmounted": "/ws/live-stream",
+                    "tab_step": "tab_alphabet", "first_action_step": "record_clicked"},
+    "word": {"used": "/ws/live-stream", "tab_unmounted": None, "tab_step": None, "first_action_step": None},
+}
+MAX_TAB_UNMOUNTED_SOCKETS = 2  # one StrictMode pair: mount -> unmount -> mount
+TAB_UNMOUNTED_HANDSHAKE = (None, 101)
+TAB_UNMOUNTED_PROTOCOL_VERSION = 2
+
+
+def _single_step(steps: list, name: str):
+    """The step called `name` when there is exactly one (else None)."""
+    found = [s for s in (steps or []) if s.get("name") == name]
+    return found[0] if len(found) == 1 else None
+
+
+def _num(v) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def tab_unmounted_violations(sockets: list, steps: list, tab_step: str, first_action_step: str) -> list:
+    """Pure (0C.2 item 2): sockets of the path of the default tab unmounted by the tab click. 0 sockets is allowed;
+    when there are sockets, ALL must hold: (a) <= 2 sockets; (b) each created before the click (created_t_s <
+    click_t_s of the tab step, which must exist with clicked: true); (c) each closed in the run, closed_t_s not null
+    and <= t_s of the first action step (which must exist); (d) n_non_json == 0 and count_by_type empty, or exactly
+    {session_info: 1} with first_type session_info and protocol_version 2; (e) handshake_status in {null, 101}."""
+    if not sockets:
+        return []
+    v = []
+    if len(sockets) > MAX_TAB_UNMOUNTED_SOCKETS:
+        v.append(f"{len(sockets)} sockets (at most {MAX_TAB_UNMOUNTED_SOCKETS})")
+    tab = _single_step(steps, tab_step)
+    click_t = tab.get("click_t_s") if tab else None
+    if tab is None:
+        v.append(f"step {tab_step} missing (or not exactly one)")
+    elif tab.get("clicked") is not True:
+        v.append(f"step {tab_step}: clicked is not true")
+    elif not _num(click_t):
+        v.append(f"step {tab_step}: click_t_s missing")
+    act = _single_step(steps, first_action_step)
+    act_t = act.get("t_s") if act else None
+    if act is None or not _num(act_t):
+        v.append(f"step {first_action_step} missing (or not exactly one)")
+    for i, w in enumerate(sockets):
+        c = w.get("created_t_s")
+        if not _num(c):
+            v.append(f"socket {i}: created_t_s missing")
+        elif _num(click_t) and not c < click_t:
+            v.append(f"socket {i}: created_t_s {c} not before click_t_s {click_t}")
+        if w.get("closed") is not True:
+            v.append(f"socket {i}: not closed")
+        ct = w.get("closed_t_s")
+        if not _num(ct):
+            v.append(f"socket {i}: closed_t_s is null")
+        elif _num(act_t) and not ct <= act_t:
+            v.append(f"socket {i}: closed_t_s {ct} after {first_action_step} t_s {act_t}")
+        cbt = dict(w.get("count_by_type") or {})
+        if w.get("n_non_json") != 0:
+            v.append(f"socket {i}: n_non_json = {w.get('n_non_json')}")
+        if w.get("n_messages", 0) != sum(cbt.values()) + (w.get("n_non_json") or 0):
+            v.append(f"socket {i}: n_messages does not match count_by_type")
+        if cbt:
+            si = w.get("session_info") or {}
+            if cbt != {"session_info": 1}:
+                v.append(f"socket {i}: messages {cbt} (only none or one session_info allowed)")
+            elif w.get("first_type") != "session_info":
+                v.append(f"socket {i}: first_type {w.get('first_type')!r}")
+            elif si.get("protocol_version") != TAB_UNMOUNTED_PROTOCOL_VERSION:
+                v.append(f"socket {i}: session_info.protocol_version {si.get('protocol_version')!r}")
+        if w.get("handshake_status") not in TAB_UNMOUNTED_HANDSHAKE:
+            v.append(f"socket {i}: handshake_status {w.get('handshake_status')!r}")
+    return v
+
+
+def scenario_ws_roles(ws_by_path: dict, scenario: str, steps: list) -> dict:
+    """Pure (0C.2): role of each app path from the constant table of the scenario, strictmode_orphan_rule on the
+    `used` path only (0B.2 rule unchanged; the `used` path without any socket is red) and tab_unmounted_socket_rule
+    on every other path (the `tab_unmounted` path of the scenario must satisfy tab_unmounted_violations; any other
+    path is red)."""
+    if scenario not in SCENARIO_WS_ROLES:
+        raise ValueError(f"unknown scenario {scenario!r}")
+    table = SCENARIO_WS_ROLES[scenario]
+    used, tabp = table["used"], table["tab_unmounted"]
+    role_by_path = {used: "used"}
+    if tabp:
+        role_by_path[tabp] = "tab_unmounted"
+    for p in ws_by_path:
+        role_by_path.setdefault(p, "other")
+    so = strictmode_orphans(ws_by_path.get(used, []))
+    checks: dict = {}
+    check(checks, "strictmode_orphan_rule", so["pass"],
+          {used: {"n_sockets": so["n_sockets"], "orphans": so["orphans"], "violations": so["violations"]}})
+    tab_detail, ok = {}, True
+    for p, role in role_by_path.items():
+        if role == "used":
+            continue
+        socks = ws_by_path.get(p, [])
+        if role == "tab_unmounted":
+            viol = tab_unmounted_violations(socks, steps, table["tab_step"], table["first_action_step"])
+        else:
+            viol = [f"app path {p!r} has no role in scenario {scenario!r} ({len(socks)} sockets)"]
+        ok = ok and not viol
+        tab_detail[p] = {"role": role, "n_sockets": len(socks), "violations": viol,
+                         "sockets": [{k: w.get(k) for k in ("created_t_s", "closed_t_s", "closed", "handshake_status",
+                                                            "n_messages", "count_by_type")} for w in socks]}
+    check(checks, "tab_unmounted_socket_rule", ok, tab_detail)
+    return {"role_by_path": role_by_path,
+            "tab_unmounted_by_path": {p: len(ws_by_path.get(p, [])) for p, r in role_by_path.items()
+                                      if r == "tab_unmounted"},
+            "strictmode_used": so, "checks": checks}
+
+
 def evaluate(args, obs: dict, ready: dict, stop: dict, clip: dict) -> dict:
     checks: dict = {}
     h = ready.get("health") or {}
@@ -312,11 +428,9 @@ def evaluate(args, obs: dict, ready: dict, stop: dict, clip: dict) -> dict:
     if obs is None:
         return checks
     ws_by_path = app_ws_by_path(obs["ws"])
-    # AC12 revision 2 (0B.2): StrictMode orphan rule on every app path
-    orph = {p: strictmode_orphans(socks) for p, socks in ws_by_path.items()}
-    check(checks, "strictmode_orphan_rule", all(o["pass"] for o in orph.values()),
-          {p: {"n_sockets": o["n_sockets"], "orphans": o["orphans"], "violations": o["violations"]}
-           for p, o in orph.items()})
+    # AC12 revision 3 (0C.2): StrictMode orphan rule (0B.2) on the `used` path of the scenario only;
+    # tab_unmounted_socket_rule on every other app path
+    checks.update(scenario_ws_roles(ws_by_path, args.scenario, obs.get("steps"))["checks"])
 
     if args.scenario == "fingerspell":
         st = obs.get("fingerspelling_status") or {}
@@ -426,14 +540,18 @@ def evaluate(args, obs: dict, ready: dict, stop: dict, clip: dict) -> dict:
     return checks
 
 
-def ws_classification(obs) -> dict:
-    """JSON summary (0B.1 / 0B.2): the Vite HMR socket(s) excluded from the "via /ws/" check, and the number of
-    StrictMode orphans per app path."""
+def ws_classification(obs, scenario: str) -> dict:
+    """JSON summary (0B.1 / 0B.2 / 0C.2): the Vite HMR socket(s) excluded from the "via /ws/" check, the role of
+    each app path, the number of StrictMode orphans on the `used` path and the number of sockets on the
+    `tab_unmounted` path."""
     if obs is None:
         return None
+    roles = scenario_ws_roles(app_ws_by_path(obs["ws"]), scenario, obs.get("steps"))
+    used = SCENARIO_WS_ROLES[scenario]["used"]
     return {"vite_hmr_excluded": classify_ws(obs["ws"])["hmr_excluded"],
-            "strictmode_orphans_by_path": {p: len(strictmode_orphans(s)["orphans"])
-                                           for p, s in app_ws_by_path(obs["ws"]).items()}}
+            "role_by_path": roles["role_by_path"],
+            "strictmode_orphans_by_path": {used: len(roles["strictmode_used"]["orphans"])},
+            "tab_unmounted_by_path": roles["tab_unmounted_by_path"]}
 
 
 def _find_forbidden(obj, path="") -> list:
@@ -540,7 +658,7 @@ def main(argv=None) -> int:
         "shutdown": stop,
         "browser_exit_code": browser_exit,
         "observations": obs,
-        "ws_classification": ws_classification(obs),
+        "ws_classification": ws_classification(obs, args.scenario),
         "checks": checks,
     }
     if obs is not None and args.scenario == "fingerspell":

@@ -137,6 +137,8 @@ function newWs(url) {
     protocol: null,
     handshake_status: null,
     closed: false,
+    created_t_s: null,
+    closed_t_s: null,
     n_messages: 0,
     n_non_json: 0,
     first_type: null,
@@ -314,6 +316,7 @@ async function main() {
     cdp.on('Network.webSocketCreated', (e) => {
       if (!recording) return;
       const ws = newWs(e.url);
+      ws.created_t_s = Number((now() / 1000).toFixed(3));
       wsById.set(e.requestId, ws);
       obs.ws.push(ws);
     });
@@ -336,6 +339,7 @@ async function main() {
     cdp.on('Network.webSocketClosed', (e) => {
       const ws = wsById.get(e.requestId);
       if (ws) ws.closed = true;
+      if (ws) ws.closed_t_s = Number((now() / 1000).toFixed(3));
     });
 
     // DOM appearances of live-recording (the harmonized recording bar)
@@ -379,13 +383,14 @@ async function main() {
 
     if (args.scenario === 'fingerspell') {
       // tab "Bảng Chữ Cái" (Navbar button; no data-testid on the tabs)
+      const clickT = Number((now() / 1000).toFixed(3));
       const clicked = await page.evaluate(() => {
         const b = [...document.querySelectorAll('header nav button')].find((x) => x.textContent.includes('Bảng Chữ Cái'));
         if (!b) return false;
         b.click();
         return true;
       });
-      step('tab_alphabet', { clicked });
+      step('tab_alphabet', { clicked, click_t_s: clickT });
       await page.waitForSelector('[data-testid="fs-status"]', { timeout: 30000 });
       await waitFor(async () => (await attr('[data-testid="fs-status"]', 'data-available')) === 'true', 60000);
       await waitFor(async () => (await attr('[data-testid="fs-ws"]', 'data-status')) === 'connected', 60000);
