@@ -24,3 +24,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-09-30T08:33Z,vslt-planner,06,revision 4,17,49,32,4,ok
 2026-09-30T09:16Z,vslt-coder,06,B8d-1..B8d-4 + B9b,49,71,22,3,ok
 2026-09-30T09:18Z,vslt-reviewer,06,part 1 (items 1-4),71,100,29+,?,limit_hit
+2026-09-30T17:05Z,vslt-reviewer,06,part 1 finish (item 1),0,?,?,?,stale

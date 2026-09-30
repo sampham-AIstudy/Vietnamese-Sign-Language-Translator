@@ -3,12 +3,19 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-09-30 23:50 (giờ Việt Nam)
-- HEAD: 0491877 (+ commit state này) | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG CHẠY — 5h 0% lúc 23:40 (reset 04:40 ngày 1/10), 7 ngày 61% (reset 09:00 ngày 1/10).
-  16:18 reviewer 06 phần 1 dính 429 (limit_hit) ở 71% + est 20 → ước lượng sai; áp lại cổng chặt `used + 1.5×est ≤ 90` (theo quyết định 15:10).
-  docs/reviews/06-review.md (chưa commit trước đó) còn dở: hạng mục 2, 3, 4 PASS; hạng mục 1 ĐANG LÀM (còn AC10 smoke, đột biến AC5).
-  ĐANG GIAO: vslt-reviewer 06 phần 1 — hoàn thiện hạng mục 1 (không làm lại 2–4) — 23:52.
+- Cập nhật lần cuối: 2026-10-01 00:20 (giờ Việt Nam)
+- HEAD: 9d1d40f (+ commit state này) | Nhánh: feat/vslt-complete (đã push)
+- Trạng thái phiên: DỪNG — SỰ CỐ MẤT DỮ LIỆU, CHỜ NGƯỜI DÙNG. Người dùng đi ngủ, yêu cầu tắt máy khi xong (00:20).
+  SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
+  `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint
+  stgcn/stgcn_h360, video+nhãn QIPEDC, hauuto_raw, alphabet_hands_kaggle, vsl_gh, parallel_text. Còn nguyên: data/raw_tudienngonngukyhieu,
+  data/splits, data/processed, clone/, _work/, code + git.
+  Bản sao đã biết: _work/_kaggle_staging/restore_root/checkpoints/{alphabet_best.pt, stgcn_tier2_indomain.pt, stgcn_unified_best.pt};
+  Kaggle private phmvnsm33/vslt-step4-artifacts + phmvnsm33/vslt-provenance-artifacts (manifest sha256 trong reports/.../kaggle_archive_manifest.json).
+  CHƯA khôi phục gì: chờ người dùng chọn (1) phần mềm khôi phục file (winfr/Recuva — cần hạn chế ghi ổ C trước) hay (2) khôi phục checkpoint
+  từ _work + Kaggle có kiểm sha256; video/landmark: người dùng có bản gốc không, hay tải lại từ nguồn + trích lại trên Kaggle.
+  Review 06: phần 1 xong (docs/reviews/06-review.md: 1–4 PASS; AC5 đột biến chỉ qua proxy do thiếu dữ liệu; V0 = sự cố trên).
+  Phần 2 (5–9) + phần 3 (10–13) + chạy lại AC2 chờ dữ liệu được khôi phục.
   Kế hoạch 06: XONG B0–B7 (B5 34a527d, B6 0328c1b, B7 dbd79f2). Còn: B8 e2e fullstack (LOCAL, Edge + video thật) → B9 → review 06.
   Reviewer 06 cần xác minh: CRITICAL impact ở B5/B6 (component React, GitNexus nhầm tên JS↔Python), HIGH ở B2/B3 (symbol mới),
   B7 sửa tests/test_frontend_contract.py (file do chính kế hoạch 06 tạo ở B4 — kiểm không nới), 050d337 thiếu detect-changes.
@@ -110,7 +117,12 @@
   Đã gỡ worktree tạm ../_rev06_wt. Ngoại lệ: y4m webcam giả của e2e vẫn ở %TEMP%slt_e2e (script từ chối thư mục trong repo).
   Việc theo sau (thấp): docstring scripts/archive_*_kaggle.py còn ví dụ `../_kaggle_staging` → đổi sang `_work/_kaggle_staging` ở đợt dọn dẹp.
 
+- (2026-10-01, rút ra từ sự cố) Luật: trước khi xóa worktree/thư mục tạm, liệt kê và GỠ mọi junction/symlink bên trong
+  (`cmd //c rmdir <link>` hoặc `find -type l`/`fsutil reparsepoint query`), không dùng `git worktree remove --force`/`rm -rf` khi còn link.
+  Agent không được tạo junction/symlink tới dữ liệu thật trong worktree tạm; cần dữ liệu thì chạy test ở repo chính.
+
 ## Câu hỏi chờ người dùng
+- (CHẶN) Khôi phục dữ liệu bị xóa 30/9 23:42: chọn phần mềm khôi phục trước hay khôi phục checkpoint từ _work + Kaggle (sha256)? Còn bản gốc video không?
 - (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
   reports/PHASE4B_REPORT.md:112 ghi "unseen / zero leakage" là sai; mặc định: ghi nhãn đúng, không viết lại báo cáo cũ.
   Có thêm backlog train lại CSLR chia theo câu (tốn GPU Kaggle)? Có lưu checkpoint CSLR/ViT5 lên Kaggle dataset private?
@@ -167,3 +179,4 @@
 - 2026-09-29 18:55 | người dùng hủy tắt máy (đã chạy shutdown /a) | không có việc dở | Ghi quyết định: chỉ tắt máy khi được yêu cầu.
 - 2026-09-30 14:50 | khôi phục sau chờ hạn mức (người dùng nhắn "continue") | STATE khớp git (HEAD 2773b44), không có nhánh cloud mới | Giao vslt-coder 06 B8c + B9b.
 - 2026-09-30 23:50 | 429 giữa lượt reviewer 06 phần 1 (16:18, 71% + est 20) | review dở: 2–4 PASS, 1 đang làm | Ghi limit_hit, cổng chặt lại; dời thư mục tạm vào _work/; giao lại reviewer hoàn thiện hạng mục 1.
+- 2026-10-01 00:20 | sự cố mất dữ liệu do orchestrator gỡ worktree có junction (30/9 23:42) | review 06 phần 1 xong | Dừng mọi việc, lưu STATE, push, tắt máy theo yêu cầu người dùng.

@@ -1,15 +1,17 @@
 # Review kế hoạch 06 — Việc 5: frontend + WS v2 + CORS + e2e fullstack
 
-Reviewer: vslt-reviewer (độc lập). Nhánh `feat/vslt-complete`, HEAD lúc review phần 1: `0491877`.
+Reviewer: vslt-reviewer (độc lập). Nhánh `feat/vslt-complete`, HEAD lúc review phần 1: `0491877` (lượt 1, hạng mục 2–4 + phần lớn 1);
+`9d1d40f` (lượt 2, hoàn thiện hạng mục 1 — chỉ commit STATE/.gitignore/review, không đổi code).
 Kế hoạch: `docs/plans/06-viec5-frontend.md`. P6 = `797d0af` (06-progress.md:3).
 
-TRẠNG THÁI: ĐANG LÀM — phần 1 (hạng mục 1–4). Xong: 2, 3, 4. Đang làm: 1 (còn: AC10 smoke, đột biến AC5).
+TRẠNG THÁI: phần 1 (hạng mục 1–4) XONG. Phần 2 (5–9) và phần 3 (10–13) chưa làm.
+**CHẶN: dữ liệu gitignored/untracked `data/external/`, `data/Dataset/`, `checkpoints/` đã bị xóa rỗng lúc 23:42 ngày 2026-09-30 (V0, NGHIÊM TRỌNG) — xem mục "Vấn đề".**
 
 ## Bảng 1–13
 
 | # | Hạng mục | Kết quả | Bằng chứng |
 |---|---|---|---|
-| 1 | Đúng kế hoạch / AC có test thật | ĐANG LÀM | |
+| 1 | Đúng kế hoạch / AC có test thật | PASS (AC5-đột biến chỉ bằng proxy) | AC1–AC13 đều có test/lệnh tương ứng, kiểm bằng đột biến: AC3 9/9, AC4 1/1 (+1 sống đúng thiết kế), AC7 19/19, AC8 2/2, AC11 1/1, AC12-t 30/30 bị giết; AC10 tự chạy 2 lần PASSED exit 0; AC5: đọc code `np.array_equal` + xanh trong AC2 tại 0491877 + proxy đột biến 5/5 bị giết (test gốc nay skip do mất dữ liệu, V0) (§1) |
 | 2 | Tự chạy lại toàn bộ test | PASS | AC2 31 module: `Ran 526 tests in 734.835s` / `OK` / exit 0, 0 skip; `npm test` 26/26, 0 skip, 3/3 file; `git status --porcelain` trước/sau giống hệt (§2) |
 | 3 | Test không bị sửa/skip/nới | PASS | 0 dòng `-` ở 26 file test có tại P6; không xóa file; B7 chỉ thêm lớp (+100/−0); Lần sửa 4: đúng 2 dòng `-`, đều thuộc method bị thay; B2 sửa test B1 theo hướng CHẶT hơn (§3) |
 | 4 | Nguồn gốc dữ liệu | PASS | Clip e2e/AC4/AC5/AC10 là video thật đọc bằng cv2 (a_hau_A_001 75 frame 640×480; D0120T 113 frame 1280×720; W03292N 70 frame), thuộc manifest hauuto (mediapipe 0.10.14) / `data/splits/unified/train.csv`, không có ở val/test; y4m sinh từ clip bằng cv2 ra `%TEMP%slt_e2e` (script từ chối thư mục trong repo); không dùng `vsl_alphabet_pilot` (§4) |
@@ -38,7 +40,7 @@ Repo chính không bị sửa (`git status --porcelain` so với ảnh chụp đ
 | AC2 | 31 module + npm test | §2 | PASS |
 | AC3 a–g | `tests/test_cors_origin_bind.py` (21 test) | Đột biến (đều bị giết): `ws_origin_allowed` luôn True → 12 fail; so khớp không phân biệt hoa thường → 3 fail; `uvicorn.run(host="0.0.0.0")` → 1; ps1 `--host 0.0.0.0` → 1; `allow_credentials=True` → 2; đóng 1000 thay 1008 → 10; `strictPort: false` ở `server` → 1; bỏ kiểm Origin chỉ ở `/ws/hand-landmarks` → 6; chỉ ở `/ws/live-stream` → 6. | PASS |
 | AC4 a–g | `tests/test_hand_landmarks_ws.py` (9 test, MediaPipe thật) | Đột biến `min_detection_confidence` 0.5→0.7 → `test_kwargs_equal_training_extractor` fail. Đột biến bỏ `cvtColor(BGR2RGB)` → AC4 vẫn xanh (đúng thiết kế: AC4 kiểm hợp đồng, phép kiểm bit thuộc AC5). | PASS |
-| AC5 | `tests/test_hand_live_equivalence.py` (4 test; 8 hauuto + 2 qipedc) | Đọc code: `np.array_equal` trên detected/landmark/score, body `/sequence` và JSON response bằng hệt, top-1 + sai lệch confidence ≤ 1e-4 (`tests/test_hand_live_equivalence.py:85-132`). Đột biến bỏ BGR2RGB: xem "Đột biến AC5". | PASS |
+| AC5 | `tests/test_hand_live_equivalence.py` (4 test; 8 hauuto + 2 qipedc) | Đọc code: `np.array_equal` trên detected/landmark/score, body `/sequence` và JSON response bằng hệt, top-1 + sai lệch confidence ≤ 1e-4 (`tests/test_hand_live_equivalence.py:85-132`). 4/4 xanh, 0 skip trong AC2 tại 0491877 (§2). Đột biến: xem "Đột biến AC5" (proxy 5/5 bị giết; chạy trên chính test gốc: UNVERIFIED vì V0). | PASS (đột biến qua proxy) |
 | AC6 | `scripts/hand_live_check.py` + `TestHandLiveCheckReport` | Chạy lại tại HEAD → thân JSON bằng hệt bản commit (§4). | PASS |
 | AC7 a–c | `frontend/tests/*.test.mjs` (26) | 11 đột biến `reduceLive` đều bị giết (bỏ `protocol_mismatch`; bỏ/tắt thêm từ CONFIRMED legacy; `bufferCapacity` cứng 60; harmonized `frame_result` xóa `lastSign`; khử trùng `sign_result`; đảo dấu `client_e2e_ms`; mất `reason`; không `fatal`; không đếm type lạ; sửa state đầu vào → deepFreeze bắt). 8 đột biến `buildSequenceBody` đều bị giết (khung 0 thay `null`; bỏ sort; bỏ lọc `segment_id`; `source_mirrored: true`; bỏ `frame_size_changed`; bỏ giới hạn frame; bỏ lỗi rỗng; cho timestamps giảm). | PASS |
 | AC7-d | `TestCrossLanguageBody` | xanh trong AC2 (node có trên máy, không skip) | PASS |
@@ -64,7 +66,32 @@ Repo chính không bị sửa (`git status --porcelain` so với ảnh chụp đ
 - 050d337 thiếu detect-changes: đúng (commit chỉ thêm 6 dòng vào `docs/plans/06-progress.md`). Tôi tìm thêm 4 commit docs-only khác cũng không có detect-changes trong message: ada003b, 15200d9, 0e506c3, 001e020 (cả 4 chỉ chạm `docs/plans/06-progress.md`). → V1.
 - 2fa59e0 (14:53:14, sau 85ef325 14:52:55) và 1b05851 (15:00:48, sau e1d13d2 15:00:32): message ghi `--scope staged` "risk low"; kế hoạch 0D.9 mục 12 đã ghi nhận (1b05851 ghi "risk low" trong khi output thật là "no indexed symbols overlap"; 2fa59e0 chạy sau commit). Chỉ docs. Từ B8d (828e472 trở đi) message chép nguyên văn output (`Changes: … Risk level: critical` / "no indexed symbols overlap those hunks — not a clean tree"). → V2.
 
-**Đột biến AC5:** (đang chạy)
+**Đột biến AC5 (lượt 2, HEAD 9d1d40f):**
+- Cách làm: vá trong tiến trình (monkeypatch), KHÔNG sửa file nào trên đĩa, không cần worktree. Driver
+  `_work/_rev06_tmp/mutate_ac5.py` (chạy `tests.test_hand_live_equivalence` sau khi vá) và `_work/_rev06_tmp/proxy_ac5.py`.
+- Chạy `mutate_ac5.py NONE` (mốc) ra `Ran 4 tests` / `OK (skipped=4)`. Lý do skip (in `_MISSING` của test): thiếu
+  `data/external/alphabet_hands_kaggle/alphabet_hands/manifest.csv`, `data/external/hauuto_raw/raw/raw`, `data/Dataset/Videos`,
+  `checkpoints/alphabet_best.pt`. Kiểm tra: `data/external/`, `data/Dataset/`, `checkpoints/` còn nhưng RỖNG, mtime
+  `30/09/2026 23:42` (`cmd /c dir /a`), xem V0. Vì vậy KHÔNG chạy được đột biến trên chính test AC5.
+- Proxy (cùng hàm so sánh của test AC5-a: `H.live_hand_frames` qua WS `/ws/hand-landmarks` bằng TestClient, PNG,
+  `H.live_arrays`, `np.array_equal` trên detected/landmark/nhãn/score; offline = `_extract_one` import nguyên văn) trên 1 video
+  người thật còn trên máy: `data/raw_tudienngonngukyhieu/videos/5--nam-863.mp4` (259 frame, offline có tay 127). Lệnh:
+  `PYTHONIOENCODING=utf-8 .venv/Scripts/python _work/_rev06_tmp/proxy_ac5.py data/raw_tudienngonngukyhieu/videos/5--nam-863.mp4 NONE M1 M2 M3 M4 M5`
+  (exit 0, log `_work/_rev06_tmp/proxy_ac5.log`):
+
+  | Đột biến | detected bằng (số frame có tay live) | landmark bằng | nhãn bằng | max abs Δ (frame cùng có tay) | AC5-a |
+  |---|---|---|---|---|---|
+  | NONE (mốc) | True (127) | True | True | 0.0 | xanh (proxy hợp lệ) |
+  | M1 bỏ `cvtColor(BGR2RGB)` trong `HandLandmarkSession.process` | False (0) | False | False | — | ĐỎ (bị giết) |
+  | M2 server lật ngang frame sau `_decode_frame` (mirror) | False (132) | False | False | 0.3861 | ĐỎ |
+  | M3 landmark qua float16 | True (127) | False | True | 0.00047 | ĐỎ |
+  | M4 `static_image_mode=True` | False (124) | False | False | 0.0632 | ĐỎ |
+  | M5 `min_tracking_confidence` 0.5 thành 0.6 | False (129) | False | False | 0.0430 | ĐỎ |
+
+  Kết luận: phép so bit của AC5-a phân biệt được cả 5 lệch train–live (kể cả lệch làm tròn 5e-4 mà một dung sai sẽ bỏ qua).
+  Giới hạn: đây là proxy trên 1 clip ngoài mẫu AC5 (video từ điển, không phải clip Cấp 1), không phải chạy lại chính test AC5;
+  AC5-b/c (body, response, top-1) không được đột biến. Cần chạy `mutate_ac5.py M1`…`M5` sau khi khôi phục dữ liệu để có bằng
+  chứng trên đúng test. Video chỉ đọc cục bộ, không commit; npz tạm ghi vào `_work/_rev06_tmp/off_*` và đã xóa.
 
 ### §2 — Tự chạy lại toàn bộ test (PASS)
 - Lệnh (từ gốc repo, HEAD 0491877):
@@ -120,8 +147,65 @@ Repo chính không bị sửa (`git status --porcelain` so với ảnh chụp đ
 
 ## Vấn đề theo mức độ
 
-(đang làm)
+- **V0 — NGHIÊM TRỌNG (môi trường, KHÔNG do code kế hoạch 06; chặn việc review tiếp).** Dữ liệu gitignored/untracked của
+  người dùng đã bị xóa: `data/external/` (hauuto_raw, alphabet_hands_kaggle, …), `data/Dataset/` (Videos, Labels của qipedc),
+  `checkpoints/` (gồm `alphabet_best.pt`, `provenance.json`, checkpoint stgcn/stgcn_h360 mà AC10 dùng) — thư mục còn nhưng
+  rỗng (`du -sh`: 0), mtime cả ba = `30/09/2026 23:42`. Bằng chứng: `git status --porcelain` chụp trước AC2 ở lượt 1
+  (`_work/_rev06_tmp/status_before_ac2.txt`) có `?? data/Dataset/` và `?? data/external/`; nay không còn (diff với
+  `_work/_rev06_tmp/status_now.txt`); lúc đó AC2 chạy 526 test 0 skip nhờ các dữ liệu này (§2). Thời điểm trùng với việc
+  "Đã gỡ worktree tạm ../_rev06_wt" + dời thư mục tạm (`docs/STATE.md:107-110`, commit 9d1d40f lúc 23:43:12). Worktree đó có
+  thư mục dữ liệu nối bằng JUNCTION về repo chính (§1, lượt 1) nên giả thuyết mạnh là: lệnh xóa/dời worktree đã đi xuyên
+  junction và xóa nội dung đích. `.git/worktrees` không còn. Bản sao duy nhất tìm thấy (find độ sâu 6 dưới thư mục cha):
+  `_work/_kaggle_staging/restore_root/checkpoints/{alphabet_best.pt, stgcn_tier2_indomain.pt, stgcn_unified_best.pt}` (ngày
+  28/09; sha256 alphabet_best.pt = a6311820ba778b6b…b708a2, CHƯA đối chiếu được vì `provenance.json` cũng mất). Không tìm thấy
+  bản sao video hauuto/qipedc. Hệ quả: AC2 không còn tái lập được (AC5, AC4 phần MediaPipe thật, AC6, AC7-d, AC10 và các test
+  dữ liệu cũ sẽ skip hoặc lỗi); phần 2 (rò rỉ, nhất quán train–realtime) cần dữ liệu. Reviewer KHÔNG khôi phục (ngoài quyền).
+  Xem mục "CẦN NGƯỜI DÙNG QUYẾT ĐỊNH".
+
+Không có vấn đề mức CAO hay TRUNG BÌNH do code/test của kế hoạch 06 trong hạng mục 1–4.
+
+- **V1 — THẤP (quy trình, AC13 "mỗi commit có output impact/detect-changes").** 5 commit của C06 không có dòng
+  detect-changes trong message: 050d337 (đã nêu ở STATE) và thêm ada003b, 15200d9, 0e506c3, 001e020 (reviewer tìm thấy,
+  STATE chưa nêu). Lệnh: vòng lặp `git log -1 --format=%B <c> | grep -qi detect-changes` trên C06. Cả 5 chỉ chạm
+  `docs/plans/06-progress.md` → không có rủi ro code; nhưng đây là lệch chữ AC13, cần ghi nhận ở kết luận cuối (phần 3).
+- **V2 — THẤP (quy trình).** 2fa59e0 (14:53:14, sau 85ef325 14:52:55) và 1b05851 (15:00:48, sau e1d13d2 15:00:32):
+  detect-changes chạy sau commit code / message ghi "risk low" không khớp output thật — planner đã ghi nhận ở 0D.9 mục 12;
+  chỉ docs; từ 828e472 trở đi đã chép nguyên văn output chạy trước commit. Không chặn.
+- **V3 — THÔNG TIN (chữ kế hoạch).** 0D.10 nói dòng `-` "CHỈ là 6 dòng của method bị thay"; thực tế chỉ 2 dòng `-` (4 dòng
+  giữa của method giữ nguyên). Chặt hơn chữ kế hoạch, không phải nới.
+- **V4 — THÔNG TIN (độ phủ của smoke AC10).** Ở `stgcn_h360`, bước "text rác" nhận `bad_timestamp` (phiên harmonized kiểm
+  timestamp trước khi giải mã) thay vì mã giải mã; vẫn đúng chữ §3.6 (mã thuộc bảng), nhưng bước này không đi qua đường
+  giải mã ở pipeline harmonized. Đường giải mã lỗi của `/ws/live-stream` đã có test riêng từ kế hoạch 04 (`tests.test_ws_live_contract`).
+- **V5 — THÔNG TIN (độ phủ AC4).** Bỏ `cv2.cvtColor(BGR2RGB)` trong `HandLandmarkSession.process` không làm AC4 đỏ; chỉ AC5
+  (so bit với `_extract_one`) có thể bắt. Proxy đột biến AC5 (§1): M1 bị giết (live 0 frame có tay so với offline 127).
+
+Chuyển cho phần 2/3 (không đánh giá ở đây):
+- Phần 2 (mục 9): AC5 chứng minh live == offline CÙNG MÁY; lệch Kaggle/Linux ↔ cục bộ (AC6: detected lệch 1/10 clip, max
+  diff 0.2298) và JPEG q90 ↔ PNG (2/10, 0.2403) là lệch train↔realtime thật, cần đánh giá ở mục 9.
+- Phần 3 (mục 12/13): tính hợp lệ của 3 lần đổi luật socket sau khi thấy kết quả (0B, 0C, 0D). Dữ kiện đã thu: JSON chính thức
+  `_r4` Đánh vần có `tab_unmounted_click_phase` = `["after_click", "after_click"]` (`t_page_ms` 1037.6 và 1041.1 >
+  `click_page_ms_after` 1036.6) — tức cả 2 socket `/ws/live-stream` được tạo SAU lúc bấm tab, đúng dạng mà luật (b) cũ sẽ báo
+  đỏ; lượt thử B8d-3 thì `before_click`. Mọi kiểm URL/HMR/`:8000`/M2 vẫn xanh.
+
+V1 đã kiểm lại ở lượt 2: vòng lặp trên 40 commit `_work/_rev06_tmp/c06.txt` ra 9 commit không có `detect-changes`; 4 là
+commit planner (4a1bc31, 717aa3e, f52de6f, facffea — ngoài phạm vi AC13 của coder), 5 còn lại đúng như V1.
 
 ## Kết luận tạm (phần 1)
 
-(chưa có)
+- Hạng mục 1 PASS (đột biến AC5 bằng proxy), 2 PASS, 3 PASS, 4 PASS. Không có FAIL nào do code/test của kế hoạch 06.
+- Vấn đề: V0 NGHIÊM TRỌNG (môi trường: mất dữ liệu `data/external`, `data/Dataset`, `checkpoints` lúc 23:42, không do
+  coder); V1, V2 THẤP (quy trình AC13, chỉ commit docs); V3–V5 thông tin.
+- Hạng mục 2 PASS là bằng chứng lịch sử tại 0491877 (log `_work/_rev06_tmp/ac2_31.log`); ở trạng thái máy hiện tại KHÔNG
+  tái lập được cho tới khi khôi phục dữ liệu.
+- Chưa thể APPROVE kế hoạch 06 cho tới khi: (1) V0 được xử lý (khôi phục dữ liệu, chạy lại AC2 ra lại 526 OK 0 skip, và
+  `mutate_ac5.py M1`…`M5` trên chính test AC5), và (2) phần 2, phần 3 xong.
+
+## CẦN NGƯỜI DÙNG QUYẾT ĐỊNH
+
+1. **Khôi phục dữ liệu bị xóa (V0).** `data/external/`, `data/Dataset/`, `checkpoints/` hiện rỗng. Nguồn có thể: Recycle Bin /
+   bản sao lưu của người dùng; tải lại hauuto/qipedc từ nguồn gốc (người dùng tự làm — agent không chạy script tải); checkpoint
+   từ `_work/_kaggle_staging/restore_root/checkpoints/` (phải đối chiếu sha256 với `provenance.json` gốc trước khi dùng) hoặc
+   tải lại output kernel Kaggle private. Việc này ngoài quyền của reviewer và coder.
+2. Sau khi khôi phục: có chạy lại AC2 đầy đủ (khoảng 13 phút) + 5 đột biến AC5 để đóng V0 trước phần 2 không.
+3. Quy trình: cấm junction/symlink tới dữ liệu trong worktree tạm (hoặc bắt buộc gỡ junction bằng `rmdir` trước khi
+   `git worktree remove`); đề xuất ghi vào `docs/prompts/autopilot.md`.
