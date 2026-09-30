@@ -5,7 +5,10 @@
 
 - Cập nhật lần cuối: 2026-10-01 00:20 (giờ Việt Nam)
 - HEAD: 9d1d40f (+ commit state này) | Nhánh: feat/vslt-complete (đã push)
-- Trạng thái phiên: DỪNG — SỰ CỐ MẤT DỮ LIỆU, CHỜ NGƯỜI DÙNG. Người dùng đi ngủ, yêu cầu tắt máy khi xong (00:20).
+- Trạng thái phiên: ĐANG CHẠY (không cần dữ liệu) — người dùng (00:04 ngày 1/10): "cứ làm đến khi hết quota" rồi tắt máy.
+  Chỉ làm việc KHÔNG cần dữ liệu bị mất và ghi đĩa ít; KHÔNG tự khôi phục dữ liệu (để ngỏ lựa chọn phần mềm khôi phục cho người dùng).
+  Thứ tự: reviewer 06 phần 3 (10–13) → phần 2 (5–9, mục cần dữ liệu ghi UNVERIFIED) → planner sửa 07/08 theo review cloud (K1, P1–P5).
+  Hết cổng ngân sách (used + 1.5×est ≤ 90) → lưu STATE, commit, push, tắt máy (người dùng yêu cầu rõ).
   SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
   `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint
   stgcn/stgcn_h360, video+nhãn QIPEDC, hauuto_raw, alphabet_hands_kaggle, vsl_gh, parallel_text. Còn nguyên: data/raw_tudienngonngukyhieu,
