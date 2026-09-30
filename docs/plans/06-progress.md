@@ -2,10 +2,10 @@
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
 - Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474), B5 (34a527d), B6 (0328c1b), B7 (commit "06: B7 — ...")
-- Bước đang làm: **B8c ĐANG LÀM** (Lần sửa 3, §0C.5; commit kế hoạch 717aa3e). B8b-1 xong (302072c), B8b-2 xong (eb379fa);
-  B8b-3 đã dừng §7-8 (1a4e182) — phần chạy chính thức chuyển sang B8c. Chưa ghi đè `reports/e2e_2026-09-29/*.json`.
-- Bước còn lại: B8c-1 (test AC12-t mục 10) → B8c-2 (e2e_browser.cjs 3 trường thời gian + vai trò path +
-  `tab_unmounted_socket_rule`) → B8c-3 (chạy chính thức 3 kịch bản, mỗi kịch bản đúng 1 lần) → B9b.
+- Bước đang làm: **DỪNG — CẦN PLANNER (§7-10 c)** ở B8c-3: lượt chính thức Đánh vần (HEAD 1b05851, sạch) exit 1, đỏ duy nhất
+  `tab_unmounted_socket_rule` vì thời điểm: 2 socket `/ws/live-stream` có `created_t_s` 3.185 > `click_t_s` 3.092. Xem mục B8c-3.
+  B8c-1 xong (85ef325), B8c-2 xong (e1d13d2). Hai kịch bản Ký từ CHƯA chạy (dừng ngay sau kịch bản đỏ, không chạy lại).
+- Bước còn lại: sau quyết định planner → B8c-3 (lượt chính thức theo quyết định) → B9b.
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
@@ -406,3 +406,46 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
 - detect-changes --scope staged (`../_plan06_tmp/b8c2_detect.txt`): risk **HIGH** — 2 file, 8 symbol (newWs, main của cjs, evaluate,
   checks, ws_classification, main của py), 8 process đều bắt đầu từ `evaluate`/`ws_classification`/`main` của chính script e2e
   (index ở 8a2f5a2 nên symbol mới chưa hiện). Không symbol backend/src/frontend nào đổi.
+- Ghi chú: commit 1b05851 (progress B8c-2) — message ghi "risk low" nhưng output thật của detect-changes --scope staged là
+  "Diff touched 1 file(s) but no indexed symbols overlap those hunks" (chỉ docs; index 8a2f5a2).
+
+### B8c-3 — DỪNG theo §7-10 (c): CẦN PLANNER (`tab_unmounted_socket_rule` đỏ vì thời điểm ở kịch bản Đánh vần)
+- Trước khi chạy: `git status --porcelain -- backend src frontend scripts tests` rỗng; HEAD 1b05851 (con cháu e1d13d2:
+  `git merge-base --is-ancestor e1d13d2 HEAD` OK; `git diff --name-only e1d13d2 HEAD` = chỉ docs/plans/06-progress.md); cổng
+  8000/3000 rảnh; ngày chạy 2026-09-30 → thư mục mới `reports/e2e_2026-09-30/` (thư mục `reports/e2e_2026-09-29/` giữ nguyên).
+- Lệnh chính thức (1 lần, không chạy lại):
+  `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/e2e_fullstack.py --scenario fingerspell --video data/external/hauuto_raw/raw/raw/hau/a_hau_A_001.mp4 --out reports/e2e_2026-09-30/fingerspell_default.json`
+  → **exit 1**, `checks 23/24 pass; FAILED: ['tab_unmounted_socket_rule']`. JSON: `generated_by.git_commit` 1b05851…,
+  `code_dirty: false`, `all_checks_pass: false`. Log `../_plan06_tmp/b8c3_run_fingerspell.log`; bản sao JSON + quan sát trình duyệt +
+  log stack: `../_plan06_tmp/b8c3_official_fingerspell{,_browser}.json`, `b8c3_official_fingerspell_{browser,stack}.log`.
+- Theo §7-10: DỪNG ngay; KHÔNG chạy 2 kịch bản Ký từ (để không tiêu lượt "đúng 1 lần" trước khi planner quyết), KHÔNG sửa luật,
+  KHÔNG nới mốc, KHÔNG chạy lại Đánh vần. JSON đỏ được commit làm bằng chứng của lượt chính thức (không phải bằng chứng AC12 đạt).
+- Chi tiết (nguyên văn JSON):
+  - `tab_unmounted_socket_rule.detail["/ws/live-stream"]`: role `tab_unmounted`, 2 socket, violations
+    `["socket 0: created_t_s 3.185 not before click_t_s 3.092", "socket 1: created_t_s 3.185 not before click_t_s 3.092"]`;
+    socket 0 `{created 3.185, closed 3.201, closed true, handshake null, 0 message}`, socket 1 `{created 3.185, closed 3.213,
+    closed true, handshake null, 0 message}`. Các điều kiện khác của 0C.2 mục 2 đều đạt (≤ 2 socket, đóng, `closed_t_s` ≤
+    `record_clicked` 3.606, 0 message, handshake null).
+  - `steps`: goto 1.806; `tab_alphabet` `{t_s 3.196, clicked true, click_t_s 3.092}`; ready 3.575; `record_clicked` 3.606; …;
+    done 7.245.
+  - Socket theo thứ tự CDP: HMR (created 2.983, 101, `{connected:1}`); `/ws/live-stream` ×2 (như trên); `/ws/hand-landmarks` ×2
+    (mồ côi created 3.2 closed 3.213 0 message; socket dùng created 3.2, 101, `{session_info:1, reset_done:1, hand_frame:76}`).
+  - Mọi kiểm khác xanh (23/24), gồm `strictmode_orphan_rule` (`/ws/hand-landmarks`: orphans [0], 0 violation), 3 kiểm URL/HMR,
+    `hand_ws_session_info`, 1 POST /sequence 200, compose 200. `role_by_path` = `{"/ws/hand-landmarks": "used",
+    "/ws/live-stream": "tab_unmounted"}`, `tab_unmounted_by_path` = `{"/ws/live-stream": 2}`.
+- Đọc code / dữ liệu (không kết luận chắc): cả 2 socket `/ws/live-stream` có CÙNG `created_t_s` 3.185 (93 ms sau `click_t_s`,
+  11 ms trước `t_s` của bước `tab_alphabet`), 2 socket `/ws/hand-landmarks` tạo 3.2 — cả 4 socket app xuất hiện trong một chùm
+  ngay sau lúc bấm. `created_t_s` là giờ Node NHẬN sự kiện CDP `Network.webSocketCreated` (sự kiện này không có timestamp),
+  đúng như 0C.4 quy định. Hai giả thuyết, dữ liệu hiện có KHÔNG tách được:
+  (H1) trễ giao sự kiện CDP: socket được tạo trong trình duyệt trước lúc bấm, nhưng Node nhận sự kiện sau `click_t_s`;
+  (H2) thứ tự thật trong trình duyệt: `Phase12Pipeline.jsx:121-128` mở WS trong `useEffect` (passive effect); React 18 xả các
+  passive effect còn treo của lần render đầu TRƯỚC khi xử lý cập nhật của sự kiện rời rạc (click) → StrictMode mount/unmount/mount
+  mở 2 socket rồi tab đổi làm unmount → socket thật sự được tạo SAU khi lệnh bấm bắt đầu. (goto trả về ở `load`; bấm tab ngay
+  sau đó, cách goto ~1.3 s.) Nếu H2 đúng, điều kiện "tạo trước `click_t_s`" không thỏa được với luồng hiện tại ở bất kỳ lượt
+  nào mà bấm tab trước khi passive effect chạy.
+- Câu hỏi cho planner (coder không chọn): (a) giữ luật, đổi nguồn mốc thời gian tạo socket (vd. dùng `timestamp` của
+  `Network.webSocketWillSendHandshakeRequest`/đồng hồ trình duyệt — khác 0C.4); (b) thay điều kiện b bằng tiêu chí thứ tự
+  (socket `/ws/live-stream` được tạo trước socket `/ws/hand-landmarks` đầu tiên theo thứ tự CDP, và/hoặc `created_t_s ≤ t_s` của
+  bước `tab_alphabet`) — nhưng 0C.4 đã loại `t_s` vì lọt socket mở sau khi chuyển tab; (c) giữ nguyên chữ → Đánh vần không đạt
+  với luồng hiện tại (luồng/App.jsx/main.jsx bị khóa). Quyết định cũng cần nói lượt chính thức mới chạy lại cả 3 kịch bản hay chỉ
+  Đánh vần (2 kịch bản Ký từ chưa chạy chính thức ở B8c).
