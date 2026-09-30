@@ -611,12 +611,15 @@ class TestE2eScenarioRoles(unittest.TestCase):
         roles, ok = self._run("fingerspell", s, _fs_steps())
         self._assert_only_red(ok)
 
-    def test_live_socket_created_at_or_after_click_is_red(self):
+    def test_live_socket_created_at_or_after_click_is_not_a_socket_rule_violation(self):
+        # plan 06 revision 4 (0D.3 / 0D.10): the comparison created_t_s < click_t_s is dropped; the source of the
+        # socket is checked by tab_unmounted_owner_rule instead (TestE2eTabOwner, case 11e)
         for created in (T_CLICK, T_CLICK + 0.001, T_CLICK + 1.0):
             with self.subTest(created_t_s=created):
                 s = _case_10a()
                 s[2] = _live_tab(1, created_t_s=created)
-                self._tab_red(s)
+                roles, ok = self._run("fingerspell", s, _fs_steps())
+                self._assert_only_red(ok)
 
     def test_live_socket_created_t_s_missing_is_red(self):
         s = _case_10a()
@@ -754,6 +757,261 @@ class TestE2eScenarioRoles(unittest.TestCase):
         self.assertEqual(wc["tab_unmounted_by_path"], {"/ws/live-stream": 2})
         self.assertEqual(wc["strictmode_orphans_by_path"], {"/ws/hand-landmarks": 1})
         self.assertEqual(len(wc["vite_hmr_excluded"]), 1)
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# AC12-t item 11 (plan 06, revision 4, 0D.3): source of the sockets of the tab_unmounted path. The page hook of
+# e2e_browser.cjs (0D.5) records, for every `new WebSocket(...)` of the page, {url, t_page_ms, frames} where frames
+# are the module paths of the call stack ("/src/..." of the app, "<node_modules>", "<other>"), innermost first.
+OWNER_P12 = "/src/components/Phase12Pipeline.jsx"
+OWNER_FS = "/src/components/Fingerspelling.jsx"
+ALL_CHECKS_6 = ALL_CHECKS + ("tab_unmounted_owner_rule",)
+PAGE_BEFORE_MS = 2000.0
+PAGE_AFTER_MS = 2010.0
+B8C3_RED_JSON = os.path.join(PROJECT_ROOT, "reports", "e2e_2026-09-30", "fingerspell_default.json")
+
+
+def _rec(url, owner=None, t_page_ms=1000.0, frames=None):
+    """One record of the page hook; `owner` is the app module that called new WebSocket."""
+    if frames is None:
+        frames = ["<other>", owner, "<node_modules>", "<other>"] if owner else ["<other>", "<other>"]
+    return {"url": url, "t_page_ms": t_page_ms, "frames": frames}
+
+
+def _rec_hook_error(url, t_page_ms=1000.0):
+    return {"url": url, "t_page_ms": t_page_ms, "frames": None, "hook_error": "TypeError: stack unavailable"}
+
+
+def _page_ws_11c(live_t=(1000.0, 1001.0), live_owner=OWNER_P12):
+    return [_rec(HMR_URL), _rec(LIVE_URL, OWNER_P12, live_t[0]), _rec(LIVE_URL, live_owner, live_t[1]),
+            _rec(HAND_URL, OWNER_FS, 2300.0), _rec(HAND_URL, OWNER_FS, 2310.0)]
+
+
+def _fs_steps_page(before=PAGE_BEFORE_MS, after=PAGE_AFTER_MS, **kw):
+    """_fs_steps with the page clock marks of the tab click (0D.5 item 2)."""
+    steps = _fs_steps(**kw)
+    for s in steps:
+        if s["name"] == "tab_alphabet":
+            s.update(click_page_ms_before=before, click_page_ms_after=after)
+    return steps
+
+
+def _word_trial_sockets(used_cbt=None):
+    return [_hmr_ws(), _ws(LIVE_URL, None, {}, created_t_s=1.0, closed_t_s=1.05),
+            _ws(LIVE_URL, None, used_cbt or {"session_info": 1, "frame_result": 44}, closed=False, created_t_s=1.05,
+                handshake_status=101)]
+
+
+def _word_page_ws():
+    return [_rec(HMR_URL), _rec(LIVE_URL, OWNER_P12, 900.0), _rec(LIVE_URL, OWNER_P12, 901.0)]
+
+
+class TestE2eTabOwner(unittest.TestCase):
+    """AC12-t item 11: tab_unmounted_owner_rule (source of the sockets of the tab_unmounted path), ws_owner,
+    click_phase (information only) and the wiring in evaluate() / ws_classification()."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.E = _load_e2e_fullstack()
+
+    def _run(self, scenario, sockets, steps, page_ws):
+        cls_ = self.E.classify_ws(sockets)
+        by_path = self.E.app_ws_by_path(sockets)
+        roles = self.E.scenario_ws_roles(by_path, scenario, steps)
+        self.assertEqual(set(roles["checks"]), {"strictmode_orphan_rule", "tab_unmounted_socket_rule"})
+        owner = self.E.tab_unmounted_owner_check(by_path, page_ws, scenario)
+        self.assertEqual(set(owner), {"pass", "detail"})
+        self.assertIsInstance(owner["detail"], dict)
+        ok = {k: v["pass"] for k, v in {**cls_["checks"], **roles["checks"]}.items()}
+        ok["tab_unmounted_owner_rule"] = owner["pass"]
+        self.assertEqual(set(ok), set(ALL_CHECKS_6))
+        return owner, ok
+
+    def _assert_only_red(self, ok, *red):
+        self.assertEqual(ok, {k: (k not in red) for k in ALL_CHECKS_6})
+
+    def _owner_red(self, sockets, page_ws, steps=None, scenario="fingerspell"):
+        owner, ok = self._run(scenario, sockets, _fs_steps() if steps is None else steps, page_ws)
+        self._assert_only_red(ok, "tab_unmounted_owner_rule")
+        return owner
+
+    # --- 11a: the constant and its static binding to the app code
+    def test_11a_owner_constant_and_static_binding(self):
+        self.assertEqual(self.E.SCENARIO_TAB_UNMOUNTED_OWNER,
+                         {"fingerspell": "/src/components/Phase12Pipeline.jsx", "word": None})
+        self.assertEqual(set(self.E.SCENARIO_TAB_UNMOUNTED_OWNER), set(self.E.SCENARIO_WS_ROLES))
+        with open(os.path.join(FRONTEND_SRC, "App.jsx"), encoding="utf-8") as f:
+            app = f.read()
+        self.assertIn("useState('realtime')", app)
+        self.assertIn("activeTab === 'realtime' && <Phase12Pipeline", app)
+        with open(os.path.join(FRONTEND_SRC, "components", "Phase12Pipeline.jsx"), encoding="utf-8") as f:
+            self.assertIn("new WebSocket(", f.read())
+        with self.assertRaises(ValueError):
+            self.E.tab_unmounted_owner_check({}, [], "sentence")
+
+    # --- 11b: ws_owner = first frame of the app sources, query cut
+    def test_11b_ws_owner(self):
+        E = self.E
+        self.assertEqual(E.ws_owner(["<other>", OWNER_P12, "/src/App.jsx"]), OWNER_P12)
+        self.assertEqual(E.ws_owner(["<other>", "<node_modules>", OWNER_FS]), OWNER_FS)
+        self.assertEqual(E.ws_owner([OWNER_P12 + "?t=1"]), OWNER_P12)
+        for frames in ([], ["<other>", "<node_modules>"], None):
+            with self.subTest(frames=frames):
+                self.assertIsNone(E.ws_owner(frames))
+
+    # --- 11c / 11d: positive
+    def test_11c_10a_with_page_records_is_green(self):
+        owner, ok = self._run("fingerspell", _case_10a(), _fs_steps(), _page_ws_11c())
+        self._assert_only_red(ok)
+        d = owner["detail"]
+        self.assertEqual(d["n_cdp_sockets"], 2)
+        self.assertEqual(d["n_records"], 2)
+        self.assertEqual(d["owners"], [OWNER_P12, OWNER_P12])
+        self.assertEqual(d["violations"], [])
+
+    def test_11d_b8c3_official_run_shape_is_green(self):
+        # input data = the observations of the official red run of B8c-3 (reports/e2e_2026-09-30, commit d2752c3)
+        with open(B8C3_RED_JSON, encoding="utf-8") as f:
+            obs = json.load(f)["observations"]
+        steps, sockets = obs["steps"], obs["ws"]
+        tab = [s for s in steps if s["name"] == "tab_alphabet"]
+        rec = [s for s in steps if s["name"] == "record_clicked"]
+        self.assertEqual((len(tab), tab[0]["click_t_s"], len(rec), rec[0]["t_s"]), (1, 3.092, 1, 3.606))
+        live = [w for w in sockets if w["url"] == LIVE_URL]
+        self.assertEqual([(w["created_t_s"], w["closed_t_s"]) for w in live], [(3.185, 3.201), (3.185, 3.213)])
+        page_ws = [_rec(w["url"], {LIVE_URL: OWNER_P12, HAND_URL: OWNER_FS}.get(w["url"])) for w in sockets]
+        owner, ok = self._run("fingerspell", sockets, steps, page_ws)
+        self._assert_only_red(ok)
+        self.assertEqual(owner["detail"]["owners"], [OWNER_P12, OWNER_P12])
+
+    # --- 11e / 11f: wrong or unknown source -> only the owner rule is red
+    def test_11e_live_socket_opened_by_fingerspelling_is_red(self):
+        with open(B8C3_RED_JSON, encoding="utf-8") as f:
+            obs = json.load(f)["observations"]
+        page_ws = [_rec(w["url"], {LIVE_URL: OWNER_P12, HAND_URL: OWNER_FS}.get(w["url"])) for w in obs["ws"]]
+        i = next(k for k, r in enumerate(page_ws) if r["url"] == LIVE_URL)
+        page_ws[i] = _rec(LIVE_URL, OWNER_FS)
+        owner, ok = self._run("fingerspell", obs["ws"], obs["steps"], page_ws)
+        self._assert_only_red(ok, "tab_unmounted_owner_rule")
+        # created BEFORE the click (10a): the old condition (b) could not catch this
+        self._owner_red(_case_10a(), _page_ws_11c(live_owner=OWNER_FS))
+
+    def test_11f_live_record_without_app_frame_or_with_hook_error_is_red(self):
+        for bad in (_rec(LIVE_URL, frames=["<other>", "<node_modules>", "<other>"]), _rec_hook_error(LIVE_URL)):
+            with self.subTest(record=bad):
+                page_ws = _page_ws_11c()
+                page_ws[2] = bad
+                self._owner_red(_case_10a(), page_ws)
+
+    # --- 11g: one record per CDP socket of the path
+    def test_11g_number_of_records_must_equal_cdp_sockets(self):
+        base = _page_ws_11c()
+        self._owner_red(_case_10a(), [r for i, r in enumerate(base) if i != 2])                     # 2 CDP, 1 record
+        self._owner_red(_case_10a(), base[:3] + [_rec(LIVE_URL, OWNER_P12, 1002.0)] + base[3:])     # 2 CDP, 3 records
+        s10c = [_hmr_ws(), _hand_orphan(), _hand_used()]
+        hand = [_rec(HMR_URL), _rec(HAND_URL, OWNER_FS, 2300.0), _rec(HAND_URL, OWNER_FS, 2310.0)]
+        self._owner_red(s10c, hand + [_rec(LIVE_URL, OWNER_P12)])                                   # 0 CDP, 1 record
+        owner, ok = self._run("fingerspell", s10c, _fs_steps(), hand)                               # 0 CDP, 0 record
+        self._assert_only_red(ok)
+
+    # --- 11h: no data of the page hook -> red in every scenario
+    def test_11h_page_hook_data_missing_is_red(self):
+        self._owner_red(_case_10a(), None)
+        self._owner_red(_word_trial_sockets(), None, steps=_word_steps(), scenario="word")
+
+    # --- 11i: word -- the rule does not apply beyond the page data being present
+    def test_11i_word_is_green_and_does_not_apply(self):
+        for used_cbt in ({"session_info": 1, "frame_result": 44},
+                         {"session_info": 1, "frame_result": 72, "sign_result": 1}):
+            with self.subTest(count_by_type=used_cbt):
+                owner, ok = self._run("word", _word_trial_sockets(used_cbt), _word_steps(), _word_page_ws())
+                self._assert_only_red(ok)
+                self.assertIs(owner["detail"]["applies"], False)
+
+    # --- 11j: a socket of Phase12Pipeline.jsx opened AFTER the click is still caught when it does harm
+    def test_11j_harmful_late_socket_of_the_right_owner_is_red(self):
+        late = dict(created_t_s=T_CLICK + 0.5, closed_t_s=T_CLICK + 0.6)
+        cases = {
+            "frame_result": ([_live_tab(1, count_by_type={"frame_result": 1}, handshake_status=101, **late)], None),
+            "not_closed": ([_live_tab(1, closed=False, **late)], None),
+            "closed_after_record": ([_live_tab(1, created_t_s=T_CLICK + 0.5, closed_t_s=R_RECORD + 0.5)], None),
+            "third_socket": ([_live_tab(1, **late), _live_tab(1, created_t_s=T_CLICK + 0.7,
+                                                              closed_t_s=T_CLICK + 0.8)],
+                             _rec(LIVE_URL, OWNER_P12, PAGE_AFTER_MS + 700.0)),
+            "error": ([_live_tab(1, count_by_type={"error": 1}, handshake_status=101, **late)], None),
+        }
+        for name, (live1, extra_rec) in cases.items():
+            with self.subTest(case=name):
+                s = _case_10a()
+                s[2:3] = live1
+                page_ws = _page_ws_11c(live_t=(1000.0, PAGE_AFTER_MS + 500.0))
+                if extra_rec is not None:
+                    page_ws.insert(3, extra_rec)
+                owner, ok = self._run("fingerspell", s, _fs_steps_page(), page_ws)
+                self._assert_only_red(ok, "tab_unmounted_socket_rule")
+
+    # --- 11k: click_phase is information, not a check
+    def test_11k_click_phase(self):
+        cp = self.E.click_phase
+        b, a = PAGE_BEFORE_MS, PAGE_AFTER_MS
+        self.assertEqual(cp(b - 0.1, b, a), "before_click")
+        for t in (b, (b + a) / 2, a):
+            with self.subTest(t=t):
+                self.assertEqual(cp(t, b, a), "during_click")
+        self.assertEqual(cp(a + 0.1, b, a), "after_click")
+        for args in ((None, b, a), (b, None, a), (b, b, None), ("1", b, a), (True, b, a)):
+            with self.subTest(args=args):
+                self.assertEqual(cp(*args), "unknown")
+
+    def _obs(self, sockets, steps, scenario, page_ws=None, with_page=True):
+        o = {"scenario": scenario, "steps": steps, "ws": sockets, "console_errors": [], "page_errors": [],
+             "request_failed": [], "http_errors": [], "requests_old_image_endpoint": [], "fatal_error": None,
+             "fingerspelling_status": None, "sequence_posts": [], "compose_posts": [], "dom": {}}
+        if with_page:
+            o["ws_page"] = page_ws
+        return o
+
+    def _evaluate(self, obs):
+        import types
+        args = types.SimpleNamespace(scenario=obs["scenario"], model_type=None, max_loops=3)
+        ready = {"health_status": 200, "health": {"status": "ok"}, "health_wait_s": 1.0, "page_status": 200,
+                 "page_wait_s": 1.0}
+        stop = {"ports_listening_after_stop": {"8000": False, "3000": False}, "processes_alive_after_stop": []}
+        return self.E.evaluate(args, obs, ready, stop, {})
+
+    def test_11k_click_phase_does_not_change_any_check(self):
+        flags = {}
+        for phase, t in (("before_click", PAGE_BEFORE_MS - 50.0), ("during_click", PAGE_BEFORE_MS + 5.0),
+                         ("after_click", PAGE_AFTER_MS + 50.0)):
+            obs = self._obs(_case_10a(), _fs_steps_page(), "fingerspell", _page_ws_11c(live_t=(t, t)))
+            flags[phase] = {k: v["pass"] for k, v in self._evaluate(obs).items()}
+            self.assertEqual(self.E.ws_classification(obs, "fingerspell")["page_hook"]["tab_unmounted_click_phase"],
+                             [phase, phase])
+            self.assertTrue(flags[phase]["tab_unmounted_owner_rule"])
+        self.assertEqual(flags["before_click"], flags["during_click"])
+        self.assertEqual(flags["before_click"], flags["after_click"])
+
+    # --- 11l: wiring
+    def test_11l_evaluate_and_ws_classification_wiring(self):
+        obs = self._obs(_case_10a(), _fs_steps_page(), "fingerspell", _page_ws_11c())
+        self.assertTrue(self._evaluate(obs)["tab_unmounted_owner_rule"]["pass"])
+        obs_missing = self._obs(_case_10a(), _fs_steps_page(), "fingerspell", with_page=False)
+        self.assertFalse(self._evaluate(obs_missing)["tab_unmounted_owner_rule"]["pass"])
+        obs_word = self._obs(_word_trial_sockets(), _word_steps(), "word", _word_page_ws())
+        self.assertTrue(self._evaluate(obs_word)["tab_unmounted_owner_rule"]["pass"])
+
+        ph = self.E.ws_classification(obs, "fingerspell")["page_hook"]
+        self.assertEqual(set(ph), {"n_records_by_path", "n_cdp_by_path", "tab_unmounted_owners",
+                                   "tab_unmounted_click_phase"})
+        self.assertEqual(ph["tab_unmounted_owners"], [OWNER_P12, OWNER_P12])
+        self.assertEqual(ph["n_records_by_path"]["/ws/live-stream"], 2)
+        self.assertEqual(ph["n_cdp_by_path"]["/ws/live-stream"], 2)
+        phw = self.E.ws_classification(obs_word, "word")["page_hook"]
+        self.assertEqual(phw["tab_unmounted_owners"], [])
+        self.assertEqual(phw["tab_unmounted_click_phase"], [])
+
+        roles = self.E.scenario_ws_roles(self.E.app_ws_by_path(_case_10a()), "fingerspell", _fs_steps())
+        self.assertEqual(set(roles["checks"]), {"strictmode_orphan_rule", "tab_unmounted_socket_rule"})
 
 
 if __name__ == "__main__":

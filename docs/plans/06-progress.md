@@ -449,3 +449,20 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
   bước `tab_alphabet`) — nhưng 0C.4 đã loại `t_s` vì lọt socket mở sau khi chuyển tab; (c) giữ nguyên chữ → Đánh vần không đạt
   với luồng hiện tại (luồng/App.jsx/main.jsx bị khóa). Quyết định cũng cần nói lượt chính thức mới chạy lại cả 3 kịch bản hay chỉ
   Đánh vần (2 kịch bản Ký từ chưa chạy chính thức ở B8c).
+
+## B8d — Lần sửa 4 (§0D.11): `tab_unmounted_owner_rule` (nguồn tạo socket), chạy thử + chẩn đoán H1/H2, chạy chính thức 3 kịch bản
+
+### B8d-1 — test AC12-t trước (thay 1 test cũ + mục 11)
+- `tests/test_frontend_contract.py`: thay TẠI CHỖ `TestE2eScenarioRoles.test_live_socket_created_at_or_after_click_is_red` bằng
+  `test_live_socket_created_at_or_after_click_is_not_a_socket_rule_violation` (cùng 3 giá trị `created_t_s` T, T+0.001, T+1.0 →
+  5 kiểm của `_run` xanh). Thêm cuối file hằng/helper MỚI (`OWNER_P12`, `OWNER_FS`, `ALL_CHECKS_6`, `_rec`, `_rec_hook_error`,
+  `_page_ws_11c`, `_fs_steps_page`, `_word_trial_sockets`, `_word_page_ws`) và lớp `TestE2eTabOwner` (13 test, mục 11a–11l;
+  11k có 2 test: `click_phase` và "không đổi kiểm nào"). 11d/11e đọc dữ liệu vào từ `reports/e2e_2026-09-30/fingerspell_default.json`
+  (observations.ws + steps) và assert các số 0D ghi (click 3.092, live created 3.185/3.185, closed 3.201/3.213, record 3.606).
+- Kiểm diff 0D.10: `git diff e1d13d2 -- tests/test_frontend_contract.py | grep '^-[^-]'` → đúng 2 dòng, đều thuộc method bị thay:
+  `-    def test_live_socket_created_at_or_after_click_is_red(self):`, `-                self._tab_red(s)` (4 dòng giữa giữ nguyên).
+  Helper cũ và 16 + 29 test cũ không đổi.
+- Chạy trước khi có hàm (log `../_plan06_tmp/b8d1_red.log`): `Ran 59 tests` `FAILED (failures=3, errors=19)` — 16 + 29 test cũ OK;
+  3 FAIL = 3 subTest của test thay thế (điều (b) còn trong code); 19 ERROR ở `TestE2eTabOwner` = 17 `AttributeError`
+  (`tab_unmounted_owner_check` 14, `ws_owner` 1, `click_phase` 1, `SCENARIO_TAB_UNMOUNTED_OWNER` 1) + 2 `KeyError` (`page_hook`,
+  `tab_unmounted_owner_rule` chưa có).
