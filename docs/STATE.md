@@ -6,7 +6,11 @@
 - Cập nhật lần cuối: 2026-09-30 14:50 (giờ Việt Nam)
 - HEAD: 2773b44 (+ commit state này) | Nhánh: feat/vslt-complete (đã push lên origin)
 - Trạng thái phiên: ĐANG CHẠY — 5h 0% lúc 14:47 (reset 19:40 giờ VN), 7 ngày 48%.
-  ĐANG GIAO: vslt-coder kế hoạch 06 B8c-1..B8c-3 + B9b (§0C.5) — 14:50, HEAD 2773b44 (+state). Sau đó vslt-reviewer toàn bộ 06 (chia 1–4 / 5–9 / 10–13).
+  Coder B8c-1/B8c-2 XONG (85ef325, e1d13d2: +30 test AC12-t; AC2 31 module Ran 513 OK, 0 skip). B8c-3 DỪNG §7-10(c) (d2752c3):
+  lượt CHÍNH THỨC Đánh vần tại 1b05851 đỏ 23/24 — tab_unmounted_socket_rule: 2 socket /ws/live-stream created_t_s 3.185 > click_t_s 3.092
+  (H1 trễ sự kiện CDP / H2 useEffect StrictMode chạy sau khi click bắt đầu). JSON đỏ đã commit reports/e2e_2026-09-30/fingerspell_default.json.
+  2 kịch bản Ký từ chưa chạy chính thức; B9b chưa làm. LẦN THỨ 3 cùng một kiểm e2e đỏ → Lần sửa 4 là lần cuối; đỏ nữa → CẦN NGƯỜI DÙNG.
+  ĐANG GIAO: vslt-planner kế hoạch 06 Lần sửa 4 — 15:06.
   Kế hoạch 06: XONG B0–B7 (B5 34a527d, B6 0328c1b, B7 dbd79f2). Còn: B8 e2e fullstack (LOCAL, Edge + video thật) → B9 → review 06.
   Reviewer 06 cần xác minh: CRITICAL impact ở B5/B6 (component React, GitNexus nhầm tên JS↔Python), HIGH ở B2/B3 (symbol mới),
   B7 sửa tests/test_frontend_contract.py (file do chính kế hoạch 06 tạo ở B4 — kiểm không nới), 050d337 thiếu detect-changes.
@@ -32,7 +36,7 @@
   e2e_browser.cjs chỉ thêm created_t_s/closed_t_s/click_t_s. Chạy chính thức mỗi kịch bản ĐÚNG 1 lần; đỏ → dừng §7-10.
   VIỆC KẾ TIẾP: vslt-coder B8c-1 (test mục 10 trước) → B8c-2 (script) → B8c-3 (3 JSON chính thức) → B9b (0B.5 bước 4, AC1 nhóm (ii)
   gồm facffea, f52de6f, 717aa3e) → vslt-reviewer toàn bộ 06 (thêm điểm §0B.6, §0C.6).
-- Hạn mức (14:47 ngày 30/9): 5 giờ 0% (reset 19:40 giờ VN), 7 ngày 48%. Sổ đo: docs/usage_ledger.csv
+- Hạn mức (15:04 ngày 30/9): 5 giờ 17% (reset 19:40 giờ VN), 7 ngày 50%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
