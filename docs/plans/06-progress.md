@@ -2,10 +2,9 @@
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
 - Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474), B5 (34a527d), B6 (0328c1b), B7 (commit "06: B7 — ...")
-- Bước đang làm: **B8d ĐANG LÀM** (Lần sửa 4, §0D.11): B8d-1 (test trước) → B8d-2 (cài đặt) → B8d-3 (thử + chẩn đoán H1/H2 +
-  cổng) → B8d-4 (chính thức 3 kịch bản, `reports/e2e_<ngày>_r4/`). B8c-1 xong (85ef325), B8c-2 xong (e1d13d2), B8c-3 dừng §7-10(c)
-  (JSON đỏ d2752c3, giữ nguyên).
-- Bước còn lại: B8d-1, B8d-2, B8d-3, B8d-4, B9b.
+- Bước đang làm: **B9b** (kiểm tra đóng việc tại HEAD cuối, 0D.11 bước 5). B8d xong: B8d-1 828e472, B8d-2 0517c0a, B8d-3 b6c27b1
+  (thử xanh, cổng qua), B8d-4 024ec64 (3 JSON chính thức `reports/e2e_2026-09-30_r4/*` xanh, chạy tại b6c27b1).
+- Bước còn lại: B9b → orchestrator gọi vslt-reviewer.
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
