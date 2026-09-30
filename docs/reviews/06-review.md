@@ -5,7 +5,8 @@ Reviewer: vslt-reviewer (độc lập). Nhánh `feat/vslt-complete`, HEAD lúc r
 Kế hoạch: `docs/plans/06-viec5-frontend.md`. P6 = `797d0af` (06-progress.md:3).
 
 TRẠNG THÁI: phần 1 (hạng mục 1–4) XONG. Phần 3 (10–13) XONG tại HEAD `8f5969a` (lượt 3; code không đổi so với
-0491877 — `git diff --name-only 0491877 8f5969a -- backend src frontend scripts tests` rỗng). Phần 2 (5–9) chưa làm.
+0491877 — `git diff --name-only 0491877 8f5969a -- backend src frontend scripts tests` rỗng). Phần 2 (5–9) XONG tại HEAD
+`9ea5450` (lượt 4; code vẫn không đổi so với 0491877). **Kết luận sau 3 phần: CHANGES_REQUESTED** — xem "Kết luận (sau 3 phần)".
 **CHẶN: dữ liệu gitignored/untracked `data/external/`, `data/Dataset/`, `checkpoints/` đã bị xóa rỗng lúc 23:42 ngày 2026-09-30 (V0, NGHIÊM TRỌNG) — xem mục "Vấn đề".**
 
 ## Bảng 1–13
@@ -16,15 +17,15 @@ TRẠNG THÁI: phần 1 (hạng mục 1–4) XONG. Phần 3 (10–13) XONG tại
 | 2 | Tự chạy lại toàn bộ test | PASS | AC2 31 module: `Ran 526 tests in 734.835s` / `OK` / exit 0, 0 skip; `npm test` 26/26, 0 skip, 3/3 file; `git status --porcelain` trước/sau giống hệt (§2) |
 | 3 | Test không bị sửa/skip/nới | PASS | 0 dòng `-` ở 26 file test có tại P6; không xóa file; B7 chỉ thêm lớp (+100/−0); Lần sửa 4: đúng 2 dòng `-`, đều thuộc method bị thay; B2 sửa test B1 theo hướng CHẶT hơn (§3) |
 | 4 | Nguồn gốc dữ liệu | PASS | Clip e2e/AC4/AC5/AC10 là video thật đọc bằng cv2 (a_hau_A_001 75 frame 640×480; D0120T 113 frame 1280×720; W03292N 70 frame), thuộc manifest hauuto (mediapipe 0.10.14) / `data/splits/unified/train.csv`, không có ở val/test; y4m sinh từ clip bằng cv2 ra `%TEMP%slt_e2e` (script từ chối thư mục trong repo); không dùng `vsl_alphabet_pilot` (§4) |
-| 5 | Rò rỉ split | CHƯA LÀM — phần 2 | |
-| 6 | Chọn model bằng VAL, TEST 1 lần | CHƯA LÀM — phần 2 | |
-| 7 | Số liệu truy được | CHƯA LÀM — phần 2 | |
-| 8 | Cỡ mẫu / CI | CHƯA LÀM — phần 2 | |
-| 9 | Nhất quán train–realtime | CHƯA LÀM — phần 2 | |
+| 5 | Rò rỉ split | FAIL (TRUNG BÌNH) | 06 không train/không chọn model → không có rò rỉ vào train/chọn model. Clip e2e/AC4/AC10 đều TRAIN của đúng model được chạy: `hauuto_a_hau_A_001` ∈ 636 clip train của `alphabet_best.pt` (`reports/alphabet_nested_2026-09-25/primary/nested_predictions.csv:2`, provenance `trained_on` 636 clip hauuto); `qipedc_D0120T`, `qipedc_W03292N` ∈ `unified/train.csv` (h360) và `folds/tier2_indomain_train.csv` (model mặc định), 0 dòng ở val/test tương ứng. NHƯNG 2/10 clip của AC5/AC6 là TEST: `qipedc_D0489`, `qipedc_D0490B` thuộc 46 clip TEST ngoài của Cấp 1 (`nested_predictions.csv` run=`external`; `external_test_predictions.csv:2-3`), `qipedc_D0490B` còn ở `unified/test.csv` (TEST Cấp 2 để dành GATE); model Cấp 1 triển khai đã chạy `/sequence` trên chúng và top-1 ghi vào JSON commit — trái §6 "KHÔNG chạm clip TEST/VAL", và câu "10 clip TRAIN" (`docs/phase12_api.md:173-174`, progress_log:112, plan §0.4/§6/AC11) SAI (xác nhận O5). Gốc: chính AC5 của kế hoạch chọn "2 clip qipedc đầu tiên" (§5) (§5 chi tiết) |
+| 6 | Chọn model bằng VAL, TEST 1 lần | PASS | Không áp dụng chọn model; model mặc định KHÔNG đổi: `backend/main.py:111-112,121` `DEFAULT_MODEL_TYPE = "stgcn"` → `checkpoints/stgcn_tier2_indomain.pt`; 6 dòng `-` duy nhất của `git diff 797d0af HEAD -- backend/main.py` là CORS cũ + `host="0.0.0.0"`; `configs/`, `predictor.py` không đổi. Tự chạy `tests.test_ws_live_contract.TestAC3aDefaults` → `Ran 2 tests` `OK` (mặc định stgcn/tier2_indomain, `IS_DEFAULT_MODEL` True; h360 chỉ khi `VSL_MODEL_TYPE=stgcn_h360`, False). `VSL_MODEL_TYPE` chỉ đặt trong env tiến trình con (`scripts/e2e_fullstack.py:710-712`, pop trước). JSON `_r4`: `word_default` health `is_default` true/legacy; `word_stgcn_h360` session_info `stgcn_h360`, `is_default` false. Không đánh giá TEST nào trong 06 (xem §5 về 2 clip TEST Cấp 1 chạy cho AC5/AC6, không dùng để chọn) (§6) |
+| 7 | Số liệu truy được | PASS (1 ghi chú THẤP) | Mọi số đo trong `docs/phase12_api.md` (chỉ ở mục AC6 `:161-174`) khớp `reports/fingerspell_live_2026-09-29/hand_live_check.json` (lệnh + `git_commit` e58d025, `code_dirty` false; commit 5fcf295): 0.2297654151916504 = max `kaggle_npz_vs_local_offline.max_abs_diff_both` (`hauuto_aw_khoi_A_003`, `detected_agree` 88/90), 0.24034595489501953 = max `live_jpeg90_vs_live_png` (cùng clip, 86/90), `qipedc_D0489` 87/93, 10/10 `detected_equal` + 0.0, 10/10 Kaggle diff > 0 (nhỏ nhất 0.000698), top-1 trùng 10/10 — tự đối chiếu từng clip; `TestPhase12ApiDoc` 6/6 + `TestHandLiveCheckReport` ok (tự chạy). Phần còn lại của tài liệu là hằng code (1 048 576, 1920, 300, 24/0.9/2 "thiết kế, chưa đo") — khớp `backend/main.py:588,895-896`, `fingerspelling.js:11-13`. progress_log:112: 25/25, 23/23, 26/26 = đếm `checks` của 3 JSON `_r4` (b6c27b1, commit 024ec64); 383 = `_work/_plan06_tmp/b0_ac2.log` `Ran 383`/OK; 526 = `b9b_ac2_31.log` `Ran 526`/OK (reviewer tái lập ở 0491877); 0.2403/0.2298 = làm tròn của JSON. Ghi chú THẤP: đường log trong progress_log (`../_plan06_tmp/`) nay đã dời sang `_work/_plan06_tmp/`; chữ "TRAIN" sai tính ở §5/§13, không phải số (§7) |
+| 8 | Cỡ mẫu / CI | PASS (1 ghi chú THẤP) | 06 không công bố tỉ lệ/độ chính xác nào → không cần CI. n nhỏ đều được gọi đúng tên: JSON `_r4` `note` "ONE training clip per scenario … Not an accuracy measurement", `prediction` dưới `info_not_accuracy`; AC6 `note` "report only … not accuracy", tài liệu "Chỉ ghi nhận, không có ngưỡng", "không chứng minh bền vững" (`docs/phase12_api.md:165,174`); AC5 (10 clip) là kiểm tương đương code tất định, không suy ra tỉ lệ; H1/H2 n = 2 lượt chỉ mô tả (§12); W03251B "n = 1" (`:148`). Không có % nào trong `phase12_api.md`/progress_log:112. Ghi chú THẤP: câu giải thích cơ chế "cỡ cả bàn tay ở vài frame tracker bắt/nhả tay khác nhau" (`docs/phase12_api.md:170`, plan §0.4) là giả thuyết chưa đo theo frame, suy từ 1 clip; `hauuto_aa_khoi_B_002` có diff Kaggle 0.135 dù cờ detected khớp 91/91 — nên ghi "giả thuyết" (§8) |
+| 9 | Nhất quán train–realtime | PASS (lượt chạy độc lập của reviewer tại 0491877, code không đổi; tái chạy hiện tại UNVERIFIED do V0) | Cấp 1 (`/ws/hand-landmarks`): đọc code — `HandLandmarkSession` dùng đúng `mp.solutions.hands.Hands(**LEVEL1_HANDS_KWARGS)` = keyword của `_extract_one` (AC4-a đọc bằng `ast`, tự chạy: ok), BGR→RGB, không resize/lật, `multi_hand_landmarks[0]`/`classification[0]`, tracker mới mỗi `reset` (`src/inference/hand_live.py:44-60` so với `scripts/extract_hands_batch.py:37-50`); `_decode_frame(min_height=None)` chỉ `cv2.imdecode(IMREAD_COLOR)` (`backend/main.py:1595,1026`); mediapipe 0.10.14 trong .venv; client vẽ canvas KHÔNG lật (CSS lật chỉ để hiển thị), `source_mirrored: false`, `frame_width/height` từ server. AC5 so CÙNG hàm (`_extract_one` nạp bằng importlib, live qua WS thật bằng TestClient, `np.array_equal` detected/landmark/nhãn/score + body + response + top-1): 4/4 ok, 0 skip trong lượt AC2 ĐỘC LẬP của reviewer tại 0491877 (`_work/_rev06_tmp/ac2_31.log`, in 10 clip), code không đổi tới HEAD; proxy đột biến 5/5 bị giết. Ký từ: 06 không đổi đường server (diff chỉ thêm `_ws_check_origin`), harmonize 360 của kế hoạch 04 giữ nguyên; `test_live_harmonized_equivalence` 9/9 ok cùng lượt. Hiện tại AC5, AC4 (2 test dữ liệu), AC7-d, 8/9 test kế hoạch 04 SKIP (V0) → tái chạy UNVERIFIED. Lệch còn lại, đã đo/nêu: Kaggle/Linux khác Windows (10/10 clip diff > 0, max 0.2298, 1/10 lệch cờ); JPEG trình duyệt chưa đo (chỉ cv2 q90) (§9) |
 | 10 | Không Math.random/mock/hard-code | PASS | Guard frontend AC8 `TestFrontendSourceGuard.test_no_violation` ok; guard DoD 7 backend 24/24 ok (`known=9 allowed=36`, không mục nào thuộc `backend/main.py`/`hand_live.py`); grep `frontend/src` + 5 script + `hand_live.py`: 0 `Math.random`/mock/kết quả giả; `Math.random` duy nhất trong bundle là nội bộ React (§10) |
 | 11 | Bảo mật | PASS (2 vấn đề THẤP) | CORS/Origin/bind đúng chữ + thăm dò thật stack uvicorn+Vite: WS Origin lạ → `403` cả trực tiếp lẫn qua proxy; input WS kiểm kích thước/base64/magic/header trước giải mã; không token/kaggle.json; hook e2e không có trong bundle. Nhưng qua proxy Vite, REST đọc được từ MỌI origin họ localhost (Vite CORS mặc định) — V6; `detail` model_unavailable của `/ws/hand-landmarks` chép nguyên chuỗi exception — V7 (§11) |
 | 12 | So sánh công bằng / GATE không nới (gồm đánh giá 3 lần đổi tiêu chí §0D.12) | PASS (V9 TRUNG BÌNH) | Không so model. 3 lần đổi luật AC12 (0B, 0C, 0D) đều có cơ chế từ code, suy từ mục đích viết trước, nêu điểm nới, commit trước lượt kế tiếp; `_r4` mỗi kịch bản 1 lần (bắt đầu 10 s sau commit b6c27b1); JSON đỏ còn nguyên (blob == d2752c3/e3d0df8). Luật 0C chạy trên dữ liệu `_r4` ĐỎ → `_r4` xanh nhờ Lần sửa 4 (nêu thẳng). Ca âm reviewer 16/16 (luật cuối bắt mọi socket có hại); AC12-t 59/59 ok. V9: coder đổi `hand_ws_session_info` sau lượt dev đỏ, 06-progress:237-239 báo sai (§12) |
-| 13 | Kết luận vượt bằng chứng | FAIL | O1 `docs/phase12_api.md:32-33` "Qua proxy Vite, CORS không tham gia" — bị thăm dò §11 bác bỏ; O2 `docs/plans/06-progress.md:237-239` báo lượt dev B8 chỉ đỏ kiểm URL — JSON dev có `hand_ws_session_info` đỏ. Câu nên chỉnh O3–O5 (THẤP). JSON e2e `note`/`info_not_accuracy` đúng mực; danh sách thí nghiệm còn thiếu ở §13 |
+| 13 | Kết luận vượt bằng chứng | FAIL | O1 `docs/phase12_api.md:32-33` "Qua proxy Vite, CORS không tham gia" — bị thăm dò §11 bác bỏ; O2 `docs/plans/06-progress.md:237-239` báo lượt dev B8 chỉ đỏ kiểm URL — JSON dev có `hand_ws_session_info` đỏ. Câu nên chỉnh O3–O5 (THẤP). JSON e2e `note`/`info_not_accuracy` đúng mực; danh sách thí nghiệm còn thiếu ở §13; phần 2: O5 được XÁC NHẬN là câu SAI (`docs/phase12_api.md:173-174`, progress_log:112 "10 clip TRAIN" — 2 clip là TEST ngoài Cấp 1, V11, §5) |
 
 ## Chi tiết phần 1
 
@@ -145,6 +146,205 @@ Repo chính không bị sửa (`git status --porcelain` so với ảnh chụp đ
 - AC6 chạy lại tại HEAD (`PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/hand_live_check.py --n-clips 8 --seed 0
   --out ../_rev06_tmp/hand_live_check_rerun.json`, exit 0, git_commit 0491877, code_dirty false): phần thân (bỏ
   `generated_by`) BẰNG HỆT `reports/fingerspell_live_2026-09-29/hand_live_check.json` (so dict Python: True).
+
+## Chi tiết phần 2 (lượt 4, HEAD `9ea5450`; code không đổi so với 0491877 — `git diff --name-only 0491877 HEAD -- backend src frontend scripts tests` rỗng; không sửa file nguồn; file tạm ở `_work/_rev06_tmp/p2_*`)
+
+### §5 — Rò rỉ split (FAIL, TRUNG BÌNH — không phải rò rỉ vào train/chọn model; là dùng clip TEST trong khi ghi là TRAIN)
+
+Lệnh (chỉ đọc): `PYTHONIOENCODING=utf-8 .venv/Scripts/python` + `csv.DictReader` trên `data/splits/unified/{train,val,test}.csv`
+(tracked, commit cuối c6df431, không đổi) và `data/splits/folds/tier2_indomain_{train,val,test}.csv` (còn trên đĩa, UNTRACKED
+— không nằm trong git); đối chiếu `reports/alphabet_nested_2026-09-25/primary/nested_predictions.csv` (682 dòng = 636 hauuto
+run `frame` + 46 qipedc run `external`) và `reports/alphabet_deploy_2026-09-27/provenance.json`.
+
+**Model nào, split nào.** 06 không train, không chọn model. Model được chạy:
+- Cấp 1 `checkpoints/alphabet_best.pt` (sha256 a6311820…b708a2): provenance `trained_on {source: hauuto, 4 signer, clips 636}`,
+  verdict `real_data_known_checkpoint` = model nested chọn bằng LOSO rồi train trên CẢ 4 signer; đánh giá ngoài trên 46 clip
+  QIPEDC chữ cái (`reports/alphabet_nested_2026-09-25/REPORT.md:16`, 62.5% trên 40 bản quay). Tức TOÀN BỘ 636 clip hauuto là
+  TRAIN; 46 clip qipedc chữ cái là TEST ngoài của Cấp 1.
+- Cấp 2 mặc định `stgcn` = `checkpoints/stgcn_tier2_indomain.pt` (`backend/main.py:121`), train trên
+  `data/splits/folds/tier2_indomain_*` (`scripts/compare_isolated_models.py:6,110`; `reports/audit_20260924/AUDIT_REPORT.md:17`).
+- Cấp 2 `stgcn_h360` = `reports/step4_2026-09-26/runs/run_keepz_360/stgcn_unified_best.pt`, split `data/splits/unified/*`.
+
+**Kết quả đối chiếu:**
+
+| Clip | Dùng ở | Model chạy trên clip | Thuộc | VAL/TEST? |
+|---|---|---|---|---|
+| `hauuto_a_hau_A_001` | e2e Đánh vần, AC4-d, AC10 (1 frame) | Cấp 1 | 636 clip train (`nested_predictions.csv:2`, run `frame`, test_signer hauuto_hau → trong LOSO; model cuối train cả 4 signer) | Không |
+| 8 clip hauuto AC5/AC6 (`a_tai_B_001`, `aa_khoi_B_002`, `aw_khoi_A_003`, `ee_vy_A_002`, `h_khoi_A_001`, `oo_vy_A_003`, `s_hau_B_002`, `tone_x_khoi_B_002`) | AC5, AC6 | Cấp 1 | cả 8 có trong 636 clip run `frame` | Không |
+| `qipedc_D0120T` | e2e Ký từ (mặc định + h360) | stgcn mặc định, h360 | `unified/train.csv` ✓, `tier2_indomain_train.csv` ✓ | Không (0 dòng ở `unified/{val,test}`, `tier2_indomain_{val,test}`) |
+| `qipedc_W03292N` | AC10 smoke (mặc định + h360; `select_train_clips()[0]`) | stgcn mặc định, h360 | `unified/train.csv` ✓, `tier2_indomain_train.csv` ✓ | Không |
+| **`qipedc_D0489`** | AC5, AC6 | **Cấp 1** (`/sequence`, `sequence_top1` = "a") | **TEST ngoài Cấp 1** (`nested_predictions.csv` run `external`; `reports/alphabet_real_run_2026-09-25/alphabet_run/external_test_predictions.csv:2`) ; không có trong split Cấp 2 nào | **CÓ — TEST Cấp 1** |
+| **`qipedc_D0490B`** | AC5, AC6 | **Cấp 1** (`sequence_top1` = "dấu huyền"; nhãn thật "ă") | **TEST ngoài Cấp 1** (`external_test_predictions.csv:3`) và **`unified/test.csv`** (TEST Cấp 2 để dành GATE); `tier2_indomain_train` | **CÓ — TEST Cấp 1 và Cấp 2** |
+
+Ghi chú: `D0120T` còn xuất hiện ở các split CŨ untracked (`tier1_val.csv`, `tier2_val.csv`, `folds/indomain_test.csv`,
+`folds/tier2_grouped_test.csv`…), `W03292N` ở `tier1_test.csv`, `tier2_test.csv`… — các split này không phải split của model
+nào được chạy trong 06 → không tính. Trường `clip.split: "train"` trong JSON e2e Ký từ là theo `unified/train.csv`
+(`label_kind`), không nói gì về split của model mặc định; reviewer đã kiểm thêm `tier2_indomain_train` → cũng TRAIN.
+
+**Đánh giá.**
+- Rò rỉ vào train/chọn model: KHÔNG. 06 không train, không chọn/đổi model, không đổi ngưỡng; kết quả trên 2 clip TEST không
+  dùng để quyết định gì (AC6 không có ngưỡng; AC5-b/c chỉ so live↔offline). Kết quả TEST ngoài của Cấp 1 đã công bố từ
+  trước (09-25) và đã chạy lại một lần ở provenance (`external_reproduction`, 46/46) — chạy thêm không đổi con số đã báo.
+- Nhưng: (a) trái chữ kế hoạch §6 "E2E và AC5 chỉ dùng clip TRAIN … KHÔNG chạm clip TEST/VAL (TEST chỉ chạy một lần, để dành
+  cho GATE)"; (b) câu "top-1 trùng trên 10 clip TRAIN" SAI ở `docs/phase12_api.md:173-174`, `docs/progress_log.md:112` (O5 xác
+  nhận), và trong chính kế hoạch (§0.4 dòng 64, §6 dòng 1316, AC11 dòng 1157-1158 — AC11 BẮT tài liệu viết câu này);
+  (c) `qipedc_D0490B` thuộc `unified/test.csv` — TEST của GATE Cấp 2: 06 KHÔNG chạy model Cấp 2 trên clip này (chỉ MediaPipe
+  hands + model Cấp 1), nên chưa "tiêu" TEST Cấp 2, nhưng landmark của nó đã được trích và xem ở AC5/AC6.
+- Nguyên nhân gốc: lỗi KẾ HOẠCH (AC5 mục "Mẫu": "+ 2 clip qipedc đầu tiên (theo `sample_id`) có `data/Dataset/Videos/<id>.mp4`"
+  lấy từ `manifest.csv` Cấp 1, mà các dòng qipedc trong manifest đó CHÍNH LÀ bộ TEST ngoài — `docs/data_registry.md:46` "adds 46
+  QIPEDC single-letter clips … as an external test set"). Coder làm đúng chữ AC5 (`scripts/hand_live_check.py:90-91` không
+  lọc theo split); JSON AC6 `note` chỉ nói "hauuto clips are training data" — đúng, nhưng tài liệu mở rộng sai sang 10 clip.
+- Mức: TRUNG BÌNH (tính trung thực của tài liệu + trái quy tắc TEST của kế hoạch); không làm sai số liệu độ chính xác nào.
+
+**Việc phải làm (trước APPROVE):**
+1. Sửa `docs/phase12_api.md:164,173-174`: tách "8 clip hauuto (TRAIN của model Cấp 1) + 2 clip qipedc (`qipedc_D0489`,
+   `qipedc_D0490B` — thuộc bộ TEST ngoài của Cấp 1; `D0490B` còn thuộc `unified/test.csv`)"; top-1 trùng giữa 3 đầu vào là
+   thông tin về độ ổn định của nhãn, không phải độ chính xác, và trên 2 clip TEST thì 1 clip nhãn sai (`D0490B`: "dấu huyền"
+   so với nhãn "ă") — nếu nêu thì nêu đủ. Test AC11 (`TestPhase12ApiDoc`) phải vẫn xanh (số thập phân phải còn trong JSON).
+2. `docs/progress_log.md`: không sửa dòng 112 (chỉ thêm) → thêm 1 dòng đính chính.
+3. Planner sửa kế hoạch 06 (§0.4, §6, AC11) cho đúng; quyết định có giữ 2 clip qipedc trong AC5/AC6 hay không (xem "CẦN
+   NGƯỜI DÙNG QUYẾT ĐỊNH" mục 4). Không cần chạy lại gì nếu chỉ đính chính chữ.
+
+### §6 — Chọn model bằng VAL, TEST chạy một lần (PASS — không áp dụng chọn model; model mặc định không đổi)
+- 06 không train, không chọn model, không có hyper-parameter/ngưỡng nào được chỉnh theo kết quả (AC6 không có ngưỡng;
+  luật e2e là luật socket, xét ở §12).
+- Model mặc định: `backend/main.py:111` `DEFAULT_MODEL_TYPE = "stgcn"`, `:112` `MODEL_TYPE = os.getenv("VSL_MODEL_TYPE",
+  DEFAULT_MODEL_TYPE)`, `:121` `"stgcn": {"ckpt": "checkpoints/stgcn_tier2_indomain.pt", …}`, `:132` `IS_DEFAULT_MODEL`.
+  `git diff 797d0af HEAD -- backend/main.py | grep '^-[^-]'` = 6 dòng: chú thích CORS cũ, `allow_origins=["*"]`,
+  `allow_credentials=True`, `allow_methods=["*"]`, `allow_headers=["*"]`, `uvicorn.run(… host="0.0.0.0" …)` — không dòng nào về
+  model. `git diff 797d0af HEAD --name-only -- configs checkpoints src/inference/predictor.py` rỗng; `start_fullstack.ps1` chỉ
+  đổi `--host`; không có `VSL_MODEL_TYPE` trong `start_fullstack.ps1` hay `frontend/src`.
+- Tự chạy: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_ws_live_contract.TestAC3aDefaults -v` →
+  `test_a_candidate_opt_in ... ok`, `test_a_default_is_unchanged ... ok`, `Ran 2 tests in 6.386s`, `OK`, exit 0
+  (`_work/_rev06_tmp/p2_ac3a.log`; test chạy subprocess không có `VSL_MODEL_TYPE`/`VSL_STGCN_CKPT`, không cần dữ liệu).
+- `stgcn_h360` chỉ là tùy chọn: `scripts/e2e_fullstack.py:710-712` `env.pop("VSL_MODEL_TYPE")` rồi chỉ đặt khi có
+  `--model-type`; smoke AC10 đặt biến ở dòng lệnh (`scripts/smoke_test_phase12.py:8`). JSON `_r4`: `word_default.json` và
+  `fingerspell_default.json` `health.is_default` true, `pipeline` legacy, checkpoint `stgcn_tier2_indomain.pt`;
+  `word_stgcn_h360.json` `session_info.model.model_type` `stgcn_h360`, `is_default` false. (Ghi chú ngoài 06: `/api/health`
+  trả `model_type: "stgcn"` cả khi chạy h360 — `backend/main.py:498,513` lấy `predictor.model_type` = họ model, có từ trước 06;
+  `is_default`/`checkpoint`/`session_info` phân biệt đúng. Thông tin.)
+- TEST: 06 không đánh giá độ chính xác trên TEST nào. Riêng việc AC5/AC6 chạy model Cấp 1 trên 2 clip TEST ngoài Cấp 1 đã tính
+  ở §5 (không dùng để chọn/đổi gì, nên không phạm "chọn bằng TEST", nhưng trái quy tắc "không chạm TEST" của kế hoạch).
+
+### §7 — Số liệu truy được (PASS; 1 ghi chú THẤP)
+Phạm vi: `docs/phase12_api.md` (toàn bộ), `docs/progress_log.md:112` (dòng của 06), số liệu dự án được trích trong
+06-review. Cách làm: liệt kê mọi số trong `docs/phase12_api.md` (`grep -noE "[0-9]+([./][0-9]+)*"`), phân loại, đối chiếu từng
+số đo với JSON bằng Python (đọc `reports/fingerspell_live_2026-09-29/hand_live_check.json`, in từng clip).
+
+- **Số đo (chỉ ở `docs/phase12_api.md:161-174`)** — nguồn JSON có `generated_by.command`
+  (`… scripts/hand_live_check.py --n-clips 8 --seed 0 --out reports/fingerspell_live_2026-09-29/hand_live_check.json`),
+  `git_commit` e58d02535fde…, `code_dirty` false; JSON chỉ commit ở 5fcf295; tài liệu ghi đường dẫn + commit (`:163-164`).
+  Tự đối chiếu:
+  | Câu trong tài liệu | Giá trị JSON |
+  |---|---|
+  | "mẫu 10 clip (8 hauuto + 2 qipedc)" | `n_clips` 10; `source` 8 hauuto, 2 qipedc |
+  | "Đường live (PNG) … bằng hệt ở cả 10 clip (sai lệch 0)" | `live_png_vs_local_offline.detected_equal` True ×10, `max_abs_diff` 0.0 ×10 |
+  | "(i) … Cả 10 clip có sai lệch khác 0" | `kaggle_npz_vs_local_offline.max_abs_diff_both` > 0 ở cả 10 (nhỏ nhất 0.0006983 `qipedc_D0490B`) |
+  | "1 clip lệch cờ … `hauuto_aw_khoi_A_003`, 88/90" | chỉ clip này có `detected_agree` (88) < `n_frames` (90) |
+  | "lớn nhất 0.2297654151916504" | max = 0.2297654151916504 (`hauuto_aw_khoi_A_003`) |
+  | "(ii) 2 clip lệch cờ (`hauuto_aw_khoi_A_003` 86/90, `qipedc_D0489` 87/93)" | `live_jpeg90_vs_live_png.detected_agree` 86/90 và 87/93; 8 clip còn lại bằng `n_frames` |
+  | "lớn nhất 0.24034595489501953" | max = 0.24034595489501953 (`hauuto_aw_khoi_A_003`) |
+  | "top-1 … trùng nhau … ở cả 10 clip" | `sequence_top1` 3 giá trị bằng nhau ở 10/10 |
+  Test tự động: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_frontend_contract.TestPhase12ApiDoc
+  tests.test_frontend_contract.TestHandLiveCheckReport -v` → `Ran 7 tests`, `OK`, exit 0 (`_work/_rev06_tmp/p2_doc_tests.log`);
+  `test_ac6_paragraph_numbers_come_from_the_json` kiểm mọi số thập phân của đoạn có trong JSON và max Kaggle được trích đúng
+  (`tests/test_frontend_contract.py:213-239`). Test không kiểm phân số nguyên (88/90…) — reviewer đã kiểm tay ở bảng trên.
+- **Không phải số đo** (hằng code/giá trị thiết kế): 1 048 576 = `WS_MAX_MESSAGE_BYTES`/`ALPHABET_MAX_BODY_BYTES`
+  (`backend/main.py:895,253`); 1920 = `WS_MAX_FRAME_SIDE` (`:896`); 300 = `ALPHABET_MAX_FRAMES` (`:588`); 24/0.9/2 =
+  `frontend/src/lib/fingerspelling.js:11-13`, tài liệu ghi "giá trị thiết kế, chưa đo" (`:136`); cổng/mã đóng WS. `:4` "không
+  chứa số đo hiệu năng nào" — đúng (không có độ trễ/fps đo).
+- **`docs/progress_log.md:112`**: "fingerspell 25/25, word 23/23, word stgcn_h360 26/26, all_checks_pass true, code_dirty false"
+  = đếm `checks` của 3 JSON `reports/e2e_2026-09-30_r4/*.json` (tự đếm: 25/25, 23/23, 26/26; `generated_by.git_commit` b6c27b1;
+  commit 024ec64); "383" = `_work/_plan06_tmp/b0_ac2.log` `Ran 383 tests` / `OK`; "526 OK, 0 skip" =
+  `_work/_plan06_tmp/b9b_ac2_31.log` `Ran 526 tests in 710.597s` / `OK` (reviewer tái lập 526 OK 0 skip ở 0491877, §2; hiện
+  không tái lập được vì V0); "npm test 26/26" (reviewer tái lập §2); "0.2403", "0.2298" = làm tròn 4 chữ số của hai max trên.
+  Ghi chú THẤP: dòng này trỏ log ở `../_plan06_tmp/` — thư mục đã dời vào `_work/_plan06_tmp/` (commit 9d1d40f), đường cũ không
+  còn; log là output test, không phải JSON số liệu, nên không tính FAIL. Chữ "10 clip TRAIN" sai — là lỗi nhãn dữ liệu, tính
+  ở §5 (và §13 O5), không phải số không truy được.
+- **06-review (số của dự án được trích):** e2e 25/25, 23/23, 26/26, blob/commit, `click_page_ms`/`t_page_ms` (§12) đều đọc từ
+  JSON đã commit với commit ghi kèm; số đo của reviewer (probe CORS, proxy AC5, test count) có lệnh + log trong
+  `_work/_rev06_tmp/`. Không tìm thấy số nào không truy được.
+
+### §8 — Cỡ mẫu / khoảng tin cậy (PASS; 1 ghi chú THẤP)
+- 06 không báo tỉ lệ/độ chính xác nào (grep `%` trong `docs/phase12_api.md` và progress_log:112: 0 số phần trăm) → không có
+  số cần CI. Các cỡ mẫu nhỏ và cách chúng được dùng:
+  | Bằng chứng | n | Dùng để | Câu kết luận | Đúng mực? |
+  |---|---|---|---|---|
+  | E2E `_r4` | 1 clip TRAIN/kịch bản, 1 lượt chính thức | "chạy được cùng nhau" | `note`: "End-to-end run on ONE training clip per scenario … Not an accuracy measurement"; `info_not_accuracy`; 06-progress:249-250, 538, 541 "clip TRAIN — không phải độ chính xác" | Có |
+  | AC5 | 10 clip (8 hauuto + 2 qipedc), 1 máy | kiểm tương đương CODE (bằng hệt bit) | Kế hoạch §6 "kiểm tương đương CODE (tất định), không phải tỉ lệ"; tài liệu "bằng hệt ở cả 10 clip" | Có (phép kiểm tất định; một ca khác đi là đủ bác bỏ, không cần n lớn). Giới hạn: 1 máy, 2 nguồn video |
+  | AC6 | 10 clip | ghi nhận lệch nguồn | "Chỉ ghi nhận, không có ngưỡng" (`:165`); "top-1 trùng … không chứng minh bền vững" (`:173-174`); không nêu tỉ lệ lệch cho toàn bộ dữ liệu; backlog "đo trên TOÀN BỘ clip hauuto" (plan §0.4) | Có (trừ nhãn TRAIN sai — §5) |
+  | H1/H2 | 2 lượt | chẩn đoán, không quyết luật | "chỉ mô tả, không khái quát" (§12) | Có |
+  | W03251B lặp ký hiệu | 1 clip | Giới hạn | "n = 1" (`:148`) | Có |
+  | AC10 smoke | 1 clip, 30 frame | kiểm giao thức | không có câu kết luận chất lượng | Có |
+- Ghi chú THẤP (giả thuyết nêu như sự thật): `docs/phase12_api.md:170` "(đơn vị ảnh chuẩn hóa — cỡ cả bàn tay ở vài frame
+  tracker bắt/nhả tay khác nhau)" và plan §0.4 "Cỡ lệch này là tracker bắt/nhả tay khác nhau ở vài frame, không phải sai số
+  làm tròn". Không có phân tích theo frame nào trong JSON (JSON chỉ có max và số frame khớp cờ); `max_abs_diff_both` chỉ tính
+  trên frame CẢ HAI bên có tay, và `hauuto_aa_khoi_B_002` có diff Kaggle 0.1354949027299881 dù `detected_agree` 91/91 — tức
+  lệch lớn xảy ra cả khi không có frame nào khác cờ. Vế "không phải sai số làm tròn" thì có căn cứ (cỡ 0.1–0.23 so với float32);
+  vế cơ chế nên ghi là giả thuyết. Không chặn.
+
+### §9 — Nhất quán train–realtime (PASS dựa trên lượt chạy độc lập của reviewer tại 0491877; tái chạy hiện tại UNVERIFIED do V0)
+
+**Cấp 1 — `/ws/hand-landmarks` so với lúc trích train (`scripts/extract_hands_batch.py::_extract_one`), đọc code:**
+
+| Yếu tố | Train (`extract_hands_batch.py`) | Live (06) | Bằng nhau? |
+|---|---|---|---|
+| Extractor + tham số | `mp.solutions.hands.Hands(static_image_mode=False, max_num_hands=1, model_complexity=1, min_detection_confidence=0.5, min_tracking_confidence=0.5)` (`:37-38`) | `Hands(**LEVEL1_HANDS_KWARGS)` (`src/inference/hand_live.py:22-28,48`) | Có — AC4-a đọc keyword bằng `ast` và so cả kiểu; tự chạy `test_kwargs_equal_training_extractor ... ok`, `test_module_is_pure ... ok` |
+| Phiên bản | mediapipe 0.10.14 (manifest; provenance `preprocessing.mediapipe_version`) | .venv: mediapipe 0.10.14, cv2 5.0.0, numpy 2.4.6 (tự in) | Có (AC4-b đối chiếu với manifest — nay skip, V0) |
+| Màu / kích thước | frame `cap.read()` gốc, `cvtColor(BGR2RGB)` (`:43`) | `_decode_frame(…, min_height=None)` → `cv2.imdecode(IMREAD_COLOR)` (BGR), không resize (`backend/main.py:1595,1026`); `process` `cvtColor(BGR2RGB)` (`hand_live.py:56`) | Có |
+| Tay / nhãn | `multi_hand_landmarks[0]`, `multi_handedness[0].classification[0]` (`:44-47`) | như train (`hand_live.py:57-60`); landmark float32 → float Python không làm tròn (`backend/main.py:1612-1613`) | Có |
+| Tracker | mới mỗi clip (`with … as hands`) | mới mỗi `reset` = mỗi lượt ghi (`hand_live.py:44-48`; UI gửi `reset` trước khi ghi) | Có (AC4-c spy: 1 + số reset) |
+| Lật gương | frame mp4 như lưu | canvas `drawImage` KHÔNG lật (`Fingerspelling.jsx:116`); lật chỉ bằng CSS để hiển thị (`:391`); body `source_mirrored: false`; server chỉ un-mirror khi `source_mirrored` true (`backend/main.py:760`) | Có (theo quy ước "không lật ở cả hai phía") |
+| Tỉ lệ khung | `width/height` trong metadata npz | `frame_width/height` của `hand_frame` = kích thước frame giải mã (`backend/main.py:1603,1610-1611`); đổi giữa chừng → lỗi, không đoán (`buildSequenceBody`) | Có |
+| Cắt đoạn | clip đã cắt sẵn | người dùng bấm Ghi/Dừng; không có luật cắt tự động | KHÁC — đã nêu ở kế hoạch §6; không có test |
+
+**Test tương đương có so CÙNG hàm không: có.** `tests/test_hand_live_equivalence.py` lấy offline từ `H.load_extract_module()` =
+`importlib` nạp chính file `scripts/extract_hands_batch.py` rồi gọi `_extract_one` (`scripts/hand_live_check.py:96-112`), không chép
+lại; live đi qua endpoint thật `client.websocket_connect("/ws/hand-landmarks")` (TestClient) với PNG không mất mát (`:161-179`); so
+`np.array_equal` detected + landmark (frame có tay) + nhãn + score float32 (`tests/test_hand_live_equivalence.py:85-97`), body
+`/sequence` và JSON response bằng hệt (`:99-113`), model dựng lại từ checkpoint trên `alphabet_clip_features` của npz offline → top-1
+bằng, |Δconfidence| ≤ 1e-4 (`:115-132`). Không có dung sai ở (a) — đúng §7-1.
+- Bằng chứng chạy: lượt AC2 độc lập của reviewer (phần 1, HEAD 0491877): 4/4 test AC5 + `TestRealFrame`, `TestSessionInfo`,
+  `TestCrossLanguageBody` (AC7-d: body JS == body Python offline) chạy, không skip; log in 10 dòng `[AC5] <sample_id>: frames=…
+  detected=…` và `[AC7-d] hauuto_a_tai_B_001: frames=45 with_hand=45` (`_work/_rev06_tmp/ac2_31.log`; tổng `Ran 526` `OK`, 0 skip).
+  Code không đổi từ đó (`git diff --name-only 0491877 HEAD -- backend src frontend scripts tests` rỗng). AC6 do reviewer chạy lại
+  tại 0491877 ra phần thân JSON bằng hệt bản commit (§4), gồm `live_png_vs_local_offline` 10/10 bằng hệt.
+- Độ nhạy của phép so: proxy đột biến (§1, `_work/_rev06_tmp/proxy_ac5.log`, 1 video từ điển còn trên máy): bỏ BGR→RGB, lật frame,
+  float16, `static_image_mode=True`, `min_tracking_confidence` 0.6 — cả 5 bị phát hiện.
+- Lượt này (HEAD 9ea5450): `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_hand_landmarks_ws
+  tests.test_hand_live_equivalence tests.test_live_harmonized_equivalence -v` → `Ran 22 tests`, `OK (skipped=14)`, exit 0
+  (`_work/_rev06_tmp/p2_eq_tests.log`). 8 test chạy xanh (AC4 phần không cần dữ liệu 7 + `TestSegmentCheckJson` 1). SKIP (KHÔNG tính
+  PASS): AC5 4/4 (thiếu `manifest.csv`, `hauuto_raw`, `Dataset/Videos`, `alphabet_best.pt`), AC4 `TestRealFrame`, `TestSessionInfo`,
+  và 8 test của kế hoạch 04 (thiếu checkpoint h360 + video) → tái lập trên máy hiện tại: UNVERIFIED (V0).
+
+**Ký từ (Cấp 2) — harmonize 360 của kế hoạch 04:**
+- 06 không đổi đường xử lý server: hunk của `git diff 797d0af HEAD -- backend/main.py` quanh `websocket_live_stream` chỉ thêm
+  `_ws_check_origin` trước `accept()` (+ docstring); `src/inference/{harmonized_live,sign_segmenter,predictor}.py`, `configs/` không
+  đổi (AC1, §1). `harmonized_v1` vẫn thu frame về `process_height` 360 phía server và từ chối frame thấp hơn (`frame_too_small`,
+  `_decode_frame` `min_height`).
+- Phía client (06 đổi `CameraCapture.jsx` +41/−59): canvas vẫn KHÔNG lật (`:114`; CSS lật chỉ để hiển thị `:232`); JPEG giữ 0.75
+  (`jpegQuality = 0.75` thay cho hằng cũ `toDataURL('image/jpeg', 0.75)` — cùng giá trị); `getUserMedia` ideal 640×480 (≥ 360);
+  timestamp nay luôn là `nowMs()` đơn điệu (đúng yêu cầu `bad_timestamp` của harmonized). Không đổi tiền xử lý.
+- Test tương đương của kế hoạch 04 (`tests.test_live_harmonized_equivalence`: raw landmark bằng hệt, đầu vào MediaPipe cao 360, mask
+  bằng hệt, chuỗi gần, top-5 bằng, WS == phiên trong tiến trình): 9/9 ok trong cùng lượt AC2 của reviewer tại 0491877; nay 8/9 skip
+  (V0). E2E `_r4` `word_stgcn_h360.json`: `pipeline harmonized_v1`, `sign_result` "phải không?" trên clip TRAIN qua trình duyệt thật —
+  chỉ chứng minh chạy được, không phải tương đương.
+
+**Lệch train–realtime CÒN LẠI (không do code 06; đã đo hoặc đã nêu):**
+1. Nền tảng: landmark train trích trên Kaggle/Linux khác trích lại trên Windows — 10/10 clip diff > 0, max 0.2297654151916504, 1/10
+   lệch cờ detected (JSON AC6). AC5 chỉ chứng minh "live == offline CÙNG MÁY". Đã ghi ở `docs/phase12_api.md:168-170`; nhưng câu
+   `:113-114` ("bằng đúng extractor lúc train … được kiểm bit-by-bit") dễ đọc thành live == dữ liệu train — O4 (THẤP, §13). Tác động lên
+   nhãn: top-1 trùng 10/10 (8 TRAIN + 2 TEST ngoài — §5), không đủ để kết luận về độ bền.
+2. Nén ảnh: live Cấp 1 dùng JPEG 0.9 của CANVAS trình duyệt; AC6 chỉ đo JPEG q90 của `cv2.imencode` (2/10 lệch cờ, max
+   0.24034595489501953). Bộ nén + chuyển màu của trình duyệt chưa đo — O3 (THẤP, §13).
+3. Cắt đoạn thủ công (Ghi/Dừng) khác clip train đã cắt sẵn; tốc độ khung webcam khác 23.6 fps (`resample: frame_index`); độ phân giải
+   webcam khác 640×480 — đã nêu ở kế hoạch §6, UI hiện fps hiệu dụng/độ phân giải; chưa đo.
+4. Lật gương: quy ước "không lật ở cả hai phía" giả định video hauuto lưu không lật — chưa kiểm được; được giảm nhẹ bởi
+   `mirror_left_hand: true` trong tiền xử lý (đưa về một chiều tay theo nhãn MediaPipe). Thông tin.
+
+Kết luận: đường code live dùng đúng extractor/phiên bản/tham số/chuyển màu/quy ước lật với lúc train, và có test tương đương thật so
+cùng hàm; bằng chứng xanh là lượt chạy độc lập của reviewer tại commit có code bằng hệt HEAD. Ở trạng thái máy hiện tại phải chạy lại
+AC5 (+ `mutate_ac5.py M1..M5`) và `test_live_harmonized_equivalence` sau khi khôi phục dữ liệu — gộp vào việc V0.
 
 ## Chi tiết phần 3 (lượt 3, HEAD 8f5969a; không sửa file nguồn nào; file tạm ở `_work/_rev06_tmp/`)
 
@@ -406,6 +606,22 @@ Vấn đề phát hiện ở phần 3 (lượt 3, HEAD 8f5969a):
   nghiệm bác bỏ (O1). Kèm các câu nên chỉnh chữ O3–O5 (THẤP).
 
 
+Vấn đề phát hiện ở phần 2 (lượt 4, HEAD 9ea5450):
+- **V11 — TRUNG BÌNH (dùng clip TEST trong khi ghi là TRAIN; lỗi gốc ở kế hoạch; xác nhận O5).** 2/10 clip của AC5/AC6
+  (`qipedc_D0489`, `qipedc_D0490B`) thuộc 46 clip TEST ngoài của Cấp 1 (`reports/alphabet_nested_2026-09-25/primary/nested_predictions.csv`
+  run `external`; `reports/alphabet_real_run_2026-09-25/alphabet_run/external_test_predictions.csv:2-3`); `qipedc_D0490B` còn thuộc
+  `data/splits/unified/test.csv` (TEST Cấp 2 để dành GATE). Model Cấp 1 triển khai đã chạy `/sequence` trên cả hai, top-1 ghi trong JSON
+  AC6. Không rò rỉ vào train/chọn model (06 không chọn gì), nhưng trái §6 của kế hoạch ("KHÔNG chạm clip TEST/VAL") và câu "top-1 trùng
+  trên 10 clip TRAIN" SAI ở `docs/phase12_api.md:173-174`, `docs/progress_log.md:112`, kế hoạch §0.4/§6/AC11. Gốc: AC5 "2 clip qipedc
+  đầu tiên" lấy từ `manifest.csv` Cấp 1, mà phần qipedc của manifest là bộ test ngoài (`docs/data_registry.md:46`). Bằng chứng: §5.
+- **V12 — THẤP (truy vết).** `docs/progress_log.md:112` trỏ log `../_plan06_tmp/b9b_ac2_31.log`; thư mục đã dời vào
+  `_work/_plan06_tmp/` (log còn, `Ran 526` / `OK`). Khi thêm dòng đính chính V11 thì ghi luôn đường mới. Bằng chứng: §7.
+- **V13 — THẤP (giả thuyết nêu như sự thật).** `docs/phase12_api.md:170` và kế hoạch §0.4: lệch Kaggle 0.23 là do "tracker bắt/nhả tay
+  khác nhau ở vài frame" — chưa phân tích theo frame; `hauuto_aa_khoi_B_002` diff 0.135 dù cờ detected khớp 91/91. Nên ghi "giả thuyết".
+  Bằng chứng: §8.
+- Thông tin: `/api/health` trả `model_type: "stgcn"` cả khi chạy `stgcn_h360` (lấy họ model; có từ trước 06; `is_default`, `checkpoint`,
+  `session_info.model.model_type` phân biệt đúng) (§6).
+
 Chuyển cho phần 2/3 (không đánh giá ở đây):
 - Phần 2 (mục 9): AC5 chứng minh live == offline CÙNG MÁY; lệch Kaggle/Linux ↔ cục bộ (AC6: detected lệch 1/10 clip, max
   diff 0.2298) và JPEG q90 ↔ PNG (2/10, 0.2403) là lệch train↔realtime thật, cần đánh giá ở mục 9.
@@ -445,6 +661,49 @@ commit planner (4a1bc31, 717aa3e, f52de6f, facffea — ngoài phạm vi AC13 c�
 - Phần 2 (5–9) chưa làm; chuyển thêm cho phần 2: O5 (2 clip qipedc của AC6/AC5 có thuộc TRAIN của model Cấp 1 không).
 - Kết luận chung hiện tại: CHANGES_REQUESTED (còn FAIL ở 13; V0 chặn tái lập; phần 2 chưa làm).
 
+## Kết luận tạm (phần 2)
+
+- Hạng mục 5 **FAIL** (V11 TRUNG BÌNH: 2/10 clip AC5/AC6 là TEST ngoài Cấp 1, `D0490B` còn là TEST Cấp 2, tài liệu ghi "10 clip TRAIN";
+  không rò rỉ vào train/chọn model); 6 PASS (model mặc định không đổi, tự chạy `TestAC3aDefaults` 2/2); 7 PASS (mọi số đo truy tới
+  JSON có lệnh + commit; V12 THẤP); 8 PASS (không có tỉ lệ/độ chính xác nào; n nhỏ đều gọi đúng tên; V13 THẤP); 9 PASS dựa trên lượt
+  chạy độc lập của reviewer tại 0491877 (code bằng hệt HEAD), tái chạy hiện tại UNVERIFIED do V0.
+- O5 của phần 3 được xác nhận là câu SAI (không chỉ "nên chỉnh") → nâng thành việc phải làm trước APPROVE (V11).
+
+## Kết luận (sau 3 phần) — CHANGES_REQUESTED
+
+Bảng 1–13: PASS 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12; **FAIL 5, 13**. Hạng mục 2 và 9 dựa trên lượt chạy độc lập của reviewer tại
+0491877 (code không đổi tới 9ea5450); ở trạng thái máy hiện tại chúng KHÔNG tái lập được vì V0.
+Không có FAIL nào do lỗi chức năng/bảo mật nghiêm trọng của code 06: code đúng hợp đồng, test thật (đột biến bị giết), không nới
+tiêu chí về thực chất. Các FAIL là tính trung thực của tài liệu/bản ghi và nhãn dữ liệu.
+
+**Việc phải làm trước APPROVE (xếp theo mức độ):**
+1. **V0 — NGHIÊM TRỌNG (môi trường, không do coder).** Khôi phục `data/external/`, `data/Dataset/`, `checkpoints/` (người dùng; đối chiếu
+   sha256 checkpoint với `reports/alphabet_deploy_2026-09-27/provenance.json` `a6311820…b708a2` và `reports/step4_2026-09-26/REPORT.md`
+   `53c34cba…fe2c826` cho `stgcn_tier2_indomain.pt`), rồi reviewer chạy lại: AC2 31 module (phải ra `Ran 526` OK 0 skip), `npm test`,
+   `_work/_rev06_tmp/mutate_ac5.py M1`…`M5` trên chính test AC5, AC10 hai lần. Nếu không khôi phục được → người dùng quyết (mục CẦN NGƯỜI
+   DÙNG QUYẾT ĐỊNH 5).
+2. **V11/O5 — TRUNG BÌNH (hạng mục 5, 13).** Sửa `docs/phase12_api.md:164,173-174` nêu đúng: 8 clip hauuto TRAIN + 2 clip qipedc thuộc
+   TEST ngoài Cấp 1 (`D0490B` còn thuộc `unified/test.csv`); thêm 1 dòng đính chính vào `docs/progress_log.md` (không sửa dòng 112);
+   planner sửa kế hoạch §0.4, §6, AC11 (AC11 đang BẮT viết "10 clip TRAIN") và quyết định giữ/đổi 2 clip (CẦN NGƯỜI DÙNG QUYẾT ĐỊNH 4).
+   `TestPhase12ApiDoc` phải vẫn xanh.
+3. **V10/O1 — TRUNG BÌNH (hạng mục 13).** Sửa `docs/phase12_api.md:32-33` cho đúng hành vi CORS qua proxy Vite (Vite dev tự trả CORS cho
+   mọi origin họ loopback), hoặc đặt `server.cors`/`preview.cors` trong `frontend/vite.config.js` (+ test văn bản kiểu AC3-g) rồi viết lại
+   câu. Câu gốc nằm trong chính kế hoạch §3.5 (dòng 880-882) → planner sửa kế hoạch cùng lúc.
+4. **V9/O2 — TRUNG BÌNH (hạng mục 12, 13).** Sửa/ghi chú `docs/plans/06-progress.md:237-239`: lượt dev B8 có `hand_ws_session_info` đỏ,
+   kiểm này được đổi trước lượt chính thức.
+5. Sau 1–4: `docs/progress_log.md` thêm dòng kết luận reviewer (AC13 yêu cầu "Kết luận vslt-reviewer = APPROVE"); reviewer kiểm lại
+   các mục 5, 13 (chỉ đọc diff tài liệu + chạy `TestPhase12ApiDoc`) và mục V0.
+
+**Chuyển backlog được (THẤP/THÔNG TIN; planner ghi rõ vào backlog):** V6 cấu hình `cors` của Vite (nếu mục 3 chọn sửa tài liệu);
+V7 `detail` cố định cho `model_unavailable` của `/ws/hand-landmarks`; O3 (JPEG trình duyệt "đo được" → "đại diện bằng cv2, chưa đo");
+O4 (thêm "(cùng máy, ảnh PNG)" ở `docs/phase12_api.md:114`); V13 (ghi "giả thuyết"); V12 (đường log); V8 số gõ tay trong `Reports.jsx`;
+V1/V2 (quy trình detect-changes của commit docs); V3–V5 (thông tin); `/api/health` `model_type` họ model. O3, O4, V13 rẻ — nên làm cùng
+lượt sửa `docs/phase12_api.md` ở mục 2–3.
+
+**Thí nghiệm còn thiếu (giữ trong Giới hạn/báo cáo cuối, không chặn 06):** như §13 mục 1–7, thêm: đo lệch Kaggle↔cục bộ trên toàn
+bộ 636 clip hauuto (§0.4 backlog); phân tích theo frame nguồn gốc lệch 0.23 (V13); JPEG canvas trình duyệt so với PNG; webcam thật/người
+ký ngoài tập train cho Cấp 1 (hiện chỉ có 46 clip QIPEDC làm test ngoài).
+
 ## CẦN NGƯỜI DÙNG QUYẾT ĐỊNH
 
 1. **Khôi phục dữ liệu bị xóa (V0).** `data/external/`, `data/Dataset/`, `checkpoints/` hiện rỗng. Nguồn có thể: Recycle Bin /
@@ -454,3 +713,12 @@ commit planner (4a1bc31, 717aa3e, f52de6f, facffea — ngoài phạm vi AC13 c�
 2. Sau khi khôi phục: có chạy lại AC2 đầy đủ (khoảng 13 phút) + 5 đột biến AC5 để đóng V0 trước phần 2 không.
 3. Quy trình: cấm junction/symlink tới dữ liệu trong worktree tạm (hoặc bắt buộc gỡ junction bằng `rmdir` trước khi
    `git worktree remove`); đề xuất ghi vào `docs/prompts/autopilot.md`.
+4. **(Phần 2, V11) 2 clip TEST trong AC5/AC6.** `qipedc_D0489`, `qipedc_D0490B` là TEST ngoài của Cấp 1 (`D0490B` còn thuộc
+   `unified/test.csv`). Chọn: (A) GIỮ, chỉ đính chính tài liệu/kế hoạch — phép so bit (AC5-a) không phụ thuộc nhãn, kết quả TEST ngoài
+   Cấp 1 đã công bố từ 09-25, 06 không quyết định gì dựa trên 2 clip này; không cần chạy lại; (B) ĐỔI sang 2 clip qipedc không thuộc
+   TEST/VAL nào (vd. clip của `unified/train.csv`, không phải chữ cái — AC5-a vẫn kiểm được, nhưng top-1 `/sequence` vô nghĩa), sửa
+   AC5/AC6 và chạy lại AC5/AC6 (cần dữ liệu, sau V0). Đề xuất của reviewer: (A), kèm ghi rõ trong `docs/phase12_api.md` và kế hoạch
+   rằng 2 clip là TEST ngoài và không dùng để đánh giá.
+5. **(V0) Nếu KHÔNG khôi phục được dữ liệu:** có chấp nhận bằng chứng lịch sử (lượt AC2 độc lập của reviewer tại 0491877, 526 OK 0
+   skip; AC6 tái lập bằng hệt; code không đổi tới HEAD) thay cho chạy lại, và ghi giới hạn "không tái lập được trên máy hiện tại" vào
+   báo cáo đóng việc không. Nếu không chấp nhận → 06 chờ tới khi có dữ liệu.

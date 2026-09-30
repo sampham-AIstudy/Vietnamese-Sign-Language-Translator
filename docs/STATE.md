@@ -5,10 +5,8 @@
 
 - Cập nhật lần cuối: 2026-10-01 00:20 (giờ Việt Nam)
 - HEAD: 9d1d40f (+ commit state này) | Nhánh: feat/vslt-complete (đã push)
-- Trạng thái phiên: ĐANG CHẠY (không cần dữ liệu) — người dùng (00:04 ngày 1/10): "cứ làm đến khi hết quota" rồi tắt máy.
-  Chỉ làm việc KHÔNG cần dữ liệu bị mất và ghi đĩa ít; KHÔNG tự khôi phục dữ liệu (để ngỏ lựa chọn phần mềm khôi phục cho người dùng).
-  Thứ tự: reviewer 06 phần 3 (10–13) → phần 2 (5–9, mục cần dữ liệu ghi UNVERIFIED) → planner sửa 07/08 theo review cloud (K1, P1–P5).
-  Hết cổng ngân sách (used + 1.5×est ≤ 90) → lưu STATE, commit, push, tắt máy (người dùng yêu cầu rõ).
+- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 48% lúc 00:38 (reset 04:40 ngày 1/10), 7 ngày 67% (reset 09:00 ngày 1/10). Việc kế tiếp = vslt-planner
+  Lần sửa 5 kế hoạch 06 (V11/O5, V10/O1, V9/O2; est planner 32 → 48 + 1.5×32 = 96 > 90, không qua cổng). Đã lưu, push, tắt máy theo yêu cầu người dùng.
   SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
   `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint
   stgcn/stgcn_h360, video+nhãn QIPEDC, hauuto_raw, alphabet_hands_kaggle, vsl_gh, parallel_text. Còn nguyên: data/raw_tudienngonngukyhieu,
@@ -21,7 +19,12 @@
   Review 06 phần 3 XONG (00:22): 10 PASS, 11 PASS (V6 thấp: Vite proxy tự trả CORS cho origin loopback; V7 thấp: detail lộ exception),
   12 PASS (3 lần đổi tiêu chí AC12 hợp lý, không hạ tiêu chí; V9 trung bình: coder nới kiểm hand_ws_session_info ở 7e38118 và
   06-progress.md:237-239 báo sai lượt dev B8), 13 FAIL (O1: phase12_api.md:32-33 "qua proxy CORS không tham gia" bị thí nghiệm bác; O2 = V9).
-  Kết luận tạm: CHANGES_REQUESTED — cần V0 (dữ liệu), V10/O1, V9/O2; thấp V6, V7, O3–O4. Phần 2 (5–9) đang giao — 00:24.
+  Review 06 phần 2 XONG (00:38): 5 FAIL (V11/O5: 2 clip qipedc_D0489, qipedc_D0490B trong AC5/AC6 là TEST ngoài Cấp 1, D0490B còn trong
+  unified/test.csv — trái §6 kế hoạch; câu "10 clip TRAIN" sai ở phase12_api.md:173-174, progress_log:112, kế hoạch §0.4/§6/AC11; gốc: kế hoạch
+  chọn "2 clip qipedc đầu" của manifest Cấp 1), 6 PASS, 7 PASS (V12 thấp), 8 PASS (V13 thấp), 9 PASS lịch sử tại 0491877 / UNVERIFIED hiện tại (V0).
+  KẾT LUẬN SAU 3 PHẦN: CHANGES_REQUESTED (vòng 1/3). Trước APPROVE: V0 khôi phục dữ liệu + reviewer chạy lại AC2 526/0 skip, npm test,
+  đột biến AC5, AC10 ×2; V11/O5, V10/O1, V9/O2 (TRUNG BÌNH — cần planner sửa kế hoạch rồi coder sửa tài liệu); sau đó dòng AC13 + reviewer kiểm lại 5, 13, V0.
+  Backlog được: V6, V7, V8; nên làm luôn O3, O4, V12, V13 khi sửa phase12_api.md.
   Kế hoạch 06: XONG B0–B7 (B5 34a527d, B6 0328c1b, B7 dbd79f2). Còn: B8 e2e fullstack (LOCAL, Edge + video thật) → B9 → review 06.
   Reviewer 06 cần xác minh: CRITICAL impact ở B5/B6 (component React, GitNexus nhầm tên JS↔Python), HIGH ở B2/B3 (symbol mới),
   B7 sửa tests/test_frontend_contract.py (file do chính kế hoạch 06 tạo ở B4 — kiểm không nới), 050d337 thiếu detect-changes.
@@ -128,6 +131,8 @@
   Agent không được tạo junction/symlink tới dữ liệu thật trong worktree tạm; cần dữ liệu thì chạy test ở repo chính.
 
 ## Câu hỏi chờ người dùng
+- (từ review 06 phần 2) 2 clip TEST trong AC5/AC6: (A) giữ, chỉ đính chính tài liệu [reviewer đề xuất] hay (B) đổi sang clip qipedc TRAIN và chạy lại AC5/AC6 khi có dữ liệu?
+- (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
 - (CHẶN) Khôi phục dữ liệu bị xóa 30/9 23:42: chọn phần mềm khôi phục trước hay khôi phục checkpoint từ _work + Kaggle (sha256)? Còn bản gốc video không?
 - (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
   reports/PHASE4B_REPORT.md:112 ghi "unseen / zero leakage" là sai; mặc định: ghi nhãn đúng, không viết lại báo cáo cũ.
@@ -186,3 +191,4 @@
 - 2026-09-30 14:50 | khôi phục sau chờ hạn mức (người dùng nhắn "continue") | STATE khớp git (HEAD 2773b44), không có nhánh cloud mới | Giao vslt-coder 06 B8c + B9b.
 - 2026-09-30 23:50 | 429 giữa lượt reviewer 06 phần 1 (16:18, 71% + est 20) | review dở: 2–4 PASS, 1 đang làm | Ghi limit_hit, cổng chặt lại; dời thư mục tạm vào _work/; giao lại reviewer hoàn thiện hạng mục 1.
 - 2026-10-01 00:20 | sự cố mất dữ liệu do orchestrator gỡ worktree có junction (30/9 23:42) | review 06 phần 1 xong | Dừng mọi việc, lưu STATE, push, tắt máy theo yêu cầu người dùng.
+- 2026-10-01 00:40 | dừng theo ngân sách (không phải ngắt) | review 06 xong 3 phần: CHANGES_REQUESTED; planner Lần sửa 5 chưa giao (96 > 90) | Lưu STATE, commit, push, tắt máy theo yêu cầu người dùng.
