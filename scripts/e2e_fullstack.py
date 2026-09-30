@@ -14,6 +14,11 @@ Plan 06 §3.7 / AC12: end-to-end run of the full stack on a real clip.
    3000 are free;
 5. writes the JSON: generated_by{command, git_commit, code_dirty}, versions (node / Edge / mediapipe), the clip id
    (no absolute path, no landmark, no image), the observations of the browser, and one entry per AC12 check.
+   Plan 06 revision 4 (0D.3): the check `tab_unmounted_owner_rule` reads the source module of every
+   `new WebSocket(...)` of the page (observations.ws_page, recorded by the page hook of e2e_browser.cjs, 0D.5): in the
+   fingerspell scenario every socket of the tab_unmounted path must have exactly one record whose first app frame is
+   /src/components/Phase12Pipeline.jsx (SCENARIO_TAB_UNMOUNTED_OWNER); missing page data is red in every scenario.
+   `ws_classification.page_hook` (records / CDP sockets by path, owners, click phase) is information, not a check.
 The prediction of the clip is written under `info_not_accuracy`: one TRAIN clip per scenario only shows that the
 stack runs; it is not an accuracy figure. TEST / VAL clips are refused.
 Exit code 0 only when every check passes.
@@ -310,11 +315,13 @@ def _num(v) -> bool:
 
 
 def tab_unmounted_violations(sockets: list, steps: list, tab_step: str, first_action_step: str) -> list:
-    """Pure (0C.2 item 2): sockets of the path of the default tab unmounted by the tab click. 0 sockets is allowed;
-    when there are sockets, ALL must hold: (a) <= 2 sockets; (b) each created before the click (created_t_s <
-    click_t_s of the tab step, which must exist with clicked: true); (c) each closed in the run, closed_t_s not null
-    and <= t_s of the first action step (which must exist); (d) n_non_json == 0 and count_by_type empty, or exactly
-    {session_info: 1} with first_type session_info and protocol_version 2; (e) handshake_status in {null, 101}."""
+    """Pure (0C.2 item 2, revision 4 of 0D.3): sockets of the path of the default tab unmounted by the tab click.
+    0 sockets is allowed; when there are sockets, ALL must hold: (a) <= 2 sockets; the tab step exists exactly once
+    with clicked: true and a numeric click_t_s, and each socket has a numeric created_t_s (created_t_s is NOT compared
+    with click_t_s any more -- the source of the socket is checked by tab_unmounted_owner_check); (c) each closed in
+    the run, closed_t_s not null and <= t_s of the first action step (which must exist); (d) n_non_json == 0 and
+    count_by_type empty, or exactly {session_info: 1} with first_type session_info and protocol_version 2;
+    (e) handshake_status in {null, 101}."""
     if not sockets:
         return []
     v = []
@@ -336,8 +343,6 @@ def tab_unmounted_violations(sockets: list, steps: list, tab_step: str, first_ac
         c = w.get("created_t_s")
         if not _num(c):
             v.append(f"socket {i}: created_t_s missing")
-        elif _num(click_t) and not c < click_t:
-            v.append(f"socket {i}: created_t_s {c} not before click_t_s {click_t}")
         if w.get("closed") is not True:
             v.append(f"socket {i}: not closed")
         ct = w.get("closed_t_s")
@@ -401,6 +406,97 @@ def scenario_ws_roles(ws_by_path: dict, scenario: str, steps: list) -> dict:
             "strictmode_used": so, "checks": checks}
 
 
+# Plan 06 revision 4, 0D.3: source (owner) of the sockets of the tab_unmounted path = the app module that called
+# `new WebSocket(...)`, read from the call stack in the page (page hook of e2e_browser.cjs, 0D.5). A constant fixed
+# from the code, never inferred from the observations: App.jsx:9 default tab 'realtime'; App.jsx:53 'realtime' ->
+# <Phase12Pipeline />; Phase12Pipeline.jsx:86 is the only `new WebSocket` of that component.
+SCENARIO_TAB_UNMOUNTED_OWNER = {"fingerspell": "/src/components/Phase12Pipeline.jsx", "word": None}
+APP_SOURCE_PREFIX = "/src/"
+
+
+def ws_owner(frames):
+    """Pure (0D.3): the first frame (innermost first) that starts with /src/, without any `?...` part; None when
+    there is none or when `frames` is not a list."""
+    if not isinstance(frames, list):
+        return None
+    for f in frames:
+        if isinstance(f, str) and f.startswith(APP_SOURCE_PREFIX):
+            return f.split("?", 1)[0]
+    return None
+
+
+def _url_path(url) -> str:
+    """URL path, split the way app_ws_by_path does."""
+    return urllib.parse.urlparse(str(url or "")).path
+
+
+def tab_unmounted_owner_check(ws_by_path: dict, page_ws, scenario: str) -> dict:
+    """Pure (0D.3): tab_unmounted_owner_rule. (1) unknown scenario -> ValueError; (2) page_ws not a list -> red in
+    every scenario (no source data = nothing proven); (3) scenario without a tab_unmounted path -> green, applies
+    false; (4) fingerspell: the records of page_ws on the tab_unmounted path P must be exactly as many as the CDP
+    sockets of P, and each must have ws_owner(frames) == SCENARIO_TAB_UNMOUNTED_OWNER[scenario]."""
+    if scenario not in SCENARIO_TAB_UNMOUNTED_OWNER:
+        raise ValueError(f"unknown scenario {scenario!r}")
+    p = SCENARIO_WS_ROLES[scenario]["tab_unmounted"]
+    if not isinstance(page_ws, list):
+        return {"pass": False, "detail": {"applies": p is not None, "violations": ["page hook data missing"]}}
+    if p is None:
+        return {"pass": True, "detail": {"applies": False, "n_records": len(page_ws), "violations": []}}
+    want = SCENARIO_TAB_UNMOUNTED_OWNER[scenario]
+    violations = [f"page record {i}: not an object" for i, r in enumerate(page_ws) if not isinstance(r, dict)]
+    recs = [r for r in page_ws if isinstance(r, dict) and _url_path(r.get("url")) == p]
+    n_cdp = len(ws_by_path.get(p, []))
+    if len(recs) != n_cdp:
+        violations.append(f"{len(recs)} page records for {n_cdp} CDP sockets on {p}")
+    owners = [ws_owner(r.get("frames")) for r in recs]
+    for i, (r, o) in enumerate(zip(recs, owners)):
+        if o != want:
+            violations.append(f"record {i} on {p}: owner {o!r} (expected {want!r})"
+                              + (f"; hook_error {r.get('hook_error')!r}" if r.get("hook_error") else ""))
+    return {"pass": not violations, "detail": {"applies": True, "path": p, "expected_owner": want,
+                                               "n_cdp_sockets": n_cdp, "n_records": len(recs), "owners": owners,
+                                               "violations": violations}}
+
+
+def click_phase(t_page_ms, before_ms, after_ms) -> str:
+    """Pure (0D.3, information only): where a page-clock time lies relative to the tab click."""
+    if not (_num(t_page_ms) and _num(before_ms) and _num(after_ms)):
+        return "unknown"
+    if t_page_ms < before_ms:
+        return "before_click"
+    if t_page_ms > after_ms:
+        return "after_click"
+    return "during_click"
+
+
+def page_hook_summary(obs: dict, scenario: str) -> dict:
+    """Information for the JSON (0D.3), not a check: records of the page hook and CDP sockets by path, the owner and
+    the click phase of each record of the tab_unmounted path."""
+    page_ws = obs.get("ws_page")
+    recs = [r for r in page_ws if isinstance(r, dict)] if isinstance(page_ws, list) else None
+    n_records = None
+    if recs is not None:
+        n_records = {}
+        for r in recs:
+            path = _url_path(r.get("url"))
+            n_records[path] = n_records.get(path, 0) + 1
+    n_cdp: dict = {}
+    for w in obs.get("ws") or []:
+        path = _url_path(w.get("url"))
+        n_cdp[path] = n_cdp.get(path, 0) + 1
+    table = SCENARIO_WS_ROLES[scenario]
+    owners, phases = [], []
+    if table["tab_unmounted"] and recs is not None:
+        tab = _single_step(obs.get("steps"), table["tab_step"]) or {}
+        for r in recs:
+            if _url_path(r.get("url")) == table["tab_unmounted"]:
+                owners.append(ws_owner(r.get("frames")))
+                phases.append(click_phase(r.get("t_page_ms"), tab.get("click_page_ms_before"),
+                                          tab.get("click_page_ms_after")))
+    return {"n_records_by_path": n_records, "n_cdp_by_path": n_cdp, "tab_unmounted_owners": owners,
+            "tab_unmounted_click_phase": phases}
+
+
 def evaluate(args, obs: dict, ready: dict, stop: dict, clip: dict) -> dict:
     checks: dict = {}
     h = ready.get("health") or {}
@@ -431,6 +527,9 @@ def evaluate(args, obs: dict, ready: dict, stop: dict, clip: dict) -> dict:
     # AC12 revision 3 (0C.2): StrictMode orphan rule (0B.2) on the `used` path of the scenario only;
     # tab_unmounted_socket_rule on every other app path
     checks.update(scenario_ws_roles(ws_by_path, args.scenario, obs.get("steps"))["checks"])
+    # AC12 revision 4 (0D.3): source of the sockets of the tab_unmounted path (page hook of e2e_browser.cjs)
+    owner = tab_unmounted_owner_check(ws_by_path, obs.get("ws_page"), args.scenario)
+    check(checks, "tab_unmounted_owner_rule", owner["pass"], owner["detail"])
 
     if args.scenario == "fingerspell":
         st = obs.get("fingerspelling_status") or {}
@@ -541,9 +640,9 @@ def evaluate(args, obs: dict, ready: dict, stop: dict, clip: dict) -> dict:
 
 
 def ws_classification(obs, scenario: str) -> dict:
-    """JSON summary (0B.1 / 0B.2 / 0C.2): the Vite HMR socket(s) excluded from the "via /ws/" check, the role of
-    each app path, the number of StrictMode orphans on the `used` path and the number of sockets on the
-    `tab_unmounted` path."""
+    """JSON summary (0B.1 / 0B.2 / 0C.2 / 0D.3): the Vite HMR socket(s) excluded from the "via /ws/" check, the role
+    of each app path, the number of StrictMode orphans on the `used` path, the number of sockets on the
+    `tab_unmounted` path, and page_hook (information only, not a check)."""
     if obs is None:
         return None
     roles = scenario_ws_roles(app_ws_by_path(obs["ws"]), scenario, obs.get("steps"))
@@ -551,7 +650,8 @@ def ws_classification(obs, scenario: str) -> dict:
     return {"vite_hmr_excluded": classify_ws(obs["ws"])["hmr_excluded"],
             "role_by_path": roles["role_by_path"],
             "strictmode_orphans_by_path": {used: len(roles["strictmode_used"]["orphans"])},
-            "tab_unmounted_by_path": roles["tab_unmounted_by_path"]}
+            "tab_unmounted_by_path": roles["tab_unmounted_by_path"],
+            "page_hook": page_hook_summary(obs, scenario)}
 
 
 def _find_forbidden(obj, path="") -> list:

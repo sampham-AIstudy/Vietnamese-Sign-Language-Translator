@@ -228,6 +228,7 @@ async function main() {
     http_errors: [],
     requests_old_image_endpoint: [],
     ws: [],
+    ws_page: null,
     fingerspelling_status: null,
     sequence_posts: [],
     compose_posts: [],
@@ -354,6 +355,45 @@ async function main() {
       new MutationObserver(check).observe(document, { childList: true, subtree: true });
     });
 
+    // Plan 06 revision 4 (0D.5 item 1): source of every `new WebSocket(...)` of the page (observation only).
+    // A Proxy of the original constructor with ONLY a `construct` trap: the original constructor is called with the
+    // same arguments; static properties, prototype and instanceof go through the Proxy unchanged. Recording errors
+    // never reach the app. frames: module path of each stack line ("/src/..." of the app, "<node_modules>",
+    // "<other>"); no host, query, line/column or file-system path. Error.stackTraceLimit is not changed.
+    await page.evaluateOnNewDocument(() => {
+      window.__e2eWs = [];
+      const Original = window.WebSocket;
+      const frameOf = (line) => {
+        const m = /(https?:\/\/[^\s)]+)/.exec(line);
+        if (!m) return '<other>';
+        try {
+          const p = new URL(m[1].replace(/(:\d+){1,2}$/, '')).pathname;
+          if (p.startsWith('/src/')) return p;
+          if (p.startsWith('/node_modules/')) return '<node_modules>';
+          return '<other>';
+        } catch (e) {
+          return '<other>';
+        }
+      };
+      window.WebSocket = new Proxy(Original, {
+        construct(target, args, newTarget) {
+          let url = '';
+          let t = null;
+          try {
+            url = String(args[0]);
+            t = performance.now();
+            const lines = String(new Error().stack || '').split('\n').slice(1);
+            window.__e2eWs.push({ url, t_page_ms: t, frames: lines.map(frameOf) });
+          } catch (e) {
+            try {
+              window.__e2eWs.push({ url, t_page_ms: t, frames: null, hook_error: String(e && e.message ? e.message : e).slice(0, 200) });
+            } catch (e2) { /* never thrown into the app */ }
+          }
+          return Reflect.construct(target, args, newTarget);
+        },
+      });
+    });
+
     step('goto');
     const resp = await page.goto(args.url, { waitUntil: 'load', timeout: 120000 });
     obs.page_status = resp ? resp.status() : null;
@@ -384,13 +424,21 @@ async function main() {
     if (args.scenario === 'fingerspell') {
       // tab "Bảng Chữ Cái" (Navbar button; no data-testid on the tabs)
       const clickT = Number((now() / 1000).toFixed(3));
-      const clicked = await page.evaluate(() => {
+      // (0D.5 item 2) page clock right before / right after b.click()
+      const click = await page.evaluate(() => {
         const b = [...document.querySelectorAll('header nav button')].find((x) => x.textContent.includes('Bảng Chữ Cái'));
-        if (!b) return false;
+        if (!b) return { clicked: false, before_page_ms: null, after_page_ms: null };
+        const before = performance.now();
         b.click();
-        return true;
+        const after = performance.now();
+        return { clicked: true, before_page_ms: before, after_page_ms: after };
       });
-      step('tab_alphabet', { clicked, click_t_s: clickT });
+      step('tab_alphabet', {
+        clicked: click.clicked,
+        click_t_s: clickT,
+        click_page_ms_before: click.before_page_ms,
+        click_page_ms_after: click.after_page_ms,
+      });
       await page.waitForSelector('[data-testid="fs-status"]', { timeout: 30000 });
       await waitFor(async () => (await attr('[data-testid="fs-status"]', 'data-available')) === 'true', 60000);
       await waitFor(async () => (await attr('[data-testid="fs-ws"]', 'data-status')) === 'connected', 60000);
@@ -499,6 +547,12 @@ async function main() {
       obs.dom.live_recording_appearances = await page.evaluate(() => window.__e2e.recordingAppearances);
     }
     await Promise.allSettled(pending);
+    // (0D.5 item 3) records of the page hook, read once
+    try {
+      obs.ws_page = await page.evaluate(() => window.__e2eWs ?? null);
+    } catch (e) {
+      obs.ws_page = null;
+    }
     step('done');
   } catch (e) {
     obs.fatal_error = cut(e && e.stack ? e.stack : e);

@@ -466,3 +466,37 @@ Commit mở file tiến độ: 050d337 (chỉ `docs/plans/06-progress.md`).
   3 FAIL = 3 subTest của test thay thế (điều (b) còn trong code); 19 ERROR ở `TestE2eTabOwner` = 17 `AttributeError`
   (`tab_unmounted_owner_check` 14, `ws_owner` 1, `click_phase` 1, `SCENARIO_TAB_UNMOUNTED_OWNER` 1) + 2 `KeyError` (`page_hook`,
   `tab_unmounted_owner_rule` chưa có).
+
+### B8d-2 — cài đặt 0D.3 (`scripts/e2e_fullstack.py`) + ghi nhận 0D.5 (`scripts/e2e_browser.cjs`)
+- impact upstream (index analyze lại tại 4bf7b74, `../_plan06_tmp/b8d2_impact_*.json`):
+  `tab_unmounted_violations` (`-f scripts/e2e_fullstack.py`) risk **HIGH** (d1 `scenario_ws_roles`; d2 `evaluate`,
+  `ws_classification`; d3 `main`; 3 process); `evaluate` risk **CRITICAL** (d1 `main` của chính script; d3 = 13 nút do trùng
+  tên `main`/`evaluate` ở script khác; 23 process); `ws_classification` risk **CRITICAL** (d1 `main`; d3 như trên; 23 process);
+  `main` (`-f scripts/e2e_browser.cjs`) risk **CRITICAL** (d2/d3 toàn nút trùng tên `main` ở file khác; 22 process).
+  Cảnh báo HIGH/CRITICAL ghi nhận; xác nhận bằng text search (`grep -rn` trong scripts tests backend src frontend/src): caller
+  thật của `tab_unmounted_violations` chỉ là `scenario_ws_roles`; `evaluate`/`ws_classification` chỉ `main()` của
+  `scripts/e2e_fullstack.py` + test; `e2e_browser.cjs` chỉ được `scripts/e2e_fullstack.py` gọi bằng subprocess. Không symbol
+  backend/src/frontend nào đổi.
+- `scripts/e2e_fullstack.py`: docstring đầu module nêu kiểm mới; `tab_unmounted_violations` bỏ ĐÚNG phép so sánh
+  `created_t_s < click_t_s` + thông điệp "not before click_t_s" (docstring sửa; "created_t_s missing" giữ); hằng
+  `SCENARIO_TAB_UNMOUNTED_OWNER = {"fingerspell": "/src/components/Phase12Pipeline.jsx", "word": None}`; hàm thuần `ws_owner`,
+  `tab_unmounted_owner_check` (detail: `applies`, `path`, `expected_owner`, `n_cdp_sockets`, `n_records`, `owners`,
+  `violations`), `click_phase`, `page_hook_summary`; `evaluate` thêm `tab_unmounted_owner_rule` ngay sau
+  `checks.update(scenario_ws_roles(...)["checks"])`; `ws_classification` thêm `page_hook` (4 khóa). `scenario_ws_roles` không đổi.
+  `git diff e1d13d2 -- scripts/e2e_fullstack.py | grep '^-[^-]'`: chỉ docstring cũ của `tab_unmounted_violations` và
+  `ws_classification`, 2 dòng của phép so sánh (b), và dòng `"tab_unmounted_by_path": ...}` (thêm khóa `page_hook` sau nó).
+- `scripts/e2e_browser.cjs` (đúng 3 mục 0D.5): (1) `evaluateOnNewDocument` mới trước `goto`: `window.__e2eWs = []`, `window.WebSocket`
+  = `Proxy` của constructor gốc chỉ bẫy `construct` (ghi `{url, t_page_ms, frames}` trong try/catch; lỗi → `{url, t_page_ms,
+  frames: null, hook_error ≤ 200}`; trả `Reflect.construct(target, args, newTarget)`; frames từ `new Error().stack` bỏ dòng tiêu
+  đề → pathname `/src/…` | `"<node_modules>"` | `"<other>"`; không đổi `Error.stackTraceLimit`); (2) lệnh bấm tab (cùng selector,
+  cùng `b.click()`) trả `before_page_ms`/`after_page_ms`, bước `tab_alphabet` thêm `click_page_ms_before/after`; (3) `obs.ws_page`
+  (khởi tạo `null`) đọc 1 lần ngay trước `step('done')`, lỗi → `null`. Không đổi thứ tự thao tác/chờ/selector/clip.
+  `node --check scripts/e2e_browser.cjs` → OK. Kiểm tay hàm frame (node, ngoài repo): dòng pptr → `<other>`,
+  `…/src/components/Phase12Pipeline.jsx?t=1727:86:20` → `/src/components/Phase12Pipeline.jsx`, `/node_modules/.vite/deps/…` →
+  `<node_modules>`, `/@vite/client` → `<other>`; Proxy giữ `instanceof`, thuộc tính tĩnh, prototype.
+- AC12-t: `Ran 59 tests` `OK` (16 + 30 + 13).
+- AC2 31 module (log `../_plan06_tmp/b8d2_ac2_31.log`): **`Ran 526 tests in 441.676s` `OK`**, 0 failure/error/skip. Theo module
+  (`../_plan06_tmp/b8d2_counts.txt`, diff với `b8c2_counts.txt` chỉ `frontend_contract 58 → 71`): 25 cũ = 383, 4 module 06 = 21 + 9
+  + 4 + 71, 2 module merge = 14 + 24 = 38 — đúng công thức 0D.11 (58 + 13 test mục 11; test thay tính 1 đổi 1).
+  `git status --porcelain` trước/sau: SAME.
+- `cd frontend && npm test`: `tests 26, pass 26, fail 0`.
