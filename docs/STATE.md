@@ -14,7 +14,10 @@
   đọc call stack qua hook Proxy construct; /ws/live-stream ở Đánh vần phải do /src/components/Phase12Pipeline.jsx tạo); chạy thử B8d-3 ngoài
   repo (1 vòng sửa B8d-2b chỉ cho lỗi cài đặt), chính thức B8d-4 cả 3 kịch bản vào reports/e2e_<ngày>_r4/, JSON đỏ cũ giữ nguyên.
   Đỏ nữa → §7-11 CẦN NGƯỜI DÙNG (câu hỏi soạn sẵn A/B/C/D trong kế hoạch), không có Lần sửa 5.
-  ĐANG GIAO: vslt-coder kế hoạch 06 B8d-1..B8d-4 + B9b (§0D.11) — 15:35.
+  Coder B8d + B9b XONG (828e472, 0517c0a, b6c27b1, 024ec64, 505c1e6, b84cefd): 3 JSON chính thức reports/e2e_2026-09-30_r4/
+  đều all_checks_pass (25/25, 23/23, 26/26) tại b6c27b1; AC2 31 module Ran 526 OK, 0 skip; npm test 26/26, build OK; AC1 theo 0B.3 sạch;
+  dòng progress_log AC13 (reviewer "CHỜ"). Chẩn đoán: lượt thử before_click, lượt chính thức after_click 1–4.5 ms (chỉ thông tin).
+  ĐANG GIAO: vslt-reviewer toàn bộ kế hoạch 06 — phần 1 (hạng mục 1–4) — 16:18, file docs/reviews/06-review.md.
   Kế hoạch 06: XONG B0–B7 (B5 34a527d, B6 0328c1b, B7 dbd79f2). Còn: B8 e2e fullstack (LOCAL, Edge + video thật) → B9 → review 06.
   Reviewer 06 cần xác minh: CRITICAL impact ở B5/B6 (component React, GitNexus nhầm tên JS↔Python), HIGH ở B2/B3 (symbol mới),
   B7 sửa tests/test_frontend_contract.py (file do chính kế hoạch 06 tạo ở B4 — kiểm không nới), 050d337 thiếu detect-changes.
@@ -40,7 +43,7 @@
   e2e_browser.cjs chỉ thêm created_t_s/closed_t_s/click_t_s. Chạy chính thức mỗi kịch bản ĐÚNG 1 lần; đỏ → dừng §7-10.
   VIỆC KẾ TIẾP: vslt-coder B8c-1 (test mục 10 trước) → B8c-2 (script) → B8c-3 (3 JSON chính thức) → B9b (0B.5 bước 4, AC1 nhóm (ii)
   gồm facffea, f52de6f, 717aa3e) → vslt-reviewer toàn bộ 06 (thêm điểm §0B.6, §0C.6).
-- Hạn mức (15:33 ngày 30/9): 5 giờ 49% (reset 19:40 giờ VN), 7 ngày 54%. Sổ đo: docs/usage_ledger.csv
+- Hạn mức (16:16 ngày 30/9): 5 giờ 71% (reset 19:40 giờ VN), 7 ngày 57%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
