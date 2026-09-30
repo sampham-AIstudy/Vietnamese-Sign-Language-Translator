@@ -2,10 +2,10 @@
 
 - P6 = 797d0af (HEAD lúc coder bắt đầu B0, commit đã chứa kế hoạch 06)
 - Bước đã xong: B0 (8e7b09b), B1 (4924502), B2 (ed5c4c9), B3 (e58d025 + 5fcf295), B4 (026f474), B5 (34a527d), B6 (0328c1b), B7 (commit "06: B7 — ...")
-- Bước đang làm: **DỪNG — CẦN PLANNER (§7-10 c)** ở B8c-3: lượt chính thức Đánh vần (HEAD 1b05851, sạch) exit 1, đỏ duy nhất
-  `tab_unmounted_socket_rule` vì thời điểm: 2 socket `/ws/live-stream` có `created_t_s` 3.185 > `click_t_s` 3.092. Xem mục B8c-3.
-  B8c-1 xong (85ef325), B8c-2 xong (e1d13d2). Hai kịch bản Ký từ CHƯA chạy (dừng ngay sau kịch bản đỏ, không chạy lại).
-- Bước còn lại: sau quyết định planner → B8c-3 (lượt chính thức theo quyết định) → B9b.
+- Bước đang làm: **B8d ĐANG LÀM** (Lần sửa 4, §0D.11): B8d-1 (test trước) → B8d-2 (cài đặt) → B8d-3 (thử + chẩn đoán H1/H2 +
+  cổng) → B8d-4 (chính thức 3 kịch bản, `reports/e2e_<ngày>_r4/`). B8c-1 xong (85ef325), B8c-2 xong (e1d13d2), B8c-3 dừng §7-10(c)
+  (JSON đỏ d2752c3, giữ nguyên).
+- Bước còn lại: B8d-1, B8d-2, B8d-3, B8d-4, B9b.
 
 ## B0 (P6 = 797d0af, 2026-09-29)
 
