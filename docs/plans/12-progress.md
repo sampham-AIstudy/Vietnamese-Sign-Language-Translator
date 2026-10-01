@@ -71,11 +71,33 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
 - `git status`: after khác before đúng 1 dòng `?? data/Dataset/` (AC0 cho phép); 3 dòng ` D` còn nguyên.
 - So với label.csv trong gói QIPEDC Kaggle: để B6 (chỉ báo giống/khác).
 
+### B4 — b2 `data/external/alphabet_hands_kaggle/alphabet_hands/` (output kernel PRIVATE, lượt 2 từ ae30658)
+- `kaggle kernels status phmvnsm33/vsl-extract-alphabet` → `KernelWorkerStatus.COMPLETE` (`_work/_plan12_tmp/B4_kernel_status.txt`).
+  `kaggle kernels files … --page-size 100`: ngày tạo file output `3:47 am, Friday 25 September 2026 UTC` (`B4_kernel_files_p1.txt`).
+- Ổ đĩa trước tải: C: trống 137G. `kaggle kernels output phmvnsm33/vsl-extract-alphabet -p _work/_plan12_tmp/k_alphabet`
+  19:57:58→20:06:34 (~8,5 phút, 15M); 688 file output tải đủ (`B4_kernel_output.log`: 688 dòng "Output file downloaded");
+  lệnh thoát 1 vì lỗi `'charmap' codec` khi CLI ghi file log kernel (file `vsl-extract-alphabet.log` 0 byte) — chỉ ảnh hưởng
+  file log. Log kernel lấy lại bằng `PYTHONUTF8=1 kaggle kernels logs …` → `B4_kernel_logs.txt` (exit 0): kernel clone
+  commit `4d0600b feat(alphabet): shared camera-invariant hand features and LOSO training`, `done: 686 npz, 0 errors []`,
+  `total 15.9 min`.
+- Cấu trúc: `manifest.csv` + `tasks.csv` (687 dòng mỗi file = header + 686), 4 thư mục người ký hauuto × 160 npz + `qipedc/` 46 npz
+  = 686 npz; 0 link.
+- Kiểm TRƯỚC khi đặt: checker `--only b2_alphabet_manifest_ids --dir-override b2_alphabet_manifest_ids=_work/_plan12_tmp/k_alphabet/alphabet_hands`
+  → ok, exit 0: `n_ref_rows` 682 (== `expected_ref_rows` 682), `n_target_rows` 686, `n_missing_ids` 0 (`B4_staging_check.json`).
+- Đặt: `data/external/alphabet_hands_kaggle/alphabet_hands` chưa tồn tại; `data/external` không phải reparse point (fsutil
+  4390), rỗng → `mkdir -p data/external/alphabet_hands_kaggle` + `mv -n` (`B4_place.log`: mv exit 0, 688 file, 0 link).
+- Kiểm SAU khi đặt: checker `--only b2_alphabet_manifest_ids` → ok, exit 0 (`B4_after_check.json`).
+- `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/alphabet_ckpt_provenance.py --out _work/_plan12_tmp/provenance_rerun.json`
+  (HEAD a46a321) → `verdict=real_data_known_checkpoint`, V1–V6 True, `external_reproduction=46/46`, V6 `{"k": 46, "n": 46,
+  "clips_in_csv": 46}`. So dict với `reports/alphabet_deploy_2026-09-27/provenance.json` (bỏ `generated_by`): **bằng hệt**
+  (`equal_without_generated_by True`, 0 khóa lệch — `B4_provenance_compare.txt`).
+- `git status --porcelain` before == after (`alphabet_hands_kaggle/` bị gitignore); 3 dòng ` D` còn nguyên.
+
 ## Đang làm
-- Lượt 2 (giao: B4–B7, HEAD bắt đầu ae30658): **B4 ĐANG LÀM** (b2 alphabet_hands từ output kernel).
+- Lượt 2 (giao: B4–B7, HEAD bắt đầu ae30658): B4 xong; **B5 ĐANG LÀM** (b1 hauuto).
 
 ## Còn lại
-- B4 (b2 alphabet_hands, kernel output), B5 (b1 hauuto), B6 (c1 QIPEDC), B7 (kiểm tổng), B8 (b3/b4, tùy chọn), B9 (đóng) — lượt sau.
+- B5 (b1 hauuto), B6 (c1 QIPEDC), B7 (kiểm tổng), B8 (b3/b4, tùy chọn), B9 (đóng) — lượt sau.
 - Còn mở: §8.1 (a4 `stgcn_best.pt`, a5 ViT5, a6 `cslr_best.pt` + `gloss_vocab_canonical.txt`: không có trong lịch sử git — B0), §8.2 (label.csv: đang dùng mặc định bản git HEAD).
 
 ## Nhật ký detect-changes (`node .gitnexus/run.cjs detect-changes --scope staged --repo .`, nguyên văn)
@@ -85,3 +107,5 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
   `scripts/check_restored_data.py`; 2 luồng bị ảnh hưởng đều nằm trong script mới (Main → _load_json; Check_video_frames → Video_props).
 - B2 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (chỉ file .md)
 - B3 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (chỉ file .md)
+- a46a321 (WIP B4): "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (chỉ file .md)
+- B4 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (chỉ file .md)
