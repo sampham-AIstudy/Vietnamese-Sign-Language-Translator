@@ -46,8 +46,23 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
 - impact: không sửa symbol có sẵn (chỉ file mới) ⇒ không cần impact upstream. Index GitNexus làm mới
   (`node .gitnexus/run.cjs analyze --index-only`, log `_work/_plan12_tmp/gitnexus_analyze_B1.log`; FTS build lỗi, graph OK).
 
+### B2 — checkpoint a1–a3 (nguồn `_work/_kaggle_staging/restore_root/checkpoints/`, không cần mạng)
+- Trước khi đặt: checker `--only a1 a2 a3 --dir-override <id>=_work/_kaggle_staging/restore_root/checkpoints` → 3/3 ok, exit 0
+  (`_work/_plan12_tmp/B2_staging_check.json`); 0 link trong `restore_root`; `fsutil reparsepoint query checkpoints` → "not a reparse point".
+- Đặt: kiểm `[ -e checkpoints/<f> ]` = không có, rồi `cp -n` 3 file (`_work/_plan12_tmp/B2_place.log`).
+- sha256 SAU khi đặt (`sha256sum checkpoints/*.pt`, `_work/_plan12_tmp/B2_sha_after.txt`), khớp manifest
+  `reports/private_archive_2026-09-28/kaggle_archive_manifest.json:24,36,48`:
+  - `checkpoints/alphabet_best.pt` a6311820ba778b6b38a33cffffd58602b2bb840b8b35326b5bf46086e5b708a2
+  - `checkpoints/stgcn_tier2_indomain.pt` 53c34cba43854c3e9820495bba3f93ffe18b5e1cb87ef44278a188ccafe2c826
+  - `checkpoints/stgcn_unified_best.pt` 930633233ff37a5557e16e09714c11d2a1549def0450b6196880f4501de4aabb
+  Checker sau khi đặt (a1–a3 + 12 `rpt_*`): 15/15 ok, exit 0 (`_work/_plan12_tmp/B2_after_check.json`). Bản phẳng /
+  tải lại Kaggle KHÔNG cần (bản `restore_root` đúng hash).
+- Chạy nhanh: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_status_privacy tests.test_fingerspelling_compose -v`
+  → `Ran 33 tests` `OK`, 0 skip (`_work/_plan12_tmp/B2_quicktests.log`).
+- `git status --porcelain` before == after (`checkpoints/` bị gitignore, `.gitignore:62`); 0 link dưới `checkpoints/`.
+
 ## Đang làm
-- B2 — checkpoint a1–a3.
+- B3 — label.csv (c2).
 
 ## Còn lại
 - B3 (lượt này); B4–B9 (lượt sau).
@@ -57,3 +72,4 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
 - B0 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (chỉ file .md)
 - B1 commit: "Changes: 3 files, 65 symbols / Affected processes: 2 / Risk level: medium" — mọi symbol là mới trong
   `scripts/check_restored_data.py`; 2 luồng bị ảnh hưởng đều nằm trong script mới (Main → _load_json; Check_video_frames → Video_props).
+- B2 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (chỉ file .md)
