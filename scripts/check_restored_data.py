@@ -264,7 +264,8 @@ def check_video_frames(base, it, exp, root, show_names):
         res.update({"min_files_ref_rows": n_rows, "n_files_ge_ref_rows": ge_ok})
     facts, facts_mm, facts_missing = [], False, False
     for f, want in zip(it.get("facts", []), exp["facts"]):
-        if f["file"] not in on_disk:
+        # fact files may sit in a subdirectory not covered by the item's glob (e.g. "<signer>/<clip>.mp4")
+        if f["file"] not in on_disk and not os.path.isfile(os.path.join(base, *f["file"].split("/"))):
             facts.append({"file": f["file"] if show_names else None, "status": "missing", "expected": want})
             facts_missing = True
             continue

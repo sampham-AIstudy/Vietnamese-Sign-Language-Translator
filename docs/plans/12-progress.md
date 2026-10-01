@@ -95,6 +95,20 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
 
 ## Đang làm
 - Lượt 2 (giao: B4–B7, HEAD bắt đầu ae30658): B4 xong; **B5 ĐANG LÀM** (b1 hauuto).
+- B5 (dở): `hauuto/vietnamese-sign-language-alphabet` lastUpdated `2026-09-18 14:42:03.857000`, 894353847 byte
+  (`kaggle datasets list -s`), 1876 file (liệt kê đủ bằng `_work/_plan12_tmp/list_files.py` → `B5_files_all.csv`): `raw/raw/{hau,khoi,tai,vy}`
+  160 mp4 mỗi người ký (+1 `.gitkeep`, +1 `.txt` trong khoi), `landmarks/` 640 npy, `visualize_output/` 592 mp4. Tải zip
+  (`kaggle datasets download -d … -p _work/_plan12_tmp/dl_hauuto`, bắt đầu 20:09:14, xong trước 20:12:05; zip 894353847 byte ==
+  kích thước niêm yết). `extract_prefix.py` (zip.testzip → None, chỉ giải `raw/raw/`, mở `xb` không ghi đè) → 642 file trong
+  `_work/_plan12_tmp/dl_hauuto/x/raw/raw` (`B5_extract.log`).
+- Checker trên bản `_work`: `b1_hauuto_videos` ok (640 mp4, 4 thư mục); `b1_hauuto_facts` báo `missing` dù file có — LỖI CHECKER:
+  facts chỉ tìm trong tập `glob` (mặc định `*.mp4`, chỉ cấp 1) nên `hau/a_hau_A_001.mp4` không bao giờ thấy.
+  Sửa: test mới `test_video_facts_file_in_subdir` (đỏ: `AssertionError: 3 != 0`, `B5_test_red.log`) → `check_video_frames`
+  kiểm thêm `os.path.isfile(base/<file>)` → `Ran 24 tests` `OK`, 0 skip (`B5_test_green.log`). Không sửa/xóa test cũ (diff test
+  chỉ +16 dòng). impact `check_video_frames` upstream: **risk CRITICAL** (27 process, 12 module) — CẢNH BÁO; nguồn: nút
+  độ sâu 2 không phân giải (`filePath ""`) nối tới mọi `main`/script trong `clone/`; caller trực tiếp duy nhất là `main` của chính
+  script (độ sâu 1), grep xác nhận chỉ `scripts/check_restored_data.py:405` và test gọi
+  (`_work/_plan12_tmp/B5_impact_check_video_frames.txt`). Hành vi chỉ đổi khi file fact không nằm trong glob (trước đó luôn missing).
 
 ## Còn lại
 - B5 (b1 hauuto), B6 (c1 QIPEDC), B7 (kiểm tổng), B8 (b3/b4, tùy chọn), B9 (đóng) — lượt sau.
@@ -109,3 +123,6 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
 - B3 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (chỉ file .md)
 - a46a321 (WIP B4): "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (chỉ file .md)
 - B4 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (chỉ file .md)
+- WIP B5 commit (sửa checker): "Changes: 2 files, 5 symbols / Affected processes: 1 / Risk level: medium" — symbol đổi:
+  `check_video_frames`; `TestItems`, `test_video_missing_file`, `test_csv_ids_missing`, `test_csv_ids_ref_rows_changed` chỉ bị dời
+  dòng (diff test 0 dòng xóa); luồng: Check_video_frames → Video_props.

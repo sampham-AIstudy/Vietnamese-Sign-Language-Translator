@@ -208,6 +208,22 @@ class TestItems(Fixture):
         self.assertEqual(self.run_main("--only", "facts_only"), 3)
         self.assertEqual(self.item("facts_only")["status"], "missing")
 
+    def test_video_facts_file_in_subdir(self):
+        # like the committed spec b1_hauuto_facts: fact file "<signer>/<clip>.mp4", no glob given
+        make_video(os.path.join(self.root, "sub", "s1", "c1.mp4"), 5)
+        self.spec["items"].append({"id": "facts_sub", "group": "b", "type": "video_frames", "required": True,
+                                   "dir": "sub", "facts": [{"file": "s1/c1.mp4", "expect": {"json": "refs/facts.json",
+                                                                                             "key": "clip.video_facts"}}],
+                                   "expect_source": "refs/facts.json:1"})
+        self.save_spec()
+        self.assertEqual(self.run_main("--only", "facts_sub"), 0)
+        it = self.item("facts_sub")
+        self.assertEqual((it["status"], it["facts"][0]["status"]), ("ok", "ok"))
+        self.assertEqual(it["facts"][0]["actual"], {"frames": 5, "fps": 10.0, "width": 64, "height": 48})
+        os.remove(os.path.join(self.root, "sub", "s1", "c1.mp4"))
+        self.assertEqual(self.run_main("--only", "facts_sub"), 3)
+        self.assertEqual(self.item("facts_sub")["status"], "missing")
+
     def test_video_missing_file(self):
         os.remove(os.path.join(self.root, "vid", "v2.mp4"))
         self.assertEqual(self.run_main("--only", "vid"), 3)
