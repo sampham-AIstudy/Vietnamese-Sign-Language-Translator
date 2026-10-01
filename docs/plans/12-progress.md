@@ -186,6 +186,46 @@ Phạm vi lượt 1: B0–B3. Lượt 2 (từ ae30658): B4–B7.
 - Checker `--only b4_parallel_text_jsonl` (HEAD a519aa4, code_dirty false) → ok (count 9405 == expected 9405), exit 0 (`B8_b4_check.json`).
 - AC6-b4: ĐẠT.
 
+### B8 (phần b3) — `data/external/vsl_gh/` (từ `clone/Vietnamese-Sign-Language-Translation/.git`, chỉ đọc)
+- 4198 vs 4200 (ghi chú B0) — ĐÃ ĐỐI CHIẾU, KHỚP: `git -C clone/… ls-tree -r HEAD data/keypoints` có 4198 tên kết thúc `_F.npy`
+  + đúng 2 tên có dấu cách trước đuôi `SENT151_S04_R01_F .npy`, `SENT151_S04_R02_F .npy` = 4200 file `_F` (script lọc `"_F" in name`
+  và tự bỏ dấu cách — chú thích "handle the two files with trailing space" trong script). Không có gì phải nới.
+- Nguồn: clone HEAD `6c351e63c0b2cf1b5e2e8056bb3bf2d6f31dc90a` (== `docs/data_registry.md:55`). `git -C clone/… archive --format=tar
+  6c351e63… data > _work/_plan12_tmp/vslgh_head.tar` (21:01:43→21:02:04, 1094277120 byte, exit 0; `B8_b3_archive.log`), giải bằng
+  `_work/_plan12_tmp/b3_extract.py` (tarfile, từ chối link/đường dẫn lạ, đích chưa có) → `_work/_plan12_tmp/vslgh_src/data/`:
+  10244 file, 0 link, keypoints 6030 (4200 `_F`), annotations 4200 (`B8_b3_extract.log`). Không checkout/sửa clone.
+- Kiểm bản giải nén so git (`B8_b3_blobcheck.txt`): sha1 blob khớp 6031/10244 (mọi `.npy` khớp); 4213 file văn bản khác blob vì
+  `git archive` áp `core.autocrlf=true` (cấu hình hệ thống `C:/Program Files/Git/etc/gitconfig`) → CRLF. Đối chiếu: `diff -rq` với
+  cây làm việc của clone (status clone chỉ ` D data/keypoints/*`, văn bản còn nguyên) → annotations, splits, `dataset_loso_s01.json`,
+  `gloss_vocab.txt`, `trans_vocab.txt`, `dataset_stats.json`, `dataset.json` BẰNG HỆT ⇒ đúng các byte mà lần chạy gốc trên máy này đã đọc.
+- Sửa script (§5 cho phép, chỉ thêm tham số): impact `main` (scripts/prepare_canonical_vsl_gh.py) upstream → **risk CRITICAL**
+  (24 nút, 21 process, 12 module) — CẢNH BÁO; độ sâu 1 là 1 nút không phân giải (`name None`, `filePath ""`) nối tới mọi luồng
+  train/inference (cùng hiện tượng B5) (`B8_impact_vslgh_main.txt`). Grep: không module Python nào import script; chỉ được gọi KHÔNG tham số
+  bởi `kaggle/vsl-train-unified/train_unified_kernel.py:20`, `kaggle/vsl-train-harmonized/train_harmonized_kernel.py:32` ⇒ hành vi
+  mặc định phải giữ nguyên. Thay đổi: thêm `parse_args(argv)` với `--source-clone` (mặc định `SOURCE_CLONE` cũ), `--report-out`
+  (mặc định `reports/vsl_gh_validation.json`; đường dẫn tường minh đã tồn tại → lỗi argparse exit 2, không ghi đè); `main(argv=None)`;
+  thay 4 chỗ `SOURCE_CLONE` trong `main` bằng `source_clone`. GIẢ ĐỊNH: chuyển 2 tác dụng phụ cấp module (đổi `sys.stdout`, 4 `mkdir`)
+  vào đầu `main()` — cần để test parse tham số mà không đụng stdout/đĩa; chạy dạng script không tham số thì tác dụng như cũ.
+- Test (TDD, thêm lớp `TestPrepareVslGhArgs` vào `tests/test_check_restored_data.py` — file §5; không file test mới vì §5 "Không file
+  nào khác"): 4 test (import không đổi stdout; mặc định giữ nguyên; tham số tường minh; `--report-out` đã có → SystemExit 2, file không
+  bị ghi). Đỏ: `Ran 4 tests` `FAILED (failures=1, errors=3)` (`B8_test_red.log`). Xanh:
+  `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_check_restored_data -v` → `Ran 28 tests` `OK`, 0 skip
+  (`B8_test_green.log`). Ghi chú: lần import đỏ (code cũ) tạo 3 thư mục rỗng `data/external/vsl_gh/{keypoints_frontal,annotations,splits}`
+  (0 file, kiểm bằng `find -type f`) — đích của bước này.
+- Chạy (HEAD 75f3af0, `data/external/vsl_gh` 0 file trước): `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/prepare_canonical_vsl_gh.py
+  --source-clone _work/_plan12_tmp/vslgh_src --report-out _work/_plan12_tmp/vsl_gh_validation_rerun.json` → exit 0, 21:05:59→21:06:15,
+  "Successfully copied and verified 4200/4200 frontal keypoints", "ALL VSL-GH CANONICAL DATA VALIDATION CHECKS PASSED!" (`B8_b3_run.log`).
+- So report (`B8_b3_compare.txt`): `cmp` với `reports/vsl_gh_validation.json` → **BẰNG HỆT từng byte** (sha256 cả hai
+  `6e69a078…c3fc`); dict bằng nhau; `total_frontal_keypoints` 4200, `hash_verification` {frontal 4200, annotations 4200},
+  `total_annotations_in_canonical_dir` 4206; `git diff --exit-code reports/vsl_gh_validation.json` rỗng (exit 0). Đích: keypoints_frontal
+  4200, annotations 4206, splits 9, + `dataset_canonical.json`, `gloss_vocab.txt`, `trans_vocab.txt`, `dataset_stats.json`; 0 link.
+- Checker (`B8_b3b4_check.json`, exit 0): `b3_vslgh_keypoints_frontal` ok, `b3_vslgh_annotations` ok, `b3_vslgh_dataset_canonical`
+  unverifiable (exists_only, không hash tham chiếu), **`b3_gloss_vocab_canonical` missing** (không script nào trong repo sinh file này —
+  §3 b3; gắn với §8.1/a6), `b4_parallel_text_jsonl` ok.
+- `git status`: `B8_status_after` khác `before` đúng 1 dòng `?? data/external/` (AC0 cho phép; T2: `vsl_gh/`, `parallel_text/` không bị
+  gitignore); 3 dòng ` D` còn nguyên.
+- AC6-b3: ĐẠT (trừ `gloss_vocab_canonical.txt`, ngoài khả năng tái tạo của kế hoạch). AC6 "AC2 31 module sau B8": xem B9.
+
 ## Đang làm
 - **B8 ĐANG LÀM** (lượt 3, từ HEAD 122ffdf; `B8_status_before.txt` 66 dòng, 3 dòng ` D` còn nguyên). Lượt 2 dừng sau B7
   theo giao việc + điểm dừng AC4 (test_g_gitignore); mục (iii) đã được orchestrator xử lý ở be5990e (xem B9).
@@ -220,3 +260,11 @@ Phạm vi lượt 1: B0–B3. Lượt 2 (từ ae30658): B4–B7.
   `Section Kế hoạch 12 — tiến độ (coder) → docs/plans/12-progress.md` (cùng hiện tượng ghi ở B5: nút Section của file .md bị nối
   nhầm vào luồng code); file staged chỉ `docs/plans/12-progress.md` + `reports/data_recovery_2026-10-01/inventory_after.json`, 0 file code
   (`dc_B7.txt`).
+- a519aa4 (WIP B8 đang làm): "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B8_wip0.txt`)
+- dded0a6 (WIP B8 b4): "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B8_wip_b4.txt`)
+- 75f3af0 (WIP B8 tham số + test): "Changes: 2 files, 4 symbols / Affected processes: 35 / Risk level: critical" — symbol đổi:
+  `TARGET_DIR` (biến), `sha256_file`, `time_to_seconds` (chỉ dời dòng), `main` của `scripts/prepare_canonical_vsl_gh.py`; 35 luồng
+  (Run_smoke_test_phase6, Translate_video, …) đều qua `TARGET_DIR` — grep: không file Python nào trong scripts/src/backend/tests khác
+  dùng `TARGET_DIR`/import script này ⇒ nối nhầm của index (`dc_B8_wip_args.txt`).
+- B8 commit: "Changes: 1 files, 1 symbols / Affected processes: 36 / Risk level: critical" — symbol duy nhất `Section Kế hoạch 12 —
+  tiến độ (coder) → docs/plans/12-progress.md` (hiện tượng nút Section như B5/B7); staged chỉ `docs/plans/12-progress.md` (`dc_B8.txt`).
