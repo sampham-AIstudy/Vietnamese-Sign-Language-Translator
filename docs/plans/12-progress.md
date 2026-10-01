@@ -226,15 +226,60 @@ Phạm vi lượt 1: B0–B3. Lượt 2 (từ ae30658): B4–B7.
   gitignore); 3 dòng ` D` còn nguyên.
 - AC6-b3: ĐẠT (trừ `gloss_vocab_canonical.txt`, ngoài khả năng tái tạo của kế hoạch). AC6 "AC2 31 module sau B8": xem B9.
 
+### B9 — đóng (lượt 3)
+- AC2 của 06 chạy lại SAU B8 (lệnh nguyên văn `docs/plans/06-viec5-frontend.md:1027`, HEAD d4fda34, 21:07:47→21:16:40, log
+  `_work/_plan12_tmp/ac2_31_B9.log`, meta `ac2_31_B9.meta`): `Ran 518 tests in 519.220s` / `FAILED (errors=1, skipped=1)`.
+  So theo module với mốc `_work/_plan06_tmp/b9b_ac2_31.log` (`Ran 526` `OK`) bằng `_work/_plan12_tmp/ac2_compare.py`
+  (`B9_ac2_compare.txt`; parser đọc 526/526 dòng mốc, 519 dòng mới, 0 không phân tích được): **28 module giống hệt** (ok/skip/fail/err;
+  `tests.test_ws_throughput` 0 test ở cả hai log), chỉ 2 module lệch, đúng (i)+(ii):
+  - (i) `tests.test_translation_core` 8/0/0/0 → 0/0/0/1: `ERROR: setUpClass (tests.test_translation_core.TestVSLTranslationCore)`,
+    `FileNotFoundError: Không tìm thấy checkpoint ViT5 tại …\checkpoints\vit5_stage2\best_model hoặc …\vit5_stage1\best_model.`
+  - (ii) `tests.test_vsl_system` 6/0/0/0 → 5/1/0/0: `test_vsl_predictor_smoke … skipped 'Checkpoint checkpoints/stgcn_best.pt not found'`.
+  - `tests.test_private_artifacts` 8/0/0/0 → **8/0/0/0** (mục (iii) của B7 không còn: đã được orchestrator xử lý ở be5990e — luật bỏ qua
+    `_work/` chuyển từ `.gitignore` sang `.git/info/exclude`, hoàn tác thay đổi `.gitignore` của 9d1d40f).
+  ⇒ Đúng kỳ vọng "chỉ (i)+(ii)" của AC4 (nhánh §8.1 chưa giải quyết). AC6 "AC2 sau B8 giống hệt AC4": giống AC4 ở (i)(ii) và 27 module
+  còn lại; khác đúng ở (iii) (FAIL ở B7 → ok) — do be5990e, không do B8. **AC2 của 06 vẫn "chưa đạt"** (cần 526/0 skip hoặc
+  quyết định người dùng; §8.1 chưa trả lời → mặc định (A)).
+- Inventory cuối: `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/check_restored_data.py --spec docs/recovery/expected_local_data.json
+  --out reports/data_recovery_2026-10-01/inventory_after_b8.json` (HEAD c56d209, code_dirty false) → exit 0: ok 23, missing 7
+  (a4, a5 ×2, a6, a7 ×2, `b3_gloss_vocab_canonical` — đều required=false), mismatch 0, unverifiable 1 (`b3_vslgh_dataset_canonical`,
+  exists_only), `required_failed` [] (`B9_inventory.log`). `inventory_after.json` (B7) giữ nguyên, không ghi đè. Tên clip hauuto duy
+  nhất trong file là `hau/a_hau_A_001.mp4` (mục facts, giống `inventory_after.json` đã commit ở B7).
+- AC0 (lượt 3): `B9_status_after` so `B8_status_after` chỉ thêm `?? reports/data_recovery_2026-10-01/inventory_after_b8.json` (file §5,
+  commit ở bước này); so `B8_status_before` thêm `?? data/external/` (AC0 cho phép); 3 dòng ` D` còn nguyên; `find checkpoints
+  data/Dataset data/external -type l` → 0; `fsutil reparsepoint query` 3 thư mục → "Error 4390: … not a reparse point";
+  `git diff --name-only 79a7eb1 HEAD | grep -E '^(data|checkpoints)/|\.(pt|npz|npy|mp4|jsonl)$'` → 0 dòng;
+  `git diff --name-only 0491877 HEAD -- backend src scripts` → `scripts/check_restored_data.py`, `scripts/prepare_canonical_vsl_gh.py` (AC4 cho phép).
+- Dọn file tạm: KHÔNG làm (tùy chọn theo §4.5). Còn trong `_work/_plan12_tmp/`: `dl_hauuto/` 853M (zip 894353847 byte + `x/` đã
+  chuyển hết), `dl_qipedc/` 18G (zip 18517283505 byte + `x/`), `vslgh_head.tar` 1.1G, `vslgh_src/` 1.1G. Ổ C: trống 115G.
+
+## Bảng cuối (AC5) — mục → nguồn → trạng thái → lệnh kiểm + kết quả
+| Mục | Đích | Nguồn (slug/version hoặc commit) | Trạng thái | Kiểm (lệnh → kết quả; log trong `_work/_plan12_tmp/`) |
+|---|---|---|---|---|
+| a1 | `checkpoints/alphabet_best.pt` | `_work/_kaggle_staging/restore_root/checkpoints/` (bản tải từ Kaggle private `phmvnsm33/vslt-provenance-artifacts`) | ok | sha256 a6311820…b708a2 == manifest `reports/private_archive_2026-09-28/kaggle_archive_manifest.json:24` (B2, `B2_sha_after.txt`); checker ok (`inventory_after_b8.json`) |
+| a2 | `checkpoints/stgcn_tier2_indomain.pt` | như a1 | ok | sha256 53c34cba…fe2c826 == manifest `:36`; checker ok |
+| a3 | `checkpoints/stgcn_unified_best.pt` | như a1 | ok | sha256 93063323…aabb == manifest `:48`; checker ok |
+| (12 rpt) | `reports/**/*.pt` | không mất (có sẵn) | ok | sha256 12/12 == 2 manifest (B0 `B0_reports_pt_sha.json`; checker ok) |
+| a4 | `checkpoints/stgcn_best.pt` | không có trong git/manifest/`_work` (B0) | mất | checker missing; `test_vsl_predictor_smoke` skip (ii); §8.1 |
+| a5 | `checkpoints/vit5_stage{2,1}/best_model/` | không lưu trữ | mất | checker missing ×2; `test_translation_core` setUpClass ERROR (i); §8.1 |
+| a6 | `checkpoints/cslr_best.pt` | không lưu trữ | mất | checker missing; §8.1 |
+| a7 | `baseline_bigru.pt`, `transformer_best.pt` (Phase 6/13) | không lưu trữ; ngoài phạm vi | mất (không khôi phục) | checker missing ×2 (required=false) |
+| b1 | `data/external/hauuto_raw/raw/raw/` | Kaggle công khai `hauuto/vietnamese-sign-language-alphabet`, lastUpdated 2026-09-18 14:42:03.857, zip 894353847 byte | ok | checker 640 mp4/4 người ký + facts `a_hau_A_001.mp4` (75 khung, 23.584 fps, 640×480) ok (B5); hand_live_check chạy lại BẰNG HỆT JSON commit (B7) |
+| b2 | `data/external/alphabet_hands_kaggle/alphabet_hands/` | output kernel private `phmvnsm33/vsl-extract-alphabet` (file tạo 2026-09-25 03:47 UTC; kernel clone commit 4d0600b; 686 npz) | ok | checker 682/682 sample_id có trong `manifest.csv` (B4); `alphabet_ckpt_provenance.py` chạy lại == `provenance.json` (bỏ `generated_by`), verdict `real_data_known_checkpoint`, V6 46/46 |
+| b3 | `data/external/vsl_gh/` (keypoints_frontal, annotations, splits, dataset_canonical.json, vocab) | `clone/Vietnamese-Sign-Language-Translation` commit 6c351e63 (git archive, chỉ đọc) | ok (trừ `gloss_vocab_canonical.txt`: mất) | `prepare_canonical_vsl_gh.py --source-clone … --report-out …` exit 0 → report BẰNG HỆT từng byte `reports/vsl_gh_validation.json` (4200 keypoints, hash 4200/4200, 4206 annotations) (B8); checker keypoints/annotations ok, dataset_canonical unverifiable (không hash), gloss_vocab_canonical missing (không có script sinh; §8.1/a6) |
+| b4 | `data/external/parallel_text/vie_vsl_10k.jsonl` | `clone/Parallel-Corpus-Vie-VSL` commit f57558c3 | ok | `main()` của `prepare_canonical_translation.py` (đích đổi sang `_work`) → report BẰNG HỆT từng byte `reports/translation_corpus_validation.json` (10000/595/9405/3764/3774); jsonl 9405 dòng; checker ok (B8) |
+| c1 | `data/Dataset/Videos/` | Kaggle công khai `aresusayhi/vsl-vietnamese-sign-languages`, lastUpdated 2026-01-24 12:53:11.033, zip 18517283505 byte | ok | checker 4362/4362 file, 0 lệch num_frames (4362 kiểm), 0 lệch kích thước (1622 kiểm), `D0120T.mp4` 113 khung/29.97002997002997 fps/1280×720 (B6); segment_check chạy lại BẰNG HỆT, smoke ×2 chọn `qipedc_W03292N` (B7) |
+| c2 | `data/Dataset/Labels/label.csv` | blob git `0aa7a44:data (2)/Dataset/Labels/label.csv` (= HEAD, cdb547ea) | ok (§8.2 mặc định) | sha256 b53a664e…0233 == blob, 4363 dòng; checker ok (B3); khác bản trong gói QIPEDC chỉ ở CRLF/LF (B6) |
+
 ## Đang làm
-- **B9 ĐANG LÀM** (lượt 3): B8 xong (d4fda34). AC2 31 module đang chạy tại HEAD d4fda34 → `_work/_plan12_tmp/ac2_31_B9.log`
-  (meta `ac2_31_B9.meta`). Mục (iii) `test_g_gitignore` của B7 đã được orchestrator xử lý ở be5990e (luật bỏ qua `_work/` chuyển
-  từ `.gitignore` sang `.git/info/exclude`; orchestrator báo `tests.test_private_artifacts` 8/8 OK) — B9 kiểm lại.
+- (không) — kế hoạch 12 xong B0–B9 (lượt 3 dừng ở B9).
 
 ## Còn lại
-- CẦN PLANNER: mục (iii) `test_private_artifacts.test_g_gitignore` FAIL (do `.gitignore` +`_work/` ở 9d1d40f), xem B7.
-- B8 (b3/b4, tùy chọn), B9 (đóng) — lượt sau.
-- Còn mở: §8.1 (a4 `stgcn_best.pt`, a5 ViT5, a6 `cslr_best.pt` + `gloss_vocab_canonical.txt`: không có trong lịch sử git — B0), §8.2 (label.csv: đang dùng mặc định bản git HEAD).
+- CẦN NGƯỜI DÙNG: §8.1 (a4 `stgcn_best.pt`, a5 ViT5, a6 `cslr_best.pt` + `gloss_vocab_canonical.txt` — không có trong lịch sử git/manifest/
+  `_work`); chưa trả lời → mặc định (A); AC2 của 06 vẫn "chưa đạt" (Ran 518, 1 ERROR setUpClass + 1 skip, đúng (i)(ii)).
+- §8.2 label.csv: đang dùng mặc định bản git HEAD (chưa có trả lời).
+- Mục (iii) `test_g_gitignore` của B7: đã xử lý bởi be5990e (orchestrator); B9 xác nhận `tests.test_private_artifacts` 8/0/0/0.
+- Tùy chọn chưa làm: dọn `_work/_plan12_tmp/dl_*`, `vslgh_head.tar`, `vslgh_src/` (~21G).
 
 ## Nhật ký detect-changes (`node .gitnexus/run.cjs detect-changes --scope staged --repo .`, nguyên văn)
 - 79a7eb1 (tạo file): "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (chỉ file .md)
@@ -269,3 +314,7 @@ Phạm vi lượt 1: B0–B3. Lượt 2 (từ ae30658): B4–B7.
   dùng `TARGET_DIR`/import script này ⇒ nối nhầm của index (`dc_B8_wip_args.txt`).
 - B8 commit: "Changes: 1 files, 1 symbols / Affected processes: 36 / Risk level: critical" — symbol duy nhất `Section Kế hoạch 12 —
   tiến độ (coder) → docs/plans/12-progress.md` (hiện tượng nút Section như B5/B7); staged chỉ `docs/plans/12-progress.md` (`dc_B8.txt`).
+- c56d209 (WIP B9): "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B9_wip.txt`)
+- B9 commit: "Changes: 3 files, 1 symbols / Affected processes: 36 / Risk level: critical" — symbol duy nhất `Section VSLT progress log →
+  docs/progress_log.md` (nút Section của file .md, cùng hiện tượng B5/B7/B8); staged: `docs/plans/12-progress.md`, `docs/progress_log.md`,
+  `reports/data_recovery_2026-10-01/inventory_after_b8.json`, 0 file code (`dc_B9.txt`).
