@@ -1,0 +1,472 @@
+{
+  "version": 1,
+  "description": "Kế hoạch 12 (docs/plans/12-khoi-phuc-du-lieu.md §2–§3): dữ liệu/checkpoint local phải có sau khôi phục. Mọi giá trị mong đợi lấy từ file tham chiếu trong repo (expected_from/expect) hoặc literal kèm file:dòng. a4–a7: không có hash tham chiếu (§8.1) -> exists_only, required=false. Checker: scripts/check_restored_data.py.",
+  "items": [
+    {
+      "id": "a1_alphabet_best",
+      "group": "a",
+      "type": "sha256",
+      "required": true,
+      "dir": "checkpoints",
+      "file": "alphabet_best.pt",
+      "expected_from": [
+        {
+          "manifest": "reports/private_archive_2026-09-28/kaggle_archive_manifest.json",
+          "local_path": "checkpoints/alphabet_best.pt"
+        },
+        {
+          "json": "reports/alphabet_deploy_2026-09-27/provenance.json",
+          "key": "checkpoints.deployed.sha256"
+        }
+      ],
+      "expect_source": "reports/private_archive_2026-09-28/kaggle_archive_manifest.json:24; reports/alphabet_deploy_2026-09-27/provenance.json:11"
+    },
+    {
+      "id": "a2_stgcn_tier2_indomain",
+      "group": "a",
+      "type": "sha256",
+      "required": true,
+      "dir": "checkpoints",
+      "file": "stgcn_tier2_indomain.pt",
+      "expected_from": [
+        {
+          "manifest": "reports/private_archive_2026-09-28/kaggle_archive_manifest.json",
+          "local_path": "checkpoints/stgcn_tier2_indomain.pt"
+        }
+      ],
+      "expect_source": "reports/private_archive_2026-09-28/kaggle_archive_manifest.json:36"
+    },
+    {
+      "id": "a3_stgcn_unified_best",
+      "group": "a",
+      "type": "sha256",
+      "required": true,
+      "dir": "checkpoints",
+      "file": "stgcn_unified_best.pt",
+      "expected_from": [
+        {
+          "manifest": "reports/private_archive_2026-09-28/kaggle_archive_manifest.json",
+          "local_path": "checkpoints/stgcn_unified_best.pt"
+        },
+        {
+          "manifest": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json",
+          "local_path": "reports/unified_run_2026-09-25/run/stgcn_unified_best.pt"
+        }
+      ],
+      "expect_source": "reports/private_archive_2026-09-28/kaggle_archive_manifest.json:48; reports/step4_2026-09-26/archive/kaggle_archive_manifest.json:162"
+    },
+    {
+      "id": "rpt_alphabet_nested_2026-09-25__primary",
+      "group": "reports_pt",
+      "type": "sha256",
+      "required": true,
+      "dir": "reports/alphabet_nested_2026-09-25/primary",
+      "file": "alphabet_nested_final.pt",
+      "expected_from": [
+        {
+          "manifest": "reports/private_archive_2026-09-28/kaggle_archive_manifest.json",
+          "local_path": "reports/alphabet_nested_2026-09-25/primary/alphabet_nested_final.pt"
+        }
+      ],
+      "expect_source": "reports/private_archive_2026-09-28/kaggle_archive_manifest.json:72"
+    },
+    {
+      "id": "rpt_alphabet_nested_2026-09-25__variants",
+      "group": "reports_pt",
+      "type": "sha256",
+      "required": true,
+      "dir": "reports/alphabet_nested_2026-09-25/variants",
+      "file": "alphabet_nested_final.pt",
+      "expected_from": [
+        {
+          "manifest": "reports/private_archive_2026-09-28/kaggle_archive_manifest.json",
+          "local_path": "reports/alphabet_nested_2026-09-25/variants/alphabet_nested_final.pt"
+        }
+      ],
+      "expect_source": "reports/private_archive_2026-09-28/kaggle_archive_manifest.json:96"
+    },
+    {
+      "id": "rpt_alphabet_real_run_2026-09-25__alphabet_run",
+      "group": "reports_pt",
+      "type": "sha256",
+      "required": true,
+      "dir": "reports/alphabet_real_run_2026-09-25/alphabet_run",
+      "file": "alphabet_real_best.pt",
+      "expected_from": [
+        {
+          "manifest": "reports/private_archive_2026-09-28/kaggle_archive_manifest.json",
+          "local_path": "reports/alphabet_real_run_2026-09-25/alphabet_run/alphabet_real_best.pt"
+        }
+      ],
+      "expect_source": "reports/private_archive_2026-09-28/kaggle_archive_manifest.json:108"
+    },
+    {
+      "id": "rpt_step4_2026-09-26__runs__dict_keepz_360",
+      "group": "reports_pt",
+      "type": "sha256",
+      "required": true,
+      "dir": "reports/step4_2026-09-26/runs/dict_keepz_360",
+      "file": "stgcn_unified_best.pt",
+      "expected_from": [
+        {
+          "manifest": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json",
+          "local_path": "reports/step4_2026-09-26/runs/dict_keepz_360/stgcn_unified_best.pt"
+        }
+      ],
+      "expect_source": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json:22"
+    },
+    {
+      "id": "rpt_step4_2026-09-26__runs__dict_keepz",
+      "group": "reports_pt",
+      "type": "sha256",
+      "required": true,
+      "dir": "reports/step4_2026-09-26/runs/dict_keepz",
+      "file": "stgcn_unified_best.pt",
+      "expected_from": [
+        {
+          "manifest": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json",
+          "local_path": "reports/step4_2026-09-26/runs/dict_keepz/stgcn_unified_best.pt"
+        }
+      ],
+      "expect_source": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json:42"
+    },
+    {
+      "id": "rpt_step4_2026-09-26__runs__run_dropz",
+      "group": "reports_pt",
+      "type": "sha256",
+      "required": true,
+      "dir": "reports/step4_2026-09-26/runs/run_dropz",
+      "file": "stgcn_unified_best.pt",
+      "expected_from": [
+        {
+          "manifest": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json",
+          "local_path": "reports/step4_2026-09-26/runs/run_dropz/stgcn_unified_best.pt"
+        }
+      ],
+      "expect_source": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json:62"
+    },
+    {
+      "id": "rpt_step4_2026-09-26__runs__run_keepz_360",
+      "group": "reports_pt",
+      "type": "sha256",
+      "required": true,
+      "dir": "reports/step4_2026-09-26/runs/run_keepz_360",
+      "file": "stgcn_unified_best.pt",
+      "expected_from": [
+        {
+          "manifest": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json",
+          "local_path": "reports/step4_2026-09-26/runs/run_keepz_360/stgcn_unified_best.pt"
+        }
+      ],
+      "expect_source": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json:82"
+    },
+    {
+      "id": "rpt_step4_2026-09-26__runs__run_keepz",
+      "group": "reports_pt",
+      "type": "sha256",
+      "required": true,
+      "dir": "reports/step4_2026-09-26/runs/run_keepz",
+      "file": "stgcn_unified_best.pt",
+      "expected_from": [
+        {
+          "manifest": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json",
+          "local_path": "reports/step4_2026-09-26/runs/run_keepz/stgcn_unified_best.pt"
+        }
+      ],
+      "expect_source": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json:102"
+    },
+    {
+      "id": "rpt_step4_2026-09-26__runs__run_keepz_notrim",
+      "group": "reports_pt",
+      "type": "sha256",
+      "required": true,
+      "dir": "reports/step4_2026-09-26/runs/run_keepz_notrim",
+      "file": "stgcn_unified_best.pt",
+      "expected_from": [
+        {
+          "manifest": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json",
+          "local_path": "reports/step4_2026-09-26/runs/run_keepz_notrim/stgcn_unified_best.pt"
+        }
+      ],
+      "expect_source": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json:122"
+    },
+    {
+      "id": "rpt_step4_2026-09-26__runs__run_keepz_seed43",
+      "group": "reports_pt",
+      "type": "sha256",
+      "required": true,
+      "dir": "reports/step4_2026-09-26/runs/run_keepz_seed43",
+      "file": "stgcn_unified_best.pt",
+      "expected_from": [
+        {
+          "manifest": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json",
+          "local_path": "reports/step4_2026-09-26/runs/run_keepz_seed43/stgcn_unified_best.pt"
+        }
+      ],
+      "expect_source": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json:142"
+    },
+    {
+      "id": "rpt_unified_run_2026-09-25__run",
+      "group": "reports_pt",
+      "type": "sha256",
+      "required": true,
+      "dir": "reports/unified_run_2026-09-25/run",
+      "file": "stgcn_unified_best.pt",
+      "expected_from": [
+        {
+          "manifest": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json",
+          "local_path": "reports/unified_run_2026-09-25/run/stgcn_unified_best.pt"
+        }
+      ],
+      "expect_source": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json:162"
+    },
+    {
+      "id": "rpt_unified_run_2026-09-25__run_seed43",
+      "group": "reports_pt",
+      "type": "sha256",
+      "required": true,
+      "dir": "reports/unified_run_2026-09-25/run_seed43",
+      "file": "stgcn_unified_best.pt",
+      "expected_from": [
+        {
+          "manifest": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json",
+          "local_path": "reports/unified_run_2026-09-25/run_seed43/stgcn_unified_best.pt"
+        }
+      ],
+      "expect_source": "reports/step4_2026-09-26/archive/kaggle_archive_manifest.json:182"
+    },
+    {
+      "id": "a4_stgcn_best",
+      "group": "a",
+      "type": "exists_only",
+      "required": false,
+      "dir": "checkpoints",
+      "file": "stgcn_best.pt",
+      "expect_source": "tests/test_vsl_system.py:118 (cổng tồn tại); docs/audit/final_status.md:42 (chỉ kích thước, không hash)"
+    },
+    {
+      "id": "a5_vit5_stage2",
+      "group": "a",
+      "type": "exists_only",
+      "required": false,
+      "dir": "checkpoints",
+      "file": "vit5_stage2/best_model",
+      "expect_source": "src/translation/translator.py:29"
+    },
+    {
+      "id": "a5_vit5_stage1_fallback",
+      "group": "a",
+      "type": "exists_only",
+      "required": false,
+      "dir": "checkpoints",
+      "file": "vit5_stage1/best_model",
+      "expect_source": "src/translation/translator.py:30"
+    },
+    {
+      "id": "a6_cslr_best",
+      "group": "a",
+      "type": "exists_only",
+      "required": false,
+      "dir": "checkpoints",
+      "file": "cslr_best.pt",
+      "expect_source": "src/translation/cslr_recognizer.py:26"
+    },
+    {
+      "id": "a7_baseline_bigru",
+      "group": "a",
+      "type": "exists_only",
+      "required": false,
+      "dir": "checkpoints",
+      "file": "baseline_bigru.pt",
+      "expect_source": "src/inference/predictor.py:43"
+    },
+    {
+      "id": "a7_transformer_best",
+      "group": "a",
+      "type": "exists_only",
+      "required": false,
+      "dir": "checkpoints",
+      "file": "transformer_best.pt",
+      "expect_source": "src/inference/predictor.py:42"
+    },
+    {
+      "id": "b1_hauuto_videos",
+      "group": "b",
+      "type": "count",
+      "required": true,
+      "private_names": true,
+      "dir": "data/external/hauuto_raw/raw/raw",
+      "glob": "*/*.mp4",
+      "expect": {
+        "value": 640,
+        "source": "docs/data_registry.md:45"
+      },
+      "expect_groups": {
+        "value": 4,
+        "source": "docs/data_registry.md:45"
+      },
+      "expect_source": "docs/data_registry.md:45"
+    },
+    {
+      "id": "b1_hauuto_facts",
+      "group": "b",
+      "type": "video_frames",
+      "required": true,
+      "dir": "data/external/hauuto_raw/raw/raw",
+      "facts": [
+        {
+          "file": "hau/a_hau_A_001.mp4",
+          "expect": {
+            "json": "reports/e2e_2026-09-30_r4/fingerspell_default.json",
+            "key": "clip.video_facts"
+          }
+        }
+      ],
+      "expect_source": "reports/e2e_2026-09-30_r4/fingerspell_default.json:32"
+    },
+    {
+      "id": "b2_alphabet_manifest_ids",
+      "group": "b",
+      "type": "csv_ids",
+      "required": true,
+      "private_names": true,
+      "dir": "data/external/alphabet_hands_kaggle/alphabet_hands",
+      "file": "manifest.csv",
+      "id_col": "sample_id",
+      "ref": {
+        "csv": "reports/alphabet_nested_2026-09-25/primary/nested_predictions.csv",
+        "id_col": "sample_id"
+      },
+      "expect_ref_rows": {
+        "value": 682,
+        "source": "docs/reviews/06-review.md:156"
+      },
+      "expect_source": "docs/reviews/06-review.md:156"
+    },
+    {
+      "id": "b3_vslgh_keypoints_frontal",
+      "group": "b",
+      "type": "count",
+      "required": false,
+      "dir": "data/external/vsl_gh/keypoints_frontal",
+      "glob": "*.npy",
+      "expect": {
+        "json": "reports/vsl_gh_validation.json",
+        "key": "total_frontal_keypoints"
+      },
+      "expect_source": "reports/vsl_gh_validation.json:5"
+    },
+    {
+      "id": "b3_vslgh_annotations",
+      "group": "b",
+      "type": "count",
+      "required": false,
+      "dir": "data/external/vsl_gh/annotations",
+      "glob": "*.txt",
+      "expect": {
+        "json": "reports/vsl_gh_validation.json",
+        "key": "total_annotations_in_canonical_dir"
+      },
+      "expect_source": "reports/vsl_gh_validation.json:6"
+    },
+    {
+      "id": "b3_vslgh_dataset_canonical",
+      "group": "b",
+      "type": "exists_only",
+      "required": false,
+      "dir": "data/external/vsl_gh",
+      "file": "dataset_canonical.json",
+      "expect_source": "docs/data_registry.md:69"
+    },
+    {
+      "id": "b3_gloss_vocab_canonical",
+      "group": "b",
+      "type": "exists_only",
+      "required": false,
+      "dir": "data/external/vsl_gh",
+      "file": "gloss_vocab_canonical.txt",
+      "expect_source": "src/translation/cslr_recognizer.py:27"
+    },
+    {
+      "id": "b4_parallel_text_jsonl",
+      "group": "b",
+      "type": "count",
+      "required": false,
+      "count_mode": "lines",
+      "dir": "data/external/parallel_text",
+      "file": "vie_vsl_10k.jsonl",
+      "expect": {
+        "json": "reports/translation_corpus_validation.json",
+        "key": "final_canonical_pairs_count"
+      },
+      "expect_source": "reports/translation_corpus_validation.json:10"
+    },
+    {
+      "id": "c1_qipedc_videos",
+      "group": "c",
+      "type": "video_frames",
+      "required": true,
+      "dir": "data/Dataset/Videos",
+      "glob": "*.mp4",
+      "refs": [
+        {
+          "csv": "data/splits/recording_groups.csv",
+          "file_col": "file_name",
+          "frames_col": "num_frames"
+        },
+        {
+          "csv": "data/splits/unified/train.csv",
+          "file_col": "file_name",
+          "width_col": "width",
+          "height_col": "height",
+          "filter": {
+            "source": "qipedc"
+          }
+        },
+        {
+          "csv": "data/splits/unified/val.csv",
+          "file_col": "file_name",
+          "width_col": "width",
+          "height_col": "height",
+          "filter": {
+            "source": "qipedc"
+          }
+        },
+        {
+          "csv": "data/splits/unified/test.csv",
+          "file_col": "file_name",
+          "width_col": "width",
+          "height_col": "height",
+          "filter": {
+            "source": "qipedc"
+          }
+        }
+      ],
+      "min_files_from_ref": "data/splits/recording_groups.csv",
+      "facts": [
+        {
+          "file": "D0120T.mp4",
+          "expect": {
+            "json": "reports/e2e_2026-09-30_r4/word_default.json",
+            "key": "clip.video_facts"
+          }
+        }
+      ],
+      "expect_source": "data/splits/recording_groups.csv:1 (num_frames; scripts/build_recording_groups.py:37); data/splits/unified/{train,val,test}.csv:1 (width,height); reports/e2e_2026-09-30_r4/word_default.json:32"
+    },
+    {
+      "id": "c2_label_csv",
+      "group": "c",
+      "type": "sha256",
+      "required": true,
+      "dir": "data/Dataset/Labels",
+      "file": "label.csv",
+      "expected_from": [
+        {
+          "git_blob": "0aa7a445ae548417225a83aa71786dea2faac6fc:data (2)/Dataset/Labels/label.csv"
+        }
+      ],
+      "expect_source": "git blob 0aa7a445ae548417225a83aa71786dea2faac6fc:data (2)/Dataset/Labels/label.csv (== HEAD khi lập kế hoạch 12; docs/plans/12-khoi-phuc-du-lieu.md §3 c2)"
+    }
+  ]
+}
