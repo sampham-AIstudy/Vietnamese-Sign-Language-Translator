@@ -347,5 +347,53 @@ class TestCommittedSpec(unittest.TestCase):
                 self.assertFalse(r, i)  # §8.1: no archived copy, cannot be required
 
 
+class TestPrepareVslGhArgs(unittest.TestCase):
+    """Plan 12 B8 (AC6): `scripts/prepare_canonical_vsl_gh.py` gains `--source-clone` and `--report-out`.
+    Defaults must keep the old behaviour (clone/ source, tracked report path); importing must have no side effects
+    (no stdout swap) so the parser can be tested without running the copy; an explicit `--report-out` never
+    overwrites an existing file. `main()` itself is NOT run here (it writes under data/external/vsl_gh)."""
+
+    @classmethod
+    def setUpClass(cls):
+        import importlib.util
+        stdout_before = sys.stdout
+        spec = importlib.util.spec_from_file_location(
+            "prepare_canonical_vsl_gh_t", os.path.join(ROOT, "scripts", "prepare_canonical_vsl_gh.py"))
+        cls.M = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.M)
+        cls.stdout_swapped = sys.stdout is not stdout_before
+        if cls.stdout_swapped:  # do not leak a swapped stdout into other tests
+            sys.stdout = stdout_before
+
+    def test_import_has_no_stdout_side_effect(self):
+        self.assertFalse(self.stdout_swapped)
+
+    def test_defaults_unchanged(self):
+        a = self.M.parse_args([])
+        self.assertEqual(os.path.normcase(str(a.source_clone)),
+                         os.path.normcase(os.path.join(ROOT, "clone", "Vietnamese-Sign-Language-Translation")))
+        self.assertEqual(os.path.normcase(str(a.report_out)),
+                         os.path.normcase(os.path.join(ROOT, "reports", "vsl_gh_validation.json")))
+
+    def test_explicit_paths(self):
+        with tempfile.TemporaryDirectory() as td:
+            src = os.path.join(td, "src")
+            rep = os.path.join(td, "sub", "rep.json")
+            a = self.M.parse_args(["--source-clone", src, "--report-out", rep])
+            self.assertEqual(str(a.source_clone), src)
+            self.assertEqual(str(a.report_out), rep)
+
+    def test_explicit_report_out_existing_rejected(self):
+        with tempfile.TemporaryDirectory() as td:
+            rep = os.path.join(td, "rep.json")
+            write(rep, b"{}")
+            with contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit) as cm:
+                    self.M.parse_args(["--report-out", rep])
+            self.assertEqual(cm.exception.code, 2)
+            with open(rep, "rb") as f:
+                self.assertEqual(f.read(), b"{}")
+
+
 if __name__ == "__main__":
     unittest.main()

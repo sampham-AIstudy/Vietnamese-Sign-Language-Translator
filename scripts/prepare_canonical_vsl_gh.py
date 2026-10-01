@@ -8,6 +8,11 @@ Script to prepare canonical VSL-GH external data layer:
 4. Reconstructs dataset_canonical.json from ground-truth annotations with full gloss sequences & timestamps
 5. Validates shapes, dtypes, hash parity, [T, 411] -> [T, 67, 3] conversion
 6. Outputs reports/vsl_gh_validation.json
+
+Options (plan 12 B8; defaults = the original behaviour, so running with no arguments is unchanged):
+  --source-clone DIR   upstream checkout to read `data/` from (default: clone/Vietnamese-Sign-Language-Translation)
+  --report-out FILE    validation report path (default: reports/vsl_gh_validation.json). An explicitly given path
+                       must not exist yet (never overwrites).
 """
 
 import os
@@ -17,26 +22,34 @@ import json
 import re
 import shutil
 import hashlib
+import argparse
 from pathlib import Path
 from collections import defaultdict, Counter
 import numpy as np
-
-# Force UTF-8 stdout
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent  # portable (was a hard-coded Windows path)
 SOURCE_CLONE = PROJECT_ROOT / "clone" / "Vietnamese-Sign-Language-Translation"
 TARGET_DIR   = PROJECT_ROOT / "data" / "external" / "vsl_gh"
 REPORTS_DIR  = PROJECT_ROOT / "reports"
+DEFAULT_REPORT = REPORTS_DIR / "vsl_gh_validation.json"
 
 TARGET_KP    = TARGET_DIR / "keypoints_frontal"
 TARGET_ANN   = TARGET_DIR / "annotations"
 TARGET_SPLITS= TARGET_DIR / "splits"
 
-REPORTS_DIR.mkdir(parents=True, exist_ok=True)
-TARGET_KP.mkdir(parents=True, exist_ok=True)
-TARGET_ANN.mkdir(parents=True, exist_ok=True)
-TARGET_SPLITS.mkdir(parents=True, exist_ok=True)
+
+def parse_args(argv=None):
+    p = argparse.ArgumentParser(description="Prepare the canonical VSL-GH frontal data layer (data/external/vsl_gh).")
+    p.add_argument("--source-clone", type=Path, default=SOURCE_CLONE,
+                   help="upstream checkout whose data/ is read (default: %(default)s)")
+    p.add_argument("--report-out", type=Path, default=None,
+                   help=f"validation report path (default: {DEFAULT_REPORT}); an explicit path must not exist yet")
+    args = p.parse_args(argv)
+    if args.report_out is None:
+        args.report_out = DEFAULT_REPORT
+    elif args.report_out.exists():
+        p.error(f"--report-out already exists, refusing to overwrite: {args.report_out}")
+    return args
 
 
 def sha256_file(filepath: Path) -> str:
@@ -123,12 +136,25 @@ def parse_annotation_file(txt_path: Path):
     return gloss_sequence, glosses_detail, frame_boundaries, translation
 
 
-def main():
+def main(argv=None):
+    args = parse_args(argv)
+    source_clone = args.source_clone
+    rep_path = args.report_out
+
+    # Force UTF-8 stdout
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+    rep_path.parent.mkdir(parents=True, exist_ok=True)
+    TARGET_KP.mkdir(parents=True, exist_ok=True)
+    TARGET_ANN.mkdir(parents=True, exist_ok=True)
+    TARGET_SPLITS.mkdir(parents=True, exist_ok=True)
+
     print("=" * 70)
     print("STEP 1: Copying and verifying frontal keypoint files")
     print("=" * 70)
 
-    src_kp_dir = SOURCE_CLONE / "data" / "keypoints"
+    src_kp_dir = source_clone / "data" / "keypoints"
     # Frontal keypoint files (handle the two files with trailing space)
     src_kp_files = [f for f in src_kp_dir.glob("*.npy") if "_F" in f.name]
     print(f"Discovered frontal keypoint files in source: {len(src_kp_files)}")
@@ -162,7 +188,7 @@ def main():
     print("STEP 2: Copying and canonicalizing annotations")
     print("=" * 70)
 
-    src_ann_dir = SOURCE_CLONE / "data" / "annotations"
+    src_ann_dir = source_clone / "data" / "annotations"
     src_ann_files = list(src_ann_dir.glob("*.txt"))
     print(f"Discovered annotation files in source: {len(src_ann_files)}")
     assert len(src_ann_files) == 4200, f"Expected 4,200 annotation files, got {len(src_ann_files)}"
@@ -213,20 +239,20 @@ def main():
     print("=" * 70)
 
     for sf in ["train.txt", "val.txt", "test.txt"]:
-        src = SOURCE_CLONE / "data" / "splits" / sf
+        src = source_clone / "data" / "splits" / sf
         dst = TARGET_SPLITS / sf
         shutil.copy2(src, dst)
         print(f"  Copied split: {sf}")
 
     for s in range(1, 7):
         loso_name = f"dataset_loso_s0{s}.json"
-        src = SOURCE_CLONE / "data" / loso_name
+        src = source_clone / "data" / loso_name
         dst = TARGET_SPLITS / loso_name
         shutil.copy2(src, dst)
         print(f"  Copied LOSO split: {loso_name}")
 
     for vf in ["gloss_vocab.txt", "trans_vocab.txt", "dataset_stats.json"]:
-        src = SOURCE_CLONE / "data" / vf
+        src = source_clone / "data" / vf
         if src.exists():
             dst = TARGET_DIR / vf
             shutil.copy2(src, dst)
@@ -452,7 +478,6 @@ def main():
         }
     }
 
-    rep_path = REPORTS_DIR / "vsl_gh_validation.json"
     with open(rep_path, "w", encoding="utf-8") as f:
         json.dump(validation_report, f, ensure_ascii=False, indent=2)
     print(f"\nValidation report saved to: {rep_path}")
