@@ -170,6 +170,22 @@ Phạm vi lượt 1: B0–B3. Lượt 2 (từ ae30658): B4–B7.
   3 dòng ` D` còn nguyên; `find checkpoints data/Dataset data/external -type l` → 0; `fsutil reparsepoint query` 3 thư mục → 4390
   (không phải reparse point); `git diff --name-only 0aa7a44 HEAD | grep -E '^(data|checkpoints)/|\.(pt|npz|npy|mp4|jsonl)$'` → 0 dòng.
 
+### B8 (phần b4) — `data/external/parallel_text/vie_vsl_10k.jsonl` (từ `clone/Parallel-Corpus-Vie-VSL`)
+- Nguồn: `clone/Parallel-Corpus-Vie-VSL` HEAD `f57558c3fa79ced8a961cba825157c573fd4c74d` (== `docs/data_registry.md:89`), status chỉ
+  ` D "Parallel Corpus Vie-VSL.rar"` (`VSL10k.txt`, `Vie10k.txt` sạch). Đích `data/external/parallel_text` chưa tồn tại trước khi chạy.
+- GIẢ ĐỊNH (theo giao việc orchestrator lượt 3: "report tracked không được bị ghi đè"): KHÔNG chạy script trực tiếp (nó ghi đè
+  `reports/translation_corpus_validation.json`) và KHÔNG sửa script (ngoài §5). Thay vào đó `_work/_plan12_tmp/b4_run.py` (không
+  commit) nạp `scripts/prepare_canonical_translation.py` bằng importlib, chỉ đổi 2 biến đích `OUTPUT_JSONL`, `REPORT_JSON` sang
+  `_work/_plan12_tmp/b4_out/`, rồi gọi nguyên `main()`. Lệnh: `PYTHONIOENCODING=utf-8 .venv/Scripts/python _work/_plan12_tmp/b4_run.py`
+  (HEAD a519aa4) → exit 0, `Original pairs: 10000`, `Duplicate pairs: 595`, `Final pairs: 9405`, vocab 3764/3774 (`B8_b4_run.log`).
+  (Nạp module tạo thư mục rỗng `data/external/parallel_text/` do `mkdir` ở cấp module của script.)
+- So report (`B8_b4_compare.txt`): `cmp` report mới vs `reports/translation_corpus_validation.json` → **BẰNG HỆT từng byte**
+  (sha256 cả hai `b3c73f46…f2aa`); `git diff --exit-code reports/translation_corpus_validation.json` → rỗng, exit 0 (report tracked
+  không bị chạm). jsonl 9405 dòng, sha256 `f55df87a38d704a53bfee731632306c705342accdc2c2523aba5f2ba35685748`.
+- Đặt: thư mục đích rỗng, `[ -e … ]` không có → `mv -n` (exit 0), sha256 sau khi đặt giống hệt, 9405 dòng, 0 link (`B8_b4_place.log`).
+- Checker `--only b4_parallel_text_jsonl` (HEAD a519aa4, code_dirty false) → ok (count 9405 == expected 9405), exit 0 (`B8_b4_check.json`).
+- AC6-b4: ĐẠT.
+
 ## Đang làm
 - **B8 ĐANG LÀM** (lượt 3, từ HEAD 122ffdf; `B8_status_before.txt` 66 dòng, 3 dòng ` D` còn nguyên). Lượt 2 dừng sau B7
   theo giao việc + điểm dừng AC4 (test_g_gitignore); mục (iii) đã được orchestrator xử lý ở be5990e (xem B9).
