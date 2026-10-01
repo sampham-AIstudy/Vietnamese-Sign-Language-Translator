@@ -6,7 +6,11 @@
 - Cập nhật lần cuối: 2026-10-01 19:25 (giờ Việt Nam)
 - HEAD: dcf9b0d (+ commit state này) | Nhánh: feat/vslt-complete (đã push)
 - Trạng thái phiên: ĐANG CHẠY — 5h 0% lúc 19:19 (reset 00:30 ngày 2/10), 7 ngày 0%. Dữ liệu vẫn chưa khôi phục.
-  ĐANG GIAO: vslt-planner kế hoạch 12 (khôi phục dữ liệu sau sự cố 30/9) — 19:25. Sau đó: planner 06 Lần sửa 5 (V11/O5 theo (A), V10/O1, V9/O2)
+  Planner kế hoạch 12 XONG (docs/plans/12-khoi-phuc-du-lieu.md): a1–a3 checkpoint từ _work (sha256 manifest); hauuto, alphabet_hands (output
+  kernel phmvnsm33/vsl-extract-alphabet), QIPEDC (Kaggle aresusayhi/vsl-vietnamese-sign-languages), label.csv (git HEAD), vsl_gh/parallel_text
+  (clone/) khôi phục được; 0 GPU-giờ. KHÔNG có bản lưu trữ: stgcn_best.pt, ViT5 stage1/2, cslr_best.pt + gloss_vocab_canonical.txt (§8.1 CẦN NGƯỜI DÙNG).
+  Đính chính: provenance.json là file tracked, KHÔNG mất; checkpoint trong reports/ (H-keepz-360) không mất.
+  ĐANG GIAO: vslt-coder kế hoạch 12 B0–B3 — 19:45. Sau đó: planner 06 Lần sửa 5 (V11/O5 theo (A), V10/O1, V9/O2)
   → coder → khôi phục xong thì reviewer kiểm lại 06 (V0: AC2 526/0 skip, npm test, đột biến AC5, AC10 ×2; hạng mục 5, 13).
   SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
   `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint
