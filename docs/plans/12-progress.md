@@ -61,11 +61,22 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
   → `Ran 33 tests` `OK`, 0 skip (`_work/_plan12_tmp/B2_quicktests.log`).
 - `git status --porcelain` before == after (`checkpoints/` bị gitignore, `.gitignore:62`); 0 link dưới `checkpoints/`.
 
+### B3 — c2 `data/Dataset/Labels/label.csv` (bản git HEAD; §8.2 mặc định)
+- Blob `HEAD:data (2)/Dataset/Labels/label.csv` = `0aa7a44:…` = `cdb547ea81cb9aa8c99f7d46ebc17462adbfdc2d`.
+- `git show "HEAD:data (2)/Dataset/Labels/label.csv" > _work/_plan12_tmp/label_head.csv` → sha256 bằng `git cat-file blob … | sha256sum`;
+  đích chưa có → `mkdir -p data/Dataset/Labels` + `cp -n` (`_work/_plan12_tmp/B3_place.log`). Không chạm `data (2)/` (thư mục
+  không tồn tại trên đĩa; ` D` của người dùng giữ nguyên, không `git checkout`/`git add`).
+- sha256 sau khi đặt: `b53a664e0bb4017dcce9bde9617b99f797cf535dfb7123ccc56cb44aa6630233` (== blob), 4363 dòng (`wc -l`);
+  checker `--only c2_label_csv` → ok, exit 0 (`_work/_plan12_tmp/B3_after_check.json`). 0 link; `data/Dataset` không phải reparse point.
+- `git status`: after khác before đúng 1 dòng `?? data/Dataset/` (AC0 cho phép); 3 dòng ` D` còn nguyên.
+- So với label.csv trong gói QIPEDC Kaggle: để B6 (chỉ báo giống/khác).
+
 ## Đang làm
-- B3 — label.csv (c2).
+- (không) — lượt này dừng sau B3 theo giao việc.
 
 ## Còn lại
-- B3 (lượt này); B4–B9 (lượt sau).
+- B4 (b2 alphabet_hands, kernel output), B5 (b1 hauuto), B6 (c1 QIPEDC), B7 (kiểm tổng), B8 (b3/b4, tùy chọn), B9 (đóng) — lượt sau.
+- Còn mở: §8.1 (a4 `stgcn_best.pt`, a5 ViT5, a6 `cslr_best.pt` + `gloss_vocab_canonical.txt`: không có trong lịch sử git — B0), §8.2 (label.csv: đang dùng mặc định bản git HEAD).
 
 ## Nhật ký detect-changes (`node .gitnexus/run.cjs detect-changes --scope staged --repo .`, nguyên văn)
 - 79a7eb1 (tạo file): "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (chỉ file .md)
@@ -73,3 +84,4 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
 - B1 commit: "Changes: 3 files, 65 symbols / Affected processes: 2 / Risk level: medium" — mọi symbol là mới trong
   `scripts/check_restored_data.py`; 2 luồng bị ảnh hưởng đều nằm trong script mới (Main → _load_json; Check_video_frames → Video_props).
 - B2 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (chỉ file .md)
+- B3 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (chỉ file .md)
