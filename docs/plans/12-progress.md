@@ -119,6 +119,12 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
 
 ## Đang làm
 - Lượt 2 (giao: B4–B7, HEAD bắt đầu ae30658): B4, B5 xong; **B6 ĐANG LÀM** (c1 QIPEDC, tải nền đang chạy).
+- B6 (dở): `aresusayhi/vsl-vietnamese-sign-languages` lastUpdated `2026-01-24 12:53:11.033000`, 18517283505 byte (`kaggle datasets list -s`);
+  liệt kê file (`list_files.py`, dừng ở trang thứ ~182 do HTTP 429, nhưng danh sách trả theo thứ tự tên — `sorted? True` — nên
+  `Dataset/` đã đủ trước `Processed/`): `Dataset/Labels/label.csv` 129653 byte, `Dataset/Videos/*.mp4` 4362 file 2898613548 byte,
+  phần còn lại là `Processed/{train,test}/*.npz`, `Processed/label_map.json` (`B6_files_all.csv`, 36200 dòng, không đầy đủ phần Processed).
+  Ổ đĩa trước tải: trống 136G ≥ 2×18,5G+1G. Tải zip nền (`kaggle datasets download -d … -p _work/_plan12_tmp/dl_qipedc`) bắt đầu 20:12:25;
+  đo: 3041918976 byte lúc 20:14:52, 4751097856 byte lúc 20:16:13 (~21 MB/s) ⇒ ETA ~20:27 (< 3 h). Kế hoạch giải nén: chỉ `Dataset/`.
 
 ## Còn lại
 - B6 (c1 QIPEDC), B7 (kiểm tổng), B8 (b3/b4, tùy chọn), B9 (đóng) — lượt sau.
@@ -137,3 +143,9 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
   `check_video_frames`; `TestItems`, `test_video_missing_file`, `test_csv_ids_missing`, `test_csv_ids_ref_rows_changed` chỉ bị dời
   dòng (diff test 0 dòng xóa); luồng: Check_video_frames → Video_props.
 - B5 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (chỉ file .md)
+  (ghi chú: bản staged chỉ bắt được dòng cuối "... and 8 more" — lỗi lọc output của coder. Chạy lại sau commit
+  `detect-changes --scope compare --base-ref HEAD~1`: "Changes: 4 files, 1 symbols / Affected processes: 34 / Risk level: critical",
+  symbol duy nhất `Section Kế hoạch 12 — tiến độ (coder) → docs/plans/12-progress.md` — index lần B5 đã nạp file .md này thành
+  nút Section và nối nhầm vào luồng code; commit chỉ chứa `docs/plans/12-progress.md`. Từ đây lưu full output vào
+  `_work/_plan12_tmp/dc_<bước>.txt`.)
+- WIP B6 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B6_wip.txt`)
