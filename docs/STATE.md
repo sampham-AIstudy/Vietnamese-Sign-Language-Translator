@@ -24,8 +24,9 @@
   KẾ HOẠCH 12: APPROVE vòng 1 (docs/reviews/12-review.md; 1–4, 7, 9, 10, 11, 13 PASS; 5, 6, 8, 12 N/A). Ghi chú thấp: đã thêm
   data/external/vsl_gh/, data/external/parallel_text/, data/Dataset/ vào .git/info/exclude (KHÔNG .gitignore); checker nên kiểm sha file tham chiếu cục bộ.
   AC2 của 06 vẫn "chưa đạt" (Ran 518, 1 ERROR ViT5 + 1 skip stgcn_best) cho tới khi người dùng trả lời §8.1 kế hoạch 12.
-  VIỆC KẾ TIẾP: vslt-planner kế hoạch 06 Lần sửa 5 (V11/O5 theo quyết định (A), V10/O1, V9/O2; thấp O3, O4, V12, V13) → coder → reviewer kiểm lại 06
-  (5, 13, V0 — V0 nay chỉ còn phụ thuộc §8.1). Sau đó: planner 06 Lần sửa 5 (V11/O5 theo (A), V10/O1, V9/O2)
+  Planner 06 Lần sửa 5 XONG (docs/plans/06-viec5-frontend-sua5.md §0E; dòng trỏ ở đầu kế hoạch 06): chỉ sửa tài liệu — V11/O5 đính chính
+  "8 hauuto TRAIN + 2 qipedc TEST ngoài", V10/O1 câu CORS qua proxy Vite, V9/O2 khối đính chính 06-progress, làm luôn O3, O4, V12, V13.
+  VIỆC KẾ TIẾP: vslt-coder 06 bước B10 (B10-1..B10-4, AC-E1..E5, ~1 giờ) → vslt-reviewer kiểm lại 06 hạng mục 5, 13 (+ V0 chỉ phụ thuộc §8.1 kế hoạch 12). Sau đó: planner 06 Lần sửa 5 (V11/O5 theo (A), V10/O1, V9/O2)
   → coder → khôi phục xong thì reviewer kiểm lại 06 (V0: AC2 526/0 skip, npm test, đột biến AC5, AC10 ×2; hạng mục 5, 13).
   SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
   `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint
@@ -70,7 +71,7 @@
   e2e_browser.cjs chỉ thêm created_t_s/closed_t_s/click_t_s. Chạy chính thức mỗi kịch bản ĐÚNG 1 lần; đỏ → dừng §7-10.
   VIỆC KẾ TIẾP: vslt-coder B8c-1 (test mục 10 trước) → B8c-2 (script) → B8c-3 (3 JSON chính thức) → B9b (0B.5 bước 4, AC1 nhóm (ii)
   gồm facffea, f52de6f, 717aa3e) → vslt-reviewer toàn bộ 06 (thêm điểm §0B.6, §0C.6).
-- Hạn mức (21:35 ngày 1/10): 5 giờ 82% (reset 00:10 ngày 2/10), 7 ngày 10%. Sổ đo: docs/usage_ledger.csv
+- Hạn mức (21:38 ngày 1/10): 5 giờ 84% (reset 00:10 ngày 2/10), 7 ngày 11%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -186,7 +187,9 @@
 6. Bước 5: bộ test webcam (script quay + đánh giá; việc QUAY là của người dùng).
 7. Đo độ trễ (DoD 8; ≥ 3 lần qua WebSocket thật, ghi cấu hình máy + tải). reports/audit_round2/v1_latency_benchmark.json: phần tách
    thành phần dựa trên tỷ lệ bịa 0.4/0.6 → đánh dấu không dùng; 90.78 ms "chưa xác minh lại" trong EVALUATION/VERIFY/AUDIT_ROUND2.
-8. Dọn dẹp: hỏi người dùng có xóa frontend/src/components/RealtimeStream.jsx (mã chết) không; `detail` của 503 có thể lộ tên file.
+8. (từ review 06) V6: cấu hình `cors` cho Vite dev/preview + test; V7: `detail` lỗi WS dùng thông điệp cố định (backend/main.py:1645);
+   V8: Reports.jsx:73-77 số gõ tay. Kế hoạch 12: checker kiểm sha file tham chiếu cục bộ (nested_predictions.csv).
+   Dọn dẹp: hỏi người dùng có xóa frontend/src/components/RealtimeStream.jsx (mã chết) không; `detail` của 503 có thể lộ tên file.
    Thấp, từ review 05: restore kiểm archive_name == local_path.replace('/', '__'); manifest ghi code_dirty; README nêu
    alphabet_real_best.pt còn trong lịch sử đã push; planner đưa file <số>-progress.md vào danh sách AC1; report_step4.py đọc thêm manifest vslt-provenance-artifacts để REPORT bước 4 không còn ghi 8 đầu vào 'không lưu trữ';
    configs/alphabet_config.yaml (hỏi trước khi xóa); sửa câu chữ AC7-e kế hoạch 04; phương án (ii) (đăng ký trước tiêu chí).
@@ -224,3 +227,4 @@
 - 2026-10-01 00:20 | sự cố mất dữ liệu do orchestrator gỡ worktree có junction (30/9 23:42) | review 06 phần 1 xong | Dừng mọi việc, lưu STATE, push, tắt máy theo yêu cầu người dùng.
 - 2026-10-01 00:40 | dừng theo ngân sách (không phải ngắt) | review 06 xong 3 phần: CHANGES_REQUESTED; planner Lần sửa 5 chưa giao (96 > 90) | Lưu STATE, commit, push, tắt máy theo yêu cầu người dùng.
 - 2026-10-01 19:25 | khôi phục sau tắt máy (người dùng nhắn "tiếp tục công việc") | STATE khớp git (HEAD dcf9b0d), dữ liệu vẫn rỗng | Hỏi người dùng 2 câu chặn (đã trả lời), giao planner kế hoạch 12 khôi phục dữ liệu.
+- 2026-10-01 21:40 | dừng theo hạn mức (84%, không phải ngắt) | kế hoạch 12 APPROVE; 06 Lần sửa 5 đã lập, coder B10 chưa giao | Lưu STATE, commit, push, tắt máy theo yêu cầu người dùng (20:00).

@@ -8,6 +8,7 @@
   `/ws/live-stream` của tab mặc định bị gỡ khi chuyển tab) — §0C.
 - Lần sửa 4 (LẦN CUỐI cho luật socket AC12): 2026-09-30, sau B8c-3 (HEAD 0a80ddd), coder dừng §7-10(c)
   (`tab_unmounted_socket_rule` đỏ vì điều kiện thời điểm "socket tạo trước `click_t_s`") — §0D.
+- Lần sửa 5: 2026-10-01, sau review 06 — `docs/plans/06-viec5-frontend-sua5.md` (§0E), ưu tiên hơn mọi câu trái ngược trong file này.
 - Backlog: docs/STATE.md "Backlog còn lại" mục 2; autopilot.md backlog gốc mục 3.
 - **Không có điểm dừng CẦN NGƯỜI DÙNG trước khi code** (xem §7; chỉ có điểm dừng có điều kiện trong lúc làm). Lần sửa 1,
   Lần sửa 2 và Lần sửa 3 cũng không tạo điểm dừng CẦN NGƯỜI DÙNG mới.
