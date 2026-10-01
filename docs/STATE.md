@@ -146,6 +146,9 @@
   phải chia nhỏ (planner viết một phần kế hoạch, coder 1 bước, reviewer 1 nhóm) hoặc làm việc khác không phụ thuộc để dùng nốt quota.
   (Các lần tắt lúc 71% ngày 29/9 và 48% ngày 1/10 là quá sớm.)
 
+- (2026-10-01 20:00) Người dùng đi vắng: làm tiếp, dùng tối ưu quota 5h (chia nhỏ, không để thừa nhiều); khi hết việc làm được hoặc quota
+  thật sự cạn (≥ 90) VÀ đã lưu STATE + commit + push, không còn agent chạy → tắt máy (`shutdown //s //t 120`).
+
 ## Câu hỏi chờ người dùng
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
 - (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
