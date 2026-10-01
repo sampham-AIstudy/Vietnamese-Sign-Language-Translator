@@ -138,6 +138,15 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
 
 ## Đang làm
 - Lượt 2 (giao: B4–B7, HEAD bắt đầu ae30658): B4, B5, B6 xong; **B7 ĐANG LÀM** (kiểm tổng).
+- B7 (dở, HEAD fe64717): checker toàn bộ → `reports/data_recovery_2026-10-01/inventory_after.json` exit 0: ok 20, missing 11
+  (chỉ mục required=false: a4, a5 ×2, a6, a7 ×2, b3 ×4, b4), mismatch 0, unverifiable 0, `required_failed` [] (`_work/_plan12_tmp/B7_inventory.log`).
+- `git diff --name-only 0491877 HEAD -- backend src scripts` → chỉ `scripts/check_restored_data.py` (`B7_code_diff.txt`).
+- `hand_live_check.py --n-clips 8 --seed 0 --out _work/_plan12_tmp/hand_live_check_rerun.json` exit 0 ("10 clips; live_png == local
+  offline (detected): 10/10") → so với `reports/fingerspell_live_2026-09-29/hand_live_check.json` bỏ `generated_by`: **BẰNG HỆT**
+  (`equal_without_generated_by True n_diffs 0`, `B7_hand_live_compare.txt`; so bằng `_work/_plan12_tmp/cmp_json.py`).
+- `live_segment_check.py --n-clips 8 --seed 0 --out _work/_plan12_tmp/segment_check_rerun.json` exit 0 ("7/8 clips …") → so với
+  `reports/live_word_2026-09-28/segment_check.json` bỏ `generated_by`: **BẰNG HỆT** (n_diffs 0, cùng 8 video_id đúng thứ tự;
+  `B7_segment_compare.txt`).
 
 ## Còn lại
 - B7 (kiểm tổng), B8 (b3/b4, tùy chọn), B9 (đóng) — lượt sau.
@@ -163,3 +172,4 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
   `_work/_plan12_tmp/dc_<bước>.txt`.)
 - WIP B6 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B6_wip.txt`)
 - B6 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B6.txt`)
+- WIP B7 (1) commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B7_wip1.txt`)
