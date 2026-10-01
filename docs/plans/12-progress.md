@@ -227,8 +227,9 @@ Phạm vi lượt 1: B0–B3. Lượt 2 (từ ae30658): B4–B7.
 - AC6-b3: ĐẠT (trừ `gloss_vocab_canonical.txt`, ngoài khả năng tái tạo của kế hoạch). AC6 "AC2 31 module sau B8": xem B9.
 
 ## Đang làm
-- **B8 ĐANG LÀM** (lượt 3, từ HEAD 122ffdf; `B8_status_before.txt` 66 dòng, 3 dòng ` D` còn nguyên). Lượt 2 dừng sau B7
-  theo giao việc + điểm dừng AC4 (test_g_gitignore); mục (iii) đã được orchestrator xử lý ở be5990e (xem B9).
+- **B9 ĐANG LÀM** (lượt 3): B8 xong (d4fda34). AC2 31 module đang chạy tại HEAD d4fda34 → `_work/_plan12_tmp/ac2_31_B9.log`
+  (meta `ac2_31_B9.meta`). Mục (iii) `test_g_gitignore` của B7 đã được orchestrator xử lý ở be5990e (luật bỏ qua `_work/` chuyển
+  từ `.gitignore` sang `.git/info/exclude`; orchestrator báo `tests.test_private_artifacts` 8/8 OK) — B9 kiểm lại.
 
 ## Còn lại
 - CẦN PLANNER: mục (iii) `test_private_artifacts.test_g_gitignore` FAIL (do `.gitignore` +`_work/` ở 9d1d40f), xem B7.
