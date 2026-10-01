@@ -135,6 +135,11 @@
   theo manifest; video/landmark tải lại từ nguồn (người dùng hỗ trợ phần không có trên Kaggle). Không dùng phần mềm khôi phục file.
 - (2026-10-01 19:22) 2 clip qipedc_D0489/D0490B (TEST ngoài) trong AC5/AC6 kế hoạch 06: GIỮ, chỉ đính chính tài liệu (8 TRAIN + 2 TEST ngoài), không chạy lại.
 
+- (2026-10-01 19:35) Tắt máy (khi người dùng đã yêu cầu "xong thì tắt"): chỉ tắt khi (a) hết việc làm được, hoặc (b) hạn mức 5h thật sự cạn
+  (used ≥ 90) — VÀ mọi thứ đã lưu (STATE, commit, push, không còn agent chạy). Không tắt chỉ vì đơn vị việc kế tiếp quá lớn so với cổng:
+  phải chia nhỏ (planner viết một phần kế hoạch, coder 1 bước, reviewer 1 nhóm) hoặc làm việc khác không phụ thuộc để dùng nốt quota.
+  (Các lần tắt lúc 71% ngày 29/9 và 48% ngày 1/10 là quá sớm.)
+
 ## Câu hỏi chờ người dùng
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
 - (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
