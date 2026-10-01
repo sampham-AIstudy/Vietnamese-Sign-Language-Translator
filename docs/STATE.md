@@ -12,7 +12,12 @@
   Đính chính: provenance.json là file tracked, KHÔNG mất; checkpoint trong reports/ (H-keepz-360) không mất.
   Coder 12 B0–B3 XONG (4922fc0, e6ff39a, 990fbe6, 5db5977): checker scripts/check_restored_data.py + 23 test OK; a1–a3 checkpoint đã đặt lại,
   sha256 khớp manifest; label.csv từ blob git (data/Dataset/Labels/label.csv). a4–a6 xác nhận không có trong git/manifest/_work.
-  ĐANG GIAO: vslt-coder kế hoạch 12 B4–B7 — 19:58. Sau đó: planner 06 Lần sửa 5 (V11/O5 theo (A), V10/O1, V9/O2)
+  Coder 12 B4–B7 XONG (6982474, bf37089, fe64717, bb784bd): alphabet_hands 686 npz (kernel output), hauuto 640 mp4, QIPEDC 4362 file — checker
+  khớp hết; hand_live_check + live_segment_check chạy lại BẰNG HỆT; smoke ×2 PASSED; npm test 26/26. AC2 31 module: Ran 518, lệch mốc đúng (i) ViT5
+  ERROR + (ii) stgcn_best skip, cộng (iii) FAIL test_g_gitignore do orchestrator thêm `_work/` vào .gitignore (9d1d40f) → orchestrator hoàn tác
+  ở be5990e (chuyển sang .git/info/exclude, _work vẫn bị bỏ qua), test_private_artifacts 8/8 OK. AC2 của 06 vẫn "chưa đạt" do §8.1 (a4–a6).
+  Zip tải về (18.5G + 0.9G) còn trong _work/_plan12_tmp/dl_* (dọn ở B9 nếu kế hoạch cho phép).
+  ĐANG GIAO: vslt-coder kế hoạch 12 B8 (+ B9 nếu còn) — 21:02. Cổng: 61 + 1.0×26 = 87 ≤ 90 (người dùng 20:00: dùng tối ưu quota). Sau đó: planner 06 Lần sửa 5 (V11/O5 theo (A), V10/O1, V9/O2)
   → coder → khôi phục xong thì reviewer kiểm lại 06 (V0: AC2 526/0 skip, npm test, đột biến AC5, AC10 ×2; hạng mục 5, 13).
   SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
   `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint
@@ -136,6 +141,7 @@
 - (2026-10-01, rút ra từ sự cố) Luật: trước khi xóa worktree/thư mục tạm, liệt kê và GỠ mọi junction/symlink bên trong
   (`cmd //c rmdir <link>` hoặc `find -type l`/`fsutil reparsepoint query`), không dùng `git worktree remove --force`/`rm -rf` khi còn link.
   Agent không được tạo junction/symlink tới dữ liệu thật trong worktree tạm; cần dữ liệu thì chạy test ở repo chính.
+  `_work/` được bỏ qua bằng .git/info/exclude (KHÔNG thêm vào .gitignore — test_private_artifacts.test_g_gitignore khóa .gitignore).
 
 - (2026-10-01 19:22) Khôi phục dữ liệu: dùng Kaggle + _work — checkpoint từ _work/_kaggle_staging và 2 dataset Kaggle private, kiểm sha256
   theo manifest; video/landmark tải lại từ nguồn (người dùng hỗ trợ phần không có trên Kaggle). Không dùng phần mềm khôi phục file.
