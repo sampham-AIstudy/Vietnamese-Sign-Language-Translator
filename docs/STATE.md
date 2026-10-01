@@ -21,7 +21,11 @@
   prepare_canonical_vsl_gh.py thêm --source-clone/--report-out (+4 test, 28 OK); AC2 31 module Ran 518: chỉ lệch (i)+(ii); inventory_after_b8
   ok 23 / missing 7 (đều không bắt buộc: a4–a7, gloss_vocab_canonical) / mismatch 0. Dòng progress_log 12 đã ghi. _work/_plan12_tmp còn ~21G zip/tar.
   Review 12 phần 1 XONG (docs/reviews/12-review.md): 1–4 + AC0 PASS, không FAIL (đột biến 3/3 bị bắt; checker 31/31 khớp; sha256 khớp).
-  ĐANG GIAO: vslt-reviewer kế hoạch 12 phần 2 (5–9, gọn) — 21:32 (78%). Sau đó nếu còn: phần 3 (10–13) + kết luận. Sau đó: planner 06 Lần sửa 5 (V11/O5 theo (A), V10/O1, V9/O2)
+  KẾ HOẠCH 12: APPROVE vòng 1 (docs/reviews/12-review.md; 1–4, 7, 9, 10, 11, 13 PASS; 5, 6, 8, 12 N/A). Ghi chú thấp: đã thêm
+  data/external/vsl_gh/, data/external/parallel_text/, data/Dataset/ vào .git/info/exclude (KHÔNG .gitignore); checker nên kiểm sha file tham chiếu cục bộ.
+  AC2 của 06 vẫn "chưa đạt" (Ran 518, 1 ERROR ViT5 + 1 skip stgcn_best) cho tới khi người dùng trả lời §8.1 kế hoạch 12.
+  VIỆC KẾ TIẾP: vslt-planner kế hoạch 06 Lần sửa 5 (V11/O5 theo quyết định (A), V10/O1, V9/O2; thấp O3, O4, V12, V13) → coder → reviewer kiểm lại 06
+  (5, 13, V0 — V0 nay chỉ còn phụ thuộc §8.1). Sau đó: planner 06 Lần sửa 5 (V11/O5 theo (A), V10/O1, V9/O2)
   → coder → khôi phục xong thì reviewer kiểm lại 06 (V0: AC2 526/0 skip, npm test, đột biến AC5, AC10 ×2; hạng mục 5, 13).
   SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
   `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint
@@ -66,7 +70,7 @@
   e2e_browser.cjs chỉ thêm created_t_s/closed_t_s/click_t_s. Chạy chính thức mỗi kịch bản ĐÚNG 1 lần; đỏ → dừng §7-10.
   VIỆC KẾ TIẾP: vslt-coder B8c-1 (test mục 10 trước) → B8c-2 (script) → B8c-3 (3 JSON chính thức) → B9b (0B.5 bước 4, AC1 nhóm (ii)
   gồm facffea, f52de6f, 717aa3e) → vslt-reviewer toàn bộ 06 (thêm điểm §0B.6, §0C.6).
-- Hạn mức (21:24 ngày 1/10): 5 giờ 74% (reset 00:10 ngày 2/10), 7 ngày 9%. Sổ đo: docs/usage_ledger.csv
+- Hạn mức (21:35 ngày 1/10): 5 giờ 82% (reset 00:10 ngày 2/10), 7 ngày 10%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
