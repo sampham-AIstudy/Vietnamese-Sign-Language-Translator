@@ -10,7 +10,9 @@
   kernel phmvnsm33/vsl-extract-alphabet), QIPEDC (Kaggle aresusayhi/vsl-vietnamese-sign-languages), label.csv (git HEAD), vsl_gh/parallel_text
   (clone/) khôi phục được; 0 GPU-giờ. KHÔNG có bản lưu trữ: stgcn_best.pt, ViT5 stage1/2, cslr_best.pt + gloss_vocab_canonical.txt (§8.1 CẦN NGƯỜI DÙNG).
   Đính chính: provenance.json là file tracked, KHÔNG mất; checkpoint trong reports/ (H-keepz-360) không mất.
-  ĐANG GIAO: vslt-coder kế hoạch 12 B0–B3 — 19:45. Sau đó: planner 06 Lần sửa 5 (V11/O5 theo (A), V10/O1, V9/O2)
+  Coder 12 B0–B3 XONG (4922fc0, e6ff39a, 990fbe6, 5db5977): checker scripts/check_restored_data.py + 23 test OK; a1–a3 checkpoint đã đặt lại,
+  sha256 khớp manifest; label.csv từ blob git (data/Dataset/Labels/label.csv). a4–a6 xác nhận không có trong git/manifest/_work.
+  ĐANG GIAO: vslt-coder kế hoạch 12 B4–B7 — 19:58. Sau đó: planner 06 Lần sửa 5 (V11/O5 theo (A), V10/O1, V9/O2)
   → coder → khôi phục xong thì reviewer kiểm lại 06 (V0: AC2 526/0 skip, npm test, đột biến AC5, AC10 ×2; hạng mục 5, 13).
   SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
   `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint
