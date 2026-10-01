@@ -72,7 +72,7 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
 - So với label.csv trong gói QIPEDC Kaggle: để B6 (chỉ báo giống/khác).
 
 ## Đang làm
-- (không) — lượt này dừng sau B3 theo giao việc.
+- Lượt 2 (giao: B4–B7, HEAD bắt đầu ae30658): **B4 ĐANG LÀM** (b2 alphabet_hands từ output kernel).
 
 ## Còn lại
 - B4 (b2 alphabet_hands, kernel output), B5 (b1 hauuto), B6 (c1 QIPEDC), B7 (kiểm tổng), B8 (b3/b4, tùy chọn), B9 (đóng) — lượt sau.
