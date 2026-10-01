@@ -78,6 +78,3 @@ reports/step4_*/runs/**/*.pt
 reports/**/*.pt
 reports/**/*.npz
 # A3 (2026-09-28): alphabet_real_best.pt gỡ khỏi index (lịch sử đã push vẫn còn), lưu ở dataset private — xem reports/private_archive_*/
-
-# Thư mục làm việc cục bộ của orchestrator/agent (log, JSON chạy thử, staging Kaggle, backup) — không commit
-_work/
