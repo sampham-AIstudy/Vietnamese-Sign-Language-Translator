@@ -171,7 +171,8 @@ Phạm vi lượt 1: B0–B3. Lượt 2 (từ ae30658): B4–B7.
   (không phải reparse point); `git diff --name-only 0aa7a44 HEAD | grep -E '^(data|checkpoints)/|\.(pt|npz|npy|mp4|jsonl)$'` → 0 dòng.
 
 ## Đang làm
-- (không) — lượt 2 dừng sau B7 theo giao việc + điểm dừng AC4 (test_g_gitignore). B8, B9 lượt sau.
+- **B8 ĐANG LÀM** (lượt 3, từ HEAD 122ffdf; `B8_status_before.txt` 66 dòng, 3 dòng ` D` còn nguyên). Lượt 2 dừng sau B7
+  theo giao việc + điểm dừng AC4 (test_g_gitignore); mục (iii) đã được orchestrator xử lý ở be5990e (xem B9).
 
 ## Còn lại
 - CẦN PLANNER: mục (iii) `test_private_artifacts.test_g_gitignore` FAIL (do `.gitignore` +`_work/` ở 9d1d40f), xem B7.
