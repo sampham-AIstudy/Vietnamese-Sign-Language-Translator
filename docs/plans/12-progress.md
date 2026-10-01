@@ -93,9 +93,8 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
   (`equal_without_generated_by True`, 0 khóa lệch — `B4_provenance_compare.txt`).
 - `git status --porcelain` before == after (`alphabet_hands_kaggle/` bị gitignore); 3 dòng ` D` còn nguyên.
 
-## Đang làm
-- Lượt 2 (giao: B4–B7, HEAD bắt đầu ae30658): B4 xong; **B5 ĐANG LÀM** (b1 hauuto).
-- B5 (dở): `hauuto/vietnamese-sign-language-alphabet` lastUpdated `2026-09-18 14:42:03.857000`, 894353847 byte
+### B5 — b1 `data/external/hauuto_raw/raw/raw/` (Kaggle công khai hauuto)
+- `hauuto/vietnamese-sign-language-alphabet` lastUpdated `2026-09-18 14:42:03.857000`, 894353847 byte
   (`kaggle datasets list -s`), 1876 file (liệt kê đủ bằng `_work/_plan12_tmp/list_files.py` → `B5_files_all.csv`): `raw/raw/{hau,khoi,tai,vy}`
   160 mp4 mỗi người ký (+1 `.gitkeep`, +1 `.txt` trong khoi), `landmarks/` 640 npy, `visualize_output/` 592 mp4. Tải zip
   (`kaggle datasets download -d … -p _work/_plan12_tmp/dl_hauuto`, bắt đầu 20:09:14, xong trước 20:12:05; zip 894353847 byte ==
@@ -109,9 +108,20 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
   độ sâu 2 không phân giải (`filePath ""`) nối tới mọi `main`/script trong `clone/`; caller trực tiếp duy nhất là `main` của chính
   script (độ sâu 1), grep xác nhận chỉ `scripts/check_restored_data.py:405` và test gọi
   (`_work/_plan12_tmp/B5_impact_check_video_frames.txt`). Hành vi chỉ đổi khi file fact không nằm trong glob (trước đó luôn missing).
+- Checker trên bản `_work` sau khi sửa (HEAD f7b4789, code_dirty false): `b1_hauuto_videos` ok (count 640, groups 4),
+  `b1_hauuto_facts` ok (`hau/a_hau_A_001.mp4`: frames 75, fps 23.584, 640×480 == JSON e2e), exit 0 (`B5_staging_check.json`).
+- Kiểm thêm (thông tin): `_work/_plan12_tmp/b5_cmp_manifest.py` so `CAP_PROP` 640 clip với `manifest.csv` của output kernel B4
+  (`num_frames`, `width/height`, `fps` làm tròn 3 số): `missing 0, frames_mm 0, size_mm 0, fps_mm 0` (`B5_cmp_manifest.json`)
+  ⇒ cùng bản video kernel 25/9 đã đọc.
+- Đặt: `data/external/hauuto_raw` chưa có; 0 link trong bản `_work` → `mkdir -p data/external/hauuto_raw/raw` + `mv -n`
+  (`B5_place.log`: mv exit 0, 642 file, 0 link dưới `data/external`).
+- Checker SAU khi đặt (không override): 2/2 ok, exit 0 (`B5_after_check.json`). `git status` before == after (`hauuto_raw/` gitignore).
+
+## Đang làm
+- Lượt 2 (giao: B4–B7, HEAD bắt đầu ae30658): B4, B5 xong; **B6 ĐANG LÀM** (c1 QIPEDC, tải nền đang chạy).
 
 ## Còn lại
-- B5 (b1 hauuto), B6 (c1 QIPEDC), B7 (kiểm tổng), B8 (b3/b4, tùy chọn), B9 (đóng) — lượt sau.
+- B6 (c1 QIPEDC), B7 (kiểm tổng), B8 (b3/b4, tùy chọn), B9 (đóng) — lượt sau.
 - Còn mở: §8.1 (a4 `stgcn_best.pt`, a5 ViT5, a6 `cslr_best.pt` + `gloss_vocab_canonical.txt`: không có trong lịch sử git — B0), §8.2 (label.csv: đang dùng mặc định bản git HEAD).
 
 ## Nhật ký detect-changes (`node .gitnexus/run.cjs detect-changes --scope staged --repo .`, nguyên văn)
@@ -126,3 +136,4 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
 - WIP B5 commit (sửa checker): "Changes: 2 files, 5 symbols / Affected processes: 1 / Risk level: medium" — symbol đổi:
   `check_video_frames`; `TestItems`, `test_video_missing_file`, `test_csv_ids_missing`, `test_csv_ids_ref_rows_changed` chỉ bị dời
   dòng (diff test 0 dòng xóa); luồng: Check_video_frames → Video_props.
+- B5 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (chỉ file .md)
