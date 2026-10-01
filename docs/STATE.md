@@ -3,10 +3,11 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-10-01 00:20 (giờ Việt Nam)
-- HEAD: 9d1d40f (+ commit state này) | Nhánh: feat/vslt-complete (đã push)
-- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 48% lúc 00:38 (reset 04:40 ngày 1/10), 7 ngày 67% (reset 09:00 ngày 1/10). Việc kế tiếp = vslt-planner
-  Lần sửa 5 kế hoạch 06 (V11/O5, V10/O1, V9/O2; est planner 32 → 48 + 1.5×32 = 96 > 90, không qua cổng). Đã lưu, push, tắt máy theo yêu cầu người dùng.
+- Cập nhật lần cuối: 2026-10-01 19:25 (giờ Việt Nam)
+- HEAD: dcf9b0d (+ commit state này) | Nhánh: feat/vslt-complete (đã push)
+- Trạng thái phiên: ĐANG CHẠY — 5h 0% lúc 19:19 (reset 00:30 ngày 2/10), 7 ngày 0%. Dữ liệu vẫn chưa khôi phục.
+  ĐANG GIAO: vslt-planner kế hoạch 12 (khôi phục dữ liệu sau sự cố 30/9) — 19:25. Sau đó: planner 06 Lần sửa 5 (V11/O5 theo (A), V10/O1, V9/O2)
+  → coder → khôi phục xong thì reviewer kiểm lại 06 (V0: AC2 526/0 skip, npm test, đột biến AC5, AC10 ×2; hạng mục 5, 13).
   SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
   `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint
   stgcn/stgcn_h360, video+nhãn QIPEDC, hauuto_raw, alphabet_hands_kaggle, vsl_gh, parallel_text. Còn nguyên: data/raw_tudienngonngukyhieu,
@@ -130,10 +131,12 @@
   (`cmd //c rmdir <link>` hoặc `find -type l`/`fsutil reparsepoint query`), không dùng `git worktree remove --force`/`rm -rf` khi còn link.
   Agent không được tạo junction/symlink tới dữ liệu thật trong worktree tạm; cần dữ liệu thì chạy test ở repo chính.
 
+- (2026-10-01 19:22) Khôi phục dữ liệu: dùng Kaggle + _work — checkpoint từ _work/_kaggle_staging và 2 dataset Kaggle private, kiểm sha256
+  theo manifest; video/landmark tải lại từ nguồn (người dùng hỗ trợ phần không có trên Kaggle). Không dùng phần mềm khôi phục file.
+- (2026-10-01 19:22) 2 clip qipedc_D0489/D0490B (TEST ngoài) trong AC5/AC6 kế hoạch 06: GIỮ, chỉ đính chính tài liệu (8 TRAIN + 2 TEST ngoài), không chạy lại.
+
 ## Câu hỏi chờ người dùng
-- (từ review 06 phần 2) 2 clip TEST trong AC5/AC6: (A) giữ, chỉ đính chính tài liệu [reviewer đề xuất] hay (B) đổi sang clip qipedc TRAIN và chạy lại AC5/AC6 khi có dữ liệu?
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
-- (CHẶN) Khôi phục dữ liệu bị xóa 30/9 23:42: chọn phần mềm khôi phục trước hay khôi phục checkpoint từ _work + Kaggle (sha256)? Còn bản gốc video không?
 - (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
   reports/PHASE4B_REPORT.md:112 ghi "unseen / zero leakage" là sai; mặc định: ghi nhãn đúng, không viết lại báo cáo cũ.
   Có thêm backlog train lại CSLR chia theo câu (tốn GPU Kaggle)? Có lưu checkpoint CSLR/ViT5 lên Kaggle dataset private?
@@ -192,3 +195,4 @@
 - 2026-09-30 23:50 | 429 giữa lượt reviewer 06 phần 1 (16:18, 71% + est 20) | review dở: 2–4 PASS, 1 đang làm | Ghi limit_hit, cổng chặt lại; dời thư mục tạm vào _work/; giao lại reviewer hoàn thiện hạng mục 1.
 - 2026-10-01 00:20 | sự cố mất dữ liệu do orchestrator gỡ worktree có junction (30/9 23:42) | review 06 phần 1 xong | Dừng mọi việc, lưu STATE, push, tắt máy theo yêu cầu người dùng.
 - 2026-10-01 00:40 | dừng theo ngân sách (không phải ngắt) | review 06 xong 3 phần: CHANGES_REQUESTED; planner Lần sửa 5 chưa giao (96 > 90) | Lưu STATE, commit, push, tắt máy theo yêu cầu người dùng.
+- 2026-10-01 19:25 | khôi phục sau tắt máy (người dùng nhắn "tiếp tục công việc") | STATE khớp git (HEAD dcf9b0d), dữ liệu vẫn rỗng | Hỏi người dùng 2 câu chặn (đã trả lời), giao planner kế hoạch 12 khôi phục dữ liệu.
