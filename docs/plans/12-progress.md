@@ -2,7 +2,7 @@
 
 Kế hoạch: `docs/plans/12-khoi-phuc-du-lieu.md`. Nhánh `feat/vslt-complete`, HEAD lúc bắt đầu `0aa7a44`
 (B0 chạy trên `79a7eb1` = 0aa7a44 + commit tạo file này).
-Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
+Phạm vi lượt 1: B0–B3. Lượt 2 (từ ae30658): B4–B7.
 
 ## Bước đã xong
 
@@ -136,9 +136,8 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
   125290 byte) nhưng chỉ khác kết thúc dòng: gói CRLF 4363 dòng, c2 LF; sau chuẩn hóa CRLF→LF bằng hệt (4363 dòng, 0 dòng khác).
   Không thay c2 (giữ bản git HEAD theo §8.2).
 
-## Đang làm
-- Lượt 2 (giao: B4–B7, HEAD bắt đầu ae30658): B4, B5, B6 xong; **B7 ĐANG LÀM** (kiểm tổng).
-- B7 (dở, HEAD fe64717): checker toàn bộ → `reports/data_recovery_2026-10-01/inventory_after.json` exit 0: ok 20, missing 11
+### B7 — kiểm tổng (DỪNG ở AC2: CẦN PLANNER)
+- HEAD fe64717 (bae2413 cho các lệnh sau): checker toàn bộ → `reports/data_recovery_2026-10-01/inventory_after.json` exit 0: ok 20, missing 11
   (chỉ mục required=false: a4, a5 ×2, a6, a7 ×2, b3 ×4, b4), mismatch 0, unverifiable 0, `required_failed` [] (`_work/_plan12_tmp/B7_inventory.log`).
 - `git diff --name-only 0491877 HEAD -- backend src scripts` → chỉ `scripts/check_restored_data.py` (`B7_code_diff.txt`).
 - `hand_live_check.py --n-clips 8 --seed 0 --out _work/_plan12_tmp/hand_live_check_rerun.json` exit 0 ("10 clips; live_png == local
@@ -147,9 +146,36 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
 - `live_segment_check.py --n-clips 8 --seed 0 --out _work/_plan12_tmp/segment_check_rerun.json` exit 0 ("7/8 clips …") → so với
   `reports/live_word_2026-09-28/segment_check.json` bỏ `generated_by`: **BẰNG HỆT** (n_diffs 0, cùng 8 video_id đúng thứ tự;
   `B7_segment_compare.txt`).
+- Smoke AC10 ×2 (HEAD bae2413): `scripts/smoke_test_phase12.py` exit 0, `>>> PHASE 12 SMOKE TEST PASSED <<<`, clip `qipedc_W03292N`
+  (`_work/_plan12_tmp/smoke_default.log:38,48`); `VSL_MODEL_TYPE=stgcn_h360 …` exit 0, PASSED, clip `qipedc_W03292N`
+  (`smoke_h360.log:62,72`). Cả hai chọn đúng clip mốc.
+- AC2 06, 31 module (lệnh nguyên văn `docs/plans/06-viec5-frontend.md:1027`, 20:42:47→~20:54, log `_work/_plan12_tmp/ac2_31.log`):
+  `Ran 518 tests in 520.600s` / `FAILED (failures=1, errors=1, skipped=1)`. So theo module với mốc `_work/_plan06_tmp/b9b_ac2_31.log`
+  (`Ran 526` `OK`) bằng `_work/_plan12_tmp/ac2_compare.py` (`B7_ac2_compare.txt`; parser đọc đủ 526/526 dòng kết quả của mốc):
+  27 module giống hệt (ok/skip/fail/err); 3 module lệch:
+  - `tests.test_translation_core` 8/0/0/0 → 0/0/0/1: `ERROR: setUpClass (tests.test_translation_core.TestVSLTranslationCore)`,
+    `FileNotFoundError: Không tìm thấy checkpoint ViT5 tại …checkpointsit5_stage2est_model hoặc …vit5_stage1est_model.`
+    (`src/translation/translator.py:66`) — đúng sai khác (i) được phép.
+  - `tests.test_vsl_system` 6/0/0/0 → 5/1/0/0: `test_vsl_predictor_smoke … skipped 'Checkpoint checkpoints/stgcn_best.pt not found'`
+    — đúng sai khác (ii) được phép.
+  - **`tests.test_private_artifacts` 8/0/0/0 → 7/0/1/0: `FAIL: test_g_gitignore`** — `AssertionError: 4 != 1 : ['+# A3 (2026-09-28):
+    alphabet_real_best.pt gỡ khỏi index …', '+', '+# Thư mục làm việc cục bộ của orchestrator/agent (log, JSON chạy thử, staging
+    Kaggle, backup) — không commit', '+_work/']` (`tests/test_private_artifacts.py:91`). NGOÀI (i)(ii). Nguyên nhân (chỉ đọc): test
+    đòi `git diff b337aee HEAD -- .gitignore` thêm đúng 1 dòng `+#`; commit `9d1d40f` (state, 2026-09-30 23:43, SAU mốc 0491877 —
+    `merge-base --is-ancestor` xác nhận) thêm 3 dòng (`""`, chú thích, `_work/`) vào `.gitignore`. Không liên quan dữ liệu khôi phục.
+  ⇒ Theo AC4 ("chênh ngoài (i)(ii) → DỪNG"): **DỪNG, CẦN PLANNER**. Không sửa test, không sửa `.gitignore` (§4.4 cấm).
+  Trạng thái AC2 06 = "chưa đạt AC2 của 06" (kể cả khi bỏ qua mục (iii)).
+- `cd frontend && npm test` → exit 0, `tests 26`, `pass 26`, `fail 0`, `skipped 0` (`_work/_plan12_tmp/npm_test.log`).
+- AC0: `B7_status_after` khác `before` đúng 1 dòng `?? reports/data_recovery_2026-10-01/` (file §5, commit ở bước này);
+  3 dòng ` D` còn nguyên; `find checkpoints data/Dataset data/external -type l` → 0; `fsutil reparsepoint query` 3 thư mục → 4390
+  (không phải reparse point); `git diff --name-only 0aa7a44 HEAD | grep -E '^(data|checkpoints)/|\.(pt|npz|npy|mp4|jsonl)$'` → 0 dòng.
+
+## Đang làm
+- (không) — lượt 2 dừng sau B7 theo giao việc + điểm dừng AC4 (test_g_gitignore). B8, B9 lượt sau.
 
 ## Còn lại
-- B7 (kiểm tổng), B8 (b3/b4, tùy chọn), B9 (đóng) — lượt sau.
+- CẦN PLANNER: mục (iii) `test_private_artifacts.test_g_gitignore` FAIL (do `.gitignore` +`_work/` ở 9d1d40f), xem B7.
+- B8 (b3/b4, tùy chọn), B9 (đóng) — lượt sau.
 - Còn mở: §8.1 (a4 `stgcn_best.pt`, a5 ViT5, a6 `cslr_best.pt` + `gloss_vocab_canonical.txt`: không có trong lịch sử git — B0), §8.2 (label.csv: đang dùng mặc định bản git HEAD).
 
 ## Nhật ký detect-changes (`node .gitnexus/run.cjs detect-changes --scope staged --repo .`, nguyên văn)
@@ -173,3 +199,7 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
 - WIP B6 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B6_wip.txt`)
 - B6 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B6.txt`)
 - WIP B7 (1) commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B7_wip1.txt`)
+- B7 commit: "Changes: 2 files, 1 symbols / Affected processes: 34 / Risk level: critical" — symbol duy nhất
+  `Section Kế hoạch 12 — tiến độ (coder) → docs/plans/12-progress.md` (cùng hiện tượng ghi ở B5: nút Section của file .md bị nối
+  nhầm vào luồng code); file staged chỉ `docs/plans/12-progress.md` + `reports/data_recovery_2026-10-01/inventory_after.json`, 0 file code
+  (`dc_B7.txt`).
