@@ -117,17 +117,30 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
   (`B5_place.log`: mv exit 0, 642 file, 0 link dưới `data/external`).
 - Checker SAU khi đặt (không override): 2/2 ok, exit 0 (`B5_after_check.json`). `git status` before == after (`hauuto_raw/` gitignore).
 
-## Đang làm
-- Lượt 2 (giao: B4–B7, HEAD bắt đầu ae30658): B4, B5 xong; **B6 ĐANG LÀM** (c1 QIPEDC, tải nền đang chạy).
-- B6 (dở): `aresusayhi/vsl-vietnamese-sign-languages` lastUpdated `2026-01-24 12:53:11.033000`, 18517283505 byte (`kaggle datasets list -s`);
+### B6 — c1 `data/Dataset/Videos/` (Kaggle công khai QIPEDC)
+- `aresusayhi/vsl-vietnamese-sign-languages` lastUpdated `2026-01-24 12:53:11.033000`, 18517283505 byte (`kaggle datasets list -s`);
   liệt kê file (`list_files.py`, dừng ở trang thứ ~182 do HTTP 429, nhưng danh sách trả theo thứ tự tên — `sorted? True` — nên
   `Dataset/` đã đủ trước `Processed/`): `Dataset/Labels/label.csv` 129653 byte, `Dataset/Videos/*.mp4` 4362 file 2898613548 byte,
   phần còn lại là `Processed/{train,test}/*.npz`, `Processed/label_map.json` (`B6_files_all.csv`, 36200 dòng, không đầy đủ phần Processed).
   Ổ đĩa trước tải: trống 136G ≥ 2×18,5G+1G. Tải zip nền (`kaggle datasets download -d … -p _work/_plan12_tmp/dl_qipedc`) bắt đầu 20:12:25;
   đo: 3041918976 byte lúc 20:14:52, 4751097856 byte lúc 20:16:13 (~21 MB/s) ⇒ ETA ~20:27 (< 3 h). Kế hoạch giải nén: chỉ `Dataset/`.
+- Tải xong ~20:27 (zip 18517283505 byte == kích thước niêm yết). `extract_prefix.py … Dataset/ …/dl_qipedc/x`: 188659 member,
+  4363 thuộc `Dataset/`, `testzip` → None, giải 4363 file, 4m19s (`B6_extract.log`); 0 link.
+- Checker TRƯỚC khi đặt (`--only c1_qipedc_videos --dir-override c1_qipedc_videos=_work/_plan12_tmp/dl_qipedc/x/Dataset/Videos`,
+  HEAD b559ac5, code_dirty false) → ok, exit 0: `n_files` 4362, `n_ref_files` 4362, `n_missing_files` 0, `n_frame_checked` 4362,
+  `n_frame_mismatch` 0, `n_size_checked` 1622, `n_size_mismatch` 0, `min_files_ref_rows` 4362; `D0120T.mp4` frames 113,
+  fps 29.97002997002997, 1280×720 == JSON e2e (`B6_staging_check.json`).
+- Đặt: `data/Dataset/Videos` chưa có; `data/Dataset` không phải reparse point → `mv -n` (`B6_place.log`: exit 0, 4362 file, 0 link).
+- Checker SAU khi đặt: `c1_qipedc_videos` ok + `c2_label_csv` ok, exit 0 (`B6_after_check.json`). `git status` before == after.
+- So label.csv của gói với c2 (chỉ báo, `B6_label_compare.txt`): sha256 KHÁC (gói a256d955…e2ae 129653 byte; c2 b53a664e…0233
+  125290 byte) nhưng chỉ khác kết thúc dòng: gói CRLF 4363 dòng, c2 LF; sau chuẩn hóa CRLF→LF bằng hệt (4363 dòng, 0 dòng khác).
+  Không thay c2 (giữ bản git HEAD theo §8.2).
+
+## Đang làm
+- Lượt 2 (giao: B4–B7, HEAD bắt đầu ae30658): B4, B5, B6 xong; **B7 ĐANG LÀM** (kiểm tổng).
 
 ## Còn lại
-- B6 (c1 QIPEDC), B7 (kiểm tổng), B8 (b3/b4, tùy chọn), B9 (đóng) — lượt sau.
+- B7 (kiểm tổng), B8 (b3/b4, tùy chọn), B9 (đóng) — lượt sau.
 - Còn mở: §8.1 (a4 `stgcn_best.pt`, a5 ViT5, a6 `cslr_best.pt` + `gloss_vocab_canonical.txt`: không có trong lịch sử git — B0), §8.2 (label.csv: đang dùng mặc định bản git HEAD).
 
 ## Nhật ký detect-changes (`node .gitnexus/run.cjs detect-changes --scope staged --repo .`, nguyên văn)
@@ -149,3 +162,4 @@ Phạm vi lượt này: B0–B3 (B4 trở đi giao lượt sau).
   nút Section và nối nhầm vào luồng code; commit chỉ chứa `docs/plans/12-progress.md`. Từ đây lưu full output vào
   `_work/_plan12_tmp/dc_<bước>.txt`.)
 - WIP B6 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B6_wip.txt`)
+- B6 commit: "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B6.txt`)
