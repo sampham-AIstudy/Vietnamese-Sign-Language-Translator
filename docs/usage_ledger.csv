@@ -31,3 +31,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-01T12:56Z,vslt-coder,12,B0-B3,24,35,11,2,ok
 2026-10-01T13:58Z,vslt-coder,12,B4-B7 (incl. 18.5G download),35,61,26,3,ok
 2026-10-01T14:24Z,vslt-coder,12,B8-B9,61,74,13,1,ok
+2026-10-01T14:30Z,vslt-reviewer,12,part 1 (items 1-4, scoped),74,78,4,1,ok

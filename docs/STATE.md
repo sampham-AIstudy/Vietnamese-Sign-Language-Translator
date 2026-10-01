@@ -20,7 +20,8 @@
   Coder 12 B8–B9 XONG (d4fda34, 6ccfe52): parallel_text + vsl_gh tái tạo, 2 report bằng hệt từng byte (4200 = 4198 + 2 tên có dấu cách);
   prepare_canonical_vsl_gh.py thêm --source-clone/--report-out (+4 test, 28 OK); AC2 31 module Ran 518: chỉ lệch (i)+(ii); inventory_after_b8
   ok 23 / missing 7 (đều không bắt buộc: a4–a7, gloss_vocab_canonical) / mismatch 0. Dòng progress_log 12 đã ghi. _work/_plan12_tmp còn ~21G zip/tar.
-  ĐANG GIAO: vslt-reviewer kế hoạch 12 phần 1 (hạng mục 1–4, tiết kiệm) — 21:26 (74%; phần quota cuối). Sau đó: planner 06 Lần sửa 5 (V11/O5 theo (A), V10/O1, V9/O2)
+  Review 12 phần 1 XONG (docs/reviews/12-review.md): 1–4 + AC0 PASS, không FAIL (đột biến 3/3 bị bắt; checker 31/31 khớp; sha256 khớp).
+  ĐANG GIAO: vslt-reviewer kế hoạch 12 phần 2 (5–9, gọn) — 21:32 (78%). Sau đó nếu còn: phần 3 (10–13) + kết luận. Sau đó: planner 06 Lần sửa 5 (V11/O5 theo (A), V10/O1, V9/O2)
   → coder → khôi phục xong thì reviewer kiểm lại 06 (V0: AC2 526/0 skip, npm test, đột biến AC5, AC10 ×2; hạng mục 5, 13).
   SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
   `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint

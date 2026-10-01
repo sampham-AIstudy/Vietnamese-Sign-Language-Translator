@@ -1,0 +1,39 @@
+# Review kế hoạch 12 — khôi phục dữ liệu sau sự cố 30/9
+
+Reviewer độc lập. Nhánh feat/vslt-complete, HEAD 588c5e4. Lượt này: PHẦN 1 (hạng mục 1–4 + AC0 an toàn).
+
+| # | Hạng mục | Kết quả | Bằng chứng |
+|---|---|---|---|
+| 1 | Tiêu chí có test thật | PASS | AC1 đủ test cho từng yêu cầu (`tests/test_check_restored_data.py`): sha khớp/khác `:140,148`, file thiếu `:156`, đếm glob + nhóm `:161`, khung video khớp/khác/size/facts `:175-225`, video thiếu `:227`, csv id thiếu/số dòng ref đổi `:233,240`, unverifiable + optional missing `:245`, mã thoát 3 (subprocess) `:276`, 2 `:286,297`, từ chối `--out`/`--dir-override` ngoài phạm vi (kể cả `_work/../`) `:303,315`, chỉ ghi `--out` (so listing) `:322`, che tên clip ngoài `_work` `:253`; spec commit được kiểm (mọi mục có `expect_source`, tham chiếu tồn tại) `:333`; B8 tham số `:350-399`. Assert so giá trị cụ thể (hash, số khung 5/7, đếm 3/4), không assert luôn đúng. Đột biến (bản sao trong `_work/_rev12_tmp/mut{1,2,3}`, repo không đổi — `git status --porcelain scripts tests` rỗng): M1 sha luôn `ok` (`check_restored_data.py:195`) → 1 FAIL (`test_sha_mismatch`); M2 bỏ `mismatch` khỏi điều kiện exit 3 (`:417`) → 5 FAIL; M3 số khung +1 (`:176`) → 9 FAIL. Cả 3 đột biến bị bắt. Spec dùng hash từ manifest (`expected_from` a1 = manifest + provenance.json), không gõ tay; tham chiếu b2 `nested_predictions.csv` là file gitignore cục bộ nhưng sha256 tự tính `212d0fd6…48db` == `reports/private_archive_2026-09-28/kaggle_archive_manifest.json:84`; tham chiếu c1 (`data/splits/recording_groups.csv`, `data/splits/unified/*.csv`) tracked và sạch. |
+| 2 | Tự chạy lại test | PASS | (a) `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_check_restored_data tests.test_private_artifacts -v` → `Ran 36 tests ... OK`, 0 skip, exit 0 (log `_work/_rev12_tmp/unit.log`), HEAD 588c5e4. (b) `.venv/Scripts/python scripts/check_restored_data.py --spec docs/recovery/expected_local_data.json --out _work/_rev12_tmp/inventory_rev.json` → exit 0, `summary {'ok': 23, 'missing': 7, 'mismatch': 0, 'unverifiable': 1} required_failed=[]` (54 s); so từng mục với `reports/data_recovery_2026-10-01/inventory_after_b8.json` (commit c56d209): 31/31 mục giống hệt (bỏ trường `*example*`). 7 missing đều `required:false` (a4, a5×2, a6, a7×2, b3_gloss_vocab_canonical) — đúng §8.1. (c) AC2 31 module KHÔNG chạy lại (theo chỉ đạo); đối chiếu log `_work/_plan12_tmp/ac2_31_B9.log` (HEAD d4fda34): `Ran 518` (:1364) vs mốc `Ran 526` (`_work/_plan06_tmp/b9b_ac2_31.log:1361`); đếm `... ok` theo module chỉ chênh `tests.test_translation_core` 8 (thay bằng `ERROR: setUpClass` FileNotFoundError ViT5, :1353-1360) + `test_vsl_predictor_smoke` mốc `ok` (:45-46) → nay `skipped 'Checkpoint checkpoints/stgcn_best.pt not found'` (:39). Tổng `... ok`: 401 vs 410 = 8+1. Khớp đúng (i)+(ii) của AC4. |
+| 3 | Test không bị nới | PASS | `git diff --stat 0aa7a44 HEAD -- tests/` → chỉ `tests/test_check_restored_data.py | 399 +` (file mới); `git diff 0aa7a44 HEAD -- tests/ \| grep '^-[^-]'` rỗng. Không test cũ nào bị sửa/skip. `scripts/prepare_canonical_vsl_gh.py` (+39/−14): chỉ thêm `parse_args` (`--source-clone` mặc định = `SOURCE_CLONE`, `--report-out` mặc định = `reports/vsl_gh_validation.json`), thay `SOURCE_CLONE`→`source_clone` ở 4 chỗ đọc, dời bọc stdout UTF-8 + `mkdir` từ lúc import vào đầu `main()`. Chạy không tham số: cùng nguồn, cùng thư mục đích, cùng report (ghi đè như cũ) → hành vi mặc định không đổi; khác duy nhất: import module không còn tác dụng phụ (có test `test_import_has_no_stdout_side_effect`). `test_private_artifacts` (gồm `test_g_gitignore`) OK. Ghi chú: `.gitignore` trong diff 0aa7a44..HEAD là commit be5990e của orchestrator (gỡ dòng `_work/` mà 9d1d40f đã thêm) — không thuộc coder. |
+| 4 | Nguồn dữ liệu thật/đúng nguồn | PASS | Tự tính `sha256sum checkpoints/*.pt`: alphabet_best `a6311820…5b708a2`, stgcn_tier2_indomain `53c34cba…afe2c826`, stgcn_unified_best `93063323…01de4aabb` — khớp AC2 §6 và `reports/private_archive_2026-09-28/kaggle_archive_manifest.json:24` (a1; :36, :48 theo kế hoạch). 12 `reports/**/*.pt`: checker mục `rpt_*` 12/12 `ok` (lần chạy của reviewer). Nguồn Kaggle: `_work/_plan12_tmp/B5_download.log:1` `Dataset URL: https://www.kaggle.com/datasets/hauuto/vietnamese-sign-language-alphabet` (= `docs/data_registry.md:43`); `B6_download.log:1` `.../aresusayhi/vsl-vietnamese-sign-languages` (= `docs/CLOUD.md:46`); b2 `kaggle kernels output phmvnsm33/vsl-extract-alphabet` (= `docs/data_registry.md:46`), `B4_provenance_compare.txt`: `equal_without_generated_by True`, `verdict real_data_known_checkpoint`. Video thật đo bằng cv2: c1 0 lệch `num_frames`/width/height so `recording_groups.csv`/`data/splits/unified/*.csv`, b1 640 clip + facts `a_hau_A_001.mp4` khớp JSON e2e (inventory reviewer = inventory_after_b8). Không có dữ liệu sinh: video duy nhất do `cv2.VideoWriter` tạo là fixture trong `tempfile.mkdtemp` của test (`tests/test_check_restored_data.py:60-71`), tự xóa. c2 label.csv lấy từ blob git HEAD (sha khớp; nội dung bản người dùng: §8.2 còn mở). |
+| 5 | Rò rỉ split | CHƯA LÀM — lượt sau | |
+| 6 | Chọn model bằng VAL | CHƯA LÀM — lượt sau | |
+| 7 | Số liệu truy được | CHƯA LÀM — lượt sau | |
+| 8 | Cỡ mẫu / CI | CHƯA LÀM — lượt sau | |
+| 9 | Nhất quán train–realtime | CHƯA LÀM — lượt sau | |
+| 10 | Không mock/Math.random | CHƯA LÀM — lượt sau | |
+| 11 | Bảo mật | CHƯA LÀM — lượt sau | |
+| 12 | So sánh công bằng | CHƯA LÀM — lượt sau | |
+| 13 | Kết luận vượt bằng chứng | CHƯA LÀM — lượt sau | |
+
+## AC0 an toàn — PASS
+- `git diff --name-only 0aa7a44 HEAD | grep -E '^(data|checkpoints)/|\.(pt|npz|npy|mp4|jsonl)$'` → rỗng (rc=1). File trong diff: .gitignore (be5990e, orchestrator), docs/STATE.md, docs/plans/12-progress.md, docs/progress_log.md, docs/recovery/expected_local_data.json, docs/usage_ledger.csv, reports/data_recovery_2026-10-01/inventory_after{,_b8}.json, scripts/check_restored_data.py, scripts/prepare_canonical_vsl_gh.py, tests/test_check_restored_data.py.
+- `find checkpoints data/Dataset data/external -type l` → rỗng. `fsutil reparsepoint query` trên checkpoints, data\Dataset, data\external, data → cả 4 `Error 4390: ... not a reparse point`. `cmd /c dir /AL /S /B checkpoints data\Dataset data\external` → `File Not Found` (không có junction/symlink nào ở mọi độ sâu).
+- 3 dòng ` D` của người dùng vẫn còn trong `git status` đầu phiên.
+
+## Vấn đề (theo mức độ)
+Không có FAIL ở phần 1. Ghi chú mức THẤP / thông tin:
+1. (THẤP) b1 hauuto chỉ kiểm được số lượng 640/4 người ký + facts 1 clip (`a_hau_A_001.mp4`) — không có tham chiếu từng clip trong repo. Bằng chứng mạnh hơn là hand_live_check chạy lại bằng hệt (AC4, 8 clip) — sẽ đánh giá ở lượt sau (mục 7/13). Không coi là "đã xác minh 640 clip từng byte".
+2. (THẤP) Checker tin file tham chiếu cục bộ gitignore (`nested_predictions.csv`) mà không tự kiểm sha của nó; reviewer đã kiểm tay (khớp manifest:84). Gợi ý (không bắt buộc): thêm `expected_from` sha cho file tham chiếu.
+3. (THÔNG TIN) `prepare_canonical_vsl_gh.py`: bọc stdout + `mkdir` dời từ lúc import vào `main()` — thay đổi hành vi khi import (tốt hơn), không đổi hành vi khi chạy không tham số.
+4. (THÔNG TIN) `.gitignore` khác so với 0aa7a44 do be5990e (orchestrator), không phải coder; `test_g_gitignore` OK.
+5. (MỞ, người dùng) §8.1 a4/a5/a6 + `gloss_vocab_canonical.txt` vẫn `missing` → AC2 của 06 là 518 chạy, 1 ERROR + 1 skip, không phải 526/0; §8.2 label.csv chưa xác nhận.
+
+## Kết luận tạm (phần 1)
+Hạng mục 1–4 + AC0: PASS, không FAIL. Kết luận cuối (APPROVE/CHANGES_REQUESTED) chờ lượt sau (5–13).
+
+## CẦN NGƯỜI DÙNG QUYẾT ĐỊNH
+- §8.1 kế hoạch 12: nguồn cho `stgcn_best.pt`, `vit5_stage{1,2}/best_model/`, `cslr_best.pt` + `gloss_vocab_canonical.txt` (hoặc chấp nhận AC2 của 06 ở trạng thái 518/1 ERROR/1 skip).
+- §8.2: xác nhận `data/Dataset/Labels/label.csv` (bản blob git HEAD) là bản đúng.
