@@ -407,5 +407,371 @@ class TestTrainSeed(unittest.TestCase):
         self.assertNotEqual(a, c)
 
 
+# =====================================================================================================================
+# B4b — scripts/archive_retrain_kaggle.py (plan 13 §3.4c) with a FAKE Kaggle API (no network, no credentials).
+# Scratch directories are under <repo>/_work/_test_tmp/ (inside _work/, as the script requires). No real symlink or
+# junction is ever created (forbidden since the 30/9 incident): link detection is exercised by patching lstat.
+# =====================================================================================================================
+
+ARCH_DATASET = "owner1/vslt-retrain-test-fixture"
+
+
+class _HttpError(Exception):
+    def __init__(self, code):
+        super().__init__(f"{code} Client Error")
+        self.response = _Obj(status_code=code)
+
+
+class _Obj:
+    def __init__(self, **kw):
+        self.__dict__.update(kw)
+
+
+class _FakeKaggle:
+    """Records every call. Before create the slug is absent (404) unless `exists`; after create it is `ready`."""
+
+    def __init__(self, staging=None, exists=False, list_private=True, meta_private=True, download_tamper=None,
+                 remote_override=None, download_source=None):
+        self.calls, self.staging, self.exists, self.created = [], staging, exists, False
+        self.list_private, self.meta_private = list_private, meta_private
+        self.download_tamper, self.remote_override = download_tamper, remote_override
+        self.download_source = download_source
+
+    def __getattr__(self, name):  # any other API method (version / update / delete ...) is recorded and fails loudly
+        if name.startswith("dataset_") or name.startswith("datasets_"):
+            def forbidden(*a, **k):
+                self.calls.append((name, k))
+                raise AssertionError(f"forbidden Kaggle call {name}")
+            return forbidden
+        raise AttributeError(name)
+
+    def dataset_status(self, dataset):
+        self.calls.append(("dataset_status", dataset))
+        if self.exists or self.created:
+            return "ready"
+        raise _HttpError(404)
+
+    def dataset_create_new(self, **kw):
+        self.calls.append(("dataset_create_new", kw))
+        self.created = True
+        return _Obj(status="ok", error=None, ref=ARCH_DATASET, url="u")
+
+    def dataset_list(self, **kw):
+        self.calls.append(("dataset_list", kw))
+        if not (self.exists or self.created):
+            return []
+        return [_Obj(ref=ARCH_DATASET, is_private=self.list_private)]
+
+    def dataset_metadata(self, dataset, path):
+        self.calls.append(("dataset_metadata", dataset))
+        p = os.path.join(path, "dataset-metadata.json")
+        with open(p, "w", encoding="utf-8") as f:
+            json.dump({"id": dataset, "info": {"isPrivate": self.meta_private}}, f)
+        return p
+
+    def _remote(self):
+        if self.remote_override is not None:
+            return dict(self.remote_override)
+        return {n: os.path.getsize(os.path.join(self.staging, n)) for n in os.listdir(self.staging)
+                if n != "dataset-metadata.json"}
+
+    def dataset_list_files(self, dataset, page_token=None, page_size=20):
+        self.calls.append(("dataset_list_files", page_token))
+        return _Obj(files=[_Obj(name=n, total_bytes=s) for n, s in sorted(self._remote().items())],
+                    next_page_token=None, error_message=None)
+
+    def dataset_download_files(self, dataset, path=None, unzip=False, **kw):
+        self.calls.append(("dataset_download_files", path, unzip))
+        src = self.download_source or self.staging
+        for n in os.listdir(src):
+            if n != "dataset-metadata.json":
+                with open(os.path.join(src, n), "rb") as fi, open(os.path.join(path, n), "wb") as fo:
+                    fo.write(fi.read())
+        if self.download_tamper:
+            with open(os.path.join(path, self.download_tamper), "ab") as f:
+                f.write(b"x")
+
+    def names(self):
+        return [c[0] for c in self.calls]
+
+
+class TestArchiveRetrainKaggle(_Scratch):
+    ALLOWED_CALLS = {"dataset_status", "dataset_create_new", "dataset_list", "dataset_metadata", "dataset_list_files",
+                     "dataset_download_files"}
+
+    @classmethod
+    def setUpClass(cls):
+        import archive_retrain_kaggle as R
+        cls.R = R
+
+    def setUp(self):
+        super().setUp()
+        self.src = self.p("src")
+        self.files = {"cslr_best.pt": b"\x00\x01ckpt", "vit5_stage2/best_model/config.json": b'{"d_model": 8}\n',
+                      "vit5_stage2/best_model/spiece.model": b"\x02spm", "logs/k2.log": b"epoch 1 loss 1.0\n"}
+        for rel, data in self.files.items():
+            write_bytes(os.path.join(self.src, *rel.split("/")), data)
+        self.staging = self.p("staging_x")
+        self.dl = self.p("verify_x")
+        self.manifest = self.p("out", "x_manifest.json")
+
+    def code(self, fn, *a, **kw):
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            try:
+                return fn(*a, **kw)
+            except self.R.ArchiveError as e:
+                return e.code
+
+    def stage(self, src=None, staging=None, title="VSLT retrain test fixture", note="test fixture only"):
+        return self.code(self.R.stage, src or self.src, staging or self.staging, ARCH_DATASET, title, note)
+
+    def staged_ok(self):
+        self.assertEqual(self.stage(), 0)
+        return self.staging
+
+    def verify(self, api, manifest=None):
+        return self.code(self.R.verify, self.staging, ARCH_DATASET, self.dl, manifest or self.manifest, api,
+                         ["verify", "--dataset", ARCH_DATASET], poll_s=0, timeout_s=0, sleep=lambda s: None,
+                         clock=lambda: 0.0)
+
+    # --- stage ---------------------------------------------------------------------------------------------------
+    def test_stage_success_flat_names_sums_private_metadata(self):
+        self.staged_ok()
+        names = sorted(os.listdir(self.staging))
+        expected = sorted([r.replace("/", "__") for r in self.files] + ["SHA256SUMS", "dataset-metadata.json"])
+        self.assertEqual(names, expected)
+        sums = self.R.parse_sums(os.path.join(self.staging, "SHA256SUMS"))
+        self.assertEqual(sums, {r.replace("/", "__"): sha(d) for r, d in self.files.items()})
+        with open(os.path.join(self.staging, "dataset-metadata.json"), encoding="utf-8") as f:
+            meta = json.load(f)
+        self.assertIs(meta["isPrivate"], True)
+        self.assertEqual(meta["id"], ARCH_DATASET)
+        self.assertIn("test fixture only", meta["description"])
+        self.assertEqual([n for n in os.listdir(self.tmp) if ".partial-" in n], [])
+
+    def test_stage_outside_work_exit_2(self):
+        outside = os.path.join(ROOT, "plan13_not_under_work_staging")
+        self.assertEqual(self.stage(staging=outside), 2)
+        self.assertFalse(os.path.exists(outside))
+        self.assertEqual(self.stage(src=os.path.join(ROOT, "configs")), 2)
+        self.assertEqual(self.code(self.R.require_under_work, self.R.WORK_ROOT, "x"), 2)  # _work itself is refused
+
+    def test_stage_existing_staging_exit_2_untouched(self):
+        self.staged_ok()
+        before = sorted(os.listdir(self.staging))
+        self.assertEqual(self.stage(), 2)
+        self.assertEqual(sorted(os.listdir(self.staging)), before)
+
+    def test_stage_link_or_reparse_point_exit_2(self):
+        from unittest import mock
+        real = self.R.is_link_or_reparse
+        target = os.path.join(self.src, "logs", "k2.log")
+        with mock.patch.object(self.R, "is_link_or_reparse",
+                               lambda p: os.path.normcase(os.path.abspath(p)) == os.path.normcase(target) or real(p)):
+            self.assertEqual(self.stage(), 2)
+        self.assertFalse(os.path.exists(self.staging))
+        target = os.path.join(self.src, "vit5_stage2")  # a directory junction
+        with mock.patch.object(self.R, "is_link_or_reparse",
+                               lambda p: os.path.normcase(os.path.abspath(p)) == os.path.normcase(target) or real(p)):
+            self.assertEqual(self.stage(), 2)
+        self.assertFalse(os.path.exists(self.staging))
+
+    def test_is_link_or_reparse_detects_attribute(self):
+        import stat as _stat
+        from unittest import mock
+        self.assertFalse(self.R.is_link_or_reparse(os.path.join(self.src, "cslr_best.pt")))
+        fake = _Obj(st_mode=_stat.S_IFDIR, st_file_attributes=0x400)
+        with mock.patch.object(self.R.os, "lstat", lambda p: fake):
+            self.assertTrue(self.R.is_link_or_reparse("anything"))
+        fake_link = _Obj(st_mode=_stat.S_IFLNK | 0o777)
+        with mock.patch.object(self.R.os, "lstat", lambda p: fake_link):
+            self.assertTrue(self.R.is_link_or_reparse("anything"))
+
+    def test_stage_empty_dir_exit_2(self):
+        os.makedirs(os.path.join(self.src, "empty_sub"))
+        self.assertEqual(self.stage(), 2)
+        self.assertFalse(os.path.exists(self.staging))
+
+    def test_stage_double_underscore_and_reserved_names_exit_2(self):
+        write_bytes(os.path.join(self.src, "a__b.txt"), b"x")
+        self.assertEqual(self.stage(), 2)
+        src2 = self.p("src2")
+        write_bytes(os.path.join(src2, "SHA256SUMS"), b"x")
+        self.assertEqual(self.stage(src=src2, staging=self.p("staging_y")), 2)
+
+    def test_stage_secret_like_string_exit_2(self):
+        write_bytes(os.path.join(self.src, "logs", "env.json"), b'{"KAGGLE_KEY": "redacted"}\n')
+        self.assertEqual(self.stage(), 2)
+        self.assertFalse(os.path.exists(self.staging))
+
+    def test_stage_total_too_large_exit_2(self):
+        from unittest import mock
+        with mock.patch.object(self.R, "MAX_TOTAL_BYTES", 10):
+            self.assertEqual(self.stage(), 2)
+        self.assertFalse(os.path.exists(self.staging))
+        self.assertEqual(self.R.MAX_TOTAL_BYTES, 3 * 1024 ** 3)
+
+    def test_stage_bad_title_dataset_note_exit_2(self):
+        self.assertEqual(self.stage(title="abc"), 2)
+        self.assertEqual(self.stage(note="  "), 2)
+        self.assertEqual(self.code(self.R.stage, self.src, self.staging, "no-slash", "VSLT retrain x", "n"), 2)
+
+    # --- upload --------------------------------------------------------------------------------------------------
+    def test_upload_creates_once_private_no_other_calls(self):
+        self.staged_ok()
+        api = _FakeKaggle(staging=self.staging)
+        self.assertEqual(self.code(self.R.upload, self.staging, ARCH_DATASET, api), 0)
+        creates = [c for c in api.calls if c[0] == "dataset_create_new"]
+        self.assertEqual(len(creates), 1)
+        kw = creates[0][1]
+        self.assertIs(kw["public"], False)
+        self.assertEqual(kw["dir_mode"], "skip")
+        self.assertEqual(os.path.normcase(kw["folder"]), os.path.normcase(os.path.abspath(self.staging)))
+        self.assertTrue(set(api.names()) <= self.ALLOWED_CALLS, api.names())
+
+    def test_upload_existing_slug_exit_5_no_create(self):
+        self.staged_ok()
+        api = _FakeKaggle(staging=self.staging, exists=True)
+        self.assertEqual(self.code(self.R.upload, self.staging, ARCH_DATASET, api), 5)
+        self.assertNotIn("dataset_create_new", api.names())
+
+    def test_upload_staging_outside_work_or_modified_exit(self):
+        api = _FakeKaggle()
+        self.assertEqual(self.code(self.R.upload, os.path.join(ROOT, "plan13_x_staging"), ARCH_DATASET, api), 2)
+        self.staged_ok()
+        with open(os.path.join(self.staging, "cslr_best.pt"), "ab") as f:
+            f.write(b"!")
+        api = _FakeKaggle(staging=self.staging)
+        self.assertEqual(self.code(self.R.upload, self.staging, ARCH_DATASET, api), 3)
+        self.assertNotIn("dataset_create_new", api.names())
+
+    def test_source_has_no_forbidden_calls(self):
+        with open(os.path.join(ROOT, "scripts", "archive_retrain_kaggle.py"), encoding="utf-8") as f:
+            src = f.read()
+        for bad in ("public=True", '"--public"', "dataset_metadata_update", "dataset_delete", "dataset_create_version",
+                    "metadata --update", "rmtree", "os.remove(", "os.unlink(", "os.symlink", "shutil.copy"):
+            self.assertNotIn(bad, src, bad)
+        self.assertIn("public=False", src)
+
+    # --- verify --------------------------------------------------------------------------------------------------
+    def uploaded(self, **kw):
+        self.staged_ok()
+        api = _FakeKaggle(staging=self.staging, **kw)
+        self.assertEqual(self.code(self.R.upload, self.staging, ARCH_DATASET, api), 0)
+        return api
+
+    def test_verify_success_manifest(self):
+        api = self.uploaded()
+        self.assertEqual(self.verify(api), 0)
+        with open(self.manifest, encoding="utf-8") as f:
+            m = json.load(f)
+        self.assertTrue({"script", "command", "git_commit", "code_dirty", "verified_at_utc"} <= set(m["generated_by"]))
+        self.assertEqual(m["generated_by"]["script"], "scripts/archive_retrain_kaggle.py")
+        self.assertIs(m["dataset"]["is_private"], True)
+        self.assertEqual(m["dataset"]["is_private_sources"], {"dataset_list_mine": True, "dataset_metadata": True})
+        self.assertEqual(m["verified"]["n_files"], len(self.files))
+        self.assertEqual(sorted(f["rel_path"] for f in m["files"]), sorted(self.files))
+        for f in m["files"]:
+            self.assertEqual(f["sha256"], sha(self.files[f["rel_path"]]))
+            self.assertEqual(f["sha256"], f["sha256_after_download"])
+            self.assertEqual(f["archive_name"], f["rel_path"].replace("/", "__"))
+            self.assertEqual(f["size_bytes"], len(self.files[f["rel_path"]]))
+        self.assertTrue(set(api.names()) <= self.ALLOWED_CALLS, api.names())
+
+    def test_verify_downloaded_sha_mismatch_exit_3_no_manifest(self):
+        api = self.uploaded(download_tamper="cslr_best.pt")
+        self.assertEqual(self.verify(api), 3)
+        self.assertFalse(os.path.exists(self.manifest))
+
+    def test_verify_remote_list_differs_exit_3(self):
+        api = self.uploaded(remote_override={"cslr_best.pt": 6})
+        self.assertEqual(self.verify(api), 3)
+        self.assertFalse(os.path.exists(self.manifest))
+
+    def test_verify_not_private_exit_4(self):
+        api = self.uploaded(list_private=False)
+        self.assertEqual(self.verify(api), 4)
+        api2 = _FakeKaggle(staging=self.staging, exists=True, meta_private=None)
+        self.assertEqual(self.verify(api2), 4)
+        self.assertFalse(os.path.exists(self.manifest))
+
+    def test_verify_manifest_out_misplaced_or_existing_exit_2(self):
+        api = self.uploaded()
+        self.assertEqual(self.verify(api, manifest=os.path.join(ROOT, "reports", "plan13_x_manifest.json")), 2)
+        self.assertEqual(self.verify(api, manifest=os.path.join(ROOT, "reports", "retrain_2026-10-02", "x.json")), 2)
+        self.assertEqual(self.verify(api, manifest=os.path.join(os.path.dirname(ROOT), "x_manifest.json")), 2)
+        ok_in_repo = os.path.join(ROOT, "reports", "retrain_2026-10-02", "inputs_tier1_manifest.json")
+        if not os.path.exists(ok_in_repo):
+            self.assertEqual(os.path.normcase(self.R.check_manifest_out(ok_in_repo)), os.path.normcase(ok_in_repo))
+        self.assertEqual(self.verify(api), 0)
+        with open(self.manifest, "rb") as f:
+            first = f.read()
+        self.assertEqual(self.verify(api), 2)  # never overwritten
+        with open(self.manifest, "rb") as f:
+            self.assertEqual(f.read(), first)
+
+    def test_verify_download_dir_outside_work_exit_2(self):
+        api = self.uploaded()
+        rc = self.code(self.R.verify, self.staging, ARCH_DATASET, os.path.join(ROOT, "plan13_x_dl"), self.manifest,
+                       api, [], poll_s=0, timeout_s=0, sleep=lambda s: None, clock=lambda: 0.0)
+        self.assertEqual(rc, 2)
+        self.assertFalse(os.path.exists(os.path.join(ROOT, "plan13_x_dl")))
+
+    # --- restore -------------------------------------------------------------------------------------------------
+    def verified(self):
+        api = self.uploaded()
+        self.assertEqual(self.verify(api), 0)
+        return api
+
+    def restore(self, api, dest, manifest=None):
+        return self.code(self.R.restore, manifest or self.manifest, self.p("restore_dl"), dest, api)
+
+    def test_restore_writes_all_then_skips_identical(self):
+        api = self.verified()
+        dest = self.p("dest")
+        self.assertEqual(self.restore(api, dest), 0)
+        for rel, data in self.files.items():
+            with open(os.path.join(dest, *rel.split("/")), "rb") as f:
+                self.assertEqual(f.read(), data)
+        self.assertEqual(self.restore(api, dest), 0)  # identical files: skipped, not rewritten
+
+    def test_restore_never_overwrites_different_file(self):
+        api = self.verified()
+        dest = self.p("dest")
+        write_bytes(os.path.join(dest, "logs", "k2.log"), b"LOCAL DIFFERENT\n")
+        self.assertEqual(self.restore(api, dest), 3)
+        with open(os.path.join(dest, "logs", "k2.log"), "rb") as f:
+            self.assertEqual(f.read(), b"LOCAL DIFFERENT\n")
+        self.assertFalse(os.path.exists(os.path.join(dest, "cslr_best.pt")))  # nothing written at all
+
+    def test_restore_rejects_tampered_manifest_and_bad_download(self):
+        api = self.verified()
+        with open(self.manifest, encoding="utf-8") as f:
+            m = json.load(f)
+        bad = json.loads(json.dumps(m))
+        bad["files"][0]["rel_path"] = "../escape.bin"
+        bad_path = self.p("bad_manifest.json")
+        write_bytes(bad_path, json.dumps(bad).encode("utf-8"))
+        self.assertEqual(self.restore(api, self.p("dest")), 0)
+        self.assertEqual(self.restore(api, self.p("dest2"), manifest=bad_path), 2)
+        other = json.loads(json.dumps(m))
+        other["generated_by"]["script"] = "scripts/archive_private_kaggle.py"
+        other_path = self.p("other_manifest.json")
+        write_bytes(other_path, json.dumps(other).encode("utf-8"))
+        self.assertEqual(self.restore(api, self.p("dest3"), manifest=other_path), 2)
+        api_t = _FakeKaggle(staging=self.staging, exists=True, download_tamper="cslr_best.pt")
+        self.assertEqual(self.restore(api_t, self.p("dest4")), 3)
+        self.assertFalse(os.path.exists(self.p("dest4", "cslr_best.pt")))
+
+    def test_cli_main_exit_codes(self):
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(self.R.main(["stage", "--src", self.src]), 2)  # missing required args
+            self.assertEqual(self.R.main(["stage", "--src", self.src, "--staging", self.staging, "--dataset",
+                                          ARCH_DATASET, "--title", "VSLT retrain test fixture",
+                                          "--licence-note", "fixture"]), 0)
+            self.assertEqual(self.R.main(["upload", "--staging", self.staging, "--dataset", ARCH_DATASET],
+                                         api=_FakeKaggle(staging=self.staging, exists=True)), 5)
+
+
 if __name__ == "__main__":
     unittest.main()

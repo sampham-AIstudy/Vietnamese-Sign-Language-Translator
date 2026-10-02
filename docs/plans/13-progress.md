@@ -222,6 +222,31 @@ Tệp tạm: `_work/_plan13_tmp/`.
 - Test: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_retrain_tools -v` → `Ran 26 tests` `OK`, 0 skip (`B4a_test_green.log`);
   `git diff 0373a90 -- tests/test_retrain_tools.py | grep -c "^-[^-]"` → 0.
 
+### B4b — `scripts/archive_retrain_kaggle.py` + test API giả (lượt 3). Log: `_work/_plan13_tmp/B4b_*`
+- Chỉ THÊM file mới; 2 script archive cũ không sửa (chỉ import helper) ⇒ không cần impact sửa.
+- Test viết trước (`TestArchiveRetrainKaggle`, 24 test, scratch dưới `_work/_test_tmp/`, API Kaggle giả — mọi hàm `dataset_*` khác 6 hàm
+  được phép đều ghi lại và FAIL): `B4b_test_red.log` — `ModuleNotFoundError: No module named 'archive_retrain_kaggle'` (FAILED errors=1);
+  mã được cất ở `_work/_plan13_tmp/b4b_edited/` trong lúc chạy đỏ rồi chuyển lại.
+- Script (§3.4c): `stage --src --staging --dataset --title --licence-note` (chép đệ quy, `archive_name` = đường dẫn tương đối `/`→`__`;
+  từ chối symlink/junction/reparse point (`os.lstat` + `FILE_ATTRIBUTE_REPARSE_POINT`, không theo link), thư mục rỗng, thành phần tên chứa `__`
+  (để `archive_name` đảo được), tên trùng `SHA256SUMS`/`dataset-metadata.json`, chuỗi giống credential (`SECRET_PATTERNS` của
+  `archive_private_kaggle`; đuôi văn bản + `.jsonl .yaml .yml .py .sh .cfg .ini .toml`), tổng > 3 GiB, staging đã có, `--src`/`--staging` không
+  nằm DƯỚI `_work/` → exit 2; chép `xb` vào `<staging>.partial-*` rồi `os.rename`; lỗi → thư mục dở dang ĐỂ LẠI trong `_work/` (script không
+  bao giờ xóa thư mục — quy tắc sau sự cố 30/9; khác script cũ dùng `rmtree`)); `upload` (chỉ `dataset_create_new(folder, public=False,
+  dir_mode="skip")`, slug đã có → 5; viết lại thân `upload` vì `archive_step4_kaggle.upload` bắt staging NGOÀI repo — mâu thuẫn §3.4c; dùng lại
+  `is_not_found`, `listed_mine`); `verify` (ready, private 2 nguồn, danh sách + kích thước, tải về thư mục mới dưới `--download-dir`, sha256;
+  manifest `generated_by{script, command, git_commit, code_dirty, code_dirty_files, kaggle_version, kagglesdk_version, verified_at_utc}`,
+  `dataset{ref, url, title, license, description, is_private, is_private_sources, status, total_bytes}`, `files[{rel_path, archive_name,
+  size_bytes, sha256, sha256_after_download}]`, `verified{n_files}`; `--manifest-out` trong repo chỉ `reports/retrain_<YYYY-MM-DD>/<tên>_manifest.json`
+  hoặc dưới `_work/`, ngoài repo → 2, đích đã có → 2 (mở `x`, không ghi đè)); `restore --manifest --download-dir --dest` (kiểm mọi mục: generator
+  == script này, `archive_name` == `rel_path` `/`→`__`, đường dẫn tương đối an toàn; tải, kiểm sha256; kiểm mọi đích trước khi ghi — khác hash → 3,
+  KHÔNG ghi file nào; cùng hash → bỏ qua; ghi `xb`). Mã thoát 0/2/3/4/5/6 như `archive_step4_kaggle`.
+  Guard nguồn (test): không chứa `public=True`, `dataset_delete`, `dataset_create_version`, `dataset_metadata_update`, `rmtree`, `os.remove(`,
+  `os.unlink(`, `os.symlink`, `shutil.copy`. Test không bao giờ tạo symlink/junction thật (phát hiện link được kiểm bằng vá `lstat`).
+- Test: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_retrain_tools tests.test_archive_step4_kaggle tests.test_archive_private_kaggle`
+  → `Ran 101 tests` `OK` (`B4b_test_green.log`; `test_retrain_tools` = 50: 15 B2 + 5 B2c + 6 B4a + 24 B4b), 0 skip;
+  `git diff 0373a90 -- tests/test_retrain_tools.py | grep -c "^-[^-]"` → 0.
+
 ## Đang làm
 - B4a–B4d (lượt 3).
 
@@ -248,3 +273,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B2b+B2c (progress) | `detect-changes --scope staged` | "Changes: 1 files, 1 symbols / Risk level: critical" — `Section Kế hoạch 13 — tiến độ (coder) → docs/plans/13-progress.md` (markdown; nối nhầm như B0/B2) (`dc_B2c.txt`) |
 | B3 (progress) | `detect-changes --scope staged` (chỉ `M docs/plans/13-progress.md`) | "Changes: 1 files, 1 symbols / Affected processes: 226 / Risk level: critical" — symbol duy nhất `Section Kế hoạch 13 — tiến độ (coder)` (markdown; nối nhầm như B0/B2) (`dc_B3.txt`) |
 | B4a | `detect-changes --scope staged` (`train.py`, `tests/test_retrain_tools.py`; rồi + progress) | "Changes: 2 files, 1 symbols / Affected processes: 226 / Risk level: critical" — symbol `Function parse_args → train.py`; luồng liệt kê (`Run_harmonized → …`, `Main → …`) là nối nhầm tên `parse_args` (grep: 0 caller mã của `train.py`) (`dc_B4a.txt`); + progress: "Changes: 3 files, 1 symbols / Risk level: critical" (`dc_B4a_full.txt`) |
+| B4b | `detect-changes --scope staged` (`A scripts/archive_retrain_kaggle.py`, `M tests/test_retrain_tools.py`), sau `analyze --index-only` | "Diff touched 2 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B4b.txt`) — index chưa có symbol của file mới / phần test thêm ⇒ KHÔNG phải kết quả sạch; đối chiếu: `git diff --cached --name-status` → `A` + `M` (test chỉ thêm dòng, 0 dòng xóa); file mới chỉ import `archive_step4_kaggle`/`archive_private_kaggle` (không sửa); `git grep archive_retrain_kaggle -- src backend scripts kaggle` → chỉ chính file ⇒ không caller có sẵn. Sau commit: `detect-changes --scope compare` (ghi ở dòng kế) |
