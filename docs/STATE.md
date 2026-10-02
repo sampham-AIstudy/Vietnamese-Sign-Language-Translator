@@ -3,12 +3,13 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-10-02 22:22 (giờ Việt Nam)
-- HEAD: cfc5eea (+ commit state này) | Nhánh: feat/vslt-complete
+- Cập nhật lần cuối: 2026-10-03 01:03 (giờ Việt Nam)
+- HEAD: c722872 (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 80% lúc 22:19, reset 01:00 ngày 3/10 giờ VN; 7 ngày 43%. Không đơn vị nào lọt cổng
-  (coder 1 bước nhỏ est 13: 80+13 = 93 > 90). Không có agent chạy. Orchestrator chỉ theo dõi trạng thái kernel K2 bằng sleep nền ≤ 25 phút.
+- Trạng thái phiên: ĐANG CHẠY — 01:03 ngày 3/10 giao vslt-coder 13 B7 lần 2 (việc kế tiếp ghi ngay dưới) tại HEAD c722872.
+  5h: cửa sổ mới (file usage ghi null lúc 01:00 = sau mốc reset), 7 ngày 44%. Cổng: 0 + 69 (est coder = max 46/69/11) ≤ 90 → đạt.
+  (Trước đó: chờ hạn mức 22:19 → 01:00, 5h 80–84%.)
   K2 preflight v1 = ERROR (orchestrator kiểm 23:10 VN): watchdog 105 phút giết `hf_probe.py VietAI/vit5-base` — snapshot HF kẹt ở
   "Fetching 10 files 4/10" suốt ~100 phút (bước trước đó: clone, pip, prepare_vsl_gh, prepare_translation, clean_10k, vocab đều chạy xong trong ~83 s).
   Output + log đã tải: _work/_plan13_tmp/k2_preflight_v1/ (env.json, SHA256SUMS, logs/*.log, translation_corpus_validation.json). CHƯA đối chiếu gì.
