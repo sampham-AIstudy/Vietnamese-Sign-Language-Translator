@@ -7,9 +7,14 @@
 - HEAD: 48f65dd (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 02:14 ngày 3/10: K2 TRAIN v3 đang chạy trên Kaggle (xem "Tài nguyên"); giao vslt-coder 11 chặng 1 (B0–B1) song song.
-  Xong kernel → (sau khi coder 11 trả về) coder 13 B9 phần 2 (tải output vào _work/_plan13_tmp/k2, kiểm §4 B9 [LS1], commit k2/ + 3 *_used_ids.json, sổ GPU;
-  watchdog cắt → §7.2-1 CẦN NGƯỜI DÙNG). 5h 50% (reset 06:00 VN), 7 ngày 51%. Cổng coder: 50 + 15 (max 15/7/9) = 65 ≤ 90 → đạt.
+- Trạng thái phiên: ĐANG CHẠY — 02:16 ngày 3/10: vslt-coder 11 chặng 1 (B0–B1) đang chạy. 5h 54% (reset 06:00 VN), 7 ngày 51%.
+  K2 TRAIN v3 = ERROR (orchestrator kiểm 19:12Z; output + log đã tải: _work/_plan13_tmp/k2_train_v3/): "K2 FAILED: KernelError: failed jobs: ['cslr']".
+  Nguyên nhân (k2/logs/cslr.log): LEAK CHECK OK (2880/30, vocab 322) rồi SMOKE TEST của train_cslr.py (set_seed 42, 8 mẫu train đầu, 10 epoch, chạy TRƯỚC
+  khi nạp backbone) FAILED: loss 78.0 → 2.33 giảm nhưng giải mã toàn `<BLANK_ONLY>` → RuntimeError "Smoke test failed! Halting full training".
+  ViT5 stage1 (8.14 phút) + stage2 (best epoch 3, val loss 0.6625) chạy xong nhưng output KHÔNG có checkpoint (chỉ log) ⇒ phải chạy lại cả K2.
+  GPU v3: total_minutes 12.14 (env.json). Không thuộc mục nào trong §7.2 ⇒ orchestrator xếp CẦN PLANNER (lần sửa 2 kế hoạch 13): xử lý smoke test
+  (không được lặng lẽ skip/nới; cân nhắc tiêu chí đặt trước), lưu output ViT5 ngay cả khi job khác lỗi, + mục (b) AC0(e) dưới đây.
+  VIỆC KẾ TIẾP: khi coder 11 trả về → giao vslt-planner 13 Lần sửa 2 (cổng planner est 32) → coder 13 sửa + đẩy K2 v4.
   Planner 11 XONG (docs/plans/11-sua-vi-pham-guard-dod7.md, commit cùng lượt này): 9 vi phạm / 8 nhóm (realtime_demo.py ×6: gỡ --source mock → fixture
   SyntheticFrameSource trong tests/test_realtime_demo_source.py, bỏ else 30.0, đổi tên candidates; landmark_extractor.py:121 bỏ `or 25.0`; vsl_gh_dataset.py:58
   bỏ "100%"; sign_segmenter.py:141 else 0.0); guard thêm TestRegistryBaseline + TestKnownEmpty; 7 bước B0–B6 ~8 h; không CẦN NGƯỜI DÙNG trước code;
@@ -293,7 +298,8 @@
 ## Tài nguyên
 - Kaggle GPU tuần này: kaggle quota thật 4,18 h / 30 h (sau K1, 18:37Z 2/10; làm mới 00:00Z 3/10); giới hạn tự đặt 10 giờ/tuần (người dùng).
 - Kaggle kernel đang chạy: phmvnsm33/vsl-retrain-cslr-vit5 version 1 (K2 MODE=preflight, CPU, private) — đẩy 2026-10-02T14:15:08Z (21:15 VN);
-  v1 ERROR (watchdog, 16:10Z); v2 COMPLETE 18:20:57Z (2.63 phút CPU). K1 phmvnsm33/vsl-retrain-stgcn-tier1 v1 COMPLETE 18:33Z (1,58 GPU-phút). ĐANG CHẠY: phmvnsm33/vsl-retrain-cslr-vit5 version 3 (K2 MODE=train, GPU, private) đẩy 2026-10-02T18:48:35Z (01:48 VN 3/10),
+  v1 ERROR (watchdog, 16:10Z); v2 COMPLETE 18:20:57Z (2.63 phút CPU). K1 phmvnsm33/vsl-retrain-stgcn-tier1 v1 COMPLETE 18:33Z (1,58 GPU-phút). version 3 (K2 MODE=train, GPU) đẩy 2026-10-02T18:48:35Z → ERROR (CSLR smoke test), 12,14 GPU-phút. Hiện KHÔNG có kernel nào chạy (02:16 VN 3/10).
+  (cũ:
   RUNNING lúc 18:51Z (orchestrator kiểm); ETA ≤ 19:49Z (§3.7, chưa xác minh), watchdog 105 phút ⇒ muộn nhất ~20:34Z (03:34 VN).
   Kiểm: `PYTHONUTF8=1 .venv/Scripts/kaggle kernels status phmvnsm33/vsl-retrain-cslr-vit5`.
 - Giới hạn API: đã gặp lỗi 429 (reset 4:20 sáng, giờ Việt Nam). Xem orchestrator_resume_addendum.md mục 4 và usage_guard_addendum.md.
