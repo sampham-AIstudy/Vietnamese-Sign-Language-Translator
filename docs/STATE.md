@@ -7,9 +7,15 @@
 - HEAD: 48f65dd (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 01:53 ngày 3/10: K2 TRAIN đang chạy trên Kaggle (xem "Tài nguyên"); giao vslt-planner kế hoạch 11 (việc 5) song song.
-  Orchestrator theo dõi kernel bằng sleep nền; xong kernel → coder 13 B9 phần 2 (tải output vào _work/_plan13_tmp/k2, kiểm §4 B9 [LS1], commit k2/ + 3 *_used_ids.json, sổ GPU;
-  watchdog cắt → §7.2-1 CẦN NGƯỜI DÙNG). 5h 31% (reset 06:00 VN), 7 ngày 48%. Cổng planner: 31 + 32 (max 32/24/2) = 63 ≤ 90 → đạt.
+- Trạng thái phiên: ĐANG CHẠY — 02:14 ngày 3/10: K2 TRAIN v3 đang chạy trên Kaggle (xem "Tài nguyên"); giao vslt-coder 11 chặng 1 (B0–B1) song song.
+  Xong kernel → (sau khi coder 11 trả về) coder 13 B9 phần 2 (tải output vào _work/_plan13_tmp/k2, kiểm §4 B9 [LS1], commit k2/ + 3 *_used_ids.json, sổ GPU;
+  watchdog cắt → §7.2-1 CẦN NGƯỜI DÙNG). 5h 50% (reset 06:00 VN), 7 ngày 51%. Cổng coder: 50 + 15 (max 15/7/9) = 65 ≤ 90 → đạt.
+  Planner 11 XONG (docs/plans/11-sua-vi-pham-guard-dod7.md, commit cùng lượt này): 9 vi phạm / 8 nhóm (realtime_demo.py ×6: gỡ --source mock → fixture
+  SyntheticFrameSource trong tests/test_realtime_demo_source.py, bỏ else 30.0, đổi tên candidates; landmark_extractor.py:121 bỏ `or 25.0`; vsl_gh_dataset.py:58
+  bỏ "100%"; sign_segmenter.py:141 else 0.0); guard thêm TestRegistryBaseline + TestKnownEmpty; 7 bước B0–B6 ~8 h; không CẦN NGƯỜI DÙNG trước code;
+  §7.1 điểm 2: nếu có video thiếu metadata fps → dừng chờ planner. CẦN PLANNER VIỆC KHÁC: (a) kế hoạch 08 §3.2 dòng 152 `fps_last = 30.0` → đổi quy ước 0.0
+  + thêm module hồi quy mới vào AC-T (trước khi code 08); (b) kế hoạch 13 AC0(e) so git diff từ mốc B0 của 13 sẽ thấy file của 11 → giới hạn theo commit
+  `^(WIP )?13:` (planner sửa nhỏ trước review cuối 13). Backlog: README.md:203 `realtime_demo.py --webcam` không tồn tại; scripts/generate_slide_images.py:60 fps=28.5 gõ tay.
   B9 phần 1 XONG (0669d9c, 28a126e = GHIM B9, ab0d740, 643f890; đã push): test 168 OK/2 skip. CẦN REVIEWER XÉT (lệch chữ §3.4e "MODE đổi bằng commit"):
   file repo K2 giữ MODE="preflight"/enable_gpu false/kernel_sources [] (2 test có sẵn khóa); bản đẩy _work/_plan13_tmp/k2_push_train/ thay 2 dòng (MODE="train",
   PIN_COMMIT) + metadata GPU/kernel_sources K1; coder sửa same_as_pinned của K2 cho phép riêng giá trị dòng MODE ∈ {preflight, train} (+4 test); mode ghi trong env.json.
