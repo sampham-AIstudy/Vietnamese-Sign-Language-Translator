@@ -5,8 +5,8 @@
 
 - Cập nhật lần cuối: 2026-10-02 09:40 (giờ Việt Nam)
 - HEAD: eea8906 (+ commit state này) | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 81% lúc 11:20 (reset 14:30), 7 ngày 21%. Đơn vị kế tiếp (coder B3, est ~19–26) không lọt; đã lưu + push.
-  Hẹn giờ nền tự đánh thức orchestrator ~14:32. KHÔNG tắt máy (người dùng không yêu cầu hôm nay).
+- Trạng thái phiên: ĐANG CHẠY — cửa sổ 5h mới (14:21), 7 ngày 22%.
+  ĐANG GIAO: vslt-coder kế hoạch 13 B3 + B4a–B4d — 14:22.
   Đã tìm Kaggle (09:25): 9 kernel của phmvnsm33 (extract/pack/train unified/harmonized/alphabet) + 2 dataset private — KHÔNG có stgcn_best.pt,
   ViT5, cslr_best.pt, gloss_vocab_canonical.txt. Colab: file nằm trên Google Drive của người dùng — orchestrator không truy cập được (chờ người dùng xem).
   Đã xóa (09:35, đã kiểm 0 link/junction trước khi xóa): _work/_plan12_tmp/{dl_hauuto, dl_qipedc, vslgh_src, vslgh_head.tar} (~21G),
@@ -247,3 +247,4 @@
 - 2026-10-01 21:40 | dừng theo hạn mức (84%, không phải ngắt) | kế hoạch 12 APPROVE; 06 Lần sửa 5 đã lập, coder B10 chưa giao | Lưu STATE, commit, push, tắt máy theo yêu cầu người dùng (20:00).
 - 2026-10-02 09:40 | khôi phục sau tắt máy (người dùng giao việc mới) | STATE khớp git (HEAD eea8906) | Tìm Kaggle (không có), dọn file thừa, giao planner kế hoạch 13.
 - 2026-10-02 11:25 | dừng theo hạn mức (81%) | 13 B2a–B2c xong | Lưu STATE, push, hẹn giờ 14:32 làm tiếp B3.
+- 2026-10-02 14:22 | khôi phục sau chờ hạn mức (người dùng nhắn "tiếp tục công việc") | STATE khớp git (HEAD cc52880) | Giao coder 13 B3 + B4.
