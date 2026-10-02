@@ -7,15 +7,25 @@
 - HEAD: 48f65dd (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 02:28 ngày 3/10 giao vslt-planner 13 Lần sửa 2 (mục dưới). 5h 55% (số lúc 02:14, có thể cũ), reset 06:00 VN; 7 ngày 51%.
-  Cổng: 55 + 32 (est planner max 32/24/19) = 87 ≤ 90 → đạt (sát ngưỡng; sau planner nhiều khả năng dừng chờ hạn mức).
+- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 88% lúc 02:45 ngày 3/10, reset 06:00 VN; 7 ngày 55%. Không đơn vị nào lọt cổng. Không agent, không kernel chạy.
+  Đã lưu + push. Orchestrator chờ bằng sleep nền ≤ 25 phút.
+  VIỆC KẾ TIẾP (sau 06:00): vslt-coder 13 B9a + B9b (chẩn đoán smoke CPU theo §0B.3, quy tắc R0/R1/R2 đặt trước; R0 → CẦN PLANNER, R2-FAIL → CẦN NGƯỜI DÙNG, dừng)
+  → B9c (song song được) → B9d → B9e (cổng GPU, ghim v4, đẩy K2 v4) → B9f. Song song/xen kẽ: coder 11 B2 (sign_segmenter); planner kế hoạch 14 (đính chính CSLR unseen);
+  planner sửa kế hoạch 08 §3.2 dòng 152 (fps_last 30.0 → 0.0) trước khi code 08.
+  Planner 13 LẦN SỬA 2 XONG (§0B + [LS2] trong docs/plans/13-train-lai-checkpoint-thieu.md, commit cùng lượt này): smoke = kiểm hạ tầng dừng-sớm (không phải tiêu chí
+  chất lượng); không sửa run_smoke_test; chẩn đoán D0–D5 trên CPU; "đi tiếp" = reports/retrain_2026-10-02/preregistration_amendment_ls2.json chỉ thêm
+  --skip-smoke-test vào argv CSLR + kernel kiểm "[MODEL] Transferred N" khớp số đo; kernel lưu output TỪNG job ngay khi xong (ViT5 không mất nữa);
+  ViT5 chạy lại trong K2 v4 (v4 = lần chạy lại DUY NHẤT; v5 cần planner/người dùng); AC0(b)(e) chỉ tính commit `^(WIP )?13:`; GIỮ 2 cơ chế MODE/PIN của coder
+  (+ commit push_record.json); sửa AC0/AC4/AC5, thêm AC14, không hạ tiêu chí. GPU đã dùng 13,72 phút; v4 ≤ 1,0 h (trần 1,75); tổng ≤ 1,98 h ≤ 2,5.
+  Q4 (THÔNG BÁO người dùng, không chặn): đi tiếp với --skip-smoke-test qua amendment — mặc định ĐƯỢC PHÉP; người dùng phủ nhận trước B9e → dừng trước khi đẩy v4.
+  ĐÍNH CHÍNH (planner): smoke test CÓ nạp backbone (run_smoke_test tự nạp, train_cslr.py:299-300, freeze=False; kernel đặt stgcn_best.pt ở t=164.37 s trước lệnh
+  train_cslr t=164.63 s) — câu "chạy TRƯỚC khi nạp backbone" ở dưới là SAI.
   Coder 11 chặng 1 XONG (a01909a B0, a3d8e1c B1; đã push): mốc guard known 9/allowed 36/unregistered 0; AC7 31 module Ran 518 errors=1 skipped=1 (có sẵn:
   setUpClass test_translation_core thiếu ViT5; skip stgcn_best.pt); test_reset_segments_and_graphs lần này ok; tests.data.test_vsl_gh_dataset test_19 FAIL có sẵn;
   0/7312 video thiếu fps ⇒ B3 được làm. B1: TestRegistryBaseline 4 test, guard Ran 28 OK ×2, đỏ trước có bằng chứng. CẦN REVIEWER: impact CRITICAL ở
   compare_registry/registry_totals coder đánh giá là nối nhầm (caller thật chỉ trong file guard; B1 không sửa 2 symbol này). VIỆC KẾ TIẾP 11: B2 (sign_segmenter).
   K2 TRAIN v3 = ERROR (orchestrator kiểm 19:12Z; output + log đã tải: _work/_plan13_tmp/k2_train_v3/): "K2 FAILED: KernelError: failed jobs: ['cslr']".
-  Nguyên nhân (k2/logs/cslr.log): LEAK CHECK OK (2880/30, vocab 322) rồi SMOKE TEST của train_cslr.py (set_seed 42, 8 mẫu train đầu, 10 epoch, chạy TRƯỚC
-  khi nạp backbone) FAILED: loss 78.0 → 2.33 giảm nhưng giải mã toàn `<BLANK_ONLY>` → RuntimeError "Smoke test failed! Halting full training".
+  Nguyên nhân (k2/logs/cslr.log): LEAK CHECK OK (2880/30, vocab 322) rồi SMOKE TEST của train_cslr.py (set_seed 42, 8 mẫu train đầu, 10 epoch; [SAI — smoke CÓ nạp backbone, xem đính chính trên]) FAILED: loss 78.0 → 2.33 giảm nhưng giải mã toàn `<BLANK_ONLY>` → RuntimeError "Smoke test failed! Halting full training".
   ViT5 stage1 (8.14 phút) + stage2 (best epoch 3, val loss 0.6625) chạy xong nhưng output KHÔNG có checkpoint (chỉ log) ⇒ phải chạy lại cả K2.
   GPU v3: total_minutes 12.14 (env.json). Không thuộc mục nào trong §7.2 ⇒ orchestrator xếp CẦN PLANNER (lần sửa 2 kế hoạch 13): xử lý smoke test
   (không được lặng lẽ skip/nới; cân nhắc tiêu chí đặt trước), lưu output ViT5 ngay cả khi job khác lỗi, + mục (b) AC0(e) dưới đây.

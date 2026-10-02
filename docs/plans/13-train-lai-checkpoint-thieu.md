@@ -1,5 +1,9 @@
 # Kế hoạch 13 — Train lại checkpoint thiếu trên Kaggle (stgcn_best, CSLR + vocab, ViT5) + gỡ Modal
 
+> **Lần sửa 2 — XONG (planner, 2026-10-03).** Sau K2 v3 ERROR (smoke test CSLR giải mã toàn blank; checkpoint ViT5 mất vì kernel chỉ chép output khi mọi
+> job thành công). Chi tiết, bằng chứng, quy tắc quyết định đăng ký trước, thay đổi tiêu chí + lý do: **§0B**. Chỗ sửa trong thân đánh dấu **[LS2]**.
+> Coder làm tiếp từ **B9a** (§0B.9); KHÔNG đẩy lại K2 trước khi B9b ra quyết định theo §0B.3.
+
 > **Lần sửa 1 — XONG (planner, 2026-10-02).** Áp quyết định người dùng Q1 = (ii) (`docs/STATE.md:165-173`, 2026-10-02 10:05).
 > Không có câu hỏi mới chặn việc. Chi tiết + lý do mọi thay đổi tiêu chí: §0. Chỗ sửa trong thân kế hoạch đánh dấu **[LS1]**.
 > B0–B2 đã làm (13-progress) giữ nguyên giá trị; vocab 372 của B2 KHÔNG còn là vocab mặc định (chỉ dùng cho K3 tùy chọn — §0.4, §0.7).
@@ -13,8 +17,201 @@
 >   là thuộc quyết định 2026-10-02 09:20 ("không có thì train lại"), KHÔNG phải GATE đổi model mặc định (không model nào đang có bị thay;
 >   model mặc định Cấp 2 `stgcn_tier2_indomain.pt` không đổi). **Mặc định: được phép.** Nếu người dùng phủ nhận → dừng trước B11.
 >   **[LS1]** Checkpoint đặt vào đường dẫn mặc định là bản (ii) (split câu); bản (i) (K3, tùy chọn) KHÔNG bao giờ đặt vào đường dẫn mặc định.
+> - **[LS2] Q4 (thông báo, KHÔNG chặn; mặc định = §0B.3):** nếu B9b ra "đường P", K2 v4 chạy CSLR với `--skip-smoke-test` qua file bổ sung đăng ký
+>   công khai (smoke gốc vẫn chạy ở CPU, kết quả ghi lại; kiểm §3.6 giữ nguyên). Người dùng phủ nhận trước B9e → dừng trước khi đẩy v4.
+> - **[LS2]** B9b có thể sinh điểm dừng CẦN NGƯỜI DÙNG (R2-FAIL: pipeline không overfit được 8 mẫu) — chỉ khi xảy ra (§0B.11).
 >
-> Trạng thái: XONG (planner, 2026-10-02; Lần sửa 1 cùng ngày). Tệp tạm: `_work/_plan13_tmp/`. Tiến độ coder: `docs/plans/13-progress.md`.
+> Trạng thái: XONG (planner, 2026-10-02; Lần sửa 1 cùng ngày; Lần sửa 2 2026-10-03). Tệp tạm: `_work/_plan13_tmp/`. Tiến độ coder: `docs/plans/13-progress.md`.
+
+## 0B. Lần sửa 2 (2026-10-03) — K2 v3 ERROR (smoke test CSLR), lưu output từng job, AC0 theo commit, cơ chế bản đẩy
+
+> Chỗ sửa trong thân kế hoạch đánh dấu **[LS2]**; §0B ghi đè mọi chỗ mâu thuẫn ở §3–§7. Mọi số dưới đây CHÉP từ file có đường dẫn
+> (log/JSON đã tải), không phải kỳ vọng. Coder làm tiếp từ **B9a** (§0B.9), KHÔNG đẩy lại K2 trước khi B9b ra quyết định.
+
+### 0B.1 Sự kiện (bằng chứng: `_work/_plan13_tmp/k2_train_v3/`)
+- `phmvnsm33/vsl-retrain-cslr-vit5` version 3 (MODE=train, ghim `28a126e`): `k2/env.json` `"error": "KernelError: failed jobs: ['cslr']"`, `exit` 1,
+  `total_minutes` 12.14, `n_gpu` 2 (Tesla T4 ×2), torch 2.10.0+cu128. Preflight trong lần train: 44/44 MATCH, `LEAK CHECK OK (k2 kernel): total=0`
+  (`vsl-retrain-cslr-vit5.log` dòng 46–91). `BACKBONE checkpoints/stgcn_best.pt sha256 2204becd… == k1_outputs.json` ở t=164.37 s, TRƯỚC lệnh
+  `train_cslr.py` ở t=164.63 s (dòng 92–93).
+- `jobs.cslr`: 18:52:02Z → 18:52:13Z, **0.18 phút**, exit 1. `k2/logs/cslr.log`: dòng 3 `LEAK CHECK OK (cslr): n_train_samples=2880, n_val_samples=30, …,
+  n_vocab_tokens=322`; dòng 9–18 loss smoke 78.0081 → 77.8921 → 63.9242 → 30.9929 → 4.4809 → 4.3370 → 3.1192 → 2.0082 → 2.3009 → 2.3260; dòng 20 hai mẫu
+  giải mã `SENT001_S02_R02_F`, `SENT001_S02_R01_F` đều `<BLANK_ONLY>`; dòng 21 `[SMOKE TEST FAILED] Loss decreased: True, Non-empty output: False`;
+  dòng 27 `RuntimeError: Smoke test failed!` (`train_cslr.py:402`).
+- `jobs.vit5_stage1` 8.14 phút exit 0 (`vit5_stage1.log`: best val loss ở epoch 2, lưu vào `/tmp/vslt/checkpoints/vit5_stage1/best_model`);
+  `jobs.vit5_stage2` 1.28 phút exit 0 (`vit5_stage2.log:20` best epoch 3, val loss 0.6625, lưu vào `/tmp/vslt/checkpoints/vit5_stage2/best_model`).
+  Output kernel chỉ có `env.json, preflight.json, SHA256SUMS, gloss_vocab_canonical.txt, translation_corpus_validation.json, logs/*` ⇒ checkpoint ViT5 MẤT.
+- **Nguyên nhân mất ViT5 (mã):** `train()` của K2 chỉ chép checkpoint/history vào `/kaggle/working/k2/` SAU KHI mọi job xong và không job nào lỗi
+  (`kaggle/vsl-retrain-cslr-vit5/retrain_cslr_vit5_kernel.py:630-650`; `raise KernelError(f"failed jobs: …")` ở `:631` đứng trước mọi `copy_new`).
+- **Đính chính STATE** (`docs/STATE.md:17-18` ghi "smoke chạy TRƯỚC khi nạp backbone"): KHÔNG đúng. Smoke chạy trước dòng `[MODEL] Transferred` của
+  `train_cslr` (`:496-502`), nhưng bản thân `run_smoke_test` nạp backbone nếu file có (`train_cslr.py:299-300`, `freeze=False`), đường dẫn =
+  `cfg["pretrained_backbone"]` = `<repo>/checkpoints/stgcn_best.pt` (`:846`) = đúng chỗ kernel vừa đặt (`k2.backbone.path`). Smoke KHÔNG in gì về việc
+  nạp (giá trị trả về bị bỏ) ⇒ log v3 không cho biết bao nhiêu tham số được chuyển (đo ở B9b-D4).
+
+### 0B.2 Nguyên nhân smoke FAIL — điều đã chứng minh và điều chưa
+**Sự thật (mã + log):**
+- S1. Smoke = 8 mẫu đầu `split="train"` (`Subset(range(8))`, `:278`), bs 4, `shuffle=True` ⇒ 2 bước AdamW/epoch × 10 epoch = **20 bước** lr 1e-3, AMP trên
+  CUDA (`:281-331`). Bản huấn luyện thật: 2880 mẫu, bs 8 ⇒ 360 bước/epoch.
+- S2. Loss in ra là loss ở chế độ `train()` (dropout 0.1, BatchNorm theo thống kê lô). Giải mã ở `evaluate_cslr` → `model.eval()` (`:153`) ⇒ BatchNorm
+  dùng running stats. Loss ở chế độ eval có tính (`eval_res["loss"]`) nhưng KHÔNG in (`:342-344`) ⇒ log không cho biết loss eval có giảm không.
+- S3. Tiêu chí: `has_predictions = total_hyp_words > 0` trên cả 8 mẫu (`:347`) ⇒ FAIL nghĩa là ở chế độ eval, mọi khung của cả 8 mẫu đều argmax = blank.
+- S4. `select_vslgh_samples` giữ thứ tự gốc (`src/data/sentence_split.py:216`); 2 mẫu giải mã là SENT001 (∈ Tr) ⇒ nhiều khả năng 8 mẫu smoke TRÙNG với
+  8 mẫu của công thức cũ (không split câu). CHƯA kiểm — B9b-D0.
+- S5. Không có bằng chứng trong repo rằng smoke từng PASS ở công thức cũ: grep `SMOKE TEST PASSED|Smoke Epoch|BLANK_ONLY` trong `reports/ docs/ experiments/`
+  → chỉ có STATE (v3). ⇒ "smoke vốn chạy được, split câu làm hỏng" là CHƯA chứng minh.
+- S6. Khác biệt duy nhất giữa smoke v3 và smoke công thức cũ (khi S4 đúng): vocab 322 vs 372 (số lớp đầu ra ⇒ khởi tạo lớp cuối và thứ tự rút RNG khác),
+  backbone K1 mới (sha `2204becd…`) thay backbone cũ (đã mất), môi trường (T4, torch 2.10, AMP).
+
+**Giả thuyết (chưa chứng minh; B9b đo, không giả thuyết nào được ghi như sự thật):**
+- H1 "Bình nguyên blank" của CTC: sau 20 bước model mới học xác suất blank cao ở mọi khung (loss giảm nhanh 78 → ~2–4/token với `reduction="mean"`),
+  chưa tới pha phát nhãn; tiêu chí "không rỗng sau 20 bước" nhạy với khởi tạo/backbone. Dấu hiệu phù hợp: loss tăng lại ở epoch 9–10 (S1, log dòng 16–18).
+- H2 Lệch BatchNorm train/eval: running stats của `data_bn`/`blocks.*` đến từ K1 (dữ liệu QIPEDC Tier 1, phân bố khác VSL-GH) và chỉ được cập nhật 20 lần
+  (momentum mặc định) ⇒ đầu ra ở `eval()` khác hẳn `train()`.
+- H3 8 mẫu khác công thức cũ — nhiều khả năng SAI theo S4.
+- H4 Backbone: K1 không chuyển được tham số (lệch shape ⇒ 0 tham số) hoặc K1 yếu. (Smoke `freeze=False` nên vẫn học được.)
+- H5 Số học GPU (AMP fp16, CTC backward CUDA không tất định) — smoke CPU tắt autocast.
+- H6 Vocab 322 vs 372 (chỉ đổi lớp cuối/RNG).
+
+### 0B.3 Cách xử lý smoke — quy tắc quyết định ĐĂNG KÝ TRƯỚC (viết trước khi có kết quả B9b)
+**Phân loại:** smoke test là **kiểm hạ tầng dừng-sớm** (fail-fast), KHÔNG phải tiêu chí chất lượng: chỉ dùng 8 mẫu TRAIN, không chạm val/test, không chọn
+epoch/hyperparameter, kết quả không đi vào số liệu báo cáo nào. Nó thuộc công thức đã đăng ký ("`train_cslr.py` (đủ tham số mặc định, có smoke test)" — §3.4e;
+`jobs.k2.cslr.train.argv` của preregistration không có `--skip-smoke-test`) ⇒ đổi nó = sửa đăng ký, phải làm CÔNG KHAI bằng file bổ sung (amendment), không
+lặng lẽ. **Không đổi mã `run_smoke_test`** (tiêu chí gốc giữ nguyên văn và vẫn được chạy, kết quả ghi lại dù PASS hay FAIL).
+
+**Vì sao không phải "đổi tiêu chí GATE sau khi thấy kết quả" (autopilot mục 4):** (1) không có GATE/đổi model mặc định nào ở đây; (2) kết quả đã thấy (smoke v3)
+không phải số đánh giá; không số báo cáo nào phụ thuộc smoke; (3) các kiểm bảo vệ KẾT QUẢ giữ nguyên, không nới: LEAK CHECK (`train_cslr.py:384-396`, chạy cả khi
+bỏ smoke), kiểm căn chỉnh CTC mỗi lô (`:600-609`, raise), kiểm hợp lý §3.6 (loss hữu hạn, best epoch ≥ 1, `best_val_wer < 100` — model chỉ ra blank cho WER 100
+⇒ bị chặn, DỪNG, CẦN NGƯỜI DÙNG), luật chọn epoch theo val, đánh giá test một lần §3.12; (4) thêm một kiểm CHẶT HƠN (chuyển backbone đủ, §0B.3-R0);
+(5) quy tắc dưới được viết trước khi chạy chẩn đoán, có trần cố định, chạy một lần, không lặp; FAIL → DỪNG.
+
+**Chẩn đoán B9b (local, CPU, 0 GPU; không ghi ngoài `_work/` trước khi commit JSON):** runner `_work/_plan13_tmp/ls2/smoke_diag.py` gọi đúng
+`src.training.train_cslr.run_smoke_test` (không sửa) cho D1–D3, và một bản sao có đo đạc cho D4/D5. Đầu vào (kiểm sha256 TRƯỚC khi chạy, lệch → dừng):
+`data/external/vsl_gh/dataset_canonical.json` (lf_sha256 `d53ab701…` = preregistration), `keypoints_frontal` (dir_digest `59642925…`),
+`_work/_plan13_tmp/vocab_train/gloss_vocab_canonical.txt` (sha256 `c0af13db…`, 322), `_work/_plan13_tmp/vocab_e02ed14/gloss_vocab_canonical.txt`
+(sha256 `dd7bc3da…`, 372), `_work/_plan13_tmp/k1/k1/stgcn_best.pt` (sha256 `2204becd…bac2`), `configs/vslgh_sentence_split_v1.json`. KHÔNG đặt gì vào
+`checkpoints/` hay `data/external/vsl_gh/gloss_vocab_canonical.txt` (B11 mới đặt). `device=cpu`, mỗi lần chạy timeout 30 phút tường.
+- **D0** (không train): `sample_id` của `Subset(range(8))` train + mẫu val `[0]` với split câu và với `sentence_split=None`; ghi cả hai danh sách + `identical`.
+- **D1** = smoke NGUYÊN BẢN: `run_smoke_test(data_root, vocab 322, K1, cpu, sentence_split=configs/vslgh_sentence_split_v1.json)` → stdout + bool.
+- **D2** (giải thích): như D1 nhưng `sentence_split=None` + vocab 372 (công thức cũ, backbone K1).
+- **D3** (giải thích): như D1 nhưng đường dẫn backbone không tồn tại (trong `_work/`) ⇒ không nạp backbone.
+- **D4/D5** (một lần chạy, bản sao có đo đạc của vòng lặp smoke, cùng D1 setting): (i) `transfer_info` trả về từ `load_pretrained_spatial_backbone`
+  (`transferred_keys_count`, `transferred_params`, danh sách skip, số khóa lệch shape) + số khóa `data_bn.*`/`blocks.*` của model CSLR;
+  (ii) **kiểm trung thực:** loss epoch 1–10 làm tròn 4 số == 10 số D1 in ra (khác → D4/D5 vô hiệu, DỪNG, CẦN PLANNER);
+  (iii) ở epoch 10 và epoch 60: loss CTC chế độ eval trên 8 mẫu, `total_hyp_words` chế độ eval, `total_hyp_words` khi CHỈ các lớp BatchNorm ở chế độ train
+  (trên bản `deepcopy`, `torch.no_grad()` — không làm bẩn model chính), tỉ lệ khung argmax = blank, WER mã hóa vocab trên 8 mẫu (`evaluate_cslr`);
+  (iv) tiếp tục cùng optimizer, cùng lr, KHÔNG đổi gì, tới **epoch 60** (= 120 bước; trần chọn theo chi phí — 6× ngân sách smoke gốc, vẫn < 4% số bước
+  một epoch-1 của stage 1 thật — chọn TRƯỚC khi chạy, không đổi sau).
+- Ghi `_work/_plan13_tmp/ls2/smoke_diag.json` (`generated_by{command, git_commit, code_dirty, torch, python, device}`, `inputs` sha256, D0–D5, `decision`)
+  + log; commit bản chép ở `reports/retrain_2026-10-02/k2_ls2_smoke_diag/`.
+
+**Quy tắc quyết định (chỉ dùng D0 [thông tin], D1, D4-i, D4-ii, D5; D2/D3/D4-iii là giải thích, KHÔNG là đầu vào quyết định):**
+- **R0 (lỗi thật — chặn):** D4-i có khóa lệch shape, hoặc `transferred_params == 0`, hoặc số khóa chuyển ≠ số khóa `data_bn.*`/`blocks.*` có ở CẢ hai model
+  ⇒ CSLR thật cũng sẽ train gần như từ đầu (kernel hiện chỉ kiểm có dòng `[MODEL] Transferred`, không kiểm số) ⇒ **DỪNG, CẦN PLANNER** (không tự sửa kiến trúc/K1).
+- **R1 (D1 PASS trên CPU):** lỗi gắn với GPU/AMP (H5) ⇒ đi đường **P** với bằng chứng "smoke nguyên bản PASS trên CPU, cùng mã/dữ liệu/backbone/vocab".
+- **R2 (D1 FAIL trên CPU):** tiêu chí gốc thất bại với công thức đăng ký, độc lập GPU. Xét D5 ở **epoch 60** (CHỈ epoch 60, không "epoch nào đó"):
+  PASS nếu loss hữu hạn, loss epoch 60 < loss epoch 1, `total_hyp_words` (eval) > 0 VÀ WER 8 mẫu < 100 ⇒ đường **P** với bằng chứng "pipeline học và phát
+  nhãn được trên 8 mẫu sau 120 bước; 20 bước không đủ". KHÔNG PASS, hoặc hết 30 phút trước epoch 60 ⇒ **DỪNG, CẦN NGƯỜI DÙNG** (pipeline không overfit được
+  8 mẫu — không đẩy K2; lựa chọn đưa người dùng: điều tra sâu hơn / đổi công thức CSLR = kế hoạch mới).
+- **Đường P (duy nhất được phép đẩy K2 v4):** commit `reports/retrain_2026-10-02/preregistration_amendment_ls2.json` (B9d) đổi ĐÚNG một khóa
+  `jobs.k2.cslr.train.argv` := argv đăng ký + `["--skip-smoke-test"]`; kèm `reason_ref "docs/plans/13 §0B.3"`, `decision_rule` (R1|R2), đường dẫn + sha256 của
+  `smoke_diag.json` và của `k2_train_v3/k2/logs/cslr.log`, `expected_backbone_transfer{transferred_keys_count, transferred_params}` (từ D4-i), danh sách
+  "không đổi" (§3.6, luật chọn epoch, giao thức §3.12, LEAK CHECK, watchdog, trần GPU). Kernel kiểm số `[MODEL] Transferred N` == `transferred_params` (R0 ở Kaggle).
+- Không có đường nào khác: không chạy lại GPU với cấu hình y hệt để "thử vận may"; không tăng số epoch smoke trong mã; không đổi seed; không đổi backbone.
+
+### 0B.4 Lưu output từng job (sửa kernel K2)
+- **Yêu cầu:** ngay khi MỖI job (`cslr`, `vit5_stage1`, `vit5_stage2`) kết thúc — exit 0, exit ≠ 0 hay watchdog — worker chép (bằng `copy_new`, không ghi đè)
+  mọi file của job đó ĐANG CÓ vào `/kaggle/working/k2/` theo đúng bố cục §4 B9 hiện dùng: `cslr_best.pt`, `cslr_stage1_best.pt` (nếu có),
+  `reports/{cslr_used_ids, cslr_train_summary, cslr_training_history}.json`; `vit5_stage1/best_model/*`, `reports/vit5_stage1_{history,used_ids}.json`;
+  `vit5_stage2/best_model/*`, `reports/vit5_stage2_{history,used_ids}.json`. Ghi `env.json.jobs.<job>.saved` = danh sách đường dẫn tương đối đã chép,
+  `missing` = danh sách dự kiến mà không có. Kiểm log + sanity của TỪNG job (`check_vit5_log`, `sanity_vit5`, `check_cslr_log`, `sanity_cslr`) chạy cho job
+  đã exit 0, độc lập job khác; ghi `sanity_<job>.json` + `sanity.json` gộp. Job nào lỗi ⇒ vẫn `KernelError` cuối (exit ≠ 0) — không che lỗi.
+- Không đổi: `SHA256SUMS` viết trong `finally` (đã phủ mọi file dưới `WORK`); không xóa/symlink; không chép gì ngoài `WORK`.
+- **ViT5 có chạy lại không:** CÓ, trong cùng K2 v4 (GPU1 song song CSLR trên GPU0). Lý do: checkpoint v3 mất do lỗi hạ tầng (thiết kế output) ⇒ được chạy lại
+  1 lần, cùng cấu hình (§3.6). Chạy song song trong cùng phiên ⇒ phiên dài bằng job dài nhất (CSLR), ViT5 gần như không thêm GPU-phút. **Không tách job:**
+  tách = thêm một phiên (thêm khởi động/clone/pip/HF ~3 phút) mà không lợi gì khi đã lưu từng job. **Chống chọn lọc:** history ViT5 v3 chỉ là log lịch sử
+  (commit ở B9a), không dùng làm gì; ViT5 dùng cho B10–B11b = bản ĐẦU TIÊN được lưu + kiểm (v4), bất kể kết quả các lần sau. Nếu v4 CSLR lỗi mà ViT5 v4
+  lưu đủ ⇒ giữ ViT5 v4; CSLR → §0B.11 điểm dừng.
+- Ghi chú lượt chạy: CSLR v4 = lần chạy lại duy nhất được phép của job CSLR (ngoại lệ trước khi xong epoch đầu, §3.6); ViT5 v4 = lần chạy lại duy nhất
+  của ViT5. v5 của bất kỳ job nào ⇒ CẦN PLANNER (lỗi hạ tầng) hoặc CẦN NGƯỜI DÙNG (kiểm hợp lý §3.6).
+
+### 0B.5 AC0 theo commit của kế hoạch 13 (kế hoạch 11 chạy song song trên cùng nhánh)
+- Tập commit của 13: `git log --format='%H %s' <mốc B0 của 13>..HEAD | grep -E '^[0-9a-f]{40} (WIP )?13:'` → `_work/_plan13_tmp/ac0_commits13.txt`
+  (lọc theo DÒNG TIÊU ĐỀ, không dùng `--grep` vì nó khớp cả thân commit). Tập file của 13 = hợp của
+  `git diff-tree --no-commit-id --name-status -r -M <c>` với mọi `<c>` trong tập đó → `_work/_plan13_tmp/ac0_files13.txt`.
+- AC0(b) và (e) áp trên tập file của 13 (thay cho `git diff <mốc B0> HEAD`). AC0(a) (`git status --porcelain` so mốc B0): dòng mới không thuộc danh sách AC0
+  của 13 thì phải nằm trong danh sách file của kế hoạch đang chạy song song (`docs/plans/11-progress.md` / AC0 của 11) — in ra từng dòng + lý do; còn lại → FAIL.
+- Kiểm bổ sung (chặt hơn, không nới): không commit nào NGOÀI tập 13 (trừ commit `state:` của orchestrator) sửa file chỉ thuộc 13 (`kaggle/vsl-retrain-*`,
+  `reports/retrain_2026-10-02/`, `scripts/retrain_*`, `scripts/eval_sentsplit.py`, `src/data/sentence_split.py`, `configs/vslgh_sentence_split_v1.json`,
+  `tests/test_retrain_tools.py`, `tests/test_sentence_split_guard.py`): `git log --format='%h %s' <mốc>..HEAD -- <các đường dẫn>` chỉ ra commit `13:`/`WIP 13:`/`state:`.
+
+### 0B.6 Hai cơ chế coder tự đặt — XÁC NHẬN cả hai (có điều kiện ghi lại)
+- (a) File repo K2 giữ `PIN_COMMIT = None`, `MODE = "preflight"`, metadata `enable_gpu: false`, `kernel_sources: []` (khóa bởi test có sẵn
+  `tests/test_retrain_tools.py:2163-2164,2170-2171`); bản đẩy trong `_work/` = file ở commit ghim thay đúng 2 dòng (`MODE`, `PIN_COMMIT`) + metadata đẩy
+  bật GPU + `kernel_sources` K1. **Giữ.** Mục đích của "MODE đổi bằng commit" (§3.4e) là truy vết: mã chạy được xác định hoàn toàn bởi (commit ghim, MODE),
+  kernel tự kiểm phần còn lại byte-bằng (`same_as_pinned`), MODE ghi ở `env.json`/`preflight.json`. Đổi sang commit MODE vào repo sẽ làm đỏ 2 test có sẵn
+  ⇒ không được. **Điều kiện [LS2]:** từ v4, bản ghi đẩy phải nằm trong repo, không chỉ trong 13-progress/`_work/`: commit
+  `reports/retrain_2026-10-02/k2/push_record.json` (sinh bằng code: sha256 file đẩy + metadata đẩy, diff đúng 2 dòng so với `git show <ghim>:…`, giá trị MODE,
+  `enable_gpu`, `kernel_sources`, thời điểm đẩy, version Kaggle). Chữ §3.4e được sửa cho khớp (dòng [LS2] ở §3.4e).
+- (b) `same_as_pinned` của K2 bỏ qua riêng GIÁ TRỊ dòng `MODE = "<x>"  # …` khi `<x>` ∈ `MODES` = (`preflight`, `train`) (`retrain_cslr_vit5_kernel.py:47-51,93-100`).
+  **Giữ:** mọi dòng khác (kể cả chú thích sau MODE) vẫn so; `repro_i` vẫn bị từ chối (test `test_k2_unknown_mode_refused`); K1 không đổi. Không cần sửa/nới
+  test nào. K3 (B14) cần MODE mới ⇒ commit mã mới + test mới khi tới đó (không mở rộng `MODES` ở lần sửa này).
+
+### 0B.7 Ngân sách GPU (cập nhật §3.7) — số từ `env.json`; ước lượng ghi rõ "chưa xác minh"
+| Job | Phiên (phút) | Nguồn |
+|---|---|---|
+| K1 v1 | 1.58 | `reports/retrain_2026-10-02/k1/env.json` |
+| K2 v3 (ERROR) | 12.14 | `_work/_plan13_tmp/k2_train_v3/k2/env.json` |
+| **Đã dùng kế hoạch 13** | **13.72 (≈ 0.23 h)** | trần tổng 2.5 h |
+| K2 v4 (kế tiếp) | ước lượng ≤ 1,0 h (chưa xác minh: CSLR 2880 mẫu ∥ ViT5 ~9.4 phút đo ở v3 + khởi động ~2.7 phút đo ở v3) | trần 1.75 h (watchdog 105') |
+- Tổng nếu v4 chạm trần: 0.23 + 1.75 = 1.98 ≤ 2.5 → lọt trần kế hoạch. K3 tùy chọn: 1.98 + 1.75 = 3.73 ≤ 4.25.
+- Cổng tuần (trước MỖI job GPU, thay số ở §3.7): `max(GPU tuần trong STATE "Tài nguyên", "GPU used" của kaggle quota đọc NGAY trước khi đẩy) + đã dùng kế hoạch
+  13 (sổ GPU) + trần job` ≤ 10 → lọt; không → DỪNG, CẦN NGƯỜI DÙNG (§7.2-1). Số đã biết: kaggle quota 4.18 h lúc 18:42Z 2/10 (trước v3; làm mới
+  2026-10-03T00:00Z) — số sau v3 phải ĐỌC lại bằng `kaggle quota`, không cộng tay.
+
+### 0B.8 K1 sanity val top-1 23.08 — ảnh hưởng tới CSLR
+- 23.08 = 3/13: val Tier 1 có 13 dòng (`preregistration.json` `tier1_grouped_val_csv.n_rows` 13, 12 lớp) ⇒ số này gần như không mang thông tin về chất
+  lượng backbone (một mẫu đổi = ±7.7 điểm). Kiểm §3.6 cho K1 (> mức ngẫu nhiên 2.0) đã đạt; KHÔNG thêm ngưỡng chất lượng mới, KHÔNG train lại K1, KHÔNG
+  bỏ backbone (backbone K1 là công thức đăng ký; preregistration `backbone.rule`).
+- Ảnh hưởng có thể (ghi giới hạn, không hành động): stage 1 CSLR đóng băng backbone 10 epoch ⇒ đặc trưng từ backbone yếu có thể làm CSLR kém hơn công thức
+  cũ; số CSLR mới chỉ đúng "với backbone K1 này". D3 (không backbone) ở B9b là giải thích, KHÔNG dùng để chọn có/không dùng backbone.
+- Ghi vào `limitations` của `test_eval.json` (B11b) và 13-progress: "backbone K1 val top-1 đo trên 13 clip — không đủ để đánh giá backbone".
+
+### 0B.9 Bước mới (thay B9 cũ; mỗi bước 1 commit `13: B9x …`, detect-changes trước commit, impact trước khi sửa symbol có sẵn)
+| Bước | Việc | Ước lượng | Phụ thuộc |
+|---|---|---|---|
+| **B9a** | Ghi nhận v3: chép `_work/_plan13_tmp/k2_train_v3/` (env.json, preflight.json, SHA256SUMS, translation_corpus_validation.json, logs/*, log stdout kernel) vào `reports/retrain_2026-10-02/k2_train_v3/` (`copy_new`, kiểm SHA256SUMS; `git add -f` cho *.log; KHÔNG chép `gloss_vocab_canonical.txt` — sha256 đã trong SHA256SUMS); sổ GPU +12.14 phút; 13-progress mục "B9 phần 2 (v3 ERROR)". Không sửa mã. | 0,5 h | — |
+| **B9b** | Chẩn đoán smoke local CPU theo §0B.3 (D0–D5), quyết định theo R0/R1/R2, commit `reports/retrain_2026-10-02/k2_ls2_smoke_diag/{smoke_diag.json, smoke_diag.log}`. Nếu R0 hoặc R2-FAIL → DỪNG (ghi 13-progress, báo orchestrator), KHÔNG làm B9c–B9f. | 1,5 h (CPU ≤ 4 × 30 phút) | B9a |
+| **B9c** | Kernel K2: (1) lưu từng job §0B.4; (2) đọc amendment (§0B.3 đường P): file `reports/retrain_<D>/preregistration_amendment_ls2.json` nếu có thì phải đúng 1 commit, commit preregistration là tổ tiên của nó và nó là tổ tiên ghim; chỉ chấp nhận khóa trong danh sách trắng `{"jobs.k2.cslr.train.argv": thêm đúng ["--skip-smoke-test"]}`, khác → `KernelError`; in `AMENDMENT ls2 <commit> applied: …`; không có file → hành vi cũ; (3) `check_backbone_transfer(text, expected)` — mới, đúng 1 dòng `[MODEL] Transferred N` với N == `expected_backbone_transfer.transferred_params`; (4) ghi `push_record` khóa vào env (MODE, metadata). Test MỚI (đỏ trước): lưu ViT5 khi CSLR lỗi (run giả), amendment hợp lệ/khóa lạ/argv lạ/≠1 commit, transfer N lệch/thiếu. Test có sẵn GIỮ NGUYÊN (`git diff <HEAD trước B9c> -- tests/test_retrain_tools.py | grep -c "^-[^-]"` → 0); test có sẵn xung đột thiết kế → DỪNG, CẦN PLANNER. impact: `train`, `main`, `check_cslr_log` (nếu chạm), `worker` (hàm lồng — đối chiếu grep). | 2 h | B9a (song song B9b được) |
+| **B9d** | `scripts/retrain_amendment.py` (mới): sinh amendment từ `smoke_diag.json` + preregistration (từ chối ghi đè → 2; `code_dirty` → 2; quyết định trong diag ≠ R1/R2-PASS → 3; ghi `generated_by`); test (đỏ trước); sinh + commit amendment. Chỉ chạy khi B9b ra đường P. | 1 h | B9b, B9c |
+| **B9e** | Commit ghim v4 (mã B9c + amendment là tổ tiên), push, `git ls-remote` == ghim; cổng ngân sách §0B.7 (đọc `kaggle quota` thật); bản đẩy `_work/_plan13_tmp/k2_push_train_v4/` theo §0B.6(a) (2 dòng; `same_as_pinned` + `check_pin` local OK); `kernels push`; theo dõi `kaggle kernels status` thật (≥ 5 phút/lần). Commit `push_record.json`. | 0,5 h + chờ | B9d |
+| **B9f** | COMPLETE/ERROR thật → `kaggle kernels output … -p _work/_plan13_tmp/k2` → kiểm như §4 B9 [LS1] + [LS2]: SHA256SUMS; `env.mode` "train", `commit` == ghim v4; log có `AMENDMENT ls2`; argv CSLR trong log == argv amendment; 0 dòng `Smoke Epoch` (đã bỏ smoke theo amendment); `[MODEL] Transferred N` == amendment; LEAK CHECK OK trước epoch đầu; 0 `PRIMARY TEST EVALUATION`; 1 `TEST DEFERRED`; §3.6 từng job; vocab == B2c; HF sha preflight == train; `jobs.*.saved` đủ. Commit `reports/retrain_2026-10-02/k2/` (JSON + log, không .pt/model) + 3 `*_used_ids.json`; sổ GPU. CSLR lỗi mà ViT5 đủ → giữ ViT5 (§0B.4), DỪNG phần CSLR, báo. | 0,75 h + chờ | B9e |
+
+B10 trở đi giữ nguyên (phụ thuộc B9f).
+
+### 0B.10 Thay đổi tiêu chí chấp nhận (planner đổi, lý do)
+| Tiêu chí | Cũ | Mới | Lý do |
+|---|---|---|---|
+| AC0 (a)(b)(e) | so `git diff`/porcelain từ mốc B0 | trên tập commit tiêu đề `^(WIP )?13:` (§0B.5) + kiểm ngược "không commit lạ sửa file của 13"; danh sách thêm: `reports/retrain_2026-10-02/{k2_train_v3, k2_ls2_smoke_diag}/`, `preregistration_amendment_ls2.json`, `k2/push_record.json`, `scripts/retrain_amendment.py`, kernel K2 (đã có) | kế hoạch 11 chạy song song cùng nhánh; không nới: thêm kiểm ngược |
+| AC4 | preregistration 1 commit, tổ tiên ghim | + amendment đúng 1 commit; preregistration ⊂ amendment ⊂ ghim v4 (`merge-base --is-ancestor`); amendment chỉ đổi khóa danh sách trắng; `smoke_diag.json` commit TRƯỚC amendment | sửa đăng ký phải công khai, có thứ tự |
+| AC5 | K2-train bản cuối COMPLETE; log … | bản cuối = v4; v3 ERROR ghi nhận (B9a); log v4 có `AMENDMENT ls2`, 0 `Smoke Epoch`, `[MODEL] Transferred N` == amendment; GPU K1 + v3 + v4 ≤ 2,5 h | §0B.3, §0B.7 |
+| **AC14 (mới)** | — | (a) `smoke_diag.json` có D0, D1 (stdout + bool), D4-i, kiểm trung thực D4-ii = true, D5 epoch 10/60, `decision` ∈ {R0, R1, R2-PASS, R2-FAIL} khớp quy tắc §0B.3 khi reviewer tính lại từ chính JSON; (b) đường P chỉ khi decision ∈ {R1, R2-PASS}; (c) test lưu-từng-job, amendment, transfer xanh; (d) output v4 có `vit5_stage{1,2}/best_model/*` và `env.jobs.*.saved` đầy đủ | §0B.3–0B.4 |
+| §3.4e "MODE đổi bằng commit" | — | MODE file repo = preflight (khóa test); MODE lần chạy = giá trị bản đẩy ∈ MODES, ghi `env.json` + `push_record.json` | §0B.6 |
+| §3.6 chạy lại | tối đa 1 lần/job | v4 = lần chạy lại duy nhất của CSLR và ViT5; v5 → CẦN PLANNER / CẦN NGƯỜI DÙNG | §0B.4 |
+
+Không tiêu chí nào bị hạ: tiêu chí smoke gốc không bị sửa (vẫn chạy ở CPU, kết quả ghi lại); mọi kiểm bảo vệ kết quả giữ nguyên; thêm R0/transfer N, AC14, kiểm ngược AC0.
+
+### 0B.11 Điểm dừng mới
+- B9b R0 → CẦN PLANNER; B9b R2-FAIL hoặc hết giờ → CẦN NGƯỜI DÙNG (không đẩy K2).
+- Test có sẵn mâu thuẫn thiết kế B9c → CẦN PLANNER (không sửa test).
+- v4: CSLR lỗi hạ tầng → CẦN PLANNER (không v5 tự động); CSLR §3.6 không đạt → CẦN NGƯỜI DÙNG; transfer N lệch → CẦN PLANNER.
+- Q4 (thông báo, KHÔNG chặn; mặc định = §0B.3): đường P bỏ smoke trên GPU dựa trên bằng chứng CPU (R1) hoặc kiểm overfit 60 epoch (R2). Người dùng
+  phủ nhận trước B9e → dừng trước khi đẩy v4.
+
+### 0B.12 Reviewer cần kiểm thêm
+1. Tính lại `decision` từ `smoke_diag.json` theo đúng R0/R1/R2 (không theo lời coder); kiểm trung thực D4-ii; D1 gọi đúng `run_smoke_test` không sửa
+   (`git diff <mốc> HEAD -- src/training/train_cslr.py` rỗng ở B9a–B9f).
+2. Thứ tự commit: kế hoạch Lần sửa 2 ⊂ `smoke_diag.json` ⊂ amendment ⊂ ghim v4; amendment 1 dòng `git log`, chỉ khóa danh sách trắng.
+3. Kernel: test lưu-từng-job thật sự mô phỏng CSLR lỗi + ViT5 thành công; `KernelError` vẫn nổ; không đường nào ghi đè/xóa.
+4. Không có số mới trong md (số trong §0B là chép từ log/JSON có đường dẫn).
 
 ## 0. Lần sửa 1 (2026-10-02) — split câu theo quyết định Q1 = (ii)
 
@@ -110,6 +307,8 @@
   phải ngưỡng đạt/không đạt, không hành động nào dựa trên kết quả.
 - Artifact (i) chỉ ở `_work/_plan13_tmp/k3/` + dataset private `phmvnsm33/vslt-retrain-repro-i` (manifest); KHÔNG bao giờ vào `checkpoints/`.
 - Ghi: sổ GPU 13-progress (phút phiên từ `env.json`) + 1 dòng `docs/usage_ledger.csv` (orchestrator ghi; "ledger" theo quyết định).
+- **[LS2]** K3 cũng sẽ gặp smoke test CSLR (công thức cũ, không `--sentence-split`) — trước B14 phải có quyết định riêng dựa trên D2 của B9b (§0B.3); không
+  tự áp amendment `ls2` cho K3 (amendment chỉ đổi `jobs.k2.cslr.train.argv`).
 
 ### 0.8 Thay đổi tiêu chí chấp nhận (planner đổi, lý do)
 | Tiêu chí | Cũ | Mới | Lý do |
@@ -181,6 +380,8 @@ này không phải "chạy test set".
   **[LS1]** Smoke test (`:210-244`) lấy 8 mẫu đầu `split="train"` + 1 mẫu `split="val"` — ở chế độ split câu phải lọc cùng luật (§3.4f).
   WER trong `evaluate_cslr` (`:108-170`) so trên ID đã mã hóa bằng vocab (gloss ngoài vocab → `<unk>`); hàm `compute_wer`
   (`src/metrics/cslr_metrics.py:169-230`) trả S/D/I, tie-break "ưu tiên substitution" (`:162-163`).
+  **[LS2]** Số dòng tại HEAD 70f86b6: `run_smoke_test` `:242-355` (nạp backbone `:299-300`, tiêu chí `:346-348`), `train_cslr` `:358-819`
+  (smoke `:398-402`, nạp backbone `:496-504`), CLI `:822-875` (`--skip-smoke-test` `:836`).
 - **vocab:** không script nào ghi `gloss_vocab_canonical.txt` (grep: chỉ nơi đọc — `train_cslr.py:737`, `cslr_recognizer.py:27`,
   `modal_runner.py:201-202`). Cơ chế có sẵn: `VSLGlossVocabulary.from_canonical_dataset(json)` (`src/data/vsl_gh_dataset.py:277-287`):
   `<blank>`, `<unk>`, rồi gloss duy nhất đã sắp xếp (`:225-232`). `.save()` mở file chế độ văn bản không `newline=` (`:289-293`) ⇒ Windows ghi
@@ -244,6 +445,7 @@ này không phải "chạy test set".
    chỉ xảy ra TRONG bản clone trên Kaggle (`/tmp/vslt`), không bao giờ chép ngược đè lên repo local.
    **[LS1] bổ sung:** được THÊM tùy chọn `sentence_split`/`--sentence-split` (và `exclude_heldout` cho `Clean10kDataset`) ở §3.4f; không truyền →
    hành vi y hệt cũ (test chứng minh). Không đổi model, không đổi tiền xử lý keypoint/văn bản.
+   **[LS2]** Lần sửa 2 KHÔNG sửa `src/training/train_cslr.py` (kể cả `run_smoke_test`); chỉ dùng cờ có sẵn `--skip-smoke-test` qua amendment (§0B.3).
 
 ### 3.2 Luồng dữ liệu
 ```
@@ -262,6 +464,8 @@ Base model `VietAI/vit5-base` chỉ tải trên Kaggle (không tải về máy l
 **[LS1]** `configs/vslgh_sentence_split_v1.json` (tracked) đi theo bản clone; K2 `train` truyền `--sentence-split` cho cả 3 job, vocab train-only,
 xuất `*_used_ids.json`. Sau B11: `scripts/eval_sentsplit.py` (local, CPU, MỘT lần) → `reports/retrain_<D>/eval/test_eval.json`.
 K3 (i) tùy chọn dùng lại K2 với `MODE="repro_i"` (§0.7).
+**[LS2]** Trước K2 v4: chẩn đoán smoke local CPU (B9b) → `reports/retrain_<D>/k2_ls2_smoke_diag/` → amendment `preregistration_amendment_ls2.json` (nếu
+đường P) → kernel đọc amendment; mỗi job xong là chép ngay output của nó vào `/kaggle/working/k2/` (§0B.4).
 
 ### 3.3 Đăng ký trước — `reports/retrain_<D>/preregistration.json` (commit ở B5, trước mọi kernel)
 Sinh bằng script `scripts/retrain_preregister.py` (mới, chỉ đọc + ghi đúng file này, từ chối ghi đè) — KHÔNG gõ tay giá trị:
@@ -289,6 +493,8 @@ Sinh bằng script `scripts/retrain_preregister.py` (mới, chỉ đọc + ghi �
   - `libs_local` thêm `sacrebleu`, `numpy`, `rouge_score` (phiên bản trong `.venv`).
 Kernel đọc file này TỪ bản clone ở commit ghim (không hằng số gõ tay trong script kernel). Giá trị phụ thuộc K1 (sha256 `stgcn_best.pt`)
 nằm ở `reports/retrain_<D>/k1_outputs.json`, commit SAU K1, TRƯỚC K2-train.
+**[LS2]** `preregistration.json` KHÔNG sửa. Thay đổi công thức sau v3 nằm ở file bổ sung `reports/retrain_<D>/preregistration_amendment_ls2.json`
+(1 commit, sinh bằng `scripts/retrain_amendment.py`, chỉ khóa danh sách trắng `jobs.k2.cslr.train.argv` — §0B.3, §0B.9 B9c/B9d).
 
 ### 3.4 Công cụ mới
 **(a) `scripts/build_gloss_vocab_canonical.py`** — `--canonical <dataset_canonical.json> --out <file>`; dùng
@@ -340,6 +546,10 @@ configs/experiments/stgcn.yaml --seed 42`; `evaluate_test.py --config … --chec
   → `train_translation_stage2.py --sentence-split … --stage1-path checkpoints/vit5_stage1/best_model`. Xuất thêm `cslr_used_ids.json`,
   `vit5_stage1_used_ids.json`, `vit5_stage2_used_ids.json`. `MODE="repro_i"` (chỉ K3): như `train` nhưng KHÔNG `--sentence-split`, vocab đầy đủ
   (byte == bản B2), CSLR chạy test S06 cuối hàm như cũ; đầu ra vào `/kaggle/working/k3/`.
+  **[LS2] K2 thay đổi:** (1) "MODE đổi bằng commit" được hiểu và thực hiện như §0B.6(a): file repo giữ `MODE = "preflight"`, `PIN_COMMIT = None`, metadata CPU
+  (khóa bởi test có sẵn); MODE của lần chạy = giá trị trong bản đẩy (∈ `MODES`), kernel tự kiểm phần còn lại == file ở ghim (§0B.6(b)); bản ghi đẩy commit
+  ở `reports/retrain_<D>/k2/push_record.json`. (2) "có smoke test" của CSLR: theo amendment `ls2` nếu B9b ra đường P (§0B.3). (3) Lưu output từng job
+  ngay khi job kết thúc (§0B.4). (4) Kiểm số tham số backbone chuyển `[MODEL] Transferred N` == amendment.
 **[LS1] (f) Tùy chọn split câu trong mã có sẵn** (impact upstream trước khi sửa từng symbol; HIGH/CRITICAL đối chiếu grep, ghi 13-progress):
 - `src/data/sentence_split.py` (mới, §0.3).
 - `VSLGHContinuousDataset.__init__(…, sentence_split=None)` (`vsl_gh_dataset.py:354-420`): có → yêu cầu `split ∈ {train,val,test}` và
@@ -354,6 +564,7 @@ configs/experiments/stgcn.yaml --seed 42`; `evaluate_test.py --config … --chec
 - `scripts/train_translation_stage2.py --sentence-split PATH` → `VSLGHTextDataset(split=…, sentence_split=…)`; ghi used IDs.
 - `scripts/make_vslgh_sentence_split.py --canonical … --seed 42 --out configs/vslgh_sentence_split_v1.json` (từ chối ghi đè, kiểm §0.3).
 - `scripts/eval_sentsplit.py` (§3.12).
+**[LS2] (g)** `scripts/retrain_amendment.py` (mới, B9d) + chẩn đoán `_work/_plan13_tmp/ls2/smoke_diag.py` (B9b, không commit vào `scripts/`).
 
 ### 3.5 Đặt vào chỗ (B11)
 `cp -n` từ bản ĐÃ verify (staging) vào đích; trước đó kiểm đích chưa tồn tại; sau đó sha256 đích == manifest. Đích:
@@ -370,6 +581,8 @@ configs/experiments/stgcn.yaml --seed 42`; `evaluate_test.py --config … --chec
 Không đạt → DỪNG, CẦN NGƯỜI DÙNG (không chạy lại với seed/cấu hình khác). Chạy lại chỉ được phép khi lỗi hạ tầng (ngoại lệ trước khi xong
 epoch đầu, Kaggle lỗi/hết phiên, lỗi mạng khi clone/pip/HF) — tối đa 1 lần/job, cùng cấu hình, ghi vào 13-progress.
 **[LS1]** Số đo trên T (§3.12) KHÔNG có ngưỡng đạt/không đạt và không dẫn tới chạy lại nào.
+**[LS2]** Không đổi các kiểm trên. K2 v4 = lần chạy lại duy nhất của CSLR (smoke raise trước epoch đầu) và của ViT5 (checkpoint v3 mất do thiết kế output);
+"cùng cấu hình" với CSLR = cấu hình đăng ký + amendment `ls2` (chỉ `--skip-smoke-test`, §0B.3). Kiểm hợp lý chạy theo TỪNG job (§0B.4). v5 → §0B.11.
 
 ### 3.7 Thứ tự, ước lượng GPU-giờ, trần
 | Job | Mở khóa | Cơ sở ước lượng (thời gian lịch sử trên RTX 3050) | Ước lượng (chưa xác minh) | Trần cứng |
@@ -388,6 +601,8 @@ Không mở khóa test nào riêng lẻ: `test_translation_core` cần đủ ViT
 **[LS1]** (ii) train trên tập con của dữ liệu cũ (S01–S04 × 240 câu; val 30 clip) ⇒ ước lượng K2 không tăng; giữ trần. K3: cổng trên vượt 10 → KHÔNG
 dừng-hỏi, chỉ ghi "K3 hoãn" (K3 tùy chọn theo quyết định người dùng "nếu cổng ngân sách cho phép"). Với số STATE ~6 + trần K1/K2 2,5 = 8,5,
 K3 (1,75) chỉ lọt nếu GPU thật đã dùng thấp hơn trần — tính lại bằng số thật trước B14.
+**[LS2]** Đã dùng: K1 1.58 + K2 v3 12.14 = 13.72 GPU-phút (≈ 0.23 h). K2 v4 giữ trần 1,75 h ⇒ tổng ≤ 1.98 ≤ 2,5. Cổng tuần dùng
+`max(STATE, kaggle quota đọc ngay trước khi đẩy)` (§0B.7).
 
 ### 3.8 CSLR: (i) hay (ii) — khuyến nghị (i)
 **[LS1] ĐÃ QUYẾT: (ii)** (người dùng, 2026-10-02 10:05). Phần dưới giữ làm lịch sử lập luận; thiết kế áp dụng ở §0.3. Khác với mô tả (ii) cũ dưới
@@ -436,6 +651,10 @@ cùng nội dung sau `reports/audit_round2/VERIFY.md:46` và `EVALUATION.md:387`
   **[LS1] thêm:** vocab `--sentence-split` trên dữ liệu giả (gloss chỉ có ở câu val/test KHÔNG vào vocab; không tùy chọn → byte y hệt bản không lọc);
   `eval_sentsplit` trên dự đoán giả (S/D/I khớp tính tay cho 3 cặp nhỏ; bootstrap tất định với seed; đọc tham số từ preregistration giả; từ chối ghi đè → 2;
   `code_dirty` → 2; `--recompute-from` ra số bằng hệt; protocol `repro_v2` tái hiện thuật toán `run_v2_cslr_bootstrap.py` trên dữ liệu giả).
+  **[LS2] thêm (chỉ THÊM, không sửa test có sẵn):** K2 lưu-từng-job (run giả: CSLR exit 1 + ViT5 exit 0 có file giả → file ViT5 có trong `WORK`,
+  `env.jobs.*.saved/missing` đúng, `KernelError` vẫn nổ); amendment (không file → argv preregistration; hợp lệ → argv + `--skip-smoke-test`; khóa lạ / argv
+  lạ / ≠ 1 commit / không là tổ tiên → `KernelError`); `check_backbone_transfer` (N đúng → OK; lệch/thiếu/2 dòng → `KernelError`); `retrain_amendment.py`
+  (từ chối ghi đè → 2, `code_dirty` → 2, decision không phải R1/R2-PASS → 3).
 - **[LS1] `tests/test_sentence_split_guard.py`** (local, không GPU, không mạng; FAIL — không skip — khi vi phạm):
   - G1 (dữ liệu giả, luôn chạy): `load_sentence_split` từ chối split chồng lấn/thiếu/sai cỡ/T ≠ SENT271..SENT300; `select_vslgh_samples` không trả mẫu
     ngoài danh sách/ngoài người ký; `match_heldout` bắt L1, L2, gần trùng ở nguồn và đích; 3 dataset với `sentence_split=None` trả đúng như cũ.
@@ -481,6 +700,8 @@ cùng nội dung sau `reports/audit_round2/VERIFY.md:46` và `EVALUATION.md:387`
   Mode A/B, tham chiếu), `metrics`, `comparison_to_old`, `limitations`. `--recompute-from <json>` tính lại `metrics` từ `per_sample` (không chạy model).
 - **K3 (`--protocol repro_v2`):** tái hiện y nguyên thuật toán `run_v2_cslr_bootstrap.py:29-133` (gồm `np.random.seed(42)` toàn cục, thứ tự rút) trên
   dự đoán của model (i), đầu ra `reports/retrain_<D>/k3_repro/test_eval_repro.json`; MỘT lần; cùng luật exit.
+- **[LS2]** `limitations` thêm: "backbone K1 val top-1 đo trên 13 clip — không đủ để đánh giá backbone" và "CSLR v4 train với `--skip-smoke-test` theo
+  amendment `ls2` (lý do + bằng chứng: `reports/retrain_<D>/k2_ls2_smoke_diag/`)" (§0B.8, §0B.3). Giao thức đo KHÔNG đổi.
 
 ## 4. Chia việc (mỗi bước commit riêng; ghi 13-progress; impact trước khi sửa symbol có sẵn; detect-changes trước commit)
 
@@ -501,20 +722,22 @@ cùng nội dung sau `reports/audit_round2/VERIFY.md:46` và `EVALUATION.md:387`
 | B6 | Lưu trữ đầu vào Tier 1: `archive_retrain_kaggle stage/upload/verify` → dataset `phmvnsm33/vslt-retrain-inputs-tier1`, manifest `reports/retrain_<D>/inputs_tier1_manifest.json`; ĐO tốc độ upload (byte/thời gian) ghi 13-progress. | 0,5 h + chờ | B4b, B5 |
 | B7 | Đẩy K2 ở `MODE=preflight` (CPU, không accelerator); theo dõi bằng `kaggle kernels status` thật; tải output; mọi dòng digest/đếm khớp. Lệch → DỪNG (§7.2). | 0,5 h + chờ | B5 |
 | B8 | Kiểm ngân sách (§3.7) → đẩy K1 (GPU) → theo dõi → `kaggle kernels output` vào `_work/_plan13_tmp/k1/` (`PYTHONUTF8=1`) → kiểm SHA256SUMS, kiểm hợp lý, đúng 1 lần evaluate_test trong log → commit `reports/retrain_<D>/k1/` (JSON + log, không `.pt`) + `k1_outputs.json`. Ghi sổ GPU. | 0,5 h + chờ | B6, B7 |
-| B9 | Đổi K2 sang `MODE="train"` + GPU T4×2 (commit, push, cập nhật commit ghim) → kiểm ngân sách → đẩy → theo dõi → tải output vào `_work/_plan13_tmp/k2/` → kiểm SHA256SUMS, kiểm hợp lý, vocab K2 == vocab B2 (bằng hệt byte), HF snapshot sha preflight == train (khác → chỉ ghi), đúng 1 dòng "PRIMARY TEST EVALUATION" → commit `reports/retrain_<D>/k2/` (JSON + log). Ghi sổ GPU. **[LS1] sửa:** vocab K2 == vocab **B2c** (train-only); log có "LEAK CHECK OK", **0** dòng "PRIMARY TEST EVALUATION", đúng 1 dòng "TEST DEFERRED"; commit thêm 3 `*_used_ids.json`. | 0,75 h + chờ | B8 |
-| B10 | Lưu trữ đầu ra: dataset `phmvnsm33/vslt-retrain-artifacts` (stgcn_best.pt + meta, cslr_best.pt, cslr_stage1_best.pt, vocab, cleaned jsonl, JSON/log) và `phmvnsm33/vslt-retrain-vit5` (vit5_stage2/best_model, vit5_stage1/best_model) → verify → 2 manifest commit. Trước ViT5: ETA = kích thước / tốc độ đo ở B6; ETA > 3 h → Q2 (§7.1), tiếp B11 với ViT5 từ output đã kiểm. **[LS1]** + file split, `*_used_ids.json`, vocab train-only vào dataset artifacts. | 1 h + chờ upload | B9 |
+| B9 | Đổi K2 sang `MODE="train"` + GPU T4×2 (commit, push, cập nhật commit ghim) → kiểm ngân sách → đẩy → theo dõi → tải output vào `_work/_plan13_tmp/k2/` → kiểm SHA256SUMS, kiểm hợp lý, vocab K2 == vocab B2 (bằng hệt byte), HF snapshot sha preflight == train (khác → chỉ ghi), đúng 1 dòng "PRIMARY TEST EVALUATION" → commit `reports/retrain_<D>/k2/` (JSON + log). Ghi sổ GPU. **[LS1] sửa:** vocab K2 == vocab **B2c** (train-only); log có "LEAK CHECK OK", **0** dòng "PRIMARY TEST EVALUATION", đúng 1 dòng "TEST DEFERRED"; commit thêm 3 `*_used_ids.json`. **[LS2]** Phần 1 đã làm (v3 ERROR, 13-progress B9 phần 1); phần còn lại THAY bằng **B9a–B9f** (§0B.9). | 0,75 h + chờ | B8 |
+| **B9a–B9f [LS2]** | Xem bảng §0B.9: B9a ghi nhận v3 → B9b chẩn đoán smoke CPU + quyết định R0/R1/R2 → B9c kernel lưu-từng-job + amendment + kiểm transfer → B9d amendment → B9e ghim + đẩy v4 → B9f tải, kiểm, commit. | 6,25 h + chờ | B9 phần 1 |
+| B10 | Lưu trữ đầu ra: dataset `phmvnsm33/vslt-retrain-artifacts` (stgcn_best.pt + meta, cslr_best.pt, cslr_stage1_best.pt, vocab, cleaned jsonl, JSON/log) và `phmvnsm33/vslt-retrain-vit5` (vit5_stage2/best_model, vit5_stage1/best_model) → verify → 2 manifest commit. Trước ViT5: ETA = kích thước / tốc độ đo ở B6; ETA > 3 h → Q2 (§7.1), tiếp B11 với ViT5 từ output đã kiểm. **[LS1]** + file split, `*_used_ids.json`, vocab train-only vào dataset artifacts. **[LS2]** phụ thuộc B9f; + amendment, `smoke_diag.json`, `push_record.json` vào dataset artifacts. | 1 h + chờ upload | B9 **(LS2: B9f)** |
 | B11 | Đặt vào chỗ (§3.5) + `tests/test_retrained_artifacts.py` + AC8-b..e. **[LS1]** + G2 đầy đủ, G3. | 2 h | B10 (hoặc B9 + Q2) |
 | **B11b [LS1]** | Eval MỘT lần (§3.12) trên cây sạch → commit `reports/retrain_<D>/eval/test_eval.json` + log; chạy `--recompute-from` vào `_work/` và so bằng hệt. | 1 h | B11 |
 | B12 | Đánh dấu tài liệu (§3.9). | 1,5 h | B11 **(LS1: B11b)** |
 | B13 | Đóng: `docs/progress_log.md` 1 dòng; 13-progress bảng cuối (artifact → job/commit → sha256 → manifest → test); AC0 kiểm cuối. | 0,5 h | B12 |
-| **B14 [LS1, TÙY CHỌN]** | K3 (i) theo §0.7: kiểm cổng (GPU + hạn mức) → không lọt: ghi "K3 hoãn" (13-progress + báo orchestrator ghi `docs/usage_ledger.csv`), DỪNG bước. Lọt: commit `MODE="repro_i"` → đẩy → tải → lưu trữ `phmvnsm33/vslt-retrain-repro-i` + manifest → eval `repro_v2` MỘT lần → commit JSON. Ghi sổ GPU. | 1,5 h + chờ | B13 |
+| **B14 [LS1, TÙY CHỌN]** | K3 (i) theo §0.7: kiểm cổng (GPU + hạn mức) → không lọt: ghi "K3 hoãn" (13-progress + báo orchestrator ghi `docs/usage_ledger.csv`), DỪNG bước. Lọt: commit `MODE="repro_i"` → đẩy → tải → lưu trữ `phmvnsm33/vslt-retrain-repro-i` + manifest → eval `repro_v2` MỘT lần → commit JSON. Ghi sổ GPU. **[LS2]** trước khi lập K3: planner quyết định smoke cho công thức cũ (§0.7 [LS2]). | 1,5 h + chờ | B13 |
 
 B1 độc lập, làm sớm để giảm nhiễu GitNexus. B2/B3/B4a song song được. Job Kaggle chạy nền; coder đợi bằng vòng lặp thưa (≥ 5 phút/lần),
 chỉ báo "xong" khi `kaggle kernels status` trả COMPLETE (hoặc ERROR) thật. Theo dõi trạng thái thật sau mỗi lần khôi phục phiên.
 **[LS1]** B2b/B2c/B4d song song được sau B2a; B4c sau B2b. Công thêm ~9,5 h (B2a–B2c, B4c, B4d, B11b) + B14 tùy chọn.
+**[LS2]** B9c song song được với B9b (mã kernel không phụ thuộc kết quả chẩn đoán; amendment B9d thì phụ thuộc). Công thêm ~6,25 h + chờ kernel.
 
 ## 5. Tiêu chí chấp nhận (hợp đồng — coder không đổi; chỉ planner đổi, ghi lý do)
-**[LS1]** Lý do mọi thay đổi: §0.8.
+**[LS1]** Lý do mọi thay đổi: §0.8. **[LS2]** Lý do mọi thay đổi: §0B.10.
 
 **AC0 — An toàn cây làm việc.** (a) `git status --porcelain` cuối so mốc B0: chỉ thêm file trong danh sách §3.4/§3.9/§3.11, `reports/retrain_<D>/`,
 `docs/plans/13-progress.md`, `kaggle/vsl-retrain-*`; xóa đúng 1 file `src/training/modal_runner.py`; 3 dòng ` D` của người dùng còn nguyên.
@@ -528,6 +751,11 @@ cho các file md này), `docs/plans/12-khoi-phuc-du-lieu.md` (+1 dòng, 0 xóa).
 `src/data/vsl_gh_dataset.py`, `src/translation/dataset.py`, `src/training/train_cslr.py`, `scripts/train_translation_stage1.py`,
 `scripts/train_translation_stage2.py`, `scripts/build_gloss_vocab_canonical.py`, `tests/test_retrain_tools.py` (chỉ THÊM test — 15 test B2 giữ
 nguyên văn: `git diff` của file này với 0373a90 không xóa dòng nào trong các test cũ). md thêm theo §3.9 [LS1] (`VERIFY.md`, `EVALUATION.md` — cột xóa 0).
+**[LS2] sửa cách đo (§0B.5):** (b) và (e) đo trên TẬP FILE của các commit có tiêu đề `^(WIP )?13:` từ mốc B0 tới HEAD (`ac0_commits13.txt`,
+`ac0_files13.txt`), không trên `git diff <mốc B0> HEAD` (kế hoạch 11 chạy song song cùng nhánh). (a) dòng porcelain mới ngoài danh sách 13 phải thuộc danh
+sách file của kế hoạch song song (in từng dòng + lý do), còn lại → FAIL. Thêm kiểm ngược: mọi commit sửa file chỉ thuộc 13 (danh sách §0B.5) có tiêu đề
+`13:`/`WIP 13:`/`state:`. Danh sách thêm (a): `reports/retrain_<D>/{k2_train_v3, k2_ls2_smoke_diag}/`, `reports/retrain_<D>/preregistration_amendment_ls2.json`,
+`reports/retrain_<D>/k2/push_record.json`, `scripts/retrain_amendment.py`. `src/training/train_cslr.py` KHÔNG được sửa trong các commit B9a–B9f.
 
 **AC1 — Modal gỡ sạch.** `git grep -n -i -E "modal_runner|run_cslr_on_modal|vslt-data-volume|import modal|from modal|modal\.(App|Volume|Image)" -- src scripts backend tests kaggle configs`
 → 0 dòng; `git grep -n -i modal -- frontend/src` → đúng các dòng có ở mốc B0 (Dictionary.jsx), `git diff <mốc> HEAD -- frontend/` rỗng;
@@ -553,12 +781,18 @@ log kernel in đúng commit ghim; file không bị sửa sau commit đó (`git l
 có đúng 1 dòng `git log` và là tổ tiên commit ghim; `preregistration.evaluation_protocol` == §3.12 (reviewer so từng tham số: B=1000, seed 42,
 RandomState, CI 95% phân vị 2.5/97.5 linear, ghép cặp, sacrebleu `13a`/`exp`/không lowercase, beams 4, max_length 64/128, CPU); commit của
 `test_eval.json` có preregistration là tổ tiên và `generated_by.git_commit` sạch (`code_dirty` false).
+**[LS2] bổ sung:** commit đưa §0B (Lần sửa 2) vào kế hoạch ⊂ commit `smoke_diag.json` ⊂ commit `preregistration_amendment_ls2.json` ⊂ ghim v4
+(`git merge-base --is-ancestor`); amendment đúng 1 dòng `git log`; chỉ chứa khóa danh sách trắng `jobs.k2.cslr.train.argv` với giá trị == argv đăng ký +
+`["--skip-smoke-test"]`; `decision_rule` trong amendment == `decision` của `smoke_diag.json` và ∈ {R1, R2-PASS}; `preregistration.json` vẫn 1 dòng `git log`.
 
 **AC5 — Kernel & một lần TEST.** `kaggle kernels status` (thật) = COMPLETE cho K1, K2-preflight, K2-train (bản cuối); log K1 có đúng 1 lần chạy
 `evaluate_test.py`; log K2 có đúng 1 dòng `PRIMARY TEST EVALUATION`; không lệnh nào chạy ViT5 trên SENT271–300/S06; kiểm hợp lý §3.6 đạt;
 sổ GPU: tổng thời gian phiên K1 + K2-train (từ `env.json`) ≤ 2,5 giờ và "STATE + kế hoạch 13" ≤ 10 (nếu không → đã DỪNG đúng §7.2, không vượt).
 **[LS1] sửa phần K2:** log K2-train có **0** dòng `PRIMARY TEST EVALUATION`, đúng 1 dòng `TEST DEFERRED (sentence split v1)`, có `LEAK CHECK OK` trước
 dòng epoch đầu của CSLR và của ViT5; không tiến trình nào trên Kaggle nạp mẫu S06 × T hoặc chạy ViT5 trên T (grep log + `*_used_ids.json`).
+**[LS2] sửa:** "K2-train bản cuối" = v4; v3 ERROR có trong `reports/retrain_<D>/k2_train_v3/` (B9a). Log v4: dòng `AMENDMENT ls2 <commit> applied`; argv CSLR
+in ra == argv amendment; 0 dòng `Smoke Epoch`; đúng 1 dòng `[MODEL] Transferred N` với N == `expected_backbone_transfer.transferred_params`; `env.json` `mode`
+"train", `commit` == ghim v4, `jobs.<job>.saved` đủ cho job exit 0. Tổng phiên K1 + K2 v3 + K2 v4 (từ `env.json`) ≤ 2,5 giờ; cổng tuần theo §0B.7.
 
 **AC6 — Lưu trữ private.** 3 manifest commit: `reports/retrain_<D>/{inputs_tier1,artifacts,vit5}_manifest.json`, mỗi manifest: `is_private`
 true từ 2 nguồn, mọi `sha256 == sha256_after_download`, `n_files` == số file staging. (Nếu Q2 xảy ra và người dùng chưa trả lời: manifest vit5 được
@@ -585,6 +819,8 @@ dataset + 3 manifest.
 **AC10 — Quy trình.** Mỗi bước 1 commit (`13: B<n> …`); trước commit có detect-changes (lưu `_work/_plan13_tmp/dc_<bước>.txt`, ghi tóm tắt
 13-progress); impact trước khi sửa `train.py` (`main`, `parse_args`); HIGH/CRITICAL được đối chiếu bằng grep và ghi lại.
 **[LS1]** impact thêm cho mọi symbol ở §3.4f trước khi sửa.
+**[LS2]** impact thêm trước khi sửa `train`, `main` của K2 (và mọi symbol có sẵn khác chạm ở B9c); `tests/test_retrain_tools.py` chỉ THÊM
+(`git diff <HEAD trước B9c> -- tests/test_retrain_tools.py | grep -c "^-[^-]"` → 0).
 
 **[LS1] AC11 — Split câu & guard rò rỉ.** (a) `configs/vslgh_sentence_split_v1.json`: T == SENT271..SENT300; |V| = 30, V ⊂ SENT001..SENT270; |Tr| = 240;
 rời nhau, phủ 300; tái sinh bằng `scripts/make_vslgh_sentence_split.py --seed 42` vào `_work/` → byte bằng hệt. (b)
@@ -604,12 +840,25 @@ từng file `vit5_stage2/best_model` (== manifest B10), split, preregistration; 
 manifest `reports/retrain_<D>/repro_i_manifest.json` đạt như AC6, `k3_repro/test_eval_repro.json` một lần như AC12 (protocol `repro_v2`), sổ GPU ghi
 K3 và tổng "STATE + kế hoạch 13" ≤ 10.
 
+**[LS2] AC14 — Smoke test, amendment, lưu từng job.**
+(a) `reports/retrain_<D>/k2_ls2_smoke_diag/smoke_diag.json` (1 dòng `git log`, `code_dirty` false) có: `inputs` sha256 == §0B.3; D0 (2 danh sách + `identical`);
+D1 (stdout nguyên văn + bool, gọi `run_smoke_test` không sửa); D4-i (`transferred_keys_count`, `transferred_params`, khóa lệch shape); D4-ii `fidelity_ok` true;
+D5 số đo epoch 10 và 60; `decision` ∈ {R0, R1, R2-PASS, R2-FAIL} — reviewer tính lại từ chính các trường JSON theo §0B.3 và ra cùng kết quả.
+(b) K2 v4 chỉ được đẩy khi `decision` ∈ {R1, R2-PASS}; R0/R2-FAIL → 13-progress ghi DỪNG + lý do, không có commit ghim v4.
+(c) `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_retrain_tools tests.test_sentence_split_guard` → OK (skip chỉ là 2 skip có sẵn
+"10k cleaned chưa đặt" trước B11), gồm các test [LS2] của §3.11 (đỏ trước có log `_work/_plan13_tmp/B9c_test_red.log`, `B9d_test_red.log`).
+(d) Output v4 đã tải: có `vit5_stage1/best_model/*`, `vit5_stage2/best_model/*`, `cslr_best.pt` (nếu CSLR exit 0), mọi file trong `env.jobs.*.saved`
+có trong `SHA256SUMS` và sha256 khớp; `jobs.*.missing` rỗng cho job exit 0.
+(e) `reports/retrain_<D>/k2/push_record.json`: sha256 file đẩy == sha256 tính lại từ `git show <ghim v4>:…` thay đúng 2 dòng (`MODE`, `PIN_COMMIT`);
+metadata đẩy chỉ khác metadata repo ở `enable_gpu`, `kernel_sources`.
+
 ## 6. Rủi ro dữ liệu/ML
 - R1 **Rò rỉ CSLR (đã biết):** (i) học mọi câu S06 qua người ký khác → số S06 chỉ là "người ký chưa thấy". Ghi ở §3.9; (ii) là backlog.
   **[LS1]** (ii) nay là mặc định; rò rỉ này chỉ còn ở số CŨ và ở K3.
 - R2 **Tier 1 split mới:** a4 mới dùng `tier1_grouped_*` (theo bản quay) — khác split của a4 cũ ⇒ số Tier 1 mới không so được với
   `docs/phase6_stgcn.md`/`benchmark_results.json`. Test Tier 1 nhỏ (đếm ở B0) ⇒ không diễn giải mạnh. CSV untracked ⇒ lưu trong dataset inputs (B6).
   **[LS1]** CSV thực ra tracked (B0); vẫn lưu trong dataset inputs để kernel kiểm sha256.
+  **[LS2]** Val Tier 1 = 13 clip ⇒ val top-1 của K1 (sanity) gần như không mang thông tin về chất lượng backbone (§0B.8).
 - R3 **Lệch byte Windows ↔ Linux:** `.save()`, script clean và có thể `prepare_canonical_*` ghi chế độ văn bản ⇒ CRLF/LF; so file văn bản
   bằng `lf_sha256`, vocab ghi LF cố định. Nếu `dataset_canonical.json` khác CẢ sau chuẩn hóa (vd. `\r` lọt vào chuỗi khi đọc annotation CRLF ở
   Windows) → preflight bắt, DỪNG, CẦN PLANNER (không tự chọn bản nào).
@@ -617,6 +866,7 @@ K3 và tổng "STATE + kế hoạch 13" ≤ 10.
   ở preflight → DỪNG (CẦN PLANNER), không nâng cấp `.venv` khi chưa hỏi.
 - R5 **Base model trôi:** `VietAI/vit5-base` trên HF có thể đổi revision → ghi snapshot sha ở preflight và train; khác → ghi giới hạn.
 - R6 **Không tất định trên GPU:** dù seed 42, cuDNN/AMP làm kết quả khác lần chạy — artifact định danh bằng sha256, không bằng "tái lập bit".
+  **[LS2]** Hệ quả: smoke CPU (B9b) và smoke GPU có thể ra kết quả khác nhau với cùng mã/seed; ViT5 v4 ≠ ViT5 v3 — chỉ dùng v4 (bản đầu tiên được lưu, §0B.4).
 - R7 **Cỡ mẫu:** S06 = 300 mẫu của 1 người ký; ViT5 val 30 câu; Tier 1 test nhỏ ⇒ không kết luận chất lượng từ một lần đo.
   **[LS1]** Test chính thức nay chỉ 30 clip / 1 người ký ⇒ CI rất rộng (CI cũ trên cùng 30 câu rộng ~20 điểm BLEU — `v2_cslr_reliability.json:12-21`);
   val CSLR chỉ 30 clip S05 ⇒ chọn epoch nhiễu (chấp nhận; không dò hyperparameter để tránh quá khớp val).
@@ -641,6 +891,10 @@ K3 và tổng "STATE + kế hoạch 13" ≤ 10.
 - **[LS1] R15 Luật khớp 10k chưa hoàn hảo:** L1/L2/gần trùng có thể bỏ sót diễn đạt khác của cùng câu (paraphrase) ⇒ "ViT5 chưa thấy câu T" là "chưa
   thấy theo luật §0.3", ghi đúng như vậy; ngược lại có thể loại thừa cặp 10k ngắn — số bị loại theo lý do ghi trong preregistration.
 - **[LS1] R16 Lệch val ViT5 s2 so với cũ:** V khác SENT241–270 ⇒ history s2 mới không so được với `reports/vit5_stage2_history.json`.
+- **[LS2] R17 Bỏ smoke trên GPU:** nếu pipeline GPU hỏng theo cách smoke đáng lẽ bắt được, chi phí là tối đa trần K2 (1,75 h) thay vì ~0,2 phút; kết quả vẫn
+  được chặn bởi §3.6 (`best_val_wer < 100`, loss hữu hạn) + kiểm CTC mỗi lô + kiểm transfer N. Không có số báo cáo nào phụ thuộc smoke.
+- **[LS2] R18 Chẩn đoán CPU khác GPU:** D1–D5 chạy CPU không autocast ⇒ chỉ chứng minh pipeline (dữ liệu → nhãn → CTC → giải mã) học được trên 8 mẫu, không
+  chứng minh hành vi số học fp16 trên T4.
 
 ## 7. Điểm dừng
 
@@ -652,6 +906,8 @@ K3 và tổng "STATE + kế hoạch 13" ≤ 10.
   Mặc định khi chưa trả lời: B11–B12 vẫn làm; AC6-vit5 "chờ"; kế hoạch không đóng.
 - **Q3** (xác nhận): đặt artifact mới vào đường dẫn mặc định = thuộc quyết định 09:20, không phải GATE. Mặc định: được phép.
 - **[LS1]** Không câu hỏi mới. (Nguồn 27.98/23.18 và định nghĩa 30 câu đã tìm thấy — §0.2.)
+- **[LS2] Q4** (thông báo, không chặn): đường P (§0B.3) chạy CSLR v4 với `--skip-smoke-test` qua amendment công khai. Mặc định: được phép. Người dùng phủ
+  nhận trước B9e → dừng trước khi đẩy v4.
 
 ### 7.2 Dừng có điều kiện (coder dừng, ghi 13-progress, báo orchestrator)
 1. Ngân sách GPU: `STATE + đã dùng + trần job kế tiếp > 10` giờ, hoặc watchdog cắt job → CẦN NGƯỜI DÙNG. **[LS1]** Riêng K3: không hỏi, ghi "K3 hoãn" (§0.7).
@@ -665,9 +921,16 @@ K3 và tổng "STATE + kế hoạch 13" ≤ 10.
 7. **[LS1]** Eval B11b lỗi giữa chừng SAU khi đã sinh dự đoán trên T (vd. hết bộ nhớ ở BLEU) → DỪNG, CẦN PLANNER (không tự chạy lại; ghi log). Lỗi TRƯỚC
    khi nạp mẫu test (thiếu file, code_dirty) → sửa nguyên nhân rồi chạy (chưa tính là "đã chạy test").
 8. **[LS1]** Impact HIGH/CRITICAL ở §3.4f mà grep xác nhận có caller thật bị đổi hành vi mặc định → DỪNG, CẦN PLANNER.
+9. **[LS2]** B9b: đầu vào lệch sha256, kiểm trung thực D4-ii sai, hoặc `decision` = R0 → CẦN PLANNER; `decision` = R2-FAIL (hoặc hết 30 phút trước epoch 60)
+   → CẦN NGƯỜI DÙNG. Không đẩy K2 v4 trong các trường hợp này.
+10. **[LS2]** B9c: test có sẵn mâu thuẫn thiết kế (cần sửa test cũ để xanh) → CẦN PLANNER.
+11. **[LS2]** K2 v4: CSLR lỗi hạ tầng hoặc transfer N lệch → CẦN PLANNER (không v5 tự động); ViT5 lỗi → CẦN PLANNER; §3.6 không đạt → CẦN NGƯỜI DÙNG (như mục 3).
+    CSLR lỗi mà ViT5 đủ → giữ ViT5 v4 (§0B.4), commit phần ViT5, dừng phần CSLR.
 
 ### 7.3 Không chạm điểm dừng bắt buộc khác
 Không đổi model mặc định Cấp 2 (a2 giữ nguyên; a4 chỉ là fallback khi thiếu a2); không cần dữ liệu người dùng; không đụng thay đổi chưa commit
 của người dùng; xóa duy nhất `src/training/modal_runner.py` (tracked, hoàn tác bằng git, theo quyết định 09:20); không xóa dữ liệu/checkpoint/báo cáo cũ.
 **[LS1]** CSLR/ViT5 (ii) đặt vào đường dẫn mặc định đang TRỐNG (không thay model nào đang có) — theo Q3 (mặc định "được"); artifact K3 không bao giờ
 vào đường dẫn mặc định. Không câu hỏi mới cho người dùng.
+**[LS2]** Lần sửa 2 không thêm hành động không hoàn tác: K2 v4 là phiên Kaggle private mới (version mới của cùng slug), không xóa version cũ; amendment là
+file mới, preregistration không sửa; không sửa mã train/model.
