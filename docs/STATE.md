@@ -289,6 +289,8 @@
   `G:\My Drive\VSLT`. Agent CHỈ đọc/ghi trong `G:\My Drive\VSLT\` (lưu trữ/tải tài liệu, bản sao checkpoint…); KHÔNG mở/liệt kê/sửa phần còn lại
   của Drive (dữ liệu cá nhân). Không đồng bộ thư mục Project lên Drive. Không cần MCP. Đã thử 03:08: ghi/đọc file 5 MB, sha256 khớp (file thử đã xóa;
   còn `VSLT\_test\write_test.txt`). Drive upload lên mây chạy nền — trước khi coi là "đã lưu trữ" phải kiểm trạng thái đồng bộ (chưa có cách kiểm qua lệnh).
+  Khi người dùng PAUSE sync: G: vẫn đọc/ghi được nhưng file chỉ nằm trong cache máy (đã thử 03:14) ⇒ trước khi lưu trữ thứ quan trọng, nhắc
+  người dùng Resume sync và nhờ xác nhận trên drive.google.com; Drive chỉ là bản sao phụ, nguồn lưu trữ chính vẫn là Kaggle dataset private + manifest sha256.
 
 - (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy" — ĐÃ BỊ THAY bởi quyết định 20:15 ngay dưới.
 
