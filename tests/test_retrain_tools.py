@@ -209,5 +209,120 @@ class TestBuildGlossVocab(_Scratch):
         self.assertEqual(json.loads(buf.getvalue())["n_tokens"], len(EXPECTED_TOKENS))
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# B2c [plan 13 LS1] — train-only vocabulary: `--sentence-split <split.json> --split train`.
+# Fixture: 300 synthetic sentences x the VSL-GH signer layout (S01-S04 train x3 reps, S05 val, S06 test).
+# ---------------------------------------------------------------------------------------------------------------------
+SS_SIGNERS = {"S01": "train", "S02": "train", "S03": "train", "S04": "train", "S05": "val", "S06": "test"}
+
+
+def ss_canonical():
+    items = []
+    for i in range(1, 301):
+        sid = f"SENT{i:03d}"
+        for signer, split in SS_SIGNERS.items():
+            for r in range(1, (3 if split == "train" else 1) + 1):
+                glosses = [f"G{i:03d}", " CHUNG "]
+                if i == 5 and signer == "S05":
+                    glosses.append("CHỈ-S05")  # train sentence, but only the val SIGNER uses this gloss -> excluded
+                if i == 5 and signer == "S02" and r == 2:
+                    glosses.append("ĐÚNG-TRAIN")  # one train sample only -> kept
+                items.append({"id": f"{sid}_{signer}_R{r:02d}_F", "sentence_id": sid, "signer_id": signer,
+                              "split": split, "gloss_sequence": glosses, "translation": f"Câu {i}."})
+    return items
+
+
+class TestBuildGlossVocabSentenceSplit(_Scratch):
+    def setUp(self):
+        super().setUp()
+        from src.data import sentence_split as SS
+        self.SS = SS
+        self.items = ss_canonical()
+        write_canonical(self.p("dataset_canonical.json"), self.items)
+        self.canon = self.p("dataset_canonical.json")
+        write_bytes(self.p("split.json"), SS.split_file_bytes(SS.make_split_dict(self.items, seed=42)))
+        self.split = SS.load_sentence_split(self.p("split.json"))
+        assert "SENT005" in self.split.train_ids  # fixture assumption (seed 42 val set)
+
+    def run_cli(self, *extra, out=None):
+        out = out or self.p("vocab", "gloss_vocab_train.txt")
+        return out, subprocess.run([sys.executable, VOCAB_SCRIPT, "--canonical", self.canon, "--out", out, *extra],
+                                   capture_output=True, text=True, encoding="utf-8")
+
+    def expected_train_tokens(self):
+        train = {f"G{int(s[4:]):03d}" for s in self.split.train_ids} | {"CHUNG", "ĐÚNG-TRAIN"}
+        return ["<blank>", "<unk>"] + sorted(train)
+
+    def test_train_only_tokens_bytes_and_report(self):
+        out, res = self.run_cli("--sentence-split", self.p("split.json"), "--split", "train")
+        self.assertEqual(res.returncode, 0, res.stderr)
+        with open(out, "rb") as f:
+            data = f.read()
+        expected = self.expected_train_tokens()
+        self.assertEqual(data, "".join(t + "\n" for t in expected).encode("utf-8"))
+        self.assertNotIn(b"\r", data)
+        info = json.loads(res.stdout)
+        self.assertEqual(info["n_tokens"], len(expected))
+        self.assertEqual(info["sha256"], sha(data))
+        self.assertEqual(info["vocab_hash16"], sha(data)[:16])
+        self.assertEqual(info["split"], "train")
+        self.assertEqual(info["sentence_split_sha256"], self.split.sha256)
+        self.assertEqual(info["n_samples_selected"], 240 * 4 * 3)
+        heldout = {f"G{int(s[4:]):03d}" for s in self.split.val_ids + self.split.test_ids}
+        self.assertEqual(info["glosses_excluded"], sorted(heldout | {"CHỈ-S05"}))
+        # glosses of val/test sentences never reach the vocabulary
+        for g in heldout:
+            self.assertNotIn(g, expected)
+        # same order/ids as the reader used by train_cslr.py / CSLRRecognizer, and as the dataset default (B2b)
+        self.assertEqual(VSLGlossVocabulary.from_file(out).gloss_to_id,
+                         VSLGlossVocabulary(tokens=list(self.SS.collect_glosses(
+                             self.SS.select_vslgh_samples(self.items, "train", self.split)))).gloss_to_id)
+
+    def test_without_option_bytes_identical_to_unfiltered(self):
+        out, res = self.run_cli()
+        self.assertEqual(res.returncode, 0, res.stderr)
+        ref = VSLGlossVocabulary.from_canonical_dataset(self.canon)
+        with open(out, "rb") as f:
+            self.assertEqual(f.read(), "".join(ref.id_to_gloss[i] + "\n" for i in range(len(ref))).encode("utf-8"))
+        self.assertEqual(sorted(json.loads(res.stdout)), sorted(["out", "n_tokens", "sha256", "vocab_hash16",
+                                                                   "canonical_lf_sha256"]))
+        self.assertEqual(V.build_tokens(self.canon), [ref.id_to_gloss[i] for i in range(len(ref))])
+
+    def test_train_only_deterministic(self):
+        a, ra = self.run_cli("--sentence-split", self.p("split.json"), "--split", "train", out=self.p("a.txt"))
+        b, rb = self.run_cli("--sentence-split", self.p("split.json"), "--split", "train", out=self.p("b.txt"))
+        self.assertEqual((ra.returncode, rb.returncode), (0, 0))
+        with open(a, "rb") as fa, open(b, "rb") as fb:
+            self.assertEqual(fa.read(), fb.read())
+
+    def test_option_errors(self):
+        # --sentence-split without --split, --split without --sentence-split, unknown split name, invalid split file,
+        # existing target: all exit 2 without writing.
+        bad = self.SS.make_split_dict(self.items, seed=42)
+        bad["train_ids"] = sorted(bad["train_ids"] + ["SENT271"])
+        write_bytes(self.p("bad.json"), self.SS.split_file_bytes(bad))
+        cases = [("--sentence-split", self.p("split.json")), ("--split", "train"),
+                 ("--sentence-split", self.p("bad.json"), "--split", "train"),
+                 ("--sentence-split", self.p("nope.json"), "--split", "train")]
+        for extra in cases:
+            out, res = self.run_cli(*extra, out=self.p("x.txt"))
+            self.assertEqual(res.returncode, 2, (extra, res.stderr))
+            self.assertFalse(os.path.exists(out), extra)
+        out, res = self.run_cli("--sentence-split", self.p("split.json"), "--split", "test", out=self.p("x.txt"))
+        self.assertNotEqual(res.returncode, 0)
+        self.assertFalse(os.path.exists(out))
+        write_bytes(self.p("keep.txt"), b"KEEP\n")
+        out, res = self.run_cli("--sentence-split", self.p("split.json"), "--split", "train", out=self.p("keep.txt"))
+        self.assertEqual(res.returncode, 2)
+        with open(out, "rb") as f:
+            self.assertEqual(f.read(), b"KEEP\n")
+
+    def test_build_tokens_train_only_function(self):
+        tokens, excluded, n_sel = V.build_tokens_train_only(self.canon, self.p("split.json"), "train")
+        self.assertEqual(tokens, self.expected_train_tokens())
+        self.assertIn("CHỈ-S05", excluded)
+        self.assertEqual(n_sel, 240 * 4 * 3)
+
+
 if __name__ == "__main__":
     unittest.main()
