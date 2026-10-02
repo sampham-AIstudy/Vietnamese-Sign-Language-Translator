@@ -365,7 +365,18 @@ class VSLGHContinuousDataset(Dataset):
         max_frames: Optional[int] = None,
         truncation: bool = False,
         temporal_subsample: int = 1,
+        sentence_split: Optional[Any] = None,  # plan 13: path or SentenceSplit; None = old behaviour
     ):
+        # Plan 13 (sentence split v1): only with an explicit split name and without LOSO.
+        self.sentence_split = None
+        if sentence_split is not None:
+            from src.data.sentence_split import resolve_sentence_split
+            if split not in ("train", "val", "test"):
+                raise ValueError(f"sentence_split requires split in ('train', 'val', 'test'), got {split!r}")
+            if loso_signer is not None or loso_mode is not None:
+                raise ValueError("sentence_split cannot be combined with loso_signer / loso_mode")
+            self.sentence_split = resolve_sentence_split(sentence_split)
+
         self.canonical_json = Path(canonical_json)
         self.keypoints_dir = Path(keypoints_dir)
         self.split = split
@@ -387,11 +398,20 @@ class VSLGHContinuousDataset(Dataset):
             all_samples = json.load(f)
 
         # Filter by split or LOSO
-        self.samples = self._filter_samples(all_samples)
+        if self.sentence_split is not None:
+            from src.data.sentence_split import select_vslgh_samples
+            self.samples = select_vslgh_samples(all_samples, self.split, self.sentence_split)
+        else:
+            self.samples = self._filter_samples(all_samples)
 
         # Set up vocabulary
         if vocabulary is not None:
             self.vocab = vocabulary
+        elif self.sentence_split is not None:
+            # Plan 13 §0.4: never derive the label space from val/test sentences -> train samples only.
+            from src.data.sentence_split import collect_glosses, select_vslgh_samples
+            train_samples = select_vslgh_samples(all_samples, "train", self.sentence_split)
+            self.vocab = VSLGlossVocabulary(tokens=list(collect_glosses(train_samples)))
         else:
             # Build directly from canonical dataset to ensure 100% token coverage
             self.vocab = VSLGlossVocabulary.from_canonical_dataset(self.canonical_json)
