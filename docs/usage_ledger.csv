@@ -35,3 +35,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-01T14:35Z,vslt-reviewer,12,part 2 (items 5-13, scoped),78,82,4,0,ok
 2026-10-01T14:38Z,vslt-planner,06,revision 5 (narrow),82,84,2,1,ok
 2026-10-02T02:48Z,vslt-planner,13,plan (incl. kaggle search + cleanup turns),5,34,29,4,noisy
+2026-10-02T03:23Z,vslt-coder,13,B0-B2,34,47,13,2,ok
