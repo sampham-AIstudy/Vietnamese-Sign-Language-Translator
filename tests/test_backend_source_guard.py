@@ -1314,6 +1314,89 @@ class TestReportMode(unittest.TestCase):
             shutil.rmtree(tmp, ignore_errors=True)
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# Plan 11 §3.5 (K1 of docs/reviews/cloud-2026-09-29-review.md §5): the registries may only SHRINK, checked by machine.
+# Every key of KNOWN_VIOLATIONS / ALLOWED must exist in the committed baseline report with a count not larger than there.
+# Widening a registry therefore needs a change to the committed baseline JSON or to BASELINE_COMMIT (visible in review).
+# ----------------------------------------------------------------------------------------------------------------------
+BASELINE_REPORT = "reports/guard_dod7_2026-09-29/guard_findings.json"
+BASELINE_COMMIT = "319ddcdb344572fa4d0878ae9922e60062f202a2"
+
+
+def baseline_counts(report):
+    """{status: {(path, rule, qualname): count}} from the `findings` of a guard report."""
+    out = {}
+    for f in report.get("findings", []):
+        per_status = out.setdefault(f["status"], {})
+        key = (f["path"], f["rule"], f["qualname"])
+        per_status[key] = per_status.get(key, 0) + 1
+    return out
+
+
+def registry_excess(registry, base):
+    """Lines for every registry key missing from `base` ("NEW ...") or registered with a larger count ("GREW ...")."""
+    lines = []
+    for key in sorted(registry):
+        count = registry[key][0]
+        if key not in base:
+            lines.append(f"NEW {key}")
+        elif count > base[key]:
+            lines.append(f"GREW {key}: mốc {base[key]}, sổ {count}")
+    return lines
+
+
+def _load_baseline():
+    with open(os.path.join(PROJECT_ROOT, BASELINE_REPORT), encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+class TestRegistryBaseline(unittest.TestCase):
+    """Plan 11 §3.5 / K1: KNOWN_VIOLATIONS and ALLOWED stay within the committed baseline report."""
+
+    def test_a_baseline_provenance(self):
+        path = os.path.join(PROJECT_ROOT, BASELINE_REPORT)
+        self.assertTrue(os.path.isfile(path), BASELINE_REPORT)
+        rep = _load_baseline()
+        self.assertEqual(rep["generated_by"]["git_commit"], BASELINE_COMMIT)
+        self.assertIs(rep["generated_by"]["code_dirty"], False)
+        self.assertEqual(rep["summary"]["by_status"]["unregistered"], 0)
+
+    def test_b_known_within_baseline(self):
+        base = baseline_counts(_load_baseline())
+        excess = registry_excess(KNOWN_VIOLATIONS, base.get("known", {}))
+        self.assertEqual(excess, [], "\n" + "\n".join(excess))
+
+    def test_c_allowed_within_baseline(self):
+        base = baseline_counts(_load_baseline())
+        excess = registry_excess(ALLOWED, base.get("allowed", {}))
+        self.assertEqual(excess, [], "\n" + "\n".join(excess))
+
+    def test_d_excess_detects_growth(self):
+        # In memory only: a small hand-made baseline, then copies of the real ALLOWED registry vs the real baseline.
+        k1, k2 = ("a.py", "D-binding", "f"), ("b.py", "C-string", "g")
+        base = {k1: 2, k2: 1}
+        same = {k1: (2, "t"), k2: (1, "t")}
+        self.assertEqual(registry_excess(same, base), [])
+        self.assertEqual(registry_excess({}, base), [])
+        self.assertEqual(registry_excess({k1: (1, "t")}, base), [])
+        new = dict(same)
+        new[("c.py", "A-stdlib", "h")] = (1, "t")
+        self.assertTrue(any(line.startswith("NEW ") for line in registry_excess(new, base)))
+        grew = dict(same)
+        grew[k2] = (2, "t")
+        self.assertTrue(any(line.startswith("GREW ") for line in registry_excess(grew, base)))
+
+        real = baseline_counts(_load_baseline()).get("allowed", {})
+        self.assertEqual(registry_excess(dict(ALLOWED), real), [])
+        key = sorted(ALLOWED)[0]
+        bumped = dict(ALLOWED)
+        bumped[key] = (ALLOWED[key][0] + 1, ALLOWED[key][1])
+        self.assertTrue(any(line.startswith("GREW ") for line in registry_excess(bumped, real)))
+        added = dict(ALLOWED)
+        added[("backend/main.py", "D-binding", "plan11_probe")] = (1, "t")
+        self.assertTrue(any(line.startswith("NEW ") for line in registry_excess(added, real)))
+
+
 if __name__ == "__main__":
     if "--report" in sys.argv[1:]:
         _argv = sys.argv[1:]

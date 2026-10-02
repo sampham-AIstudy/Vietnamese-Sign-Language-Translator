@@ -9,9 +9,9 @@ Kế hoạch: `docs/plans/11-sua-vi-pham-guard-dod7.md`. Nhánh `feat/vslt-compl
 
 ## Trạng thái
 
-- ĐANG LÀM: B1
-- Đã xong: B0 (commit `WIP 11: B0 mốc`)
-- Còn lại: B1 (chặng 1); B2, B3, B4, B5, B6 (chặng sau, chưa giao)
+- ĐANG LÀM: — (chặng 1 xong; chờ orchestrator giao chặng sau)
+- Đã xong: B0 (commit `a01909a` `WIP 11: B0 mốc`), B1 (commit `11: B1 ...`, hash ở `git log --grep="^11: B1"`)
+- Còn lại: B2, B3, B4, B5, B6 (chặng sau, chưa giao). B3 được phép (B0(5): 0 video thiếu fps).
 
 ## B0 — Mốc (XONG)
 
@@ -67,9 +67,25 @@ Kế hoạch: `docs/plans/11-sua-vi-pham-guard-dod7.md`. Nhánh `feat/vslt-compl
    Vẫn chạy `node .gitnexus/run.cjs analyze --index-only` (exit 0, 19 s; cảnh báo FTS/BM25 "search index build failed" — không ảnh
    hưởng impact/detect-changes) → lastCommit `7547105`. Log `_work/_plan11_tmp/b0_analyze.log`.
 
-## B1 — K1 TestRegistryBaseline
+## B1 — K1 TestRegistryBaseline (XONG)
 
-(đang làm)
+- Thêm vào cuối `tests/test_backend_source_guard.py`, ngay trước `if __name__ == "__main__":` (giữ 2 dòng trống có sẵn): hằng
+  `BASELINE_REPORT`, `BASELINE_COMMIT`; hàm `baseline_counts(report)`, `registry_excess(registry, base)`, `_load_baseline()`; lớp
+  `TestRegistryBaseline` (`test_a_baseline_provenance`, `test_b_known_within_baseline`, `test_c_allowed_within_baseline`,
+  `test_d_excess_detects_growth`). Chỉ thư viện chuẩn (`json`, `os` đã import). Không dòng có sẵn nào bị đổi:
+  `git diff --stat` = `1 file changed, 83 insertions(+)`, 0 dòng `-`. `skip|expectedFailure` trong khối mới: 0.
+- AC2(a) (script `_work/_plan11_tmp/ac2_prefix.py 4fe3398 WORKTREE`): `PREFIX_IDENTICAL True`, `BODY_PRESERVED True`, `MAIN_IDENTICAL True`.
+- Xanh, chạy 2 lần `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_backend_source_guard -v`
+  (`_work/_plan11_tmp/b1_green_run1.txt`, `b1_green_run2.txt`): cả hai `Ran 28 tests` / `OK` (0 skip, 0 failure, 0 error; B0 = 24 →
+  +4), `[DoD7-guard] known=9 allowed=36`, `[scope] serving=45 main=56`; 4 test mới `... ok`.
+  `tests.test_backend_source_guard.TestImportLight` riêng: `OK` (khối mới không kéo module nặng).
+- Đỏ trước (`_work/_plan11_tmp/b1_red.txt`, chỉ trong bộ nhớ, file guard sha256 không đổi: `guard file sha unchanged: True`):
+  `baseline statuses: {'allowed': (16, 36), 'known': (8, 9)}`;
+  bản sao KNOWN count +1 → `["GREW ('realtime_demo.py', 'C-result', 'RealtimeHUD._locate_vietnamese_font'): mốc 1, sổ 2"]`;
+  bản sao KNOWN thêm khóa → `["NEW ('realtime_demo.py', 'D-binding', 'RealtimeDemo.plan11_probe')"]`; KNOWN nguyên → `[]`.
+  Chạy test thật trên sổ đột biến (thay thuộc tính module trong bộ nhớ): `MUTATED KNOWN_VIOLATIONS -> test_b_known_within_baseline:
+  failures=1 errors=0` (GREW), như vậy với NEW; `MUTATED ALLOWED -> test_c_allowed_within_baseline: failures=1 errors=0`.
+- `git status --porcelain` (ngoài `??`) trước commit: 3 dòng ` D` của người dùng + ` M tests/test_backend_source_guard.py`.
 
 ## Nhật ký impact (GitNexus)
 
@@ -91,3 +107,7 @@ Kế hoạch: `docs/plans/11-sua-vi-pham-guard-dod7.md`. Nhánh `feat/vslt-compl
   `node .gitnexus/run.cjs detect-changes --scope all --repo .` → `Diff touched 3 file(s) but no indexed symbols overlap those hunks —
   not a clean tree.` (3 file = `git diff HEAD --name-only`: đúng 3 dòng ` D` của người dùng; `11-progress.md` mới chưa track). risk = không
   có symbol bị chạm (không có partial/truncated).
+- B1 commit (`11: B1 ...`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` →
+  `Changes: 4 files, 10 symbols` / `Affected processes: 0` / `Risk level: low`; symbol đổi = toàn bộ symbol MỚI của B1
+  (`BASELINE_REPORT`, `BASELINE_COMMIT`, `baseline_counts`, `registry_excess`, `_load_baseline`, `TestRegistryBaseline` + 4 method);
+  4 file = guard + 3 dòng ` D` của người dùng. Không partial/truncated.
