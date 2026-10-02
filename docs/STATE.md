@@ -3,12 +3,20 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-10-02 20:15 (giờ Việt Nam)
-- HEAD: e03d988 (+ commit state này) | Nhánh: feat/vslt-complete
+- Cập nhật lần cuối: 2026-10-02 21:15 (giờ Việt Nam)
+- HEAD: c8a9dc6 (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 20:05 giao vslt-coder 13 B5 (+B6 nếu còn ngân sách) tại HEAD e03d988. 5h 0% (reset 01:00 ngày 3/10), 7 ngày 33%.
-  Cổng: 0 + 1.0×46 (est coder = max 3 dòng ok gần nhất: 13/19/46) ≤ 90 → đạt.
+- Trạng thái phiên: ĐANG CHẠY — 21:15 giao vslt-coder 13 B7 (chỉ 1 bước: ghim + đẩy K2 preflight CPU + theo dõi + kiểm output). 5h 69% (reset 01:00 3/10), 7 ngày 42%.
+  Cổng: 69 + 1.0×13 (est coder 1 bước nhỏ = max dòng ok cỡ nhỏ 9/11/13) = 82 ≤ 90 → đạt. Chặng lớn (est 69) KHÔNG lọt.
+  Coder 13 B5+B6 XONG (86927ef, 2cb02b3, ea12b44, 0908ef3 = COMMIT GHIM, fa687ef, c8a9dc6; đã push, ls-remote = c8a9dc6): preregistration
+  reports/retrain_2026-10-02/preregistration.json (leak_check 0, code_dirty false); kernel kaggle/vsl-retrain-stgcn-tier1 (K1),
+  kaggle/vsl-retrain-cslr-vit5 (K2 MODE=preflight, enable_gpu false, không eval); PIN_COMMIT=None → đặt ở B7/B8; K2 train đòi
+  k1_outputs.json khóa `stgcn_best_pt.sha256`. test_retrain_tools 112 OK; +guard 154 OK/2 skip. B6: dataset private
+  phmvnsm33/vslt-retrain-inputs-tier1 162 file verify OK; upload ~26.3 KB/s ⇒ ViT5 ở B10 gần như chắc chạm Q2 (>3h).
+  MỞ: AC8-a Ran 518 FAILED(failures=1, errors=1, skipped=1) — thêm 1 failure so với mốc: tests.test_hand_landmarks_ws
+  test_reset_segments_and_graphs ([1,1,1,0] != [1,1,1,1]) FAIL 3/3 lần chạy đủ khi có 6 file B5, PASS 2/2 khi tạm dời chúng, PASS khi chạy riêng;
+  không import chung. Cần điều tra (phụ thuộc thứ tự/thời gian?) trước review cuối 13 — reviewer cuối phải xét. Kế hoạch 11 CHƯA có file → cần planner.
   (Trước đó: chờ hạn mức 5h 88% lúc 16:28, reset thật 19:20 — bản cũ ghi nhầm 19:40.)
   Coder 13 sửa trước B5 XONG (1ff6037, 80802be): E1 (evaluation_output + file đánh dấu .started mở "x"), E2 (manifest theo đường tương đối;
   manifest_rel_paths k2/cslr_best.pt, vit5_stage2/best_model), E3 (canonical_json + test_keypoints_digest bắt buộc), G2 (TestG2RegisteredReference so với
