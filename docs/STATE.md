@@ -3,9 +3,11 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-10-02 09:40 (giờ Việt Nam)
-- HEAD: eea8906 (+ commit state này) | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 86% lúc 16:19 (reset 19:40), 7 ngày 33%. Đã lưu + push; hẹn giờ nền làm tiếp sau 19:42. Không tắt máy.
+- Cập nhật lần cuối: 2026-10-02 20:05 (giờ Việt Nam)
+- HEAD: e03d988 (+ commit state này) | Nhánh: feat/vslt-complete
+- Trạng thái phiên: ĐANG CHẠY — 20:05 giao vslt-coder 13 B5 (+B6 nếu còn ngân sách) tại HEAD e03d988. 5h 0% (reset 01:00 ngày 3/10), 7 ngày 33%.
+  Cổng: 0 + 1.0×46 (est coder = max 3 dòng ok gần nhất: 13/19/46) ≤ 90 → đạt.
+  (Trước đó: chờ hạn mức 5h 88% lúc 16:28, reset thật 19:20 — bản cũ ghi nhầm 19:40.)
   Coder 13 sửa trước B5 XONG (1ff6037, 80802be): E1 (evaluation_output + file đánh dấu .started mở "x"), E2 (manifest theo đường tương đối;
   manifest_rel_paths k2/cslr_best.pt, vit5_stage2/best_model), E3 (canonical_json + test_keypoints_digest bắt buộc), G2 (TestG2RegisteredReference so với
   preregistration / tham chiếu B3 — đột biến reviewer giờ FAIL); 129 test OK / 2 skip. Coder thêm 9 dòng vào fixture build_inputs của test cũ
@@ -271,3 +273,4 @@
 - 2026-10-02 11:25 | dừng theo hạn mức (81%) | 13 B2a–B2c xong | Lưu STATE, push, hẹn giờ 14:32 làm tiếp B3.
 - 2026-10-02 14:22 | khôi phục sau chờ hạn mức (người dùng nhắn "tiếp tục công việc") | STATE khớp git (HEAD cc52880) | Giao coder 13 B3 + B4.
 - 2026-10-02 16:22 | dừng theo hạn mức (86%) | 13 sửa trước B5 xong | Lưu STATE, push, hẹn giờ 19:42 làm tiếp B5.
+- 2026-10-02 20:05 | khôi phục sau chờ hạn mức (sleep nền bị dừng khi phiên cũ kết thúc; người dùng nhắn "continue") | STATE khớp git (HEAD e03d988); sửa HEAD ghi eea8906 → e03d988, giờ reset 19:40 → 19:20 | Giao coder 13 B5.
