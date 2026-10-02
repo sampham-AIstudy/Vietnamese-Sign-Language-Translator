@@ -206,6 +206,10 @@
 - (2026-10-02 16:15) `--source mock` của realtime_demo.py: CHUYỂN bộ sinh khung giả thành fixture chỉ dùng trong tests/ (ngoài phạm vi guard);
   realtime_demo.py không còn --source mock.
 
+- (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy": áp luật tắt máy 2026-10-01 19:35 — tắt (`shutdown //s //t 120`) khi
+  (a) hết việc làm được (vd chỉ còn chờ kernel Kaggle dài mà không còn việc song song nào lọt cổng) hoặc (b) hạn mức 5h ≥ 90,
+  VÀ đã lưu STATE + commit + push, không còn agent chạy. Không tắt chỉ vì đơn vị kế tiếp lớn: chia nhỏ trước.
+
 ## Câu hỏi chờ người dùng
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
 - (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
