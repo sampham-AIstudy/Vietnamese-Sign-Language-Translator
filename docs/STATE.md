@@ -9,7 +9,10 @@
   Coder 13 B3 + B4a–B4d XONG (3deee22, 459f282, 7ecaa25, a272df6, f7aacc1, 13f897a): cleaned 10k 7140 (6426/714) khớp; loại 4 cặp trùng câu val
   (0 trùng test); gói Tier 1 162 file digest 7098e007…; train.py --seed; archive_retrain_kaggle.py (24 test API giả); --sentence-split cho
   train_cslr/stage1/stage2 (LEAK CHECK OK, TEST DEFERRED); eval_sentsplit.py (12 test); 115 test OK/1 skip; AC2-06 y mốc.
-  ĐANG GIAO: vslt-reviewer kiểm GIỮA kế hoạch 13 (B2a–B4d) TRƯỚC B5 (đăng ký trước sẽ khóa tiêu chí) — 15:42. Sau đó: coder B5.
+  Review GIỮA 13 (docs/reviews/13-review-mid.md): GO cho B5 có điều kiện — không rò rỉ; cần sửa (TB) guard G2 10k tự quy chiếu (đột biến L1 SENT275 vẫn PASS),
+  E1 cổng "chạy một lần" chỉ theo --out, E2 so manifest theo tên file gốc (stage1/stage2 lẫn), (thấp–TB) E3 kiểm đầu vào bỏ qua im lặng, (thấp) split="all" + sentence_split không raise.
+  B5 bắt buộc: preregistration đủ khóa (danh sách trong review), K2 không gọi eval/test, kernel assert sha stgcn_best.pt (tránh train from scratch im lặng).
+  VIỆC KẾ TIẾP: vslt-coder 13 B5 (kèm sửa E1, E2, E3, G2, mục 5 trước khi commit preregistration).
   Đã tìm Kaggle (09:25): 9 kernel của phmvnsm33 (extract/pack/train unified/harmonized/alphabet) + 2 dataset private — KHÔNG có stgcn_best.pt,
   ViT5, cslr_best.pt, gloss_vocab_canonical.txt. Colab: file nằm trên Google Drive của người dùng — orchestrator không truy cập được (chờ người dùng xem).
   Đã xóa (09:35, đã kiểm 0 link/junction trước khi xóa): _work/_plan12_tmp/{dl_hauuto, dl_qipedc, vslgh_src, vslgh_head.tar} (~21G),
