@@ -3,8 +3,10 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-10-02 20:05 (giờ Việt Nam)
+- Cập nhật lần cuối: 2026-10-02 20:15 (giờ Việt Nam)
 - HEAD: e03d988 (+ commit state này) | Nhánh: feat/vslt-complete
+- Cho phép tắt máy: KHÔNG
+  (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
 - Trạng thái phiên: ĐANG CHẠY — 20:05 giao vslt-coder 13 B5 (+B6 nếu còn ngân sách) tại HEAD e03d988. 5h 0% (reset 01:00 ngày 3/10), 7 ngày 33%.
   Cổng: 0 + 1.0×46 (est coder = max 3 dòng ok gần nhất: 13/19/46) ≤ 90 → đạt.
   (Trước đó: chờ hạn mức 5h 88% lúc 16:28, reset thật 19:20 — bản cũ ghi nhầm 19:40.)
@@ -206,9 +208,15 @@
 - (2026-10-02 16:15) `--source mock` của realtime_demo.py: CHUYỂN bộ sinh khung giả thành fixture chỉ dùng trong tests/ (ngoài phạm vi guard);
   realtime_demo.py không còn --source mock.
 
-- (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy": áp luật tắt máy 2026-10-01 19:35 — tắt (`shutdown //s //t 120`) khi
-  (a) hết việc làm được (vd chỉ còn chờ kernel Kaggle dài mà không còn việc song song nào lọt cổng) hoặc (b) hạn mức 5h ≥ 90,
-  VÀ đã lưu STATE + commit + push, không còn agent chạy. Không tắt chỉ vì đơn vị kế tiếp lớn: chia nhỏ trước.
+- (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy" — ĐÃ BỊ THAY bởi quyết định 20:15 ngay dưới.
+
+- (2026-10-02 20:15) LUẬT TẮT MÁY (thay mọi quyết định tắt máy trước đây: 2026-09-29 18:55, 2026-10-01 19:35, 2026-10-01 20:00, 2026-10-02 20:10):
+  1. Dòng đầu file "Cho phép tắt máy: KHÔNG" là mặc định. Chỉ tắt khi dòng này là CÓ và do NGƯỜI DÙNG đổi; agent không tự đổi.
+  2. Trước khi tắt (mọi điều kiện): `git status -sb` không có "ahead"; ghi slug + giờ bắt đầu + giờ dự kiến xong của mọi kernel Kaggle
+     đang chạy; không còn tiến trình nền trên máy (agent, sleep, server…); ghi "Trạng thái phiên: ĐÃ TẮT MÁY CÓ CHỦ ĐÍCH lúc HH:MM".
+  3. Lệnh: `shutdown /s /t 300 /c "VSLT: tat may sau khi luu STATE. Huy: shutdown /a"` (không dùng /f).
+     Trong Git Bash phải chặn đổi đường dẫn: `MSYS_NO_PATHCONV=1 shutdown /s /t 300 /c "..."`.
+  4. Nếu "Cho phép tắt máy" là KHÔNG: lưu xong (STATE, commit, push) thì dừng và báo người dùng, KHÔNG tắt.
 
 ## Câu hỏi chờ người dùng
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
