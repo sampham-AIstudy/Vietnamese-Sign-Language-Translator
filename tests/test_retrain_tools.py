@@ -2093,5 +2093,291 @@ class TestRetrainPreregister(_PreregRoot):
         self.assertEqual(cm.exception.code, 2)
 
 
+# =====================================================================================================================
+# B5 — Kaggle kernels K1 (kaggle/vsl-retrain-stgcn-tier1) and K2 (kaggle/vsl-retrain-cslr-vit5), plan 13 §3.4e + [LS1]
+# and mid review 13 §6 / "Việc phải làm" 2. Local, no network, no GPU: static checks of the sources + metadata, and the
+# pure helpers (pin, watchdog, backbone sha256, log checks, sanity checks, Tier 1 restore) on scratch files.
+# =====================================================================================================================
+K1_DIR = os.path.join(ROOT, "kaggle", "vsl-retrain-stgcn-tier1")
+K2_DIR = os.path.join(ROOT, "kaggle", "vsl-retrain-cslr-vit5")
+
+
+def _load_kernel(path, name):
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(name, path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)  # module level only defines constants / functions (main() under __main__)
+    return mod
+
+
+def _code_strings_and_names(path):
+    """String literals and names of the CODE (module docstring and comments excluded)."""
+    import ast
+    with open(path, encoding="utf-8") as f:
+        tree = ast.parse(f.read())
+    body = tree.body[1:] if (tree.body and isinstance(tree.body[0], ast.Expr)
+                             and isinstance(getattr(tree.body[0], "value", None), ast.Constant)) else tree.body
+    out = []
+    for node in ast.walk(ast.Module(body=body, type_ignores=[])):
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            out.append(node.value)
+        elif isinstance(node, ast.Name):
+            out.append(node.id)
+        elif isinstance(node, ast.Attribute):
+            out.append(node.attr)
+    return out, tree
+
+
+def _module_constant(tree, name):
+    import ast
+    for node in tree.body:
+        if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == name for t in node.targets):
+            return ast.literal_eval(node.value)
+    raise KeyError(name)
+
+
+class TestRetrainKernels(_Scratch):
+    @classmethod
+    def setUpClass(cls):
+        with open(os.path.join(K1_DIR, "kernel-metadata.json"), encoding="utf-8") as f:
+            cls.m1 = json.load(f)
+        with open(os.path.join(K2_DIR, "kernel-metadata.json"), encoding="utf-8") as f:
+            cls.m2 = json.load(f)
+        cls.k1_path = os.path.join(K1_DIR, cls.m1["code_file"])
+        cls.k2_path = os.path.join(K2_DIR, cls.m2["code_file"])
+        cls.K1 = _load_kernel(cls.k1_path, "plan13_k1_kernel")
+        cls.K2 = _load_kernel(cls.k2_path, "plan13_k2_kernel")
+
+    # --- metadata / static ------------------------------------------------------------------------------------------
+    def test_metadata_private_internet_and_accelerators(self):
+        for m in (self.m1, self.m2):
+            self.assertIs(m["is_private"], True)
+            self.assertIs(m["enable_internet"], True)
+            self.assertEqual(m["language"], "python")
+            self.assertEqual(m["kernel_type"], "script")
+        self.assertEqual(self.m1["id"], "phmvnsm33/vsl-retrain-stgcn-tier1")
+        self.assertIs(self.m1["enable_gpu"], True)
+        self.assertEqual(self.m1["dataset_sources"], ["phmvnsm33/vslt-retrain-inputs-tier1"])
+        self.assertEqual(self.m2["id"], "phmvnsm33/vsl-retrain-cslr-vit5")
+        self.assertIs(self.m2["enable_gpu"], False)  # preflight: CPU, no GPU quota
+        self.assertEqual((self.m2["dataset_sources"], self.m2["kernel_sources"]), ([], []))
+        self.assertEqual(self.K1.KERNEL_FILE_IN_REPO, "kaggle/vsl-retrain-stgcn-tier1/retrain_stgcn_kernel.py")
+        self.assertEqual(self.K2.KERNEL_FILE_IN_REPO, "kaggle/vsl-retrain-cslr-vit5/retrain_cslr_vit5_kernel.py")
+
+    def test_k2_is_preflight_and_never_evaluates(self):
+        code, tree = _code_strings_and_names(self.k2_path)
+        self.assertEqual(_module_constant(tree, "MODE"), "preflight")
+        self.assertIsNone(_module_constant(tree, "PIN_COMMIT"))
+        joined = "\n".join(code)
+        for forbidden in ("eval_sentsplit", "evaluate_test", "evaluate_cslr", "test_translation_core", "--protocol",
+                          "--sentence-split", "train_cslr.py", "train_translation_stage", "symlink", "rmtree",
+                          "unlink", "shutil"):
+            self.assertNotIn(forbidden, joined, forbidden)
+        self.assertNotIn("remove", [c for c in code])
+        # the only PRIMARY TEST EVALUATION string is the constant the CSLR log is checked against (must be absent)
+        self.assertEqual(sum("PRIMARY TEST EVALUATION" in c for c in code), 1)
+        self.assertEqual(self.K2.PRIMARY_TEST, "PRIMARY TEST EVALUATION")
+        self.assertEqual(self.K2.TEST_DEFERRED, "TEST DEFERRED (sentence split v1)")
+        # preflight prints only a TEST DEFERRED (preflight) line, never the train_cslr one
+        self.assertEqual([c for c in code if c.startswith("TEST DEFERRED")],
+                         ["TEST DEFERRED (sentence split v1)", "TEST DEFERRED (preflight): no training and no "
+                                                               "evaluation in this mode"])
+
+    def test_k1_static_one_test_command_from_preregistration(self):
+        import ast
+        code, tree = _code_strings_and_names(self.k1_path)
+        self.assertIsNone(_module_constant(tree, "PIN_COMMIT"))
+        joined = "\n".join(code)
+        for forbidden in ("evaluate_test.py", "train.py", "--seed", "symlink", "rmtree", "unlink", "shutil"):
+            self.assertNotIn(forbidden, joined, forbidden)
+        # exactly one place reads the registered test command, and it is after the sanity gate in main()
+        with open(self.k1_path, encoding="utf-8") as f:
+            src = f.read()
+        self.assertEqual(src.count('k1["test"]'), 1)
+        self.assertLess(src.index('if not sanity["ok"]'), src.index('k1["test"]'))
+        self.assertLess(src.index('k1["train"]'), src.index('if not sanity["ok"]'))
+        self.assertTrue(any(isinstance(n, ast.FunctionDef) and n.name == "main" for n in tree.body))
+
+    def test_main_refuses_without_pin_and_clones_nothing(self):
+        from unittest import mock
+        from pathlib import Path
+        for K in (self.K1, self.K2):
+            work = Path(self.p(K.__name__))
+            calls = []
+            with mock.patch.object(K, "WORK", work), mock.patch.object(K, "run", lambda *a, **k: calls.append(a) or 0), \
+                    contextlib.redirect_stdout(io.StringIO()):
+                rc = K.main()
+            self.assertEqual(rc, 1)
+            self.assertEqual(calls, [])
+            env = json.loads((work / "env.json").read_text(encoding="utf-8"))
+            self.assertIn("PIN_COMMIT", env["error"])
+            self.assertEqual(env["exit"], 1)
+            self.assertTrue((work / "SHA256SUMS").is_file())
+
+    def test_k2_unknown_mode_refused(self):
+        from unittest import mock
+        from pathlib import Path
+        work = Path(self.p("k2_mode"))
+        with mock.patch.object(self.K2, "WORK", work), mock.patch.object(self.K2, "MODE", "repro_i"), \
+                mock.patch.object(self.K2, "PIN_COMMIT", "a" * 40), contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(self.K2.main(), 1)
+        self.assertIn("repro_i", json.loads((work / "env.json").read_text(encoding="utf-8"))["error"])
+
+    def test_pin_and_pinned_file_checks(self):
+        for K in (self.K1, self.K2):
+            self.assertEqual(K.check_pin("0123456789abcdef" * 2 + "01234567"), "0123456789abcdef" * 2 + "01234567")
+            for bad in (None, "abc1234", "G" * 40, "a" * 39):
+                with self.assertRaises(K.KernelError):
+                    K.check_pin(bad)
+            with open(self.k1_path if K is self.K1 else self.k2_path, encoding="utf-8") as f:
+                text = f.read()
+            K.same_as_pinned(text.replace("PIN_COMMIT = None", 'PIN_COMMIT = "' + "a" * 40 + '"'), text)
+            K.same_as_pinned(text.replace("\n", "\r\n"), text)
+            with self.assertRaises(K.KernelError):
+                K.same_as_pinned(text.replace('REPO_URL = "', 'REPO_URL = "x'), text)
+
+    def test_watchdog_kills_child(self):
+        import time as _t
+        for K in (self.K1, self.K2):
+            t0 = _t.time()
+            with self.assertRaises(K.Watchdog), contextlib.redirect_stdout(io.StringIO()):
+                K.run([sys.executable, "-c", "import time; time.sleep(60)"], self.tmp, self.p("wd.log"), _t.time() + 1.5)
+            self.assertLess(_t.time() - t0, 30)
+            with contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(K.run([sys.executable, "-c", "print('ok')"], self.tmp, self.p("ok.log"), _t.time() + 60), 0)
+
+    # --- K2 helpers --------------------------------------------------------------------------------------------------
+    def test_k2_backbone_sha256_asserted(self):
+        K = self.K2
+        src = self.p("in", "stgcn_best.pt")
+        write_bytes(src, b"backbone-bytes")
+        good = sha(b"backbone-bytes")
+        with self.assertRaises(K.KernelError):  # missing in the K1 output -> never train from scratch
+            K.place_backbone(None, self.p("ck", "a.pt"), good)
+        with self.assertRaises(K.KernelError):
+            K.place_backbone(self.p("in", "nope.pt"), self.p("ck", "a.pt"), good)
+        with self.assertRaises(K.KernelError):  # no registered sha256
+            K.place_backbone(src, self.p("ck", "a.pt"), None)
+        with self.assertRaises(K.KernelError):  # other sha256
+            K.place_backbone(src, self.p("ck", "a.pt"), "0" * 64)
+        self.assertFalse(os.path.exists(self.p("ck", "a.pt")))
+        self.assertEqual(K.place_backbone(src, self.p("ck", "a.pt"), good), good)
+        with open(self.p("ck", "a.pt"), "rb") as f:
+            self.assertEqual(f.read(), b"backbone-bytes")
+        with self.assertRaises(K.KernelError):  # never overwrite
+            K.place_backbone(src, self.p("ck", "a.pt"), good)
+
+    def test_k2_cslr_log_check(self):
+        K = self.K2
+        good = "\n".join(["[MODEL] Transferred 123 spatial parameters", "LEAK CHECK OK (cslr): n_train_samples=2880",
+                          "  Smoke Epoch 01/10: Train CTC Loss = 1.0", "CSLR TRAINING STARTED | Total Epochs: 40",
+                          "Epoch 01/40 [Stage 1] | Train Loss: 3.2", K.TEST_DEFERRED + ": run scripts/eval_sentsplit.py once"])
+        K.check_cslr_log(good)
+        bad_cases = {
+            "primary": good + "\nPRIMARY TEST EVALUATION",
+            "two deferred": good + "\n" + K.TEST_DEFERRED,
+            "no deferred": good.replace(K.TEST_DEFERRED, "x"),
+            "leak after epoch": good.replace("LEAK CHECK OK (cslr): n_train_samples=2880\n", "") + "\nLEAK CHECK OK (cslr)",
+            "no leak line": good.replace("LEAK CHECK OK (cslr)", "x"),
+            "scratch": good + "\n[WARN] Checkpoint checkpoints/stgcn_best.pt not found. Training from scratch.",
+            "no transfer": good.replace("[MODEL] Transferred", "x"),
+            "leak failed": good + "\nLEAK CHECK FAILED (cslr): 1 violation(s)",
+        }
+        for name, text in bad_cases.items():
+            with self.assertRaises(K.KernelError, msg=name):
+                K.check_cslr_log(text)
+
+    def test_k2_vit5_log_check(self):
+        K = self.K2
+        s1 = "LEAK CHECK OK (vit5_stage1): n_items=7136\n  [Epoch 1/3] Step 50/400 | Batch Loss: 2.0"
+        s2 = "LEAK CHECK OK (vit5_stage2): n_train_samples=240\n[Stage 2 | Epoch 01/15] Train Loss: 1.0"
+        K.check_vit5_log(s1, "vit5_stage1")
+        K.check_vit5_log(s2, "vit5_stage2")
+        for text, job in (("  [Epoch 1/3] Step 1\nLEAK CHECK OK (vit5_stage1)", "vit5_stage1"),
+                          ("[Stage 2 | Epoch 01/15] x", "vit5_stage2"), (s2, "vit5_stage1"),
+                          (s1 + "\nPRIMARY TEST EVALUATION", "vit5_stage1")):
+            with self.assertRaises(K.KernelError):
+                K.check_vit5_log(text, job)
+
+    def test_sanity_checks(self):
+        K1, K2 = self.K1, self.K2
+        hist = [{"epoch": 1, "train_loss": 2.0, "val_loss": 2.5}, {"epoch": 2, "train_loss": 1.5, "val_loss": 2.0}]
+        summ = {"training_time": {"best_epoch": 2}, "validation_s05": {"best_val_wer": 80.0}, "test_deferred": True,
+                "test_s06": None}
+        self.assertTrue(K2.sanity_cslr(hist, summ)["ok"])
+        self.assertFalse(K2.sanity_cslr(hist, {**summ, "validation_s05": {"best_val_wer": 100.0}})["ok"])
+        self.assertFalse(K2.sanity_cslr(hist + [{"epoch": 3, "train_loss": float("nan"), "val_loss": 1.0}], summ)["ok"])
+        self.assertFalse(K2.sanity_cslr(hist, {**summ, "training_time": {"best_epoch": 0}})["ok"])
+        self.assertFalse(K2.sanity_cslr(hist, {**summ, "test_s06": {"wer": 1.0}})["ok"])  # a test ran: refused
+        v = {"history": hist, "best_val_loss": 2.0, "best_epoch": 2}
+        self.assertTrue(K2.sanity_vit5(v, need_best_epoch=True)["ok"])
+        self.assertFalse(K2.sanity_vit5({**v, "best_val_loss": float("inf")}, need_best_epoch=False)["ok"])
+        self.assertFalse(K2.sanity_vit5({**v, "best_epoch": 0}, need_best_epoch=True)["ok"])
+        self.assertTrue(K1.sanity_k1(hist, {"epoch": 2, "val_top1": 2.1}, 50)["ok"])
+        self.assertFalse(K1.sanity_k1(hist, {"epoch": 2, "val_top1": 2.0}, 50)["ok"])  # == chance (100/50)
+        self.assertFalse(K1.sanity_k1(hist, {"epoch": 0, "val_top1": 90.0}, 50)["ok"])
+        self.assertFalse(K1.sanity_k1([{"epoch": 1, "train_loss": float("nan"), "val_loss": 1.0}],
+                                      {"epoch": 1, "val_top1": 90.0}, 50)["ok"])
+
+    # --- K1 Tier 1 restore -------------------------------------------------------------------------------------------
+    def _tier1_fixture(self, tag="a"):
+        import retrain_preregister as P
+        src_root, clone = self.p(tag, "src_root"), self.p(tag, "clone")
+        J = lambda r, rel: os.path.join(r, *rel.split("/"))  # noqa: E731
+        csv_rows = {"train": ["1", "2"], "val": ["3"], "test": ["4"]}
+        for name, vids in csv_rows.items():
+            body = "video_id,gloss_normalized\n" + "".join(f"{v},g{v}\n" for v in vids)
+            write_bytes(J(src_root, P.TIER1_CSV_REL[name]), body.replace("\n", "\r\n").encode())  # Windows copy
+            write_bytes(J(clone, P.TIER1_CSV_REL[name]), body.encode())                           # git checkout (LF)
+        for r in (src_root, clone):
+            write_bytes(J(r, P.TIER1_CLASSES_REL), b"g1\ng2\ng3\ng4\n")
+        for v in range(1, 5):
+            write_bytes(J(src_root, f"{P.TIER1_NPZ_DIR_REL}/{v}.npz"), f"npz{v}".encode())
+        prereg = {"inputs": P.measure_tier1(src_root)}
+        ds = self.p(tag, "input", "vslt-retrain-inputs-tier1")
+        sums = {}
+        for rel in [*P.TIER1_CSV_REL.values(), P.TIER1_CLASSES_REL, *[f"{P.TIER1_NPZ_DIR_REL}/{v}.npz" for v in range(1, 5)]]:
+            with open(J(src_root, rel), "rb") as f:
+                data = f.read()
+            write_bytes(os.path.join(ds, rel.replace("/", "__")), data)
+            sums[rel.replace("/", "__")] = sha(data)
+        write_bytes(os.path.join(ds, "SHA256SUMS"), "".join(f"{h}  {n}\n" for n, h in sorted(sums.items())).encode())
+        write_bytes(os.path.join(ds, "dataset-metadata.json"), b'{"isPrivate": true}\n')
+        return P, prereg, ds, clone
+
+    def test_k1_restore_tier1_and_compare(self):
+        K = self.K1
+        P, prereg, ds, clone = self._tier1_fixture()
+        self.assertEqual(str(K.find_input_dir(prereg, self.p("a", "input"))), ds)
+        rec = K.restore_tier1(ds, clone, prereg)
+        self.assertEqual((rec["n_files"], rec["n_npz_restored"]), (8, 4))
+        rows = P.compare(prereg, {"inputs": P.measure_tier1(clone)}, P.K1_COMPARE)
+        self.assertEqual([r for r in rows if not r["ok"]], [])  # CRLF dataset copy == LF clone copy (lf_sha256)
+        # tampered dataset file -> SHA256SUMS mismatch
+        write_bytes(os.path.join(ds, "data__extracted_keypoints__2.npz"), b"tampered")
+        with self.assertRaises(K.KernelError):
+            K.restore_tier1(ds, self.p("a", "clone2"), prereg)
+
+    def test_k1_restore_refuses_extra_file_and_text_mismatch(self):
+        K = self.K1
+        P, prereg, ds, clone = self._tier1_fixture("x")
+        write_bytes(os.path.join(ds, "extra.bin"), b"x")
+        with self.assertRaises(K.KernelError):
+            K.restore_tier1(ds, clone, prereg)
+        P, prereg, ds, clone = self._tier1_fixture("y")
+        # the clone's tracked CSV differs in content (not only line endings) -> lf_sha256 mismatch
+        write_bytes(os.path.join(clone, *P.TIER1_CSV_REL["val"].split("/")), b"video_id,gloss_normalized\n9,g9\n")
+        with self.assertRaises(K.KernelError):
+            K.restore_tier1(ds, clone, prereg)
+        # two candidate input datasets -> refused
+        P2, prereg2, ds2, _ = self._tier1_fixture("z")
+        other = self.p("z", "input", "copy")
+        for name in os.listdir(ds2):
+            with open(os.path.join(ds2, name), "rb") as f:
+                write_bytes(os.path.join(other, name), f.read())
+        with self.assertRaises(K.KernelError):
+            K.find_input_dir(prereg2, self.p("z", "input"))
+
+
 if __name__ == "__main__":
     unittest.main()

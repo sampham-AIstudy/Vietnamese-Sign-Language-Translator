@@ -1,0 +1,16 @@
+{
+  "id": "phmvnsm33/vsl-retrain-stgcn-tier1",
+  "title": "vsl-retrain-stgcn-tier1",
+  "code_file": "retrain_stgcn_kernel.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": [
+    "phmvnsm33/vslt-retrain-inputs-tier1"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [],
+  "model_sources": []
+}
