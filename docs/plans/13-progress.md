@@ -176,11 +176,40 @@ Tệp tạm: `_work/_plan13_tmp/`.
   → 322, blank 0, unk 1. Chạy lại vào đích đã có → exit 2, sha256 không đổi. Chưa đặt vào `data/external/vsl_gh/` (B11).
   (`glosses_only_in_val` / `glosses_only_in_test` và tỉ lệ OOV token tham chiếu test do `retrain_preregister.py` tính ở B5.)
 
+### B3 — cleaned 10k + gói đầu vào Tier 1 (lượt 3, mốc HEAD `34117fd`). Log: `_work/_plan13_tmp/B3_*`
+- Không sửa mã tracked nào (chỉ runner trong `_work/`) ⇒ không cần impact.
+- Lệnh: `PYTHONIOENCODING=utf-8 .venv/Scripts/python _work/_plan13_tmp/b3_runner.py` (HEAD `34117fd`, `code_dirty` false cho
+  `src scripts configs train.py`) → exit 0; kết quả máy đọc `_work/_plan13_tmp/B3_result.json`, stdout `B3_runner.log`.
+- Cách chạy script clean KHÔNG sửa: runner `compile` nguyên văn `scripts/clean_10k_translation_corpus.py` rồi `exec` với `__file__` giả
+  = `_work/_plan13_tmp/cleaned/scripts/…` (script suy mọi đường dẫn từ `__file__` ở cấp module, `:14-16`) ⇒ `project_root` = `_work/_plan13_tmp/cleaned/`;
+  đầu vào = bản chép byte (`xb`, kiểm sha256) của `data/external/parallel_text/vie_vsl_10k.jsonl`; runner assert `raw_path`/`clean_path` của script
+  trỏ đúng vào `_work`. (Biến thể của "importlib + đổi biến đích" §2.2: script không có `main()`, chạy ngay khi nạp nên không đặt lại biến sau nạp được.)
+- **cleaned:** `_work/_plan13_tmp/cleaned/data/external/parallel_text/vie_vsl_10k_cleaned.jsonl` — đầu vào 9405 dòng; script in
+  identical 2259 / misaligned 6 / fixed 3 / retained **7140** (== tham chiếu `inventory_summary.json:88`); 7140 dòng, 7140 id duy nhất;
+  ghi chế độ văn bản Windows ⇒ 7140 CRLF; `sha256` `012e7f555f7fb8c93a4958fa1331f981cfb1b6628e70f78eccf53458ac26d6d0`,
+  **`lf_sha256` `f141f64a04d919fc8c9887cc76b2c6cf027c8f996eba3c6df168732d766c1778`** (giá trị so ở preflight — R3).
+  Đầu vào: `sha256` `f55df87a…5748`, `lf_sha256` `c1dcceff…40e6`.
+- `Clean10kDataset(jsonl_path=…)` không loại: train **6426** / val **714** (== tham chiếu `vit5_stage1_history.json:4-5`).
+- `Clean10kDataset(…, exclude_heldout=heldout_texts(canonical, T ∪ V))` (split `289b2ac1…21a4`, canonical `lf_sha256` `d53ab701…a881`):
+  train 6426 → **6423** (loại 3: L1/source 1 `PAR_10K_02347`→SENT112; near_dup/source 1 `PAR_10K_03112`→SENT223; near_dup/target 1
+  `PAR_10K_05270`→SENT144); val 714 → **713** (loại 1: L1/source `PAR_10K_02536`→SENT141). Tổng loại **4**, cả 4 khớp câu V, **0** khớp câu T.
+  Danh sách đầy đủ (id + rule/side/sentence_ids) trong `B3_result.json` → `clean10k_exclude_heldout`. Số này sẽ do `retrain_preregister.py` tính
+  lại bằng code ở B5 (preregistration là nguồn chính thức).
+- **Gói Tier 1** `_work/_plan13_tmp/src_inputs_tier1/` (bố cục đường dẫn tương đối repo, chép `xb`, sha256 nguồn == đích, 0 link):
+  **162 file** = 3 CSV `data/splits/folds/tier1_grouped_{train,val,test}.csv` + `tier1_grouped_classes.txt` + 158 npz
+  `data/extracted_keypoints/<video_id>.npz` (đúng 158 `video_id` duy nhất của 3 CSV); tổng 9991844 byte (npz 9951449 == B0).
+  `npz` `dir_digest` (158) `88f15ac819942f7acc51093a61e68a6065c50f52f80c6e9a2702cde77359ae88`; digest gói (dòng `"<rel_path> <sha256>\n"` sắp theo
+  đường dẫn) `7098e007687a08f5eee7affe7250d6a2437c56cd127dfcbfdb130c2bdb9e33b7`. sha256 từng file trong `B3_result.json` → `tier1_inputs.files`.
+  Ghi nhận cho B5/B6: 4 file văn bản Tier 1 tracked với `i/lf w/crlf` (`git ls-files --eol`) ⇒ bản chép là CRLF; `lf_sha256` của từng file ==
+  sha256 blob git tại HEAD (train `8d2f6878…`, val `6b663e16…`, test `85e57199…`, classes `29f1a69e…`) ⇒ kernel K1 so `lf_sha256`, không so sha256 thô.
+- Chưa đặt cleaned vào `data/external/parallel_text/` (B11, §3.5). Guard G2 `test_vit5_stage1_clean10k_no_heldout_match` vẫn skip tới B11
+  (test đọc đường dẫn thật `data/external/parallel_text/vie_vsl_10k_cleaned.jsonl`).
+
 ## Đang làm
-- (không) — lượt 2 (B2a–B2c) xong; dừng, báo orchestrator.
+- B4a–B4d (lượt 3).
 
 ## Còn lại
-- B3–B14 (lượt sau). B4c/B4d phụ thuộc B2a/B2b (đã có).
+- B4a–B4d (lượt 3), B5–B14 (lượt sau).
 
 ## Sổ GPU (kế hoạch 13)
 | Job | Phiên (phút, từ env.json) | Ghi chú |
@@ -200,3 +229,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B2b (WIP 9146f6f) | `detect-changes --scope staged` (3 file M) | "Changes: 3 files, 36 symbols / Affected processes: 4 / Risk level: medium" — `__init__ → _id_list | Split_file_sha256 | Ids | Signers` (`dc_B2b.txt`) |
 | B2c (WIP 059a780) | `detect-changes --scope staged` (2 file M) | "Changes: 2 files, 13 symbols / Affected processes: 6 / Risk level: high" — luồng `Main → _id_list | Split_file_sha256 | Ids | Signers | From_canonical_dataset | Collect_glosses` (đều là `main` của chính script vocab gọi hàm dùng chung); grep: không caller ngoài script + test (`dc_B2c_wip.txt`) |
 | B2b+B2c (progress) | `detect-changes --scope staged` | "Changes: 1 files, 1 symbols / Risk level: critical" — `Section Kế hoạch 13 — tiến độ (coder) → docs/plans/13-progress.md` (markdown; nối nhầm như B0/B2) (`dc_B2c.txt`) |
+| B3 (progress) | `detect-changes --scope staged` (chỉ `M docs/plans/13-progress.md`) | "Changes: 1 files, 1 symbols / Affected processes: 226 / Risk level: critical" — symbol duy nhất `Section Kế hoạch 13 — tiến độ (coder)` (markdown; nối nhầm như B0/B2) (`dc_B3.txt`) |
