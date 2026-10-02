@@ -416,11 +416,28 @@ Tệp tạm: `_work/_plan13_tmp/`.
 - **Commit ghim B5: `0908ef3e9de4847023e879896c99975d05bc2070`** (`0908ef3`); `git ls-remote origin refs/heads/feat/vslt-complete` → `0908ef3e9de4847023e879896c99975d05bc2070` (== ghim, đã push).
   Tổ tiên: `4f714c6` (Lần sửa 1) ⊂ `0a18183` (split) ⊂ `ea12b44` (preregistration) ⊂ `0908ef3` (ghim).
 
+### B6 — lưu trữ đầu vào Tier 1 (lượt 5, sau khi B5 đã push). Log: `_work/_plan13_tmp/B6_*`
+- Trước khi stage: `retrain_preregister.measure_tier1(_work/_plan13_tmp/src_inputs_tier1)` so preregistration `K1_COMPARE` → 17 dòng, 0 lệch.
+- `stage --src _work/_plan13_tmp/src_inputs_tier1 --staging _work/_plan13_tmp/staging_inputs_tier1 --dataset phmvnsm33/vslt-retrain-inputs-tier1
+  --title "VSLT retrain inputs Tier 1" --licence-note "QIPEDC: educational / research use, redistribution not stated"` → exit 0, 162 file + SHA256SUMS +
+  dataset-metadata.json (`isPrivate: true`) (`B6_stage.log`).
+- `upload --staging … --dataset phmvnsm33/vslt-retrain-inputs-tier1` → **exit 6**: cả 163 file báo `Upload successful`, rồi
+  `dataset_create_new lỗi: Expecting value: line 1 column 1 (char 0)` (phản hồi của lệnh tạo không phải JSON) (`B6_upload.log`). KHÔNG chạy lại upload.
+  Kiểm trạng thái thật: `kaggle datasets status phmvnsm33/vslt-retrain-inputs-tier1` → `ready`; `kaggle datasets list --mine -s vslt-retrain` → có
+  slug, size 9976210 ⇒ dataset ĐÃ được tạo; xác minh bằng `verify` (dưới).
+- **Tốc độ upload đo (từ `B6_upload_timing.json`, `date +%s.%N` quanh lệnh upload): 10008761 byte (cả thư mục staging) trong
+  380.9 s ⇒ ≈ 26278 byte/s** (≈ 25.7 KiB/s; gồm chi phí mỗi file của 163 file nhỏ + lệnh tạo; tốc độ với file lớn có thể khác —
+  dùng cho ETA ở B10).
+- `verify --staging … --download-dir _work/_plan13_tmp/verify_inputs_tier1 --manifest-out reports/retrain_2026-10-02/inputs_tier1_manifest.json` → exit 0
+  (`B6_verify.log`): `is_private` True từ 2 nguồn {'dataset_list_mine': True, 'dataset_metadata': True}, `status` ready,
+  `verified` {'downloaded_sha256_all_match': True, 'file_list_matches': True, 'n_files': 162}; 162 mục, mọi `sha256 == sha256_after_download`; `generated_by.git_commit` `fa687ef`,
+  `code_dirty` False. ⇒ AC6 phần inputs_tier1 đạt (manifest commit cùng bước này).
+
 ## Đang làm
-- Lượt 5 (mốc HEAD `bf40a1d`): B5 XONG (ghim `0908ef3`); tiếp B6 (lưu trữ đầu vào Tier 1). Mục 5 review giữa (1.B) orchestrator HOÃN sang backlog — không làm. KHÔNG đẩy kernel nào ở lượt này (B7 trở đi lượt sau).
+- Lượt 5 (mốc HEAD `bf40a1d`): B5 XONG (ghim `0908ef3`); B6 XONG (dataset `phmvnsm33/vslt-retrain-inputs-tier1` private, manifest commit). Dừng trước B7. Mục 5 review giữa (1.B) orchestrator HOÃN sang backlog — không làm. KHÔNG đẩy kernel nào ở lượt này (B7 trở đi lượt sau).
 
 ## Còn lại
-- B6–B14. (Ghi chú cũ cho B5 — đã làm: `retrain_preregister.py` phải ghi đúng các khóa mà `eval_sentsplit.py` đọc (mục B4d); `protocol_template()` là nguồn
+- B7–B14. (Ghi chú cũ cho B5 — đã làm: `retrain_preregister.py` phải ghi đúng các khóa mà `eval_sentsplit.py` đọc (mục B4d); `protocol_template()` là nguồn
   của `evaluation_protocol`; số Clean10k sau loại (6423/713, loại 4) và CSLR/ViT5 (2880/30, 240/30) phải được TÍNH LẠI bằng code ở B5 (B3/B4c chỉ là số
   kiểm tra trước); file Tier 1 văn bản so `lf_sha256` (B3).)
 - B7: đặt `PIN_COMMIT` (K2) = hash ghim, đẩy K2 preflight (CPU). B8: `k1_outputs.json` khóa `stgcn_best_pt.sha256` (kernel K2 train đọc khóa này — `jobs.k2.backbone.k1_outputs_key`); `PIN_COMMIT` (K1). B9: K2 `MODE="train"`, metadata `enable_gpu: true` + `kernel_sources: ["phmvnsm33/vsl-retrain-stgcn-tier1"]`.
@@ -457,3 +474,5 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B5b (WIP 2cb02b3) | như trên (4 file `A` kaggle/vsl-retrain-*, `M` test chỉ thêm) | "Changes: 5 files, 105 symbols / Affected processes: 23 / Risk level: critical" — luồng `Measure_and_compare → …` (kernel gọi `retrain_preregister`), `Main → _kill | Log | Norm` … — chỉ trong 2 file kernel MỚI; không file mã nào import kernel (`git grep retrain_cslr_vit5_kernel\|retrain_stgcn_kernel -- src scripts backend` → 0) (`dc_B5b.txt`) |
 | B5c (ea12b44) | `detect-changes --scope staged` (`A reports/retrain_2026-10-02/preregistration.json`) | "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." — file JSON dữ liệu, không symbol; KHÔNG phải kết quả sạch; đối chiếu: chỉ 1 file `A`, không mã nào import (`dc_B5c.txt`) |
 | B5d (0908ef3) | `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +63/−3) | "Changes: 1 files, 1 symbols / Affected processes: 196 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B0/B2/B3); 3 dòng "xóa" = dòng "Đang làm"/"Còn lại" được thay (`dc_B5d.txt`) |
+| B5e (fa687ef) | `detect-changes --scope staged` (`M docs/plans/13-progress.md`) | "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." — chỉ markdown; KHÔNG phải kết quả sạch; không mã nào đọc file này (`dc_B5e.txt`) |
+| B6 | `detect-changes --scope staged` (`A reports/retrain_2026-10-02/inputs_tier1_manifest.json`, `M docs/plans/13-progress.md`) | "Diff touched 2 file(s) but no indexed symbols overlap those hunks — not a clean tree." — JSON manifest + markdown, không symbol; KHÔNG phải kết quả sạch; không mã nào import (`dc_B6.txt`) |
