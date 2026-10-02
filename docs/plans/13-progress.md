@@ -502,6 +502,16 @@ Tệp tạm: `_work/_plan13_tmp/`.
   commit sau, chỉ sửa 13-progress; một commit không chứa được hash của chính nó). File repo GIỮ `PIN_COMMIT = None` (test `:2170`); bản đẩy =
   file ở ghim mới thay đúng dòng `PIN_COMMIT`. Preregistration `ea12b44` vẫn là tổ tiên, không sửa (1 dòng `git log`). K1 không đổi (vẫn ghim B5/B8 sau).
 
+- **Commit ghim B7r2: `c0c70d23fcd5c6d2345c598fb434ff4576a5ef91`** (`c0c70d2`); `git ls-remote origin refs/heads/feat/vslt-complete` → `c0c70d23…ef91`
+  (== ghim, đã push). Tổ tiên: `ea12b44` (preregistration, `git log` 1 dòng) ⊂ `0908ef3` (ghim B5) ⊂ `c0c70d2`. `git diff --stat 0908ef3 c0c70d2 --
+  kaggle reports configs scripts src` → chỉ file kernel K2 + `inputs_tier1_manifest.json` (B6); `kernel-metadata.json` K2 không đổi.
+- Bản đẩy `_work/_plan13_tmp/k2_push_v2/` = file ở `c0c70d2` thay ĐÚNG dòng 39 `PIN_COMMIT` (`B7r2_push_diff.txt`); `same_as_pinned` local OK
+  (`B7r2_push_check.txt`); sha256 kernel `bff3c464789e41708f75c4be10f0fa423cc32b460a5b59fa103753f44f2ec9f8`, metadata
+  `2890fd528926bcb9d52f348725cc7999b4196df3828021e2adef0574bb48b283` (== repo). Trước khi đẩy: `kernels status` → "KernelWorkerStatus.ERROR" (v1).
+- Đẩy: `PYTHONUTF8=1 .venv/Scripts/kaggle kernels push -p _work/_plan13_tmp/k2_push_v2` lúc **2026-10-02T18:14:38Z** → "Kernel version 2 successfully
+  pushed." (`B7r2_push.log`, `B7r2_push_time.txt`). Slug **`phmvnsm33/vsl-retrain-cslr-vit5` version 2** (private, CPU, `MODE="preflight"`).
+  Theo dõi: `B7r2_status_log.txt`.
+
 ## Đang làm
 - **ĐANG LÀM B7 lần 2** (lượt 7, mốc HEAD `a4fc4cd`): K2 v1 ERROR (watchdog 105' giết `hf_probe.py VietAI/vit5-base`, log dừng "Fetching 10 files: 40% 4/10"). Việc: đối chiếu sớm output v1, sửa bước HF (chỉ tải file cần, timeout/retry, log từng file, watchdog riêng), ghim mới nếu đổi kernel, đẩy K2 v2. KHÔNG làm B8.
 - **ĐANG LÀM B7** (lượt 6, mốc HEAD `422e499`): K2 preflight ĐÃ ĐẨY (`phmvnsm33/vsl-retrain-cslr-vit5` v1, 14:15:08Z), lần kiểm cuối 15:18:07Z RUNNING (>60 phút) → bàn giao orchestrator theo dõi; còn: tải output + đối chiếu preregistration. KHÔNG làm B8.
@@ -552,3 +562,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B7r2-start (518dac3) | (KHÔNG chạy trước commit — sót; commit chỉ thêm 1 dòng "Đang làm" vào `docs/plans/13-progress.md`) | chạy bù ở dòng kế (cùng file, cùng loại thay đổi) |
 | B7r2a | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, chỉ thêm) | "Changes: 1 files, 1 symbols / Affected processes: 198 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a/B7b); không mã nào đọc file này (`dc_B7r2a.txt`) |
 | B7r2b (ghim mới) | `analyze --index-only` rồi `detect-changes --scope staged` (`M` kernel K2, `M tests/test_retrain_tools.py` chỉ thêm, `M docs/plans/13-progress.md`) | "Changes: 3 files, 39 symbols / Affected processes: 197 / Risk level: critical" — symbol đổi: hằng/hàm HF mới (`HF_*`, `git_blob_sha1`, `hf_select_files`, `hf_attempt_seconds`, `hf_verify`, `last_tagged`, `run_attempts`), `HF_PROBE`, `hf_snapshot` + lớp test mới + mục markdown; luồng liệt kê (`Run_harmonized → …`, `Main → …`, `Measure_and_compare → …`) đều ghi "changed: Kế hoạch 13 — tiến độ (coder)" = nối nhầm qua mục markdown như B7a; caller thật của `hf_snapshot` chỉ `main` của K2 (impact + grep ở trên) (`dc_B7r2b.txt`) |
+| B7r2c | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, chỉ thêm) | "Changes: 1 files, 3 symbols / Affected processes: 0 / Risk level: low" — 3 mục markdown của 13-progress; không mã nào đọc file này (`dc_B7r2c.txt`) |
