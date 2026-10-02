@@ -1,0 +1,9 @@
+{
+  "n_epochs": 17,
+  "non_finite_loss_epochs": [],
+  "best_epoch": 7,
+  "val_top1_best": 23.08,
+  "chance_top1": 2.0,
+  "n_classes": 50,
+  "ok": true
+}

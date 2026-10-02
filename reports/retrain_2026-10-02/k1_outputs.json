@@ -1,0 +1,42 @@
+{
+  "generated_by": {
+    "command": "PYTHONIOENCODING=utf-8 .venv/Scripts/python _work/_plan13_tmp/b8_write_reports.py",
+    "git_commit": "2d6fbbd36a75f6417df5c093f5315f10c140939e",
+    "source": "PYTHONUTF8=1 .venv/Scripts/kaggle kernels output phmvnsm33/vsl-retrain-stgcn-tier1 -p _work/_plan13_tmp/k1"
+  },
+  "kernel": "phmvnsm33/vsl-retrain-stgcn-tier1",
+  "kernel_version": 1,
+  "pin_commit": "c0c70d23fcd5c6d2345c598fb434ff4576a5ef91",
+  "preregistration_commit": "ea12b44734840a0c0ccb7d35944d0db7df701091",
+  "stgcn_best_pt": {
+    "sha256": "2204becd2662840d2425a5935366b48f059b95feb7b73c1d0d1ded3d2da1bac2",
+    "size_bytes": 4070904,
+    "kernel_output_path": "k1/stgcn_best.pt",
+    "sha256_in_kernel_SHA256SUMS": "2204becd2662840d2425a5935366b48f059b95feb7b73c1d0d1ded3d2da1bac2",
+    "meta_sidecar": "reports/retrain_2026-10-02/k1/stgcn_best.meta.json"
+  },
+  "env": "reports/retrain_2026-10-02/k1/env.json",
+  "local_crosscheck": "reports/retrain_2026-10-02/k1/local_crosscheck.json",
+  "local_crosscheck_n_checks": 39,
+  "local_crosscheck_n_failed": 0,
+  "committed_files": [
+    "reports/retrain_2026-10-02/k1/SHA256SUMS",
+    "reports/retrain_2026-10-02/k1/env.json",
+    "reports/retrain_2026-10-02/k1/preflight.json",
+    "reports/retrain_2026-10-02/k1/sanity.json",
+    "reports/retrain_2026-10-02/k1/stgcn_best.meta.json",
+    "reports/retrain_2026-10-02/k1/stgcn_history.json",
+    "reports/retrain_2026-10-02/k1/eval/benchmark_results.json",
+    "reports/retrain_2026-10-02/k1/logs/clone.log",
+    "reports/retrain_2026-10-02/k1/logs/train.log",
+    "reports/retrain_2026-10-02/k1/logs/evaluate_test.log",
+    "reports/retrain_2026-10-02/k1/kernel_stdout_vsl-retrain-stgcn-tier1.log",
+    "reports/retrain_2026-10-02/k1/local_crosscheck.json"
+  ],
+  "not_committed_kernel_outputs": {
+    "eval/classification_report.csv": "1ca9f580ed8942af25b835a4c897d6c8ccad040bd417f52e1e7bba3138a93a00",
+    "eval/confusion_matrix.png": "942b3241011f6b7c2884a895d8d3a494a7ab8e9e1fad663ebd9704db3ec39824",
+    "eval/training_curve.png": "3218198206703247c8e7efb4462683284b4e12b54074d71ad14f546b2cc8b179",
+    "stgcn_best.pt": "2204becd2662840d2425a5935366b48f059b95feb7b73c1d0d1ded3d2da1bac2"
+  }
+}

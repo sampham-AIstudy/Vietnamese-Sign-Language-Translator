@@ -1,0 +1,39 @@
+Loading experiment configuration: configs/experiments/stgcn.yaml
+Experiment: stgcn_tier1
+Compute Device: cuda
+GPU: Tesla T4
+Seed: 42
+
+Initializing DataLoaders for Tier: tier1 (Batch size=16)...
+Classes in dataset: 50
+
+Building Model: STGCNModel...
+Total Trainable Parameters: 316,437
+
+Starting training loop for 100 epoch(s)...
+Starting Training: 100 epochs | Device: cuda | AMP: True
+Patience: 10 | Checkpoint: checkpoints/stgcn_best.pt
+Epoch 001/100 [5.5s] | Train Loss: 3.8128, Top1: 6.8% | Val Loss: 3.8786, Top1: 15.4%, F1: 2.6% | LR: 1.00e-03 [*BEST*]
+Epoch 002/100 [3.4s] | Train Loss: 3.4443, Top1: 19.2% | Val Loss: 3.7277, Top1: 15.4%, F1: 3.2% | LR: 1.00e-03 [*BEST*]
+Epoch 003/100 [3.4s] | Train Loss: 3.2132, Top1: 27.0% | Val Loss: 3.6838, Top1: 15.4%, F1: 4.2% | LR: 1.00e-03 [*BEST*]
+Epoch 004/100 [3.4s] | Train Loss: 2.9355, Top1: 39.2% | Val Loss: 3.6297, Top1: 15.4%, F1: 3.7% | LR: 1.00e-03 [*BEST*]
+Epoch 005/100 [3.4s] | Train Loss: 2.7219, Top1: 44.3% | Val Loss: 3.5666, Top1: 23.1%, F1: 8.8% | LR: 1.00e-03 [*BEST*]
+Epoch 006/100 [3.4s] | Train Loss: 2.5144, Top1: 50.3% | Val Loss: 3.5043, Top1: 15.4%, F1: 3.3% | LR: 1.00e-03
+Epoch 007/100 [3.4s] | Train Loss: 2.3631, Top1: 56.8% | Val Loss: 3.5266, Top1: 23.1%, F1: 9.3% | LR: 1.00e-03 [*BEST*]
+Epoch 008/100 [3.4s] | Train Loss: 2.2344, Top1: 58.9% | Val Loss: 3.6039, Top1: 15.4%, F1: 3.3% | LR: 1.00e-03
+Epoch 009/100 [3.3s] | Train Loss: 2.1035, Top1: 63.8% | Val Loss: 3.6722, Top1: 23.1%, F1: 7.0% | LR: 1.00e-03
+Epoch 010/100 [3.4s] | Train Loss: 1.9455, Top1: 68.7% | Val Loss: 3.7261, Top1: 23.1%, F1: 10.5% | LR: 1.00e-03
+Epoch 011/100 [3.4s] | Train Loss: 1.8588, Top1: 71.1% | Val Loss: 3.5617, Top1: 23.1%, F1: 7.4% | LR: 1.00e-03
+Epoch 012/100 [3.4s] | Train Loss: 1.8162, Top1: 73.8% | Val Loss: 3.5604, Top1: 23.1%, F1: 7.4% | LR: 1.00e-03
+Epoch 013/100 [3.4s] | Train Loss: 1.7033, Top1: 76.2% | Val Loss: 3.9278, Top1: 15.4%, F1: 4.5% | LR: 5.00e-04
+Epoch 014/100 [3.4s] | Train Loss: 1.6382, Top1: 79.7% | Val Loss: 3.7759, Top1: 15.4%, F1: 4.8% | LR: 5.00e-04
+Epoch 015/100 [3.4s] | Train Loss: 1.5803, Top1: 85.1% | Val Loss: 3.7660, Top1: 23.1%, F1: 8.6% | LR: 5.00e-04
+Epoch 016/100 [3.3s] | Train Loss: 1.5507, Top1: 83.0% | Val Loss: 3.8158, Top1: 23.1%, F1: 9.1% | LR: 5.00e-04
+Epoch 017/100 [3.4s] | Train Loss: 1.4916, Top1: 84.9% | Val Loss: 3.6506, Top1: 23.1%, F1: 8.6% | LR: 5.00e-04
+
+[Early Stopping] No improvement for 10 epochs. Stopping at epoch 17.
+================================================================
+Training Complete in 1.00 mins.
+Best Model at Epoch 7: Val Top-1 = 23.08%, Val Loss = 3.5266
+Saved Checkpoint: checkpoints/stgcn_best.pt
+================================================================

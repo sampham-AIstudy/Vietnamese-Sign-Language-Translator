@@ -1,0 +1,351 @@
+{
+  "generated_by": {
+    "command": "PYTHONIOENCODING=utf-8 .venv/Scripts/python _work/_plan13_tmp/b8_check_k1.py <out>",
+    "git_commit": "2d6fbbd36a75f6417df5c093f5315f10c140939e"
+  },
+  "pin": "c0c70d23fcd5c6d2345c598fb434ff4576a5ef91",
+  "n_checks": 39,
+  "n_failed": 0,
+  "stgcn_best_pt_sha256": "2204becd2662840d2425a5935366b48f059b95feb7b73c1d0d1ded3d2da1bac2",
+  "stgcn_best_pt_size_bytes": 4070904,
+  "checks": [
+    {
+      "key": "SHA256SUMS.file_list",
+      "expected": [
+        "env.json",
+        "eval/benchmark_results.json",
+        "eval/classification_report.csv",
+        "eval/confusion_matrix.png",
+        "eval/training_curve.png",
+        "logs/clone.log",
+        "logs/evaluate_test.log",
+        "logs/train.log",
+        "preflight.json",
+        "sanity.json",
+        "stgcn_best.meta.json",
+        "stgcn_best.pt",
+        "stgcn_history.json"
+      ],
+      "measured": [
+        "env.json",
+        "eval/benchmark_results.json",
+        "eval/classification_report.csv",
+        "eval/confusion_matrix.png",
+        "eval/training_curve.png",
+        "logs/clone.log",
+        "logs/evaluate_test.log",
+        "logs/train.log",
+        "preflight.json",
+        "sanity.json",
+        "stgcn_best.meta.json",
+        "stgcn_best.pt",
+        "stgcn_history.json"
+      ],
+      "ok": true
+    },
+    {
+      "key": "SHA256SUMS.mismatching_files",
+      "expected": [],
+      "measured": [],
+      "ok": true
+    },
+    {
+      "key": "env.exit",
+      "expected": 0,
+      "measured": 0,
+      "ok": true
+    },
+    {
+      "key": "env.error",
+      "expected": null,
+      "measured": null,
+      "ok": true
+    },
+    {
+      "key": "env.job",
+      "expected": "k1",
+      "measured": "k1",
+      "ok": true
+    },
+    {
+      "key": "env.commit",
+      "expected": "c0c70d23fcd5c6d2345c598fb434ff4576a5ef91",
+      "measured": "c0c70d23fcd5c6d2345c598fb434ff4576a5ef91",
+      "ok": true
+    },
+    {
+      "key": "env.preregistration_commit",
+      "expected": [
+        "ea12b44734840a0c0ccb7d35944d0db7df701091"
+      ],
+      "measured": [
+        "ea12b44734840a0c0ccb7d35944d0db7df701091"
+      ],
+      "ok": true
+    },
+    {
+      "key": "env.preregistration",
+      "expected": "reports/retrain_2026-10-02/preregistration.json",
+      "measured": "reports/retrain_2026-10-02/preregistration.json",
+      "ok": true
+    },
+    {
+      "key": "git.prereg_is_ancestor_of_pin",
+      "expected": 0,
+      "measured": 0,
+      "ok": true
+    },
+    {
+      "key": "env.watchdog_minutes",
+      "expected": 45,
+      "measured": 45,
+      "ok": true
+    },
+    {
+      "key": "env.n_test_runs",
+      "expected": 1,
+      "measured": 1,
+      "ok": true
+    },
+    {
+      "key": "env.gpus_nonempty",
+      "expected": true,
+      "measured": true,
+      "ok": true
+    },
+    {
+      "key": "env.total_minutes<=watchdog",
+      "expected": true,
+      "measured": true,
+      "ok": true
+    },
+    {
+      "key": "env.inputs.n_npz_restored",
+      "expected": 158,
+      "measured": 158,
+      "ok": true
+    },
+    {
+      "key": "env.inputs.text_lf_sha256",
+      "expected": {
+        "tier1_grouped_train_csv": "8d2f6878de26c57c64961f21a31d7a38d3899566a59ba596cdc5886e1cdd2b76",
+        "tier1_grouped_val_csv": "6b663e164b4086f33e0e4cad0c774e1e432860ad3c25cda3bf724ee98d060a91",
+        "tier1_grouped_test_csv": "85e5719934d55028ad39fbe51d3fd73e679febe3efe23c0310e982882f606c54",
+        "tier1_grouped_classes_txt": "29f1a69e84bde3acb08d6d153939d114d53ec0fc8f18faf0b9c0e47185f08678"
+      },
+      "measured": {
+        "tier1_grouped_classes_txt": "29f1a69e84bde3acb08d6d153939d114d53ec0fc8f18faf0b9c0e47185f08678",
+        "tier1_grouped_test_csv": "85e5719934d55028ad39fbe51d3fd73e679febe3efe23c0310e982882f606c54",
+        "tier1_grouped_train_csv": "8d2f6878de26c57c64961f21a31d7a38d3899566a59ba596cdc5886e1cdd2b76",
+        "tier1_grouped_val_csv": "6b663e164b4086f33e0e4cad0c774e1e432860ad3c25cda3bf724ee98d060a91"
+      },
+      "ok": true
+    },
+    {
+      "key": "preflight.row_keys==K1_COMPARE",
+      "expected": [
+        "inputs.tier1_grouped_train_csv.lf_sha256",
+        "inputs.tier1_grouped_train_csv.n_classes_in_rows",
+        "inputs.tier1_grouped_train_csv.n_rows",
+        "inputs.tier1_grouped_train_csv.path",
+        "inputs.tier1_grouped_val_csv.lf_sha256",
+        "inputs.tier1_grouped_val_csv.n_classes_in_rows",
+        "inputs.tier1_grouped_val_csv.n_rows",
+        "inputs.tier1_grouped_val_csv.path",
+        "inputs.tier1_grouped_test_csv.lf_sha256",
+        "inputs.tier1_grouped_test_csv.n_classes_in_rows",
+        "inputs.tier1_grouped_test_csv.n_rows",
+        "inputs.tier1_grouped_test_csv.path",
+        "inputs.tier1_grouped_classes_txt.lf_sha256",
+        "inputs.tier1_grouped_classes_txt.n_classes",
+        "inputs.tier1_grouped_classes_txt.path",
+        "inputs.tier1_npz.dir_digest",
+        "inputs.tier1_npz.n_files"
+      ],
+      "measured": [
+        "inputs.tier1_grouped_train_csv.lf_sha256",
+        "inputs.tier1_grouped_train_csv.n_classes_in_rows",
+        "inputs.tier1_grouped_train_csv.n_rows",
+        "inputs.tier1_grouped_train_csv.path",
+        "inputs.tier1_grouped_val_csv.lf_sha256",
+        "inputs.tier1_grouped_val_csv.n_classes_in_rows",
+        "inputs.tier1_grouped_val_csv.n_rows",
+        "inputs.tier1_grouped_val_csv.path",
+        "inputs.tier1_grouped_test_csv.lf_sha256",
+        "inputs.tier1_grouped_test_csv.n_classes_in_rows",
+        "inputs.tier1_grouped_test_csv.n_rows",
+        "inputs.tier1_grouped_test_csv.path",
+        "inputs.tier1_grouped_classes_txt.lf_sha256",
+        "inputs.tier1_grouped_classes_txt.n_classes",
+        "inputs.tier1_grouped_classes_txt.path",
+        "inputs.tier1_npz.dir_digest",
+        "inputs.tier1_npz.n_files"
+      ],
+      "ok": true
+    },
+    {
+      "key": "preflight.n_rows",
+      "expected": 17,
+      "measured": 17,
+      "ok": true
+    },
+    {
+      "key": "preflight.n_mismatch",
+      "expected": 0,
+      "measured": 0,
+      "ok": true
+    },
+    {
+      "key": "preflight.rows_all_equal_local_prereg",
+      "expected": 17,
+      "measured": 17,
+      "ok": true
+    },
+    {
+      "key": "sanity.recomputed==sanity.json",
+      "expected": {
+        "n_epochs": 17,
+        "non_finite_loss_epochs": [],
+        "best_epoch": 7,
+        "val_top1_best": 23.08,
+        "chance_top1": 2.0,
+        "n_classes": 50,
+        "ok": true
+      },
+      "measured": {
+        "n_epochs": 17,
+        "non_finite_loss_epochs": [],
+        "best_epoch": 7,
+        "val_top1_best": 23.08,
+        "chance_top1": 2.0,
+        "n_classes": 50,
+        "ok": true
+      },
+      "ok": true
+    },
+    {
+      "key": "sanity.ok",
+      "expected": true,
+      "measured": true,
+      "ok": true
+    },
+    {
+      "key": "sanity.n_classes==classes_txt",
+      "expected": 50,
+      "measured": 50,
+      "ok": true
+    },
+    {
+      "key": "history.best_epoch_entry.val_top1==ckpt",
+      "expected": [
+        23.08
+      ],
+      "measured": [
+        23.08
+      ],
+      "ok": true
+    },
+    {
+      "key": "checkpoint.has_model_state_dict",
+      "expected": true,
+      "measured": true,
+      "ok": true
+    },
+    {
+      "key": "meta.checkpoint_sha256",
+      "expected": "2204becd2662840d2425a5935366b48f059b95feb7b73c1d0d1ded3d2da1bac2",
+      "measured": "2204becd2662840d2425a5935366b48f059b95feb7b73c1d0d1ded3d2da1bac2",
+      "ok": true
+    },
+    {
+      "key": "meta.n_classes",
+      "expected": 50,
+      "measured": 50,
+      "ok": true
+    },
+    {
+      "key": "meta.seed",
+      "expected": 42,
+      "measured": 42,
+      "ok": true
+    },
+    {
+      "key": "meta.commit",
+      "expected": "c0c70d23fcd5c6d2345c598fb434ff4576a5ef91",
+      "measured": "c0c70d23fcd5c6d2345c598fb434ff4576a5ef91",
+      "ok": true
+    },
+    {
+      "key": "SHA256SUMS.stgcn_best.pt",
+      "expected": "2204becd2662840d2425a5935366b48f059b95feb7b73c1d0d1ded3d2da1bac2",
+      "measured": "2204becd2662840d2425a5935366b48f059b95feb7b73c1d0d1ded3d2da1bac2",
+      "ok": true
+    },
+    {
+      "key": "kernel_stdout_log_count",
+      "expected": 1,
+      "measured": 1,
+      "ok": true
+    },
+    {
+      "key": "stdout.evaluate_test_invocations",
+      "expected": 1,
+      "measured": 1,
+      "ok": true
+    },
+    {
+      "key": "stdout.train_invocations",
+      "expected": 1,
+      "measured": 1,
+      "ok": true
+    },
+    {
+      "key": "stdout.PINNED_COMMIT",
+      "expected": 1,
+      "measured": 1,
+      "ok": true
+    },
+    {
+      "key": "stdout.INPUTS_OK",
+      "expected": 1,
+      "measured": 1,
+      "ok": true
+    },
+    {
+      "key": "logs.evaluate_test.log_exists",
+      "expected": true,
+      "measured": true,
+      "ok": true
+    },
+    {
+      "key": "logs.other_logs_mention_evaluate_test",
+      "expected": {
+        "logs/clone.log": 0,
+        "logs/train.log": 0
+      },
+      "measured": {
+        "logs/clone.log": 0,
+        "logs/train.log": 0
+      },
+      "ok": true
+    },
+    {
+      "key": "stdout.evaluate_test_argv==prereg",
+      "expected": true,
+      "measured": true,
+      "ok": true
+    },
+    {
+      "key": "stdout.train_argv==prereg",
+      "expected": true,
+      "measured": true,
+      "ok": true
+    },
+    {
+      "key": "eval.benchmark_results.json_exists",
+      "expected": true,
+      "measured": true,
+      "ok": true
+    }
+  ]
+}

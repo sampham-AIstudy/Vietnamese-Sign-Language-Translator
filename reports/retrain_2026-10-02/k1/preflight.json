@@ -1,0 +1,108 @@
+{
+  "rows": [
+    {
+      "key": "inputs.tier1_grouped_train_csv.lf_sha256",
+      "expected": "8d2f6878de26c57c64961f21a31d7a38d3899566a59ba596cdc5886e1cdd2b76",
+      "measured": "8d2f6878de26c57c64961f21a31d7a38d3899566a59ba596cdc5886e1cdd2b76",
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_grouped_train_csv.n_classes_in_rows",
+      "expected": 50,
+      "measured": 50,
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_grouped_train_csv.n_rows",
+      "expected": 74,
+      "measured": 74,
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_grouped_train_csv.path",
+      "expected": "data/splits/folds/tier1_grouped_train.csv",
+      "measured": "data/splits/folds/tier1_grouped_train.csv",
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_grouped_val_csv.lf_sha256",
+      "expected": "6b663e164b4086f33e0e4cad0c774e1e432860ad3c25cda3bf724ee98d060a91",
+      "measured": "6b663e164b4086f33e0e4cad0c774e1e432860ad3c25cda3bf724ee98d060a91",
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_grouped_val_csv.n_classes_in_rows",
+      "expected": 12,
+      "measured": 12,
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_grouped_val_csv.n_rows",
+      "expected": 13,
+      "measured": 13,
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_grouped_val_csv.path",
+      "expected": "data/splits/folds/tier1_grouped_val.csv",
+      "measured": "data/splits/folds/tier1_grouped_val.csv",
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_grouped_test_csv.lf_sha256",
+      "expected": "85e5719934d55028ad39fbe51d3fd73e679febe3efe23c0310e982882f606c54",
+      "measured": "85e5719934d55028ad39fbe51d3fd73e679febe3efe23c0310e982882f606c54",
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_grouped_test_csv.n_classes_in_rows",
+      "expected": 50,
+      "measured": 50,
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_grouped_test_csv.n_rows",
+      "expected": 71,
+      "measured": 71,
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_grouped_test_csv.path",
+      "expected": "data/splits/folds/tier1_grouped_test.csv",
+      "measured": "data/splits/folds/tier1_grouped_test.csv",
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_grouped_classes_txt.lf_sha256",
+      "expected": "29f1a69e84bde3acb08d6d153939d114d53ec0fc8f18faf0b9c0e47185f08678",
+      "measured": "29f1a69e84bde3acb08d6d153939d114d53ec0fc8f18faf0b9c0e47185f08678",
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_grouped_classes_txt.n_classes",
+      "expected": 50,
+      "measured": 50,
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_grouped_classes_txt.path",
+      "expected": "data/splits/folds/tier1_grouped_classes.txt",
+      "measured": "data/splits/folds/tier1_grouped_classes.txt",
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_npz.dir_digest",
+      "expected": "88f15ac819942f7acc51093a61e68a6065c50f52f80c6e9a2702cde77359ae88",
+      "measured": "88f15ac819942f7acc51093a61e68a6065c50f52f80c6e9a2702cde77359ae88",
+      "ok": true
+    },
+    {
+      "key": "inputs.tier1_npz.n_files",
+      "expected": 158,
+      "measured": 158,
+      "ok": true
+    }
+  ],
+  "n_rows": 17,
+  "n_mismatch": 0
+}

@@ -1,0 +1,31 @@
+[{"stream_name":"stdout","time":0.856087612,"data":"$ git clone -q -b feat/vslt-complete https://github.com/sampham-AIstudy/Vietnamese-Sign-Language-Translator.git /tmp/vslt  (cwd=/tmp, log=/kaggle/working/k1/logs/clone.log)\n"}
+,{"stream_name":"stdout","time":2.579733473,"data":"$ git -C /tmp/vslt checkout -q c0c70d23fcd5c6d2345c598fb434ff4576a5ef91  (cwd=/tmp, log=/kaggle/working/k1/logs/clone.log)\n"}
+,{"stream_name":"stdout","time":2.7484308,"data":"PINNED COMMIT c0c70d23fcd5c6d2345c598fb434ff4576a5ef91\n"}
+,{"stream_name":"stdout","time":2.761468984,"data":"PREREGISTRATION reports/retrain_2026-10-02/preregistration.json commit ea12b44734840a0c0ccb7d35944d0db7df701091 (ancestor of the pin)\n"}
+,{"stream_name":"stdout","time":4.163540709,"data":"MATCH    inputs.tier1_grouped_train_csv.lf_sha256: expected=8d2f6878de26c57c64961f21a31d7a38d3899566a59ba596cdc5886e1cdd2b76 measured=8d2f6878de26c57c64961f21a31d7a38d3899566a59ba596cdc5886e1cdd2b76\n"}
+,{"stream_name":"stdout","time":4.163571344,"data":"MATCH    inputs.tier1_grouped_train_csv.n_classes_in_rows: expected=50 measured=50\n"}
+,{"stream_name":"stdout","time":4.163575805,"data":"MATCH    inputs.tier1_grouped_train_csv.n_rows: expected=74 measured=74\n"}
+,{"stream_name":"stdout","time":4.163579565,"data":"MATCH    inputs.tier1_grouped_train_csv.path: expected=data/splits/folds/tier1_grouped_train.csv measured=data/splits/folds/tier1_grouped_train.csv\n"}
+,{"stream_name":"stdout","time":4.1635836,"data":"MATCH    inputs.tier1_grouped_val_csv.lf_sha256: expected=6b663e164b4086f33e0e4cad0c774e1e432860ad3c25cda3bf724ee98d060a91 measured=6b663e164b4086f33e0e4cad0c774e1e432860ad3c25cda3bf724ee98d060a91\n"}
+,{"stream_name":"stdout","time":4.163587695,"data":"MATCH    inputs.tier1_grouped_val_csv.n_classes_in_rows: expected=12 measured=12\n"}
+,{"stream_name":"stdout","time":4.163591168,"data":"MATCH    inputs.tier1_grouped_val_csv.n_rows: expected=13 measured=13\n"}
+,{"stream_name":"stdout","time":4.163594838,"data":"MATCH    inputs.tier1_grouped_val_csv.path: expected=data/splits/folds/tier1_grouped_val.csv measured=data/splits/folds/tier1_grouped_val.csv\n"}
+,{"stream_name":"stdout","time":4.163598671,"data":"MATCH    inputs.tier1_grouped_test_csv.lf_sha256: expected=85e5719934d55028ad39fbe51d3fd73e679febe3efe23c0310e982882f606c54 measured=85e5719934d55028ad39fbe51d3fd73e679febe3efe23c0310e982882f606c54\n"}
+,{"stream_name":"stdout","time":4.163602741,"data":"MATCH    inputs.tier1_grouped_test_csv.n_classes_in_rows: expected=50 measured=50\n"}
+,{"stream_name":"stdout","time":4.163606393,"data":"MATCH    inputs.tier1_grouped_test_csv.n_rows: expected=71 measured=71\n"}
+,{"stream_name":"stdout","time":4.16361001,"data":"MATCH    inputs.tier1_grouped_test_csv.path: expected=data/splits/folds/tier1_grouped_test.csv measured=data/splits/folds/tier1_grouped_test.csv\n"}
+,{"stream_name":"stdout","time":4.163613905,"data":"MATCH    inputs.tier1_grouped_classes_txt.lf_sha256: expected=29f1a69e84bde3acb08d6d153939d114d53ec0fc8f18faf0b9c0e47185f08678 measured=29f1a69e84bde3acb08d6d153939d114d53ec0fc8f18faf0b9c0e47185f08678\n"}
+,{"stream_name":"stdout","time":4.163618043,"data":"MATCH    inputs.tier1_grouped_classes_txt.n_classes: expected=50 measured=50\n"}
+,{"stream_name":"stdout","time":4.163621599,"data":"MATCH    inputs.tier1_grouped_classes_txt.path: expected=data/splits/folds/tier1_grouped_classes.txt measured=data/splits/folds/tier1_grouped_classes.txt\n"}
+,{"stream_name":"stdout","time":4.163626498,"data":"MATCH    inputs.tier1_npz.dir_digest: expected=88f15ac819942f7acc51093a61e68a6065c50f52f80c6e9a2702cde77359ae88 measured=88f15ac819942f7acc51093a61e68a6065c50f52f80c6e9a2702cde77359ae88\n"}
+,{"stream_name":"stdout","time":4.163630595,"data":"MATCH    inputs.tier1_npz.n_files: expected=158 measured=158\n"}
+,{"stream_name":"stdout","time":4.163875033,"data":"INPUTS OK: 17 values == preregistration\n"}
+,{"stream_name":"stdout","time":11.834576212,"data":"$ /usr/bin/python3 train.py --config configs/experiments/stgcn.yaml --seed 42  (cwd=/tmp/vslt, log=/kaggle/working/k1/logs/train.log)\n"}
+,{"stream_name":"stdout","time":85.580589501,"data":"$ /usr/bin/python3 evaluate_test.py --config configs/experiments/stgcn.yaml --checkpoint checkpoints/stgcn_best.pt --output-dir /kaggle/working/k1/eval  (cwd=/tmp/vslt, log=/kaggle/working/k1/logs/evaluate_test.log)\n"}
+,{"stream_name":"stderr","time":98.411925514,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":98.4119611,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":98.644004474,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":98.644041236,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":99.28453469,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":100.149210095,"data":"[NbConvertApp] Writing 358682 bytes to __results__.html\n"}
+]

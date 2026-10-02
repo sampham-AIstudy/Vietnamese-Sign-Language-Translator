@@ -1,0 +1,35 @@
+================================================================
+BENCHMARK EVALUATION ON TEST SET
+================================================================
+Model Name:        STGCNModel
+Config:            configs/experiments/stgcn.yaml
+Checkpoint:        checkpoints/stgcn_best.pt
+Output Directory:  /kaggle/working/k1/eval
+Evaluation Device: cuda
+
+[1/4] Loading tier1 DataLoaders...
+
+[2/4] Loading Best Checkpoint from checkpoints/stgcn_best.pt...
+Loaded model from Epoch 7 (Best Val Top-1: 23.08%, Val Loss: 3.5266)
+
+[3/4] Evaluating on tier1 Test Set (71 samples)...
+
+--- FINAL TEST SET BENCHMARK RESULTS ---
+  Model:               STGCNModel
+  Test Loss:           3.4863
+  Top-1 Accuracy:      15.49%
+  Top-5 Accuracy:      40.85%
+  Macro F1 Score:      12.50%
+  Macro Precision:     10.56%
+  Macro Recall:        20.00%
+----------------------------------------
+
+[4/4] Generating Reports and Visualizations in /kaggle/working/k1/eval...
+Saved classification report to: /kaggle/working/k1/eval/classification_report.csv
+Saved confusion matrix to: /kaggle/working/k1/eval/confusion_matrix.png
+Saved training curves to: /kaggle/working/k1/eval/training_curve.png
+Saved benchmark results to: /kaggle/working/k1/eval/benchmark_results.json
+
+================================================================
+BENCHMARK EVALUATION COMPLETE.
+================================================================

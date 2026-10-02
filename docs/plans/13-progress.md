@@ -552,9 +552,36 @@ Tệp tạm: `_work/_plan13_tmp/`.
   pushed." (`B8_push.log`, `B8_push_time.txt`). Slug **`phmvnsm33/vsl-retrain-stgcn-tier1` version 1** (private, GPU, ghim `c0c70d2`).
   Theo dõi (`B8_status_log.txt`, `kaggle kernels status` thật): 18:30:57Z RUNNING. Watchdog kernel 45 phút (preregistration) ⇒ tự kết thúc chậm nhất
   ~19:16Z + độ trễ khởi động.
+- Theo dõi tiếp: **18:33:02Z COMPLETE** (`B8_status_log.txt`). Output: `PYTHONUTF8=1 .venv/Scripts/kaggle kernels output phmvnsm33/vsl-retrain-stgcn-tier1
+  -p _work/_plan13_tmp/k1` → exit 0 (`B8_output_dl.log`; 14 file dưới `k1/k1/` + log kernel `k1/vsl-retrain-stgcn-tier1.log`).
+- **Kết quả (bằng chứng chính thức B8):** `env.json`: `exit` 0, không `error`, `commit` == ghim `c0c70d2…`, `preregistration_commit` `ea12b44…`,
+  `start_utc` 18:30:15Z → `end_utc` 18:31:51Z, `total_minutes` 1.58 (train 1.23), `gpus` ["Tesla T4", "Tesla T4"], torch 2.10.0+cu128,
+  `n_test_runs` 1; `inputs`: dataset mount `/kaggle/input/datasets/phmvnsm33/vslt-retrain-inputs-tier1`, 162 file, 158 npz chép, 4 `lf_sha256` == preregistration.
+  `preflight.json` `n_rows` 17, `n_mismatch` 0. `sanity.json` (§3.6): `ok` true — số trong file (17 epoch, 0 loss không hữu hạn, best epoch 7,
+  val top-1 23.08 > mức ngẫu nhiên 2.0 = 100/50). Số test Tier 1 chỉ trong `reports/retrain_2026-10-02/k1/eval/benchmark_results.json` (không ngưỡng).
+- Kiểm độc lập local: `PYTHONIOENCODING=utf-8 .venv/Scripts/python _work/_plan13_tmp/b8_check_k1.py _work/_plan13_tmp/B8_k1_check.json` → exit 0,
+  **39 kiểm, 0 sai** (`B8_k1_check.log`; chép thành `reports/retrain_2026-10-02/k1/local_crosscheck.json`): SHA256SUMS (danh sách + mọi sha256); env
+  (exit, error, commit == ghim, preregistration commit == 1 dòng `git log` + `merge-base --is-ancestor` → 0, watchdog 45, `n_test_runs` 1, GPU, thời
+  gian ≤ watchdog, 158 npz, `lf_sha256`); preflight: khóa dòng == lá `K1_COMPARE` của preregistration local, mọi `expected` == `measured` == local, 0 lệch;
+  sanity tính lại bằng `sanity_k1` của kernel từ `stgcn_history.json` + `stgcn_best.pt` == `sanity.json`, `ok`; n_classes == 50 (classes_txt); val top-1 ở
+  epoch best của history == checkpoint; meta sidecar sha256/n_classes/seed/commit; **đúng 1 lần `evaluate_test.py`** (1 dòng lệnh `$ … evaluate_test.py`
+  trong log kernel, argv == `jobs.k1.test.argv`; 0 lần nhắc trong `clone.log`/`train.log`; có `logs/evaluate_test.log`); 1 lệnh train, argv == `jobs.k1.train.argv`.
+  ⇒ AC5 phần K1: COMPLETE (thật), 1 lần evaluate_test, §3.6 đạt. Không lệch ⇒ không dừng §7.2.
+- **`stgcn_best.pt` sha256 `2204becd2662840d2425a5935366b48f059b95feb7b73c1d0d1ded3d2da1bac2`** (== `SHA256SUMS` kernel == `stgcn_best.meta.json`).
+  Bản `.pt` chỉ ở `_work/_plan13_tmp/k1/k1/stgcn_best.pt` (KHÔNG commit, KHÔNG đặt vào `checkpoints/` — B11; `ls checkpoints/stgcn_best.pt` → không có).
+- Commit: `reports/retrain_2026-10-02/k1/` (54 KB; byte == output, `copy_new` kiểm sha256): `SHA256SUMS`, `env.json`, `preflight.json`, `sanity.json`,
+  `stgcn_best.meta.json`, `stgcn_history.json`, `eval/benchmark_results.json`, `logs/{clone,train,evaluate_test}.log` (`git add -f`, `.gitignore:45 *.log`),
+  `kernel_stdout_vsl-retrain-stgcn-tier1.log`, `local_crosscheck.json`. KHÔNG commit `stgcn_best.pt`, `eval/classification_report.csv`,
+  `eval/confusion_matrix.png`, `eval/training_curve.png` (sha256 trong `SHA256SUMS` + `k1_outputs.json.not_committed_kernel_outputs`).
+  `reports/retrain_2026-10-02/k1_outputs.json` sinh bằng `PYTHONIOENCODING=utf-8 .venv/Scripts/python _work/_plan13_tmp/b8_write_reports.py`
+  (`B8_write_reports.log`): khóa `stgcn_best_pt.sha256` (lồng `{"stgcn_best_pt": {"sha256": …}}` — đúng cách K2 `train()` tách `k1_outputs_key` bằng
+  `.`; đọc thử local → đúng hash trên), `kernel_version` 1, `pin_commit`, `preregistration_commit`. Quét chuỗi credential trên output → 0 dòng.
+- Hạn mức sau job: `kaggle quota` 18:34:41Z → GPU used 4.18h (trước 4.15h; `B8_quota_after.txt`).
+- Test: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_retrain_tools tests.test_sentence_split_guard` → `Ran 164 tests` `OK (skipped=2)`
+  (2 skip như B5/B7: 10k cleaned chưa đặt — B11) (`B8_full_suites.log`). Không sửa mã/test ở B8.
 
 ## Đang làm
-- **ĐANG LÀM B8** (lượt 8, mốc HEAD `506f8fd`, bắt đầu 2026-10-02T18:26Z): kiểm ngân sách GPU §3.7 → ghim K1 → đẩy K1 → theo dõi → tải output + kiểm. Log: `_work/_plan13_tmp/B8_*`.
+- **B8 XONG** (lượt 8): K1 `phmvnsm33/vsl-retrain-stgcn-tier1` v1 COMPLETE (ghim `c0c70d2`), 39/39 kiểm, `stgcn_best.pt` sha256 `2204becd…bac2` trong `k1_outputs.json`. Dừng trước B9 (KHÔNG làm B9).
 - **B7 XONG** (lượt 7, lần 2): K2 preflight v2 `phmvnsm33/vsl-retrain-cslr-vit5` COMPLETE, 44/44 khớp preregistration, ghim `c0c70d2`. Dừng trước B8 (KHÔNG làm B8). Lần 1 (v1 ERROR) — xem mục B7 / B7 lần 2.
 - (Cũ, đã thay bởi dòng trên) Lượt 6, mốc HEAD `422e499`: K2 preflight ĐÃ ĐẨY (`phmvnsm33/vsl-retrain-cslr-vit5` v1, 14:15:08Z), lần kiểm cuối 15:18:07Z RUNNING (>60 phút) → bàn giao orchestrator theo dõi; còn: tải output + đối chiếu preregistration. KHÔNG làm B8.
 - Lượt 5 (mốc HEAD `bf40a1d`): B5 XONG (ghim `0908ef3`); B6 XONG (dataset `phmvnsm33/vslt-retrain-inputs-tier1` private, manifest commit). Dừng trước B7. Mục 5 review giữa (1.B) orchestrator HOÃN sang backlog — không làm. KHÔNG đẩy kernel nào ở lượt này (B7 trở đi lượt sau).
@@ -563,7 +590,7 @@ Tệp tạm: `_work/_plan13_tmp/`.
 - B7–B14. (Ghi chú cũ cho B5 — đã làm: `retrain_preregister.py` phải ghi đúng các khóa mà `eval_sentsplit.py` đọc (mục B4d); `protocol_template()` là nguồn
   của `evaluation_protocol`; số Clean10k sau loại (6423/713, loại 4) và CSLR/ViT5 (2880/30, 240/30) phải được TÍNH LẠI bằng code ở B5 (B3/B4c chỉ là số
   kiểm tra trước); file Tier 1 văn bản so `lf_sha256` (B3).)
-- B7: XONG (lượt 7). B8 (ghim K1 vẫn theo cơ chế B5; ghim mới nhất của nhánh là `c0c70d2` hoặc sau): `k1_outputs.json` khóa `stgcn_best_pt.sha256` (kernel K2 train đọc khóa này — `jobs.k2.backbone.k1_outputs_key`); `PIN_COMMIT` (K1). B9: K2 `MODE="train"`, metadata `enable_gpu: true` + `kernel_sources: ["phmvnsm33/vsl-retrain-stgcn-tier1"]`.
+- B8: XONG (lượt 8; `k1_outputs.json` đã commit). (Ghi chú cũ cho B8 — đã làm:) B8 (ghim K1 vẫn theo cơ chế B5; ghim mới nhất của nhánh là `c0c70d2` hoặc sau): `k1_outputs.json` khóa `stgcn_best_pt.sha256` (kernel K2 train đọc khóa này — `jobs.k2.backbone.k1_outputs_key`); `PIN_COMMIT` (K1). B9: K2 `MODE="train"`, metadata `enable_gpu: true` + `kernel_sources: ["phmvnsm33/vsl-retrain-stgcn-tier1"]`.
 - Flaky `tests.test_hand_landmarks_ws.TestReset.test_reset_segments_and_graphs` (AC8-a ở trên) — chờ orchestrator/planner.
 
 ## Sổ GPU (kế hoạch 13)
@@ -571,6 +598,8 @@ Tệp tạm: `_work/_plan13_tmp/`.
 |---|---|---|
 | K2-preflight v1 (`phmvnsm33/vsl-retrain-cslr-vit5` v1) | 105.0 (CPU, không accelerator; ERROR: watchdog giết hf_probe) | 0 GPU-phút; `_work/_plan13_tmp/k2_preflight_v1/k2/env.json` |
 | K2-preflight v2 (v2, ghim `c0c70d2`) | 2.63 (CPU, không accelerator; COMPLETE) | 0 GPU-phút; `reports/retrain_2026-10-02/k2_preflight/env.json` |
+| K1 stgcn Tier 1 (`phmvnsm33/vsl-retrain-stgcn-tier1` v1, ghim `c0c70d2`) | 1.58 (GPU, 2× Tesla T4 hiển thị; COMPLETE) | **1.58 GPU-phút** (`env.json` `total_minutes`; trần 0.75 h = 45'); `kaggle quota` GPU used 4.15h → 4.18h; `reports/retrain_2026-10-02/k1/env.json` |
+| **Tổng GPU kế hoạch 13** | **1.58 phút** (≈ 0.03 h) | trần tổng 2.5 h |
 
 ## Nhật ký detect-changes
 | Bước | Lệnh | Kết quả (nguyên văn risk) |
@@ -610,3 +639,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B8a | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +1 dòng "ĐANG LÀM B8" trước dòng này) | "Changes: 1 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); không mã nào đọc file này (`dc_B8a.txt`) |
 | B8b | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, mục B8 cổng ngân sách + ghim, chỉ thêm, trước dòng này) | "Changes: 1 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); không mã nào đọc file này (`dc_B8b.txt`) |
 | B8c | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, dòng đẩy K1, chỉ thêm) | "Changes: 1 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a) (`dc_B8c.txt`) |
+| B8d | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, 13 file `A` trong `reports/retrain_2026-10-02/k1/` + `k1_outputs.json`) | "Changes: 14 files, 3 symbols / Affected processes: 195 / Risk level: critical" — 3 symbol đều là mục markdown của 13-progress (`Kế hoạch 13 — tiến độ (coder)`, `Bước đã xong`, `B8 — đẩy K1 …`; nối nhầm như B7a); 13 file JSON/log dữ liệu, không symbol, không mã nào import; `git diff --cached --name-only` đuôi `.pt/.npz/.png/.csv/…` → 0 (`dc_B8d.txt`) |
