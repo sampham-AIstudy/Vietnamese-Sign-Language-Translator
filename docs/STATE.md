@@ -12,8 +12,12 @@
   Đã xóa (09:35, đã kiểm 0 link/junction trước khi xóa): _work/_plan12_tmp/{dl_hauuto, dl_qipedc, vslgh_src, vslgh_head.tar} (~21G),
   _work/_kaggle_staging/{restore_dl, restore_dl2, verify_provenance, verify_download}, %TEMP%slt_e2e (y4m), .agents/skills/modal/ (untracked),
   2 file rác 0 byte ở gốc repo. Dữ liệu đã khôi phục còn nguyên (4362 file Videos, 3 checkpoint). Ổ C trống 132G.
-  ĐANG GIAO: vslt-planner kế hoạch 13 (train lại stgcn_best / ViT5 / CSLR trên Kaggle + gỡ Modal khỏi code) — 09:42.
-  Song song chờ: coder 06 B10 (chỉ tài liệu) — giao sau planner 13.
+  Planner 13 XONG (docs/plans/13-train-lai-checkpoint-thieu.md): K1 stgcn_best (≤0.25 GPU-h, trần 0.75), K2 CSLR + ViT5 song song T4×2
+  (≤1.0, trần 1.75), tổng trần 2.5 GPU-h; script vocab mới (372 token, LF); 3 dataset private mới + manifest sha256; gỡ Modal = git rm
+  src/training/modal_runner.py (+ dòng "đã gỡ" ở plan 12 §8.1, docs/cloud_training.md). Coder B0–B13 (~15 h công + chờ kernel).
+  Q1 (CSLR: (i) công thức cũ chia theo người ký [mặc định] / (ii) chia theo câu), Q2 (upload ViT5 >3h), Q3 (đặt checkpoint mới vào đường dẫn
+  mặc định = thuộc quyết định 09:20, không phải GATE) — đều có mặc định, không chặn tới B9.
+  ĐANG GIAO: vslt-coder kế hoạch 13 B0–B2 — 10:15. Sau đó: 13 B3–B5, ...; coder 06 B10 (tài liệu) xen khi chờ kernel.
   SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
   `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint
   stgcn/stgcn_h360, video+nhãn QIPEDC, hauuto_raw, alphabet_hands_kaggle, vsl_gh, parallel_text. Còn nguyên: data/raw_tudienngonngukyhieu,
@@ -57,7 +61,7 @@
   e2e_browser.cjs chỉ thêm created_t_s/closed_t_s/click_t_s. Chạy chính thức mỗi kịch bản ĐÚNG 1 lần; đỏ → dừng §7-10.
   VIỆC KẾ TIẾP: vslt-coder B8c-1 (test mục 10 trước) → B8c-2 (script) → B8c-3 (3 JSON chính thức) → B9b (0B.5 bước 4, AC1 nhóm (ii)
   gồm facffea, f52de6f, 717aa3e) → vslt-reviewer toàn bộ 06 (thêm điểm §0B.6, §0C.6).
-- Hạn mức (09:23 ngày 2/10): 5 giờ 5% (reset 14:30), 7 ngày 11%. Sổ đo: docs/usage_ledger.csv
+- Hạn mức (10:15 ngày 2/10): xem usage_ledger; reset 5h 14:30. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -154,6 +158,7 @@
   Xóa file tải về/tạm không cần thiết.
 
 ## Câu hỏi chờ người dùng
+- (kế hoạch 13 §7.1, có mặc định) Q1: CSLR train lại theo (i) công thức cũ chia theo người ký (giữ rò rỉ câu S06, ghi giới hạn) hay (ii) chia theo câu (sạch, khác model cũ)? Mặc định (i); cần trả lời trước B9.
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
 - (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
   reports/PHASE4B_REPORT.md:112 ghi "unseen / zero leakage" là sai; mặc định: ghi nhãn đúng, không viết lại báo cáo cũ.
