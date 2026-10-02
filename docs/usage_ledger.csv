@@ -44,3 +44,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-02T14:11Z,vslt-coder,13,B5+B6 (preregister + kernels + Tier1 upload 380s),0,69,69,9,ok (incl. ~2 orchestrator turns)
 2026-10-02T15:19Z,vslt-coder,13,B7 push K2 preflight + 60min watch (not finished),69,80,11,1,ok (incl. orchestrator turns)
 2026-10-02T18:25Z,vslt-coder,13,B7 retry (HF fix + K2 v2 preflight COMPLETE),0,15,15,2,ok (incl. orchestrator turns)
+2026-10-02T18:37Z,vslt-coder,13,B8 (K1 GPU push+check+commit),15,22,7,1,ok

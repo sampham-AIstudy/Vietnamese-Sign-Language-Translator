@@ -3,12 +3,18 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-10-03 01:27 (giờ Việt Nam)
-- HEAD: 347e290 (+ commit state này) | Nhánh: feat/vslt-complete
+- Cập nhật lần cuối: 2026-10-03 01:40 (giờ Việt Nam)
+- HEAD: 48f65dd (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 01:27 ngày 3/10 giao vslt-coder 13 B8 (kiểm ngân sách GPU §3.7 → ghim + đẩy K1 GPU → theo dõi → tải → kiểm → commit
-  reports/retrain_2026-10-02/k1/ + k1_outputs.json khóa stgcn_best_pt.sha256). 5h 15% (reset 06:00 VN), 7 ngày 46%. Cổng: 15 + 69 = 84 ≤ 90 → đạt.
+- Trạng thái phiên: ĐANG CHẠY — 01:40 ngày 3/10 giao vslt-coder 13 B9 phần 1 (K2 MODE=train + GPU + kernel_sources K1 → commit → ghim mới → push →
+  đẩy K2 → trả về ngay khi RUNNING). Sau đó: orchestrator theo dõi kernel; song song planner kế hoạch 11 (việc 5); xong kernel → coder B9 phần 2 (tải + kiểm + commit).
+  5h 22% (reset 06:00 VN), 7 ngày 47%. Cổng: 22 + 15 (est coder = max 3 dòng ok gần nhất 11/15/7) = 37 ≤ 90 → đạt.
+  B8 XONG (f693995, e76513c, 2d6fbbd, 48f65dd; đã push): K1 phmvnsm33/vsl-retrain-stgcn-tier1 v1 COMPLETE (orchestrator kiểm), 1,58 GPU-phút (2×T4),
+  ghim c0c70d2 (K1 không đổi); 39/39 kiểm; sanity §3.6 ok: 17 epoch, best epoch 7, val top-1 23.08 (> ngẫu nhiên 2.0; THẤP — reviewer/Giới hạn ghi rõ,
+  không phải ngưỡng chất lượng đã đăng ký); đúng 1 lần evaluate_test; số test Tier 1 trong reports/retrain_2026-10-02/k1/eval/benchmark_results.json.
+  stgcn_best.pt sha256 2204becd…bac2, chỉ ở _work/_plan13_tmp/k1/k1/stgcn_best.pt (chưa đặt vào checkpoints/ — B11). k1_outputs.json khóa stgcn_best_pt.sha256.
+  Hạn mức GPU Kaggle THẬT (kaggle quota 18:27Z): 4,18 h / 30 h tuần, làm mới 2026-10-03T00:00Z.
   B7 XONG (518dac3, 0a4e143, c0c70d2 = GHIM MỚI, 2dc5b7e, 347e290; đã push): nguyên nhân v1 treo = snapshot_download tải cả tf_model.h5 + flax
   (1.8 GB thừa) không timeout; sửa: chỉ 6 file PyTorch, hf_hub_download từng file, timeout/retry, kiểm sha, HF_HUB_DISABLE_XET=1, watchdog HF 30 phút.
   K2 v2 (version 2) COMPLETE 2.63 phút CPU: preflight 44/44 khớp, leak 0; đối chiếu local 34/34. Test 164 OK/2 skip. 0 GPU-phút.
@@ -275,9 +281,9 @@
    configs/alphabet_config.yaml (hỏi trước khi xóa); sửa câu chữ AC7-e kế hoạch 04; phương án (ii) (đăng ký trước tiêu chí).
 
 ## Tài nguyên
-- Kaggle GPU tuần này: ~6 giờ đã dùng (ước tính của người dùng, chưa xác minh), giới hạn tự đặt 10 giờ/tuần.
+- Kaggle GPU tuần này: kaggle quota thật 4,18 h / 30 h (sau K1, 18:37Z 2/10; làm mới 00:00Z 3/10); giới hạn tự đặt 10 giờ/tuần (người dùng).
 - Kaggle kernel đang chạy: phmvnsm33/vsl-retrain-cslr-vit5 version 1 (K2 MODE=preflight, CPU, private) — đẩy 2026-10-02T14:15:08Z (21:15 VN);
-  v1 ERROR (watchdog, 16:10Z); v2 COMPLETE 18:20:57Z (2.63 phút CPU). Hiện KHÔNG có kernel nào chạy (01:27 VN 3/10).
+  v1 ERROR (watchdog, 16:10Z); v2 COMPLETE 18:20:57Z (2.63 phút CPU). K1 phmvnsm33/vsl-retrain-stgcn-tier1 v1 COMPLETE 18:33Z (1,58 GPU-phút). Hiện KHÔNG có kernel nào chạy (01:40 VN 3/10).
   Kiểm: `PYTHONUTF8=1 .venv/Scripts/kaggle kernels status phmvnsm33/vsl-retrain-cslr-vit5`.
 - Giới hạn API: đã gặp lỗi 429 (reset 4:20 sáng, giờ Việt Nam). Xem orchestrator_resume_addendum.md mục 4 và usage_guard_addendum.md.
 
