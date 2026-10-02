@@ -7,9 +7,13 @@
 - HEAD: 48f65dd (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 01:40 ngày 3/10 giao vslt-coder 13 B9 phần 1 (K2 MODE=train + GPU + kernel_sources K1 → commit → ghim mới → push →
-  đẩy K2 → trả về ngay khi RUNNING). Sau đó: orchestrator theo dõi kernel; song song planner kế hoạch 11 (việc 5); xong kernel → coder B9 phần 2 (tải + kiểm + commit).
-  5h 22% (reset 06:00 VN), 7 ngày 47%. Cổng: 22 + 15 (est coder = max 3 dòng ok gần nhất 11/15/7) = 37 ≤ 90 → đạt.
+- Trạng thái phiên: ĐANG CHẠY — 01:53 ngày 3/10: K2 TRAIN đang chạy trên Kaggle (xem "Tài nguyên"); giao vslt-planner kế hoạch 11 (việc 5) song song.
+  Orchestrator theo dõi kernel bằng sleep nền; xong kernel → coder 13 B9 phần 2 (tải output vào _work/_plan13_tmp/k2, kiểm §4 B9 [LS1], commit k2/ + 3 *_used_ids.json, sổ GPU;
+  watchdog cắt → §7.2-1 CẦN NGƯỜI DÙNG). 5h 31% (reset 06:00 VN), 7 ngày 48%. Cổng planner: 31 + 32 (max 32/24/2) = 63 ≤ 90 → đạt.
+  B9 phần 1 XONG (0669d9c, 28a126e = GHIM B9, ab0d740, 643f890; đã push): test 168 OK/2 skip. CẦN REVIEWER XÉT (lệch chữ §3.4e "MODE đổi bằng commit"):
+  file repo K2 giữ MODE="preflight"/enable_gpu false/kernel_sources [] (2 test có sẵn khóa); bản đẩy _work/_plan13_tmp/k2_push_train/ thay 2 dòng (MODE="train",
+  PIN_COMMIT) + metadata GPU/kernel_sources K1; coder sửa same_as_pinned của K2 cho phép riêng giá trị dòng MODE ∈ {preflight, train} (+4 test); mode ghi trong env.json.
+  Rủi ro chưa xác minh: script ViT5 from_pretrained không đặt HF_HUB_DISABLE_XET (file đã có trong cache).
   B8 XONG (f693995, e76513c, 2d6fbbd, 48f65dd; đã push): K1 phmvnsm33/vsl-retrain-stgcn-tier1 v1 COMPLETE (orchestrator kiểm), 1,58 GPU-phút (2×T4),
   ghim c0c70d2 (K1 không đổi); 39/39 kiểm; sanity §3.6 ok: 17 epoch, best epoch 7, val top-1 23.08 (> ngẫu nhiên 2.0; THẤP — reviewer/Giới hạn ghi rõ,
   không phải ngưỡng chất lượng đã đăng ký); đúng 1 lần evaluate_test; số test Tier 1 trong reports/retrain_2026-10-02/k1/eval/benchmark_results.json.
@@ -283,7 +287,8 @@
 ## Tài nguyên
 - Kaggle GPU tuần này: kaggle quota thật 4,18 h / 30 h (sau K1, 18:37Z 2/10; làm mới 00:00Z 3/10); giới hạn tự đặt 10 giờ/tuần (người dùng).
 - Kaggle kernel đang chạy: phmvnsm33/vsl-retrain-cslr-vit5 version 1 (K2 MODE=preflight, CPU, private) — đẩy 2026-10-02T14:15:08Z (21:15 VN);
-  v1 ERROR (watchdog, 16:10Z); v2 COMPLETE 18:20:57Z (2.63 phút CPU). K1 phmvnsm33/vsl-retrain-stgcn-tier1 v1 COMPLETE 18:33Z (1,58 GPU-phút). Hiện KHÔNG có kernel nào chạy (01:40 VN 3/10).
+  v1 ERROR (watchdog, 16:10Z); v2 COMPLETE 18:20:57Z (2.63 phút CPU). K1 phmvnsm33/vsl-retrain-stgcn-tier1 v1 COMPLETE 18:33Z (1,58 GPU-phút). ĐANG CHẠY: phmvnsm33/vsl-retrain-cslr-vit5 version 3 (K2 MODE=train, GPU, private) đẩy 2026-10-02T18:48:35Z (01:48 VN 3/10),
+  RUNNING lúc 18:51Z (orchestrator kiểm); ETA ≤ 19:49Z (§3.7, chưa xác minh), watchdog 105 phút ⇒ muộn nhất ~20:34Z (03:34 VN).
   Kiểm: `PYTHONUTF8=1 .venv/Scripts/kaggle kernels status phmvnsm33/vsl-retrain-cslr-vit5`.
 - Giới hạn API: đã gặp lỗi 429 (reset 4:20 sáng, giờ Việt Nam). Xem orchestrator_resume_addendum.md mục 4 và usage_guard_addendum.md.
 
