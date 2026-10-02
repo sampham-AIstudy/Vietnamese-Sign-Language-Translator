@@ -441,9 +441,18 @@ Tệp tạm: `_work/_plan13_tmp/`.
   dòng PIN) — chạy thử `same_as_pinned` local với `git show 0908ef3:…` → OK. sha256 bản đẩy: kernel `001b3ec3cd8e7708ee5e4dd3ab7c89a9befaafbfb1b0e499d87fd22fa3c6a376`,
   metadata `2890fd528926bcb9d52f348725cc7999b4196df3828021e2adef0574bb48b283` (== file repo). Ghim `0908ef3` là tổ tiên `origin/feat/vslt-complete` (`422e499`).
   `git diff --quiet 0908ef3 -- kaggle/vsl-retrain-cslr-vit5` → không đổi kể từ ghim. Slug trước khi đẩy: `kernels status` → "Permission 'kernels.get' was denied" (chưa tồn tại / không truy cập) (`B7_status_before.txt`).
+- Đẩy: `PYTHONUTF8=1 .venv/Scripts/kaggle kernels push -p _work/_plan13_tmp/k2_push` lúc **2026-10-02T14:15:08Z** → "Kernel version 1 successfully pushed"
+  (`B7_push.log`, `B7_push_time.txt`). Slug **`phmvnsm33/vsl-retrain-cslr-vit5`** version 1 (private, CPU, `MODE="preflight"`).
+- Theo dõi (`B7_status_log.txt`, `kaggle kernels status` thật): 14:20:15Z RUNNING; 14:27–14:53Z CLI báo "Permission 'kernels.get' was denied" — KHÔNG phải
+  lỗi kernel: access token OAuth hết hạn 14:23:15Z và `kagglesdk/kaggle_creds.py` `access_token_has_expired()` chỉ coi là hết hạn sau hạn **+30 phút**
+  (so `expiration < now − 30 min`), nên CLI không tự làm mới tới ~14:53Z; sau đó tự làm mới (credentials.json cập nhật 14:55Z). 14:55:38Z, 15:03:50Z,
+  15:12:58Z, **15:18:07Z: RUNNING** (63 phút sau khi đẩy) ⇒ theo lệnh orchestrator: dừng theo dõi ở lượt này, chưa tải output, CHƯA đối chiếu.
+  Watchdog kernel 105 phút (từ preregistration) tính từ lúc script bắt đầu ⇒ kernel tự kết thúc chậm nhất ~16:00Z + độ trễ khởi động.
+  Việc tiếp (orchestrator/lượt sau): `kernels status` tới COMPLETE/ERROR → `PYTHONUTF8=1 .venv/Scripts/kaggle kernels output phmvnsm33/vsl-retrain-cslr-vit5
+  -p _work/_plan13_tmp/k2_preflight/` → đối chiếu `preflight.json` (rows/n_mismatch/leak_check_total) + `env.json` với preregistration; lệch → §7.2.
 
 ## Đang làm
-- **ĐANG LÀM B7** (lượt 6, mốc HEAD `422e499`): đặt `PIN_COMMIT` K2 = `0908ef3e9de4847023e879896c99975d05bc2070`, đẩy K2 preflight (CPU), theo dõi, đối chiếu preregistration. KHÔNG làm B8.
+- **ĐANG LÀM B7** (lượt 6, mốc HEAD `422e499`): K2 preflight ĐÃ ĐẨY (`phmvnsm33/vsl-retrain-cslr-vit5` v1, 14:15:08Z), lần kiểm cuối 15:18:07Z RUNNING (>60 phút) → bàn giao orchestrator theo dõi; còn: tải output + đối chiếu preregistration. KHÔNG làm B8.
 - Lượt 5 (mốc HEAD `bf40a1d`): B5 XONG (ghim `0908ef3`); B6 XONG (dataset `phmvnsm33/vslt-retrain-inputs-tier1` private, manifest commit). Dừng trước B7. Mục 5 review giữa (1.B) orchestrator HOÃN sang backlog — không làm. KHÔNG đẩy kernel nào ở lượt này (B7 trở đi lượt sau).
 
 ## Còn lại
@@ -487,3 +496,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B5e (fa687ef) | `detect-changes --scope staged` (`M docs/plans/13-progress.md`) | "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." — chỉ markdown; KHÔNG phải kết quả sạch; không mã nào đọc file này (`dc_B5e.txt`) |
 | B6 | `detect-changes --scope staged` (`A reports/retrain_2026-10-02/inputs_tier1_manifest.json`, `M docs/plans/13-progress.md`) | "Diff touched 2 file(s) but no indexed symbols overlap those hunks — not a clean tree." — JSON manifest + markdown, không symbol; KHÔNG phải kết quả sạch; không mã nào import (`dc_B6.txt`) |
 | B7a | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +10/−0 trước dòng này) | "Changes: 1 files, 1 symbols / Affected processes: 196 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B0/B2/B3/B5d); không mã nào đọc file này (`dc_B7a.txt`) |
+| B7b | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +10/−1 trước dòng này) | "Changes: 1 files, 1 symbols / Affected processes: 198 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); 1 dòng "xóa" = dòng "Đang làm" được thay (`dc_B7b.txt`) |
