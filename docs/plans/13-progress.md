@@ -359,13 +359,70 @@ Tệp tạm: `_work/_plan13_tmp/`.
 - Mục 5 (1.B, `VSLGHTextDataset(split="all", sentence_split=…)` raise): KHÔNG làm — CẦN PLANNER: mâu thuẫn với kế hoạch §3.4 dòng 347
   ("`all` không đổi") và test có sẵn `tests/test_sentence_split_guard.py:472` (khẳng định trả đủ 300 câu); làm sẽ phải sửa test cũ.
 
+### B5 — preregistration + kernel K1/K2 (lượt 5, mốc HEAD `bf40a1d`). Log: `_work/_plan13_tmp/B5_*`
+- Phần 1 (commit WIP `86927ef`): `scripts/retrain_preregister.py` (chỉ THÊM file; không sửa symbol có sẵn ⇒ không cần impact sửa)
+  + 12 test `TestRetrainPreregister` (fixture gốc giả dưới `_work/_test_tmp/`). Đỏ: `B5_test_red.log` — `ModuleNotFoundError: No module named
+  'retrain_preregister'`; xanh: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_retrain_tools` → `Ran 99 tests` `OK`
+  (`B5_test_green_prereg.log`); `git diff 0373a90 -- tests/test_retrain_tools.py | grep -c "^-[^-]"` → 0.
+  Mọi số tính bằng code lúc sinh (hàm `measure_*` dùng chung với kernel); tham chiếu 7140/9405/6426/714/240/30/3600/300/300/372/4200
+  ĐỌC từ file nguồn kèm file:dòng và so với số đo dữ liệu GỐC (lệch → exit 3); dừng (exit 3, không ghi) nếu leak_check ≠ 0, CSLR val/test ≠ 30,
+  vocab train > vocab đầy đủ, (đầy đủ − train) ≠ only_in_val ∪ only_in_test, file đối chiếu vocab khác byte; exit 2 nếu code bẩn, đích có/sai đường,
+  commit Lần sửa 1 không phải commit đầu tiên chứa dấu `## 0. Lần sửa 1 (2026-10-02)` hoặc không là tổ tiên HEAD, file split ≠ đúng 1 commit.
+  Test hợp đồng: eval_sentsplit.py chạy hết (model giả) trên preregistration do script sinh; `registered_reference()` của guard đọc đúng.
+  Chạy thử trên dữ liệu thật (không ghi vào reports/, `_work/_plan13_tmp/b5_dry_run.py` → `B5_dry_prereg.json`, ~8 s): khớp số B2b/B2c/B3
+  (cslr 2880/30/30, vslgh_text 240/30/30, clean10k 6423/713, loại 3+1, leak 0, vocab 322 `c0af13db…`, đầy đủ 372 `dd7bc3da…`).
+- Phần 2 (commit WIP `2cb02b3`): kernel `kaggle/vsl-retrain-stgcn-tier1/{kernel-metadata.json, retrain_stgcn_kernel.py}` (K1) và
+  `kaggle/vsl-retrain-cslr-vit5/{kernel-metadata.json, retrain_cslr_vit5_kernel.py}` (K2, `MODE = "preflight"`, metadata `enable_gpu: false`,
+  `kernel_sources: []`). Cả hai `is_private: true`, `enable_internet: true`; `PIN_COMMIT = None` → kernel từ chối chạy (exit 1, không clone) cho tới khi
+  commit đẩy kernel (B7/B8/B9) đặt hash ghim; clone nhánh rồi `git checkout <pin>` + assert `rev-parse HEAD`; file kernel đang chạy phải == file ở commit
+  ghim trừ dòng `PIN_COMMIT`; preregistration ở pin phải đúng 1 commit và là tổ tiên pin. MỌI lệnh / commit nguồn / phiên bản pip / watchdog / digest kỳ
+  vọng đọc từ preregistration (không hằng gõ tay ngoài URL/nhánh/MODE/PIN). Đo lại bằng `retrain_preregister.measure_k2` / `measure_tier1` (cùng mã
+  sinh preregistration) rồi `compare` → bảng MATCH/MISMATCH, lệch → exit ≠ 0 trước khi train. K2 preflight KHÔNG train, KHÔNG evaluate (in đúng
+  `TEST DEFERRED (preflight): …`; test tĩnh: mã không chứa `eval_sentsplit`, `evaluate_test`, `evaluate_cslr`, `test_translation_core`,
+  `--sentence-split`, `train_cslr.py`; chuỗi `PRIMARY TEST EVALUATION` chỉ là hằng để kiểm log). K2 train (chưa bật): `place_backbone` assert sha256
+  `stgcn_best.pt` == `reports/retrain_<D>/k1_outputs.json` khóa `stgcn_best_pt.sha256` (thiếu/khác → dừng, không train from scratch); log CSLR phải
+  có 0 `PRIMARY TEST EVALUATION`, đúng 1 `TEST DEFERRED (sentence split v1)`, `LEAK CHECK OK (cslr)` trước dòng train đầu, `[MODEL] Transferred`, không
+  `Training from scratch`; ViT5 `LEAK CHECK OK (vit5_stage{1,2})` trước epoch đầu; kiểm hợp lý §3.6. K1: kiểm SHA256SUMS dataset, chép npz (không
+  link, `xb`), CSV/classes của bản clone + dataset so `lf_sha256`; `evaluate_test` đúng 1 lần, chỉ sau kiểm hợp lý; sidecar `stgcn_best.meta.json`.
+  Watchdog thời gian tường (K1 45', K2 105' từ preregistration) giết tiến trình con. Không symlink/rmtree/xóa file.
+  Test: +13 `TestRetrainKernels`; đỏ `B5_test_red_kernels.log` (`FileNotFoundError` file kernel); xanh `tests.test_retrain_tools` → `Ran 112 tests`
+  `OK`, 0 skip (`B5_test_green_kernels.log`); `git diff 0373a90 -- tests/test_retrain_tools.py | grep -c "^-[^-]"` → 0.
+- Phần 3 (commit `ea12b44`): `reports/retrain_2026-10-02/preregistration.json` (`<D>` = 2026-10-02). Lệnh (cây sạch ở `2cb02b3`, `git status --porcelain
+  -- src scripts configs train.py evaluate_test.py kaggle` rỗng): `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/retrain_preregister.py --date 2026-10-02
+  --plan-revision-commit 4f714c6 --clean10k _work/_plan13_tmp/cleaned/data/external/parallel_text/vie_vsl_10k_cleaned.jsonl --vocab-file
+  _work/_plan13_tmp/vocab_train/gloss_vocab_canonical.txt --vocab-full-file _work/_plan13_tmp/vocab_e02ed14/gloss_vocab_canonical.txt` → exit 0
+  (`B5_prereg_run.json`): sha256 file `7ce00ce5f491e8e7547c7a187efbfffb3b3d8f203b1381a68344d52d1b85ce6b`, `generated_by.git_commit` `2cb02b3…`, `code_dirty`
+  false, `leak_check.total` 0. Số trong file (do code tính; xem file, không chép thêm ở đây). AC4: `git merge-base --is-ancestor 4f714c6 ea12b44` → 0;
+  `git log --format=%h -- reports/retrain_2026-10-02/preregistration.json` → 1 dòng `ea12b44`; file split 1 dòng `0a18183`, tổ tiên.
+  Guard: `tests.test_sentence_split_guard` (G2-ref nay đọc preregistration) → `Ran 42` `OK (skipped=2)` (10k cleaned chưa đặt — B11)
+  (`B5_guard_with_prereg.log`); với `VSLT_GUARD_CLEAN10K=<bản B3 trong _work>` → `Ran 42` `OK`, 0 skip (`B5_guard_with_prereg_clean.log`).
+- AC8-a (lệnh AC2-06 nguyên văn `docs/plans/06-viec5-frontend.md:1028`, cây `ea12b44` = B5 đủ mã + preregistration): `Ran 518 tests in 231.920s`
+  `FAILED (failures=1, errors=1, skipped=1)` (`B5_ac2_31.log`); so theo module với `_work/_plan12_tmp/ac2_31_B9.log` (`B5_ac2_compare.txt`): 30/31
+  module GIỐNG HỆT mốc (gồm ERROR setUpClass `test_translation_core` — thiếu ViT5; skip `stgcn_best.pt not found`); khác duy nhất
+  `tests.test_hand_landmarks_ws` 9/0/0/0 → 8/0/1/0: FAIL `test_reset_segments_and_graphs` `[1, 1, 1, 0] != [1, 1, 1, 1]` (đóng graph cuối khi đóng
+  phiên WS — cùng chữ ký lỗi chập chờn đã ghi ở B2b, khi đó xảy ra ở cây `9146f6f`, trước B5). Bằng chứng thêm (không sửa test, không sửa mã):
+  chạy riêng module 3 lần → OK/OK/OK (`B5_rerun_hand_landmarks_ws_{1,2,3}.log`); module + 4 module đứng trước → OK ×3 (`B5_flaky_ctx_{1,2,3}.log`);
+  `import tests.test_hand_landmarks_ws` không nạp module nào của B5 (`retrain_preregister|retrain_digest|eval_sentsplit|sentence_split|kernel` → []);
+  chạy lại TOÀN BỘ AC2-06: có file B5 → FAIL ở test đó 2 lần nữa (`B5_ac2_31_run2.log`, `B5_ac2_31_run3.log`, mỗi lần đúng 1 DIFF ở module này);
+  ĐỐI CHỨNG tạm cất 6 file B5 vào `_work/_plan13_tmp/b5_hide/` (rồi trả lại; `git status -- scripts kaggle reports/retrain_2026-10-02` sạch sau đó)
+  → `FAILED (errors=1, skipped=1)` = mốc, 2/2 lần (`B5_ac2_31_control_without_B5.log`, `B5_ac2_31_control2_without_B5.log`).
+  ⇒ Tương quan 3/3 vs 0/2 nhưng KHÔNG tìm được đường nối mã (test không đọc `scripts/`, `kaggle/`, `reports/retrain_*`; backend không glob `reports/`);
+  lỗi có từ trước B5. Không sửa/skip test (ngoài phạm vi) — BÁO ORCHESTRATOR (đề xuất: planner xem race đóng graph khi đóng WS).
+- Bộ test kế hoạch 13: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_retrain_tools tests.test_sentence_split_guard` →
+  `Ran 154 tests` `OK (skipped=2)` (2 skip = 10k cleaned chưa đặt, đúng kế hoạch tới B11) (`B5_full_suites.log`).
+- Commit ghim = commit B5 cuối (chứa mã + preregistration + kernel + 13-progress), đã push lên `origin/feat/vslt-complete`; hash ghi ở mục
+  "Commit ghim" dưới (commit sau, chỉ sửa 13-progress). Kernel giữ `PIN_COMMIT = None` ở commit ghim (một commit không chứa được hash của chính
+  nó); B7/B8 đặt `PIN_COMMIT` = hash ghim trong commit đẩy kernel, kernel kiểm file đang chạy == file ở commit ghim trừ dòng đó.
+
 ## Đang làm
-- Lượt 4: sửa E1–E3 / G2 xong; mục 5 chờ planner; dừng trước B5.
+- Lượt 5 (mốc HEAD `bf40a1d`): B5 XONG (chờ ghi hash ghim); tiếp B6 (lưu trữ đầu vào Tier 1). Mục 5 review giữa (1.B) orchestrator HOÃN sang backlog — không làm. KHÔNG đẩy kernel nào ở lượt này (B7 trở đi lượt sau).
 
 ## Còn lại
-- B5–B14 (lượt sau). Ghi chú cho B5: `retrain_preregister.py` phải ghi đúng các khóa mà `eval_sentsplit.py` đọc (mục B4d); `protocol_template()` là nguồn
+- B6–B14. (Ghi chú cũ cho B5 — đã làm: `retrain_preregister.py` phải ghi đúng các khóa mà `eval_sentsplit.py` đọc (mục B4d); `protocol_template()` là nguồn
   của `evaluation_protocol`; số Clean10k sau loại (6423/713, loại 4) và CSLR/ViT5 (2880/30, 240/30) phải được TÍNH LẠI bằng code ở B5 (B3/B4c chỉ là số
-  kiểm tra trước); file Tier 1 văn bản so `lf_sha256` (B3).
+  kiểm tra trước); file Tier 1 văn bản so `lf_sha256` (B3).)
+- B7: đặt `PIN_COMMIT` (K2) = hash ghim, đẩy K2 preflight (CPU). B8: `k1_outputs.json` khóa `stgcn_best_pt.sha256` (kernel K2 train đọc khóa này — `jobs.k2.backbone.k1_outputs_key`); `PIN_COMMIT` (K1). B9: K2 `MODE="train"`, metadata `enable_gpu: true` + `kernel_sources: ["phmvnsm33/vsl-retrain-stgcn-tier1"]`.
+- Flaky `tests.test_hand_landmarks_ws.TestReset.test_reset_segments_and_graphs` (AC8-a ở trên) — chờ orchestrator/planner.
 
 ## Sổ GPU (kế hoạch 13)
 | Job | Phiên (phút, từ env.json) | Ghi chú |
@@ -394,3 +451,6 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B4d (sau commit f7aacc1) | `analyze --index-only` rồi `detect-changes --scope compare --base-ref HEAD~1` | "Changes: 6 files, 44 symbols / Affected processes: 213 / Risk level: critical" — symbol đổi = hàm/hằng của `scripts/eval_sentsplit.py` (mới) + `Section … 13-progress`; luồng liệt kê là nối nhầm qua mục markdown/`main` như B0/B2/B4b; "6 files" gồm thay đổi chưa commit của cây (3 ` D` người dùng) (`dc_B4d_compare.txt`) |
 | Sửa-review G2 | `detect-changes --scope staged` (`M tests/test_sentence_split_guard.py`, chỉ thêm dòng), sau `analyze --index-only` | "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_G2.txt`) — index chưa có symbol của lớp test mới ⇒ KHÔNG phải kết quả sạch; đối chiếu: `git diff --cached --numstat` → `98 0` (0 dòng xóa), file test không được mã nào import |
 | Sửa-review E1–E3 | `detect-changes --scope staged` (`M scripts/eval_sentsplit.py`, `M tests/test_retrain_tools.py`), sau `analyze --index-only` | "Changes: 2 files, 33 symbols / Affected processes: 3 / Risk level: medium" — luồng `Main → Encode`, `Main → From_file`, `Run → Resolve` (đều qua `run` của chính script); symbol đổi: `protocol_template`, `manifest_sha_index`, `check_against_manifests`, `check_prereg_inputs`, `run` + hằng/hàm mới + lớp test mới; không caller ngoài script/test (`dc_E.txt`) |
+| B5a (WIP 86927ef) | `analyze --index-only` rồi `detect-changes --scope staged` (`A scripts/retrain_preregister.py`, `M tests/test_retrain_tools.py` chỉ thêm) | "Changes: 2 files, 88 symbols / Affected processes: 15 / Risk level: high" — luồng `Measure_k2 → _id_list | Split_file_sha256 | Ids | Signers | From_canonical_dataset | Collect_glosses`, `Jobs_block → Lines_of | Need_file`, `Main → Protocol_template` … — đều là hàm của script MỚI gọi mô-đun dùng chung (không symbol có sẵn nào bị sửa; `git diff --cached --diff-filter=M` chỉ file test, 0 dòng xóa) (`dc_B5a.txt`) |
+| B5b (WIP 2cb02b3) | như trên (4 file `A` kaggle/vsl-retrain-*, `M` test chỉ thêm) | "Changes: 5 files, 105 symbols / Affected processes: 23 / Risk level: critical" — luồng `Measure_and_compare → …` (kernel gọi `retrain_preregister`), `Main → _kill | Log | Norm` … — chỉ trong 2 file kernel MỚI; không file mã nào import kernel (`git grep retrain_cslr_vit5_kernel\|retrain_stgcn_kernel -- src scripts backend` → 0) (`dc_B5b.txt`) |
+| B5c (ea12b44) | `detect-changes --scope staged` (`A reports/retrain_2026-10-02/preregistration.json`) | "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." — file JSON dữ liệu, không symbol; KHÔNG phải kết quả sạch; đối chiếu: chỉ 1 file `A`, không mã nào import (`dc_B5c.txt`) |
