@@ -195,6 +195,9 @@
   - Ước lượng thời gian: dùng số đo từ docs/usage_ledger.csv (cả seven_delta), báo lại người dùng.
   (Orchestrator xếp việc 4 và 6 — người dùng chưa xếp — sau 5 và trước 8; báo người dùng.)
 
+- (2026-10-02 16:15) `--source mock` của realtime_demo.py: CHUYỂN bộ sinh khung giả thành fixture chỉ dùng trong tests/ (ngoài phạm vi guard);
+  realtime_demo.py không còn --source mock.
+
 ## Câu hỏi chờ người dùng
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
 - (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
@@ -202,7 +205,6 @@
   Có thêm backlog train lại CSLR chia theo câu (tốn GPU Kaggle)? Có lưu checkpoint CSLR/ViT5 lên Kaggle dataset private?
   (2) Việc C: kiểm archive_name chỉ áp đúng luật cho manifest do script tự sinh (manifest bước 4 không có tiền tố reports/) — giữ hay áp nguyên văn?
   (3) KAGGLE_KEY trong môi trường cloud còn là chữ mẫu — người dùng tự điền (không đưa vào chat/repo).
-  (4) (review cloud) Kế hoạch 11: có bỏ chế độ `--source mock` của realtime_demo.py (4/9 vi phạm guard DoD 7) không?
 
 ## Backlog còn lại (thứ tự)
 1. (xong — kế hoạch 05)
