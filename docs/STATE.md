@@ -9,8 +9,12 @@
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
 - Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 80% lúc 22:19, reset 01:00 ngày 3/10 giờ VN; 7 ngày 43%. Không đơn vị nào lọt cổng
   (coder 1 bước nhỏ est 13: 80+13 = 93 > 90). Không có agent chạy. Orchestrator chỉ theo dõi trạng thái kernel K2 bằng sleep nền ≤ 25 phút.
-  VIỆC KẾ TIẾP (sau reset): vslt-coder 13 hoàn tất B7 — K2 đang RUNNING (xem "Tài nguyên"): tải output vào _work/_plan13_tmp/k2_preflight/,
-  đối chiếu preflight.json (rows, n_mismatch, leak_check_total) + env.json với preregistration.json, lệch → §7.2; khớp → commit JSON/log nhỏ, sổ GPU. Rồi B8 (K1 GPU).
+  K2 preflight v1 = ERROR (orchestrator kiểm 23:10 VN): watchdog 105 phút giết `hf_probe.py VietAI/vit5-base` — snapshot HF kẹt ở
+  "Fetching 10 files 4/10" suốt ~100 phút (bước trước đó: clone, pip, prepare_vsl_gh, prepare_translation, clean_10k, vocab đều chạy xong trong ~83 s).
+  Output + log đã tải: _work/_plan13_tmp/k2_preflight_v1/ (env.json, SHA256SUMS, logs/*.log, translation_corpus_validation.json). CHƯA đối chiếu gì.
+  VIỆC KẾ TIẾP (sau reset 01:00): vslt-coder 13 B7 lần 2 — (1) đối chiếu phần output đã có (vocab, clean_10k, translation validation, SHA256SUMS)
+  với preregistration; (2) sửa hf_probe: chỉ tải đúng file cần (allow_patterns, tránh tf/flax/bin thừa), timeout/retry từng file, ghi lý do;
+  nếu sửa đổi nội dung đã đăng ký → theo §7.2/planner; (3) commit, push, đẩy K2 v2 preflight, theo dõi. Rồi B8 (K1 GPU).
   Song song khi chờ kernel: planner kế hoạch 11 (việc 5) — chưa có file.
   Coder 13 B7 (dd510f1, cfc5eea, chỉ 13-progress): GIẢ ĐỊNH CẦN REVIEWER XÉT: PIN_COMMIT trong file repo vẫn None (test có sẵn
   tests/test_retrain_tools.py:2170 và :2189 assertIsNone); bản đẩy Kaggle ở _work/_plan13_tmp/k2_push/ = file tại 0908ef3 chỉ thay dòng 38
@@ -267,7 +271,7 @@
 ## Tài nguyên
 - Kaggle GPU tuần này: ~6 giờ đã dùng (ước tính của người dùng, chưa xác minh), giới hạn tự đặt 10 giờ/tuần.
 - Kaggle kernel đang chạy: phmvnsm33/vsl-retrain-cslr-vit5 version 1 (K2 MODE=preflight, CPU, private) — đẩy 2026-10-02T14:15:08Z (21:15 VN);
-  RUNNING lúc 15:19Z (orchestrator kiểm). Watchdog kernel 105 phút ⇒ dự kiến xong/tự dừng chậm nhất ~16:00–16:10Z (23:00–23:10 VN).
+  KẾT THÚC ERROR (kiểm 16:10Z = 23:10 VN): watchdog 105 phút giết hf_probe (snapshot ViT5 kẹt). Hiện KHÔNG có kernel nào chạy.
   Kiểm: `PYTHONUTF8=1 .venv/Scripts/kaggle kernels status phmvnsm33/vsl-retrain-cslr-vit5`.
 - Giới hạn API: đã gặp lỗi 429 (reset 4:20 sáng, giờ Việt Nam). Xem orchestrator_resume_addendum.md mục 4 và usage_guard_addendum.md.
 
