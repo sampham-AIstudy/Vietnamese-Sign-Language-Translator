@@ -59,7 +59,23 @@ def parse_args():
         default=None,
         help="Limit number of batches per epoch (useful for smoke tests)",
     )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="Seed random/numpy/torch/torch.cuda before building the DataLoaders (default: no seeding, old behaviour)",
+    )
     return parser.parse_args()
+
+
+def set_seed(seed: int) -> None:
+    """Seed Python `random`, NumPy, torch (CPU) and every CUDA device (plan 13 §3.4b)."""
+    import random
+    import numpy as np
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
 
 
 def load_config(config_path: str) -> dict:
@@ -92,6 +108,11 @@ def main():
     print(f"Compute Device: {device}")
     if torch.cuda.is_available():
         print(f"GPU: {torch.cuda.get_device_name(0)}")
+
+    # Plan 13 §3.4b: optional seeding; without --seed nothing is seeded (old behaviour)
+    if args.seed is not None:
+        print(f"Seed: {args.seed}")
+        set_seed(args.seed)
 
     # 1. Initialize DataLoaders
     data_cfg = config["data"]

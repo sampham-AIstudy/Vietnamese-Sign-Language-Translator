@@ -324,5 +324,88 @@ class TestBuildGlossVocabSentenceSplit(_Scratch):
         self.assertEqual(n_sel, 240 * 4 * 3)
 
 
+# =====================================================================================================================
+# B4a — train.py --seed (plan 13 §3.4b): optional; absent (default) = exactly the old behaviour (no seeding call).
+# The training itself is never run: get_vsl_dataloaders is replaced by a stub that stops main() right there.
+# =====================================================================================================================
+
+class _StopMain(Exception):
+    pass
+
+
+class TestTrainSeed(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        import train as T  # repo-root train.py
+        cls.T = T
+
+    def run_main(self, argv):
+        from unittest import mock
+        calls = []
+
+        def fake_loaders(*a, **k):
+            calls.append(("loaders", None))
+            raise _StopMain()
+
+        def fake_seed(n):
+            calls.append(("seed", n))
+
+        with mock.patch.object(sys, "argv", ["train.py"] + argv), \
+                mock.patch.object(self.T, "get_vsl_dataloaders", fake_loaders), \
+                mock.patch.object(self.T, "set_seed", fake_seed), \
+                contextlib.redirect_stdout(io.StringIO()):
+            with self.assertRaises(_StopMain):
+                self.T.main()
+        return calls
+
+    def test_parse_default_none(self):
+        from unittest import mock
+        with mock.patch.object(sys, "argv", ["train.py"]):
+            self.assertIsNone(self.T.parse_args().seed)
+
+    def test_parse_seed(self):
+        from unittest import mock
+        with mock.patch.object(sys, "argv", ["train.py", "--seed", "42"]):
+            self.assertEqual(self.T.parse_args().seed, 42)
+
+    def test_old_options_unchanged(self):
+        from unittest import mock
+        with mock.patch.object(sys, "argv", ["train.py"]):
+            a = vars(self.T.parse_args())
+        self.assertEqual(a, {"config": "configs/experiments/baseline_bigru.yaml", "epochs": None, "batch_size": None,
+                             "lr": None, "smoke_test": False, "max_batches": None, "seed": None})
+
+    def test_main_without_seed_never_seeds(self):
+        calls = self.run_main(["--config", "configs/experiments/stgcn.yaml"])
+        self.assertEqual(calls, [("loaders", None)])
+
+    def test_main_with_seed_seeds_before_dataloaders(self):
+        calls = self.run_main(["--config", "configs/experiments/stgcn.yaml", "--seed", "42"])
+        self.assertEqual(calls, [("seed", 42), ("loaders", None)])
+
+    def test_set_seed_is_deterministic(self):
+        import random
+        import numpy as np
+        import torch
+
+        def draw():
+            return (random.random(), float(np.random.rand()), float(torch.rand(1)))
+
+        state = (random.getstate(), np.random.get_state(), torch.get_rng_state())
+        try:
+            self.T.set_seed(42)
+            a = draw()
+            self.T.set_seed(42)
+            b = draw()
+            self.T.set_seed(43)
+            c = draw()
+        finally:
+            random.setstate(state[0])
+            np.random.set_state(state[1])
+            torch.set_rng_state(state[2])
+        self.assertEqual(a, b)
+        self.assertNotEqual(a, c)
+
+
 if __name__ == "__main__":
     unittest.main()

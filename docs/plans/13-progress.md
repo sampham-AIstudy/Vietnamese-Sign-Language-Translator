@@ -205,6 +205,23 @@ Tệp tạm: `_work/_plan13_tmp/`.
 - Chưa đặt cleaned vào `data/external/parallel_text/` (B11, §3.5). Guard G2 `test_vit5_stage1_clean10k_no_heldout_match` vẫn skip tới B11
   (test đọc đường dẫn thật `data/external/parallel_text/vie_vsl_10k_cleaned.jsonl`).
 
+### B4a — `train.py --seed` (lượt 3). Log: `_work/_plan13_tmp/B4a_*`
+- Impact TRƯỚC khi sửa (`B4a_impact.txt`, sau `analyze --index-only` — `gitnexus_analyze_B4a.txt`): `impact "main" --file train.py` →
+  `"status": "ambiguous"` (2 ứng viên: `train.py:72` và `clone/Vietnamese-Sign-Language-Translation/source/train.py:165`), mỗi ứng viên
+  `"risk": "CRITICAL"`, 58; `impact "parse_args" --file train.py` → `"risk": "CRITICAL"`, 58 (luồng `Run_harmonized → …`, `translate_video`… —
+  nối nhầm tên `parse_args`/`main` giữa các script, như 12-progress B5/B8). Đối chiếu grep (`B4a_grep_callers.txt`):
+  `git grep -n -E "from train import|^\s*import train|train\.main\(|train\.parse_args|[^_a-z]train\.py" -- src scripts backend tests kaggle configs …`
+  và `git grep -E "['\"/ ]train\.py"` (trừ docs/reports/md) → chỉ 2 dòng docstring của chính `train.py` ⇒ không caller mã thật; hành vi mặc định
+  giữ nguyên (test dưới) ⇒ không chạm §7.2-8.
+- Test viết trước (`tests/test_retrain_tools.py`, lớp mới `TestTrainSeed`, 6 test; `main()` dừng bằng stub `get_vsl_dataloaders`, không train):
+  `B4a_test_red.log` — `Ran 6` `FAILED (failures=1, errors=5)` (`Namespace` không có `seed`; `train` không có `set_seed`).
+- Sửa `train.py` (+21/−0, `git diff --numstat`): `--seed` (int, mặc định None); hàm mới `set_seed(n)` = `random.seed`, `np.random.seed`,
+  `torch.manual_seed`, `torch.cuda.manual_seed_all`; trong `main()` gọi TRƯỚC `get_vsl_dataloaders` chỉ khi `args.seed is not None` (in `Seed: N`).
+  Không đụng `VSLTrainer`. Test khóa: tùy chọn cũ y nguyên + `seed None`; không `--seed` → không gọi `set_seed`; `--seed 42` → `set_seed(42)` rồi
+  mới tới DataLoader; `set_seed` tất định (42 hai lần bằng nhau, 43 khác; trạng thái RNG trả lại sau test).
+- Test: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_retrain_tools -v` → `Ran 26 tests` `OK`, 0 skip (`B4a_test_green.log`);
+  `git diff 0373a90 -- tests/test_retrain_tools.py | grep -c "^-[^-]"` → 0.
+
 ## Đang làm
 - B4a–B4d (lượt 3).
 
@@ -230,3 +247,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B2c (WIP 059a780) | `detect-changes --scope staged` (2 file M) | "Changes: 2 files, 13 symbols / Affected processes: 6 / Risk level: high" — luồng `Main → _id_list | Split_file_sha256 | Ids | Signers | From_canonical_dataset | Collect_glosses` (đều là `main` của chính script vocab gọi hàm dùng chung); grep: không caller ngoài script + test (`dc_B2c_wip.txt`) |
 | B2b+B2c (progress) | `detect-changes --scope staged` | "Changes: 1 files, 1 symbols / Risk level: critical" — `Section Kế hoạch 13 — tiến độ (coder) → docs/plans/13-progress.md` (markdown; nối nhầm như B0/B2) (`dc_B2c.txt`) |
 | B3 (progress) | `detect-changes --scope staged` (chỉ `M docs/plans/13-progress.md`) | "Changes: 1 files, 1 symbols / Affected processes: 226 / Risk level: critical" — symbol duy nhất `Section Kế hoạch 13 — tiến độ (coder)` (markdown; nối nhầm như B0/B2) (`dc_B3.txt`) |
+| B4a | `detect-changes --scope staged` (`train.py`, `tests/test_retrain_tools.py`; rồi + progress) | "Changes: 2 files, 1 symbols / Affected processes: 226 / Risk level: critical" — symbol `Function parse_args → train.py`; luồng liệt kê (`Run_harmonized → …`, `Main → …`) là nối nhầm tên `parse_args` (grep: 0 caller mã của `train.py`) (`dc_B4a.txt`); + progress: "Changes: 3 files, 1 symbols / Risk level: critical" (`dc_B4a_full.txt`) |
