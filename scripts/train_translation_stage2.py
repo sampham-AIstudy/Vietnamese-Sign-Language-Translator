@@ -40,6 +40,7 @@ def train_stage2(
     seed: int = 42,
     checkpoint_dir: str = "checkpoints/vit5_stage2",
     reports_dir: str = "reports",
+    sentence_split=None,  # plan 13: split file path / SentenceSplit; None = old SENT001-240 / SENT241-270
 ):
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
@@ -56,6 +57,9 @@ def train_stage2(
     rep_path.mkdir(parents=True, exist_ok=True)
 
     stage1_full_path = project_root / pretrained_stage1_path
+    if sentence_split is not None and not stage1_full_path.exists():
+        # plan 13: the registered recipe is stage 1 -> stage 2; never fall back silently to the raw base model
+        raise FileNotFoundError(f"Stage 1 checkpoint not found at {stage1_full_path} (required with --sentence-split)")
     if not stage1_full_path.exists():
         print(f"[WARN] Stage 1 checkpoint not found at {stage1_full_path}, falling back to raw 'VietAI/vit5-base'")
         model_source = "VietAI/vit5-base"
@@ -68,8 +72,23 @@ def train_stage2(
 
     # Datasets
     collate_fn = get_seq2seq_collate_fn(tokenizer, max_source_length=128, max_target_length=128)
-    train_dataset = VSLGHTextDataset(split="train")
-    val_dataset = VSLGHTextDataset(split="val")
+    train_dataset = VSLGHTextDataset(split="train", sentence_split=sentence_split)
+    val_dataset = VSLGHTextDataset(split="val", sentence_split=sentence_split)
+    if sentence_split is not None:
+        # Plan 13 §3.4e: check the very sentences about to be used, then record them
+        from src.data.sentence_split import assert_no_leak, resolve_sentence_split, sample_leak_report
+        ss = resolve_sentence_split(sentence_split)
+        print(assert_no_leak(sample_leak_report(ss, train_dataset.samples, val_dataset.samples), "vit5_stage2"))
+        used = {
+            "sentence_split_path": str(sentence_split) if not hasattr(sentence_split, "sha256") else ss.path,
+            "sentence_split_sha256": ss.sha256,
+            "canonical_json": str(train_dataset.canonical_json),
+            "train_sentence_ids": [s["sentence_id"] for s in train_dataset.samples],
+            "val_sentence_ids": [s["sentence_id"] for s in val_dataset.samples],
+        }
+        with open(rep_path / "vit5_stage2_used_ids.json", "x", encoding="utf-8", newline="\n") as f:
+            json.dump(used, f, indent=2, ensure_ascii=False)
+            f.write("\n")
 
     train_loader = DataLoader(
         train_dataset,
@@ -204,7 +223,10 @@ if __name__ == "__main__":
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--lr", type=float, default=2.5e-5)
     parser.add_argument("--patience", type=int, default=5)
+    parser.add_argument("--sentence-split", type=str, default=None,
+                        help="Plan 13 sentence split file: train = train_ids, val = val_ids (default: SENT001-240 / 241-270)")
     args = parser.parse_args()
+    split_kwargs = {} if args.sentence_split is None else {"sentence_split": args.sentence_split}
 
     train_stage2(
         pretrained_stage1_path=args.stage1_path,
@@ -212,4 +234,5 @@ if __name__ == "__main__":
         batch_size=args.batch_size,
         lr=args.lr,
         patience=args.patience,
+        **split_kwargs,
     )

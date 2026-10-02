@@ -79,6 +79,38 @@ def get_git_commit() -> str:
         return "406db45"
 
 
+TEST_DEFERRED_LINE = "TEST DEFERRED (sentence split v1): run scripts/eval_sentsplit.py once"
+
+
+def sentence_split_config(path: str) -> Dict[str, Any]:
+    """Plan 13 §3.4f: config keys for `--sentence-split PATH` (the file is validated; sha256 = LF-normalised bytes)."""
+    from src.data.sentence_split import load_sentence_split
+    ss = load_sentence_split(path)
+    return {"sentence_split_path": str(path), "sentence_split_sha256": ss.sha256}
+
+
+def cslr_leak_check(data_root: Path, vocab: VSLGlossVocabulary, sentence_split: Any) -> Tuple[str, List[str], List[str]]:
+    """Plan 13 §3.4e: before any training (smoke test included) check, with the shared functions of
+    src/data/sentence_split.py, that the train / val selection holds no test (T) sentence, train no val (V) sentence,
+    signers follow the signer split, and the label space (vocab) is exactly the train glosses + specials.
+    Returns ("LEAK CHECK OK ...", train sample ids, val sample ids); raises RuntimeError("LEAK CHECK FAILED ...")."""
+    from src.data.sentence_split import (assert_no_leak, collect_glosses, sample_leak_report, select_vslgh_samples,
+                                         vocab_leak_report)
+    with open(data_root / "dataset_canonical.json", "r", encoding="utf-8") as f:
+        all_samples = json.load(f)
+    train_sel = select_vslgh_samples(all_samples, "train", sentence_split)
+    val_sel = select_vslgh_samples(all_samples, "val", sentence_split)
+    report = sample_leak_report(sentence_split, train_sel, val_sel)
+    tokens = [vocab.id_to_gloss[i] for i in range(len(vocab))]
+    v_rep = vocab_leak_report(tokens, collect_glosses(train_sel), specials=("<blank>", "<unk>"))
+    report["n_vocab_tokens"] = v_rep["n_tokens"]
+    report["vocab_tokens_not_from_train"] = v_rep["tokens_not_from_train"]
+    report["vocab_train_glosses_missing"] = v_rep["train_glosses_missing"]
+    report["n_violations"] += v_rep["n_violations"]
+    line = assert_no_leak(report, "cslr")
+    return line, [s["id"] for s in train_sel], [s["id"] for s in val_sel]
+
+
 def validate_ctc_alignment_batch(
     out_lengths: torch.Tensor,
     target_lengths: torch.Tensor,
@@ -212,6 +244,7 @@ def run_smoke_test(
     vocab_path: Path,
     checkpoint_path: Path,
     device: torch.device,
+    sentence_split: Optional[Any] = None,  # plan 13: split file path / SentenceSplit; None = old signer split
 ) -> bool:
     """
     Executes a 10-epoch overfit test on 8 training samples and 1 validation sample.
@@ -230,6 +263,7 @@ def run_smoke_test(
         vocabulary=vocab,
         conversion_mode="semantic",
         normalize=True,
+        sentence_split=sentence_split,
     )
     val_dataset = VSLGHContinuousDataset(
         canonical_json=data_root / "dataset_canonical.json",
@@ -238,6 +272,7 @@ def run_smoke_test(
         vocabulary=vocab,
         conversion_mode="semantic",
         normalize=True,
+        sentence_split=sentence_split,
     )
 
     smoke_train_subset = Subset(full_train, indices=list(range(8)))
@@ -346,9 +381,23 @@ def train_cslr(
     git_commit = get_git_commit()
     timestamp_str = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 
+    # Plan 13 §3.4f: optional sentence split v1 (config keys added only by --sentence-split; absent = old behaviour)
+    sentence_split = None
+    leak_ids: Optional[Tuple[List[str], List[str]]] = None
+    if config.get("sentence_split_path") is not None:
+        from src.data.sentence_split import load_sentence_split
+        sentence_split = load_sentence_split(config["sentence_split_path"])
+        expected_sha = config.get("sentence_split_sha256")
+        if expected_sha is not None and expected_sha != sentence_split.sha256:
+            raise ValueError(f"sentence split sha256 {sentence_split.sha256} != config {expected_sha}")
+        leak_line, leak_train_ids, leak_val_ids = cslr_leak_check(
+            data_root, VSLGlossVocabulary.from_file(str(vocab_path)), sentence_split)
+        leak_ids = (leak_train_ids, leak_val_ids)
+        print(leak_line)
+
     # 1. Smoke test check
     if not skip_smoke_test:
-        smoke_ok = run_smoke_test(data_root, vocab_path, pretrained_backbone_path, device)
+        smoke_ok = run_smoke_test(data_root, vocab_path, pretrained_backbone_path, device, sentence_split=sentence_split)
         if not smoke_ok:
             raise RuntimeError("Smoke test failed! Halting full training as per Section 10 safety protocol.")
 
@@ -363,6 +412,7 @@ def train_cslr(
         vocabulary=vocab,
         conversion_mode="semantic",
         normalize=True,
+        sentence_split=sentence_split,
     )
     val_dataset = VSLGHContinuousDataset(
         canonical_json=data_root / "dataset_canonical.json",
@@ -371,6 +421,7 @@ def train_cslr(
         vocabulary=vocab,
         conversion_mode="semantic",
         normalize=True,
+        sentence_split=sentence_split,
     )
     test_dataset = VSLGHContinuousDataset(
         canonical_json=data_root / "dataset_canonical.json",
@@ -379,9 +430,28 @@ def train_cslr(
         vocabulary=vocab,
         conversion_mode="semantic",
         normalize=True,
-    )
+    ) if sentence_split is None else None  # plan 13: with the sentence split the test set is never built here
 
-    print(f"[DATA] Splits loaded: Train={len(train_dataset)} (S01-S04), Val={len(val_dataset)} (S05), Test={len(test_dataset)} (S06)")
+    if sentence_split is None:
+        print(f"[DATA] Splits loaded: Train={len(train_dataset)} (S01-S04), Val={len(val_dataset)} (S05), Test={len(test_dataset)} (S06)")
+    else:
+        print(f"[DATA] Sentence split v1: Train={len(train_dataset)} (S01-S04 x train sentences), "
+              f"Val={len(val_dataset)} (S05 x val sentences), Test=not built (deferred)")
+        used_train = [s["id"] for s in train_dataset.samples]
+        used_val = [s["id"] for s in val_dataset.samples]
+        if (used_train, used_val) != leak_ids:
+            raise RuntimeError("LEAK CHECK FAILED (cslr): datasets differ from the checked selection")
+        used = {
+            "sentence_split_path": config["sentence_split_path"],
+            "sentence_split_sha256": sentence_split.sha256,
+            "train": [{"sample_id": s["id"], "sentence_id": s["sentence_id"], "signer_id": s.get("signer_id")}
+                      for s in train_dataset.samples],
+            "val": [{"sample_id": s["id"], "sentence_id": s["sentence_id"], "signer_id": s.get("signer_id")}
+                    for s in val_dataset.samples],
+        }
+        with open(reports_dir / "cslr_used_ids.json", "x", encoding="utf-8", newline="\n") as f:
+            json.dump(used, f, indent=2, ensure_ascii=False)
+            f.write("\n")
 
     batch_size = config["batch_size"]
     num_workers = config.get("num_workers", 0)  # 0 for Windows stability
@@ -409,7 +479,7 @@ def train_cslr(
         collate_fn=vslgh_collate_fn,
         num_workers=num_workers,
         pin_memory=(device.type == "cuda"),
-    )
+    ) if test_dataset is not None else None
 
     # 3. Model Architecture
     model = STGCNBiGRU_CSLR(
@@ -657,6 +727,41 @@ def train_cslr(
 
     print(f"\n[HISTORY] Saved training logs to:\n  - {history_json_path}\n  - {history_csv_path}")
 
+    # Plan 13 §3.4f / §3.12: with the sentence split the test set (S06 x T) is evaluated ONCE, later, by
+    # scripts/eval_sentsplit.py — never inside the training process.
+    if sentence_split is not None:
+        print(TEST_DEFERRED_LINE)
+        deferred_summary = {
+            "device": str(device),
+            "gpu_name": torch.cuda.get_device_name(0) if device.type == "cuda" else "N/A",
+            "training_time": {
+                "total_training_time_sec": round(total_train_time, 2),
+                "average_epoch_time_sec": round(avg_epoch_time, 2),
+                "total_epochs_trained": len(history),
+                "best_epoch": best_epoch,
+            },
+            "validation_s05": {
+                "best_val_wer": best_val_wer,
+                "final_val_loss": history[-1]["val_loss"] if history else None,
+                "final_val_wer": history[-1]["val_wer"] if history else None,
+            },
+            "test_s06": None,
+            "test_deferred": True,
+            "test_deferred_reason": TEST_DEFERRED_LINE,
+            "checkpoints": {
+                "stage1_best": str(checkpoint_dir / "cslr_stage1_best.pt"),
+                "global_best": str(checkpoint_dir / "cslr_best.pt"),
+                "latest": str(checkpoint_dir / "cslr_latest.pt"),
+            },
+            "config": config,
+        }
+        summary_path = reports_dir / "cslr_train_summary.json"
+        with open(summary_path, "x", encoding="utf-8", newline="\n") as f:
+            json.dump(deferred_summary, f, indent=2, ensure_ascii=False)
+            f.write("\n")
+        print(f"[TRAIN REPORT] Saved training summary (no test) to: {summary_path}")
+        return deferred_summary
+
     # =========================================================================
     # FINAL EVALUATION ON S06 (TEST SIGNER) - STRICTLY ONCE
     # =========================================================================
@@ -729,6 +834,9 @@ if __name__ == "__main__":
     parser.add_argument("--seed", type=int, default=42, help="Random seed (default: 42)")
     parser.add_argument("--smoke-test-only", action="store_true", help="Run smoke test only and exit")
     parser.add_argument("--skip-smoke-test", action="store_true", help="Skip smoke test before training")
+    parser.add_argument("--sentence-split", type=str, default=None,
+                        help="Plan 13 sentence split file (configs/vslgh_sentence_split_v1.json): train S01-S04 x train "
+                             "sentences, val S05 x val sentences, test NOT run here (default: old signer split)")
 
     args = parser.parse_args()
 
@@ -750,6 +858,8 @@ if __name__ == "__main__":
         "early_stopping_patience": args.patience,
         "seed": args.seed,
     }
+    if args.sentence_split is not None:
+        cfg.update(sentence_split_config(args.sentence_split))
 
     if args.smoke_test_only:
         dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -758,6 +868,7 @@ if __name__ == "__main__":
             Path(cfg["vocab_path"]),
             Path(cfg["pretrained_backbone"]),
             dev,
+            sentence_split=cfg.get("sentence_split_path"),
         )
         sys.exit(0 if ok else 1)
 

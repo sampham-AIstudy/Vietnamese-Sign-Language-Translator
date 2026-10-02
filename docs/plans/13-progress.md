@@ -247,6 +247,46 @@ Tệp tạm: `_work/_plan13_tmp/`.
   → `Ran 101 tests` `OK` (`B4b_test_green.log`; `test_retrain_tools` = 50: 15 B2 + 5 B2c + 6 B4a + 24 B4b), 0 skip;
   `git diff 0373a90 -- tests/test_retrain_tools.py | grep -c "^-[^-]"` → 0.
 
+### B4c [LS1] — `--sentence-split` cho CSLR + ViT5 s1/s2 (lượt 3). Log: `_work/_plan13_tmp/B4c_*`
+- Impact TRƯỚC khi sửa (`B4c_impact.txt`, index tại `7ecaa25`): `impact "train_cslr" --file src/training/train_cslr.py` → `"risk": "CRITICAL"`,
+  `impactedCount` 61, `direct` 1; `run_smoke_test` → CRITICAL, 61, `direct` 2; `train_stage1` (`scripts/train_translation_stage1.py`) → CRITICAL, 62,
+  `direct` 1; `train_stage2` → CRITICAL, 62, `direct` 1 (luồng liệt kê `Run_harmonized → …`, `translate_video`, `Ws_classification → …` — nối nhầm
+  `main`/tên trùng như B4a). Đối chiếu grep (`B4c_grep_callers.txt`, `git grep -n -E "train_cslr\(|run_smoke_test\(|train_stage1\(|train_stage2\(|
+  from src.training.train_cslr|import train_cslr|train_translation_stage[12]" -- src scripts backend tests kaggle configs …` + `-- kaggle backend tests
+  *.ps1 *.yaml`): caller thật = chỉ nội bộ (`train_cslr.py:351,756,764`, `__main__` của 2 script stage); `scripts/evaluate_cslr_s06.py:21` chỉ import
+  `evaluate_cslr` (không sửa); 3 dòng trong test là chú thích ⇒ không caller nào bị đổi hành vi mặc định (test dưới) ⇒ không chạm §7.2-8.
+- Test viết trước (`TestB4cSentenceSplitTraining`, 14 test, fixture tổng hợp nhỏ dưới `_work/_test_tmp/`; KHÔNG train: `train_cslr` chạy với
+  `total_epochs=0` (không epoch nào); ViT5 dừng ở `DataLoader` đầu tiên, tokenizer/model giả, không tải mạng): `B4c_test_red.log` — `Ran 14`
+  `FAILED (failures=2, errors=9)`; 3 test "mặc định không đổi" (`test_cslr_default_unchanged`, `test_stage1_default_unchanged`,
+  `test_stage2_default_unchanged`) XANH ngay trên mã cũ (chứng minh chúng mô tả đúng hành vi cũ). Sửa fixture 2 test ViT5 của chính lượt này
+  (mini canonical thiếu câu → `heldout_texts`/`VSLGHTextDataset` báo thiếu; đổi sang fixture 300 câu) — `B4c_test_green1.log` → `green2.log`.
+- `src/data/sentence_split.py` (+69/−0, chỉ THÊM hàm): `sample_leak_report` (câu train ∈ T/V/ngoài Tr, câu val ∈ T/ngoài V, người ký ngoài split),
+  `text_leak_report` (cặp 10k còn `match_heldout`), `vocab_leak_report` (token ≠ gloss train + specials), `assert_no_leak` → dòng
+  `LEAK CHECK OK (<job>): …` hoặc `RuntimeError("LEAK CHECK FAILED …")`.
+- `src/training/train_cslr.py` (+115/−4; 4 dòng "xóa" = 2 dòng `)` thêm `if … else None`, 1 lời gọi `run_smoke_test` thêm kwarg, 1 `print` cũ đưa
+  nguyên văn vào nhánh `if sentence_split is None`): hàm mới `sentence_split_config(path)` (kiểm file, trả `sentence_split_path`, `sentence_split_sha256`),
+  `cslr_leak_check` (chọn mẫu train/val bằng `select_vslgh_samples` + kiểm vocab == gloss train + specials; chạy TRƯỚC smoke test và trước
+  "CSLR TRAINING STARTED"); `run_smoke_test(…, sentence_split=None)`; `train_cslr`: chỉ khi `config["sentence_split_path"]` có — sha256 khớp config,
+  in `LEAK CHECK OK (cslr)`, dataset train/val lọc theo split, KHÔNG dựng test dataset/loader, dataset == tập đã kiểm, ghi `cslr_used_ids.json`
+  (`sample_id`, `sentence_id`, `signer_id` train/val; mở `x`), sau history in đúng 1 dòng `TEST DEFERRED (sentence split v1): run scripts/eval_sentsplit.py once`,
+  ghi `cslr_train_summary.json` (`test_s06: null`, `test_deferred: true`, mở `x`) và trả về TRƯỚC khối "PRIMARY TEST EVALUATION"; CLI `--sentence-split PATH`
+  (thêm 2 khóa config; `--smoke-test-only` truyền split). Không tùy chọn → config không thêm khóa, mọi dòng cũ chạy y nguyên.
+- `scripts/train_translation_stage1.py` (+62/−2): `train_stage1(…, sentence_split=None, canonical_json=DEFAULT)`; có split → `exclude_heldout =
+  heldout_texts(canonical, T ∪ V)` (hàm `stage1_heldout`), in `LEAK CHECK OK (vit5_stage1)` (kiểm lại chính các cặp sắp dùng), ghi `vit5_stage1_used_ids.json`
+  (chỉ ID: `train_ids`, `val_ids`, `excluded` kèm rule/side/sentence_ids/split, `heldout_sentence_ids`, `lf_sha256` của jsonl + canonical), thêm khối
+  `sentence_split` vào history; CLI `--sentence-split`, `--canonical-json` (không có `--sentence-split` → `parser.error`). 2 dòng "xóa" = 2 lời gọi
+  `Clean10kDataset` thêm `exclude_heldout=heldout` (None khi không tùy chọn = hành vi cũ, B2b).
+- `scripts/train_translation_stage2.py` (+25/−2): `train_stage2(…, sentence_split=None)` → `VSLGHTextDataset(split, sentence_split=…)`, `LEAK CHECK OK
+  (vit5_stage2)`, `vit5_stage2_used_ids.json`; CLI `--sentence-split`. **Giả định của coder (ngoài chữ kế hoạch, chỉ ở chế độ split):** thiếu stage 1 →
+  `FileNotFoundError` thay vì lặng lẽ dùng `VietAI/vit5-base` (công thức đăng ký là s1 → s2); không tùy chọn → fallback cũ giữ nguyên.
+- Kiểm trên dữ liệu THẬT (chỉ chọn mẫu, không train, không nạp mẫu test; `.venv/Scripts/python _work/_plan13_tmp/b4c_real_check.py` →
+  `B4c_real_check.json`): `LEAK CHECK OK (cslr): n_train_samples=2880, n_val_samples=30, n_train_sentences=240, n_val_sentences=30, n_vocab_tokens=322`
+  (vocab train-only B2c); vocab đầy đủ 372 → `LEAK CHECK FAILED (cslr): 50 violation(s)` (đúng 50 gloss B2c loại); `LEAK CHECK OK (vit5_stage1):
+  n_items=7136` (train 6423 / val 713, loại 4 ID == B3) trên bản cleaned trong `_work`; `LEAK CHECK OK (vit5_stage2): 240 / 30`.
+- Test: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_retrain_tools` → `Ran 64 tests` `OK`, 0 skip (`B4c_test_green.log`);
+  `tests.test_sentence_split_guard tests.test_backend_source_guard` → `Ran 63` `OK (skipped=1)` (skip = G2 clean10k chờ B11; `B4c_guard_tests.log`);
+  `git diff 0373a90 -- tests/test_retrain_tools.py | grep -c "^-[^-]"` → 0.
+
 ## Đang làm
 - B4a–B4d (lượt 3).
 
@@ -274,3 +314,5 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B3 (progress) | `detect-changes --scope staged` (chỉ `M docs/plans/13-progress.md`) | "Changes: 1 files, 1 symbols / Affected processes: 226 / Risk level: critical" — symbol duy nhất `Section Kế hoạch 13 — tiến độ (coder)` (markdown; nối nhầm như B0/B2) (`dc_B3.txt`) |
 | B4a | `detect-changes --scope staged` (`train.py`, `tests/test_retrain_tools.py`; rồi + progress) | "Changes: 2 files, 1 symbols / Affected processes: 226 / Risk level: critical" — symbol `Function parse_args → train.py`; luồng liệt kê (`Run_harmonized → …`, `Main → …`) là nối nhầm tên `parse_args` (grep: 0 caller mã của `train.py`) (`dc_B4a.txt`); + progress: "Changes: 3 files, 1 symbols / Risk level: critical" (`dc_B4a_full.txt`) |
 | B4b | `detect-changes --scope staged` (`A scripts/archive_retrain_kaggle.py`, `M tests/test_retrain_tools.py`), sau `analyze --index-only` | "Diff touched 2 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B4b.txt`) — index chưa có symbol của file mới / phần test thêm ⇒ KHÔNG phải kết quả sạch; đối chiếu: `git diff --cached --name-status` → `A` + `M` (test chỉ thêm dòng, 0 dòng xóa); file mới chỉ import `archive_step4_kaggle`/`archive_private_kaggle` (không sửa); `git grep archive_retrain_kaggle -- src backend scripts kaggle` → chỉ chính file ⇒ không caller có sẵn. Sau commit: `detect-changes --scope compare` (ghi ở dòng kế) |
+| B4b (sau commit 7ecaa25) | `analyze --index-only` rồi `detect-changes --scope compare --base-ref HEAD~1` | "Changes: 6 files, 79 symbols / Affected processes: 202 / Risk level: critical" — symbol đổi = các hằng/hàm của `scripts/archive_retrain_kaggle.py` (mới) + `Section … 13-progress`; luồng liệt kê (`Run_harmonized → …`, `Main → …`) là nối nhầm qua mục markdown/`main` như B0/B2; "6 files" gồm cả thay đổi chưa commit của cây làm việc (3 ` D` người dùng) (`dc_B4b_compare.txt`) |
+| B4c | `detect-changes --scope staged` (5 file M, sau `analyze --index-only`) | "Changes: 5 files, 25 symbols / Affected processes: 16 / Risk level: critical" — symbol: hàm/hằng mới + `train_stage1`, `train_stage2`, `run_smoke_test`, `train_cslr`…; luồng: `Train_stage1 → _words | _normalizers | L2_text | Heldout_ids | _id_list | Split_file_sha256`, `Cslr_leak_check → Ids`, `Train_stage2 → Signers | _id_list`, `Run_smoke_test → Levenshtein_distance` … — đều trong chính 3 script train gọi mô-đun split dùng chung; không luồng serving/backend; hành vi mặc định khóa bằng 3 test xanh trên cả mã cũ và mới (`dc_B4c.txt`) |

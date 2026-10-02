@@ -345,3 +345,72 @@ def match_heldout(src: Any, tgt: str, heldout: HeldoutTexts) -> Tuple[bool, Opti
         if hit:
             return True, {"rule": "near_dup", "side": side, "sentence_ids": hit}
     return False, None
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Leak checks (plan 13 §3.4e/§3.4f: "LEAK CHECK OK" before any training epoch; run on the very data about to be used)
+# ---------------------------------------------------------------------------------------------------------------------
+
+_SAMPLE_LEAK_KEYS = ("train_in_test", "train_in_val", "train_outside_train", "val_in_test", "val_outside_val",
+                     "train_signers_outside", "val_signers_outside")
+
+
+def sample_leak_report(sentence_split: Union[SentenceSplit, PathLike], train_samples: Iterable[Mapping[str, Any]],
+                       val_samples: Iterable[Mapping[str, Any]]) -> Dict[str, Any]:
+    """Sentence (and, when the samples carry `signer_id`, signer) leakage of a train / val selection.
+
+    Violations: a train sentence in T or V or outside Tr; a val sentence in T or outside V; a train signer outside the
+    train signers; a val signer outside the val signers. `n_violations` = number of offending ids (0 = clean)."""
+    ss = resolve_sentence_split(sentence_split)
+    T, V, Tr = set(ss.test_ids), set(ss.val_ids), set(ss.train_ids)
+    train_samples, val_samples = list(train_samples), list(val_samples)
+    tr = {s.get("sentence_id") for s in train_samples}
+    va = {s.get("sentence_id") for s in val_samples}
+    tr_sig = {s.get("signer_id") for s in train_samples if "signer_id" in s}
+    va_sig = {s.get("signer_id") for s in val_samples if "signer_id" in s}
+    rep: Dict[str, Any] = {
+        "sentence_split_sha256": ss.sha256,
+        "n_train_samples": len(train_samples), "n_val_samples": len(val_samples),
+        "n_train_sentences": len(tr), "n_val_sentences": len(va),
+        "train_in_test": sorted(map(str, tr & T)), "train_in_val": sorted(map(str, tr & V)),
+        "train_outside_train": sorted(map(str, tr - Tr)),
+        "val_in_test": sorted(map(str, va & T)), "val_outside_val": sorted(map(str, va - V)),
+        "train_signers_outside": sorted(map(str, tr_sig - set(ss.signers("train")))),
+        "val_signers_outside": sorted(map(str, va_sig - set(ss.signers("val")))),
+    }
+    rep["n_violations"] = sum(len(rep[k]) for k in _SAMPLE_LEAK_KEYS)
+    return rep
+
+
+def text_leak_report(items: Iterable[Mapping[str, Any]], heldout: HeldoutTexts) -> Dict[str, Any]:
+    """10k pairs (`id`, `vsl`, `vi`) that still match a held-out sentence (L1/L2/near_dup). 0 = clean."""
+    hits = []
+    n = 0
+    for it in items:
+        n += 1
+        hit, reason = match_heldout(it.get("vsl"), it.get("vi"), heldout)
+        if hit:
+            hits.append({"id": it.get("id"), **reason})
+    return {"n_items": n, "heldout_sentence_ids": list(heldout.sentence_ids), "matches": hits,
+            "n_violations": len(hits)}
+
+
+def vocab_leak_report(vocab_tokens: Sequence[str], allowed_glosses: Iterable[str],
+                      specials: Sequence[str] = ("<blank>", "<unk>")) -> Dict[str, Any]:
+    """The label space must be exactly specials + the glosses of the train selection (plan 13 §0.4)."""
+    tokens = list(vocab_tokens)
+    allowed = set(allowed_glosses)
+    extra = sorted(t for t in tokens if t not in allowed and t not in specials)
+    missing = sorted(allowed - set(tokens))
+    return {"n_tokens": len(tokens), "n_allowed": len(allowed), "tokens_not_from_train": extra,
+            "train_glosses_missing": missing, "n_violations": len(extra) + len(missing)}
+
+
+def assert_no_leak(report: Mapping[str, Any], what: str) -> str:
+    """Return the "LEAK CHECK OK (<what>): ..." line, or raise RuntimeError("LEAK CHECK FAILED ...")."""
+    n = report.get("n_violations")
+    if n != 0:
+        details = {k: v for k, v in report.items() if isinstance(v, list) and v}
+        raise RuntimeError(f"LEAK CHECK FAILED ({what}): {n} violation(s): {json.dumps(details, ensure_ascii=False)[:2000]}")
+    counts = {k: v for k, v in report.items() if k.startswith("n_") and k != "n_violations"}
+    return f"LEAK CHECK OK ({what}): " + ", ".join(f"{k}={v}" for k, v in counts.items())

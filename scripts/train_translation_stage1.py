@@ -26,6 +26,23 @@ if str(project_root) not in sys.path:
 
 from src.translation.dataset import Clean10kDataset, get_seq2seq_collate_fn
 
+DEFAULT_CANONICAL_JSON = "data/external/vsl_gh/dataset_canonical.json"
+
+
+def _lf_sha256_file(path) -> str:
+    import hashlib
+    with open(path, "rb") as f:
+        return hashlib.sha256(f.read().replace(b"\r\n", b"\n")).hexdigest()
+
+
+def stage1_heldout(sentence_split, canonical_json):
+    """Plan 13 §0.3 / §3.4f: held-out texts (T u V, every signer and repetition) of the canonical VSL-GH data."""
+    from src.data.sentence_split import heldout_texts, resolve_sentence_split
+    ss = resolve_sentence_split(sentence_split)
+    with open(canonical_json, "r", encoding="utf-8") as f:
+        canonical = json.load(f)
+    return ss, heldout_texts(canonical, ss.heldout_ids())
+
 
 def train_stage1(
     model_name: str = "VietAI/vit5-base",
@@ -36,6 +53,8 @@ def train_stage1(
     seed: int = 42,
     checkpoint_dir: str = "checkpoints/vit5_stage1",
     reports_dir: str = "reports",
+    sentence_split=None,  # plan 13: split file path / SentenceSplit; None = old behaviour (no pair removed)
+    canonical_json: str = DEFAULT_CANONICAL_JSON,
 ):
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
@@ -57,8 +76,34 @@ def train_stage1(
     # Prepare Datasets & Loaders
     collate_fn = get_seq2seq_collate_fn(tokenizer, max_source_length=128, max_target_length=128)
 
-    train_dataset = Clean10kDataset(split="train", val_ratio=0.1, seed=seed)
-    val_dataset = Clean10kDataset(split="val", val_ratio=0.1, seed=seed)
+    heldout = None
+    if sentence_split is not None:
+        ss, heldout = stage1_heldout(sentence_split, canonical_json)
+    train_dataset = Clean10kDataset(split="train", val_ratio=0.1, seed=seed, exclude_heldout=heldout)
+    val_dataset = Clean10kDataset(split="val", val_ratio=0.1, seed=seed, exclude_heldout=heldout)
+    if sentence_split is not None:
+        # Plan 13 §3.4e: re-check the very pairs about to be used, then record used / excluded ids (ids only, no text)
+        from src.data.sentence_split import assert_no_leak, text_leak_report
+        print(assert_no_leak(text_leak_report(list(train_dataset.samples) + list(val_dataset.samples), heldout),
+                             "vit5_stage1"))
+        used = {
+            "sentence_split_path": str(sentence_split) if not hasattr(sentence_split, "sha256") else ss.path,
+            "sentence_split_sha256": ss.sha256,
+            "canonical_json": str(canonical_json),
+            "canonical_lf_sha256": _lf_sha256_file(canonical_json),
+            "jsonl_path": str(train_dataset.jsonl_path),
+            "jsonl_lf_sha256": _lf_sha256_file(train_dataset.jsonl_path),
+            "rule_ref": "plan 13 §0.3 (L1/L2/near_dup, source OR target, vs every pair of T u V)",
+            "heldout_sentence_ids": list(heldout.sentence_ids),
+            "train_ids": [s["id"] for s in train_dataset.samples],
+            "val_ids": [s["id"] for s in val_dataset.samples],
+            "excluded": [{"split": "train", **e} for e in train_dataset.excluded]
+                        + [{"split": "val", **e} for e in val_dataset.excluded],
+        }
+        with open(rep_path / "vit5_stage1_used_ids.json", "x", encoding="utf-8", newline="\n") as f:
+            json.dump(used, f, indent=2, ensure_ascii=False)
+            f.write("\n")
+        print(f"[STAGE 1] Sentence split v1: excluded train={len(train_dataset.excluded)} val={len(val_dataset.excluded)}")
 
     train_loader = DataLoader(
         train_dataset,
@@ -174,6 +219,9 @@ def train_stage1(
         "total_training_time_sec": round(total_time, 2),
         "history": history,
     }
+    if sentence_split is not None:
+        summary["sentence_split"] = {"sha256": ss.sha256, "n_excluded_train": len(train_dataset.excluded),
+                                     "n_excluded_val": len(val_dataset.excluded)}
 
     hist_file = rep_path / "vit5_stage1_history.json"
     with open(hist_file, "w", encoding="utf-8") as f:
@@ -189,10 +237,22 @@ if __name__ == "__main__":
     parser.add_argument("--epochs", type=int, default=3)
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--lr", type=float, default=5e-5)
+    parser.add_argument("--sentence-split", type=str, default=None,
+                        help="Plan 13 sentence split file: drop 10k pairs matching a val/test sentence (default: none)")
+    parser.add_argument("--canonical-json", type=str, default=None,
+                        help=f"VSL-GH canonical JSON for the held-out texts (only with --sentence-split; "
+                             f"default {DEFAULT_CANONICAL_JSON})")
     args = parser.parse_args()
+    if args.canonical_json is not None and args.sentence_split is None:
+        parser.error("--canonical-json requires --sentence-split")
+    split_kwargs = {}
+    if args.sentence_split is not None:
+        split_kwargs = {"sentence_split": args.sentence_split,
+                        "canonical_json": args.canonical_json or DEFAULT_CANONICAL_JSON}
 
     train_stage1(
         epochs=args.epochs,
         batch_size=args.batch_size,
         lr=args.lr,
+        **split_kwargs,
     )
