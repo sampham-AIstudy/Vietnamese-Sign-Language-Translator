@@ -1083,5 +1083,409 @@ class TestB4cSentenceSplitTraining(_Scratch):
             SS.assert_no_leak(bad, "x")
 
 
+# =====================================================================================================================
+# B4d [plan 13 LS1] — scripts/eval_sentsplit.py (§3.12 + repro_v2 of §0.7) on SYNTHETIC predictions only.
+# Never runs a model and never touches the real test set: CSLR / ViT5 steps are replaced by deterministic fakes, the
+# fixture is the 300-sentence synthetic canonical above (its S06 x T clips are fixture rows, not data).
+# =====================================================================================================================
+
+def _row(sample_id, sid, ref, pred, S, D, I, src_a, src_b, reftext, out_a, out_b):
+    return {"sample_id": sample_id, "sentence_id": sid, "signer_id": "S06", "ref_gloss_raw": list(ref),
+            "ref_gloss": list(ref), "pred_gloss": list(pred), "S": S, "D": D, "I": I,
+            "ref_gloss_vocab_encoded": list(ref), "n_ref_oov": 0, "mode_a_source": src_a, "mode_b_source": src_b,
+            "reference": reftext, "mode_a_output": out_a, "mode_b_output": out_b}
+
+
+class TestEvalSentsplit(_Scratch):
+    @classmethod
+    def setUpClass(cls):
+        import eval_sentsplit as E
+        cls.E = E
+
+    def hand_rows(self):
+        # hand-computed edit operations: sub (B->X), deletion (B), insertion (C)
+        return [
+            _row("SENT271_S06_R01_F", "SENT271", ["A", "B", "C"], ["A", "X", "C"], 1, 0, 0, "a b c", "a x c",
+                 "tôi đi học.", "tôi đi học.", "tôi đi chơi."),
+            _row("SENT272_S06_R01_F", "SENT272", ["A", "B", "C"], ["A", "C"], 0, 1, 0, "a b c", "a c",
+                 "hôm nay trời đẹp.", "hôm nay trời đẹp.", "hôm nay đẹp."),
+            _row("SENT273_S06_R01_F", "SENT273", ["A", "B"], ["A", "B", "C"], 0, 0, 1, "a b", "a b c",
+                 "bạn khỏe không?", "bạn có khỏe không?", "bạn khỏe không?"),
+        ]
+
+    def proto(self, **boot):
+        p = self.E.protocol_template("sentsplit_v1")
+        p["bootstrap"].update(boot)
+        return p
+
+    # --- protocol / metrics ----------------------------------------------------------------------------------------
+    def test_protocol_template_matches_plan_3_12(self):
+        p = self.E.protocol_template("sentsplit_v1")
+        self.assertEqual((p["bootstrap"]["rng"], p["bootstrap"]["seed"], p["bootstrap"]["n_resamples"]),
+                         ("numpy.random.RandomState", 42, 1000))
+        self.assertEqual((p["bootstrap"]["percentiles"], p["bootstrap"]["interpolation"], p["bootstrap"]["paired"]),
+                         ([2.5, 97.5], "linear", True))
+        self.assertEqual((p["bleu"]["tokenize"], p["bleu"]["smooth_method"], p["bleu"]["lowercase"]), ("13a", "exp", False))
+        self.assertEqual(p["translation"]["generate"], {"num_beams": 4, "max_length": 64, "do_sample": False})
+        self.assertEqual(p["translation"]["tokenizer"], {"max_length": 128, "padding": True, "truncation": True})
+        self.assertEqual((p["cslr"]["device"], p["translation"]["device"], p["cslr"]["batch_size"]), ("cpu", "cpu", 8))
+        self.assertEqual(p["test_set"]["expected_n"], 30)
+        r = self.E.protocol_template("repro_v2")
+        self.assertEqual((r["bootstrap"]["seed"], r["bootstrap"]["n_resamples"]), (42, 1000))
+        with self.assertRaises(self.E.EvalError):
+            self.E.protocol_template("nope")
+
+    def test_check_protocol_refuses_unimplemented(self):
+        p = self.proto()
+        self.E.check_protocol(p, "sentsplit_v1")
+        for sec, key, val in (("bootstrap", "rng", "numpy.random.default_rng"), ("bootstrap", "interpolation", "nearest"),
+                              ("translation", "fallback_stage1", True), ("bootstrap", "paired", False)):
+            q = json.loads(json.dumps(p))
+            q[sec][key] = val
+            with self.assertRaises(self.E.EvalError) as cm:
+                self.E.check_protocol(q, "sentsplit_v1")
+            self.assertEqual(cm.exception.code, 2)
+        with self.assertRaises(self.E.EvalError):
+            self.E.check_protocol(p, "repro_v2")
+
+    def test_wer_sdi_hand_computed(self):
+        m = self.E.metrics_sentsplit_v1(self.hand_rows(), self.proto(n_resamples=50))
+        self.assertEqual((m["wer"]["S"], m["wer"]["D"], m["wer"]["I"], m["wer"]["N_ref"]), (1, 1, 1, 8))
+        self.assertEqual(m["wer"]["wer"], 37.5)
+        self.assertEqual(m["wer"]["wer_exact"], 37.5)
+        self.assertEqual((m["wer"]["sub_rate"], m["wer"]["del_rate"], m["wer"]["ins_rate"]), (12.5, 12.5, 12.5))
+        self.assertEqual(m["n_clips"], 3)
+        bad = self.hand_rows()
+        bad[0]["S"] = 0  # per-sample S/D/I must add up to compute_wer
+        with self.assertRaises(self.E.EvalError):
+            self.E.metrics_sentsplit_v1(bad, self.proto(n_resamples=5))
+
+    def test_bleu_points_equal_sacrebleu_defaults(self):
+        import sacrebleu
+        rows = self.hand_rows()
+        m = self.E.metrics_sentsplit_v1(rows, self.proto(n_resamples=5))
+        refs = [r["reference"] for r in rows]
+        self.assertEqual(m["bleu_mode_a"]["score"], sacrebleu.corpus_bleu([r["mode_a_output"] for r in rows], [refs]).score)
+        self.assertEqual(m["bleu_mode_b"]["score"], sacrebleu.corpus_bleu([r["mode_b_output"] for r in rows], [refs]).score)
+        self.assertIn("tok:13a", m["bleu_mode_a"]["signature"])
+        self.assertIn("smooth:exp", m["bleu_mode_a"]["signature"])
+        self.assertAlmostEqual(m["delta"]["score"], m["bleu_mode_a"]["score"] - m["bleu_mode_b"]["score"])
+
+    def test_paired_bootstrap_deterministic_and_reads_seed(self):
+        import numpy as np
+        rows = self.hand_rows()
+        a = self.E.metrics_sentsplit_v1(rows, self.proto(n_resamples=40, seed=42))
+        b = self.E.metrics_sentsplit_v1(rows, self.proto(n_resamples=40, seed=42))
+        c = self.E.metrics_sentsplit_v1(rows, self.proto(n_resamples=40, seed=7))
+        self.assertEqual(a, b)
+        self.assertEqual(c["bootstrap"]["seed"], 7)
+        self.assertEqual(c["bootstrap"]["n_resamples"], 40)
+        # paired: ONE RandomState(seed) stream, the same idx per resample for WER and both BLEU scores; reproduced
+        # here independently for seed 42 and seed 7 (the seed / B are read from the protocol)
+        import sacrebleu
+        S = np.array([1, 0, 0]); D = np.array([0, 1, 0]); I = np.array([0, 0, 1]); N = np.array([3, 3, 2])
+        refs = [r["reference"] for r in rows]
+        ha = [r["mode_a_output"] for r in rows]
+        hb = [r["mode_b_output"] for r in rows]
+        for seed, m in ((42, a), (7, c)):
+            rng = np.random.RandomState(seed)
+            w, ba, dl = [], [], []
+            for _ in range(40):
+                idx = rng.choice(3, 3, replace=True)
+                w.append((S[idx].sum() + D[idx].sum() + I[idx].sum()) / N[idx].sum() * 100.0)
+                rr = [refs[i] for i in idx]
+                sa = sacrebleu.corpus_bleu([ha[i] for i in idx], [rr]).score
+                sb = sacrebleu.corpus_bleu([hb[i] for i in idx], [rr]).score
+                ba.append(sa)
+                dl.append(sa - sb)
+            self.assertEqual(m["wer"]["ci_95"], [float(x) for x in np.percentile(w, [2.5, 97.5])])
+            self.assertEqual(m["bleu_mode_a"]["ci_95"], [float(x) for x in np.percentile(ba, [2.5, 97.5])])
+            self.assertEqual(m["delta"]["ci_95"], [float(x) for x in np.percentile(dl, [2.5, 97.5])])
+        d = self.E.metrics_sentsplit_v1(rows, self.proto(n_resamples=0 + 7, seed=42))
+        self.assertEqual(d["bootstrap"]["n_resamples"], 7)
+
+    def test_repro_v2_reproduces_old_audit_algorithm(self):
+        # Run the ORIGINAL code of reports/audit_round2/run_v2_cslr_bootstrap.py (bootstrap + WER part, read from the
+        # file) on synthetic predictions and compare with metrics_repro_v2.
+        import numpy as np
+        import sacrebleu
+        with open(os.path.join(ROOT, "reports", "audit_round2", "run_v2_cslr_bootstrap.py"), encoding="utf-8") as f:
+            src = f.read()
+        start = src.index("# 2. Bootstrap 95% CI")
+        end = src.index("v2_results = {")
+        rng = np.random.RandomState(3)
+        words = ["TÔI", "ĐI", "HỌC", "BẠN", "ĂN", "CƠM", "NHÀ"]
+        texts = ["tôi đi học.", "bạn ăn cơm chưa?", "nhà tôi ở xa.", "hôm nay trời đẹp.", "tôi không biết."]
+        s06 = []
+        for i in range(1, 41):
+            sid = f"SENT{(i * 7) % 300 + 1:03d}" if i <= 25 else f"SENT{270 + i - 25:03d}"
+            ref = [words[k] for k in rng.randint(0, 7, size=rng.randint(2, 6))]
+            pred = [w if rng.rand() > 0.3 else words[rng.randint(0, 7)] for w in ref][: max(1, len(ref) - rng.randint(0, 2))]
+            s06.append({"sample_id": f"{sid}_S06_R01_F", "sentence_id": sid, "ref_gloss_list": ref, "pred_gloss_list": pred,
+                        "translation": texts[i % 5]})
+        unseen = [s for s in s06 if s["sentence_id"] >= "SENT271"]
+        refs = [t.lower() for t in (s["translation"] for s in unseen)]
+        a_preds = [texts[(k + 1) % 5] if k % 3 == 0 else refs[k] for k in range(len(unseen))]
+        b_preds = [texts[(k + 2) % 5] if k % 2 == 0 else refs[k] for k in range(len(unseen))]
+        g = {"np": np, "s06_samples": s06, "unseen_samples": unseen, "unseen_refs": refs, "mode_a_preds": a_preds,
+             "mode_b_preds": b_preds}
+        with contextlib.redirect_stdout(io.StringIO()):
+            exec(compile(src[start:end], "run_v2_cslr_bootstrap.py", "exec"), g)
+        rows = []
+        k = 0
+        for s in s06:
+            r = {"sample_id": s["sample_id"], "sentence_id": s["sentence_id"], "ref_gloss_raw": s["ref_gloss_list"],
+                 "pred_gloss": s["pred_gloss_list"]}
+            if s["sentence_id"] >= "SENT271":
+                r.update({"reference": refs[k], "mode_a_output": a_preds[k], "mode_b_output": b_preds[k]})
+                k += 1
+            rows.append(r)
+        p = self.E.protocol_template("repro_v2")
+        m = self.E.metrics_repro_v2(rows, p)
+        self.assertEqual(m["n_unseen"], 15)
+        self.assertEqual(m["bleu_mode_a"]["ci_95"], [float(x) for x in g["ci_a"]])
+        self.assertEqual(m["bleu_mode_b"]["ci_95"], [float(x) for x in g["ci_b"]])
+        self.assertEqual(m["delta"]["ci_95"], [float(x) for x in g["ci_diff"]])
+        self.assertEqual(m["wer_300"]["score"], float(g["base_wer"]))
+        self.assertEqual(m["wer_300"]["ci_95"], [float(x) for x in g["ci_wer"]])
+        self.assertEqual(m["bleu_mode_a"]["score"], sacrebleu.corpus_bleu(a_preds, [refs]).score)
+
+    # --- full run with fakes -----------------------------------------------------------------------------------------
+    def build_inputs(self, protocol_overrides=None):
+        import numpy as np
+        import torch
+        from src.data import sentence_split as SS
+        E = self.E
+        items = ss_canonical()
+        canon = self.p("data", "dataset_canonical.json")
+        write_canonical(canon, items)
+        split_path = self.p("split.json")
+        write_bytes(split_path, SS.split_file_bytes(SS.make_split_dict(items, seed=42)))
+        split = SS.load_sentence_split(split_path)
+        kp = self.p("data", "keypoints_frontal")
+        os.makedirs(kp)
+        for it in items:
+            if it["signer_id"] == "S06" and it["sentence_id"] in split.test_ids:
+                np.save(os.path.join(kp, it["id"] + ".npy"), np.zeros((4, 411), dtype=np.float32))
+        tokens, _, _ = V.build_tokens_train_only(canon, split_path, "train")
+        vocab = self.p("vocab.txt")
+        write_bytes(vocab, "".join(t + "\n" for t in tokens).encode("utf-8"))
+        with open(vocab, "rb") as f:
+            vocab_sha = sha(f.read())
+        ckpt = self.p("ckpt", "cslr_best.pt")
+        os.makedirs(os.path.dirname(ckpt))
+        torch.save({"gloss_vocab_hash": vocab_sha[:16], "config": {"sentence_split_sha256": split.sha256}}, ckpt)
+        vit5 = self.p("vit5", "best_model")
+        write_bytes(os.path.join(vit5, "config.json"), b'{"fake": true}\n')
+        write_bytes(os.path.join(vit5, "spiece.model"), b"\x00fake")
+        with open(ckpt, "rb") as f:
+            ckpt_sha = sha(f.read())
+        files = [{"rel_path": "k2/cslr_best.pt", "sha256": ckpt_sha},
+                 {"rel_path": "vit5_stage2/best_model/config.json", "sha256": sha(b'{"fake": true}\n')},
+                 {"rel_path": "vit5_stage2/best_model/spiece.model", "sha256": sha(b"\x00fake")}]
+        manifest = self.p("manifest.json")
+        write_bytes(manifest, json.dumps({"files": files}).encode("utf-8"))
+        proto = E.protocol_template("sentsplit_v1")
+        proto["inputs"] = {"canonical_json": canon, "keypoints_dir": kp, "vocab": vocab, "cslr_checkpoint": ckpt,
+                           "vit5_model_dir": vit5}
+        proto["bootstrap"]["n_resamples"] = 30
+        for (sec, key), val in (protocol_overrides or {}).items():
+            proto[sec][key] = val
+        prereg = {"evaluation_protocol": proto, "sentence_split": {"path": split_path, "sha256": split.sha256},
+                  "libs_local": {"sacrebleu": E.pkg_version("sacrebleu"), "numpy": E.pkg_version("numpy")},
+                  "vocab": {"sha256": vocab_sha},
+                  "inputs": {"dataset_canonical": {"path": canon, "lf_sha256": D.lf_sha256(canon)}}}
+        prereg_path = self.p("reports", "preregistration.json")
+        write_bytes(prereg_path, json.dumps(prereg, ensure_ascii=False).encode("utf-8"))
+        self.split, self.items = split, items
+        return prereg_path, manifest, prereg
+
+    def fake_heavy(self, git=None):
+        from unittest import mock
+        E = self.E
+        calls = {"cslr": 0, "vit5": 0}
+
+        def cslr(ckpt, vocab, dataset, protocol):
+            calls["cslr"] += 1
+            out = {}
+            for k, s in enumerate(dataset.samples):
+                ref = [g.strip() for g in s["gloss_sequence"] if g.strip()]
+                out[s["id"]] = ref if k % 3 else ref[:1] + ["<unk>"]
+            return out
+
+        def vit5(model_dir, sources, protocol):
+            calls["vit5"] += 1
+            return [f"câu {src}." if i % 4 else "khác." for i, src in enumerate(sources)]
+
+        state = git or {"head": "f" * 40, "code_dirty": False, "dirty_lines": [], "prereg_commit": "e" * 40,
+                        "prereg_n_commits": 1, "prereg_is_ancestor": True}
+        return calls, (mock.patch.object(E, "cslr_predict", cslr), mock.patch.object(E, "vit5_generate", vit5),
+                       mock.patch.object(E, "git_state", lambda p: dict(state)))
+
+    def run_main(self, argv, git=None):
+        calls, patches = self.fake_heavy(git)
+        out, err = io.StringIO(), io.StringIO()
+        with patches[0], patches[1], patches[2], contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            rc = self.E.main(argv)
+        return rc, calls, out.getvalue(), err.getvalue()
+
+    def argv(self, prereg, manifest, out):
+        return ["--prereg", prereg, "--protocol", "sentsplit_v1", "--manifest", manifest, "--out", out]
+
+    def test_full_run_once_json_contents(self):
+        prereg, manifest, pr = self.build_inputs()
+        out = self.p("reports", "eval", "test_eval.json")
+        rc, calls, log, err = self.run_main(self.argv(prereg, manifest, out))
+        self.assertEqual(rc, 0, err)
+        self.assertEqual(calls, {"cslr": 1, "vit5": 2})
+        self.assertEqual(log.count("EVAL RUN "), 1)
+        with open(out, encoding="utf-8") as f:
+            r = json.load(f)
+        self.assertEqual(len(r["per_sample"]), 30)
+        self.assertEqual(sorted(s["sentence_id"] for s in r["per_sample"]), list(self.split.test_ids))
+        self.assertEqual({s["signer_id"] for s in r["per_sample"]}, {"S06"})
+        self.assertEqual(r["protocol"], pr["evaluation_protocol"])
+        for k in ("command", "git_commit", "code_dirty", "generated_at_utc", "python", "torch", "transformers",
+                  "sacrebleu", "numpy", "device"):
+            self.assertIn(k, r["generated_by"])
+        self.assertIs(r["generated_by"]["code_dirty"], False)
+        self.assertEqual(r["inputs"]["sentence_split_sha256"], self.split.sha256)
+        self.assertEqual(set(r["inputs"]["vit5_model_files_sha256"]), {"config.json", "spiece.model"})
+        m = r["metrics"]
+        for k in ("S", "D", "I", "N_ref", "ci_95"):
+            self.assertIn(k, m["wer"])
+        for k in ("bleu_mode_a", "bleu_mode_b"):
+            self.assertTrue({"score", "ci_95", "signature"} <= set(m[k]))
+        self.assertTrue({"score", "ci_95", "ci_contains_zero"} <= set(m["delta"]))
+        c = r["comparison_to_old"]
+        self.assertTrue(c["items"]["bleu_mode_a"]["old_source"].startswith("reports/audit_round2/v2_cslr_reliability.json:"))
+        self.assertIn("old_point_inside_new_ci", c["items"]["bleu_mode_b"])
+        self.assertTrue(any("NOT chosen at random" in x for x in r["limitations"]))
+        # second run into the same target -> 2, nothing recomputed
+        rc2, calls2, _, _ = self.run_main(self.argv(prereg, manifest, out))
+        self.assertEqual((rc2, calls2), (2, {"cslr": 0, "vit5": 0}))
+        # recompute from the saved per-sample predictions -> identical metrics, no model call
+        rc3, calls3, log3, _ = self.run_main(["--recompute-from", out, "--out", self.p("recompute.json")])
+        self.assertEqual((rc3, calls3), (0, {"cslr": 0, "vit5": 0}))
+        with open(self.p("recompute.json"), encoding="utf-8") as f:
+            rr = json.load(f)
+        self.assertTrue(rr["identical"])
+        self.assertEqual(rr["metrics"], r["metrics"])
+        # tampered per-sample -> recompute differs -> 3
+        r["per_sample"][0]["mode_b_output"] = "hoàn toàn khác."
+        tampered = self.p("tampered.json")
+        write_bytes(tampered, json.dumps(r, ensure_ascii=False).encode("utf-8"))
+        rc4, _, _, _ = self.run_main(["--recompute-from", tampered, "--out", self.p("recompute2.json")])
+        self.assertEqual(rc4, 3)
+
+    def test_refusals_before_any_model_call(self):
+        prereg, manifest, pr = self.build_inputs()
+        out = self.p("reports", "eval", "x.json")
+        clean = {"head": "f" * 40, "code_dirty": False, "dirty_lines": [], "prereg_commit": "e" * 40,
+                 "prereg_n_commits": 1, "prereg_is_ancestor": True}
+        for git, why in (({**clean, "code_dirty": True, "dirty_lines": [" M src/x.py"]}, "dirty"),
+                         ({**clean, "prereg_is_ancestor": False}, "not ancestor"),
+                         ({**clean, "prereg_commit": None}, "not committed"),
+                         ({**clean, "prereg_n_commits": 2}, "changed after commit")):
+            rc, calls, _, _ = self.run_main(self.argv(prereg, manifest, out), git=git)
+            self.assertEqual((rc, calls), (2, {"cslr": 0, "vit5": 0}), why)
+        self.assertFalse(os.path.exists(out))
+        # library version != preregistration -> 2
+        bad = dict(pr, libs_local={"sacrebleu": "0.0.0", "numpy": pr["libs_local"]["numpy"]})
+        p2 = self.p("reports", "prereg_badlib.json")
+        write_bytes(p2, json.dumps(bad).encode("utf-8"))
+        rc, calls, _, _ = self.run_main(self.argv(p2, manifest, out))
+        self.assertEqual((rc, calls), (2, {"cslr": 0, "vit5": 0}))
+        # vocab digest != preregistration -> 3
+        bad = dict(pr, vocab={"sha256": "0" * 64})
+        p3 = self.p("reports", "prereg_badvocab.json")
+        write_bytes(p3, json.dumps(bad).encode("utf-8"))
+        rc, calls, _, _ = self.run_main(self.argv(p3, manifest, out))
+        self.assertEqual((rc, calls), (3, {"cslr": 0, "vit5": 0}))
+        # model file not in the manifest -> 3
+        m2 = self.p("manifest_other.json")
+        write_bytes(m2, json.dumps({"files": [{"rel_path": "cslr_best.pt", "sha256": "0" * 64}]}).encode("utf-8"))
+        rc, calls, _, _ = self.run_main(self.argv(prereg, m2, out))
+        self.assertEqual((rc, calls), (3, {"cslr": 0, "vit5": 0}))
+        # missing keypoints of one test clip -> 3 (never dropped)
+        kp = pr["evaluation_protocol"]["inputs"]["keypoints_dir"]
+        victim = sorted(os.listdir(kp))[0]
+        os.rename(os.path.join(kp, victim), os.path.join(self.tmp, victim))
+        rc, calls, _, err = self.run_main(self.argv(prereg, manifest, out))
+        self.assertEqual((rc, calls), (3, {"cslr": 0, "vit5": 0}))
+        self.assertIn("missing keypoints", err)
+        self.assertFalse(os.path.exists(out))
+
+    def test_cli_argument_rules(self):
+        self.assertEqual(self.E.main(["--out", self.p("o.json")]), 2)
+        self.assertEqual(self.E.main(["--prereg", "p.json", "--protocol", "sentsplit_v1", "--out", self.p("o.json")]), 2)
+        self.assertEqual(self.E.main(["--recompute-from", "x.json", "--protocol", "sentsplit_v1",
+                                      "--out", self.p("o.json")]), 2)
+
+    def test_heavy_steps_run_on_tiny_random_models(self):
+        # The real CSLR / ViT5 steps on TINY randomly initialised models built here (nothing downloaded, nothing
+        # trained): catches wiring errors (model kwargs from the checkpoint config, collate, decode, generate) before
+        # the one real run, where an error after the predictions would stop plan 13 (§7.2-7).
+        import numpy as np
+        import torch
+        from tokenizers import Tokenizer, models, pre_tokenizers
+        from transformers import PreTrainedTokenizerFast, T5Config, T5ForConditionalGeneration
+        from src.data import sentence_split as SS
+        from src.data.vsl_gh_dataset import VSLGHContinuousDataset, VSLGlossVocabulary
+        from src.models.cslr_stgcn_bigru import STGCNBiGRU_CSLR
+        items = ss_canonical()
+        canon = self.p("data", "dataset_canonical.json")
+        write_canonical(canon, items)
+        split_path = self.p("split.json")
+        write_bytes(split_path, SS.split_file_bytes(SS.make_split_dict(items, seed=42)))
+        kp = self.p("data", "keypoints_frontal")
+        os.makedirs(kp)
+        rng = np.random.RandomState(0)
+        test_items = [it for it in items if it["signer_id"] == "S06" and it["sentence_id"] >= "SENT271"]
+        for it in test_items:
+            np.save(os.path.join(kp, it["id"] + ".npy"), rng.rand(20, 411).astype(np.float32))
+        tokens, _, _ = V.build_tokens_train_only(canon, split_path, "train")
+        vocab = VSLGlossVocabulary(tokens=tokens)
+        torch.manual_seed(0)
+        cfg = {"hidden_size": 16, "num_gru_layers": 1, "dropout": 0.0}
+        proto = self.E.protocol_template("sentsplit_v1")
+        model = STGCNBiGRU_CSLR(num_classes=len(vocab), **proto["cslr"]["model"]["fixed"], **cfg)
+        ckpt = {"config": cfg, "model_state_dict": model.state_dict()}
+        ds = VSLGHContinuousDataset(canonical_json=canon, keypoints_dir=kp, split="test", vocabulary=vocab,
+                                    sentence_split=split_path, **proto["cslr"]["dataset"])
+        preds = self.E.cslr_predict(ckpt, vocab, ds, proto)
+        self.assertEqual(sorted(preds), sorted(it["id"] for it in test_items))
+        self.assertTrue(all(isinstance(g, str) for v in preds.values() for g in v))
+        # tiny seq2seq: word-level fast tokenizer + 1-layer T5 with random weights
+        words = ["<pad>", "</s>", "<unk>", "tôi", "đi", "học", "câu", "a", "b"]
+        tk = Tokenizer(models.WordLevel({w: i for i, w in enumerate(words)}, unk_token="<unk>"))
+        tk.pre_tokenizer = pre_tokenizers.Whitespace()
+        fast = PreTrainedTokenizerFast(tokenizer_object=tk, pad_token="<pad>", eos_token="</s>", unk_token="<unk>")
+        mdir = self.p("tiny_t5")
+        fast.save_pretrained(mdir)
+        t5 = T5ForConditionalGeneration(T5Config(vocab_size=len(words), d_model=8, d_ff=16, d_kv=4, num_layers=1,
+                                                 num_heads=2, pad_token_id=0, eos_token_id=1,
+                                                 decoder_start_token_id=0))
+        t5.save_pretrained(mdir)
+        outs = self.E.vit5_generate(mdir, ["tôi đi học", "a b", "câu"], proto)
+        self.assertEqual(len(outs), 3)
+        self.assertTrue(all(isinstance(o, str) for o in outs))
+
+    def test_git_state_on_a_tracked_file(self):
+        # read-only git queries on the committed split file (exactly one commit, ancestor of HEAD — plan 13 AC11/AC4)
+        gs = self.E.git_state(os.path.join(ROOT, "configs", "vslgh_sentence_split_v1.json"))
+        self.assertEqual(len(gs["head"]), 40)
+        self.assertEqual(gs["prereg_n_commits"], 1)
+        self.assertTrue(gs["prereg_is_ancestor"])
+        self.assertIsInstance(gs["code_dirty"], bool)
+
+    def test_no_hand_typed_old_numbers_in_source(self):
+        with open(os.path.join(ROOT, "scripts", "eval_sentsplit.py"), encoding="utf-8") as f:
+            src = f.read()
+        body = src[src.index('"""', 3) + 3:]  # skip the module docstring
+        for number in ("27.98", "23.18", "32.8", "17.6", "38.39", "13.62", "33.7"):
+            self.assertNotIn(number, body, number)
+
+
 if __name__ == "__main__":
     unittest.main()

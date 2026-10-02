@@ -287,11 +287,54 @@ Tệp tạm: `_work/_plan13_tmp/`.
   `tests.test_sentence_split_guard tests.test_backend_source_guard` → `Ran 63` `OK (skipped=1)` (skip = G2 clean10k chờ B11; `B4c_guard_tests.log`);
   `git diff 0373a90 -- tests/test_retrain_tools.py | grep -c "^-[^-]"` → 0.
 
+### B4d [LS1] — `scripts/eval_sentsplit.py` (§3.12 + `repro_v2`) — chỉ dữ liệu giả, KHÔNG chạy trên dữ liệu thật (lượt 3). Log: `_work/_plan13_tmp/B4d_*`
+- Chỉ THÊM file mới (không sửa symbol có sẵn; chỉ gọi `compute_wer`, `levenshtein_distance`, `ctc_greedy_decode`, `tokens_to_words`,
+  `select_vslgh_samples`, `VSLGHContinuousDataset`) ⇒ không cần impact sửa.
+- Test viết trước (`TestEvalSentsplit`): `B4d_test_red.log` — `ModuleNotFoundError: No module named 'eval_sentsplit'` (FAILED errors=1); mã cất ở
+  `_work/_plan13_tmp/b4d_edited/` lúc chạy đỏ. Sửa test của chính lượt này: 1 khẳng định yếu (`assertNotEqual` CI seed 42 vs 7 trùng nhau với 3 dòng × 40
+  lần rút) thay bằng tái dựng độc lập luồng `RandomState` cho cả seed 42 và 7 (WER, BLEU A, delta) — `B4d_test_green1.log` → `green2.log`.
+- Script: `protocol_template("sentsplit_v1"|"repro_v2")` = dạng code của §3.12/§0.7 (B5 chép vào preregistration); khi chạy, MỌI tham số đọc từ
+  `preregistration.evaluation_protocol[_repro_v2]`, `check_protocol` từ chối trường thuật toán không cài đặt (rng, interpolation, paired, lớp BLEU, CPU,
+  fallback stage1). Hợp đồng khóa preregistration mà B5 phải ghi: `evaluation_protocol`, `evaluation_protocol_repro_v2`, `sentence_split{path, sha256}`,
+  `libs_local{sacrebleu, numpy}`, `vocab{sha256}`, `vocab_full_reference{sha256}`, tùy chọn `inputs{…: {path, sha256|lf_sha256}}`.
+  Chạy một lần: đích có → 2; `git status --porcelain -- src scripts configs train.py <prereg>` bẩn → 2; commit thêm preregistration không phải tổ tiên HEAD
+  hoặc file có > 1 commit → 2; phiên bản `sacrebleu`/`numpy` ≠ preregistration → 2; thiếu đầu vào → 2; sha256 split/vocab ≠ preregistration, sha256
+  `cslr_best.pt` + từng file ViT5 không có trong `--manifest` (JSON manifest hoặc SHA256SUMS, khớp theo tên gốc), `gloss_vocab_hash` checkpoint ≠ vocab,
+  `config.sentence_split_sha256` ≠ split, số clip ≠ `expected_n`, người ký ≠ S06, câu ≠ T, thiếu keypoint (không bỏ clip) → 3 — TẤT CẢ trước khi nạp
+  clip test; in đúng 1 dòng `EVAL RUN …`; in `PER_SAMPLE …` (dự đoán) TRƯỚC khi tính số (lỗi sau đó không mất dự đoán — §7.2-7). WER chính =
+  `compute_wer(pred, gloss THÔ)` + S/D/I/tỉ lệ/N_ref/N_hyp; phụ `wer_vocab_encoded`, `oov`; BLEU = `sacrebleu.metrics.BLEU(tokenize, smooth_method,
+  lowercase)` + `signature`; CI = bootstrap GHÉP CẶP một `RandomState(seed)`, cùng `idx` cho WER/S/D/I/BLEU A/BLEU B/delta, `numpy.percentile` (linear);
+  `ci_contains_zero` (mô tả). `comparison_to_old` đọc số cũ TỪ `reports/audit_round2/v2_cslr_reliability.json` (kèm sha256 + `file:dòng`), không gõ tay
+  (test quét nguồn không chứa 27.98/23.18/32.8/…); `limitations` theo §0.2/R7/R10/R13/R15. `--recompute-from` tính lại `metrics` từ `per_sample`
+  (không chạy model) → `identical` + exit 0, khác → 3. `repro_v2` = thuật toán `run_v2_cslr_bootstrap.py:29-133` (RNG toàn cục, thứ tự rút, DP edit).
+- Test (12): giao thức == §3.12 (B=1000, seed 42, RandomState, [2.5, 97.5] linear, ghép cặp, 13a/exp/không lowercase, beams 4, max_length 64/128, CPU,
+  bs 8, n=30); từ chối giao thức không cài đặt; S/D/I tính tay 3 cặp (S1, D1, I1, N_ref 8 → WER 37.5); BLEU điểm == `sacrebleu.corpus_bleu` mặc định;
+  bootstrap tất định + đọc seed/B từ giao thức + tái dựng độc lập luồng ghép cặp; `repro_v2` so với CHÍNH mã gốc `run_v2_cslr_bootstrap.py` (đoạn
+  "# 2. Bootstrap…" → trước `v2_results`, đọc từ file, `exec` trên dữ liệu giả) → CI A/B/delta, WER, CI WER bằng hệt; chạy đầy đủ với CSLR/ViT5 giả
+  (30 clip S06 × T, JSON đủ khóa AC12, chạy lần 2 → 2 và 0 lời gọi model, `--recompute-from` bằng hệt và 0 lời gọi model, `per_sample` bị sửa → 3);
+  từ chối trước mọi lời gọi model (bẩn, không tổ tiên, chưa commit, > 1 commit, lệch phiên bản, lệch vocab, ngoài manifest, thiếu keypoint);
+  luật tham số CLI; bước nặng thật (`cslr_predict`, `vit5_generate`) chạy trên model NGẪU NHIÊN TÍ HON dựng trong test (không tải, không train) để bắt
+  lỗi nối dây trước lần chạy thật; `git_state` trên file split đã commit (1 commit, tổ tiên HEAD).
+- Test: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_retrain_tools tests.test_sentence_split_guard` → `Ran 115 tests` `OK (skipped=1)`
+  (`B4d_test_green.log`; `test_retrain_tools` 76 test, 0 skip; skip duy nhất = G2 clean10k chờ B11); `git diff 0373a90 -- tests/test_retrain_tools.py |
+  grep -c "^-[^-]"` → 0.
+
+### Hồi quy sau B4c (lượt 3)
+- AC2-06 (lệnh nguyên văn `docs/plans/06-viec5-frontend.md:1028`) trên cây `a272df6` (B4c đã commit; B4d chỉ thêm file không thuộc 31 module):
+  `Ran 518 tests in 698.018s` `FAILED (errors=1, skipped=1)` (`_work/_plan13_tmp/B4_ac2_31.log`); so theo module với `_work/_plan12_tmp/ac2_31_B9.log`
+  (`B4_ac2_compare.txt`): 31/31 module GIỐNG HỆT mốc; non-ok y mốc (ERROR setUpClass `test_translation_core` — thiếu ViT5; skip `stgcn_best.pt not found`).
+  `test_hand_landmarks_ws` 9/0/0/0 lần này (chập chờn đã ghi ở B2b, không gặp lại). Dòng `[scope] serving=45 main=56` == B2b.
+- Guard: `tests.test_sentence_split_guard` 39 test, `OK (skipped=1)` — G2 `test_vit5_stage1_clean10k_no_heldout_match` VẪN skip (file cleaned chưa đặt vào
+  `data/external/parallel_text/`, đặt ở B11). Chạy cùng guard với `VSLT_GUARD_CLEAN10K=<bản cleaned trong _work>` → `Ran 39` `OK`, 0 skip (`B3_guard_with_work_cleaned.log`).
+- Ngoài phạm vi, không gặp lại / không sửa: `tests.data.test_vsl_gh_dataset` test_19 (dữ liệu khôi phục thiếu `annotation_source`) — không chạy lại ở lượt này.
+
 ## Đang làm
-- B4a–B4d (lượt 3).
+- (không) — lượt 3 (B3, B4a–B4d) xong; dừng, báo orchestrator. B5 (đăng ký trước + commit ghim + push) giao lượt sau.
 
 ## Còn lại
-- B4a–B4d (lượt 3), B5–B14 (lượt sau).
+- B5–B14 (lượt sau). Ghi chú cho B5: `retrain_preregister.py` phải ghi đúng các khóa mà `eval_sentsplit.py` đọc (mục B4d); `protocol_template()` là nguồn
+  của `evaluation_protocol`; số Clean10k sau loại (6423/713, loại 4) và CSLR/ViT5 (2880/30, 240/30) phải được TÍNH LẠI bằng code ở B5 (B3/B4c chỉ là số
+  kiểm tra trước); file Tier 1 văn bản so `lf_sha256` (B3).
 
 ## Sổ GPU (kế hoạch 13)
 | Job | Phiên (phút, từ env.json) | Ghi chú |
@@ -316,3 +359,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B4b | `detect-changes --scope staged` (`A scripts/archive_retrain_kaggle.py`, `M tests/test_retrain_tools.py`), sau `analyze --index-only` | "Diff touched 2 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B4b.txt`) — index chưa có symbol của file mới / phần test thêm ⇒ KHÔNG phải kết quả sạch; đối chiếu: `git diff --cached --name-status` → `A` + `M` (test chỉ thêm dòng, 0 dòng xóa); file mới chỉ import `archive_step4_kaggle`/`archive_private_kaggle` (không sửa); `git grep archive_retrain_kaggle -- src backend scripts kaggle` → chỉ chính file ⇒ không caller có sẵn. Sau commit: `detect-changes --scope compare` (ghi ở dòng kế) |
 | B4b (sau commit 7ecaa25) | `analyze --index-only` rồi `detect-changes --scope compare --base-ref HEAD~1` | "Changes: 6 files, 79 symbols / Affected processes: 202 / Risk level: critical" — symbol đổi = các hằng/hàm của `scripts/archive_retrain_kaggle.py` (mới) + `Section … 13-progress`; luồng liệt kê (`Run_harmonized → …`, `Main → …`) là nối nhầm qua mục markdown/`main` như B0/B2; "6 files" gồm cả thay đổi chưa commit của cây làm việc (3 ` D` người dùng) (`dc_B4b_compare.txt`) |
 | B4c | `detect-changes --scope staged` (5 file M, sau `analyze --index-only`) | "Changes: 5 files, 25 symbols / Affected processes: 16 / Risk level: critical" — symbol: hàm/hằng mới + `train_stage1`, `train_stage2`, `run_smoke_test`, `train_cslr`…; luồng: `Train_stage1 → _words | _normalizers | L2_text | Heldout_ids | _id_list | Split_file_sha256`, `Cslr_leak_check → Ids`, `Train_stage2 → Signers | _id_list`, `Run_smoke_test → Levenshtein_distance` … — đều trong chính 3 script train gọi mô-đun split dùng chung; không luồng serving/backend; hành vi mặc định khóa bằng 3 test xanh trên cả mã cũ và mới (`dc_B4c.txt`) |
+| B4d | `detect-changes --scope staged` (`A scripts/eval_sentsplit.py`, `M tests/test_retrain_tools.py`), sau `analyze --index-only` | "Diff touched 2 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B4d.txt`) — như B4b: index chưa có symbol của file mới ⇒ KHÔNG phải kết quả sạch; đối chiếu: test chỉ thêm dòng (0 dòng xóa), file mới không được mã nào import (`git grep eval_sentsplit -- src backend kaggle` → 2 dòng, đều là chuỗi/chú thích trong `src/training/train_cslr.py:82,731` — dòng `TEST DEFERRED`, không import). Sau commit: `detect-changes --scope compare` (dòng kế) |
