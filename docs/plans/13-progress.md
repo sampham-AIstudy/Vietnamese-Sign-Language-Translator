@@ -413,9 +413,11 @@ Tệp tạm: `_work/_plan13_tmp/`.
 - Commit ghim = commit B5 cuối (chứa mã + preregistration + kernel + 13-progress), đã push lên `origin/feat/vslt-complete`; hash ghi ở mục
   "Commit ghim" dưới (commit sau, chỉ sửa 13-progress). Kernel giữ `PIN_COMMIT = None` ở commit ghim (một commit không chứa được hash của chính
   nó); B7/B8 đặt `PIN_COMMIT` = hash ghim trong commit đẩy kernel, kernel kiểm file đang chạy == file ở commit ghim trừ dòng đó.
+- **Commit ghim B5: `0908ef3e9de4847023e879896c99975d05bc2070`** (`0908ef3`); `git ls-remote origin refs/heads/feat/vslt-complete` → `0908ef3e9de4847023e879896c99975d05bc2070` (== ghim, đã push).
+  Tổ tiên: `4f714c6` (Lần sửa 1) ⊂ `0a18183` (split) ⊂ `ea12b44` (preregistration) ⊂ `0908ef3` (ghim).
 
 ## Đang làm
-- Lượt 5 (mốc HEAD `bf40a1d`): B5 XONG (chờ ghi hash ghim); tiếp B6 (lưu trữ đầu vào Tier 1). Mục 5 review giữa (1.B) orchestrator HOÃN sang backlog — không làm. KHÔNG đẩy kernel nào ở lượt này (B7 trở đi lượt sau).
+- Lượt 5 (mốc HEAD `bf40a1d`): B5 XONG (ghim `0908ef3`); tiếp B6 (lưu trữ đầu vào Tier 1). Mục 5 review giữa (1.B) orchestrator HOÃN sang backlog — không làm. KHÔNG đẩy kernel nào ở lượt này (B7 trở đi lượt sau).
 
 ## Còn lại
 - B6–B14. (Ghi chú cũ cho B5 — đã làm: `retrain_preregister.py` phải ghi đúng các khóa mà `eval_sentsplit.py` đọc (mục B4d); `protocol_template()` là nguồn
@@ -454,3 +456,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B5a (WIP 86927ef) | `analyze --index-only` rồi `detect-changes --scope staged` (`A scripts/retrain_preregister.py`, `M tests/test_retrain_tools.py` chỉ thêm) | "Changes: 2 files, 88 symbols / Affected processes: 15 / Risk level: high" — luồng `Measure_k2 → _id_list | Split_file_sha256 | Ids | Signers | From_canonical_dataset | Collect_glosses`, `Jobs_block → Lines_of | Need_file`, `Main → Protocol_template` … — đều là hàm của script MỚI gọi mô-đun dùng chung (không symbol có sẵn nào bị sửa; `git diff --cached --diff-filter=M` chỉ file test, 0 dòng xóa) (`dc_B5a.txt`) |
 | B5b (WIP 2cb02b3) | như trên (4 file `A` kaggle/vsl-retrain-*, `M` test chỉ thêm) | "Changes: 5 files, 105 symbols / Affected processes: 23 / Risk level: critical" — luồng `Measure_and_compare → …` (kernel gọi `retrain_preregister`), `Main → _kill | Log | Norm` … — chỉ trong 2 file kernel MỚI; không file mã nào import kernel (`git grep retrain_cslr_vit5_kernel\|retrain_stgcn_kernel -- src scripts backend` → 0) (`dc_B5b.txt`) |
 | B5c (ea12b44) | `detect-changes --scope staged` (`A reports/retrain_2026-10-02/preregistration.json`) | "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." — file JSON dữ liệu, không symbol; KHÔNG phải kết quả sạch; đối chiếu: chỉ 1 file `A`, không mã nào import (`dc_B5c.txt`) |
+| B5d (0908ef3) | `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +63/−3) | "Changes: 1 files, 1 symbols / Affected processes: 196 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B0/B2/B3); 3 dòng "xóa" = dòng "Đang làm"/"Còn lại" được thay (`dc_B5d.txt`) |
