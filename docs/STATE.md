@@ -261,6 +261,15 @@
 - (2026-10-02 16:15) `--source mock` của realtime_demo.py: CHUYỂN bộ sinh khung giả thành fixture chỉ dùng trong tests/ (ngoài phạm vi guard);
   realtime_demo.py không còn --source mock.
 
+- (2026-10-03 02:40) Dọn dẹp: GIỮ frontend/src/components/RealtimeStream.jsx và configs/alphabet_config.yaml. Đưa vào backlog DỌN DẸP CUỐI: xóa khi grep
+  không còn tham chiếu và test không đổi, MỖI FILE MỘT COMMIT riêng.
+- (2026-10-03 02:40) Đính chính CSLR "unseen / zero leakage" (trả lời câu hỏi cloud A–D (1)):
+  - README: sửa TRỰC TIẾP, bỏ "unseen / zero leakage" cho CSLR, thay bằng "người ký chưa từng thấy, nhưng 300/300 câu đã thấy ở train" kèm số liệu sinh từ JSON;
+    số WER thật trên câu chưa thấy CHỜ kết quả K2 (kế hoạch 13).
+  - reports/PHASE4B_REPORT.md: thêm khối ĐÍNH CHÍNH ở ĐẦU file (có ngày, link tới số đúng), KHÔNG xóa nội dung cũ.
+  - Grep "unseen" / "zero leakage" / "không rò rỉ" toàn repo (EVALUATION, báo cáo, UI) và sửa tương tự.
+  - Thêm test guard: khẳng định "unseen" / "zero leakage" cho CSLR chỉ được phép nếu trỏ tới JSON chứng minh split theo câu.
+
 - (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy" — ĐÃ BỊ THAY bởi quyết định 20:15 ngay dưới.
 
 - (2026-10-02 20:15) LUẬT TẮT MÁY (thay mọi quyết định tắt máy trước đây: 2026-09-29 18:55, 2026-10-01 19:35, 2026-10-01 20:00, 2026-10-02 20:10):
@@ -276,10 +285,14 @@
 - (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
   reports/PHASE4B_REPORT.md:112 ghi "unseen / zero leakage" là sai; mặc định: ghi nhãn đúng, không viết lại báo cáo cũ.
   Có thêm backlog train lại CSLR chia theo câu (tốn GPU Kaggle)? Có lưu checkpoint CSLR/ViT5 lên Kaggle dataset private?
+  → ĐÃ TRẢ LỜI (1): train lại chia câu = kế hoạch 13; đính chính README/báo cáo = quyết định 2026-10-03 02:40.
   (2) Việc C: kiểm archive_name chỉ áp đúng luật cho manifest do script tự sinh (manifest bước 4 không có tiền tố reports/) — giữ hay áp nguyên văn?
   (3) KAGGLE_KEY trong môi trường cloud còn là chữ mẫu — người dùng tự điền (không đưa vào chat/repo).
 
 ## Backlog còn lại (thứ tự)
+0a. (2026-10-03, người dùng) Đính chính CSLR "unseen / zero leakage" + guard — xem quyết định 2026-10-03 02:40. Cần planner (kế hoạch 14).
+    Phần đính chính + guard làm được ngay (không phụ thuộc K2); dòng WER câu chưa thấy điền sau 13 B11b.
+0b. DỌN DẸP CUỐI: xóa RealtimeStream.jsx, configs/alphabet_config.yaml khi grep 0 tham chiếu + test không đổi; mỗi file 1 commit.
 1. (xong — kế hoạch 05)
 2. Việc 5: nối frontend với endpoint mới (hợp đồng WS v2, Cấp 1 gửi null/[] cho khung không có tay; tọa độ chuẩn hóa MediaPipe);
    chạy backend + frontend cùng nhau; WebSocket qua proxy /ws; thu hẹp CORS chỉ origin dev, không "*" kèm credentials
