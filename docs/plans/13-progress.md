@@ -31,11 +31,35 @@ Tệp tạm: `_work/_plan13_tmp/`.
 - GitNexus: `node .gitnexus/run.cjs analyze --index-only` chạy xong (incremental; FTS build lỗi — "keyword search degraded",
   graph OK) — log `_work/_plan13_tmp/gitnexus_analyze_B0.txt`.
 
+### B1 — gỡ Modal (§3.10). Log: `_work/_plan13_tmp/B1_*.txt`, `B1_ac2_31.log`, `B1_ac2_compare.txt`
+- Impact TRƯỚC khi xóa (`B1_impact.txt`, sau `analyze --index-only`): `node .gitnexus/run.cjs impact "<s>" --direction upstream --repo .`
+  cho `check_cloud_environment`, `run_cslr_on_modal`, `write_file_to_volume`, `read_file_from_volume`, `list_volume_files`, và
+  `impact "main" --file src/training/modal_runner.py --include-tests` → cả 6: `"impactedCount": 0`, `"risk": "UNKNOWN"`, riskNote
+  "No callers resolved. Absence of edges is not evidence the symbol is unused…". Không HIGH/CRITICAL.
+- Đối chiếu bằng grep (vì UNKNOWN; `B1_grep_before.txt`): `git grep -n -i -E 'modal_runner|run_cslr_on_modal|vslt-data-volume|import modal|from modal|modal\.(App|Volume|Image)' -- src scripts backend tests kaggle configs frontend/src`
+  → mọi dòng nằm TRONG `src/training/modal_runner.py`; tên 4 hàm còn lại chỉ xuất hiện trong chính file đó (các lệnh `.remote()` nội bộ);
+  `src/training/__init__.py` chỉ export `VSLTrainer`. Mốc AC1 frontend: `git grep -n -i modal -- frontend/src` → đúng 1 dòng
+  `frontend/src/components/Dictionary.jsx:143: {/* Video Player Modal */}` (UI, giữ nguyên).
+- `git rm src/training/modal_runner.py`. **Sự cố quy trình (không mất dữ liệu):** trong lúc thao tác detect-changes, orchestrator commit
+  `84c90e4` ("state: quyết định người dùng Q1 …") và commit đó đã cuốn theo thay đổi ĐÃ STAGE của coder (xóa `modal_runner.py`, 261 dòng).
+  ⇒ việc gỡ file nằm ở commit `84c90e4` (không có commit riêng `WIP 13: B1`). Nội dung đúng như dự định; không sửa lịch sử.
+  Dòng ghi chú ở `docs/plans/12-khoi-phuc-du-lieu.md` (§8.1 mục 2) dẫn tới `84c90e4` (+1 dòng, 0 xóa — `git diff --numstat` `1 0`).
+- AC1 sau khi gỡ (`B1_ac1_after.txt`): grep trên `src scripts backend tests kaggle configs` → 0 dòng; `frontend/src` → đúng dòng
+  Dictionary.jsx như mốc; `git ls-files src/training/modal_runner.py` → rỗng; `.venv/Scripts/python -c "import src.training"` exit 0;
+  `tests.test_backend_source_guard`: `Ran 24 tests` `OK` (trước khi gỡ cũng 24 OK; dòng thông tin `[scope] serving=44 main=56` → `main=55`).
+- Hồi quy AC2-06 (lệnh nguyên văn `docs/plans/06-viec5-frontend.md:1028`, chạy trên cây có B1): `Ran 518 tests in 1141.450s`,
+  `FAILED (errors=1, skipped=1)`; so theo module với `_work/_plan12_tmp/ac2_31_B9.log` bằng `_work/_plan13_tmp/ac2_compare.py`
+  (bản sao của script kế hoạch 12) → mọi module GIỐNG HỆT mốc 12-B9; non-ok y như mốc: ERROR setUpClass `test_translation_core` (thiếu ViT5),
+  skip `test_vsl_predictor_smoke` (`stgcn_best.pt not found`).
+- Chưa làm (cố ý, để B12): dòng "Modal: không dùng — … đã gỡ ngày <D> (kế hoạch 13)" ở `docs/cloud_training.md` — §3.9 định nghĩa `<D>` = ngày
+  coder làm B5, chưa cố định; làm cùng các dòng §3.9 khác ở B12.
+- Sau xóa: `node .gitnexus/run.cjs analyze --index-only` (log `_work/_plan13_tmp/gitnexus_analyze_B1.txt`).
+
 ## Đang làm
-- B1 — gỡ Modal.
+- B2 — script vocab + digest + test.
 
 ## Còn lại
-- B2 script vocab + digest + test; B3–B13 (lượt sau).
+- B3–B13 (lượt sau). Lưu ý: Q1 đã trả lời (ii) (STATE 10:05) → cần planner Lần sửa 1 trước B3.
 
 ## Sổ GPU (kế hoạch 13)
 | Job | Phiên (phút, từ env.json) | Ghi chú |
@@ -47,3 +71,5 @@ Tệp tạm: `_work/_plan13_tmp/`.
 |---|---|---|
 | B0-start (6048042) | `node .gitnexus/run.cjs detect-changes --scope staged --repo .` (index cũ dded0a6) | "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B0start.txt`) |
 | B0 | như trên (sau analyze) | "Changes: 1 files, 1 symbols / Affected processes: 34 / Risk level: critical" — symbol duy nhất: `Section Kế hoạch 13 — tiến độ (coder) → docs/plans/13-progress.md` (mục markdown); đối chiếu: diff chỉ là 1 file .md, không mã nào đọc file này (`git grep -n 13-progress -- src scripts backend tests` → 0) ⇒ nối nhầm của index, không có rủi ro thực (`dc_B0.txt`) |
+| B1 (xóa file, đã lọt vào 84c90e4) | `detect-changes --scope staged` khi chỉ stage `D src/training/modal_runner.py` | "No changes detected." (`dc_B1a.txt`); `--scope all` cùng lúc: "Diff touched 3 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B1a_all.txt`) ⇒ công cụ không thấy symbol của file bị xóa; đã đối chiếu bằng impact (6× UNKNOWN, 0 caller) + grep (0 tham chiếu ngoài file) |
+| B1 (docs) | `detect-changes --scope staged` (sau analyze) | "Changes: 2 files, 1 symbols / Affected processes: 33 / Risk level: critical" — symbol duy nhất: `Section Kế hoạch 12 — Khôi phục dữ liệu sau sự cố 30/9 23:42 → docs/plans/12-khoi-phuc-du-lieu.md` (mục markdown, +1 dòng); không mã nào đọc file kế hoạch (`git grep -n 12-khoi-phuc -- src scripts backend tests` → 0) ⇒ nối nhầm của index (`dc_B1.txt`) |

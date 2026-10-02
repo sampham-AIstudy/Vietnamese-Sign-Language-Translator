@@ -241,6 +241,7 @@ test (8 không chạy do lỗi setUpClass + 1 skip) — xem AC4. Hướng dẫn 
    (token của bạn — không dán token vào chat/repo), chạy `modal volume ls vslt-data-volume /` và
    `modal volume ls vslt-data-volume checkpoints`. Gửi lại danh sách tên file (không cần nội dung). Nếu có, orchestrator sẽ
    đề xuất lệnh `modal volume get` vào `_work\_plan12_restore_user\`.
+   > (2026-10-02, kế hoạch 13) Modal không dùng; `src/training/modal_runner.py` đã gỡ ở commit 84c90e4 — mục này không còn áp dụng.
 3. Nếu không còn bản nào: chọn một trong
    (A) Chấp nhận mất: 9 test trên ghi là "không tái lập được do mất artifact chưa lưu trữ"; trả lời câu hỏi đang chờ ở STATE
        ("có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?"). Chế độ Ký câu (kế hoạch 07) bị chặn tới khi có (B).
