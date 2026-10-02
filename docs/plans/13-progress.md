@@ -108,11 +108,79 @@ Tệp tạm: `_work/_plan13_tmp/`.
   Đối chiếu: `git diff --cached --name-status` → 4 dòng `A`, 0 `M`; luồng bị liệt kê đều qua `main` (nối nhầm `main` của script mới vào mọi `main`
   — đã biết từ 12-progress B5/B8); `git grep sentence_split HEAD -- src scripts backend tests` → 0 (chưa caller nào) ⇒ không rủi ro thực.
 
+### B2b [LS1] — tùy chọn split câu ở 3 dataset (commit WIP `9146f6f`). Log: `_work/_plan13_tmp/B2b_*`
+- Impact TRƯỚC khi sửa (`B2b_impact.txt`, sau `analyze --index-only`): `VSLGHContinuousDataset`, `VSLGHTextDataset`, `Clean10kDataset` →
+  `"impactedCount": 0`, `"risk": "UNKNOWN"` (riskNote "No callers resolved…"); `_filter_samples` → `impactedCount 1`, `"risk": "LOW"` (gọi từ
+  `__init__`); `impact "__init__" --file src/translation/dataset.py` → `"risk": "CRITICAL"`, 53 — NHƯNG `target.id` =
+  `Class:src/models/transformer_model.py:MaskedTemporalAttention` (index nhận nhầm symbol, `B2b_impact_init_translation.json`);
+  `--file src/data/vsl_gh_dataset.py` → UNKNOWN. Đối chiếu bằng grep (`B2b_grep_callers.txt`, `git grep -n -E "VSLGHContinuousDataset\(|VSLGHTextDataset\(|Clean10kDataset\(" -- src scripts backend tests kaggle`):
+  caller thật = `train_cslr.py:226,234,359,367,375`, `scripts/evaluate_cslr_s06.py:39`, `scripts/extract_cslr_predictions.py:31`,
+  `train_translation_stage1.py:60-61`, `train_translation_stage2.py:71-72`, `tests/data/test_vsl_gh_dataset.py` — không ai truyền tham số mới ⇒
+  hành vi mặc định của mọi caller không đổi (chứng minh dưới) ⇒ không chạm §7.2-8.
+- Test viết trước, đỏ trên mã HEAD (sửa mã đã được cất vào `_work/_plan13_tmp/b2b_edited/`, file trả về nội dung HEAD bằng `git show`, chạy test,
+  rồi chép lại): `B2b_test_red.log` — `FAILED (errors=9, skipped=1)`: `TypeError … unexpected keyword argument 'sentence_split'` ×6,
+  `'exclude_heldout'` ×1, `AttributeError … 'excluded'` / `'sentence_split'` ×2.
+- Sửa (chỉ THÊM tham số cuối, mặc định None; 2 dòng "xóa" trong diff là 2 câu lệnh cũ được đưa nguyên văn vào nhánh `else`):
+  `VSLGHContinuousDataset(…, sentence_split=None)` — có → bắt buộc `split ∈ {train,val,test}` và không LOSO (ValueError), mẫu =
+  `select_vslgh_samples`; nếu không truyền `vocabulary` thì vocab mặc định dựng từ mẫu TRAIN của split (giả định của coder, theo §0.4 — kế hoạch
+  không nói; `train_cslr.py` luôn truyền vocab từ file nên không ảnh hưởng đường train). `VSLGHTextDataset(…, sentence_split=None)` — train/val/test
+  lấy ID từ file, `all` không đổi. `Clean10kDataset(…, exclude_heldout=None)` — sau bước chia 90/10 cũ, bỏ mục `match_heldout`, giữ
+  `excluded` (`id` + `rule`/`side`/`sentence_ids`) và `excluded_ids`; None → `excluded == []`, mẫu y cũ.
+- Test: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_sentence_split_guard -v` → `Ran 39 tests` `OK (skipped=1)`
+  (`B2b_test_green.log`). Skip duy nhất: `test_vit5_stage1_clean10k_no_heldout_match` — "local data not present: …vie_vsl_10k_cleaned.jsonl
+  (restored data; required from plan 13 B11)" (file sinh ở B3, đặt ở B11; AC8-c đòi 0 skip ở B11). G2 cần thêm (B5/B11): so `counts_after_split`
+  và sha256 với preregistration.
+- Hành vi mặc định trên DỮ LIỆU THẬT == mã ở `0a18183` (`_work/_plan13_tmp/b2b_default_equiv.py` nạp bản cũ từ `git show 0a18183:…`):
+  `B2b_default_equiv.json` `"all_same": true` cho 22 cấu hình — `VSLGHContinuousDataset` split None/train/val/test + LOSO S01–S06 × train/test
+  (mẫu + vocab), `VSLGHTextDataset` train/val/test/all, `Clean10kDataset` train/val (trên `vie_vsl_10k.jsonl` vì bản cleaned chưa có — cùng logic lớp).
+- Số mẫu sau split (code, `B2b_counts.json`): CSLR train 2880 / val 30 / test 30; ViT5 s2 240 / 30 / 30.
+- Đột biến guard (AC11-c, chỉ bản sao / vá lúc chạy, `_work/_plan13_tmp/mut/`): M1 bản sao split thêm SENT271 vào train
+  (`VSLT_GUARD_SPLIT=…`) → `FAILED (errors=1)` "split sets overlap: … train&test=['SENT271']"; M2 đổi chỗ SENT271 ↔ 1 ID train → `FAILED`
+  "test sentences must be exactly SENT271..SENT300"; M3 vá `select_vslgh_samples` bỏ lọc câu → `test_cslr_dataset_no_leak` FAIL (liệt kê
+  SENT271–SENT300); M4 vá `VSLGHTextDataset` bỏ `sentence_split` → `test_vit5_stage2_dataset_no_leak` FAIL; không đột biến → `OK (skipped=1)`.
+  Còn lại cho B5/B11: đột biến bản sao `*_used_ids.json` (G3) và bản sao 10k thêm cặp trùng L1 — cặp đó bị `exclude_heldout` loại nên chỉ bị bắt
+  khi G2 so số mẫu/số bị loại với `counts_after_split`/`clean10k_excluded` của preregistration (B5).
+- Phát hiện ngoài phạm vi (KHÔNG sửa): `tests.data.test_vsl_gh_dataset` (không thuộc AC2-06) `Ran 21` `FAILED (failures=1)` —
+  `test_19_synthesized_annotations_tracking` `0 != 2`: `dataset_canonical.json` khôi phục (kế hoạch 12) có 0 trường `annotation_source`
+  (`grep -c` → 0) ⇒ do dữ liệu, không do mã (mẫu mặc định == mã cũ, ở trên). Log `B2b_test_vsl_gh_dataset.log`.
+- detect-changes `--scope staged` (3 file M): "Changes: 3 files, 36 symbols / Affected processes: 4 / Risk level: medium" — luồng
+  `__init__ → _id_list | Split_file_sha256 | Ids | Signers` (lời gọi mới vào `sentence_split`) (`dc_B2b.txt`).
+- Hồi quy AC2-06 (lệnh nguyên văn `docs/plans/06-viec5-frontend.md:1028`, cây `9146f6f` + mã B2c chưa commit — không module nào của AC2-06
+  nạp script vocab): `Ran 518 tests in 1129.152s` `FAILED (failures=1, errors=1, skipped=1)` (`B2b_ac2_31.log`); so theo module với
+  `_work/_plan12_tmp/ac2_31_B9.log` (`B2b_ac2_compare.txt`): 30/31 module giống hệt mốc (gồm ERROR setUpClass `test_translation_core`, skip
+  `stgcn_best.pt not found`); khác duy nhất `tests.test_hand_landmarks_ws` 9/0/0/0 → 8/0/1/0: FAIL `test_reset_segments_and_graphs`
+  (`[1, 1, 1, 0] != [1, 1, 1, 1]`, đóng graph khi đóng phiên WS). Chạy lại riêng module 3 lần trên cùng cây: OK / FAIL / OK
+  (`B2b_rerun_hand_landmarks_ws_{1,2,3}.log`) ⇒ chập chờn theo thời gian; module này KHÔNG nạp mã đã đổi (`import tests.test_hand_landmarks_ws`
+  → 0 module `sentence_split|vsl_gh_dataset|translation.dataset|build_gloss` trong `sys.modules`, `B2b_hand_ws_imports.txt`). Không sửa test
+  (ngoài phạm vi; báo orchestrator). ⇒ Mốc 518/1E/1S giữ ở mọi module chịu ảnh hưởng.
+
+### B2c [LS1] — vocab chỉ từ câu train (commit WIP `059a780`). Log: `_work/_plan13_tmp/B2c_*`, `vocab_train/`
+- Impact: `impact "main" --file scripts/build_gloss_vocab_canonical.py` → `"risk": "CRITICAL"`, 53 (danh sách là các kernel `kaggle/vsl-extract-*`,
+  `train_alphabet_kernel.py` — nối nhầm `main`, đã biết); `impact "build_tokens"` → CRITICAL 53 cùng kiểu (`end_to_end.py`, `harmonized_live.py`…).
+  Đối chiếu grep `git grep -n -E "build_gloss_vocab_canonical|build_tokens" -- src scripts backend tests kaggle` → chỉ chính script + `tests/test_retrain_tools.py`
+  ⇒ không caller thật; `build_tokens` không bị sửa.
+- Test viết trước: `B2c_test_red.log` — `Ran 20` `FAILED (failures=2, errors=1)` (`build_tokens_train_only` chưa có; tùy chọn chưa có).
+- `--sentence-split <json> --split train` (phải đi cùng nhau, `--split` chỉ nhận `train`; file split sai/thiếu → exit 2, không ghi): token =
+  `VSLGlossVocabulary(tokens=collect_glosses(select_vslgh_samples(…, "train", split)))` (cùng thứ tự `<blank>`, `<unk>`, sắp xếp; cùng hàm dataset
+  B2b dùng); JSON thêm `split, sentence_split, sentence_split_sha256, n_samples_selected, glosses_excluded`. Không tùy chọn → nhánh cũ nguyên văn.
+- Test: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_retrain_tools -v` → `Ran 20 tests` `OK`, 0 skip (`B2c_test_green.log`);
+  `git diff 0373a90 -- tests/test_retrain_tools.py | grep -c "^-[^-]"` → 0 (15 test B2 nguyên văn, chỉ thêm 5 test).
+- Không tùy chọn trên dữ liệu thật (ở `059a780`): sinh vào `_work/_plan13_tmp/vocab_full_059a780/` → `cmp` với `vocab_e02ed14/` BẰNG HỆT byte; JSON (bỏ `out`) giống hệt.
+- **Vocab train-only (sinh ở commit `059a780`, mã sạch):** `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/build_gloss_vocab_canonical.py
+  --canonical data/external/vsl_gh/dataset_canonical.json --out _work/_plan13_tmp/vocab_train/gloss_vocab_canonical.txt
+  --sentence-split configs/vslgh_sentence_split_v1.json --split train` → exit 0, JSON `_work/_plan13_tmp/vocab_train/build_output.json`:
+  `n_tokens` **322** (≤ 372), `sha256` `c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0`, `vocab_hash16` `c0af13dbdf20e7d5`,
+  `n_samples_selected` 2880, `sentence_split_sha256` `289b2ac1…21a4`, `canonical_lf_sha256` `d53ab701…a881`; `glosses_excluded` 50 gloss (danh sách
+  trong JSON) == vocab đầy đủ B2 − vocab train (kiểm bằng code). Phân loại mô tả (`vocab_train/excluded_breakdown.json`): 27 chỉ ở câu T, 22 chỉ ở câu V,
+  1 ở cả T và V, 0 từ câu train của người ký ngoài train. File: 322 dòng, 0 byte CR, `<blank>`/`<unk>` đầu, byte cuối LF; `VSLGlossVocabulary.from_file`
+  → 322, blank 0, unk 1. Chạy lại vào đích đã có → exit 2, sha256 không đổi. Chưa đặt vào `data/external/vsl_gh/` (B11).
+  (`glosses_only_in_val` / `glosses_only_in_test` và tỉ lệ OOV token tham chiếu test do `retrain_preregister.py` tính ở B5.)
+
 ## Đang làm
-- B2b (tùy chọn dataset) — tiếp theo.
+- (không) — lượt 2 (B2a–B2c) xong; dừng, báo orchestrator.
 
 ## Còn lại
-- B2b, B2c (lượt này); B3–B14 (lượt sau).
+- B3–B14 (lượt sau). B4c/B4d phụ thuộc B2a/B2b (đã có).
 
 ## Sổ GPU (kế hoạch 13)
 | Job | Phiên (phút, từ env.json) | Ghi chú |
@@ -128,3 +196,7 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B1 (docs) | `detect-changes --scope staged` (sau analyze) | "Changes: 2 files, 1 symbols / Affected processes: 33 / Risk level: critical" — symbol duy nhất: `Section Kế hoạch 12 — Khôi phục dữ liệu sau sự cố 30/9 23:42 → docs/plans/12-khoi-phuc-du-lieu.md` (mục markdown, +1 dòng); không mã nào ĐỌC file kế hoạch (`git grep -n 12-khoi-phuc -- src scripts backend tests` → 1 dòng: docstring `scripts/check_restored_data.py:1`, chỉ là chú thích — đính chính ở commit B2, bản ghi trước ghi nhầm "→ 0") ⇒ nối nhầm của index (`dc_B1.txt`) |
 | B2 (WIP e02ed14) | `detect-changes --scope staged` (3 file mới) | "Changes: 3 files, 41 symbols / Affected processes: 4 / Risk level: medium" — luồng: `Main → From_canonical_dataset`, `Main → _check_names`, `Main → Digest_entries`, `Main → Sha256_file` (đều là `main` của 2 script mới gọi hàm của chính nó; không symbol có sẵn nào bị sửa) (`dc_B2wip.txt`) |
 | B2 (progress) | `detect-changes --scope staged` | "Changes: 1 files, 1 symbols / Risk level: critical" — symbol duy nhất `Section Kế hoạch 13 — tiến độ (coder) → docs/plans/13-progress.md` (markdown; như B0 — nối nhầm của index) (`dc_B2.txt`) |
+| B2a (0a18183) | `detect-changes --scope staged` (4 file mới; rồi + progress) | "Changes: 4 files, 86 symbols / Affected processes: 241 / Risk level: critical" (`dc_B2a.txt`); + progress: "Changes: 5 files, 86 symbols / Risk level: critical" (`dc_B2a_full.txt`). Chỉ file `A`, 0 `M`; luồng qua `main` của script mới (nối nhầm `main`); 0 caller có sẵn |
+| B2b (WIP 9146f6f) | `detect-changes --scope staged` (3 file M) | "Changes: 3 files, 36 symbols / Affected processes: 4 / Risk level: medium" — `__init__ → _id_list | Split_file_sha256 | Ids | Signers` (`dc_B2b.txt`) |
+| B2c (WIP 059a780) | `detect-changes --scope staged` (2 file M) | "Changes: 2 files, 13 symbols / Affected processes: 6 / Risk level: high" — luồng `Main → _id_list | Split_file_sha256 | Ids | Signers | From_canonical_dataset | Collect_glosses` (đều là `main` của chính script vocab gọi hàm dùng chung); grep: không caller ngoài script + test (`dc_B2c_wip.txt`) |
+| B2b+B2c (progress) | `detect-changes --scope staged` | "Changes: 1 files, 1 symbols / Risk level: critical" — `Section Kế hoạch 13 — tiến độ (coder) → docs/plans/13-progress.md` (markdown; nối nhầm như B0/B2) (`dc_B2c.txt`) |
