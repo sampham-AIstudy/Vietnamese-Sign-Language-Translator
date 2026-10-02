@@ -1697,5 +1697,401 @@ class TestEvalSentsplitGates(_Scratch):
         self.assertFalse(os.path.exists(self.E.run_marker_path(out)))
 
 
+# =====================================================================================================================
+# B5 — scripts/retrain_preregister.py (plan 13 §3.3 + [LS1]; mid review 13 §6: every key read by eval_sentsplit.py,
+# by the kernels and by tests/test_sentence_split_guard.py). Fixture = a fake repository root under _work/_test_tmp/
+# (300 sentences x 6 signers, tiny 10k file with 3 planted held-out matches, tiny Tier 1 package, reference files).
+# =====================================================================================================================
+B5_DATE = "2026-10-02"
+
+
+def _write_text(path, text):
+    write_bytes(path, text.encode("utf-8"))
+
+
+class _PreregRoot(_Scratch):
+    @classmethod
+    def setUpClass(cls):
+        import retrain_preregister as P
+        cls.P = P
+
+    def build_root(self, cslr_train_ref="3,600", keep_other_gloss=False):
+        from src.data import sentence_split as SS
+        P = self.P
+        root = self.p("root")
+        J = lambda rel: os.path.join(root, *rel.split("/"))  # noqa: E731
+        self.J = J
+        items = ss_canonical()
+        if not keep_other_gloss:
+            # ss_canonical() has one gloss used only by the val SIGNER on a train sentence: excluded from the train
+            # vocab but in no val/test sentence (0 such glosses in the real data, 13-progress B2c) -> see the test
+            # test_vocab_excluded_outside_val_test_stops
+            for it in items:
+                it["gloss_sequence"] = [g for g in it["gloss_sequence"] if g != "CHỈ-S05"]
+        write_canonical(J(P.CANONICAL_REL), items)
+        write_bytes(J(P.SPLIT_REL), SS.split_file_bytes(SS.make_split_dict(items, seed=42)))
+        split = SS.load_sentence_split(J(P.SPLIT_REL))
+        os.makedirs(J(P.KEYPOINTS_REL))
+        n_kp = 0
+        for it in items:
+            if it["signer_id"] == "S06":  # every S06 clip: the repro_v2 digest needs all 300
+                write_bytes(os.path.join(J(P.KEYPOINTS_REL), it["id"] + ".npy"), ("kp-" + it["id"]).encode())
+                n_kp += 1
+        raw = [{"id": f"PAR_10K_{k:05d}", "vsl": f"RAW{k}", "vi": f"Thô {k}."} for k in range(1, 71)]
+        _write_text(J(P.RAW10K_REL), "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in raw))
+        v_num = int(split.val_ids[0][4:])
+        rows = [{"id": f"PAR_10K_{k:05d}", "vsl": f"TỪ{k} KHÁC{k} NỮA{k}", "vi": f"Một câu số {k} khác hẳn."}
+                for k in range(1, 61)]
+        rows += [{"id": "PAR_10K_09001", "vsl": "BẤT KỲ GÌ", "vi": "Câu 271."},             # L1 target, test sentence
+                 {"id": "PAR_10K_09002", "vsl": "G271 CHUNG", "vi": "Hoàn toàn khác biệt nhé."},  # L1 source, test
+                 {"id": "PAR_10K_09003", "vsl": "ĐIỀU KHÁC", "vi": f"câu {v_num}"}]          # L2 target, val sentence
+        cleaned = self.p("work", "cleaned", "vie_vsl_10k_cleaned.jsonl")
+        _write_text(cleaned, "".join(json.dumps(r, ensure_ascii=False) + "\r\n" for r in rows))  # CRLF like Windows
+        self.planted = {"PAR_10K_09001", "PAR_10K_09002", "PAR_10K_09003"}
+        # Tier 1
+        csv_rows = {"train": [("1", "a"), ("2", "b"), ("3", "a"), ("4", "b")], "val": [("5", "a")],
+                    "test": [("6", "a"), ("7", "b")]}
+        for name, rs in csv_rows.items():
+            _write_text(J(P.TIER1_CSV_REL[name]),
+                        "video_id,gloss_normalized,split\r\n" + "".join(f"{v},{g},{name}\r\n" for v, g in rs))
+        _write_text(J(P.TIER1_CLASSES_REL), "a\nb\n")
+        for v in range(1, 8):
+            write_bytes(os.path.join(J(P.TIER1_NPZ_DIR_REL), f"{v}.npz"), f"npz-{v}".encode())
+        # reference sources (values of the ORIGINAL fixture data, with the file layout of the real sources)
+        n_full = len(V.build_tokens(J(P.CANONICAL_REL)))
+        _write_text(J("reports/audit_20260924/inventory_summary.json"),
+                    json.dumps({"level_3": {"raw_10k_pairs": 70, "clean_10k_pairs": 63}}, indent=2) + "\n")
+        _write_text(J("reports/vit5_stage1_history.json"), json.dumps({"train_samples": 57, "val_samples": 6}, indent=2))
+        _write_text(J("reports/vit5_stage2_history.json"), json.dumps({"train_samples": 240, "val_samples": 30}, indent=2))
+        _write_text(J("docs/data_registry.md"), f"- **Splits**:\n  - Signer-independent: Train (S01..S04, {cslr_train_ref} "
+                                               "samples), Val (S05, 300 samples), Test (S06, 300 samples).\n")
+        _write_text(J("docs/vsl_gh_dataset.md"),
+                    f"  - Frontal keypoints: `data/external/vsl_gh/keypoints_frontal/*.npy` ({n_kp} files)\n"
+                    "  - Metadata: `data/external/vsl_gh/dataset_canonical.json` (4,200 entries)\n"
+                    f"  - Vocabularies: `data/external/vsl_gh/gloss_vocab_canonical.txt` ({n_full} tokens)\n")
+        # train-only vocab written by the real CLI (B2c) -> cross-check file
+        vocab_file = self.p("work", "vocab_train", "gloss_vocab_canonical.txt")
+        r = subprocess.run([sys.executable, VOCAB_SCRIPT, "--canonical", J(P.CANONICAL_REL), "--out", vocab_file,
+                            "--sentence-split", J(P.SPLIT_REL), "--split", "train"], capture_output=True, text=True,
+                           encoding="utf-8", env={**os.environ, "PYTHONIOENCODING": "utf-8"})
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.root, self.items, self.split, self.cleaned, self.vocab_file = root, items, split, cleaned, vocab_file
+        return root
+
+    def fake_git(self, **over):
+        g = {"head": "a" * 40, "code_dirty": False, "code_dirty_files": [],
+             "plan_revision": {"commit": "c" * 40, "marker": self.P.PLAN_REVISION_MARKER, "file": self.P.PLAN,
+                               "is_ancestor_of_head": True},
+             "split_commit": {"commit": "b" * 40, "n_commits": 1, "is_ancestor_of_head": True,
+                              "blob_sha256_lf": self.split.sha256}}
+        g.update(over)
+        return lambda root, commit: json.loads(json.dumps(g))
+
+    def argv(self, *extra):
+        return ["--date", B5_DATE, "--plan-revision-commit", "c" * 7, "--clean10k", self.cleaned,
+                "--vocab-file", self.vocab_file, "--root", self.root, *extra]
+
+    def run_main(self, argv, git=None):
+        from unittest import mock
+        out, err = io.StringIO(), io.StringIO()
+        with mock.patch.object(self.P, "git_info", git or self.fake_git()), contextlib.redirect_stdout(out), \
+                contextlib.redirect_stderr(err):
+            rc = self.P.main(argv)
+        return rc, out.getvalue(), err.getvalue()
+
+    def out_path(self):
+        return self.J(f"reports/retrain_{B5_DATE}/preregistration.json")
+
+    def generate(self):
+        self.build_root()
+        rc, out, err = self.run_main(self.argv())
+        self.assertEqual(rc, 0, err)
+        with open(self.out_path(), encoding="utf-8") as f:
+            return json.load(f)
+
+
+class TestRetrainPreregister(_PreregRoot):
+    def test_keys_read_by_eval_guard_and_kernels_computed_by_code(self):
+        import eval_sentsplit as E
+        from src.data.sentence_split import heldout_texts
+        from src.translation.dataset import Clean10kDataset
+        pr = self.generate()
+        # 1. protocols = code templates of eval_sentsplit.py (whole dict, inputs included)
+        self.assertEqual(pr["evaluation_protocol"], E.protocol_template("sentsplit_v1"))
+        self.assertEqual(pr["evaluation_protocol_repro_v2"], E.protocol_template("repro_v2"))
+        # 2. sentence split: every key, sha256 = LF-normalised file sha256
+        ss = pr["sentence_split"]
+        self.assertEqual(set(ss) >= {"path", "sha256", "version", "seed", "python", "test_ids", "val_ids",
+                                     "n_train_sentences"}, True, sorted(ss))
+        self.assertEqual((ss["path"], ss["sha256"], ss["seed"]), (self.P.SPLIT_REL, self.split.sha256, 42))
+        self.assertEqual((ss["test_ids"], ss["val_ids"], ss["n_train_sentences"]),
+                         (list(self.split.test_ids), list(self.split.val_ids), 240))
+        # 3. libraries = .venv versions (eval compares with ==)
+        for name in ("sacrebleu", "numpy", "torch", "transformers", "tokenizers", "sentencepiece", "safetensors",
+                     "rouge_score"):
+            self.assertEqual(pr["libs_local"][name], E.pkg_version(name), name)
+        # 4. vocab sha256 = RAW bytes of the file written by the real CLI; full vocab reference
+        with open(self.vocab_file, "rb") as f:
+            vb = f.read()
+        self.assertEqual(pr["vocab"]["sha256"], sha(vb))
+        self.assertEqual(pr["vocab"]["n_tokens"], vb.count(b"\n"))
+        self.assertEqual(pr["vocab"]["mode"], "train_only")
+        full = V.build_tokens(self.J(self.P.CANONICAL_REL))
+        self.assertEqual(pr["vocab_full_reference"]["sha256"], sha("".join(t + "\n" for t in full).encode("utf-8")))
+        self.assertEqual(pr["vocab_full_reference"]["n_tokens"], len(full))
+        excl = sorted(set(full) - set(vb.decode("utf-8").splitlines()))
+        self.assertEqual(sorted(set(pr["vocab"]["glosses_only_in_val"]) | set(pr["vocab"]["glosses_only_in_test"])), excl)
+        self.assertEqual(pr["vocab"]["glosses_excluded_other"], [])
+        test_ref = [g.strip() for s in self.items if s["signer_id"] == "S06" and s["sentence_id"] in self.split.test_ids
+                    for g in s["gloss_sequence"] if g.strip()]
+        self.assertEqual(pr["vocab"]["test_ref_tokens_total"], len(test_ref))
+        self.assertEqual(pr["vocab"]["test_ref_tokens_oov"], sum(1 for g in test_ref if g not in set(vb.decode('utf-8').splitlines())))
+        # 5. inputs: relative "/" paths exactly as the protocol, lf_sha256 of text files
+        inp = pr["inputs"]
+        self.assertEqual(inp["dataset_canonical_json"]["path"], E.protocol_template("sentsplit_v1")["inputs"]["canonical_json"])
+        self.assertEqual(inp["dataset_canonical_json"]["lf_sha256"], D.lf_sha256(self.J(self.P.CANONICAL_REL)))
+        self.assertEqual(inp["gloss_vocab_canonical_txt"]["path"], E.protocol_template("sentsplit_v1")["inputs"]["vocab"])
+        self.assertEqual(inp["vie_vsl_10k_cleaned_jsonl"]["lf_sha256"], D.lf_sha256(self.cleaned))
+        self.assertNotEqual(inp["vie_vsl_10k_cleaned_jsonl"]["lf_sha256"], D.sha256_file(self.cleaned))  # CRLF file
+        self.assertEqual(inp["keypoints_frontal"]["dir_digest"], D.dir_digest(self.J(self.P.KEYPOINTS_REL), "*.npy")[0])
+        self.assertEqual(inp["tier1_npz"]["n_files"], 7)
+        self.assertEqual(inp["tier1_grouped_train_csv"]["lf_sha256"], D.lf_sha256(self.J(self.P.TIER1_CSV_REL["train"])))
+        # 6. counts after the split + 10k exclusion (recomputed here with the dataset classes)
+        canon = self.items
+        held = heldout_texts(canon, self.split.heldout_ids())
+        c10 = {n: Clean10kDataset(jsonl_path=self.cleaned, split=n, exclude_heldout=held) for n in ("train", "val")}
+        self.assertEqual(pr["counts_after_split"]["clean10k"], {n: len(d) for n, d in c10.items()})
+        self.assertEqual(sum(pr["counts_after_split"]["clean10k"].values()), 63 - 3)
+        self.assertEqual(pr["counts_after_split"]["cslr"], {"train": 240 * 12, "val": 30, "test": 30})
+        self.assertEqual(pr["counts_after_split"]["vslgh_text"], {"train": 240, "val": 30, "test": 30})
+        ce = pr["clean10k_excluded"]
+        self.assertEqual(set(ce["ids"]), self.planted)
+        self.assertEqual(ce["n_train"] + ce["n_val"], 3)
+        self.assertEqual(ce["by_reason"], {"L1": 2, "L2": 1, "near_dup": 0})
+        self.assertEqual(ce["rule_ref"], "§0.3")
+        self.assertEqual((ce["n_matching_test_sentences"], ce["n_matching_val_sentences"]), (2, 1))
+        self.assertEqual(pr["counts_default"]["cslr"], {"train": 3600, "val": 300, "test": 300})
+        # 7. leak check 0
+        self.assertEqual(pr["leak_check"]["total"], 0)
+        # 8. registered output + test keypoints digest (formula of eval_sentsplit.py, computed independently)
+        self.assertEqual(pr["evaluation_output"], f"reports/retrain_{B5_DATE}/eval/test_eval.json")
+        self.assertEqual(pr["evaluation_output_repro_v2"], f"reports/retrain_{B5_DATE}/k3_repro/test_eval_repro.json")
+        kpd = self.J(self.P.KEYPOINTS_REL)
+
+        def kp_digest(ids):
+            lines = []
+            for i in sorted(ids):
+                with open(os.path.join(kpd, i + ".npy"), "rb") as f:
+                    lines.append(f"{i}.npy {sha(f.read())}\n")
+            return sha("".join(lines).encode("utf-8"))
+        test_ids = [s["id"] for s in self.items if s["signer_id"] == "S06" and s["sentence_id"] in self.split.test_ids]
+        self.assertEqual(len(test_ids), 30)
+        self.assertEqual(pr["test_keypoints_digest"], kp_digest(test_ids))
+        self.assertEqual(pr["test_keypoints_digest_repro_v2"],
+                         kp_digest([s["id"] for s in self.items if s["signer_id"] == "S06"]))
+        # 9. HF base model policy, 10. jobs: K2 commands verbatim with the split, test deferred, no eval in kernels
+        self.assertIn("snapshot sha", pr["hf_base_model"]["policy"])
+        k2 = pr["jobs"]["k2"]
+        for job in ("cslr", "vit5_stage1", "vit5_stage2"):
+            self.assertEqual(k2[job]["train"]["argv"][1:3], ["--sentence-split", self.P.SPLIT_REL], job)
+        self.assertEqual(k2["data_prep"]["vocab"]["argv"][-4:], ["--sentence-split", self.P.SPLIT_REL, "--split", "train"])
+        self.assertIn("TEST DEFERRED (sentence split v1)", k2["cslr"]["test_policy"])
+        flat = json.dumps(pr["jobs"]["k1"]) + json.dumps(k2)
+        self.assertNotIn("eval_sentsplit.py --", flat)
+        self.assertEqual(pr["jobs"]["k1"]["train"]["argv"], ["train.py", "--config", "configs/experiments/stgcn.yaml",
+                                                              "--seed", "42"])
+        self.assertEqual(pr["jobs"]["k1"]["test"]["argv"][0], "evaluate_test.py")
+        for job in ("cslr", "vit5_stage1", "vit5_stage2"):
+            self.assertRegex(k2[job]["selection"]["rule_ref"], r"^[\w/.]+\.py:\d+$")
+        self.assertEqual(pr["jobs"]["k2"]["backbone"]["k1_outputs_key"], "stgcn_best_pt.sha256")
+        # references read from the sources with file:line, all matching the original data
+        self.assertTrue(all(v["matches"] for v in pr["reference_counts"].values()))
+        self.assertEqual(pr["reference_counts"]["cslr_default_train"]["source"], "docs/data_registry.md:2")
+        self.assertEqual(pr["generated_by"]["git_commit"], "a" * 40)
+        self.assertFalse(pr["generated_by"]["code_dirty"])
+        self.assertEqual(pr["cross_checks"]["vocab"]["identical"], True)
+        # 11. upstream commits read from the local clones (needed by K2 to rebuild the data)
+        for name in ("vsl_gh", "parallel_corpus"):
+            self.assertRegex(pr["upstream_sources"][name]["commit"], r"^[0-9a-f]{40}$")
+
+    def test_refuses_overwrite_and_wrong_out(self):
+        pr = self.generate()
+        with open(self.out_path(), "rb") as f:
+            before = f.read()
+        rc, _, err = self.run_main(self.argv())
+        self.assertEqual(rc, 2)
+        self.assertIn("overwrite", err)
+        with open(self.out_path(), "rb") as f:
+            self.assertEqual(f.read(), before)
+        for out in (f"reports/retrain_{B5_DATE}/other.json", "reports/retrain_2026-10-03/preregistration.json",
+                    "_work/preregistration.json"):
+            rc, _, _ = self.run_main(self.argv("--out", out))
+            self.assertEqual(rc, 2, out)
+        self.assertEqual(self.P.main(["--date", "02-10-2026", "--plan-revision-commit", "x", "--clean10k", "y"]), 2)
+        self.assertEqual(pr["date"], B5_DATE)
+
+    def test_refuses_dirty_code(self):
+        self.build_root()
+        rc, _, err = self.run_main(self.argv(), git=self.fake_git(code_dirty=True, code_dirty_files=[" M src/x.py"]))
+        self.assertEqual(rc, 2)
+        self.assertIn("dirty", err)
+        self.assertFalse(os.path.exists(self.out_path()))
+
+    def test_refuses_split_blob_mismatch(self):
+        self.build_root()
+        git = self.fake_git(split_commit={"commit": "b" * 40, "n_commits": 1, "is_ancestor_of_head": True,
+                                          "blob_sha256_lf": "0" * 64})
+        rc, _, _ = self.run_main(self.argv(), git=git)
+        self.assertEqual(rc, 3)
+        self.assertFalse(os.path.exists(self.out_path()))
+
+    def test_leak_stops_without_writing(self):
+        # mutation: the shared selection leaks one S01 x SENT271 clip into CSLR train -> leak_check != 0 -> exit 3
+        from unittest import mock
+        from src.data import sentence_split as SS
+        self.build_root()
+        real = SS.select_vslgh_samples
+
+        def leaky(samples, split_name, sentence_split):
+            out = real(samples, split_name, sentence_split)
+            if split_name == "train":
+                out = out + [s for s in samples if s["sentence_id"] == "SENT271" and s["signer_id"] == "S01"][:1]
+            return out
+        with mock.patch.object(SS, "select_vslgh_samples", leaky):
+            rc, _, err = self.run_main(self.argv())
+        self.assertEqual(rc, 3)
+        self.assertIn("leak_check", err)
+        self.assertFalse(os.path.exists(self.out_path()))
+
+    def test_vocab_excluded_outside_val_test_stops(self):
+        # AC2: (full vocab - train vocab) must equal only_in_val u only_in_test; a gloss excluded for another reason
+        # (here: used only by the val signer on a train sentence) cannot satisfy it -> exit 3, nothing written
+        self.build_root(keep_other_gloss=True)
+        rc, _, err = self.run_main(self.argv())
+        self.assertEqual(rc, 3)
+        self.assertIn("CHỈ-S05", err)
+        self.assertFalse(os.path.exists(self.out_path()))
+
+    def test_reference_mismatch_stops(self):
+        self.build_root(cslr_train_ref="3,601")
+        rc, _, err = self.run_main(self.argv())
+        self.assertEqual(rc, 3)
+        self.assertIn("cslr_default_train", err)
+        self.assertFalse(os.path.exists(self.out_path()))
+
+    def test_cross_check_vocab_mismatch_stops(self):
+        self.build_root()
+        with open(self.vocab_file, "ab") as f:
+            f.write(b"EXTRA\n")
+        rc, _, err = self.run_main(self.argv())
+        self.assertEqual(rc, 3)
+        self.assertIn("vocab", err)
+        self.assertFalse(os.path.exists(self.out_path()))
+
+    def test_eval_sentsplit_accepts_the_generated_preregistration(self):
+        # contract: eval_sentsplit.py runs to the end on a preregistration produced by retrain_preregister.py (model
+        # steps faked; every input gate of the eval runs for real against the fixture root)
+        import torch
+        from unittest import mock
+        import eval_sentsplit as E
+        pr = self.generate()
+        J = self.J
+        with open(self.vocab_file, "rb") as f:
+            vb = f.read()
+        write_bytes(J(self.P.VOCAB_REL), vb)
+        ckpt = J("checkpoints/cslr_best.pt")
+        os.makedirs(os.path.dirname(ckpt), exist_ok=True)
+        torch.save({"gloss_vocab_hash": sha(vb)[:16], "config": {"sentence_split_sha256": self.split.sha256}}, ckpt)
+        vit5 = J("checkpoints/vit5_stage2/best_model")
+        write_bytes(os.path.join(vit5, "config.json"), b'{"fake": true}\n')
+        with open(ckpt, "rb") as f:
+            ckpt_sha = sha(f.read())
+        manifest = J(f"reports/retrain_{B5_DATE}/artifacts_manifest.json")
+        write_bytes(manifest, json.dumps({"files": [{"rel_path": "k2/cslr_best.pt", "sha256": ckpt_sha},
+                                                    {"rel_path": "vit5_stage2/best_model/config.json",
+                                                     "sha256": sha(b'{"fake": true}\n')}]}).encode("utf-8"))
+        with open(os.path.join(ROOT, "reports", "audit_round2", "v2_cslr_reliability.json"), "rb") as f:
+            write_bytes(J("reports/audit_round2/v2_cslr_reliability.json"), f.read())
+        calls = {"cslr": 0, "vit5": 0}
+
+        def cslr(ckpt_, vocab, dataset, protocol):
+            calls["cslr"] += 1
+            return {s["id"]: [g.strip() for g in s["gloss_sequence"] if g.strip()][:1] for s in dataset.samples}
+
+        def vit5(model_dir, sources, protocol):
+            calls["vit5"] += 1
+            return [f"câu {i}." for i, _ in enumerate(sources)]
+        git = {"head": "f" * 40, "code_dirty": False, "dirty_lines": [], "prereg_commit": "e" * 40,
+               "prereg_n_commits": 1, "prereg_is_ancestor": True}
+        out = J(pr["evaluation_output"])
+        argv = ["--prereg", self.out_path(), "--protocol", "sentsplit_v1", "--manifest", manifest, "--out", out]
+        so, se = io.StringIO(), io.StringIO()
+        with mock.patch.object(E, "ROOT", __import__("pathlib").Path(self.root)), \
+                mock.patch.object(E, "git_state", lambda p: dict(git)), mock.patch.object(E, "cslr_predict", cslr), \
+                mock.patch.object(E, "vit5_generate", vit5), contextlib.redirect_stdout(so), contextlib.redirect_stderr(se):
+            rc = E.main(argv)
+        self.assertEqual(rc, 0, se.getvalue())
+        self.assertEqual(calls, {"cslr": 1, "vit5": 2})
+        with open(out, encoding="utf-8") as f:
+            res = json.load(f)
+        self.assertEqual(len(res["per_sample"]), 30)
+        self.assertEqual(res["protocol"], pr["evaluation_protocol"])
+        self.assertIn("data/external/vsl_gh/dataset_canonical.json", res["inputs"]["preregistration_inputs_checked"])
+        self.assertIn("data/external/vsl_gh/gloss_vocab_canonical.txt", res["inputs"]["preregistration_inputs_checked"])
+        self.assertEqual(res["inputs"]["test_keypoints_digest"], pr["test_keypoints_digest"])
+
+    def test_guard_reads_the_generated_preregistration(self):
+        from unittest import mock
+        import tests.test_sentence_split_guard as G
+        pr = self.generate()
+        with mock.patch.object(G, "REF_PREREG", self.out_path()):
+            ref = G.registered_reference()
+        self.assertEqual(ref["split_sha256"], self.split.sha256)
+        self.assertEqual(ref["clean10k"], pr["counts_after_split"]["clean10k"])
+        self.assertEqual(ref["clean10k_n_excluded"], {"train": pr["clean10k_excluded"]["n_train"],
+                                                      "val": pr["clean10k_excluded"]["n_val"]})
+        self.assertEqual(ref["clean10k_excluded_ids"], sorted(self.planted))
+        self.assertEqual(ref["cslr"], {"train": 2880, "val": 30, "test": 30})
+        self.assertEqual(ref["vslgh_text"], {"train": 240, "val": 30, "test": 30})
+
+    def test_kernel_measurement_matches_and_compare_flags_differences(self):
+        P = self.P
+        pr = self.generate()
+        # K2 preflight on identical data: every compared leaf equal (vocab file built by the real CLI)
+        m = P.measure_k2(self.root, self.cleaned, vocab_file=self.vocab_file)
+        rows = P.compare(pr, m, P.K2_COMPARE)
+        self.assertGreater(len(rows), 40)
+        self.assertEqual([r for r in rows if not r["ok"]], [])
+        # K1 Tier 1 inputs
+        rows1 = P.compare(pr, {"inputs": P.measure_tier1(self.root)}, P.K1_COMPARE)
+        self.assertEqual([r for r in rows1 if not r["ok"]], [])
+        write_bytes(os.path.join(self.J(P.TIER1_NPZ_DIR_REL), "3.npz"), b"changed")
+        bad1 = [r["key"] for r in P.compare(pr, {"inputs": P.measure_tier1(self.root)}, P.K1_COMPARE) if not r["ok"]]
+        self.assertEqual(bad1, ["inputs.tier1_npz.dir_digest"])
+        # one changed leaf / one missing key
+        m2 = json.loads(json.dumps({k: v for k, v in m.items() if not k.startswith("_")}))
+        m2["counts_after_split"]["cslr"]["train"] += 1
+        del m2["test_keypoints_digest_repro_v2"]
+        bad = [r["key"] for r in P.compare(pr, m2, P.K2_COMPARE) if not r["ok"]]
+        self.assertEqual(bad, ["counts_after_split.cslr.train", "test_keypoints_digest_repro_v2"])
+        # the built vocab file must equal the bytes built in memory
+        other = self.p("work", "vocab_other.txt")
+        write_bytes(other, b"<blank>\n<unk>\nX\n")
+        with self.assertRaises(P.PreregError) as cm:
+            P.measure_k2(self.root, self.cleaned, vocab_file=other)
+        self.assertEqual(cm.exception.code, 3)
+
+    def test_plan_revision_commit_checked_on_real_git(self):
+        # read-only git on this repository: plan revision 1 = 4f714c6 (ancestor of HEAD); another commit is refused
+        P = self.P
+        gi = P.git_info(ROOT, "4f714c6")
+        self.assertTrue(gi["plan_revision"]["commit"].startswith("4f714c6"))
+        self.assertTrue(gi["plan_revision"]["is_ancestor_of_head"])
+        self.assertEqual(gi["split_commit"]["n_commits"], 1)
+        with self.assertRaises(P.PreregError) as cm:
+            P.git_info(ROOT, "bf2ec8a")
+        self.assertEqual(cm.exception.code, 2)
+
+
 if __name__ == "__main__":
     unittest.main()
