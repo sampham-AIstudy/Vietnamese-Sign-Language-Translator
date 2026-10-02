@@ -606,6 +606,16 @@ Tệp tạm: `_work/_plan13_tmp/`.
   (2 skip như B5/B7/B8: 10k cleaned chưa đặt — B11) (`B9_full_suites.log`).
 - **Ghim mới:** K2 đổi so với ghim `c0c70d2` ⇒ commit chứa kernel + test + mục này = **commit ghim B9** (hash ghi ở commit sau, chỉ sửa 13-progress).
 
+- **Commit ghim B9: `28a126ee12d969d858792ee9362fc5cd6f05386f`** (`28a126e`). Tổ tiên: `ea12b44` (preregistration; `git log` 1 dòng `ea12b44`) ⊂
+  `c0c70d2` (ghim B7r2) ⊂ `48f65dd` (`k1_outputs.json`, 1 dòng `git log`) ⊂ `28a126e` (`git merge-base --is-ancestor` → 0 cả hai).
+  `git diff --stat c0c70d2 28a126e -- kaggle reports configs scripts src train.py evaluate_test.py` → kernel K2 (+8/−3) + `reports/retrain_2026-10-02/k1/`,
+  `k1_outputs.json`, `k2_preflight/` (B7r2/B8); không đổi preregistration/mã train/cấu hình.
+- Bản đẩy `_work/_plan13_tmp/k2_push_train/` sinh bằng `PYTHONIOENCODING=utf-8 .venv/Scripts/python _work/_plan13_tmp/b9_make_push.py 28a126ee…386f`
+  (`B9_push_check.txt`, exit 0): file ở ghim (`git show 28a126e:…`) thay ĐÚNG 2 dòng — 38 `MODE = "train"  # …`, 39 `PIN_COMMIT = "28a126ee…386f"   # …`;
+  nạp chính bản đẩy: `MODE == "train"`, `check_pin` OK, `same_as_pinned(bản đẩy, file ở ghim)` OK. sha256 kernel đẩy
+  `6aef839e0329261ad80d047c5d5eab1990f3bb0b9464a95c2de117edbef932c6`, metadata đẩy `779505bf7d0c4ae60dc30a56bce68edd6cfb55e21a1e33f965416f85b97a2d21`
+  (= metadata ở ghim, chỉ `enable_gpu: true`, `kernel_sources: ["phmvnsm33/vsl-retrain-stgcn-tier1"]`; `is_private` true, `enable_internet` true).
+
 ## Đang làm
 - **ĐANG LÀM B9 phần 1** (lượt 9, mốc HEAD `22e742f`): cổng ngân sách §3.7 → K2 `MODE="train"` + GPU + `kernel_sources` K1 → ghim → đẩy K2 → trả về khi RUNNING. Log: `_work/_plan13_tmp/B9_*`.
 - **B8 XONG** (lượt 8): K1 `phmvnsm33/vsl-retrain-stgcn-tier1` v1 COMPLETE (ghim `c0c70d2`), 39/39 kiểm, `stgcn_best.pt` sha256 `2204becd…bac2` trong `k1_outputs.json`. Dừng trước B9 (KHÔNG làm B9).
@@ -669,3 +679,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B8d | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, 13 file `A` trong `reports/retrain_2026-10-02/k1/` + `k1_outputs.json`) | "Changes: 14 files, 3 symbols / Affected processes: 195 / Risk level: critical" — 3 symbol đều là mục markdown của 13-progress (`Kế hoạch 13 — tiến độ (coder)`, `Bước đã xong`, `B8 — đẩy K1 …`; nối nhầm như B7a); 13 file JSON/log dữ liệu, không symbol, không mã nào import; `git diff --cached --name-only` đuôi `.pt/.npz/.png/.csv/…` → 0 (`dc_B8d.txt`) |
 | B9a | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +1 dòng "ĐANG LÀM B9 phần 1" trước dòng này) | "Changes: 1 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); không mã nào đọc file này (`dc_B9a.txt`) |
 | B9b (ghim B9) | `analyze --index-only` rồi `detect-changes --scope staged` (`M` kernel K2, `M tests/test_retrain_tools.py` chỉ thêm, `M docs/plans/13-progress.md`) | "Changes: 3 files, 11 symbols / Affected processes: 196 / Risk level: critical" — symbol đổi: `MODE_VALUE_RX`, `same_as_pinned`, `norm` (lambda trong `same_as_pinned`) của K2 + lớp test mới `TestK2PushedModeLine` + mục markdown; luồng liệt kê (`Run_harmonized → …`, `Main → …`, `Measure_and_compare → …`) đều ghi "changed: Kế hoạch 13 — tiến độ (coder)" = nối nhầm qua mục markdown như B7a; caller thật của `same_as_pinned` chỉ `clone_pinned` (K2) (`dc_B9b.txt`) |
+| B9c | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, ghi hash ghim B9 + bản đẩy, chỉ thêm) | "Changes: 1 files, 1 symbols / Affected processes: 195 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a) (`dc_B9c.txt`) |
