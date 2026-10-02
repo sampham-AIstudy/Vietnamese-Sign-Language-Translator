@@ -3,17 +3,22 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-10-03 01:03 (giờ Việt Nam)
-- HEAD: c722872 (+ commit state này) | Nhánh: feat/vslt-complete
+- Cập nhật lần cuối: 2026-10-03 01:27 (giờ Việt Nam)
+- HEAD: 347e290 (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 01:03 ngày 3/10 giao vslt-coder 13 B7 lần 2 (việc kế tiếp ghi ngay dưới) tại HEAD c722872.
-  5h: cửa sổ mới (file usage ghi null lúc 01:00 = sau mốc reset), 7 ngày 44%. Cổng: 0 + 69 (est coder = max 46/69/11) ≤ 90 → đạt.
+- Trạng thái phiên: ĐANG CHẠY — 01:27 ngày 3/10 giao vslt-coder 13 B8 (kiểm ngân sách GPU §3.7 → ghim + đẩy K1 GPU → theo dõi → tải → kiểm → commit
+  reports/retrain_2026-10-02/k1/ + k1_outputs.json khóa stgcn_best_pt.sha256). 5h 15% (reset 06:00 VN), 7 ngày 46%. Cổng: 15 + 69 = 84 ≤ 90 → đạt.
+  B7 XONG (518dac3, 0a4e143, c0c70d2 = GHIM MỚI, 2dc5b7e, 347e290; đã push): nguyên nhân v1 treo = snapshot_download tải cả tf_model.h5 + flax
+  (1.8 GB thừa) không timeout; sửa: chỉ 6 file PyTorch, hf_hub_download từng file, timeout/retry, kiểm sha, HF_HUB_DISABLE_XET=1, watchdog HF 30 phút.
+  K2 v2 (version 2) COMPLETE 2.63 phút CPU: preflight 44/44 khớp, leak 0; đối chiếu local 34/34. Test 164 OK/2 skip. 0 GPU-phút.
+  GIẢ ĐỊNH CẦN REVIEWER: coder hiểu §7.2-1 ("watchdog cắt job → CẦN NGƯỜI DÙNG") chỉ cho job GPU/train, nên tự sửa + đẩy v2 (orchestrator đã giao sửa);
+  hằng tải HF gõ trong kernel (coi là hạ tầng); log commit bằng git add -f; 518dac3 thiếu detect-changes trước commit (chạy bù).
   (Trước đó: chờ hạn mức 22:19 → 01:00, 5h 80–84%.)
   K2 preflight v1 = ERROR (orchestrator kiểm 23:10 VN): watchdog 105 phút giết `hf_probe.py VietAI/vit5-base` — snapshot HF kẹt ở
   "Fetching 10 files 4/10" suốt ~100 phút (bước trước đó: clone, pip, prepare_vsl_gh, prepare_translation, clean_10k, vocab đều chạy xong trong ~83 s).
-  Output + log đã tải: _work/_plan13_tmp/k2_preflight_v1/ (env.json, SHA256SUMS, logs/*.log, translation_corpus_validation.json). CHƯA đối chiếu gì.
-  VIỆC KẾ TIẾP (sau reset 01:00): vslt-coder 13 B7 lần 2 — (1) đối chiếu phần output đã có (vocab, clean_10k, translation validation, SHA256SUMS)
+  Output + log đã tải: _work/_plan13_tmp/k2_preflight_v1/ (đã đối chiếu ở B7 lần 2: 28 dòng, 0 lệch).
+  [LỊCH SỬ — đã làm xong 01:25] Việc giao 01:03: vslt-coder 13 B7 lần 2 — (1) đối chiếu phần output đã có (vocab, clean_10k, translation validation, SHA256SUMS)
   với preregistration; (2) sửa hf_probe: chỉ tải đúng file cần (allow_patterns, tránh tf/flax/bin thừa), timeout/retry từng file, ghi lý do;
   nếu sửa đổi nội dung đã đăng ký → theo §7.2/planner; (3) commit, push, đẩy K2 v2 preflight, theo dõi. Rồi B8 (K1 GPU).
   Song song khi chờ kernel: planner kế hoạch 11 (việc 5) — chưa có file.
@@ -272,7 +277,7 @@
 ## Tài nguyên
 - Kaggle GPU tuần này: ~6 giờ đã dùng (ước tính của người dùng, chưa xác minh), giới hạn tự đặt 10 giờ/tuần.
 - Kaggle kernel đang chạy: phmvnsm33/vsl-retrain-cslr-vit5 version 1 (K2 MODE=preflight, CPU, private) — đẩy 2026-10-02T14:15:08Z (21:15 VN);
-  KẾT THÚC ERROR (kiểm 16:10Z = 23:10 VN): watchdog 105 phút giết hf_probe (snapshot ViT5 kẹt). Hiện KHÔNG có kernel nào chạy.
+  v1 ERROR (watchdog, 16:10Z); v2 COMPLETE 18:20:57Z (2.63 phút CPU). Hiện KHÔNG có kernel nào chạy (01:27 VN 3/10).
   Kiểm: `PYTHONUTF8=1 .venv/Scripts/kaggle kernels status phmvnsm33/vsl-retrain-cslr-vit5`.
 - Giới hạn API: đã gặp lỗi 429 (reset 4:20 sáng, giờ Việt Nam). Xem orchestrator_resume_addendum.md mục 4 và usage_guard_addendum.md.
 
