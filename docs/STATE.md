@@ -5,8 +5,8 @@
 
 - Cập nhật lần cuối: 2026-10-02 09:40 (giờ Việt Nam)
 - HEAD: eea8906 (+ commit state này) | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG CHẠY — 5h 5% lúc 09:23 (reset 14:30), 7 ngày 11%.
-  Người dùng (09:20 ngày 2/10): tìm checkpoint thiếu trên Colab + Kaggle, không có thì TRAIN LẠI trên Kaggle; bỏ Modal (không dùng); xóa file thừa.
+- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 81% lúc 11:20 (reset 14:30), 7 ngày 21%. Đơn vị kế tiếp (coder B3, est ~19–26) không lọt; đã lưu + push.
+  Hẹn giờ nền tự đánh thức orchestrator ~14:32. KHÔNG tắt máy (người dùng không yêu cầu hôm nay).
   Đã tìm Kaggle (09:25): 9 kernel của phmvnsm33 (extract/pack/train unified/harmonized/alphabet) + 2 dataset private — KHÔNG có stgcn_best.pt,
   ViT5, cslr_best.pt, gloss_vocab_canonical.txt. Colab: file nằm trên Google Drive của người dùng — orchestrator không truy cập được (chờ người dùng xem).
   Đã xóa (09:35, đã kiểm 0 link/junction trước khi xóa): _work/_plan12_tmp/{dl_hauuto, dl_qipedc, vslgh_src, vslgh_head.tar} (~21G),
@@ -25,7 +25,12 @@
   random.Random(42) trên SENT001–270, train 240; CSLR train S01–S04×train, val S05×val, test S06×test; ViT5 stage1 loại cặp khớp 60 câu;
   configs/vslgh_sentence_split_v1.json + src/data/sentence_split.py; vocab chỉ từ câu train (≠ 372); tiêu chí §3.12 (sacrebleu 13a, bootstrap
   1000, RandomState(42), CI 95%); eval MỘT lần local (scripts/eval_sentsplit.py); K3 công thức cũ = B14 tùy chọn. Bước tiếp từ B2a.
-  ĐANG GIAO: vslt-coder kế hoạch 13 B2a–B2c — 10:40. Sau đó: 13 B3–B5, ...; coder 06 B10 (tài liệu) xen khi chờ kernel.
+  Coder 13 B2a–B2c XONG (0a18183, 9146f6f, 059a780, b2be827): configs/vslgh_sentence_split_v1.json (240/30/30, seed 42, sha256 289b2ac1…);
+  src/data/sentence_split.py; guard tests/test_sentence_split_guard.py 39 OK / 1 skip (Clean10k G2 chờ B3), 4 đột biến bị bắt; dataset mặc định
+  == mã cũ (22 cấu hình); vocab train-only 322 token (sha256 c0af13db…, 50 gloss bị loại). Phát hiện ngoài phạm vi: (1) test_hand_landmarks_ws
+  TestReset.test_reset_segments_and_graphs CHẬP CHỜN (OK/FAIL/OK) — cần điều tra; (2) tests.data.test_vsl_gh_dataset test_19 FAIL: dataset_canonical.json
+  khôi phục có 0 trường annotation_source (dữ liệu, kế hoạch 12 b3).
+  VIỆC KẾ TIẾP: vslt-coder 13 B3 (cleaned 10k jsonl + đóng gói Tier 1) → B4a–B4d → B5 (đăng ký trước, commit ghim, push) → … Sau đó: 13 B3–B5, ...; coder 06 B10 (tài liệu) xen khi chờ kernel.
   SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
   `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint
   stgcn/stgcn_h360, video+nhãn QIPEDC, hauuto_raw, alphabet_hands_kaggle, vsl_gh, parallel_text. Còn nguyên: data/raw_tudienngonngukyhieu,
@@ -241,3 +246,4 @@
 - 2026-10-01 19:25 | khôi phục sau tắt máy (người dùng nhắn "tiếp tục công việc") | STATE khớp git (HEAD dcf9b0d), dữ liệu vẫn rỗng | Hỏi người dùng 2 câu chặn (đã trả lời), giao planner kế hoạch 12 khôi phục dữ liệu.
 - 2026-10-01 21:40 | dừng theo hạn mức (84%, không phải ngắt) | kế hoạch 12 APPROVE; 06 Lần sửa 5 đã lập, coder B10 chưa giao | Lưu STATE, commit, push, tắt máy theo yêu cầu người dùng (20:00).
 - 2026-10-02 09:40 | khôi phục sau tắt máy (người dùng giao việc mới) | STATE khớp git (HEAD eea8906) | Tìm Kaggle (không có), dọn file thừa, giao planner kế hoạch 13.
+- 2026-10-02 11:25 | dừng theo hạn mức (81%) | 13 B2a–B2c xong | Lưu STATE, push, hẹn giờ 14:32 làm tiếp B3.
