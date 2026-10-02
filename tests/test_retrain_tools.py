@@ -2379,5 +2379,220 @@ class TestRetrainKernels(_Scratch):
             K.find_input_dir(prereg2, self.p("z", "input"))
 
 
+
+# names of the files of the HF repo VietAI/vit5-base at sha 2209a38d (HfApi().model_info(files_metadata=True), plan 13 B7
+# lần 2, _work/_plan13_tmp/B7r2_hf_repo_files.txt) — used only as a fixture of file NAMES for the selection rule
+VIT5_BASE_FILES = [".gitattributes", "README.md", "config.json", "flax_model.msgpack", "pytorch_model.bin",
+                   "special_tokens_map.json", "spiece.model", "tf_model.h5", "tokenizer.json", "tokenizer_config.json"]
+VIT5_SHA = "2209a38d735ede63e88f5aa52bcdc11a05a37b85"
+
+
+class TestK2HfFetch(_Scratch):
+    """Plan 13 B7 lần 2: the HF step of K2 downloads only the files a PyTorch ViT5 train/eval needs, file by file, with a
+    per-attempt timeout, retries, a per-file progress line, integrity check and its own (shorter) watchdog."""
+
+    @classmethod
+    def setUpClass(cls):
+        with open(os.path.join(K2_DIR, "kernel-metadata.json"), encoding="utf-8") as f:
+            m2 = json.load(f)
+        cls.k2_path = os.path.join(K2_DIR, m2["code_file"])
+        cls.K2 = _load_kernel(cls.k2_path, "plan13_k2_kernel_hf")
+
+    # --- selection ----------------------------------------------------------------------------------------------------
+    def test_select_vit5_base_only_torch_files(self):
+        K = self.K2
+        sel, skipped = K.hf_select_files(VIT5_BASE_FILES)
+        self.assertEqual(sel, ["config.json", "pytorch_model.bin", "special_tokens_map.json", "spiece.model",
+                               "tokenizer.json", "tokenizer_config.json"])
+        self.assertEqual(skipped, [".gitattributes", "README.md", "flax_model.msgpack", "tf_model.h5"])
+
+    def test_select_prefers_safetensors_and_handles_shards(self):
+        K = self.K2
+        sel, skipped = K.hf_select_files(VIT5_BASE_FILES + ["model.safetensors", "generation_config.json",
+                                                            "added_tokens.json"])
+        self.assertIn("model.safetensors", sel)
+        self.assertNotIn("pytorch_model.bin", sel)
+        self.assertIn("pytorch_model.bin", skipped)
+        self.assertIn("generation_config.json", sel)
+        self.assertIn("added_tokens.json", sel)
+        shards = ["config.json", "tokenizer.json", "model.safetensors.index.json", "model-00001-of-00002.safetensors",
+                  "model-00002-of-00002.safetensors", "pytorch_model.bin.index.json", "pytorch_model-00001-of-00002.bin"]
+        sel, skipped = K.hf_select_files(shards)
+        self.assertEqual(sel, ["config.json", "model-00001-of-00002.safetensors", "model-00002-of-00002.safetensors",
+                               "model.safetensors.index.json", "tokenizer.json"])
+        sel, _ = K.hf_select_files(["config.json", "spiece.model", "pytorch_model.bin.index.json",
+                                    "pytorch_model-00001-of-00002.bin", "pytorch_model-00002-of-00002.bin"])
+        self.assertEqual(sel, ["config.json", "pytorch_model-00001-of-00002.bin", "pytorch_model-00002-of-00002.bin",
+                               "pytorch_model.bin.index.json", "spiece.model"])
+
+    def test_select_refuses_incomplete_repo(self):
+        K = self.K2
+        for files in (["config.json", "spiece.model", "tf_model.h5", "flax_model.msgpack"],  # no torch weights
+                      ["config.json", "pytorch_model.bin"],                                 # no tokenizer
+                      ["pytorch_model.bin", "spiece.model", "tokenizer.json"]):              # no config
+            with self.assertRaises(K.KernelError, msg=files):
+                K.hf_select_files(files)
+
+    # --- integrity / timeouts -----------------------------------------------------------------------------------------
+    def test_verify_file(self):
+        K = self.K2
+        data = b"hello vit5"
+        s256 = hashlib.sha256(data).hexdigest()
+        g1 = hashlib.sha1(b"blob %d\0" % len(data) + data).hexdigest()
+        self.assertEqual(K.git_blob_sha1(data), g1)
+        K.hf_verify({"name": "a.bin", "size": len(data), "lfs_sha256": s256, "blob_id": "x"},
+                    {"size": len(data), "sha256": s256, "git_sha1": g1})
+        K.hf_verify({"name": "a.json", "size": len(data), "lfs_sha256": None, "blob_id": g1},
+                    {"size": len(data), "sha256": s256, "git_sha1": g1})
+        got = {"size": len(data), "sha256": s256, "git_sha1": g1}
+        for meta in ({"name": "a", "size": 1, "lfs_sha256": s256, "blob_id": None},          # size
+                     {"name": "a", "size": len(data), "lfs_sha256": "0" * 64, "blob_id": None},  # lfs sha256
+                     {"name": "a", "size": len(data), "lfs_sha256": None, "blob_id": "0" * 40},  # git blob
+                     {"name": "a", "size": len(data), "lfs_sha256": None, "blob_id": None}):     # nothing to check
+            with self.assertRaises(K.KernelError, msg=meta):
+                K.hf_verify(meta, got)
+
+    def test_attempt_seconds_and_hf_watchdog_shorter_than_kernel_watchdog(self):
+        K = self.K2
+        self.assertEqual(K.hf_attempt_seconds(0), K.HF_ATTEMPT_BASE_S)
+        big = K.hf_attempt_seconds(903886847)
+        self.assertGreater(big, K.HF_ATTEMPT_BASE_S)
+        self.assertLessEqual(big, K.HF_STEP_MINUTES * 60)
+        with open(os.path.join(ROOT, "reports", "retrain_2026-10-02", "preregistration.json"), encoding="utf-8") as f:
+            prereg = json.load(f)
+        self.assertLess(K.HF_STEP_MINUTES, prereg["jobs"]["k2"]["watchdog_minutes"])
+        self.assertGreaterEqual(K.HF_ATTEMPTS, 2)
+        self.assertEqual(K.HF_CHILD_ENV["HF_HUB_DISABLE_XET"], "1")
+
+    def test_probe_downloads_file_by_file_never_whole_repo(self):
+        K = self.K2
+        self.assertNotIn("snapshot_download", K.HF_PROBE)
+        self.assertIn("hf_hub_download", K.HF_PROBE)
+        self.assertIn("files_metadata=True", K.HF_PROBE)
+        compile(K.HF_PROBE, "hf_probe.py", "exec")
+
+    def test_run_attempts_timeout_retry_and_deadline(self):
+        import time as _t
+        K = self.K2
+        t0 = _t.time()
+        with self.assertRaises(K.KernelError) as cm, contextlib.redirect_stdout(io.StringIO()) as out:
+            K.run_attempts([sys.executable, "-c", "import time; time.sleep(60)"], self.tmp, self.p("a.log"),
+                           _t.time() + 120, attempt_seconds=1, attempts=2, label="sleepy")
+        self.assertNotIsInstance(cm.exception, K.Watchdog)
+        self.assertLess(_t.time() - t0, 30)
+        self.assertEqual(out.getvalue().count("sleepy attempt"), 2)
+        # first attempt fails, second succeeds -> only the second attempt's output is returned
+        marker = self.p("marker")
+        code = ("import os,sys\nm=sys.argv[1]\nif not os.path.exists(m):\n    open(m,'w').close()\n"
+                "    print('FIRST'); sys.exit(3)\nprint('HF_FILE {\"ok\": 1}')\n")
+        with contextlib.redirect_stdout(io.StringIO()) as out:
+            text = K.run_attempts([sys.executable, "-c", code, marker], self.tmp, self.p("b.log"), _t.time() + 120,
+                                  attempt_seconds=60, attempts=3, label="flaky")
+        self.assertNotIn("FIRST", text)
+        self.assertEqual(K.last_tagged(text, "HF_FILE"), {"ok": 1})
+        self.assertIn("flaky attempt 1/3", out.getvalue())
+        self.assertIn("flaky attempt 2/3", out.getvalue())
+        # the step deadline itself expires -> Watchdog (not retried)
+        t0 = _t.time()
+        with self.assertRaises(K.Watchdog), contextlib.redirect_stdout(io.StringIO()):
+            K.run_attempts([sys.executable, "-c", "import time; time.sleep(60)"], self.tmp, self.p("c.log"),
+                           _t.time() + 1.5, attempt_seconds=60, attempts=3, label="late")
+        self.assertLess(_t.time() - t0, 30)
+
+    # --- whole HF step with a fake child ------------------------------------------------------------------------------
+    def _fake_child(self, calls, corrupt=None, load_sha=None, path_sha=None):
+        K = self.K2
+        files, blobs = [], {}
+        for name in VIT5_BASE_FILES:
+            data = ("bytes of " + name).encode()
+            blobs[name] = data
+            lfs = name.endswith((".bin", ".h5", ".msgpack", ".model"))
+            files.append({"name": name, "size": len(data),
+                          "lfs_sha256": hashlib.sha256(data).hexdigest() if lfs else None,
+                          "blob_id": None if lfs else K.git_blob_sha1(data)})
+
+        def fake(argv, cwd, log_path, deadline, attempt_seconds, attempts, env=None, label=""):
+            sub = str(argv[2])
+            calls.append({"sub": sub, "argv": [str(a) for a in argv], "deadline": deadline, "env": dict(env or {}),
+                          "attempt_seconds": attempt_seconds, "attempts": attempts})
+            if sub == "list":
+                return "HF_LIST " + json.dumps({"sha": VIT5_SHA, "files": files, "versions": {"huggingface_hub": "x"}})
+            if sub == "fetch":
+                name = str(argv[5])
+                data = blobs[name] + (b"!" if name == corrupt else b"")
+                return "HF_FILE " + json.dumps({"name": name, "size": len(data),
+                                                "path": f"/c/models--x/snapshots/{path_sha or VIT5_SHA}/{name}",
+                                                "sha256": hashlib.sha256(data).hexdigest(),
+                                                "git_sha1": K.git_blob_sha1(data), "seconds": 0.1})
+            if sub == "load":
+                return "HF_SNAPSHOT " + json.dumps({"name": str(argv[3]), "snapshot_sha": load_sha or VIT5_SHA,
+                                                    "n_params": 7, "tokenizer": "T5TokenizerFast"})
+            raise AssertionError(sub)
+        return fake
+
+    def _patched(self, fake, tag):
+        from pathlib import Path
+        from unittest import mock
+        K = self.K2
+        stack = contextlib.ExitStack()
+        stack.enter_context(mock.patch.object(K, "run_attempts", fake))
+        stack.enter_context(mock.patch.object(K, "SCRATCH", Path(self.p(tag, "scratch"))))
+        stack.enter_context(mock.patch.object(K, "WORK", Path(self.p(tag, "work"))))
+        return stack
+
+    def test_hf_snapshot_fetches_only_needed_files_with_own_deadline(self):
+        import time as _t
+        K = self.K2
+        prereg = {"hf_base_model": {"name": "VietAI/vit5-base", "revision": None}}
+        calls = []
+        far = _t.time() + 6000
+        with self._patched(self._fake_child(calls), "ok"), contextlib.redirect_stdout(io.StringIO()) as out:
+            rec = K.hf_snapshot(prereg, far, "preflight")
+        fetched = [c["argv"][5] for c in calls if c["sub"] == "fetch"]
+        self.assertEqual(fetched, ["config.json", "pytorch_model.bin", "special_tokens_map.json", "spiece.model",
+                                   "tokenizer.json", "tokenizer_config.json"])
+        self.assertEqual([c["sub"] for c in calls], ["list"] + ["fetch"] * 6 + ["load"])
+        for c in calls:
+            self.assertLessEqual(c["deadline"], _t.time() + K.HF_STEP_MINUTES * 60 + 1)
+            self.assertLess(c["deadline"], far)
+            self.assertEqual(c["env"].get("HF_HUB_DISABLE_XET"), "1")
+            self.assertGreaterEqual(c["attempts"], 2)
+            if c["sub"] == "fetch":
+                self.assertEqual(c["argv"][3:5], ["VietAI/vit5-base", VIT5_SHA])  # one revision for all files
+        self.assertEqual([c for c in calls if c["sub"] == "load"][0]["env"].get("HF_HUB_OFFLINE"), "1")
+        self.assertEqual(rec["snapshot_sha"], VIT5_SHA)
+        self.assertEqual(rec["n_params"], 7)
+        self.assertEqual([f["name"] for f in rec["files"]], fetched)
+        self.assertEqual(rec["skipped"], [".gitattributes", "README.md", "flax_model.msgpack", "tf_model.h5"])
+        self.assertEqual(rec["step_minutes"], K.HF_STEP_MINUTES)
+        log_text = out.getvalue()
+        for i, name in enumerate(fetched, 1):
+            self.assertIn(f"HF FILE {i}/6 {name}", log_text)
+
+    def test_hf_snapshot_integrity_and_sha_mismatch_refused(self):
+        import time as _t
+        K = self.K2
+        prereg = {"hf_base_model": {"name": "VietAI/vit5-base", "revision": None}}
+        for i, kw in enumerate(({"corrupt": "pytorch_model.bin"}, {"load_sha": "f" * 40}, {"path_sha": "e" * 40})):
+            with self._patched(self._fake_child([], **kw), f"bad{i}"), contextlib.redirect_stdout(io.StringIO()):
+                with self.assertRaises(K.KernelError, msg=kw):
+                    K.hf_snapshot(prereg, _t.time() + 6000, "preflight")
+
+    def test_hf_step_watchdog_is_a_kernel_error_unless_kernel_deadline(self):
+        import time as _t
+        K = self.K2
+        prereg = {"hf_base_model": {"name": "VietAI/vit5-base", "revision": None}}
+
+        def stuck(*a, **k):
+            raise K.Watchdog("watchdog: killed at the wall-clock limit")
+        with self._patched(stuck, "wd"), contextlib.redirect_stdout(io.StringIO()):
+            with self.assertRaises(K.KernelError) as cm:
+                K.hf_snapshot(prereg, _t.time() + 6000, "preflight")  # the HF step deadline binds
+            self.assertNotIsInstance(cm.exception, K.Watchdog)
+            self.assertIn("HF step watchdog", str(cm.exception))
+            with self.assertRaises(K.Watchdog):
+                K.hf_snapshot(prereg, _t.time() + 5, "preflight")  # the kernel deadline binds
+
+
 if __name__ == "__main__":
     unittest.main()

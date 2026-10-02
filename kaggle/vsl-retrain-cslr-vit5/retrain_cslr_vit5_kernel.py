@@ -4,7 +4,8 @@ Kaggle job K2 of plan 13 (docs/plans/13-train-lai-checkpoint-thieu.md §3.4e + [
 MODE (a constant, changed only by a commit):
   "preflight"  CPU, no accelerator. Clone the repository at PIN_COMMIT (asserted), the two upstream sources at the commits
                of the preregistration, install the pinned libraries, rebuild the data (VSL-GH canonical, 10k parallel
-               text, cleaned 10k, train-only vocab), download VietAI/vit5-base (snapshot sha recorded), then measure
+               text, cleaned 10k, train-only vocab), download the PyTorch files of VietAI/vit5-base file by file
+               (timeout + retries + own HF watchdog, sha256 verified, snapshot sha recorded), then measure
                everything with scripts/retrain_preregister.py (measure_k2 — the same code that wrote the
                preregistration) and compare with reports/retrain_<D>/preregistration.json. Any difference -> exit != 0.
                No training and no evaluation of any kind.
@@ -348,30 +349,220 @@ def build_data(prereg, deadline):
     run_ok([py, *jobs["vocab"]["argv"]], REPO, WORK / "logs" / "vocab.log", deadline)
 
 
+# HF step (plan 13 B7 lần 2). v1 (0908ef3) called snapshot_download(name): all 10 files of VietAI/vit5-base, incl. the
+# TF (tf_model.h5) and Flax (flax_model.msgpack) weights that PyTorch never reads (~1.8 GB extra), with no timeout of its
+# own; it stalled at "Fetching 10 files: 4/10" until the 105-min kernel watchdog. Now: list the repo at one resolved
+# revision, select only what transformers loads for PyTorch (hf_select_files), download file by file (hf_hub_download,
+# same revision) with a per-attempt timeout, retries and one progress line per file, verify size + sha256 (LFS) / git blob
+# sha1 against the Hub listing, then load tokenizer + model OFFLINE from the cache (proves the selection is enough).
+# The whole step has its own watchdog (HF_STEP_MINUTES), shorter than the registered kernel watchdog.
+HF_STEP_MINUTES = 30          # wall clock of the whole HF step (< jobs.k2.watchdog_minutes = 105)
+HF_ATTEMPTS = 3               # attempts per child (list / each file / load); an interrupted download resumes
+HF_ATTEMPT_BASE_S = 120       # per-attempt timeout = base + size / HF_MIN_BYTES_PER_S
+HF_MIN_BYTES_PER_S = 2_000_000
+HF_LOAD_SECONDS = 600         # per attempt, offline load of tokenizer + model on CPU
+HF_CHILD_ENV = {"HF_HUB_DISABLE_XET": "1", "HF_HUB_ENABLE_HF_TRANSFER": "0", "HF_HUB_DOWNLOAD_TIMEOUT": "60",
+                "HF_HUB_ETAG_TIMEOUT": "60", "HF_HUB_DISABLE_PROGRESS_BARS": "1", "PYTHONUNBUFFERED": "1"}
+HF_OFFLINE_ENV = {"HF_HUB_OFFLINE": "1", "TRANSFORMERS_OFFLINE": "1"}
+HF_CONFIG_FILE = "config.json"
+HF_OPTIONAL_FILES = ("generation_config.json", "special_tokens_map.json", "tokenizer_config.json", "added_tokens.json")
+HF_TOKENIZER_FILES = ("tokenizer.json", "spiece.model")
+# PyTorch weights in the order transformers prefers them: (single file or index, shard pattern of the index)
+HF_WEIGHT_RULES = (("model.safetensors", None),
+                   ("model.safetensors.index.json", re.compile(r"^model-\d+-of-\d+\.safetensors$")),
+                   ("pytorch_model.bin", None),
+                   ("pytorch_model.bin.index.json", re.compile(r"^pytorch_model-\d+-of-\d+\.bin$")))
+
 HF_PROBE = '''
-import json, sys
-from pathlib import Path
-from huggingface_hub import snapshot_download
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
-name = sys.argv[1]
-path = snapshot_download(name)
-tok = AutoTokenizer.from_pretrained(name)
-model = AutoModelForSeq2SeqLM.from_pretrained(name)
-print("HF_SNAPSHOT " + json.dumps({"name": name, "snapshot_sha": Path(path).name,
-                                    "n_params": sum(p.numel() for p in model.parameters()),
-                                    "tokenizer": type(tok).__name__}))
+import hashlib, json, os, sys, time
+from importlib.metadata import PackageNotFoundError, version
+
+
+def versions():
+    out = {}
+    for n in ("huggingface_hub", "hf_xet", "hf_transfer", "transformers", "tokenizers", "safetensors"):
+        try:
+            out[n] = version(n)
+        except PackageNotFoundError:
+            out[n] = None
+    out["env"] = {k: os.environ[k] for k in sorted(os.environ) if k.startswith("HF_HUB_") and "TOKEN" not in k}
+    return out
+
+
+def sums(path):
+    size = os.path.getsize(path)
+    h, g = hashlib.sha256(), hashlib.sha1(b"blob %d\\0" % size)
+    with open(path, "rb") as f:
+        for block in iter(lambda: f.read(1 << 20), b""):
+            h.update(block)
+            g.update(block)
+    return size, h.hexdigest(), g.hexdigest()
+
+
+sub, name = sys.argv[1], sys.argv[2]
+if sub == "list":
+    from huggingface_hub import HfApi
+    revision = sys.argv[3] if len(sys.argv) > 3 else None
+    info = HfApi().model_info(name, revision=revision, files_metadata=True)
+    files = []
+    for s in info.siblings:
+        lfs = s.lfs
+        lfs_sha = (lfs.get("sha256") if isinstance(lfs, dict) else getattr(lfs, "sha256", None)) if lfs else None
+        files.append({"name": s.rfilename, "size": s.size, "lfs_sha256": lfs_sha, "blob_id": s.blob_id})
+    print("HF_LIST " + json.dumps({"sha": info.sha, "files": files, "versions": versions()}), flush=True)
+elif sub == "fetch":
+    from huggingface_hub import hf_hub_download
+    sha, fname = sys.argv[3], sys.argv[4]
+    t = time.time()
+    path = hf_hub_download(name, fname, revision=sha)
+    size, s256, g1 = sums(path)
+    print("HF_FILE " + json.dumps({"name": fname, "path": path, "size": size, "sha256": s256, "git_sha1": g1,
+                                   "seconds": round(time.time() - t, 2)}), flush=True)
+elif sub == "load":
+    from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
+    sha = sys.argv[3]
+    tok = AutoTokenizer.from_pretrained(name, revision=sha)
+    model = AutoModelForSeq2SeqLM.from_pretrained(name, revision=sha)
+    print("HF_SNAPSHOT " + json.dumps({"name": name, "snapshot_sha": getattr(model.config, "_commit_hash", None),
+                                       "n_params": sum(p.numel() for p in model.parameters()),
+                                       "tokenizer": type(tok).__name__}), flush=True)
+else:
+    raise SystemExit("unknown sub-command " + sub)
 '''
 
 
+def git_blob_sha1(data):
+    return hashlib.sha1(b"blob %d\0" % len(data) + data).hexdigest()
+
+
+def hf_select_files(names):
+    """Files of a HF model repo that transformers needs to load the PyTorch model + tokenizer -> (selected, skipped)."""
+    names = set(names)
+    if HF_CONFIG_FILE not in names:
+        raise KernelError(f"HF repo has no {HF_CONFIG_FILE}: {sorted(names)}")
+    tok = [n for n in HF_TOKENIZER_FILES if n in names]
+    if not tok:
+        raise KernelError(f"HF repo has no tokenizer file ({HF_TOKENIZER_FILES}): {sorted(names)}")
+    weights = None
+    for head, shard_rx in HF_WEIGHT_RULES:
+        if head in names:
+            shards = [n for n in names if shard_rx.match(n)] if shard_rx else []
+            if shard_rx and not shards:
+                raise KernelError(f"HF repo has {head} but no shard file")
+            weights = [head, *shards]
+            break
+    if weights is None:
+        raise KernelError(f"HF repo has no PyTorch weights ({[h for h, _ in HF_WEIGHT_RULES]}): {sorted(names)}")
+    selected = sorted({HF_CONFIG_FILE, *tok, *weights, *(n for n in HF_OPTIONAL_FILES if n in names)})
+    return selected, sorted(names - set(selected))
+
+
+def hf_attempt_seconds(size_bytes):
+    return HF_ATTEMPT_BASE_S + int((size_bytes or 0) / HF_MIN_BYTES_PER_S)
+
+
+def hf_verify(meta, got):
+    """Downloaded file == Hub listing: size, and sha256 (LFS files) or git blob sha1 (plain git files)."""
+    name = meta.get("name")
+    if meta.get("size") != got.get("size"):
+        raise KernelError(f"HF file {name}: size {got.get('size')} != Hub {meta.get('size')}")
+    if meta.get("lfs_sha256"):
+        if got.get("sha256") != meta["lfs_sha256"]:
+            raise KernelError(f"HF file {name}: sha256 {got.get('sha256')} != Hub LFS {meta['lfs_sha256']}")
+    elif meta.get("blob_id"):
+        if got.get("git_sha1") != meta["blob_id"]:
+            raise KernelError(f"HF file {name}: git blob {got.get('git_sha1')} != Hub {meta['blob_id']}")
+    else:
+        raise KernelError(f"HF file {name}: the Hub listing has no sha256 / blob id to verify against")
+
+
+def last_tagged(text, tag):
+    lines = [ln for ln in text.splitlines() if ln.startswith(tag + " ")]
+    if not lines:
+        raise KernelError(f"no '{tag}' line in the child output")
+    return json.loads(lines[-1][len(tag) + 1:])
+
+
+def run_attempts(argv, cwd, log_path, deadline, attempt_seconds, attempts, env=None, label=""):
+    """run() up to `attempts` times, each with its own timeout (capped by `deadline`); returns the log text of the
+    successful attempt. The step `deadline` itself expiring -> Watchdog (no retry); all attempts failing -> KernelError."""
+    last = None
+    for k in range(1, attempts + 1):
+        log_path = Path(log_path)
+        start = log_path.stat().st_size if log_path.exists() else 0
+        t = time.time()
+        attempt_deadline = min(deadline, t + attempt_seconds)
+        try:
+            rc = run(argv, cwd, log_path, attempt_deadline, env=env)
+        except Watchdog:
+            if attempt_deadline >= deadline:
+                raise
+            last = f"timeout after {attempt_seconds} s"
+            log(f"{label} attempt {k}/{attempts}: {last}")
+            continue
+        with open(log_path, "rb") as f:
+            f.seek(start)
+            text = f.read().decode("utf-8", errors="replace")
+        if rc == 0:
+            log(f"{label} attempt {k}/{attempts}: ok in {time.time() - t:.1f} s")
+            return text
+        last = f"exit {rc}: " + " | ".join(text.splitlines()[-5:])
+        log(f"{label} attempt {k}/{attempts}: {last}")
+    raise KernelError(f"{label}: {attempts} attempt(s) failed; last: {last}")
+
+
 def hf_snapshot(prereg, deadline, tag):
+    t0 = time.time()
+    hf = prereg["hf_base_model"]
+    name, revision = hf["name"], hf.get("revision")
+    hf_deadline = min(deadline, t0 + 60 * HF_STEP_MINUTES)
     SCRATCH.mkdir(parents=True, exist_ok=True)
     probe = SCRATCH / "hf_probe.py"
     if not probe.exists():
         probe.write_text(HF_PROBE, encoding="utf-8")
     logp = WORK / "logs" / f"hf_{tag}.log"
-    run_ok([sys.executable, str(probe), prereg["hf_base_model"]["name"]], SCRATCH, logp, deadline)
-    line = [ln for ln in logp.read_text(encoding="utf-8").splitlines() if ln.startswith("HF_SNAPSHOT ")][-1]
-    return json.loads(line[len("HF_SNAPSHOT "):])
+    env = {**os.environ, **HF_CHILD_ENV}
+
+    def step(args, seconds, label, child_env=env):
+        return run_attempts([sys.executable, str(probe), *args], SCRATCH, logp, hf_deadline, seconds, HF_ATTEMPTS,
+                            env=child_env, label=label)
+
+    try:
+        listing = last_tagged(step(["list", name, *([revision] if revision else [])], HF_ATTEMPT_BASE_S,
+                                   f"HF LIST {name}"), "HF_LIST")
+        sha = listing.get("sha")
+        if not isinstance(sha, str) or not re.fullmatch(r"[0-9a-f]{40}", sha):
+            raise KernelError(f"HF {name}: no commit sha in the Hub listing ({sha!r})")
+        meta = {f["name"]: f for f in listing["files"]}
+        selected, skipped = hf_select_files(list(meta))
+        total = sum(meta[n].get("size") or 0 for n in selected)
+        log(f"HF {name} @ {sha}: {len(selected)} file(s) needed, {total} B; not downloaded: {skipped}")
+        files = []
+        for i, fname in enumerate(selected, 1):
+            m = meta[fname]
+            label = f"HF FILE {i}/{len(selected)} {fname} ({m.get('size')} B)"
+            seconds = hf_attempt_seconds(m.get("size"))
+            log(f"{label}: fetching (timeout {seconds} s per attempt, {HF_ATTEMPTS} attempts)")
+            got = last_tagged(step(["fetch", name, sha, fname], seconds, label), "HF_FILE")
+            if Path(got["path"]).parent.name != sha:
+                raise KernelError(f"HF file {fname} resolved to {got['path']}, not the snapshot {sha}")
+            hf_verify(m, got)
+            files.append({"name": fname, "size": got["size"], "sha256": got["sha256"], "seconds": got["seconds"]})
+            log(f"{label}: verified sha256 {got['sha256']} in {got['seconds']} s")
+        loaded = last_tagged(step(["load", name, sha], HF_LOAD_SECONDS, f"HF LOAD {name} (offline)",
+                                  child_env={**env, **HF_OFFLINE_ENV}), "HF_SNAPSHOT")
+        if loaded.get("snapshot_sha") != sha:
+            raise KernelError(f"HF {name}: loaded commit {loaded.get('snapshot_sha')} != listed {sha}")
+    except Watchdog as e:
+        if hf_deadline < deadline:
+            raise KernelError(f"HF step watchdog: {HF_STEP_MINUTES} min exceeded ({e})") from None
+        raise
+    rec = {"name": name, "revision_requested": revision, "snapshot_sha": sha, "n_params": loaded.get("n_params"),
+           "tokenizer": loaded.get("tokenizer"), "files": files, "skipped": skipped, "total_bytes": total,
+           "step_minutes": HF_STEP_MINUTES, "minutes": round((time.time() - t0) / 60, 2),
+           "hub": listing.get("versions"), "transport_env": HF_CHILD_ENV}
+    log(f"HF_SNAPSHOT {name} {sha} n_params={rec['n_params']} tokenizer={rec['tokenizer']} ({rec['minutes']} min)")
+    return rec
 
 
 def measure_and_compare(prereg):

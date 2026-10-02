@@ -465,6 +465,42 @@ Tệp tạm: `_work/_plan13_tmp/`.
   `inputs` 10k `n_lines`/cleaned `n_records`; `translation_corpus_validation.json` `final_canonical_pairs_count` == 10k `n_lines`, status PASS;
   `prepare_vsl_gh.log` số mục canonical / số keypoint == `inputs`. Chưa kiểm được từ v1 (bước `measure_and_compare` chưa chạy): dir_digest keypoints,
   lf_sha256 10k/cleaned, `counts_after_split`, `clean10k_excluded`, `leak_check`. ⇒ Không lệch dữ liệu ⇒ không dừng §7.2.
+- **Nguyên nhân treo (đo được):** v1 (`0908ef3`) gọi `snapshot_download("VietAI/vit5-base")` = tải CẢ 10 file của repo, không timeout riêng.
+  Liệt kê Hub thật (`HfApi().model_info(files_metadata=True)`, `B7r2_hf_repo_files.txt`, sha `2209a38d735ede63e88f5aa52bcdc11a05a37b85`): có
+  `tf_model.h5` (904334744 B) và `flax_model.msgpack` (903815044 B) — định dạng TF/Flax PyTorch không đọc — cạnh `pytorch_model.bin` (903886847 B);
+  không có safetensors. Theo `B7r2_smoke/smoke_result.json`: 6 file cần 907111529 B, 4 file thừa 1808152185 B (2/3 dung lượng tải là thừa).
+  `hf_preflight.log` chỉ có thanh tqdm "Fetching 10 files … 4/10 [00:09<…]" rồi im 105 phút: tqdm chỉ đếm file đã XONG, nên log v1 KHÔNG cho biết
+  file nào treo (6 file chưa xong; không xác định được từ log — không đoán). Cơ chế treo: tải song song không có timeout tổng/từng file; `hf_xet`
+  có trong môi trường local (1.6.0, `B7r2_smoke`), phiên bản trên Kaggle v1 không ghi lại ⇒ giả thuyết (CHƯA chứng minh): kênh tải Xet treo.
+- **Sửa (kernel K2, chỉ bước HF; test đỏ trước):** `hf_snapshot` mới: (1) `list` 1 lần → sha commit Hub (40 hex) + kích thước + sha256 LFS / git blob
+  id từng file; (2) `hf_select_files`: chỉ `config.json`, file tokenizer (`tokenizer.json`, `spiece.model`), tùy chọn (`generation_config.json`,
+  `special_tokens_map.json`, `tokenizer_config.json`, `added_tokens.json`) và trọng số PyTorch theo thứ tự ưu tiên của transformers
+  (`model.safetensors` > index safetensors + shard > `pytorch_model.bin` > index bin + shard); thiếu config/tokenizer/trọng số → dừng; (3) tải TỪNG
+  file bằng `hf_hub_download(…, revision=<sha đã liệt kê>)` trong tiến trình con, timeout mỗi lần thử = 120 s + size/2 MB/s, 3 lần thử (tải dở
+  được nối tiếp), 1 dòng log/lần thử + 1 dòng "HF FILE i/n <tên> (<B>): fetching/verified sha256 …"; (4) kiểm size + sha256 (LFS) hoặc git blob
+  sha1 == danh sách Hub, file phải nằm trong `snapshots/<sha>`; (5) nạp tokenizer + model OFFLINE (`HF_HUB_OFFLINE=1`) từ cache — chứng minh tập
+  file đủ; `config._commit_hash` == sha; (6) watchdog riêng bước HF `HF_STEP_MINUTES = 30` (< 105 của preregistration) → `KernelError("HF step
+  watchdog …")`; watchdog tổng vẫn như cũ. Kênh tải: `HF_HUB_DISABLE_XET=1`, `HF_HUB_DOWNLOAD_TIMEOUT=60`, `HF_HUB_ETAG_TIMEOUT=60`, tắt thanh tiến
+  độ; `env.json.hf_preflight` ghi thêm danh sách file + sha256, file bỏ qua, phiên bản `huggingface_hub`/`hf_xet`/`hf_transfer`, biến `HF_HUB_*`.
+  Không đụng preregistration: `hf_base_model` = {name, `revision: null`, policy "not pinned; sha ghi ở env.json"} — vẫn đúng (không đăng ký danh
+  sách file); không đổi lệnh/digest/đếm nào ⇒ không cần planner.
+- **Giả định:** các hằng của bước HF (30 phút, 3 lần thử, 120 s + size/2 MB/s, 600 s nạp) gõ trong kernel — là tham số hạ tầng tải, không phải
+  lệnh/số liệu đăng ký trước (docstring kernel "nothing is typed … except URL/branch/MODE/PIN" áp cho lệnh/commit/phiên bản/digest).
+- Impact (`B7r2_impact.txt`): `hf_snapshot` upstream CRITICAL (80 mục, 79 luồng) — độ sâu 1 chỉ `main` của chính kernel K2; độ sâu 3 = các
+  kernel/script khác nối nhầm qua tên `main`; grep `hf_snapshot|HF_PROBE|hf_probe` trong `src scripts backend kaggle tests train.py evaluate_test.py`
+  → chỉ trong file kernel K2 (2 lời gọi ở `main`). `HF_PROBE` UNKNOWN (0 caller) — grep: chỉ `hf_snapshot` dùng. Không symbol nào khác bị sửa
+  (`run`, `run_ok`, `main` giữ nguyên; `run_attempts` mới gọi `run`).
+- Test: +10 `TestK2HfFetch` (đỏ trước: `B7r2_test_red.log` `Ran 10` `FAILED (failures=1, errors=9)` — thiếu hàm / probe còn `snapshot_download`);
+  xanh: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_retrain_tools tests.test_sentence_split_guard` → `Ran 164 tests`
+  `OK (skipped=2)` (2 skip như B5: 10k cleaned chưa đặt — B11) (`B7r2_full_suites.log`); `git diff 0908ef3 -- tests/test_retrain_tools.py | grep -c
+  "^-[^-]"` → 0 (không sửa/xóa test cũ).
+- Smoke local (mạng thật, cache trong `_work/_plan13_tmp/B7r2_smoke/hf_home`, `B7r2_smoke.log`): `list VietAI/vit5-base` (không tải trọng số) →
+  chọn đúng 6 file, bỏ `.gitattributes`, `README.md`, `flax_model.msgpack`, `tf_model.h5`; `hf_snapshot` đầy đủ trên `hf-internal-testing/tiny-random-t5`
+  (5 file, bỏ `tf_model.h5`) → tải từng file, sha256 khớp Hub, nạp offline OK (`T5TokenizerFast`, `_commit_hash` == sha liệt kê), 0.15 phút.
+
+- **Ghim mới (theo cơ chế B5):** kernel K2 đổi so với ghim `0908ef3` ⇒ commit chứa mã kernel + test + 13-progress này = **commit ghim B7r2** (hash ghi ở
+  commit sau, chỉ sửa 13-progress; một commit không chứa được hash của chính nó). File repo GIỮ `PIN_COMMIT = None` (test `:2170`); bản đẩy =
+  file ở ghim mới thay đúng dòng `PIN_COMMIT`. Preregistration `ea12b44` vẫn là tổ tiên, không sửa (1 dòng `git log`). K1 không đổi (vẫn ghim B5/B8 sau).
 
 ## Đang làm
 - **ĐANG LÀM B7 lần 2** (lượt 7, mốc HEAD `a4fc4cd`): K2 v1 ERROR (watchdog 105' giết `hf_probe.py VietAI/vit5-base`, log dừng "Fetching 10 files: 40% 4/10"). Việc: đối chiếu sớm output v1, sửa bước HF (chỉ tải file cần, timeout/retry, log từng file, watchdog riêng), ghim mới nếu đổi kernel, đẩy K2 v2. KHÔNG làm B8.
@@ -515,3 +551,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B7b | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +10/−1 trước dòng này) | "Changes: 1 files, 1 symbols / Affected processes: 198 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); 1 dòng "xóa" = dòng "Đang làm" được thay (`dc_B7b.txt`) |
 | B7r2-start (518dac3) | (KHÔNG chạy trước commit — sót; commit chỉ thêm 1 dòng "Đang làm" vào `docs/plans/13-progress.md`) | chạy bù ở dòng kế (cùng file, cùng loại thay đổi) |
 | B7r2a | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, chỉ thêm) | "Changes: 1 files, 1 symbols / Affected processes: 198 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a/B7b); không mã nào đọc file này (`dc_B7r2a.txt`) |
+| B7r2b (ghim mới) | `analyze --index-only` rồi `detect-changes --scope staged` (`M` kernel K2, `M tests/test_retrain_tools.py` chỉ thêm, `M docs/plans/13-progress.md`) | "Changes: 3 files, 39 symbols / Affected processes: 197 / Risk level: critical" — symbol đổi: hằng/hàm HF mới (`HF_*`, `git_blob_sha1`, `hf_select_files`, `hf_attempt_seconds`, `hf_verify`, `last_tagged`, `run_attempts`), `HF_PROBE`, `hf_snapshot` + lớp test mới + mục markdown; luồng liệt kê (`Run_harmonized → …`, `Main → …`, `Measure_and_compare → …`) đều ghi "changed: Kế hoạch 13 — tiến độ (coder)" = nối nhầm qua mục markdown như B7a; caller thật của `hf_snapshot` chỉ `main` của K2 (impact + grep ở trên) (`dc_B7r2b.txt`) |
