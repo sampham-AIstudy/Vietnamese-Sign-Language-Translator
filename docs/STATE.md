@@ -3,12 +3,21 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-10-02 21:15 (giờ Việt Nam)
-- HEAD: c8a9dc6 (+ commit state này) | Nhánh: feat/vslt-complete
+- Cập nhật lần cuối: 2026-10-02 22:22 (giờ Việt Nam)
+- HEAD: cfc5eea (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 21:15 giao vslt-coder 13 B7 (chỉ 1 bước: ghim + đẩy K2 preflight CPU + theo dõi + kiểm output). 5h 69% (reset 01:00 3/10), 7 ngày 42%.
-  Cổng: 69 + 1.0×13 (est coder 1 bước nhỏ = max dòng ok cỡ nhỏ 9/11/13) = 82 ≤ 90 → đạt. Chặng lớn (est 69) KHÔNG lọt.
+- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 80% lúc 22:19, reset 01:00 ngày 3/10 giờ VN; 7 ngày 43%. Không đơn vị nào lọt cổng
+  (coder 1 bước nhỏ est 13: 80+13 = 93 > 90). Không có agent chạy. Orchestrator chỉ theo dõi trạng thái kernel K2 bằng sleep nền ≤ 25 phút.
+  VIỆC KẾ TIẾP (sau reset): vslt-coder 13 hoàn tất B7 — K2 đang RUNNING (xem "Tài nguyên"): tải output vào _work/_plan13_tmp/k2_preflight/,
+  đối chiếu preflight.json (rows, n_mismatch, leak_check_total) + env.json với preregistration.json, lệch → §7.2; khớp → commit JSON/log nhỏ, sổ GPU. Rồi B8 (K1 GPU).
+  Song song khi chờ kernel: planner kế hoạch 11 (việc 5) — chưa có file.
+  Coder 13 B7 (dd510f1, cfc5eea, chỉ 13-progress): GIẢ ĐỊNH CẦN REVIEWER XÉT: PIN_COMMIT trong file repo vẫn None (test có sẵn
+  tests/test_retrain_tools.py:2170 và :2189 assertIsNone); bản đẩy Kaggle ở _work/_plan13_tmp/k2_push/ = file tại 0908ef3 chỉ thay dòng 38
+  PIN_COMMIT="0908ef3e…" (sha256 kernel 001b3ec3…a376). B8/B9 làm tương tự. Rủi ro: kernel dùng Path(__file__) — nếu Kaggle không đặt
+  __file__ → ERROR "K2 FAILED: NameError" (lỗi thiết kế kernel, không phải lệch dữ liệu). Mẹo: CLI Kaggle báo "Permission 'kernels.get' was denied"
+  tới 30 phút sau access_token_expiration (lỗi kagglesdk) — chờ, không phải lỗi kernel.
+  (Trước đó 21:15: giao coder 13 B7, cổng 69 + 13 = 82 ≤ 90.)
   Coder 13 B5+B6 XONG (86927ef, 2cb02b3, ea12b44, 0908ef3 = COMMIT GHIM, fa687ef, c8a9dc6; đã push, ls-remote = c8a9dc6): preregistration
   reports/retrain_2026-10-02/preregistration.json (leak_check 0, code_dirty false); kernel kaggle/vsl-retrain-stgcn-tier1 (K1),
   kaggle/vsl-retrain-cslr-vit5 (K2 MODE=preflight, enable_gpu false, không eval); PIN_COMMIT=None → đặt ở B7/B8; K2 train đòi
@@ -257,7 +266,9 @@
 
 ## Tài nguyên
 - Kaggle GPU tuần này: ~6 giờ đã dùng (ước tính của người dùng, chưa xác minh), giới hạn tự đặt 10 giờ/tuần.
-- Kaggle kernel đang chạy: không có ghi nhận nào.
+- Kaggle kernel đang chạy: phmvnsm33/vsl-retrain-cslr-vit5 version 1 (K2 MODE=preflight, CPU, private) — đẩy 2026-10-02T14:15:08Z (21:15 VN);
+  RUNNING lúc 15:19Z (orchestrator kiểm). Watchdog kernel 105 phút ⇒ dự kiến xong/tự dừng chậm nhất ~16:00–16:10Z (23:00–23:10 VN).
+  Kiểm: `PYTHONUTF8=1 .venv/Scripts/kaggle kernels status phmvnsm33/vsl-retrain-cslr-vit5`.
 - Giới hạn API: đã gặp lỗi 429 (reset 4:20 sáng, giờ Việt Nam). Xem orchestrator_resume_addendum.md mục 4 và usage_guard_addendum.md.
 
 ## Thay đổi chưa commit trong working tree (KHÔNG đụng)
