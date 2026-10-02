@@ -5,8 +5,14 @@
 
 - Cập nhật lần cuối: 2026-10-02 09:40 (giờ Việt Nam)
 - HEAD: eea8906 (+ commit state này) | Nhánh: feat/vslt-complete
-- Trạng thái phiên: ĐANG CHẠY — cửa sổ 5h mới (14:21), 7 ngày 22%.
-  Coder 13 B3 + B4a–B4d XONG (3deee22, 459f282, 7ecaa25, a272df6, f7aacc1, 13f897a): cleaned 10k 7140 (6426/714) khớp; loại 4 cặp trùng câu val
+- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 86% lúc 16:19 (reset 19:40), 7 ngày 33%. Đã lưu + push; hẹn giờ nền làm tiếp sau 19:42. Không tắt máy.
+  Coder 13 sửa trước B5 XONG (1ff6037, 80802be): E1 (evaluation_output + file đánh dấu .started mở "x"), E2 (manifest theo đường tương đối;
+  manifest_rel_paths k2/cslr_best.pt, vit5_stage2/best_model), E3 (canonical_json + test_keypoints_digest bắt buộc), G2 (TestG2RegisteredReference so với
+  preregistration / tham chiếu B3 — đột biến reviewer giờ FAIL); 129 test OK / 2 skip. Coder thêm 9 dòng vào fixture build_inputs của test cũ
+  (không đổi assertion) — reviewer cuối xem lại. Mục 5 (split="all" + sentence_split raise) KHÔNG làm: trái kế hoạch §3.4 dòng 347 và test có sẵn
+  test_sentence_split_guard.py:472 — orchestrator HOÃN sang backlog thấp (không sửa test cũ). VIỆC KẾ TIẾP: coder 13 B5 (preregistration đủ khóa — danh sách
+  trong docs/plans/13-progress.md + review giữa §6; kernel K2 không gọi eval; kernel assert sha stgcn_best.pt; commit ghim; push) → B6 … ;
+  trong lúc chờ kernel: việc 5 (kế hoạch 11), việc 3 (kế hoạch 08), chuẩn bị việc 7.
   (0 trùng test); gói Tier 1 162 file digest 7098e007…; train.py --seed; archive_retrain_kaggle.py (24 test API giả); --sentence-split cho
   train_cslr/stage1/stage2 (LEAK CHECK OK, TEST DEFERRED); eval_sentsplit.py (12 test); 115 test OK/1 skip; AC2-06 y mốc.
   Review GIỮA 13 (docs/reviews/13-review-mid.md): GO cho B5 có điều kiện — không rò rỉ; cần sửa (TB) guard G2 10k tự quy chiếu (đột biến L1 SENT275 vẫn PASS),
@@ -264,3 +270,4 @@
 - 2026-10-02 09:40 | khôi phục sau tắt máy (người dùng giao việc mới) | STATE khớp git (HEAD eea8906) | Tìm Kaggle (không có), dọn file thừa, giao planner kế hoạch 13.
 - 2026-10-02 11:25 | dừng theo hạn mức (81%) | 13 B2a–B2c xong | Lưu STATE, push, hẹn giờ 14:32 làm tiếp B3.
 - 2026-10-02 14:22 | khôi phục sau chờ hạn mức (người dùng nhắn "tiếp tục công việc") | STATE khớp git (HEAD cc52880) | Giao coder 13 B3 + B4.
+- 2026-10-02 16:22 | dừng theo hạn mức (86%) | 13 sửa trước B5 xong | Lưu STATE, push, hẹn giờ 19:42 làm tiếp B5.

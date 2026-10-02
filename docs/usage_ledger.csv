@@ -40,3 +40,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-02T04:20Z,vslt-coder,13,B2a-B2c,62,81,19,4,ok
 2026-10-02T08:39Z,vslt-coder,13,B3-B4d,0,46,46,6,ok
 2026-10-02T08:56Z,vslt-reviewer,13,mid review B0-B4d,46,54,8,1,ok
+2026-10-02T09:19Z,vslt-coder,13,pre-B5 fixes E1-E3+G2,54,86,32,4,noisy (includes orchestrator turns)
