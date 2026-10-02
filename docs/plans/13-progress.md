@@ -452,6 +452,7 @@ Tệp tạm: `_work/_plan13_tmp/`.
   -p _work/_plan13_tmp/k2_preflight/` → đối chiếu `preflight.json` (rows/n_mismatch/leak_check_total) + `env.json` với preregistration; lệch → §7.2.
 
 ## Đang làm
+- **ĐANG LÀM B7 lần 2** (lượt 7, mốc HEAD `a4fc4cd`): K2 v1 ERROR (watchdog 105' giết `hf_probe.py VietAI/vit5-base`, log dừng "Fetching 10 files: 40% 4/10"). Việc: đối chiếu sớm output v1, sửa bước HF (chỉ tải file cần, timeout/retry, log từng file, watchdog riêng), ghim mới nếu đổi kernel, đẩy K2 v2. KHÔNG làm B8.
 - **ĐANG LÀM B7** (lượt 6, mốc HEAD `422e499`): K2 preflight ĐÃ ĐẨY (`phmvnsm33/vsl-retrain-cslr-vit5` v1, 14:15:08Z), lần kiểm cuối 15:18:07Z RUNNING (>60 phút) → bàn giao orchestrator theo dõi; còn: tải output + đối chiếu preregistration. KHÔNG làm B8.
 - Lượt 5 (mốc HEAD `bf40a1d`): B5 XONG (ghim `0908ef3`); B6 XONG (dataset `phmvnsm33/vslt-retrain-inputs-tier1` private, manifest commit). Dừng trước B7. Mục 5 review giữa (1.B) orchestrator HOÃN sang backlog — không làm. KHÔNG đẩy kernel nào ở lượt này (B7 trở đi lượt sau).
 
