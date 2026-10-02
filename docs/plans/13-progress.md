@@ -616,8 +616,20 @@ Tệp tạm: `_work/_plan13_tmp/`.
   `6aef839e0329261ad80d047c5d5eab1990f3bb0b9464a95c2de117edbef932c6`, metadata đẩy `779505bf7d0c4ae60dc30a56bce68edd6cfb55e21a1e33f965416f85b97a2d21`
   (= metadata ở ghim, chỉ `enable_gpu: true`, `kernel_sources: ["phmvnsm33/vsl-retrain-stgcn-tier1"]`; `is_private` true, `enable_internet` true).
 
+- Trước khi đẩy (`B9_status_before.txt`): `kernels status phmvnsm33/vsl-retrain-cslr-vit5` 18:48:28Z → "KernelWorkerStatus.COMPLETE" (v2 preflight).
+- Đẩy: `PYTHONUTF8=1 .venv/Scripts/kaggle kernels push -p _work/_plan13_tmp/k2_push_train` lúc **2026-10-02T18:48:35Z** (xong 18:48:38Z) → "Kernel
+  version 3 successfully pushed." (`B9_push.log`, `B9_push_time.txt`). Slug **`phmvnsm33/vsl-retrain-cslr-vit5` version 3** (private, GPU,
+  `MODE="train"`, `kernel_sources` K1, ghim `28a126e`). Theo dõi (`B9_status_log.txt`, `kaggle kernels status` thật): **18:49:43Z RUNNING**, 18:50:05Z RUNNING.
+- Watchdog kernel 105 phút (`jobs.k2.watchdog_minutes` của preregistration) tính từ lúc script bắt đầu ⇒ tự kết thúc chậm nhất ~20:34Z + độ trễ
+  khởi động. Ước lượng §3.7 (chưa xác minh): ≤ 1,0 GPU-giờ ⇒ dự kiến xong trước ~19:49Z; trần 1,75 h (watchdog 105' cắt trước trần).
+  Hạn mức GPU làm mới 2026-10-03T00:00Z (sau giờ kết thúc muộn nhất).
+- **Phần 1 XONG, phần 2 CHƯA làm** (lượt sau): `kernels status` tới COMPLETE/ERROR → `PYTHONUTF8=1 .venv/Scripts/kaggle kernels output
+  phmvnsm33/vsl-retrain-cslr-vit5 -p _work/_plan13_tmp/k2` → kiểm theo §4 B9 [LS1] (SHA256SUMS, §3.6, vocab == B2c, HF sha preflight == train, LEAK
+  CHECK OK, 0 PRIMARY TEST EVALUATION, 1 TEST DEFERRED, env `mode` == "train" + `commit` == ghim `28a126e`) → commit `reports/retrain_2026-10-02/k2/`
+  + 3 `*_used_ids.json`; sổ GPU. Lưu ý watchdog cắt job → §7.2-1 CẦN NGƯỜI DÙNG.
+
 ## Đang làm
-- **ĐANG LÀM B9 phần 1** (lượt 9, mốc HEAD `22e742f`): cổng ngân sách §3.7 → K2 `MODE="train"` + GPU + `kernel_sources` K1 → ghim → đẩy K2 → trả về khi RUNNING. Log: `_work/_plan13_tmp/B9_*`.
+- **B9 phần 1 XONG** (lượt 9): ghim `28a126e`; K2 train `phmvnsm33/vsl-retrain-cslr-vit5` v3 đẩy 18:48:35Z, RUNNING 18:49:43Z. Chờ phần 2 (tải output, kiểm, commit) — lượt sau.
 - **B8 XONG** (lượt 8): K1 `phmvnsm33/vsl-retrain-stgcn-tier1` v1 COMPLETE (ghim `c0c70d2`), 39/39 kiểm, `stgcn_best.pt` sha256 `2204becd…bac2` trong `k1_outputs.json`. Dừng trước B9 (KHÔNG làm B9).
 - **B7 XONG** (lượt 7, lần 2): K2 preflight v2 `phmvnsm33/vsl-retrain-cslr-vit5` COMPLETE, 44/44 khớp preregistration, ghim `c0c70d2`. Dừng trước B8 (KHÔNG làm B8). Lần 1 (v1 ERROR) — xem mục B7 / B7 lần 2.
 - (Cũ, đã thay bởi dòng trên) Lượt 6, mốc HEAD `422e499`: K2 preflight ĐÃ ĐẨY (`phmvnsm33/vsl-retrain-cslr-vit5` v1, 14:15:08Z), lần kiểm cuối 15:18:07Z RUNNING (>60 phút) → bàn giao orchestrator theo dõi; còn: tải output + đối chiếu preregistration. KHÔNG làm B8.
@@ -680,3 +692,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B9a | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +1 dòng "ĐANG LÀM B9 phần 1" trước dòng này) | "Changes: 1 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); không mã nào đọc file này (`dc_B9a.txt`) |
 | B9b (ghim B9) | `analyze --index-only` rồi `detect-changes --scope staged` (`M` kernel K2, `M tests/test_retrain_tools.py` chỉ thêm, `M docs/plans/13-progress.md`) | "Changes: 3 files, 11 symbols / Affected processes: 196 / Risk level: critical" — symbol đổi: `MODE_VALUE_RX`, `same_as_pinned`, `norm` (lambda trong `same_as_pinned`) của K2 + lớp test mới `TestK2PushedModeLine` + mục markdown; luồng liệt kê (`Run_harmonized → …`, `Main → …`, `Measure_and_compare → …`) đều ghi "changed: Kế hoạch 13 — tiến độ (coder)" = nối nhầm qua mục markdown như B7a; caller thật của `same_as_pinned` chỉ `clone_pinned` (K2) (`dc_B9b.txt`) |
 | B9c | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, ghi hash ghim B9 + bản đẩy, chỉ thêm) | "Changes: 1 files, 1 symbols / Affected processes: 195 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a) (`dc_B9c.txt`) |
+| B9d | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, dòng đẩy K2 v3 + "Đang làm" thay 1 dòng) | "Changes: 1 files, 1 symbols / Affected processes: 191 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a) (`dc_B9d.txt`) |
