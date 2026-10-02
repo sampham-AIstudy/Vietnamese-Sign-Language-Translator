@@ -14,7 +14,10 @@ protocol whose algorithm fields it does not implement exactly (rng, interpolatio
 
 Preregistration keys read: `evaluation_protocol[_repro_v2]`, `sentence_split{path, sha256}`, `libs_local{sacrebleu,
 numpy}` (must equal the running versions), `vocab{sha256}` (sentsplit_v1) / `vocab_full_reference{sha256}` (repro_v2),
-optional `inputs` entries {path, sha256|lf_sha256} checked for the protocol's input paths.
+`inputs` entries {path, sha256|lf_sha256} (matched to the protocol's FILE inputs by resolved path; the canonical json entry
+is mandatory), `evaluation_output[_repro_v2]` (the only accepted --out) and `test_keypoints_digest[_repro_v2]` (sha256 of
+the "<id>.npy <sha256>" lines of the selected test clips sorted by id). Model files are matched against the --manifest
+entries by FULL relative path (`protocol.manifest_rel_paths`), never by base name (mid review 13, E1-E3).
 
 sentsplit_v1 (§3.12): test set = S06 x T (select_vslgh_samples(..., "test", split)), exactly `expected_n` clips; CSLR
 on CPU (model kwargs from the checkpoint config), greedy CTC decode; WER = compute_wer(pred glosses, RAW reference
@@ -26,8 +29,10 @@ repro_v2 (§0.7): the exact algorithm of reports/audit_round2/run_v2_cslr_bootst
 np.random.seed, BLEU bootstrap on the unseen sentences, then plain-Levenshtein WER bootstrap on all S06 clips continuing
 the same RNG stream).
 
-Once only: the output must not exist (exit 2); code must be clean (exit 2); the commit that added the preregistration
-must be an ancestor of HEAD and the only commit touching it (exit 2). Inputs are checked BEFORE any test sample is loaded (exit 2/3); once predictions
+Once only: --out must be the registered `evaluation_output` and must not exist (exit 2); an exclusive run marker
+`<evaluation_output>.started` is created (mode "x") after every input check and BEFORE the first test clip is read, so a
+second run - into any path, even after a crash - is refused (exit 2); code must be clean (exit 2); the commit that added
+the preregistration must be an ancestor of HEAD and the only commit touching it (exit 2). Inputs are checked BEFORE any test sample is loaded (exit 2/3); once predictions
 exist they are printed to the log (PER_SAMPLE line) before metrics so an error afterwards loses nothing.
 Exit codes: 0 ok; 2 refused (arguments, output exists, dirty code, preregistration not committed / not an ancestor,
 library version or protocol mismatch, missing input); 3 data / digest mismatch (count, keypoints, sha256 vs
@@ -87,6 +92,7 @@ def protocol_template(name):
                        "vocab": "data/external/vsl_gh/gloss_vocab_canonical.txt",
                        "cslr_checkpoint": "checkpoints/cslr_best.pt",
                        "vit5_model_dir": "checkpoints/vit5_stage2/best_model"},
+            "manifest_rel_paths": {"cslr_checkpoint": "k2/cslr_best.pt", "vit5_model_dir": "vit5_stage2/best_model"},
             "cslr": {"dataset": {"conversion_mode": "semantic", "normalize": True}, "device": "cpu", "batch_size": 8,
                      "autocast": False, "decode": "ctc_greedy_decode + tokens_to_words",
                      "model": {"from_checkpoint_config": ["hidden_size", "num_gru_layers", "dropout"],
@@ -122,6 +128,7 @@ def protocol_template(name):
                        "vocab": "_work/_plan13_tmp/k3/gloss_vocab_canonical.txt",
                        "cslr_checkpoint": "_work/_plan13_tmp/k3/cslr_best.pt",
                        "vit5_model_dir": "_work/_plan13_tmp/k3/vit5_stage2/best_model"},
+            "manifest_rel_paths": {"cslr_checkpoint": "k3/cslr_best.pt", "vit5_model_dir": "k3/vit5_stage2/best_model"},
             "cslr": {"dataset": {"conversion_mode": "semantic", "normalize": True}, "device": "cpu", "batch_size": 8,
                      "autocast": False, "decode": "ctc_greedy_decode + tokens_to_words",
                      "model": {"from_checkpoint_config": ["hidden_size", "num_gru_layers", "dropout"],
@@ -140,6 +147,26 @@ def protocol_template(name):
                                   "rule": "descriptive only: is the old point estimate inside the new 95% CI"},
         }
     raise EvalError(2, f"unknown protocol {name!r}; expected one of {PROTOCOLS}")
+
+
+PREREG_KEYS = {
+    "sentsplit_v1": {"protocol": "evaluation_protocol", "output": "evaluation_output",
+                     "kp_digest": "test_keypoints_digest"},
+    "repro_v2": {"protocol": "evaluation_protocol_repro_v2", "output": "evaluation_output_repro_v2",
+                 "kp_digest": "test_keypoints_digest_repro_v2"},
+}
+FILE_INPUTS = ("canonical_json", "vocab", "cslr_checkpoint")  # directories: keypoints -> kp digest, ViT5 -> manifests
+REQUIRED_INPUT_ENTRIES = ("canonical_json",)
+
+
+def run_marker_path(out_path):
+    """Exclusive marker of the one evaluation run, next to the registered output."""
+    p = Path(out_path)
+    return p.with_name(p.name + ".started")
+
+
+def same_path(a, b):
+    return os.path.normcase(os.path.abspath(str(a))) == os.path.normcase(os.path.abspath(str(b)))
 
 
 SUPPORTED = {
@@ -226,7 +253,8 @@ def git_state(prereg_path):
 
 
 def manifest_sha_index(paths):
-    """{basename: {sha256, ...}} from archive manifests (files[].rel_path/sha256) or SHA256SUMS files."""
+    """{relative path: {sha256, ...}} from archive manifests (files[].rel_path/sha256) or SHA256SUMS files (archive
+    names, "/" stored as "__"). Keys are FULL relative paths, never base names (mid review 13, E2)."""
     idx = {}
     for p in paths:
         p = resolve(p)
@@ -245,14 +273,15 @@ def manifest_sha_index(paths):
         if not entries:
             raise EvalError(2, f"no file entries in manifest {p}")
         for rel, h in entries:
-            base = rel.replace("__", "/").split("/")[-1]
-            idx.setdefault(base, set()).add(h)
+            key = rel.replace("\\", "/").replace("__", "/").strip("/")
+            idx.setdefault(key, set()).add(h)
     return idx
 
 
 def check_against_manifests(file_shas, idx):
-    """Every model file's sha256 must appear in the manifests under the same base name."""
-    bad = [rel for rel, h in sorted(file_shas.items()) if h not in idx.get(rel.split("/")[-1], set())]
+    """Every model file's sha256 must appear in the manifests under the SAME full relative path
+    ({"vit5_stage2/best_model/config.json": sha256, ...}); a stage 1 file put in place of stage 2 is refused."""
+    bad = [rel for rel, h in sorted(file_shas.items()) if h not in idx.get(rel, set())]
     if bad:
         raise EvalError(3, f"sha256 not found in the given manifests: {bad}")
 
@@ -515,22 +544,34 @@ def check_versions(prereg):
 
 
 def check_prereg_inputs(prereg, protocol):
+    """Check every preregistration `inputs` entry that names one of the protocol's FILE inputs (matched by resolved path,
+    not by string). Never silent: a matched entry without a digest, or no entry for a required input
+    (REQUIRED_INPUT_ENTRIES), is exit 3. Returns the paths checked."""
     entries = prereg.get("inputs") or {}
-    items = entries.values() if isinstance(entries, dict) else entries
-    wanted = {str(v).replace("\\", "/") for k, v in protocol["inputs"].items() if k != "vit5_model_dir"}
+    items = list(entries.values()) if isinstance(entries, dict) else list(entries)
+    wanted = {k: resolve(protocol["inputs"][k]) for k in FILE_INPUTS}
     checked = []
     for e in items:
-        if not isinstance(e, dict) or str(e.get("path", "")).replace("\\", "/") not in wanted:
+        if not isinstance(e, dict) or not e.get("path"):
             continue
         p = resolve(e["path"])
-        if not p.is_file():
+        keys = [k for k, w in wanted.items() if same_path(p, w)]
+        if not keys:
             continue
+        if not p.is_file():
+            raise EvalError(3, f"preregistered input {keys[0]} not found: {p}")
+        if "lf_sha256" not in e and "sha256" not in e:
+            raise EvalError(3, f"preregistration inputs entry for {keys[0]} ({e['path']}) has no lf_sha256 / sha256")
         if "lf_sha256" in e and lf_sha256(p) != e["lf_sha256"]:
-            raise EvalError(3, f"lf_sha256 of {e['path']} != preregistration")
+            raise EvalError(3, f"lf_sha256 of {e['path']} ({keys[0]}) != preregistration")
         if "sha256" in e and sha256_file(p) != e["sha256"]:
-            raise EvalError(3, f"sha256 of {e['path']} != preregistration")
-        checked.append(e["path"])
-    return checked
+            raise EvalError(3, f"sha256 of {e['path']} ({keys[0]}) != preregistration")
+        checked += [(k, e["path"]) for k in keys]
+    missing = [k for k in REQUIRED_INPUT_ENTRIES if k not in {c[0] for c in checked}]
+    if missing:
+        raise EvalError(3, f"preregistration inputs has no checkable entry for {missing} "
+                           f"(path must resolve to {[str(wanted[k]) for k in missing]})")
+    return [c[1] for c in checked]
 
 
 def run(args, argv):
@@ -540,8 +581,21 @@ def run(args, argv):
     if out_path.exists():
         raise EvalError(2, f"output already exists (evaluation runs once): {out_path}")
     prereg = _load_json(prereg_path, "preregistration")
-    key = "evaluation_protocol" if name == "sentsplit_v1" else "evaluation_protocol_repro_v2"
-    protocol = check_protocol(prereg.get(key), name)
+    pkeys = PREREG_KEYS[name]
+    protocol = check_protocol(prereg.get(pkeys["protocol"]), name)
+    registered_out = prereg.get(pkeys["output"])
+    if not isinstance(registered_out, str) or not registered_out:
+        raise EvalError(2, f"preregistration has no {pkeys['output']} (the one accepted --out)")
+    registered_out = resolve(registered_out)
+    if run_marker_path(registered_out).exists():
+        raise EvalError(2, f"run marker exists, the evaluation already started once: {run_marker_path(registered_out)}")
+    registered_kp = prereg.get(pkeys["kp_digest"])
+    if not isinstance(registered_kp, str) or len(registered_kp) != 64:
+        raise EvalError(3, f"preregistration has no {pkeys['kp_digest']} (64 hex)")
+    rel_paths = protocol.get("manifest_rel_paths")
+    if (not isinstance(rel_paths, dict) or not all(isinstance(rel_paths.get(k), str) and rel_paths[k]
+                                                   for k in ("cslr_checkpoint", "vit5_model_dir"))):
+        raise EvalError(2, "protocol has no manifest_rel_paths{cslr_checkpoint, vit5_model_dir}")
     gs = git_state(prereg_path)
     if gs["code_dirty"]:
         raise EvalError(2, f"code is dirty (git status --porcelain -- {' '.join(CODE_PATHS)} <prereg>): {gs['dirty_lines']}")
@@ -573,7 +627,9 @@ def run(args, argv):
     file_shas = {"cslr_best.pt": sha256_file(inp["cslr_checkpoint"]),
                  "gloss_vocab_canonical.txt": vocab_sha}
     vit5_shas = {rel: sha256_file(model_dir / rel) for rel in model_files}
-    check_against_manifests({**{k: v for k, v in file_shas.items() if k == "cslr_best.pt"}, **vit5_shas},
+    vit5_prefix = rel_paths["vit5_model_dir"].replace("\\", "/").strip("/")
+    check_against_manifests({rel_paths["cslr_checkpoint"].replace("\\", "/").strip("/"): file_shas["cslr_best.pt"],
+                             **{f"{vit5_prefix}/{rel}": h for rel, h in vit5_shas.items()}},
                             manifest_sha_index(args.manifest))
     ckpt = load_cslr_checkpoint(inp["cslr_checkpoint"])
     if ckpt.get("gloss_vocab_hash") != vocab_sha[:16]:
@@ -611,8 +667,23 @@ def run(args, argv):
     kp_digest = hashlib.sha256("".join(f"{s['id']}.npy {sha256_file(inp['keypoints_dir'] / (s['id'] + '.npy'))}\n"
                                        for s in sorted(selected, key=lambda x: x["id"])).encode("utf-8")).hexdigest()
 
-    # ---- the one evaluation ----
-    print(f"EVAL RUN protocol={name} n_clips={len(selected)} head={gs['head']}", flush=True)
+    if kp_digest != registered_kp:
+        raise EvalError(3, f"test keypoints digest {kp_digest} != preregistration {pkeys['kp_digest']} {registered_kp}")
+    if not same_path(out_path, registered_out):
+        raise EvalError(2, f"--out {out_path} is not the registered {pkeys['output']} {registered_out}")
+
+    # ---- the one evaluation: exclusive marker first, then the first test clip is read ----
+    marker = run_marker_path(registered_out)
+    marker.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with open(marker, "x", encoding="utf-8", newline="\n") as f:
+            f.write(json.dumps({"protocol": name, "git_commit": gs["head"], "out": str(out_path),
+                                "command": f"python {SCRIPT} " + " ".join(shlex.quote(a) for a in argv),
+                                "started_at_utc": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")},
+                               ensure_ascii=False) + "\n")
+    except FileExistsError:
+        raise EvalError(2, f"run marker exists, the evaluation already started once: {marker}") from None
+    print(f"EVAL RUN protocol={name} n_clips={len(selected)} head={gs['head']} marker={marker}", flush=True)
     from src.metrics.cslr_metrics import levenshtein_distance
     from src.translation.text_normalizer import normalize_vietnamese_target, normalize_vsl_source
     preds = cslr_predict(ckpt, vocab, dataset, protocol)
@@ -654,6 +725,7 @@ def run(args, argv):
                    "test_keypoints_digest": kp_digest, "vocab_sha256": vocab_sha,
                    "cslr_checkpoint_sha256": file_shas["cslr_best.pt"],
                    "vit5_model_files_sha256": vit5_shas, "manifests": list(args.manifest),
+                   "manifest_rel_paths": rel_paths, "run_marker": str(marker),
                    "preregistration_inputs_checked": checked_inputs},
         "protocol": protocol,
         "per_sample": rows,

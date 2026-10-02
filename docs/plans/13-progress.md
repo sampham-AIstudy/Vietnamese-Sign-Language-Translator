@@ -339,8 +339,28 @@ Tệp tạm: `_work/_plan13_tmp/`.
   với ĐỘT BIẾN D2 của reviewer `VSLT_GUARD_CLEAN10K=_work/_rev13_tmp/m2_10k.jsonl` → test mới **FAIL** `AssertionError: 4 != 3 : ('train',
   [..., 'PAR_10K_MUT01', ...])`, còn test cũ `test_vit5_stage1_clean10k_no_heldout_match` vẫn ok (đúng như reviewer báo) (`G2ref_D2.log`).
 
+- E1–E3 (`scripts/eval_sentsplit.py`; impact trước khi sửa: `check_prereg_inputs`, `manifest_sha_index`, `check_against_manifests` → risk
+  CRITICAL, direct 1 (= `run`/`main` của chính script; luồng "Main → …" là nối nhầm `main` như B4b/B4d); `protocol_template`, `run` → UNKNOWN;
+  `git grep` → chỉ chính script + `tests/test_retrain_tools.py` (`E_impact.txt`)):
+  - E1: preregistration phải có `evaluation_output` (thiếu → 2); `--out` phải là đúng đường đó (so đường đã resolve; khác → 2); file đánh dấu
+    `<evaluation_output>.started` mở mode "x" SAU mọi kiểm đầu vào và TRƯỚC dòng `EVAL RUN` / clip test đầu tiên; đã có → 2 (kiểm cả ở đầu `run`).
+  - E2: manifest đánh chỉ mục theo ĐƯỜNG DẪN TƯƠNG ĐỐI ĐẦY ĐỦ (`__` → `/`), so với `protocol.manifest_rel_paths` mới trong `protocol_template`:
+    sentsplit_v1 `{cslr_checkpoint: "k2/cslr_best.pt", vit5_model_dir: "vit5_stage2/best_model"}`, repro_v2 `{"k3/cslr_best.pt",
+    "k3/vit5_stage2/best_model"}`; thiếu khóa → 2; stage1 đặt vào chỗ stage2 → 3.
+  - E3: `inputs` khớp theo đường đã resolve (không theo chuỗi), chỉ với input là FILE (canonical_json, vocab, cslr_checkpoint); mục khớp mà không có
+    `lf_sha256`/`sha256` → 3; KHÔNG có mục cho `canonical_json` → 3; `test_keypoints_digest` (64 hex) bắt buộc (thiếu → 3) và so với digest
+    tính từ file keypoint S06 × T (lệch → 3) trước file đánh dấu.
+  - Test: THÊM `TestEvalSentsplitGates` (11 test) + 9 dòng THÊM vào fixture `build_inputs` (đăng ký `evaluation_output`, `test_keypoints_digest`
+    tính độc lập trong test) — 0 dòng cũ bị xóa/sửa (`git diff --numstat` → `210 0`). Đỏ trên mã cũ: `Ran 23` `FAILED (failures=8, errors=3)` —
+    đúng 11 test mới, 12 test B4d vẫn xanh với fixture đã thêm khóa (`E_test_red.log`); xanh: `Ran 23` `OK` (`E_test_green.log`).
+  - Hai module: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_retrain_tools tests.test_sentence_split_guard -v` →
+    `Ran 129 tests` `OK (skipped=2)` (2 skip = 10k cleaned chưa đặt: test G2 cũ + test G2-ref mới) (`E_full_suites.log`); guard với bản cleaned B3:
+    `Ran 42` `OK` (`E_guard_with_work_cleaned.log`).
+- Mục 5 (1.B, `VSLGHTextDataset(split="all", sentence_split=…)` raise): KHÔNG làm — CẦN PLANNER: mâu thuẫn với kế hoạch §3.4 dòng 347
+  ("`all` không đổi") và test có sẵn `tests/test_sentence_split_guard.py:472` (khẳng định trả đủ 300 câu); làm sẽ phải sửa test cũ.
+
 ## Đang làm
-- Lượt 4: sửa E1–E3 / G2 / mục 5 theo review giữa; dừng trước B5.
+- Lượt 4: sửa E1–E3 / G2 xong; mục 5 chờ planner; dừng trước B5.
 
 ## Còn lại
 - B5–B14 (lượt sau). Ghi chú cho B5: `retrain_preregister.py` phải ghi đúng các khóa mà `eval_sentsplit.py` đọc (mục B4d); `protocol_template()` là nguồn
@@ -373,3 +393,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B4d | `detect-changes --scope staged` (`A scripts/eval_sentsplit.py`, `M tests/test_retrain_tools.py`), sau `analyze --index-only` | "Diff touched 2 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B4d.txt`) — như B4b: index chưa có symbol của file mới ⇒ KHÔNG phải kết quả sạch; đối chiếu: test chỉ thêm dòng (0 dòng xóa), file mới không được mã nào import (`git grep eval_sentsplit -- src backend kaggle` → 2 dòng, đều là chuỗi/chú thích trong `src/training/train_cslr.py:82,731` — dòng `TEST DEFERRED`, không import). Sau commit: `detect-changes --scope compare` (dòng kế) |
 | B4d (sau commit f7aacc1) | `analyze --index-only` rồi `detect-changes --scope compare --base-ref HEAD~1` | "Changes: 6 files, 44 symbols / Affected processes: 213 / Risk level: critical" — symbol đổi = hàm/hằng của `scripts/eval_sentsplit.py` (mới) + `Section … 13-progress`; luồng liệt kê là nối nhầm qua mục markdown/`main` như B0/B2/B4b; "6 files" gồm thay đổi chưa commit của cây (3 ` D` người dùng) (`dc_B4d_compare.txt`) |
 | Sửa-review G2 | `detect-changes --scope staged` (`M tests/test_sentence_split_guard.py`, chỉ thêm dòng), sau `analyze --index-only` | "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_G2.txt`) — index chưa có symbol của lớp test mới ⇒ KHÔNG phải kết quả sạch; đối chiếu: `git diff --cached --numstat` → `98 0` (0 dòng xóa), file test không được mã nào import |
+| Sửa-review E1–E3 | `detect-changes --scope staged` (`M scripts/eval_sentsplit.py`, `M tests/test_retrain_tools.py`), sau `analyze --index-only` | "Changes: 2 files, 33 symbols / Affected processes: 3 / Risk level: medium" — luồng `Main → Encode`, `Main → From_file`, `Run → Resolve` (đều qua `run` của chính script); symbol đổi: `protocol_template`, `manifest_sha_index`, `check_against_manifests`, `check_prereg_inputs`, `run` + hằng/hàm mới + lớp test mới; không caller ngoài script/test (`dc_E.txt`) |

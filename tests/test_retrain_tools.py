@@ -1295,6 +1295,14 @@ class TestEvalSentsplit(_Scratch):
                   "libs_local": {"sacrebleu": E.pkg_version("sacrebleu"), "numpy": E.pkg_version("numpy")},
                   "vocab": {"sha256": vocab_sha},
                   "inputs": {"dataset_canonical": {"path": canon, "lf_sha256": D.lf_sha256(canon)}}}
+        # [mid review 13, E1/E3] keys every preregistration must carry since the mid-plan review: the one registered
+        # output path and the digest of the S06 x T keypoint files (computed here independently of the script)
+        prereg["evaluation_output"] = self.p("reports", "eval", "test_eval.json")
+        kp_lines = []
+        for name in sorted(os.listdir(kp)):
+            with open(os.path.join(kp, name), "rb") as f:
+                kp_lines.append(f"{name} {sha(f.read())}\n")
+        prereg["test_keypoints_digest"] = sha("".join(kp_lines).encode("utf-8"))
         prereg_path = self.p("reports", "preregistration.json")
         write_bytes(prereg_path, json.dumps(prereg, ensure_ascii=False).encode("utf-8"))
         self.split, self.items = split, items
@@ -1485,6 +1493,208 @@ class TestEvalSentsplit(_Scratch):
         body = src[src.index('"""', 3) + 3:]  # skip the module docstring
         for number in ("27.98", "23.18", "32.8", "17.6", "38.39", "13.62", "33.7"):
             self.assertNotIn(number, body, number)
+
+
+# =====================================================================================================================
+# Mid-plan review 13 (docs/reviews/13-review-mid.md §3) — gates of scripts/eval_sentsplit.py, synthetic fixture only:
+#   E1 the output must be the path registered in the preregistration (`evaluation_output`) and an exclusive run marker
+#      is created before the first test clip is read -> a second run is refused whatever --out says;
+#   E2 model files are matched against the manifests by FULL relative path (stage 1 placed as stage 2 -> refused);
+#   E3 the canonical json entry of `inputs` is mandatory (never skipped silently) and the S06 x T keypoint digest must
+#      equal the registered `test_keypoints_digest`.
+# =====================================================================================================================
+
+class TestEvalSentsplitGates(_Scratch):
+    @classmethod
+    def setUpClass(cls):
+        import eval_sentsplit as E
+        cls.E = E
+
+    # the B4d fixture helpers, reused unchanged
+    build_inputs = TestEvalSentsplit.build_inputs
+    fake_heavy = TestEvalSentsplit.fake_heavy
+    run_main = TestEvalSentsplit.run_main
+    argv = TestEvalSentsplit.argv
+
+    def rewrite(self, prereg_path, prereg):
+        write_bytes(prereg_path, json.dumps(prereg, ensure_ascii=False).encode("utf-8"))
+
+    def registered_out(self, pr):
+        return pr["evaluation_output"]
+
+    def assert_refused(self, rc_calls, code):
+        rc, calls = rc_calls
+        self.assertEqual((rc, calls), (code, {"cslr": 0, "vit5": 0}))
+
+    # --- E1 -----------------------------------------------------------------------------------------------------------
+    def test_e1_out_must_be_the_registered_output(self):
+        prereg, manifest, pr = self.build_inputs()
+        other = self.p("reports", "eval", "other.json")
+        rc, calls, _, err = self.run_main(self.argv(prereg, manifest, other))
+        self.assert_refused((rc, calls), 2)
+        self.assertIn("evaluation_output", err)
+        self.assertFalse(os.path.exists(other))
+        self.assertFalse(os.path.exists(self.E.run_marker_path(other)))
+        self.assertFalse(os.path.exists(self.E.run_marker_path(self.registered_out(pr))))
+
+    def test_e1_missing_evaluation_output_refused(self):
+        prereg, manifest, pr = self.build_inputs()
+        out = self.registered_out(pr)
+        del pr["evaluation_output"]
+        self.rewrite(prereg, pr)
+        rc, calls, _, err = self.run_main(self.argv(prereg, manifest, out))
+        self.assert_refused((rc, calls), 2)
+        self.assertIn("evaluation_output", err)
+        self.assertFalse(os.path.exists(out))
+
+    def test_e1_second_run_refused_at_any_path(self):
+        prereg, manifest, pr = self.build_inputs()
+        out = self.registered_out(pr)
+        rc, calls, _, err = self.run_main(self.argv(prereg, manifest, out))
+        self.assertEqual((rc, calls), (0, {"cslr": 1, "vit5": 2}), err)
+        self.assertTrue(os.path.isfile(self.E.run_marker_path(out)))
+        # another target path -> refused
+        rc, calls, _, _ = self.run_main(self.argv(prereg, manifest, self.p("elsewhere", "test_eval.json")))
+        self.assert_refused((rc, calls), 2)
+        # even with the result moved away, the marker alone refuses a new run into the registered path
+        os.rename(out, self.p("moved_test_eval.json"))
+        rc, calls, _, err = self.run_main(self.argv(prereg, manifest, out))
+        self.assert_refused((rc, calls), 2)
+        self.assertIn("marker", err)
+        self.assertFalse(os.path.exists(out))
+
+    def test_e1_marker_exists_before_first_clip_and_survives_a_crash(self):
+        from unittest import mock
+        prereg, manifest, pr = self.build_inputs()
+        out = self.registered_out(pr)
+        marker = self.E.run_marker_path(out)
+        seen = {}
+
+        def cslr(ckpt, vocab, dataset, protocol):
+            seen["marker_at_cslr"] = os.path.isfile(marker)
+            return {s["id"]: ["X"] for s in dataset.samples}
+
+        def vit5(model_dir, sources, protocol):
+            raise RuntimeError("simulated crash after the predictions")
+
+        git = {"head": "f" * 40, "code_dirty": False, "dirty_lines": [], "prereg_commit": "e" * 40,
+               "prereg_n_commits": 1, "prereg_is_ancestor": True}
+        with mock.patch.object(self.E, "cslr_predict", cslr), mock.patch.object(self.E, "vit5_generate", vit5), \
+                mock.patch.object(self.E, "git_state", lambda p: dict(git)), \
+                contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            with self.assertRaises(RuntimeError):
+                self.E.main(self.argv(prereg, manifest, out))
+        self.assertTrue(seen["marker_at_cslr"])
+        self.assertFalse(os.path.exists(out))
+        with open(marker, encoding="utf-8") as f:
+            info = json.load(f)
+        self.assertEqual(info["git_commit"], "f" * 40)
+        # the crashed run cannot be repeated without a planner decision (plan 13 §7.2-7)
+        rc, calls, _, err = self.run_main(self.argv(prereg, manifest, out))
+        self.assert_refused((rc, calls), 2)
+        self.assertIn("marker", err)
+
+    # --- E2 -----------------------------------------------------------------------------------------------------------
+    def test_e2_stage1_in_place_of_stage2_refused(self):
+        prereg, manifest, pr = self.build_inputs()
+        out = self.registered_out(pr)
+        vit5 = pr["evaluation_protocol"]["inputs"]["vit5_model_dir"]
+        files = {}
+        for name in sorted(os.listdir(vit5)):
+            with open(os.path.join(vit5, name), "rb") as f:
+                files[name] = sha(f.read())
+        with open(pr["evaluation_protocol"]["inputs"]["cslr_checkpoint"], "rb") as f:
+            ckpt_sha = sha(f.read())
+        # the directory holds the STAGE 1 files: same base names, stage 1 hashes; stage 2 has other hashes
+        entries = [{"rel_path": "k2/cslr_best.pt", "sha256": ckpt_sha}]
+        entries += [{"rel_path": f"vit5_stage1/best_model/{n}", "sha256": h} for n, h in files.items()]
+        entries += [{"rel_path": f"vit5_stage2/best_model/{n}", "sha256": sha(b"stage2 " + n.encode())} for n in files]
+        m = self.p("manifest_vit5_both_stages.json")
+        write_bytes(m, json.dumps({"files": entries}).encode("utf-8"))
+        rc, calls, _, err = self.run_main(self.argv(prereg, m, out))
+        self.assert_refused((rc, calls), 3)
+        self.assertIn("vit5_stage2/best_model/config.json", err)
+        self.assertFalse(os.path.exists(out))
+        self.assertFalse(os.path.exists(self.E.run_marker_path(out)))
+
+    def test_e2_cslr_checkpoint_matched_by_relative_path(self):
+        prereg, manifest, pr = self.build_inputs()
+        out = self.registered_out(pr)
+        with open(manifest, encoding="utf-8") as f:
+            m = json.load(f)
+        for e in m["files"]:
+            if e["rel_path"] == "k2/cslr_best.pt":
+                e["rel_path"] = "k3/cslr_best.pt"  # right bytes, wrong artifact (another job)
+        m2 = self.p("manifest_wrong_cslr_rel.json")
+        write_bytes(m2, json.dumps(m).encode("utf-8"))
+        rc, calls, _, err = self.run_main(self.argv(prereg, m2, out))
+        self.assert_refused((rc, calls), 3)
+        self.assertIn("k2/cslr_best.pt", err)
+
+    def test_e2_protocol_without_manifest_rel_paths_refused(self):
+        prereg, manifest, pr = self.build_inputs()
+        out = self.registered_out(pr)
+        self.assertEqual(self.E.protocol_template("sentsplit_v1")["manifest_rel_paths"],
+                         {"cslr_checkpoint": "k2/cslr_best.pt", "vit5_model_dir": "vit5_stage2/best_model"})
+        del pr["evaluation_protocol"]["manifest_rel_paths"]
+        self.rewrite(prereg, pr)
+        rc, calls, _, err = self.run_main(self.argv(prereg, manifest, out))
+        self.assert_refused((rc, calls), 2)
+        self.assertIn("manifest_rel_paths", err)
+
+    # --- E3 -----------------------------------------------------------------------------------------------------------
+    def test_e3_canonical_entry_is_mandatory(self):
+        prereg, manifest, pr = self.build_inputs()
+        out = self.registered_out(pr)
+        pr["inputs"] = {}
+        self.rewrite(prereg, pr)
+        rc, calls, _, err = self.run_main(self.argv(prereg, manifest, out))
+        self.assert_refused((rc, calls), 3)
+        self.assertIn("canonical_json", err)
+        self.assertFalse(os.path.exists(out))
+
+    def test_e3_canonical_entry_matched_by_resolved_path_not_by_string(self):
+        prereg, manifest, pr = self.build_inputs()
+        out = self.registered_out(pr)
+        canon = pr["evaluation_protocol"]["inputs"]["canonical_json"]
+        spelled = os.path.join(os.path.dirname(canon), ".", os.path.basename(canon)).replace("\\", "/")
+        self.assertNotEqual(spelled, canon.replace("\\", "/"))
+        pr["inputs"] = {"dataset_canonical": {"path": spelled, "lf_sha256": "0" * 64}}
+        self.rewrite(prereg, pr)
+        rc, calls, _, err = self.run_main(self.argv(prereg, manifest, out))
+        self.assert_refused((rc, calls), 3)
+        self.assertIn("lf_sha256", err)
+
+    def test_e3_canonical_entry_without_digest_refused(self):
+        prereg, manifest, pr = self.build_inputs()
+        out = self.registered_out(pr)
+        pr["inputs"] = {"dataset_canonical": {"path": pr["inputs"]["dataset_canonical"]["path"]}}
+        self.rewrite(prereg, pr)
+        rc, calls, _, _ = self.run_main(self.argv(prereg, manifest, out))
+        self.assert_refused((rc, calls), 3)
+
+    def test_e3_test_keypoints_digest_required_and_compared(self):
+        prereg, manifest, pr = self.build_inputs()
+        out = self.registered_out(pr)
+        good = pr["test_keypoints_digest"]
+        # missing
+        del pr["test_keypoints_digest"]
+        self.rewrite(prereg, pr)
+        rc, calls, _, err = self.run_main(self.argv(prereg, manifest, out))
+        self.assert_refused((rc, calls), 3)
+        self.assertIn("test_keypoints_digest", err)
+        # registered, but one test keypoint file changed (present, same name, other bytes)
+        pr["test_keypoints_digest"] = good
+        self.rewrite(prereg, pr)
+        kp = pr["evaluation_protocol"]["inputs"]["keypoints_dir"]
+        victim = os.path.join(kp, sorted(os.listdir(kp))[0])
+        import numpy as np
+        np.save(victim, np.ones((4, 411), dtype=np.float32))
+        rc, calls, _, err = self.run_main(self.argv(prereg, manifest, out))
+        self.assert_refused((rc, calls), 3)
+        self.assertIn("test_keypoints_digest", err)
+        self.assertFalse(os.path.exists(out))
+        self.assertFalse(os.path.exists(self.E.run_marker_path(out)))
 
 
 if __name__ == "__main__":
