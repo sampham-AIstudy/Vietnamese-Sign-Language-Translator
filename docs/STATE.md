@@ -285,6 +285,11 @@
   chạy tới epoch 60) cũng chạy trên Kaggle (kernel CPU, 0 GPU) thay vì CPU local; chỉ việc rất nhẹ (test đơn vị, dữ liệu giả, đối chiếu JSON) chạy local.
   Eval MỘT lần B11b (suy luận 30 câu) giữ local như kế hoạch trừ khi người dùng muốn khác.
 
+- (2026-10-03 03:10) Google Drive: người dùng cài Google Drive for desktop (stream, ổ G:, cache giới hạn ~20 GB, khởi động cùng máy) và tạo thư mục
+  `G:\My Drive\VSLT`. Agent CHỈ đọc/ghi trong `G:\My Drive\VSLT\` (lưu trữ/tải tài liệu, bản sao checkpoint…); KHÔNG mở/liệt kê/sửa phần còn lại
+  của Drive (dữ liệu cá nhân). Không đồng bộ thư mục Project lên Drive. Không cần MCP. Đã thử 03:08: ghi/đọc file 5 MB, sha256 khớp (file thử đã xóa;
+  còn `VSLT\_test\write_test.txt`). Drive upload lên mây chạy nền — trước khi coi là "đã lưu trữ" phải kiểm trạng thái đồng bộ (chưa có cách kiểm qua lệnh).
+
 - (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy" — ĐÃ BỊ THAY bởi quyết định 20:15 ngay dưới.
 
 - (2026-10-02 20:15) LUẬT TẮT MÁY (thay mọi quyết định tắt máy trước đây: 2026-09-29 18:55, 2026-10-01 19:35, 2026-10-01 20:00, 2026-10-02 20:10):
