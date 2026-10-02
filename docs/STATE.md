@@ -18,7 +18,10 @@
   Q1 (CSLR: (i) công thức cũ chia theo người ký [mặc định] / (ii) chia theo câu), Q2 (upload ViT5 >3h), Q3 (đặt checkpoint mới vào đường dẫn
   mặc định = thuộc quyết định 09:20, không phải GATE) — đều có mặc định, không chặn tới B9.
   Q1 ĐÃ TRẢ LỜI (ii) 10:05 → cần planner Lần sửa 1 kế hoạch 13 (split câu cho CSLR + ViT5, guard, tiêu chí WER/BLEU + CI) TRƯỚC B3.
-  ĐANG GIAO: vslt-coder kế hoạch 13 B0–B2 — 09:50 (không bị ảnh hưởng bởi Q1). Sau đó: 13 B3–B5, ...; coder 06 B10 (tài liệu) xen khi chờ kernel.
+  Coder 13 B0–B2 XONG (39e96bf, 19b7159, 0373a90): gỡ Modal (modal_runner.py bị cuốn vào commit state 84c90e4 của orchestrator do commit cùng lúc —
+  nội dung đúng); vocab script: 372 token, sha256 dd7bc3da…1d11 (dựng từ TOÀN BỘ dataset); 15 test OK; AC2-06 hồi quy y mốc (518, 1 ERROR, 1 skip).
+  Không tìm thấy cách sinh vocab gốc trong lịch sử git. 4 file tier1_grouped_* thực ra đang tracked.
+  ĐANG GIAO: vslt-planner kế hoạch 13 Lần sửa 1 (quyết định Q1 = (ii) 10:05; vocab chỉ từ câu train?) — 10:35. Sau đó: 13 B3–B5, ...; coder 06 B10 (tài liệu) xen khi chờ kernel.
   SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
   `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint
   stgcn/stgcn_h360, video+nhãn QIPEDC, hauuto_raw, alphabet_hands_kaggle, vsl_gh, parallel_text. Còn nguyên: data/raw_tudienngonngukyhieu,
@@ -141,6 +144,7 @@
 - (2026-10-01, rút ra từ sự cố) Luật: trước khi xóa worktree/thư mục tạm, liệt kê và GỠ mọi junction/symlink bên trong
   (`cmd //c rmdir <link>` hoặc `find -type l`/`fsutil reparsepoint query`), không dùng `git worktree remove --force`/`rm -rf` khi còn link.
   Agent không được tạo junction/symlink tới dữ liệu thật trong worktree tạm; cần dữ liệu thì chạy test ở repo chính.
+  Orchestrator commit state bằng `git commit --only <file>` / `git commit -- <paths>` (không cuốn file coder đã stage).
   `_work/` được bỏ qua bằng .git/info/exclude (KHÔNG thêm vào .gitignore — test_private_artifacts.test_g_gitignore khóa .gitignore).
 
 - (2026-10-01 19:22) Khôi phục dữ liệu: dùng Kaggle + _work — checkpoint từ _work/_kaggle_staging và 2 dataset Kaggle private, kiểm sha256
