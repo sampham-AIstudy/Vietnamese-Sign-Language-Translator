@@ -533,6 +533,22 @@ Tệp tạm: `_work/_plan13_tmp/`.
   `.gitignore:45 *.log`), `kernel_stdout_vsl-retrain-cslr-vit5.log`, `local_crosscheck.json`. KHÔNG commit `gloss_vocab_canonical.txt` (file dữ liệu
   dẫn xuất, `data/external/` không tracked; sha256 có trong `SHA256SUMS` + preregistration). Quét chuỗi credential trên output → 0 dòng.
 
+### B8 — đẩy K1 stgcn Tier 1 (lượt 8, mốc HEAD `506f8fd`). Log: `_work/_plan13_tmp/B8_*`, bản đẩy `_work/_plan13_tmp/k1_push/`
+- **Cổng ngân sách §3.7 (trước job GPU):** hạn mức thật `PYTHONUTF8=1 .venv/Scripts/kaggle quota` lúc 2026-10-02T18:27:13Z (`B8_quota.txt`):
+  GPU used 4.15h, remaining 25.85h, total 30.00h, refreshAt 2026-10-03T00:00:00. Kế hoạch 13 đã dùng 0 GPU-giờ (sổ GPU: K2-preflight v1/v2 đều CPU).
+  Trần K1 = `jobs.k1.gpu_cap_hours` 0.75 (preregistration). Công thức §3.7 với số STATE (~6, ước tính người dùng — lớn hơn số thật 4.15, dùng số lớn
+  hơn cho an toàn): 6 + 0 + 0.75 = 6.75 ≤ 10 → LỌT; với số thật: 4.15 + 0 + 0.75 = 4.90 ≤ 10 → LỌT. Không dừng §7.2-1.
+- **Ghim:** K1 KHÔNG đổi so với ghim mới nhất `c0c70d2` (`git diff --quiet c0c70d2 HEAD -- kaggle/vsl-retrain-stgcn-tier1 scripts src configs train.py
+  evaluate_test.py reports/retrain_2026-10-02/preregistration.json` → 0; `git diff --stat 0908ef3 HEAD -- kaggle/vsl-retrain-stgcn-tier1` rỗng; file repo
+  `cmp` == `git show c0c70d2:…`) ⇒ dùng ghim **`c0c70d23fcd5c6d2345c598fb434ff4576a5ef91`**, không cần commit ghim mới. `c0c70d2` là tổ tiên
+  `origin/feat/vslt-complete`. File repo GIỮ `PIN_COMMIT = None` (test `tests/test_retrain_tools.py`); bản đẩy = file ở `c0c70d2` thay ĐÚNG dòng 29
+  (`B8_push_diff.txt`); `check_pin` + `same_as_pinned` chạy local trên bản đẩy → OK (`B8_push_check.txt`). sha256 bản đẩy: kernel
+  `f22f6ed67a700054d6882af95bebbf33019e02dc57f6643ce7b769c404acc256`, metadata `05a3fe534b11a7e655707b4cd4f011d1ccf93ba7b36516e8966e57cf7f8ef180`
+  (== file repo; `is_private` true, `enable_gpu` true, `dataset_sources` [`phmvnsm33/vslt-retrain-inputs-tier1`]).
+  Slug trước khi đẩy (`B8_status_before.txt`): `kernels status` → "Permission 'kernels.get' was denied"; `kernels list --mine -s vsl-retrain` chỉ có
+  `phmvnsm33/vsl-retrain-cslr-vit5` ⇒ slug K1 chưa tồn tại.
+- Không chạy train K1 local (train.py ghi `checkpoints/stgcn_best.pt` = đường dẫn mặc định — cấm trước B11).
+
 ## Đang làm
 - **ĐANG LÀM B8** (lượt 8, mốc HEAD `506f8fd`, bắt đầu 2026-10-02T18:26Z): kiểm ngân sách GPU §3.7 → ghim K1 → đẩy K1 → theo dõi → tải output + kiểm. Log: `_work/_plan13_tmp/B8_*`.
 - **B7 XONG** (lượt 7, lần 2): K2 preflight v2 `phmvnsm33/vsl-retrain-cslr-vit5` COMPLETE, 44/44 khớp preregistration, ghim `c0c70d2`. Dừng trước B8 (KHÔNG làm B8). Lần 1 (v1 ERROR) — xem mục B7 / B7 lần 2.
@@ -588,3 +604,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B7r2c | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, chỉ thêm) | "Changes: 1 files, 3 symbols / Affected processes: 0 / Risk level: low" — 3 mục markdown của 13-progress; không mã nào đọc file này (`dc_B7r2c.txt`) |
 | B7r2d | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, 13 file `A` trong `reports/retrain_2026-10-02/k2_preflight/`) | "Changes: 14 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); 13 file JSON/log dữ liệu, không symbol, không mã nào import (`dc_B7r2d.txt`) |
 | B8a | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +1 dòng "ĐANG LÀM B8" trước dòng này) | "Changes: 1 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); không mã nào đọc file này (`dc_B8a.txt`) |
+| B8b | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, mục B8 cổng ngân sách + ghim, chỉ thêm, trước dòng này) | "Changes: 1 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); không mã nào đọc file này (`dc_B8b.txt`) |
