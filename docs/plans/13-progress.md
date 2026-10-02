@@ -82,11 +82,37 @@ Tệp tạm: `_work/_plan13_tmp/`.
 - Lưu ý cho planner (Q1 = (ii), STATE 10:05): §3.8(ii) ghi "vocab chỉ từ câu train". Vocab B2 dựng từ TOÀN BỘ `dataset_canonical.json`
   (đúng AC2 hiện hành, 372). Nếu Lần sửa 1 đổi nguồn vocab, script nhận `--canonical` bất kỳ; có thể cần thêm tùy chọn lọc câu — chưa làm.
 
+### B2a [LS1] — split câu v1 + guard G1. Log: `_work/_plan13_tmp/B2a_*`
+- Lượt 2 (sau Lần sửa 1 `4f714c6`), mốc HEAD `1425863`. Phạm vi: B2a → B2b → B2c rồi dừng.
+- Impact: chỉ THÊM file mới (`git diff --cached --diff-filter=M` → 0 file sửa), không sửa symbol có sẵn. GitNexus `analyze --index-only`
+  chạy trước (`gitnexus_analyze_B2a.txt`; FTS vẫn "degraded", graph OK).
+- Test viết trước: `B2a_test_red.log` — `ImportError: cannot import name 'sentence_split' from 'src.data'` (FAILED errors=1).
+- `src/data/sentence_split.py` (mô-đun dùng chung §0.3): `make_split_dict` (kiểm bố cục canonical: người ký ↔ `split` = S01–S04 train,
+  S05 val, S06 test, đúng SENT001..SENT300; V = `sorted(random.Random(seed).sample(sorted(SENT001..SENT270), 30))`, T = SENT271..SENT300),
+  `validate_split_dict`/`load_sentence_split` (rời nhau, phủ đủ, 240/30/30, T == SENT271..300, V ⊂ SENT001..270, không trùng, `signer_split`
+  đúng, `version`), `select_vslgh_samples` (người ký × câu, giữ thứ tự; mẫu lệch người ký ↔ `split` → ValueError, không lọc im lặng),
+  `collect_glosses`, `heldout_texts` (mọi người ký, mọi lần lặp), `match_heldout` (L1 → L2 → near_dup, nguồn trước đích; Jaccard so bằng số
+  nguyên 5·∩ ≥ 4·∪; L1 = `src/translation/text_normalizer.py`, không viết lại; L2 = chữ thường + BỎ `.,!?;:"'()[]{}…` + gộp khoảng trắng).
+- **Giả định (ghi để reviewer kiểm):** định danh file split `sha256` = sha256 của nội dung sau CRLF→LF (`split_file_sha256`). Lý do: git ở máy này
+  `core.autocrlf=true` (`C:/Program Files/Git/etc/gitconfig`), không có `.gitattributes` (không được thêm — ngoài AC0) ⇒ checkout Windows có thể biến
+  file thành CRLF; blob git và bản trên Kaggle là LF. File sinh ra chỉ có LF nên giá trị này == sha256 byte của file vừa sinh (kiểm dưới).
+- `scripts/make_vslgh_sentence_split.py --canonical … --seed N --out …` (từ chối ghi đè → 2, canonical thiếu → 2, bố cục sai → 3; ghi LF, `xb`).
+- Test `tests/test_sentence_split_guard.py` (G1, dữ liệu giả trong `_work/_test_tmp/`): `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest
+  tests.test_sentence_split_guard -v` → `Ran 26 tests` `OK`, 0 skip (`B2a_test_green.log`).
+- File split thật: `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/make_vslgh_sentence_split.py --canonical data/external/vsl_gh/dataset_canonical.json
+  --seed 42 --out configs/vslgh_sentence_split_v1.json` (Python 3.11.9 `.venv`, code tại HEAD 1425863 + file B2a chưa commit) → exit 0, JSON
+  `_work/_plan13_tmp/B2a_make_split.json`: `sha256` `289b2ac158419d6a5e7487a256bdb9a6bf8fbac9bc76fb167fbfa9a86d8421a4`, 240/30/30, seed 42,
+  `canonical_lf_sha256` `d53ab701…a881` (== B2). Tái sinh vào `_work/_plan13_tmp/split_regen/` → `cmp` IDENTICAL; chạy lại vào đích đã có → exit 2.
+  `sha256sum` file == `load_sentence_split(...).sha256` (cùng giá trị trên, file 0 byte CR). Danh sách V nằm trong file (nguồn sự thật).
+- detect-changes `--scope staged` (4 file mới): "Changes: 4 files, 86 symbols / Affected processes: 241 / Risk level: critical" (`dc_B2a.txt`).
+  Đối chiếu: `git diff --cached --name-status` → 4 dòng `A`, 0 `M`; luồng bị liệt kê đều qua `main` (nối nhầm `main` của script mới vào mọi `main`
+  — đã biết từ 12-progress B5/B8); `git grep sentence_split HEAD -- src scripts backend tests` → 0 (chưa caller nào) ⇒ không rủi ro thực.
+
 ## Đang làm
-- (không) — lượt 1 (B0–B2) xong; dừng, báo orchestrator.
+- B2b (tùy chọn dataset) — tiếp theo.
 
 ## Còn lại
-- B3–B13 (lượt sau). Lưu ý: Q1 đã trả lời (ii) (STATE 10:05) → cần planner Lần sửa 1 trước B3.
+- B2b, B2c (lượt này); B3–B14 (lượt sau).
 
 ## Sổ GPU (kế hoạch 13)
 | Job | Phiên (phút, từ env.json) | Ghi chú |
