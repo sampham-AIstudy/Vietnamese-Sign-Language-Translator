@@ -21,7 +21,11 @@
   Coder 13 B0–B2 XONG (39e96bf, 19b7159, 0373a90): gỡ Modal (modal_runner.py bị cuốn vào commit state 84c90e4 của orchestrator do commit cùng lúc —
   nội dung đúng); vocab script: 372 token, sha256 dd7bc3da…1d11 (dựng từ TOÀN BỘ dataset); 15 test OK; AC2-06 hồi quy y mốc (518, 1 ERROR, 1 skip).
   Không tìm thấy cách sinh vocab gốc trong lịch sử git. 4 file tier1_grouped_* thực ra đang tracked.
-  ĐANG GIAO: vslt-planner kế hoạch 13 Lần sửa 1 (quyết định Q1 = (ii) 10:05; vocab chỉ từ câu train?) — 10:35. Sau đó: 13 B3–B5, ...; coder 06 B10 (tài liệu) xen khi chờ kernel.
+  Planner 13 Lần sửa 1 XONG (4f714c6): test = SENT271–300 (nguồn 27.98/23.18: reports/audit_round2/v2_cslr_reliability.json), val 30 câu
+  random.Random(42) trên SENT001–270, train 240; CSLR train S01–S04×train, val S05×val, test S06×test; ViT5 stage1 loại cặp khớp 60 câu;
+  configs/vslgh_sentence_split_v1.json + src/data/sentence_split.py; vocab chỉ từ câu train (≠ 372); tiêu chí §3.12 (sacrebleu 13a, bootstrap
+  1000, RandomState(42), CI 95%); eval MỘT lần local (scripts/eval_sentsplit.py); K3 công thức cũ = B14 tùy chọn. Bước tiếp từ B2a.
+  ĐANG GIAO: vslt-coder kế hoạch 13 B2a–B2c — 10:40. Sau đó: 13 B3–B5, ...; coder 06 B10 (tài liệu) xen khi chờ kernel.
   SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
   `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint
   stgcn/stgcn_h360, video+nhãn QIPEDC, hauuto_raw, alphabet_hands_kaggle, vsl_gh, parallel_text. Còn nguyên: data/raw_tudienngonngukyhieu,
