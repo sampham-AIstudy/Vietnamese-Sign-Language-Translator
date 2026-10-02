@@ -10,6 +10,7 @@ import hashlib
 import io
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -2592,6 +2593,51 @@ class TestK2HfFetch(_Scratch):
             self.assertIn("HF step watchdog", str(cm.exception))
             with self.assertRaises(K.Watchdog):
                 K.hf_snapshot(prereg, _t.time() + 5, "preflight")  # the kernel deadline binds
+
+
+class TestK2PushedModeLine(unittest.TestCase):
+    """Plan 13 B9: the repo file keeps MODE = "preflight" (locked by TestRetrainKernels); the pushed copy differs from the
+    pinned file ONLY in the PIN_COMMIT line and the value of the MODE line, and that value must be one of MODES."""
+
+    @classmethod
+    def setUpClass(cls):
+        with open(os.path.join(K2_DIR, "kernel-metadata.json"), encoding="utf-8") as f:
+            cls.k2_path = os.path.join(K2_DIR, json.load(f)["code_file"])
+        cls.K2 = _load_kernel(cls.k2_path, "plan13_k2_kernel_mode")
+        with open(cls.k2_path, encoding="utf-8") as f:
+            cls.text = f.read()
+
+    def pushed(self, mode='"train"', pin='"' + "b" * 40 + '"'):
+        out = self.text.replace('MODE = "preflight"  #', f"MODE = {mode}  #", 1)
+        return out.replace("PIN_COMMIT = None", f"PIN_COMMIT = {pin}", 1)
+
+    def test_repo_mode_line_is_unique_and_preflight(self):
+        self.assertEqual(len(re.findall(r"^MODE = ", self.text, re.M)), 1)
+        self.assertEqual(self.text.count('MODE = "preflight"  #'), 1)
+
+    def test_train_mode_with_pin_is_same_as_pinned(self):
+        for mode in self.K2.MODES:
+            self.K2.same_as_pinned(self.pushed(mode=f'"{mode}"'), self.text)
+            self.K2.same_as_pinned(self.pushed(mode=f'"{mode}"').replace("\n", "\r\n"), self.text)
+
+    def test_other_mode_values_or_extra_lines_are_refused(self):
+        for mode in ('"repro_i"', '"Train"', "'train'", '"train" if True else "preflight"', "MODES[1]"):
+            with self.assertRaises(self.K2.KernelError, msg=mode):
+                self.K2.same_as_pinned(self.pushed(mode=mode), self.text)
+        with self.assertRaises(self.K2.KernelError):  # a second MODE line anywhere
+            self.K2.same_as_pinned(self.pushed() + '\nMODE = "train"  # extra\n', self.text)
+        with self.assertRaises(self.K2.KernelError):  # the comment of the MODE line is still compared
+            self.K2.same_as_pinned(self.pushed().replace('MODE = "train"  #', 'MODE = "train"  # x', 1), self.text)
+        with self.assertRaises(self.K2.KernelError):  # any other line still compared
+            self.K2.same_as_pinned(self.pushed().replace('BRANCH = "', 'BRANCH = "x', 1), self.text)
+
+    def test_k1_pin_check_unchanged(self):
+        with open(os.path.join(K1_DIR, "retrain_stgcn_kernel.py"), encoding="utf-8") as f:
+            k1_text = f.read()
+        K1 = _load_kernel(os.path.join(K1_DIR, "retrain_stgcn_kernel.py"), "plan13_k1_kernel_mode")
+        self.assertFalse(re.search(r"^MODE = ", k1_text, re.M))
+        with self.assertRaises(K1.KernelError):
+            K1.same_as_pinned(k1_text + '\nMODE = "train"\n', k1_text)
 
 
 if __name__ == "__main__":

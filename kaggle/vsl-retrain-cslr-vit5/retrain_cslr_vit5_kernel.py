@@ -46,6 +46,9 @@ WORK = Path("/kaggle/working/k2")
 SCRATCH = Path("/tmp/k2_scratch")
 MODES = ("preflight", "train")
 PIN_LINE_RX = re.compile(r"^PIN_COMMIT = .*$", re.M)
+# plan 13 B9: the repo file keeps MODE = "preflight" (locked by the tests); the pushed copy may change only the VALUE of
+# the MODE line, and only to one of MODES (the comment after it and every other line are still compared)
+MODE_VALUE_RX = re.compile(r'^MODE = "(?:' + "|".join(MODES) + r')"(?=  # )', re.M)
 TEST_DEFERRED = "TEST DEFERRED (sentence split v1)"
 PRIMARY_TEST = "PRIMARY TEST EVALUATION"
 # first line of any training loop: smoke test / CSLR start / epoch lines of train_cslr.py and the two ViT5 scripts
@@ -88,11 +91,13 @@ def check_pin(pin):
 
 
 def same_as_pinned(running_text, pinned_text):
-    """The running kernel must be the pinned file except for the PIN_COMMIT line (the pin cannot contain itself)."""
-    norm = lambda t: PIN_LINE_RX.sub("PIN_COMMIT = <pin>", t.replace("\r\n", "\n"))  # noqa: E731
+    """The running kernel must be the pinned file except for the PIN_COMMIT line (the pin cannot contain itself) and the
+    value of the MODE line (one of MODES; the mode that ran is recorded in env.json)."""
+    norm = lambda t: MODE_VALUE_RX.sub("MODE = <mode>",  # noqa: E731
+                                       PIN_LINE_RX.sub("PIN_COMMIT = <pin>", t.replace("\r\n", "\n")))
     if norm(running_text) != norm(pinned_text):
         raise KernelError(f"the running kernel differs from {KERNEL_FILE_IN_REPO} at the pinned commit "
-                          "(other than the PIN_COMMIT line)")
+                          "(other than the PIN_COMMIT line and the MODE value)")
 
 
 def _kill(proc):

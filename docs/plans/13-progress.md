@@ -580,6 +580,32 @@ Tệp tạm: `_work/_plan13_tmp/`.
 - Test: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_retrain_tools tests.test_sentence_split_guard` → `Ran 164 tests` `OK (skipped=2)`
   (2 skip như B5/B7: 10k cleaned chưa đặt — B11) (`B8_full_suites.log`). Không sửa mã/test ở B8.
 
+### B9 phần 1 — K2 train: chuẩn bị + đẩy (lượt 9, mốc HEAD `22e742f`). Log: `_work/_plan13_tmp/B9_*`, bản đẩy `_work/_plan13_tmp/k2_push_train/`
+- **Cổng ngân sách §3.7 (trước job GPU):** `PYTHONUTF8=1 .venv/Scripts/kaggle quota` lúc 2026-10-02T18:42:12Z (`B9_quota.txt`): GPU used 4.18h,
+  remaining 25.82h, total 30.00h, refreshAt 2026-10-03T00:00:00. Kế hoạch 13 đã dùng 1.58 GPU-phút (≈ 0.03 h, sổ GPU). Trần K2 = 1.75 h (§3.7;
+  watchdog 105'). Với số STATE ~6 (lớn hơn số thật, dùng cho an toàn): 6 + 0.03 + 1.75 = 7.78 ≤ 10 → LỌT; số thật: 4.18 + 0.03 + 1.75 = 5.96 ≤ 10
+  → LỌT (4.18 đã gồm K1). Tổng kế hoạch 13: 0.03 + 1.75 = 1.78 ≤ trần tổng 2.5. Không dừng §7.2-1.
+- **Giả định (cơ chế bản đẩy cho MODE, theo lệnh orchestrator "áp cùng cơ chế như PIN_COMMIT"):** test có sẵn khóa file repo K2:
+  `TestRetrainKernels.test_k2_is_preflight_and_never_evaluates` (`_module_constant(tree, "MODE") == "preflight"`) và
+  `test_metadata_private_internet_and_accelerators` (`m2["enable_gpu"] is False`, `kernel_sources == []`) ⇒ commit `MODE="train"` / GPU vào file
+  repo (như §4 B9 viết) sẽ làm đỏ 2 test — KHÔNG sửa/nới test. Nên: file repo GIỮ `MODE = "preflight"`, `PIN_COMMIT = None`, metadata CPU;
+  bản đẩy = file ở ghim thay dòng `PIN_COMMIT` + GIÁ TRỊ dòng `MODE` → `"train"`; metadata đẩy = metadata repo với `enable_gpu: true`,
+  `kernel_sources: ["phmvnsm33/vsl-retrain-stgcn-tier1"]` (như K1: chỉ `enable_gpu`, K1 v1 nhận 2× T4).
+  Khác với PIN: kernel tự kiểm `same_as_pinned` (file đang chạy == file ở ghim trừ dòng PIN) ⇒ đổi MODE ở bản đẩy sẽ bị kernel từ chối. Sửa
+  DUY NHẤT `same_as_pinned` của K2 (+ hằng `MODE_VALUE_RX`): bỏ qua thêm GIÁ TRỊ dòng `MODE = "<x>"  # …` khi `<x>` ∈ `MODES` (`preflight`, `train`);
+  chú thích sau giá trị, dòng MODE thứ hai, giá trị khác (`repro_i`, `'train'`, biểu thức) và mọi dòng khác vẫn so ⇒ bản chạy được xác định hoàn
+  toàn bởi (ghim, MODE) — MODE đã ghi trong `env.json` (`mode`) và `preflight.json` (`mode`). K1 không đổi. Lệch chữ với §3.4e ("MODE đổi bằng commit"):
+  MODE không nằm trong commit mà trong bản đẩy + 13-progress — reviewer/orchestrator xác nhận cách hiểu (không đổi tiêu chí, không đổi test).
+- Impact (`B9_impact_same_as_pinned_k2.txt`, `-u Function:kaggle/vsl-retrain-cslr-vit5/retrain_cslr_vit5_kernel.py:same_as_pinned`): upstream
+  **CRITICAL** (3 mục, 75 luồng — luồng `Main → …`/`Run_harmonized → …` của script khác nối nhầm qua tên `main`, như B7r2); độ sâu 1 chỉ
+  `clone_pinned` của chính K2. grep `same_as_pinned` trong `src scripts backend kaggle tests train.py evaluate_test.py` → K2 `:90,:274`, K1 (hàm riêng,
+  không sửa), test `:2234-2237` ⇒ caller thật duy nhất là `clone_pinned` (K2). Hành vi cũ giữ: PIN/CRLF vẫn được bỏ qua, `REPO_URL` đổi vẫn lỗi.
+- Test: +4 `TestK2PushedModeLine` (+1 dòng `import re` đầu file; 0 dòng xóa: `git diff 22e742f -- tests/test_retrain_tools.py | grep -c "^-[^-]"` → 0).
+  Đỏ trước: `B9_test_red.log` `Ran 4` `FAILED (errors=1)` (`test_train_mode_with_pin_is_same_as_pinned`: KernelError). Xanh:
+  `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_retrain_tools tests.test_sentence_split_guard` → `Ran 168 tests` `OK (skipped=2)`
+  (2 skip như B5/B7/B8: 10k cleaned chưa đặt — B11) (`B9_full_suites.log`).
+- **Ghim mới:** K2 đổi so với ghim `c0c70d2` ⇒ commit chứa kernel + test + mục này = **commit ghim B9** (hash ghi ở commit sau, chỉ sửa 13-progress).
+
 ## Đang làm
 - **ĐANG LÀM B9 phần 1** (lượt 9, mốc HEAD `22e742f`): cổng ngân sách §3.7 → K2 `MODE="train"` + GPU + `kernel_sources` K1 → ghim → đẩy K2 → trả về khi RUNNING. Log: `_work/_plan13_tmp/B9_*`.
 - **B8 XONG** (lượt 8): K1 `phmvnsm33/vsl-retrain-stgcn-tier1` v1 COMPLETE (ghim `c0c70d2`), 39/39 kiểm, `stgcn_best.pt` sha256 `2204becd…bac2` trong `k1_outputs.json`. Dừng trước B9 (KHÔNG làm B9).
@@ -642,3 +668,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B8c | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, dòng đẩy K1, chỉ thêm) | "Changes: 1 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a) (`dc_B8c.txt`) |
 | B8d | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, 13 file `A` trong `reports/retrain_2026-10-02/k1/` + `k1_outputs.json`) | "Changes: 14 files, 3 symbols / Affected processes: 195 / Risk level: critical" — 3 symbol đều là mục markdown của 13-progress (`Kế hoạch 13 — tiến độ (coder)`, `Bước đã xong`, `B8 — đẩy K1 …`; nối nhầm như B7a); 13 file JSON/log dữ liệu, không symbol, không mã nào import; `git diff --cached --name-only` đuôi `.pt/.npz/.png/.csv/…` → 0 (`dc_B8d.txt`) |
 | B9a | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +1 dòng "ĐANG LÀM B9 phần 1" trước dòng này) | "Changes: 1 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); không mã nào đọc file này (`dc_B9a.txt`) |
+| B9b (ghim B9) | `analyze --index-only` rồi `detect-changes --scope staged` (`M` kernel K2, `M tests/test_retrain_tools.py` chỉ thêm, `M docs/plans/13-progress.md`) | "Changes: 3 files, 11 symbols / Affected processes: 196 / Risk level: critical" — symbol đổi: `MODE_VALUE_RX`, `same_as_pinned`, `norm` (lambda trong `same_as_pinned`) của K2 + lớp test mới `TestK2PushedModeLine` + mục markdown; luồng liệt kê (`Run_harmonized → …`, `Main → …`, `Measure_and_compare → …`) đều ghi "changed: Kế hoạch 13 — tiến độ (coder)" = nối nhầm qua mục markdown như B7a; caller thật của `same_as_pinned` chỉ `clone_pinned` (K2) (`dc_B9b.txt`) |
