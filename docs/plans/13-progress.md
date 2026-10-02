@@ -451,6 +451,21 @@ Tệp tạm: `_work/_plan13_tmp/`.
   Việc tiếp (orchestrator/lượt sau): `kernels status` tới COMPLETE/ERROR → `PYTHONUTF8=1 .venv/Scripts/kaggle kernels output phmvnsm33/vsl-retrain-cslr-vit5
   -p _work/_plan13_tmp/k2_preflight/` → đối chiếu `preflight.json` (rows/n_mismatch/leak_check_total) + `env.json` với preregistration; lệch → §7.2.
 
+### B7 lần 2 (lượt 7, mốc HEAD `a4fc4cd`). Log: `_work/_plan13_tmp/B7r2_*`
+- Sự kiện (orchestrator kiểm thật, output v1 ở `_work/_plan13_tmp/k2_preflight_v1/`): K2 v1 ERROR, `env.json` `error` "Watchdog: watchdog: killed
+  ['/usr/bin/python3', '/tmp/k2_scratch/hf_probe.py', 'VietAI/vit5-base'] at the wall-clock limit", `total_minutes` 105.0; `hf_preflight.log` dừng ở
+  "Fetching 10 files: 40% 4/10"; log kernel: lệnh hf_probe bắt đầu ở t=83.0 s, mọi bước trước đó xong.
+- Ghi chú đối chiếu §7.2-1 ("watchdog cắt job → CẦN NGƯỜI DÙNG", mục Ngân sách GPU): v1 là preflight CPU, 0 GPU quota, không train — orchestrator giao
+  sửa và đẩy v2; coder làm theo lệnh này, ghi lại để reviewer/orchestrator xác nhận cách hiểu.
+- **Kiểm sớm output v1 (KHÔNG phải bằng chứng chính thức — chính thức là v2):** `PYTHONIOENCODING=utf-8 .venv/Scripts/python
+  _work/_plan13_tmp/b7r2_check_v1.py` → exit 0, `B7r2_v1_crosscheck.json`: 28 dòng, 0 lệch — SHA256SUMS (9 file + danh sách file) khớp file tải về;
+  `env.commit` == ghim `0908ef3`, `preregistration_commit` == commit duy nhất của preregistration (`ea12b44`), `pip` == `k2_pip_pinned`, `upstream` ==
+  `upstream_sources`, `watchdog_minutes` == jobs.k2; `vocab.log`: `n_tokens`, `sha256`, hash16, `n_samples_selected`, `glosses_excluded` == `vocab`;
+  `canonical_lf_sha256` == `inputs.dataset_canonical_json.lf_sha256`; `sentence_split_sha256` == `sentence_split.sha256`; `clean_10k.log` raw/retained ==
+  `inputs` 10k `n_lines`/cleaned `n_records`; `translation_corpus_validation.json` `final_canonical_pairs_count` == 10k `n_lines`, status PASS;
+  `prepare_vsl_gh.log` số mục canonical / số keypoint == `inputs`. Chưa kiểm được từ v1 (bước `measure_and_compare` chưa chạy): dir_digest keypoints,
+  lf_sha256 10k/cleaned, `counts_after_split`, `clean10k_excluded`, `leak_check`. ⇒ Không lệch dữ liệu ⇒ không dừng §7.2.
+
 ## Đang làm
 - **ĐANG LÀM B7 lần 2** (lượt 7, mốc HEAD `a4fc4cd`): K2 v1 ERROR (watchdog 105' giết `hf_probe.py VietAI/vit5-base`, log dừng "Fetching 10 files: 40% 4/10"). Việc: đối chiếu sớm output v1, sửa bước HF (chỉ tải file cần, timeout/retry, log từng file, watchdog riêng), ghim mới nếu đổi kernel, đẩy K2 v2. KHÔNG làm B8.
 - **ĐANG LÀM B7** (lượt 6, mốc HEAD `422e499`): K2 preflight ĐÃ ĐẨY (`phmvnsm33/vsl-retrain-cslr-vit5` v1, 14:15:08Z), lần kiểm cuối 15:18:07Z RUNNING (>60 phút) → bàn giao orchestrator theo dõi; còn: tải output + đối chiếu preregistration. KHÔNG làm B8.
@@ -498,3 +513,5 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B6 | `detect-changes --scope staged` (`A reports/retrain_2026-10-02/inputs_tier1_manifest.json`, `M docs/plans/13-progress.md`) | "Diff touched 2 file(s) but no indexed symbols overlap those hunks — not a clean tree." — JSON manifest + markdown, không symbol; KHÔNG phải kết quả sạch; không mã nào import (`dc_B6.txt`) |
 | B7a | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +10/−0 trước dòng này) | "Changes: 1 files, 1 symbols / Affected processes: 196 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B0/B2/B3/B5d); không mã nào đọc file này (`dc_B7a.txt`) |
 | B7b | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +10/−1 trước dòng này) | "Changes: 1 files, 1 symbols / Affected processes: 198 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); 1 dòng "xóa" = dòng "Đang làm" được thay (`dc_B7b.txt`) |
+| B7r2-start (518dac3) | (KHÔNG chạy trước commit — sót; commit chỉ thêm 1 dòng "Đang làm" vào `docs/plans/13-progress.md`) | chạy bù ở dòng kế (cùng file, cùng loại thay đổi) |
+| B7r2a | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, chỉ thêm) | "Changes: 1 files, 1 symbols / Affected processes: 198 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a/B7b); không mã nào đọc file này (`dc_B7r2a.txt`) |
