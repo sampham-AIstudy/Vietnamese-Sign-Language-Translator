@@ -187,6 +187,14 @@
   - (i) (công thức cũ) chỉ chạy SAU (ii), nếu cổng ngân sách cho phép, như kiểm tra tái tạo số cũ; ghi vào ledger.
   - Số liệu sinh từ JSON.
 
+- (2026-10-02 16:10) THỨ TỰ MỚI (theo bảng 9 khối việc): 13 (train lại) → 2 (đóng kế hoạch 06) → 3 (kế hoạch 08 segmenter live) →
+  5 (kế hoạch 11: sửa HẾT 9 vi phạm guard DoD 7 bằng sửa code, KHÔNG nới guard) → 7 (đo độ trễ) → 8 (README/EVALUATION từ JSON, Giới hạn,
+  clone sạch) → 9 (review toàn nhánh + báo cáo). TRONG LÚC kernel Kaggle của 13 chạy: làm việc 5, việc 3 và phần chuẩn bị của việc 7 (không cần checkpoint).
+  - Việc 6 (từ điển): KIỂM TRA DoD 5 còn thiếu gì ở /api/dictionary TRƯỚC khi lập kế hoạch; chỉ dựng SQLite nếu thật sự cần hoặc người dùng yêu cầu.
+  - Việc 4 (Ký câu): chạy chế độ OFFLINE, giao diện ghi rõ "demo trong miền y tế". CHƯA làm tách đoạn realtime cho Cấp 3.
+  - Ước lượng thời gian: dùng số đo từ docs/usage_ledger.csv (cả seven_delta), báo lại người dùng.
+  (Orchestrator xếp việc 4 và 6 — người dùng chưa xếp — sau 5 và trước 8; báo người dùng.)
+
 ## Câu hỏi chờ người dùng
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
 - (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
