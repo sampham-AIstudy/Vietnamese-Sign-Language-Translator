@@ -280,6 +280,11 @@
   - Grep "unseen" / "zero leakage" / "không rò rỉ" toàn repo (EVALUATION, báo cáo, UI) và sửa tương tự.
   - Thêm test guard: khẳng định "unseen" / "zero leakage" cho CSLR chỉ được phép nếu trỏ tới JSON chứng minh split theo câu.
 
+- (2026-10-03 02:55) KHÔNG tìm checkpoint gốc nữa (đã kiểm toàn bộ tài khoản Kaggle phmvnsm33 03/10: 11 notebook, 3 dataset, 0 model — không có;
+  danh sách _work/_kaggle_search_1003/). Train lại TRÊN KAGGLE; KHÔNG train local (lâu, hại máy). Orchestrator áp dụng: chẩn đoán smoke CSLR B9b (§0B.3,
+  chạy tới epoch 60) cũng chạy trên Kaggle (kernel CPU, 0 GPU) thay vì CPU local; chỉ việc rất nhẹ (test đơn vị, dữ liệu giả, đối chiếu JSON) chạy local.
+  Eval MỘT lần B11b (suy luận 30 câu) giữ local như kế hoạch trừ khi người dùng muốn khác.
+
 - (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy" — ĐÃ BỊ THAY bởi quyết định 20:15 ngay dưới.
 
 - (2026-10-02 20:15) LUẬT TẮT MÁY (thay mọi quyết định tắt máy trước đây: 2026-09-29 18:55, 2026-10-01 19:35, 2026-10-01 20:00, 2026-10-02 20:10):
