@@ -47,3 +47,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-02T18:37Z,vslt-coder,13,B8 (K1 GPU push+check+commit),15,22,7,1,ok
 2026-10-02T18:51Z,vslt-coder,13,B9 part 1 (K2 train push),22,31,9,1,ok
 2026-10-02T19:12Z,vslt-planner,11,full plan (read-only),31,50,19,3,ok
+2026-10-02T19:26Z,vslt-coder,11,B0-B1,54,55+,?,0,stale (usage written 02:14 VN before coder end)

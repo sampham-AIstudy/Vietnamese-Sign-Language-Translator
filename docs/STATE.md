@@ -7,7 +7,12 @@
 - HEAD: 48f65dd (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 02:16 ngày 3/10: vslt-coder 11 chặng 1 (B0–B1) đang chạy. 5h 54% (reset 06:00 VN), 7 ngày 51%.
+- Trạng thái phiên: ĐANG CHẠY — 02:28 ngày 3/10 giao vslt-planner 13 Lần sửa 2 (mục dưới). 5h 55% (số lúc 02:14, có thể cũ), reset 06:00 VN; 7 ngày 51%.
+  Cổng: 55 + 32 (est planner max 32/24/19) = 87 ≤ 90 → đạt (sát ngưỡng; sau planner nhiều khả năng dừng chờ hạn mức).
+  Coder 11 chặng 1 XONG (a01909a B0, a3d8e1c B1; đã push): mốc guard known 9/allowed 36/unregistered 0; AC7 31 module Ran 518 errors=1 skipped=1 (có sẵn:
+  setUpClass test_translation_core thiếu ViT5; skip stgcn_best.pt); test_reset_segments_and_graphs lần này ok; tests.data.test_vsl_gh_dataset test_19 FAIL có sẵn;
+  0/7312 video thiếu fps ⇒ B3 được làm. B1: TestRegistryBaseline 4 test, guard Ran 28 OK ×2, đỏ trước có bằng chứng. CẦN REVIEWER: impact CRITICAL ở
+  compare_registry/registry_totals coder đánh giá là nối nhầm (caller thật chỉ trong file guard; B1 không sửa 2 symbol này). VIỆC KẾ TIẾP 11: B2 (sign_segmenter).
   K2 TRAIN v3 = ERROR (orchestrator kiểm 19:12Z; output + log đã tải: _work/_plan13_tmp/k2_train_v3/): "K2 FAILED: KernelError: failed jobs: ['cslr']".
   Nguyên nhân (k2/logs/cslr.log): LEAK CHECK OK (2880/30, vocab 322) rồi SMOKE TEST của train_cslr.py (set_seed 42, 8 mẫu train đầu, 10 epoch, chạy TRƯỚC
   khi nạp backbone) FAILED: loss 78.0 → 2.33 giảm nhưng giải mã toàn `<BLANK_ONLY>` → RuntimeError "Smoke test failed! Halting full training".
