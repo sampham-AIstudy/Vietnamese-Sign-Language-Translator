@@ -610,5 +610,103 @@ class TestG2RealData(_Scratch):
             self.assertEqual(sorted([s["id"] for s in ds.samples] + ds.excluded_ids), sorted(s["id"] for s in plain.samples))
 
 
+# =====================================================================================================================
+# G2-ref (mid review 13, issue 1.A): the G2 checks above re-use `match_heldout` to check its own output, so a 10k file
+# with an inserted pair of a test sentence still passes. These tests compare what the code computes NOW with numbers
+# REGISTERED BEFORE (never recomputed here):
+#   1. the preregistration `reports/retrain_<D>/preregistration.json` (B5; override VSLT_GUARD_PREREG):
+#        sentence_split.sha256, counts_after_split.{clean10k{train,val}, cslr{train,val,test}, vslgh_text{train,val,test}},
+#        clean10k_excluded{n_train, n_val, ids};
+#   2. until B5 exists: the values computed by code in B3 / B2b and saved under _work/_plan13_tmp/ (B3_result.json from
+#      _work/_plan13_tmp/b3_runner.py at commit 34117fd, code_dirty false; B2b_counts.json), override VSLT_GUARD_B3 /
+#      VSLT_GUARD_B2B.
+# Missing DATA -> skip (as G2). Data present but no registered reference -> FAIL (cannot be checked = not checked).
+# =====================================================================================================================
+
+REF_PREREG = os.environ.get("VSLT_GUARD_PREREG")
+REF_B3 = os.environ.get("VSLT_GUARD_B3", os.path.join(ROOT, "_work", "_plan13_tmp", "B3_result.json"))
+REF_B2B = os.environ.get("VSLT_GUARD_B2B", os.path.join(ROOT, "_work", "_plan13_tmp", "B2b_counts.json"))
+
+
+def registered_reference():
+    """Reference values registered before this run, or None. Raises if more than one preregistration is found."""
+    import glob
+    if REF_PREREG:
+        preregs = [REF_PREREG]
+    else:
+        preregs = sorted(glob.glob(os.path.join(ROOT, "reports", "retrain_*", "preregistration.json")))
+    if len(preregs) > 1:
+        raise AssertionError(f"more than one preregistration, set VSLT_GUARD_PREREG: {preregs}")
+    if preregs:
+        with open(preregs[0], "r", encoding="utf-8") as f:
+            pr = json.load(f)
+        counts, excl = pr["counts_after_split"], pr["clean10k_excluded"]
+        return {"source": preregs[0], "split_sha256": pr["sentence_split"]["sha256"],
+                "clean10k": {"train": counts["clean10k"]["train"], "val": counts["clean10k"]["val"]},
+                "clean10k_n_excluded": {"train": excl["n_train"], "val": excl["n_val"]},
+                "clean10k_excluded_ids": sorted(excl["ids"]),
+                "cslr": dict(counts["cslr"]), "vslgh_text": dict(counts["vslgh_text"])}
+    if os.path.isfile(REF_B3) and os.path.isfile(REF_B2B):
+        with open(REF_B3, "r", encoding="utf-8") as f:
+            b3 = json.load(f)["clean10k_exclude_heldout"]
+        with open(REF_B2B, "r", encoding="utf-8") as f:
+            b2b = json.load(f)
+        return {"source": f"{REF_B3} + {REF_B2B}", "split_sha256": b3["sentence_split_sha256"],
+                "clean10k": {"train": b3["train"]["n_kept"], "val": b3["val"]["n_kept"]},
+                "clean10k_n_excluded": {"train": b3["train"]["n_excluded"], "val": b3["val"]["n_excluded"]},
+                "clean10k_excluded_ids": sorted(e["id"] for k in ("train", "val") for e in b3[k]["excluded"]),
+                "cslr": dict(b2b["cslr"]), "vslgh_text": dict(b2b["vit5_s2"])}
+    return None
+
+
+class TestG2RegisteredReference(_Scratch):
+    @classmethod
+    def setUpClass(cls):
+        cls.split = SS.load_sentence_split(REAL_SPLIT)
+        cls.ref = registered_reference()
+
+    need = TestG2RealData.need
+
+    def require_ref(self):
+        if self.ref is None:
+            self.fail("data present but no registered reference (no reports/retrain_*/preregistration.json and no "
+                      f"{REF_B3} + {REF_B2B}): the counts cannot be checked")
+        return self.ref
+
+    def test_split_sha256_equals_registered(self):
+        if self.ref is None:
+            self.skipTest("no preregistration yet (B5) and no B3 reference under _work/_plan13_tmp/")
+        self.assertEqual(self.split.sha256, self.ref["split_sha256"], self.ref["source"])
+
+    def test_clean10k_counts_and_excluded_ids_equal_registered(self):
+        self.need(REAL_CLEAN10K)
+        self.need(REAL_CANON)
+        ref = self.require_ref()
+        with open(REAL_CANON, "r", encoding="utf-8") as f:
+            canon = json.load(f)
+        from src.translation.dataset import Clean10kDataset
+        heldout = SS.heldout_texts(canon, self.split.heldout_ids())
+        got_ids = []
+        for name in ("train", "val"):
+            ds = Clean10kDataset(jsonl_path=REAL_CLEAN10K, split=name, exclude_heldout=heldout)
+            self.assertEqual(len(ds), ref["clean10k"][name], (name, ref["source"]))
+            self.assertEqual(len(ds.excluded_ids), ref["clean10k_n_excluded"][name], (name, ds.excluded_ids))
+            got_ids += ds.excluded_ids
+        self.assertEqual(sorted(got_ids), ref["clean10k_excluded_ids"], ref["source"])
+
+    def test_cslr_and_text_counts_equal_registered(self):
+        self.need(REAL_CANON)
+        self.need(REAL_KP)
+        ref = self.require_ref()
+        from src.data.vsl_gh_dataset import VSLGHContinuousDataset
+        from src.translation.dataset import VSLGHTextDataset
+        for name in ("train", "val", "test"):
+            cont = VSLGHContinuousDataset(canonical_json=REAL_CANON, keypoints_dir=REAL_KP, split=name,
+                                          sentence_split=REAL_SPLIT)
+            text = VSLGHTextDataset(canonical_json=REAL_CANON, split=name, sentence_split=REAL_SPLIT)
+            self.assertEqual(len(cont), ref["cslr"][name], (name, ref["source"]))
+            self.assertEqual(len(text), ref["vslgh_text"][name], (name, ref["source"]))
+
+
 if __name__ == "__main__":
     unittest.main()

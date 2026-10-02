@@ -328,8 +328,19 @@ Tệp tạm: `_work/_plan13_tmp/`.
   `data/external/parallel_text/`, đặt ở B11). Chạy cùng guard với `VSLT_GUARD_CLEAN10K=<bản cleaned trong _work>` → `Ran 39` `OK`, 0 skip (`B3_guard_with_work_cleaned.log`).
 - Ngoài phạm vi, không gặp lại / không sửa: `tests.data.test_vsl_gh_dataset` test_19 (dữ liệu khôi phục thiếu `annotation_source`) — không chạy lại ở lượt này.
 
+### Sửa sau review giữa (`docs/reviews/13-review-mid.md`, lượt 4, mốc HEAD `a22b3d9`). Log: `_work/_plan13_tmp/E_*`, `G2ref_*`
+- G2 (vấn đề 1.A): THÊM `TestG2RegisteredReference` vào `tests/test_sentence_split_guard.py` (0 dòng cũ bị xóa/sửa; `git diff --numstat` → `98 0`).
+  So với giá trị ĐĂNG KÝ TRƯỚC, không tính lại bằng `match_heldout`: preregistration (`reports/retrain_*/preregistration.json`, đúng 1 file, hoặc
+  `VSLT_GUARD_PREREG`) → `sentence_split.sha256`, `counts_after_split.{clean10k{train,val}, cslr{train,val,test}, vslgh_text{train,val,test}}`,
+  `clean10k_excluded{n_train, n_val, ids}`; CHƯA có preregistration → số B3/B2b do code tính và ghi trong `_work/_plan13_tmp/B3_result.json`
+  (`b3_runner.py`, commit `34117fd`, code_dirty false: train 6423 / val 713, loại 3 + 1, 4 ID) + `B2b_counts.json` (cslr 2880/30/30, vit5_s2 240/30/30).
+  Có dữ liệu mà không có tham chiếu → FAIL; thiếu dữ liệu → skip (như G2).
+  Kết quả: mặc định `Ran 3` `OK (skipped=1)` (10k chưa đặt) (`G2ref_default.log`); với bản cleaned B3 `Ran 3` `OK` (`G2ref_clean.log`);
+  với ĐỘT BIẾN D2 của reviewer `VSLT_GUARD_CLEAN10K=_work/_rev13_tmp/m2_10k.jsonl` → test mới **FAIL** `AssertionError: 4 != 3 : ('train',
+  [..., 'PAR_10K_MUT01', ...])`, còn test cũ `test_vit5_stage1_clean10k_no_heldout_match` vẫn ok (đúng như reviewer báo) (`G2ref_D2.log`).
+
 ## Đang làm
-- (không) — lượt 3 (B3, B4a–B4d) xong; dừng, báo orchestrator. B5 (đăng ký trước + commit ghim + push) giao lượt sau.
+- Lượt 4: sửa E1–E3 / G2 / mục 5 theo review giữa; dừng trước B5.
 
 ## Còn lại
 - B5–B14 (lượt sau). Ghi chú cho B5: `retrain_preregister.py` phải ghi đúng các khóa mà `eval_sentsplit.py` đọc (mục B4d); `protocol_template()` là nguồn
@@ -361,3 +372,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B4c | `detect-changes --scope staged` (5 file M, sau `analyze --index-only`) | "Changes: 5 files, 25 symbols / Affected processes: 16 / Risk level: critical" — symbol: hàm/hằng mới + `train_stage1`, `train_stage2`, `run_smoke_test`, `train_cslr`…; luồng: `Train_stage1 → _words | _normalizers | L2_text | Heldout_ids | _id_list | Split_file_sha256`, `Cslr_leak_check → Ids`, `Train_stage2 → Signers | _id_list`, `Run_smoke_test → Levenshtein_distance` … — đều trong chính 3 script train gọi mô-đun split dùng chung; không luồng serving/backend; hành vi mặc định khóa bằng 3 test xanh trên cả mã cũ và mới (`dc_B4c.txt`) |
 | B4d | `detect-changes --scope staged` (`A scripts/eval_sentsplit.py`, `M tests/test_retrain_tools.py`), sau `analyze --index-only` | "Diff touched 2 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_B4d.txt`) — như B4b: index chưa có symbol của file mới ⇒ KHÔNG phải kết quả sạch; đối chiếu: test chỉ thêm dòng (0 dòng xóa), file mới không được mã nào import (`git grep eval_sentsplit -- src backend kaggle` → 2 dòng, đều là chuỗi/chú thích trong `src/training/train_cslr.py:82,731` — dòng `TEST DEFERRED`, không import). Sau commit: `detect-changes --scope compare` (dòng kế) |
 | B4d (sau commit f7aacc1) | `analyze --index-only` rồi `detect-changes --scope compare --base-ref HEAD~1` | "Changes: 6 files, 44 symbols / Affected processes: 213 / Risk level: critical" — symbol đổi = hàm/hằng của `scripts/eval_sentsplit.py` (mới) + `Section … 13-progress`; luồng liệt kê là nối nhầm qua mục markdown/`main` như B0/B2/B4b; "6 files" gồm thay đổi chưa commit của cây (3 ` D` người dùng) (`dc_B4d_compare.txt`) |
+| Sửa-review G2 | `detect-changes --scope staged` (`M tests/test_sentence_split_guard.py`, chỉ thêm dòng), sau `analyze --index-only` | "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (`dc_G2.txt`) — index chưa có symbol của lớp test mới ⇒ KHÔNG phải kết quả sạch; đối chiếu: `git diff --cached --numstat` → `98 0` (0 dòng xóa), file test không được mã nào import |
