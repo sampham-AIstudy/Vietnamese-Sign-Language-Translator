@@ -548,6 +548,10 @@ Tệp tạm: `_work/_plan13_tmp/`.
   Slug trước khi đẩy (`B8_status_before.txt`): `kernels status` → "Permission 'kernels.get' was denied"; `kernels list --mine -s vsl-retrain` chỉ có
   `phmvnsm33/vsl-retrain-cslr-vit5` ⇒ slug K1 chưa tồn tại.
 - Không chạy train K1 local (train.py ghi `checkpoints/stgcn_best.pt` = đường dẫn mặc định — cấm trước B11).
+- Đẩy: `PYTHONUTF8=1 .venv/Scripts/kaggle kernels push -p _work/_plan13_tmp/k1_push` lúc **2026-10-02T18:29:34Z** → "Kernel version 1 successfully
+  pushed." (`B8_push.log`, `B8_push_time.txt`). Slug **`phmvnsm33/vsl-retrain-stgcn-tier1` version 1** (private, GPU, ghim `c0c70d2`).
+  Theo dõi (`B8_status_log.txt`, `kaggle kernels status` thật): 18:30:57Z RUNNING. Watchdog kernel 45 phút (preregistration) ⇒ tự kết thúc chậm nhất
+  ~19:16Z + độ trễ khởi động.
 
 ## Đang làm
 - **ĐANG LÀM B8** (lượt 8, mốc HEAD `506f8fd`, bắt đầu 2026-10-02T18:26Z): kiểm ngân sách GPU §3.7 → ghim K1 → đẩy K1 → theo dõi → tải output + kiểm. Log: `_work/_plan13_tmp/B8_*`.
@@ -605,3 +609,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B7r2d | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, 13 file `A` trong `reports/retrain_2026-10-02/k2_preflight/`) | "Changes: 14 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); 13 file JSON/log dữ liệu, không symbol, không mã nào import (`dc_B7r2d.txt`) |
 | B8a | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +1 dòng "ĐANG LÀM B8" trước dòng này) | "Changes: 1 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); không mã nào đọc file này (`dc_B8a.txt`) |
 | B8b | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, mục B8 cổng ngân sách + ghim, chỉ thêm, trước dòng này) | "Changes: 1 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); không mã nào đọc file này (`dc_B8b.txt`) |
+| B8c | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, dòng đẩy K1, chỉ thêm) | "Changes: 1 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a) (`dc_B8c.txt`) |
