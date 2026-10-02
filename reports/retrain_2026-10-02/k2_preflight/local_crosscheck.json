@@ -1,0 +1,350 @@
+{
+ "script": "_work/_plan13_tmp/b7r2_check_v2.py",
+ "command": "PYTHONIOENCODING=utf-8 .venv/Scripts/python _work/_plan13_tmp/b7r2_check_v2.py",
+ "git_head": "2dc5b7e3a507d13a12a27b298d2f2b0cd3ee8306",
+ "kernel": "phmvnsm33/vsl-retrain-cslr-vit5",
+ "version": 2,
+ "n_checks": 34,
+ "n_fail": 0,
+ "preflight_n_rows": 44,
+ "checks": [
+  {
+   "key": "SHA256SUMS.file_list",
+   "expected": [
+    "env.json",
+    "gloss_vocab_canonical.txt",
+    "logs/clean_10k.log",
+    "logs/clone.log",
+    "logs/hf_preflight.log",
+    "logs/pip.log",
+    "logs/prepare_translation.log",
+    "logs/prepare_vsl_gh.log",
+    "logs/vocab.log",
+    "preflight.json",
+    "translation_corpus_validation.json"
+   ],
+   "measured": [
+    "env.json",
+    "gloss_vocab_canonical.txt",
+    "logs/clean_10k.log",
+    "logs/clone.log",
+    "logs/hf_preflight.log",
+    "logs/pip.log",
+    "logs/prepare_translation.log",
+    "logs/prepare_vsl_gh.log",
+    "logs/vocab.log",
+    "preflight.json",
+    "translation_corpus_validation.json"
+   ],
+   "ok": true
+  },
+  {
+   "key": "SHA256SUMS.all_match",
+   "expected": true,
+   "measured": true,
+   "ok": true
+  },
+  {
+   "key": "preflight.mode",
+   "expected": "preflight",
+   "measured": "preflight",
+   "ok": true
+  },
+  {
+   "key": "preflight.commit",
+   "expected": "c0c70d23fcd5c6d2345c598fb434ff4576a5ef91",
+   "measured": "c0c70d23fcd5c6d2345c598fb434ff4576a5ef91",
+   "ok": true
+  },
+  {
+   "key": "preflight.n_rows",
+   "expected": 44,
+   "measured": 44,
+   "ok": true
+  },
+  {
+   "key": "preflight.n_mismatch",
+   "expected": 0,
+   "measured": 0,
+   "ok": true
+  },
+  {
+   "key": "preflight.leak_check_total",
+   "expected": 0,
+   "measured": 0,
+   "ok": true
+  },
+  {
+   "key": "preflight.leak_check_total==prereg",
+   "expected": 0,
+   "measured": 0,
+   "ok": true
+  },
+  {
+   "key": "preflight.row_keys==K2_COMPARE",
+   "expected": [
+    "sentence_split.sha256",
+    "inputs.dataset_canonical_json.lf_sha256",
+    "inputs.dataset_canonical_json.n_samples",
+    "inputs.keypoints_frontal.dir_digest",
+    "inputs.keypoints_frontal.n_files",
+    "inputs.vie_vsl_10k_jsonl.lf_sha256",
+    "inputs.vie_vsl_10k_jsonl.n_lines",
+    "inputs.vie_vsl_10k_cleaned_jsonl.lf_sha256",
+    "inputs.vie_vsl_10k_cleaned_jsonl.n_records",
+    "inputs.gloss_vocab_canonical_txt.sha256",
+    "inputs.gloss_vocab_canonical_txt.n_tokens",
+    "vocab.n_tokens",
+    "vocab.sha256",
+    "vocab.glosses_only_in_val",
+    "vocab.glosses_only_in_test",
+    "vocab.test_ref_tokens_total",
+    "vocab.test_ref_tokens_oov",
+    "vocab_full_reference.n_tokens",
+    "vocab_full_reference.sha256",
+    "counts_after_split.clean10k.train",
+    "counts_after_split.clean10k.val",
+    "counts_after_split.cslr.test",
+    "counts_after_split.cslr.train",
+    "counts_after_split.cslr.val",
+    "counts_after_split.vslgh_text.test",
+    "counts_after_split.vslgh_text.train",
+    "counts_after_split.vslgh_text.val",
+    "counts_default.clean10k.train",
+    "counts_default.clean10k.val",
+    "counts_default.cslr.test",
+    "counts_default.cslr.train",
+    "counts_default.cslr.val",
+    "counts_default.vslgh_text.test",
+    "counts_default.vslgh_text.train",
+    "counts_default.vslgh_text.val",
+    "clean10k_excluded.n_train",
+    "clean10k_excluded.n_val",
+    "clean10k_excluded.by_reason.L1",
+    "clean10k_excluded.by_reason.L2",
+    "clean10k_excluded.by_reason.near_dup",
+    "clean10k_excluded.ids",
+    "leak_check.total",
+    "test_keypoints_digest",
+    "test_keypoints_digest_repro_v2"
+   ],
+   "measured": [
+    "sentence_split.sha256",
+    "inputs.dataset_canonical_json.lf_sha256",
+    "inputs.dataset_canonical_json.n_samples",
+    "inputs.keypoints_frontal.dir_digest",
+    "inputs.keypoints_frontal.n_files",
+    "inputs.vie_vsl_10k_jsonl.lf_sha256",
+    "inputs.vie_vsl_10k_jsonl.n_lines",
+    "inputs.vie_vsl_10k_cleaned_jsonl.lf_sha256",
+    "inputs.vie_vsl_10k_cleaned_jsonl.n_records",
+    "inputs.gloss_vocab_canonical_txt.sha256",
+    "inputs.gloss_vocab_canonical_txt.n_tokens",
+    "vocab.n_tokens",
+    "vocab.sha256",
+    "vocab.glosses_only_in_val",
+    "vocab.glosses_only_in_test",
+    "vocab.test_ref_tokens_total",
+    "vocab.test_ref_tokens_oov",
+    "vocab_full_reference.n_tokens",
+    "vocab_full_reference.sha256",
+    "counts_after_split.clean10k.train",
+    "counts_after_split.clean10k.val",
+    "counts_after_split.cslr.test",
+    "counts_after_split.cslr.train",
+    "counts_after_split.cslr.val",
+    "counts_after_split.vslgh_text.test",
+    "counts_after_split.vslgh_text.train",
+    "counts_after_split.vslgh_text.val",
+    "counts_default.clean10k.train",
+    "counts_default.clean10k.val",
+    "counts_default.cslr.test",
+    "counts_default.cslr.train",
+    "counts_default.cslr.val",
+    "counts_default.vslgh_text.test",
+    "counts_default.vslgh_text.train",
+    "counts_default.vslgh_text.val",
+    "clean10k_excluded.n_train",
+    "clean10k_excluded.n_val",
+    "clean10k_excluded.by_reason.L1",
+    "clean10k_excluded.by_reason.L2",
+    "clean10k_excluded.by_reason.near_dup",
+    "clean10k_excluded.ids",
+    "leak_check.total",
+    "test_keypoints_digest",
+    "test_keypoints_digest_repro_v2"
+   ],
+   "ok": true
+  },
+  {
+   "key": "preflight.rows_all_equal_local_prereg",
+   "expected": 44,
+   "measured": 44,
+   "ok": true
+  },
+  {
+   "key": "AC3:inputs.vie_vsl_10k_cleaned_jsonl.n_records",
+   "expected": 7140,
+   "measured": 7140,
+   "ok": true
+  },
+  {
+   "key": "AC3:counts_default.clean10k.train",
+   "expected": 6426,
+   "measured": 6426,
+   "ok": true
+  },
+  {
+   "key": "AC3:counts_default.clean10k.val",
+   "expected": 714,
+   "measured": 714,
+   "ok": true
+  },
+  {
+   "key": "AC3:counts_default.vslgh_text.train",
+   "expected": 240,
+   "measured": 240,
+   "ok": true
+  },
+  {
+   "key": "AC3:counts_default.vslgh_text.val",
+   "expected": 30,
+   "measured": 30,
+   "ok": true
+  },
+  {
+   "key": "AC3:counts_default.cslr.train",
+   "expected": 3600,
+   "measured": 3600,
+   "ok": true
+  },
+  {
+   "key": "AC3:counts_default.cslr.val",
+   "expected": 300,
+   "measured": 300,
+   "ok": true
+  },
+  {
+   "key": "AC3:counts_default.cslr.test",
+   "expected": 300,
+   "measured": 300,
+   "ok": true
+  },
+  {
+   "key": "AC3:counts_after_split.cslr.test",
+   "expected": 30,
+   "measured": 30,
+   "ok": true
+  },
+  {
+   "key": "AC3:counts_after_split.cslr.val",
+   "expected": 30,
+   "measured": 30,
+   "ok": true
+  },
+  {
+   "key": "env.exit",
+   "expected": 0,
+   "measured": 0,
+   "ok": true
+  },
+  {
+   "key": "env.error",
+   "expected": null,
+   "measured": null,
+   "ok": true
+  },
+  {
+   "key": "env.mode",
+   "expected": "preflight",
+   "measured": "preflight",
+   "ok": true
+  },
+  {
+   "key": "env.commit",
+   "expected": "c0c70d23fcd5c6d2345c598fb434ff4576a5ef91",
+   "measured": "c0c70d23fcd5c6d2345c598fb434ff4576a5ef91",
+   "ok": true
+  },
+  {
+   "key": "env.preregistration_commit",
+   "expected": [
+    "ea12b44734840a0c0ccb7d35944d0db7df701091"
+   ],
+   "measured": [
+    "ea12b44734840a0c0ccb7d35944d0db7df701091"
+   ],
+   "ok": true
+  },
+  {
+   "key": "git.prereg_is_ancestor_of_pin",
+   "expected": 0,
+   "measured": 0,
+   "ok": true
+  },
+  {
+   "key": "env.pip",
+   "expected": {
+    "transformers": "4.57.6",
+    "tokenizers": "0.22.2",
+    "sentencepiece": "0.2.2",
+    "safetensors": "0.8.0"
+   },
+   "measured": {
+    "transformers": "4.57.6",
+    "tokenizers": "0.22.2",
+    "sentencepiece": "0.2.2",
+    "safetensors": "0.8.0"
+   },
+   "ok": true
+  },
+  {
+   "key": "env.upstream",
+   "expected": {
+    "vsl_gh": "6c351e63c0b2cf1b5e2e8056bb3bf2d6f31dc90a",
+    "parallel_corpus": "f57558c3fa79ced8a961cba825157c573fd4c74d"
+   },
+   "measured": {
+    "parallel_corpus": "f57558c3fa79ced8a961cba825157c573fd4c74d",
+    "vsl_gh": "6c351e63c0b2cf1b5e2e8056bb3bf2d6f31dc90a"
+   },
+   "ok": true
+  },
+  {
+   "key": "env.watchdog_minutes",
+   "expected": 105,
+   "measured": 105,
+   "ok": true
+  },
+  {
+   "key": "env.hf.name",
+   "expected": "VietAI/vit5-base",
+   "measured": "VietAI/vit5-base",
+   "ok": true
+  },
+  {
+   "key": "env.hf.revision_requested",
+   "expected": null,
+   "measured": null,
+   "ok": true
+  },
+  {
+   "key": "env.gpus_visible",
+   "expected": [],
+   "measured": [],
+   "ok": true
+  },
+  {
+   "key": "vocab_file.sha256",
+   "expected": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0",
+   "measured": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0",
+   "ok": true
+  },
+  {
+   "key": "vocab_file==B2c_local_bytes",
+   "expected": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0",
+   "measured": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0",
+   "ok": true
+  }
+ ]
+}

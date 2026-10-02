@@ -512,22 +512,44 @@ Tệp tạm: `_work/_plan13_tmp/`.
   pushed." (`B7r2_push.log`, `B7r2_push_time.txt`). Slug **`phmvnsm33/vsl-retrain-cslr-vit5` version 2** (private, CPU, `MODE="preflight"`).
   Theo dõi: `B7r2_status_log.txt`.
 
+- Theo dõi (`B7r2_status_log.txt`, `kaggle kernels status` thật): 18:15:19Z RUNNING; **18:20:57Z COMPLETE**. Output: `PYTHONUTF8=1 .venv/Scripts/kaggle
+  kernels output phmvnsm33/vsl-retrain-cslr-vit5 -p _work/_plan13_tmp/k2_preflight` → exit 0 (`B7r2_output_dl.log`).
+- **Kết quả v2 (bằng chứng chính thức B7):** `env.json`: `exit` 0, không `error`, `commit` == ghim `c0c70d2…`, `preregistration_commit` `ea12b44…`,
+  `start_utc` 18:15:17Z → `end_utc` 18:17:55Z, `total_minutes` 2.63, `gpus_visible` [] (CPU), `hf_preflight`: `VietAI/vit5-base` @
+  `2209a38d735ede63e88f5aa52bcdc11a05a37b85`, 6 file (907111529 B) tải từng file, sha256 khớp Hub, bỏ 4 file (`.gitattributes`, `README.md`,
+  `flax_model.msgpack`, `tf_model.h5`), `pytorch_model.bin` 25.25 s, nạp offline OK (`T5TokenizerFast`, `n_params` 225950976), bước HF 1.12 phút;
+  trên Kaggle `huggingface_hub` 0.36.2, `hf_xet` 1.4.3 (có cài — khớp giả thuyết kênh Xet ở v1, vẫn CHƯA chứng minh). Log kernel: "PREFLIGHT OK: 44 values
+  == preregistration", "LEAK CHECK OK (k2 kernel): total=0 cslr=0 vocab=0 vit5_stage1=0 vit5_stage2=0 cslr_test_selection=0", "TEST DEFERRED
+  (preflight): …"; `preflight.json`: `n_rows` 44, `n_mismatch` 0, `leak_check_total` 0.
+- Đối chiếu độc lập local: `PYTHONIOENCODING=utf-8 .venv/Scripts/python _work/_plan13_tmp/b7r2_check_v2.py` → exit 0, 34 kiểm, 0 sai
+  (`B7r2_v2_crosscheck.json`, chép vào `reports/retrain_2026-10-02/k2_preflight/local_crosscheck.json`): SHA256SUMS (danh sách + mọi sha256);
+  khóa 44 dòng == lá của `K2_COMPARE` tính từ preregistration local; mọi dòng `expected` == `measured` == giá trị trong preregistration local;
+  AC3 tham chiếu (cleaned 7140, Clean10k 6426/714, VSLGHText 240/30, CSLR 3600/300/300; sau split CSLR test 30, val 30); `env` (exit 0, commit,
+  preregistration commit + `merge-base --is-ancestor` → 0, `pip` == `k2_pip_pinned`, `upstream`, `watchdog_minutes`, `hf.name`/`revision` null
+  == preregistration, CPU); vocab K2 sha256 == preregistration == bản B2c local (`_work/_plan13_tmp/vocab_train/`). ⇒ AC3 phần preflight K2 ĐẠT;
+  AC5 phần K2-preflight: status COMPLETE (thật). Không lệch ⇒ không dừng §7.2.
+- Commit vào `reports/retrain_2026-10-02/k2_preflight/` (89 KB; bản byte của output, `cmp` == bản tải): `env.json`, `preflight.json`, `SHA256SUMS`,
+  `translation_corpus_validation.json` (cùng loại với `reports/translation_corpus_validation.json` đã tracked), `logs/*.log` (7 file, `git add -f` vì
+  `.gitignore:45 *.log`), `kernel_stdout_vsl-retrain-cslr-vit5.log`, `local_crosscheck.json`. KHÔNG commit `gloss_vocab_canonical.txt` (file dữ liệu
+  dẫn xuất, `data/external/` không tracked; sha256 có trong `SHA256SUMS` + preregistration). Quét chuỗi credential trên output → 0 dòng.
+
 ## Đang làm
-- **ĐANG LÀM B7 lần 2** (lượt 7, mốc HEAD `a4fc4cd`): K2 v1 ERROR (watchdog 105' giết `hf_probe.py VietAI/vit5-base`, log dừng "Fetching 10 files: 40% 4/10"). Việc: đối chiếu sớm output v1, sửa bước HF (chỉ tải file cần, timeout/retry, log từng file, watchdog riêng), ghim mới nếu đổi kernel, đẩy K2 v2. KHÔNG làm B8.
-- **ĐANG LÀM B7** (lượt 6, mốc HEAD `422e499`): K2 preflight ĐÃ ĐẨY (`phmvnsm33/vsl-retrain-cslr-vit5` v1, 14:15:08Z), lần kiểm cuối 15:18:07Z RUNNING (>60 phút) → bàn giao orchestrator theo dõi; còn: tải output + đối chiếu preregistration. KHÔNG làm B8.
+- **B7 XONG** (lượt 7, lần 2): K2 preflight v2 `phmvnsm33/vsl-retrain-cslr-vit5` COMPLETE, 44/44 khớp preregistration, ghim `c0c70d2`. Dừng trước B8 (KHÔNG làm B8). Lần 1 (v1 ERROR) — xem mục B7 / B7 lần 2.
+- (Cũ, đã thay bởi dòng trên) Lượt 6, mốc HEAD `422e499`: K2 preflight ĐÃ ĐẨY (`phmvnsm33/vsl-retrain-cslr-vit5` v1, 14:15:08Z), lần kiểm cuối 15:18:07Z RUNNING (>60 phút) → bàn giao orchestrator theo dõi; còn: tải output + đối chiếu preregistration. KHÔNG làm B8.
 - Lượt 5 (mốc HEAD `bf40a1d`): B5 XONG (ghim `0908ef3`); B6 XONG (dataset `phmvnsm33/vslt-retrain-inputs-tier1` private, manifest commit). Dừng trước B7. Mục 5 review giữa (1.B) orchestrator HOÃN sang backlog — không làm. KHÔNG đẩy kernel nào ở lượt này (B7 trở đi lượt sau).
 
 ## Còn lại
 - B7–B14. (Ghi chú cũ cho B5 — đã làm: `retrain_preregister.py` phải ghi đúng các khóa mà `eval_sentsplit.py` đọc (mục B4d); `protocol_template()` là nguồn
   của `evaluation_protocol`; số Clean10k sau loại (6423/713, loại 4) và CSLR/ViT5 (2880/30, 240/30) phải được TÍNH LẠI bằng code ở B5 (B3/B4c chỉ là số
   kiểm tra trước); file Tier 1 văn bản so `lf_sha256` (B3).)
-- B7: đặt `PIN_COMMIT` (K2) = hash ghim, đẩy K2 preflight (CPU). B8: `k1_outputs.json` khóa `stgcn_best_pt.sha256` (kernel K2 train đọc khóa này — `jobs.k2.backbone.k1_outputs_key`); `PIN_COMMIT` (K1). B9: K2 `MODE="train"`, metadata `enable_gpu: true` + `kernel_sources: ["phmvnsm33/vsl-retrain-stgcn-tier1"]`.
+- B7: XONG (lượt 7). B8 (ghim K1 vẫn theo cơ chế B5; ghim mới nhất của nhánh là `c0c70d2` hoặc sau): `k1_outputs.json` khóa `stgcn_best_pt.sha256` (kernel K2 train đọc khóa này — `jobs.k2.backbone.k1_outputs_key`); `PIN_COMMIT` (K1). B9: K2 `MODE="train"`, metadata `enable_gpu: true` + `kernel_sources: ["phmvnsm33/vsl-retrain-stgcn-tier1"]`.
 - Flaky `tests.test_hand_landmarks_ws.TestReset.test_reset_segments_and_graphs` (AC8-a ở trên) — chờ orchestrator/planner.
 
 ## Sổ GPU (kế hoạch 13)
 | Job | Phiên (phút, từ env.json) | Ghi chú |
 |---|---|---|
-| (chưa có job) | | |
+| K2-preflight v1 (`phmvnsm33/vsl-retrain-cslr-vit5` v1) | 105.0 (CPU, không accelerator; ERROR: watchdog giết hf_probe) | 0 GPU-phút; `_work/_plan13_tmp/k2_preflight_v1/k2/env.json` |
+| K2-preflight v2 (v2, ghim `c0c70d2`) | 2.63 (CPU, không accelerator; COMPLETE) | 0 GPU-phút; `reports/retrain_2026-10-02/k2_preflight/env.json` |
 
 ## Nhật ký detect-changes
 | Bước | Lệnh | Kết quả (nguyên văn risk) |
@@ -563,3 +585,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B7r2a | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, chỉ thêm) | "Changes: 1 files, 1 symbols / Affected processes: 198 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a/B7b); không mã nào đọc file này (`dc_B7r2a.txt`) |
 | B7r2b (ghim mới) | `analyze --index-only` rồi `detect-changes --scope staged` (`M` kernel K2, `M tests/test_retrain_tools.py` chỉ thêm, `M docs/plans/13-progress.md`) | "Changes: 3 files, 39 symbols / Affected processes: 197 / Risk level: critical" — symbol đổi: hằng/hàm HF mới (`HF_*`, `git_blob_sha1`, `hf_select_files`, `hf_attempt_seconds`, `hf_verify`, `last_tagged`, `run_attempts`), `HF_PROBE`, `hf_snapshot` + lớp test mới + mục markdown; luồng liệt kê (`Run_harmonized → …`, `Main → …`, `Measure_and_compare → …`) đều ghi "changed: Kế hoạch 13 — tiến độ (coder)" = nối nhầm qua mục markdown như B7a; caller thật của `hf_snapshot` chỉ `main` của K2 (impact + grep ở trên) (`dc_B7r2b.txt`) |
 | B7r2c | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, chỉ thêm) | "Changes: 1 files, 3 symbols / Affected processes: 0 / Risk level: low" — 3 mục markdown của 13-progress; không mã nào đọc file này (`dc_B7r2c.txt`) |
+| B7r2d | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, 13 file `A` trong `reports/retrain_2026-10-02/k2_preflight/`) | "Changes: 14 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); 13 file JSON/log dữ liệu, không symbol, không mã nào import (`dc_B7r2d.txt`) |
