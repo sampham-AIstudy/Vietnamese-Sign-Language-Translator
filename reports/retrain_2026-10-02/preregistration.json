@@ -1,0 +1,1080 @@
+{
+  "plan": "docs/plans/13-train-lai-checkpoint-thieu.md",
+  "generated_by": {
+    "script": "scripts/retrain_preregister.py",
+    "command": "python scripts/retrain_preregister.py --date 2026-10-02 --plan-revision-commit 4f714c6 --clean10k _work/_plan13_tmp/cleaned/data/external/parallel_text/vie_vsl_10k_cleaned.jsonl --vocab-file _work/_plan13_tmp/vocab_train/gloss_vocab_canonical.txt --vocab-full-file _work/_plan13_tmp/vocab_e02ed14/gloss_vocab_canonical.txt",
+    "git_commit": "2cb02b3523a86640f3945c4aeeefd82e025c2472",
+    "code_dirty": false,
+    "code_dirty_files": [],
+    "generated_at_utc": "2026-10-02T13:36:16Z",
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0"
+  },
+  "date": "2026-10-02",
+  "plan_revision": {
+    "commit": "4f714c64f083ab0b39bccbc962950e6bfc2f3a15",
+    "marker": "## 0. Lần sửa 1 (2026-10-02)",
+    "file": "docs/plans/13-train-lai-checkpoint-thieu.md",
+    "is_ancestor_of_head": true
+  },
+  "sentence_split": {
+    "path": "configs/vslgh_sentence_split_v1.json",
+    "sha256": "289b2ac158419d6a5e7487a256bdb9a6bf8fbac9bc76fb167fbfa9a86d8421a4",
+    "sha256_rule": "sha256 of the file bytes with CRLF -> LF (src.data.sentence_split.split_file_sha256)",
+    "version": "vslgh_sentence_split_v1",
+    "seed": 42,
+    "python": "3.11.9",
+    "test_ids": [
+      "SENT271",
+      "SENT272",
+      "SENT273",
+      "SENT274",
+      "SENT275",
+      "SENT276",
+      "SENT277",
+      "SENT278",
+      "SENT279",
+      "SENT280",
+      "SENT281",
+      "SENT282",
+      "SENT283",
+      "SENT284",
+      "SENT285",
+      "SENT286",
+      "SENT287",
+      "SENT288",
+      "SENT289",
+      "SENT290",
+      "SENT291",
+      "SENT292",
+      "SENT293",
+      "SENT294",
+      "SENT295",
+      "SENT296",
+      "SENT297",
+      "SENT298",
+      "SENT299",
+      "SENT300"
+    ],
+    "val_ids": [
+      "SENT002",
+      "SENT013",
+      "SENT014",
+      "SENT016",
+      "SENT017",
+      "SENT045",
+      "SENT048",
+      "SENT051",
+      "SENT053",
+      "SENT057",
+      "SENT058",
+      "SENT072",
+      "SENT108",
+      "SENT112",
+      "SENT115",
+      "SENT120",
+      "SENT126",
+      "SENT140",
+      "SENT141",
+      "SENT144",
+      "SENT151",
+      "SENT167",
+      "SENT180",
+      "SENT184",
+      "SENT195",
+      "SENT208",
+      "SENT217",
+      "SENT223",
+      "SENT265",
+      "SENT266"
+    ],
+    "n_train_sentences": 240,
+    "n_val_sentences": 30,
+    "n_test_sentences": 30,
+    "git_commit": "0a18183405ea40eb59e85ec945e52e02d9f3e217"
+  },
+  "inputs": {
+    "dataset_canonical_json": {
+      "path": "data/external/vsl_gh/dataset_canonical.json",
+      "lf_sha256": "d53ab70100e2b2cd70ed32ec6893aa0bcdffab0c4389f27b7d3b8838f6c9a881",
+      "n_samples": 4200
+    },
+    "keypoints_frontal": {
+      "path": "data/external/vsl_gh/keypoints_frontal",
+      "pattern": "*.npy",
+      "dir_digest": "596429252ff53caf1948fc9ed6e416952ee1a33876aa8972c25fcc9786e3bcae",
+      "n_files": 4200,
+      "rule": "sha256 of '<name> <sha256>\\n' lines sorted by name (scripts/retrain_digest.py)"
+    },
+    "vie_vsl_10k_jsonl": {
+      "path": "data/external/parallel_text/vie_vsl_10k.jsonl",
+      "lf_sha256": "c1dcceffc20e4dc2c659902a44b6c00bd3981431caaa131d3e68a94e074440e6",
+      "n_lines": 9405
+    },
+    "vie_vsl_10k_cleaned_jsonl": {
+      "path": "data/external/parallel_text/vie_vsl_10k_cleaned.jsonl",
+      "measured_from": "_work/_plan13_tmp/cleaned/data/external/parallel_text/vie_vsl_10k_cleaned.jsonl",
+      "lf_sha256": "f141f64a04d919fc8c9887cc76b2c6cf027c8f996eba3c6df168732d766c1778",
+      "n_records": 7140,
+      "n_unique_ids": 7140,
+      "n_lines": 7140
+    },
+    "gloss_vocab_canonical_txt": {
+      "path": "data/external/vsl_gh/gloss_vocab_canonical.txt",
+      "sha256": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0",
+      "lf_sha256": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0",
+      "n_tokens": 322,
+      "mode": "train_only",
+      "measured_from": "bytes built by build_tokens_train_only",
+      "cross_checked_with": "_work/_plan13_tmp/vocab_train/gloss_vocab_canonical.txt"
+    },
+    "tier1_grouped_train_csv": {
+      "path": "data/splits/folds/tier1_grouped_train.csv",
+      "lf_sha256": "8d2f6878de26c57c64961f21a31d7a38d3899566a59ba596cdc5886e1cdd2b76",
+      "n_rows": 74,
+      "n_classes_in_rows": 50
+    },
+    "tier1_grouped_val_csv": {
+      "path": "data/splits/folds/tier1_grouped_val.csv",
+      "lf_sha256": "6b663e164b4086f33e0e4cad0c774e1e432860ad3c25cda3bf724ee98d060a91",
+      "n_rows": 13,
+      "n_classes_in_rows": 12
+    },
+    "tier1_grouped_test_csv": {
+      "path": "data/splits/folds/tier1_grouped_test.csv",
+      "lf_sha256": "85e5719934d55028ad39fbe51d3fd73e679febe3efe23c0310e982882f606c54",
+      "n_rows": 71,
+      "n_classes_in_rows": 50
+    },
+    "tier1_grouped_classes_txt": {
+      "path": "data/splits/folds/tier1_grouped_classes.txt",
+      "lf_sha256": "29f1a69e84bde3acb08d6d153939d114d53ec0fc8f18faf0b9c0e47185f08678",
+      "n_classes": 50
+    },
+    "tier1_npz": {
+      "path": "data/extracted_keypoints",
+      "names": "<video_id>.npz of the 3 CSV",
+      "dir_digest": "88f15ac819942f7acc51093a61e68a6065c50f52f80c6e9a2702cde77359ae88",
+      "n_files": 158
+    }
+  },
+  "cross_checks": {
+    "vocab": {
+      "file": "_work/_plan13_tmp/vocab_train/gloss_vocab_canonical.txt",
+      "sha256": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0",
+      "identical": true
+    },
+    "vocab_full": {
+      "file": "_work/_plan13_tmp/vocab_e02ed14/gloss_vocab_canonical.txt",
+      "sha256": "dd7bc3da8f83e1e3400a85a0bfc4a7d8e882224647a23279a63b8f31d3601d11",
+      "identical": true
+    }
+  },
+  "reference_counts": {
+    "cleaned_10k_records": {
+      "value": 7140,
+      "source": "reports/audit_20260924/inventory_summary.json:88",
+      "measured": 7140,
+      "matches": true
+    },
+    "raw_10k_lines": {
+      "value": 9405,
+      "source": "reports/audit_20260924/inventory_summary.json:87",
+      "measured": 9405,
+      "matches": true
+    },
+    "clean10k_default_train": {
+      "value": 6426,
+      "source": "reports/vit5_stage1_history.json:4",
+      "measured": 6426,
+      "matches": true
+    },
+    "clean10k_default_val": {
+      "value": 714,
+      "source": "reports/vit5_stage1_history.json:5",
+      "measured": 714,
+      "matches": true
+    },
+    "vslgh_text_default_train": {
+      "value": 240,
+      "source": "reports/vit5_stage2_history.json:3",
+      "measured": 240,
+      "matches": true
+    },
+    "vslgh_text_default_val": {
+      "value": 30,
+      "source": "reports/vit5_stage2_history.json:4",
+      "measured": 30,
+      "matches": true
+    },
+    "cslr_default_train": {
+      "value": 3600,
+      "source": "docs/data_registry.md:71",
+      "measured": 3600,
+      "matches": true
+    },
+    "cslr_default_val": {
+      "value": 300,
+      "source": "docs/data_registry.md:71",
+      "measured": 300,
+      "matches": true
+    },
+    "cslr_default_test": {
+      "value": 300,
+      "source": "docs/data_registry.md:71",
+      "measured": 300,
+      "matches": true
+    },
+    "vocab_full_n_tokens": {
+      "value": 372,
+      "source": "docs/vsl_gh_dataset.md:19",
+      "measured": 372,
+      "matches": true
+    },
+    "canonical_n_samples": {
+      "value": 4200,
+      "source": "docs/vsl_gh_dataset.md:18",
+      "measured": 4200,
+      "matches": true
+    },
+    "keypoints_n_files": {
+      "value": 4200,
+      "source": "docs/vsl_gh_dataset.md:16",
+      "measured": 4200,
+      "matches": true
+    }
+  },
+  "counts_default": {
+    "cslr": {
+      "train": 3600,
+      "val": 300,
+      "test": 300
+    },
+    "vslgh_text": {
+      "train": 240,
+      "val": 30,
+      "test": 30
+    },
+    "clean10k": {
+      "train": 6426,
+      "val": 714
+    }
+  },
+  "counts_after_split": {
+    "cslr": {
+      "train": 2880,
+      "val": 30,
+      "test": 30
+    },
+    "vslgh_text": {
+      "train": 240,
+      "val": 30,
+      "test": 30
+    },
+    "clean10k": {
+      "train": 6423,
+      "val": 713
+    }
+  },
+  "clean10k_excluded": {
+    "rule_ref": "§0.3",
+    "rule": "plan 13 §0.3: L1 / L2 / near_dup (Jaccard >= 0.8 and word count diff <= 1), source OR target, vs every pair (all signers, repetitions) of T u V",
+    "heldout_sentence_ids": [
+      "SENT002",
+      "SENT013",
+      "SENT014",
+      "SENT016",
+      "SENT017",
+      "SENT045",
+      "SENT048",
+      "SENT051",
+      "SENT053",
+      "SENT057",
+      "SENT058",
+      "SENT072",
+      "SENT108",
+      "SENT112",
+      "SENT115",
+      "SENT120",
+      "SENT126",
+      "SENT140",
+      "SENT141",
+      "SENT144",
+      "SENT151",
+      "SENT167",
+      "SENT180",
+      "SENT184",
+      "SENT195",
+      "SENT208",
+      "SENT217",
+      "SENT223",
+      "SENT265",
+      "SENT266",
+      "SENT271",
+      "SENT272",
+      "SENT273",
+      "SENT274",
+      "SENT275",
+      "SENT276",
+      "SENT277",
+      "SENT278",
+      "SENT279",
+      "SENT280",
+      "SENT281",
+      "SENT282",
+      "SENT283",
+      "SENT284",
+      "SENT285",
+      "SENT286",
+      "SENT287",
+      "SENT288",
+      "SENT289",
+      "SENT290",
+      "SENT291",
+      "SENT292",
+      "SENT293",
+      "SENT294",
+      "SENT295",
+      "SENT296",
+      "SENT297",
+      "SENT298",
+      "SENT299",
+      "SENT300"
+    ],
+    "n_train": 3,
+    "n_val": 1,
+    "by_reason": {
+      "L1": 2,
+      "L2": 0,
+      "near_dup": 2
+    },
+    "by_reason_side": {
+      "L1/source": 2,
+      "near_dup/source": 1,
+      "near_dup/target": 1
+    },
+    "ids": [
+      "PAR_10K_02347",
+      "PAR_10K_02536",
+      "PAR_10K_03112",
+      "PAR_10K_05270"
+    ],
+    "n_matching_test_sentences": 0,
+    "n_matching_val_sentences": 4,
+    "items": [
+      {
+        "split": "train",
+        "id": "PAR_10K_03112",
+        "rule": "near_dup",
+        "side": "source",
+        "sentence_ids": [
+          "SENT223"
+        ]
+      },
+      {
+        "split": "train",
+        "id": "PAR_10K_02347",
+        "rule": "L1",
+        "side": "source",
+        "sentence_ids": [
+          "SENT112"
+        ]
+      },
+      {
+        "split": "train",
+        "id": "PAR_10K_05270",
+        "rule": "near_dup",
+        "side": "target",
+        "sentence_ids": [
+          "SENT144"
+        ]
+      },
+      {
+        "split": "val",
+        "id": "PAR_10K_02536",
+        "rule": "L1",
+        "side": "source",
+        "sentence_ids": [
+          "SENT141"
+        ]
+      }
+    ]
+  },
+  "leak_check": {
+    "cslr": {
+      "n_train_samples": 2880,
+      "n_val_samples": 30,
+      "n_train_sentences": 240,
+      "n_val_sentences": 30,
+      "train_in_test": [],
+      "train_in_val": [],
+      "train_outside_train": [],
+      "val_in_test": [],
+      "val_outside_val": [],
+      "train_signers_outside": [],
+      "val_signers_outside": [],
+      "n_violations": 0
+    },
+    "vocab": {
+      "n_tokens": 322,
+      "n_allowed": 320,
+      "tokens_not_from_train": [],
+      "train_glosses_missing": [],
+      "n_violations": 0
+    },
+    "vit5_stage1": {
+      "n_items": 7136,
+      "matches": [],
+      "n_violations": 0
+    },
+    "vit5_stage2": {
+      "n_train_samples": 240,
+      "n_val_samples": 30,
+      "n_train_sentences": 240,
+      "n_val_sentences": 30,
+      "train_in_test": [],
+      "train_in_val": [],
+      "train_outside_train": [],
+      "val_in_test": [],
+      "val_outside_val": [],
+      "train_signers_outside": [],
+      "val_signers_outside": [],
+      "n_violations": 0
+    },
+    "cslr_test_selection": {
+      "n_clips": 30,
+      "signers": [
+        "S06"
+      ],
+      "violations": [],
+      "n_violations": 0
+    },
+    "total": 0,
+    "rule": "shared functions of src/data/sentence_split.py (sample_leak_report, vocab_leak_report, text_leak_report) on the very selections the training scripts use; total must be 0"
+  },
+  "vocab": {
+    "mode": "train_only",
+    "path": "data/external/vsl_gh/gloss_vocab_canonical.txt",
+    "n_tokens": 322,
+    "sha256": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0",
+    "sha256_rule": "sha256 of the raw bytes (LF only; eval_sentsplit.py uses sha256_file)",
+    "gloss_vocab_hash16": "c0af13dbdf20e7d5",
+    "built_with": "scripts/build_gloss_vocab_canonical.py --sentence-split configs/vslgh_sentence_split_v1.json --split train (build_tokens_train_only)",
+    "n_samples_selected": 2880,
+    "first_tokens": [
+      "<blank>",
+      "<unk>"
+    ],
+    "glosses_excluded": [
+      "1-NGÀY",
+      "4",
+      "55",
+      "BẤT-THƯỜNG",
+      "BỎ-RA",
+      "CHI-PHÍ",
+      "CHO-TÔI",
+      "CHÀO",
+      "CUỐI-CÙNG",
+      "CÙNG",
+      "CẢM-ƠN",
+      "CẬN-THỊ",
+      "GIẢI-THÍCH",
+      "GIẤY-PHÉP",
+      "GÃI",
+      "HEN-SUYỄN",
+      "KHÍ-HƯ",
+      "KHÔNG-HIỂU",
+      "KIÊNG",
+      "KÍNH",
+      "KỲ",
+      "LO-LẮNG",
+      "LÁI-XE",
+      "LÂY",
+      "LẤY-THUỐC",
+      "LỐI-SỐNG",
+      "MUA",
+      "MẤY-LẦN",
+      "MẶN",
+      "MỘT-MÌNH",
+      "NGHIÊM-TRỌNG",
+      "NGHỈ",
+      "NGỦ-KHÓ",
+      "NHÀ",
+      "RA",
+      "SAU",
+      "SUỐT",
+      "SẼ",
+      "THAY-ĐỔI",
+      "THI",
+      "THỂ-DỤC",
+      "THỨC-KHUYA",
+      "TUỔI",
+      "TÁO-BÓN",
+      "XEM",
+      "Ù",
+      "ĐÁNG-LO",
+      "ĐƠN",
+      "ẢNH-HƯỞNG",
+      "ỐM"
+    ],
+    "glosses_only_in_val": [
+      "4",
+      "55",
+      "BẤT-THƯỜNG",
+      "BỎ-RA",
+      "CHI-PHÍ",
+      "CÙNG",
+      "CẬN-THỊ",
+      "GÃI",
+      "HEN-SUYỄN",
+      "KHÍ-HƯ",
+      "KÍNH",
+      "LO-LẮNG",
+      "LÁI-XE",
+      "MỘT-MÌNH",
+      "NGỦ-KHÓ",
+      "NHÀ",
+      "RA",
+      "SUỐT",
+      "THI",
+      "TUỔI",
+      "TÁO-BÓN",
+      "XEM",
+      "Ù"
+    ],
+    "glosses_only_in_test": [
+      "1-NGÀY",
+      "CHO-TÔI",
+      "CHÀO",
+      "CUỐI-CÙNG",
+      "CẢM-ƠN",
+      "GIẢI-THÍCH",
+      "GIẤY-PHÉP",
+      "KHÔNG-HIỂU",
+      "KIÊNG",
+      "KỲ",
+      "LÂY",
+      "LẤY-THUỐC",
+      "LỐI-SỐNG",
+      "MUA",
+      "MẤY-LẦN",
+      "MẶN",
+      "NGHIÊM-TRỌNG",
+      "NGHỈ",
+      "SAU",
+      "SẼ",
+      "THAY-ĐỔI",
+      "THỂ-DỤC",
+      "THỨC-KHUYA",
+      "XEM",
+      "ĐÁNG-LO",
+      "ĐƠN",
+      "ẢNH-HƯỞNG",
+      "ỐM"
+    ],
+    "glosses_excluded_other": [],
+    "test_ref_tokens_total": 128,
+    "test_ref_tokens_oov": 29
+  },
+  "vocab_full_reference": {
+    "n_tokens": 372,
+    "sha256": "dd7bc3da8f83e1e3400a85a0bfc4a7d8e882224647a23279a63b8f31d3601d11",
+    "built_with": "scripts/build_gloss_vocab_canonical.py (no --sentence-split; build_tokens)",
+    "used_for": "K3 (recipe (i), plan 13 §0.7) only; never placed in data/external/vsl_gh/"
+  },
+  "test_keypoints_digest": "4bf83012afe85d2477da4f8a3f3e89fde4e89cf8ffb14e221aee97912fb8c5dc",
+  "test_keypoints_digest_repro_v2": "27e3c15a2fda67487e1327f3ef00c3aae7bcd00fa36b06592c160627a54bc188",
+  "test_keypoints_digest_rule": "sha256 of '<id>.npy <sha256>\\n' lines of the test clips sorted by id (scripts/eval_sentsplit.py); sentsplit_v1 = S06 x test_ids, repro_v2 = all S06",
+  "evaluation_output": "reports/retrain_2026-10-02/eval/test_eval.json",
+  "evaluation_output_repro_v2": "reports/retrain_2026-10-02/k3_repro/test_eval_repro.json",
+  "evaluation_protocol": {
+    "name": "sentsplit_v1",
+    "plan_ref": "docs/plans/13-train-lai-checkpoint-thieu.md §3.12",
+    "test_set": {
+      "selection": "select_vslgh_samples(canonical, 'test', sentence_split)",
+      "split": "test",
+      "expected_n": 30,
+      "signers": [
+        "S06"
+      ],
+      "sentence_ids": "sentence_split.test_ids",
+      "missing_keypoints": "stop (never drop a clip)"
+    },
+    "inputs": {
+      "canonical_json": "data/external/vsl_gh/dataset_canonical.json",
+      "keypoints_dir": "data/external/vsl_gh/keypoints_frontal",
+      "vocab": "data/external/vsl_gh/gloss_vocab_canonical.txt",
+      "cslr_checkpoint": "checkpoints/cslr_best.pt",
+      "vit5_model_dir": "checkpoints/vit5_stage2/best_model"
+    },
+    "manifest_rel_paths": {
+      "cslr_checkpoint": "k2/cslr_best.pt",
+      "vit5_model_dir": "vit5_stage2/best_model"
+    },
+    "cslr": {
+      "dataset": {
+        "conversion_mode": "semantic",
+        "normalize": true
+      },
+      "device": "cpu",
+      "batch_size": 8,
+      "autocast": false,
+      "decode": "ctc_greedy_decode + tokens_to_words",
+      "model": {
+        "from_checkpoint_config": [
+          "hidden_size",
+          "num_gru_layers",
+          "dropout"
+        ],
+        "fixed": {
+          "num_joints": 67,
+          "in_channels": 3,
+          "channel_dims": [
+            64,
+            64,
+            128
+          ],
+          "temporal_downsample": 2
+        }
+      }
+    },
+    "wer": {
+      "function": "src.metrics.cslr_metrics.compute_wer",
+      "references": "raw gloss_sequence of the clip (strip, drop empty) - NOT vocab-encoded",
+      "secondary": "wer_vocab_encoded (refs encoded with the vocab, as evaluate_cslr) - reference only"
+    },
+    "translation": {
+      "source_normalizer": "src.translation.text_normalizer.normalize_vsl_source",
+      "target_normalizer": "src.translation.text_normalizer.normalize_vietnamese_target",
+      "tokenizer": {
+        "max_length": 128,
+        "padding": true,
+        "truncation": true
+      },
+      "generate": {
+        "num_beams": 4,
+        "max_length": 64,
+        "do_sample": false
+      },
+      "batching": "all sources of a mode in one batch",
+      "decode": {
+        "skip_special_tokens": true
+      },
+      "post_normalizer": "normalize_vietnamese_target",
+      "device": "cpu",
+      "fallback_stage1": false
+    },
+    "bleu": {
+      "library": "sacrebleu",
+      "class": "sacrebleu.metrics.BLEU",
+      "tokenize": "13a",
+      "smooth_method": "exp",
+      "lowercase": false
+    },
+    "bootstrap": {
+      "rng": "numpy.random.RandomState",
+      "seed": 42,
+      "n_resamples": 1000,
+      "paired": true,
+      "unit": "clip (= sentence: S06 has one clip per sentence)",
+      "ci_level": 95,
+      "percentiles": [
+        2.5,
+        97.5
+      ],
+      "interpolation": "linear",
+      "statistics": [
+        "wer",
+        "sub_rate",
+        "del_rate",
+        "ins_rate",
+        "bleu_mode_a",
+        "bleu_mode_b",
+        "delta_a_minus_b"
+      ]
+    },
+    "comparison_to_old": {
+      "source": "reports/audit_round2/v2_cslr_reliability.json",
+      "keys": {
+        "bleu_mode_a": "bleu_bootstrap_30_unseen.mode_a_oracle",
+        "bleu_mode_b": "bleu_bootstrap_30_unseen.mode_b_cslr"
+      },
+      "rule": "descriptive only: is the old point estimate inside the new 95% CI"
+    }
+  },
+  "evaluation_protocol_repro_v2": {
+    "name": "repro_v2",
+    "plan_ref": "docs/plans/13-train-lai-checkpoint-thieu.md §0.7 (K3); algorithm of reports/audit_round2/run_v2_cslr_bootstrap.py:29-133",
+    "test_set": {
+      "selection": "VSLGHContinuousDataset(split='test') without sentence split (all S06 clips)",
+      "split": "test",
+      "expected_n": 300,
+      "signers": [
+        "S06"
+      ],
+      "unseen_rule": "sentence_id >= 'SENT271'",
+      "expected_unseen": 30,
+      "missing_keypoints": "stop (never drop a clip)"
+    },
+    "inputs": {
+      "canonical_json": "data/external/vsl_gh/dataset_canonical.json",
+      "keypoints_dir": "data/external/vsl_gh/keypoints_frontal",
+      "vocab": "_work/_plan13_tmp/k3/gloss_vocab_canonical.txt",
+      "cslr_checkpoint": "_work/_plan13_tmp/k3/cslr_best.pt",
+      "vit5_model_dir": "_work/_plan13_tmp/k3/vit5_stage2/best_model"
+    },
+    "manifest_rel_paths": {
+      "cslr_checkpoint": "k3/cslr_best.pt",
+      "vit5_model_dir": "k3/vit5_stage2/best_model"
+    },
+    "cslr": {
+      "dataset": {
+        "conversion_mode": "semantic",
+        "normalize": true
+      },
+      "device": "cpu",
+      "batch_size": 8,
+      "autocast": false,
+      "decode": "ctc_greedy_decode + tokens_to_words",
+      "model": {
+        "from_checkpoint_config": [
+          "hidden_size",
+          "num_gru_layers",
+          "dropout"
+        ],
+        "fixed": {
+          "num_joints": 67,
+          "in_channels": 3,
+          "channel_dims": [
+            64,
+            64,
+            128
+          ],
+          "temporal_downsample": 2
+        }
+      }
+    },
+    "translation": {
+      "source_normalizer": "src.translation.text_normalizer.normalize_vsl_source",
+      "target_normalizer": "src.translation.text_normalizer.normalize_vietnamese_target",
+      "tokenizer": {
+        "max_length": 128,
+        "padding": true,
+        "truncation": true
+      },
+      "generate": {
+        "num_beams": 4,
+        "max_length": 64,
+        "do_sample": false
+      },
+      "batching": "all sources of a mode in one batch",
+      "decode": {
+        "skip_special_tokens": true
+      },
+      "post_normalizer": "normalize_vietnamese_target",
+      "device": "cpu",
+      "fallback_stage1": false
+    },
+    "bleu": {
+      "library": "sacrebleu",
+      "function": "sacrebleu.corpus_bleu",
+      "defaults": true
+    },
+    "bootstrap": {
+      "rng": "numpy.random.seed (global)",
+      "seed": 42,
+      "n_resamples": 1000,
+      "order": "BLEU on unseen (A, B, A-B with one idx) then WER on all clips, same RNG stream",
+      "percentiles": [
+        2.5,
+        97.5
+      ],
+      "interpolation": "linear",
+      "wer_edit": "plain Levenshtein edit count on raw gloss lists"
+    },
+    "comparison_to_old": {
+      "source": "reports/audit_round2/v2_cslr_reliability.json",
+      "keys": {
+        "bleu_mode_a": "bleu_bootstrap_30_unseen.mode_a_oracle",
+        "bleu_mode_b": "bleu_bootstrap_30_unseen.mode_b_cslr",
+        "wer_300": "cslr_wer_bootstrap_300"
+      },
+      "rule": "descriptive only: is the old point estimate inside the new 95% CI"
+    }
+  },
+  "libs_local": {
+    "torch": "2.6.0+cu124",
+    "transformers": "4.57.6",
+    "tokenizers": "0.22.2",
+    "sentencepiece": "0.2.2",
+    "safetensors": "0.8.0",
+    "sacrebleu": "2.6.0",
+    "numpy": "2.4.6",
+    "rouge_score": "0.1.2",
+    "python": "3.11.9"
+  },
+  "k2_pip_pinned": {
+    "transformers": "4.57.6",
+    "tokenizers": "0.22.2",
+    "sentencepiece": "0.2.2",
+    "safetensors": "0.8.0"
+  },
+  "hf_base_model": {
+    "name": "VietAI/vit5-base",
+    "revision": null,
+    "policy": "not pinned; the HF snapshot sha is recorded in env.json at preflight and at train; if they differ it is recorded as a limitation (plan 13 R5)"
+  },
+  "upstream_sources": {
+    "vsl_gh": {
+      "clone_dir": "clone/Vietnamese-Sign-Language-Translation",
+      "url": "https://github.com/nguyentheanh822/Vietnamese-Sign-Language-Translation.git",
+      "commit": "6c351e63c0b2cf1b5e2e8056bb3bf2d6f31dc90a",
+      "source": "git -C clone/Vietnamese-Sign-Language-Translation rev-parse HEAD"
+    },
+    "parallel_corpus": {
+      "clone_dir": "clone/Parallel-Corpus-Vie-VSL",
+      "url": "https://github.com/BichDiep/Parallel-Corpus-Vie-VSL.git",
+      "commit": "f57558c3fa79ced8a961cba825157c573fd4c74d",
+      "source": "git -C clone/Parallel-Corpus-Vie-VSL rev-parse HEAD"
+    }
+  },
+  "jobs": {
+    "seed": 42,
+    "k1": {
+      "kernel": "phmvnsm33/vsl-retrain-stgcn-tier1",
+      "dir": "kaggle/vsl-retrain-stgcn-tier1",
+      "train": {
+        "argv": [
+          "train.py",
+          "--config",
+          "configs/experiments/stgcn.yaml",
+          "--seed",
+          "42"
+        ],
+        "command": "python train.py --config configs/experiments/stgcn.yaml --seed 42"
+      },
+      "test": {
+        "argv": [
+          "evaluate_test.py",
+          "--config",
+          "configs/experiments/stgcn.yaml",
+          "--checkpoint",
+          "checkpoints/stgcn_best.pt",
+          "--output-dir",
+          "/kaggle/working/k1/eval"
+        ],
+        "command": "python evaluate_test.py --config configs/experiments/stgcn.yaml --checkpoint checkpoints/stgcn_best.pt --output-dir /kaggle/working/k1/eval"
+      },
+      "history_file": "experiments/stgcn/history.json",
+      "checkpoint": "checkpoints/stgcn_best.pt",
+      "selection": {
+        "split": "val (tier1_grouped_val.csv)",
+        "rule": "max val top-1, tie -> lower val loss",
+        "rule_ref": "src/training/trainer.py:198"
+      },
+      "test_policy": "Tier 1 test (tier1_grouped_test.csv) evaluated exactly once by evaluate_test.py, after the sanity checks pass",
+      "sanity": [
+        "every loss in the history finite",
+        "best epoch >= 1",
+        "val top-1 at the best epoch > 100 / number of classes (label_map)"
+      ],
+      "watchdog_minutes": 45,
+      "gpu_cap_hours": 0.75,
+      "accelerator": "GPU"
+    },
+    "k2": {
+      "kernel": "phmvnsm33/vsl-retrain-cslr-vit5",
+      "dir": "kaggle/vsl-retrain-cslr-vit5",
+      "modes": {
+        "preflight": "CPU, no accelerator: rebuild the data, measure with scripts/retrain_preregister.py (measure_*), compare with this file, stop on any difference; no training, no test",
+        "train": "preflight again, then backbone sha256 == k1_outputs.json, LEAK CHECK, GPU0 CSLR | GPU1 ViT5 s1 -> s2"
+      },
+      "data_prep": {
+        "vsl_gh": {
+          "argv": [
+            "scripts/prepare_canonical_vsl_gh.py"
+          ],
+          "command": "python scripts/prepare_canonical_vsl_gh.py"
+        },
+        "parallel_corpus": "scripts/prepare_canonical_translation.py loaded with importlib in a runner subprocess; PROJECT_ROOT/CORPUS_DIR/VSL_SRC/VIE_SRC/OUTPUT_DIR/OUTPUT_JSONL/REPORT_JSON reset into the clone (plan 13 §2.2); main() unchanged",
+        "clean_10k": {
+          "argv": [
+            "scripts/clean_10k_translation_corpus.py"
+          ],
+          "command": "python scripts/clean_10k_translation_corpus.py"
+        },
+        "vocab": {
+          "argv": [
+            "scripts/build_gloss_vocab_canonical.py",
+            "--canonical",
+            "data/external/vsl_gh/dataset_canonical.json",
+            "--out",
+            "data/external/vsl_gh/gloss_vocab_canonical.txt",
+            "--sentence-split",
+            "configs/vslgh_sentence_split_v1.json",
+            "--split",
+            "train"
+          ],
+          "command": "python scripts/build_gloss_vocab_canonical.py --canonical data/external/vsl_gh/dataset_canonical.json --out data/external/vsl_gh/gloss_vocab_canonical.txt --sentence-split configs/vslgh_sentence_split_v1.json --split train"
+        }
+      },
+      "backbone": {
+        "path": "checkpoints/stgcn_best.pt",
+        "from": "output of K1 (kernel source)",
+        "sha256_from": "reports/retrain_2026-10-02/k1_outputs.json (committed after K1, before K2-train)",
+        "k1_outputs_key": "stgcn_best_pt.sha256",
+        "rule": "missing or sha256 different -> stop before training (train_cslr.py would otherwise train from scratch silently)"
+      },
+      "cslr": {
+        "train": {
+          "argv": [
+            "src/training/train_cslr.py",
+            "--sentence-split",
+            "configs/vslgh_sentence_split_v1.json"
+          ],
+          "command": "python src/training/train_cslr.py --sentence-split configs/vslgh_sentence_split_v1.json"
+        },
+        "gpu": "0",
+        "selection": {
+          "split": "val = S05 x val_ids (30 clips)",
+          "rule": "min val WER, tie keeps the earlier epoch",
+          "rule_ref": "src/training/train_cslr.py:695"
+        },
+        "test_policy": "NOT run in the kernel: exactly one 'TEST DEFERRED (sentence split v1)' line, 0 'PRIMARY TEST EVALUATION'; test = scripts/eval_sentsplit.py once, local, after B11",
+        "outputs": [
+          "checkpoints/cslr_best.pt",
+          "checkpoints/cslr_stage1_best.pt",
+          "reports/cslr_used_ids.json",
+          "reports/cslr_train_summary.json",
+          "reports/cslr_training_history.json"
+        ],
+        "sanity": [
+          "every loss finite",
+          "best epoch >= 1",
+          "best_val_wer < 100",
+          "'LEAK CHECK OK (cslr)' before the first epoch",
+          "backbone transferred ('[MODEL] Transferred'), never 'Training from scratch'"
+        ]
+      },
+      "vit5_stage1": {
+        "train": {
+          "argv": [
+            "scripts/train_translation_stage1.py",
+            "--sentence-split",
+            "configs/vslgh_sentence_split_v1.json"
+          ],
+          "command": "python scripts/train_translation_stage1.py --sentence-split configs/vslgh_sentence_split_v1.json"
+        },
+        "gpu": "1",
+        "base_model": "VietAI/vit5-base",
+        "selection": {
+          "split": "val 10% of the cleaned 10k after the §0.3 exclusion",
+          "rule": "min val loss",
+          "rule_ref": "scripts/train_translation_stage1.py:205"
+        },
+        "test_policy": "no test in the kernel",
+        "outputs": [
+          "checkpoints/vit5_stage1/best_model",
+          "reports/vit5_stage1_used_ids.json",
+          "reports/vit5_stage1_history.json"
+        ],
+        "sanity": [
+          "every loss finite",
+          "'LEAK CHECK OK (vit5_stage1)' before the first epoch"
+        ]
+      },
+      "vit5_stage2": {
+        "train": {
+          "argv": [
+            "scripts/train_translation_stage2.py",
+            "--sentence-split",
+            "configs/vslgh_sentence_split_v1.json",
+            "--stage1-path",
+            "checkpoints/vit5_stage1/best_model"
+          ],
+          "command": "python scripts/train_translation_stage2.py --sentence-split configs/vslgh_sentence_split_v1.json --stage1-path checkpoints/vit5_stage1/best_model"
+        },
+        "gpu": "1",
+        "after": "vit5_stage1",
+        "selection": {
+          "split": "val = val_ids (30 sentences)",
+          "rule": "min val loss",
+          "rule_ref": "scripts/train_translation_stage2.py:186"
+        },
+        "test_policy": "no test in the kernel; ViT5 runs on the 30 test sentences only once, in scripts/eval_sentsplit.py (Mode A / Mode B), local, after B11",
+        "outputs": [
+          "checkpoints/vit5_stage2/best_model",
+          "reports/vit5_stage2_used_ids.json",
+          "reports/vit5_stage2_history.json"
+        ],
+        "sanity": [
+          "every loss finite",
+          "best epoch >= 1",
+          "'LEAK CHECK OK (vit5_stage2)' before the first epoch",
+          "non-empty translations for the inputs of tests/test_translation_core (B11)"
+        ]
+      },
+      "single_gpu": "CSLR then ViT5 sequentially (watchdog still applies)",
+      "watchdog_minutes": 105,
+      "gpu_cap_hours": 1.75,
+      "accelerator": "preflight: none; train: GPU T4 x2"
+    },
+    "k3_optional": {
+      "condition": "plan 13 §0.7: only after B13 (eval of (ii) done) AND GPU budget §3.7 AND the 5h quota gate",
+      "mode": "repro_i (same K2 kernel): no --sentence-split, full vocab (vocab_full_reference), CSLR test S06 at the end as the old recipe; outputs only under /kaggle/working/k3 -> _work/_plan13_tmp/k3/",
+      "evaluation": "scripts/eval_sentsplit.py --protocol repro_v2 once (evaluation_output_repro_v2)",
+      "watchdog_minutes": 105,
+      "gpu_cap_hours": 1.75
+    },
+    "gpu_budget": {
+      "weekly_limit_hours": 10,
+      "plan_total_cap_hours": 2.5,
+      "plan_total_cap_with_k3_hours": 4.25,
+      "rule": "before each GPU job: STATE week + used in plan 13 + cap of the job > 10 -> stop (K3: record 'K3 hoan' instead)",
+      "source": "plan 13 §3.7"
+    },
+    "rerun_policy": "no other seed / config; rerun only on an infrastructure error, at most once per job, same config (plan 13 §3.6)"
+  },
+  "artifacts_planned": {
+    "checkpoints/stgcn_best.pt": {
+      "job": "k1",
+      "dataset": "phmvnsm33/vslt-retrain-artifacts"
+    },
+    "checkpoints/cslr_best.pt": {
+      "job": "k2",
+      "dataset": "phmvnsm33/vslt-retrain-artifacts"
+    },
+    "data/external/vsl_gh/gloss_vocab_canonical.txt": {
+      "job": "k2 (== bytes of vocab.sha256)",
+      "dataset": "phmvnsm33/vslt-retrain-artifacts"
+    },
+    "data/external/parallel_text/vie_vsl_10k_cleaned.jsonl": {
+      "job": "B3 (local) == K2 rebuild",
+      "dataset": "phmvnsm33/vslt-retrain-artifacts"
+    },
+    "checkpoints/vit5_stage1/best_model": {
+      "job": "k2",
+      "dataset": "phmvnsm33/vslt-retrain-vit5"
+    },
+    "checkpoints/vit5_stage2/best_model": {
+      "job": "k2",
+      "dataset": "phmvnsm33/vslt-retrain-vit5"
+    },
+    "tier1_inputs": {
+      "dataset": "phmvnsm33/vslt-retrain-inputs-tier1",
+      "manifest": "reports/retrain_2026-10-02/inputs_tier1_manifest.json"
+    },
+    "manifests": [
+      "reports/retrain_2026-10-02/inputs_tier1_manifest.json",
+      "reports/retrain_2026-10-02/artifacts_manifest.json",
+      "reports/retrain_2026-10-02/vit5_manifest.json"
+    ],
+    "k1_outputs": "reports/retrain_2026-10-02/k1_outputs.json",
+    "k3_optional": {
+      "dir": "_work/_plan13_tmp/k3/",
+      "dataset": "phmvnsm33/vslt-retrain-repro-i",
+      "manifest": "reports/retrain_2026-10-02/repro_i_manifest.json",
+      "never_in": "checkpoints/"
+    }
+  }
+}
