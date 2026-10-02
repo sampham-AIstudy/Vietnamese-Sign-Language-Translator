@@ -17,7 +17,8 @@
   src/training/modal_runner.py (+ dòng "đã gỡ" ở plan 12 §8.1, docs/cloud_training.md). Coder B0–B13 (~15 h công + chờ kernel).
   Q1 (CSLR: (i) công thức cũ chia theo người ký [mặc định] / (ii) chia theo câu), Q2 (upload ViT5 >3h), Q3 (đặt checkpoint mới vào đường dẫn
   mặc định = thuộc quyết định 09:20, không phải GATE) — đều có mặc định, không chặn tới B9.
-  ĐANG GIAO: vslt-coder kế hoạch 13 B0–B2 — 10:15. Sau đó: 13 B3–B5, ...; coder 06 B10 (tài liệu) xen khi chờ kernel.
+  Q1 ĐÃ TRẢ LỜI (ii) 10:05 → cần planner Lần sửa 1 kế hoạch 13 (split câu cho CSLR + ViT5, guard, tiêu chí WER/BLEU + CI) TRƯỚC B3.
+  ĐANG GIAO: vslt-coder kế hoạch 13 B0–B2 — 09:50 (không bị ảnh hưởng bởi Q1). Sau đó: 13 B3–B5, ...; coder 06 B10 (tài liệu) xen khi chờ kernel.
   SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
   `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint
   stgcn/stgcn_h360, video+nhãn QIPEDC, hauuto_raw, alphabet_hands_kaggle, vsl_gh, parallel_text. Còn nguyên: data/raw_tudienngonngukyhieu,
@@ -157,8 +158,17 @@
 - (2026-10-02 09:20) Checkpoint thiếu (§8.1 kế hoạch 12): tìm Colab + Kaggle; không có thì train lại trên Kaggle. Bỏ Modal (không dùng).
   Xóa file tải về/tạm không cần thiết.
 
+- (2026-10-02 10:05) Q1 kế hoạch 13 — CHỌN (ii) cho K2: chia theo câu + giữ chia theo người ký.
+  - Giữ split người ký hiện có (S06 = test). Câu test = đúng 30 câu ViT5 chưa thấy (để BLEU mới so được với 27.98 / 23.18); loại khỏi train
+    CSLR ở MỌI người ký. Thêm ~30 câu val (seed cố định, ghi seed, không trùng câu test). Chọn epoch/hyperparameter bằng val; test chạy MỘT lần.
+  - Cùng split câu áp cho ViT5: nếu train lại ViT5, loại 30 câu test (và 30 câu val) khỏi train/val của ViT5; thêm test guard FAIL nếu câu
+    test xuất hiện trong train của CSLR hoặc ViT5.
+  - Đăng ký trước tiêu chí trong kế hoạch: WER (S/D/I) + CI bootstrap trên 30 câu test; BLEU Mode A (oracle gloss) và Mode B (CSLR → ViT5),
+    cùng CI. Ghi chú: 30 câu này KHÔNG chọn ngẫu nhiên.
+  - (i) (công thức cũ) chỉ chạy SAU (ii), nếu cổng ngân sách cho phép, như kiểm tra tái tạo số cũ; ghi vào ledger.
+  - Số liệu sinh từ JSON.
+
 ## Câu hỏi chờ người dùng
-- (kế hoạch 13 §7.1, có mặc định) Q1: CSLR train lại theo (i) công thức cũ chia theo người ký (giữ rò rỉ câu S06, ghi giới hạn) hay (ii) chia theo câu (sạch, khác model cũ)? Mặc định (i); cần trả lời trước B9.
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
 - (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
   reports/PHASE4B_REPORT.md:112 ghi "unseen / zero leakage" là sai; mặc định: ghi nhãn đúng, không viết lại báo cáo cũ.
