@@ -3,31 +3,17 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-10-01 19:25 (giờ Việt Nam)
-- HEAD: dcf9b0d (+ commit state này) | Nhánh: feat/vslt-complete (đã push)
-- Trạng thái phiên: ĐANG CHẠY — 5h 0% lúc 19:19 (reset 00:30 ngày 2/10), 7 ngày 0%. Dữ liệu vẫn chưa khôi phục.
-  Planner kế hoạch 12 XONG (docs/plans/12-khoi-phuc-du-lieu.md): a1–a3 checkpoint từ _work (sha256 manifest); hauuto, alphabet_hands (output
-  kernel phmvnsm33/vsl-extract-alphabet), QIPEDC (Kaggle aresusayhi/vsl-vietnamese-sign-languages), label.csv (git HEAD), vsl_gh/parallel_text
-  (clone/) khôi phục được; 0 GPU-giờ. KHÔNG có bản lưu trữ: stgcn_best.pt, ViT5 stage1/2, cslr_best.pt + gloss_vocab_canonical.txt (§8.1 CẦN NGƯỜI DÙNG).
-  Đính chính: provenance.json là file tracked, KHÔNG mất; checkpoint trong reports/ (H-keepz-360) không mất.
-  Coder 12 B0–B3 XONG (4922fc0, e6ff39a, 990fbe6, 5db5977): checker scripts/check_restored_data.py + 23 test OK; a1–a3 checkpoint đã đặt lại,
-  sha256 khớp manifest; label.csv từ blob git (data/Dataset/Labels/label.csv). a4–a6 xác nhận không có trong git/manifest/_work.
-  Coder 12 B4–B7 XONG (6982474, bf37089, fe64717, bb784bd): alphabet_hands 686 npz (kernel output), hauuto 640 mp4, QIPEDC 4362 file — checker
-  khớp hết; hand_live_check + live_segment_check chạy lại BẰNG HỆT; smoke ×2 PASSED; npm test 26/26. AC2 31 module: Ran 518, lệch mốc đúng (i) ViT5
-  ERROR + (ii) stgcn_best skip, cộng (iii) FAIL test_g_gitignore do orchestrator thêm `_work/` vào .gitignore (9d1d40f) → orchestrator hoàn tác
-  ở be5990e (chuyển sang .git/info/exclude, _work vẫn bị bỏ qua), test_private_artifacts 8/8 OK. AC2 của 06 vẫn "chưa đạt" do §8.1 (a4–a6).
-  Zip tải về (18.5G + 0.9G) còn trong _work/_plan12_tmp/dl_* (dọn ở B9 nếu kế hoạch cho phép).
-  Coder 12 B8–B9 XONG (d4fda34, 6ccfe52): parallel_text + vsl_gh tái tạo, 2 report bằng hệt từng byte (4200 = 4198 + 2 tên có dấu cách);
-  prepare_canonical_vsl_gh.py thêm --source-clone/--report-out (+4 test, 28 OK); AC2 31 module Ran 518: chỉ lệch (i)+(ii); inventory_after_b8
-  ok 23 / missing 7 (đều không bắt buộc: a4–a7, gloss_vocab_canonical) / mismatch 0. Dòng progress_log 12 đã ghi. _work/_plan12_tmp còn ~21G zip/tar.
-  Review 12 phần 1 XONG (docs/reviews/12-review.md): 1–4 + AC0 PASS, không FAIL (đột biến 3/3 bị bắt; checker 31/31 khớp; sha256 khớp).
-  KẾ HOẠCH 12: APPROVE vòng 1 (docs/reviews/12-review.md; 1–4, 7, 9, 10, 11, 13 PASS; 5, 6, 8, 12 N/A). Ghi chú thấp: đã thêm
-  data/external/vsl_gh/, data/external/parallel_text/, data/Dataset/ vào .git/info/exclude (KHÔNG .gitignore); checker nên kiểm sha file tham chiếu cục bộ.
-  AC2 của 06 vẫn "chưa đạt" (Ran 518, 1 ERROR ViT5 + 1 skip stgcn_best) cho tới khi người dùng trả lời §8.1 kế hoạch 12.
-  Planner 06 Lần sửa 5 XONG (docs/plans/06-viec5-frontend-sua5.md §0E; dòng trỏ ở đầu kế hoạch 06): chỉ sửa tài liệu — V11/O5 đính chính
-  "8 hauuto TRAIN + 2 qipedc TEST ngoài", V10/O1 câu CORS qua proxy Vite, V9/O2 khối đính chính 06-progress, làm luôn O3, O4, V12, V13.
-  VIỆC KẾ TIẾP: vslt-coder 06 bước B10 (B10-1..B10-4, AC-E1..E5, ~1 giờ) → vslt-reviewer kiểm lại 06 hạng mục 5, 13 (+ V0 chỉ phụ thuộc §8.1 kế hoạch 12). Sau đó: planner 06 Lần sửa 5 (V11/O5 theo (A), V10/O1, V9/O2)
-  → coder → khôi phục xong thì reviewer kiểm lại 06 (V0: AC2 526/0 skip, npm test, đột biến AC5, AC10 ×2; hạng mục 5, 13).
+- Cập nhật lần cuối: 2026-10-02 09:40 (giờ Việt Nam)
+- HEAD: eea8906 (+ commit state này) | Nhánh: feat/vslt-complete
+- Trạng thái phiên: ĐANG CHẠY — 5h 5% lúc 09:23 (reset 14:30), 7 ngày 11%.
+  Người dùng (09:20 ngày 2/10): tìm checkpoint thiếu trên Colab + Kaggle, không có thì TRAIN LẠI trên Kaggle; bỏ Modal (không dùng); xóa file thừa.
+  Đã tìm Kaggle (09:25): 9 kernel của phmvnsm33 (extract/pack/train unified/harmonized/alphabet) + 2 dataset private — KHÔNG có stgcn_best.pt,
+  ViT5, cslr_best.pt, gloss_vocab_canonical.txt. Colab: file nằm trên Google Drive của người dùng — orchestrator không truy cập được (chờ người dùng xem).
+  Đã xóa (09:35, đã kiểm 0 link/junction trước khi xóa): _work/_plan12_tmp/{dl_hauuto, dl_qipedc, vslgh_src, vslgh_head.tar} (~21G),
+  _work/_kaggle_staging/{restore_dl, restore_dl2, verify_provenance, verify_download}, %TEMP%slt_e2e (y4m), .agents/skills/modal/ (untracked),
+  2 file rác 0 byte ở gốc repo. Dữ liệu đã khôi phục còn nguyên (4362 file Videos, 3 checkpoint). Ổ C trống 132G.
+  ĐANG GIAO: vslt-planner kế hoạch 13 (train lại stgcn_best / ViT5 / CSLR trên Kaggle + gỡ Modal khỏi code) — 09:42.
+  Song song chờ: coder 06 B10 (chỉ tài liệu) — giao sau planner 13.
   SỰ CỐ (lỗi của orchestrator): 30/9 23:42 `git worktree remove --force ../_rev06_wt` đi xuyên JUNCTION trong worktree tạm và xóa nội dung
   `checkpoints/`, `data/Dataset/`, `data/external/` của repo chính (thư mục còn, rỗng). Mất: alphabet_best.pt, provenance.json, checkpoint
   stgcn/stgcn_h360, video+nhãn QIPEDC, hauuto_raw, alphabet_hands_kaggle, vsl_gh, parallel_text. Còn nguyên: data/raw_tudienngonngukyhieu,
@@ -71,7 +57,7 @@
   e2e_browser.cjs chỉ thêm created_t_s/closed_t_s/click_t_s. Chạy chính thức mỗi kịch bản ĐÚNG 1 lần; đỏ → dừng §7-10.
   VIỆC KẾ TIẾP: vslt-coder B8c-1 (test mục 10 trước) → B8c-2 (script) → B8c-3 (3 JSON chính thức) → B9b (0B.5 bước 4, AC1 nhóm (ii)
   gồm facffea, f52de6f, 717aa3e) → vslt-reviewer toàn bộ 06 (thêm điểm §0B.6, §0C.6).
-- Hạn mức (21:38 ngày 1/10): 5 giờ 84% (reset 00:10 ngày 2/10), 7 ngày 11%. Sổ đo: docs/usage_ledger.csv
+- Hạn mức (09:23 ngày 2/10): 5 giờ 5% (reset 14:30), 7 ngày 11%. Sổ đo: docs/usage_ledger.csv
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -164,6 +150,9 @@
 - (2026-10-01 20:00) Người dùng đi vắng: làm tiếp, dùng tối ưu quota 5h (chia nhỏ, không để thừa nhiều); khi hết việc làm được hoặc quota
   thật sự cạn (≥ 90) VÀ đã lưu STATE + commit + push, không còn agent chạy → tắt máy (`shutdown //s //t 120`).
 
+- (2026-10-02 09:20) Checkpoint thiếu (§8.1 kế hoạch 12): tìm Colab + Kaggle; không có thì train lại trên Kaggle. Bỏ Modal (không dùng).
+  Xóa file tải về/tạm không cần thiết.
+
 ## Câu hỏi chờ người dùng
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
 - (từ báo cáo cloud A–D, không chặn việc) (1) CSLR được train trên cả 300 câu S06 (người ký khác) → README.md:56 và
@@ -228,3 +217,4 @@
 - 2026-10-01 00:40 | dừng theo ngân sách (không phải ngắt) | review 06 xong 3 phần: CHANGES_REQUESTED; planner Lần sửa 5 chưa giao (96 > 90) | Lưu STATE, commit, push, tắt máy theo yêu cầu người dùng.
 - 2026-10-01 19:25 | khôi phục sau tắt máy (người dùng nhắn "tiếp tục công việc") | STATE khớp git (HEAD dcf9b0d), dữ liệu vẫn rỗng | Hỏi người dùng 2 câu chặn (đã trả lời), giao planner kế hoạch 12 khôi phục dữ liệu.
 - 2026-10-01 21:40 | dừng theo hạn mức (84%, không phải ngắt) | kế hoạch 12 APPROVE; 06 Lần sửa 5 đã lập, coder B10 chưa giao | Lưu STATE, commit, push, tắt máy theo yêu cầu người dùng (20:00).
+- 2026-10-02 09:40 | khôi phục sau tắt máy (người dùng giao việc mới) | STATE khớp git (HEAD eea8906) | Tìm Kaggle (không có), dọn file thừa, giao planner kế hoạch 13.
