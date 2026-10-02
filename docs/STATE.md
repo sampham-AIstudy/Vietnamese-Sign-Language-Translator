@@ -6,7 +6,10 @@
 - Cập nhật lần cuối: 2026-10-02 09:40 (giờ Việt Nam)
 - HEAD: eea8906 (+ commit state này) | Nhánh: feat/vslt-complete
 - Trạng thái phiên: ĐANG CHẠY — cửa sổ 5h mới (14:21), 7 ngày 22%.
-  ĐANG GIAO: vslt-coder kế hoạch 13 B3 + B4a–B4d — 14:22.
+  Coder 13 B3 + B4a–B4d XONG (3deee22, 459f282, 7ecaa25, a272df6, f7aacc1, 13f897a): cleaned 10k 7140 (6426/714) khớp; loại 4 cặp trùng câu val
+  (0 trùng test); gói Tier 1 162 file digest 7098e007…; train.py --seed; archive_retrain_kaggle.py (24 test API giả); --sentence-split cho
+  train_cslr/stage1/stage2 (LEAK CHECK OK, TEST DEFERRED); eval_sentsplit.py (12 test); 115 test OK/1 skip; AC2-06 y mốc.
+  ĐANG GIAO: vslt-reviewer kiểm GIỮA kế hoạch 13 (B2a–B4d) TRƯỚC B5 (đăng ký trước sẽ khóa tiêu chí) — 15:42. Sau đó: coder B5.
   Đã tìm Kaggle (09:25): 9 kernel của phmvnsm33 (extract/pack/train unified/harmonized/alphabet) + 2 dataset private — KHÔNG có stgcn_best.pt,
   ViT5, cslr_best.pt, gloss_vocab_canonical.txt. Colab: file nằm trên Google Drive của người dùng — orchestrator không truy cập được (chờ người dùng xem).
   Đã xóa (09:35, đã kiểm 0 link/junction trước khi xóa): _work/_plan12_tmp/{dl_hauuto, dl_qipedc, vslgh_src, vslgh_head.tar} (~21G),
