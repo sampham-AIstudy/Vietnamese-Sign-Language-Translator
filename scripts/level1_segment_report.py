@@ -295,12 +295,20 @@ def calibrate(clips: Sequence[Dict[str, Any]], design: Dict[str, Any]) -> Dict[s
     p95_duration = _pct([p["duration_ms"] for p in profiles], 95, "max_segment_ms (all clips)")
     max_segment_ms = int(math.ceil(p95_duration))
     # rule 5
-    p50_trailing = _pct([p["trailing_still_ms"] for p in moving_p], 50, "tail_still_keep_ms (clips with motion)")
-    tail_still_keep_ms = min(hold_ms, p50_trailing)
+    if moving_p:
+        p50_trailing = _pct([p["trailing_still_ms"] for p in moving_p], 50, "tail_still_keep_ms (clips with motion)")
+        tail_still_keep_ms = min(hold_ms, p50_trailing)
+    else:
+        p50_trailing = None
+        tail_still_keep_ms = hold_ms
     # rule 6 (pre-registered stop point)
-    p90_internal = _pct([p["longest_internal_still_ms"] for p in tone_moving_p], 90,
-                        "rule 6 (tone clips with motion)")
-    triggered = bool(p90_internal >= hold_ms)
+    if tone_moving_p:
+        p90_internal = _pct([p["longest_internal_still_ms"] for p in tone_moving_p], 90,
+                            "rule 6 (tone clips with motion)")
+        triggered = bool(p90_internal >= hold_ms)
+    else:
+        p90_internal = None
+        triggered = False
     return {
         "values": {"still_speed": still_speed, "move_speed": move_speed, "hold_ms": hold_ms,
                    "max_segment_ms": max_segment_ms, "tail_still_keep_ms": tail_still_keep_ms},
@@ -372,7 +380,8 @@ def u1_summary(path: str) -> Dict[str, Any]:
     with open(path, encoding="utf-8") as f:
         s = json.load(f)
     segs = s.get("segments") or []
-    cap = (s.get("config") or {}).get("values", {}).get("max_segment_ms")
+    cap_raw = (s.get("config") or {}).get("values", {}).get("max_segment_ms")
+    cap = cap_raw.get("value") if isinstance(cap_raw, dict) else cap_raw
     counts = s.get("counts") or {}
     proc_fps = counts.get("processing_fps")
     interval = (1000.0 / proc_fps) if proc_fps else None

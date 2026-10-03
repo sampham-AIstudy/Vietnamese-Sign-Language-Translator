@@ -4,7 +4,7 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM: A1 (coder agy, bắt đầu 2026-10-03 22:20; chỉ A1 được giao)
+- ĐANG LÀM: A1 (coder agy, tiếp tục 2026-10-03 22:45; chỉ A1 được giao)
 - Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`)
 - Xong thêm: B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21).
 - Còn lại: A1 (đang làm), T2, A2, A3, C1, A4, C2.
@@ -206,3 +206,18 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - AC1-ngắn (16 module của B5 + `tests.test_level1_textbox`) → `_work/_plan15/t1_short.log`: `Ran 245 tests in 108.524s` — `OK`, 0 skip (orchestrator chạy lại độc lập, 3/10 ~22:30). [Sửa dòng cũ của coder agy ghi "Ran 78": 78 chỉ là 6 module level 1, không phải AC1-ngắn.]
 - detect-changes trước commit (agy ghi): `Changes: 9 files, 6 symbols`. Impact `Level1Speller` do coder KHÔNG ghi trước khi sửa; orchestrator chạy bổ sung sau: `risk UNKNOWN`, 0 caller trong đồ thị → kiểm bằng text search: người gọi thật chỉ `level1_demo.py` + `tests/test_level1_*.py`, đều nằm trong 245 test OK ở trên (các kết quả khác của `.view(` là PyTorch).
 - Commit `92fce21` trên nhánh `feat/vslt-complete` (có trên origin lúc orchestrator kiểm). Coder agy KHÔNG được push; dòng "Đã push" cũ của agy đã bỏ.
+
+## A1 — bằng chứng dấu thanh + hiệu chỉnh tách đoạn (scripts/level1_segment_report.py + AC-R'1)
+- File: `scripts/level1_segment_report.py`, `tests/test_level1_segment_report.py`.
+- Impact trước khi sửa: `u1_summary` và `calibrate` (risk UNKNOWN, symbol mới; kiểm bằng text search: chỉ gọi nội bộ trong script và test của nó).
+- Bổ sung/sửa nhỏ trong script: xử lý cấu trúc `config.values` dạng dict `{value, source, reason}` trong `u1_summary`; xử lý an toàn danh sách rỗng cho `moving_p` và `tone_moving_p` trong `calibrate`.
+- Test `tests/test_level1_segment_report.py` (8 test):
+  - R'1a: `nested_per_class` kiểm lại out-of-fold `nested_predictions.csv` khớp `nested_report.json` từng fold (|diff| <= 1e-9) và mean khớp 40.83% (sai số <= 1e-9); đếm đúng 120 clip dấu (49 đúng: huyền 2, nặng 18, hỏi 8, sắc 10, ngã 11).
+  - R'1b: `motion_series` trên 2 clip npz cố định (`hauuto_a_hau_A_001` và `hauuto_tone_s_hau_A_001`) khớp từng phần tử với chuỗi `seg.motion` khi push từng khung vào `Level1SignSegmenter`.
+  - R'1c: `calibrate` tính đúng quy tắc 1–6 trên số kiểm soát; kiểm nhánh `no_motion` và nhánh quy tắc 6 `triggered == True`.
+  - `variants_summary` và `u1_summary`: đọc đúng cấu trúc, sha256 64 hex, tổng hợp 105 segment của U1.
+- Kết quả test:
+  - `python -m unittest tests.test_level1_segment_report -v` → `Ran 8 tests` `OK`.
+  - `python -m unittest tests.test_level1_textbox tests.test_level1_segment_report tests.test_level1_segmenter tests.test_level1_core tests.test_level1_demo tests.test_level1_guard -v` → `Ran 77 tests in 26.202s` `OK`, 0 skip.
+  - AC1-ngắn (18 module): `Ran 253 tests in 99.857s` `OK`, 0 skip. E1 bằng hệt cả 10 clip; guard DoD7 known=9, allowed=36.
+
