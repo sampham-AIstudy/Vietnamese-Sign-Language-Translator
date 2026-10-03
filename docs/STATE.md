@@ -7,8 +7,15 @@
 - HEAD: feba7a1 (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 08:33 ngày 3/10 giao vslt-coder 13 B9a + B9b (B9b chạy trên Kaggle CPU theo quyết định 02:55, không local). 5h 0% (reset 13:30 VN),
-  7 ngày 56%. Cổng: 0 + 15 (est coder max 15/7/9) ≤ 90 → đạt. (Trước đó: chờ hạn mức 02:45 → 06:00; người dùng nhắn "continue" 08:30.)
+- Trạng thái phiên: ĐANG CHẠY — 08:58 ngày 3/10: vslt-coder 13 B9a/B9b đang chạy (B9a xong 32c1356); giao vslt-planner sửa nhỏ 13 (§3.9/B12 chồng lấn 14,
+  AC0(a) thêm 14) + 08 (§3.2 dòng 152 fps_last 30.0 → 0.0, AC-T thêm module mới của 11). 5h 23% (số lúc 08:43), reset 13:30 VN; 7 ngày 60%.
+  Cổng: 23 + 15 (coder đang chạy) + 32 (planner) = 70 ≤ 90 → đạt.
+  Planner 14 XONG (docs/plans/14-dinh-chinh-cslr-unseen.md, commit cùng lượt này): chưa có JSON chứng minh "300/300 câu đã thấy" → B1 thêm
+  scripts/audit_cslr_sentence_coverage.py → reports/cslr_claims_<D>/old_cslr_sentence_coverage.json; README:60 gắn nhãn sai thứ hai (WER 32.80% đo trên 300 clip S06,
+  không phải 30 câu); số trong tài liệu sinh bằng scripts/render_cslr_claims.py (khối giữa marker); sửa trực tiếp README, EVALUATION, docs/cslr_streaming_design.md,
+  docstring 2 script; khối ĐÍNH CHÍNH đầu 6 báo cáo lịch sử; guard tests/test_cslr_claim_guard.py + scripts/cslr_claim_rules.py (L1–L4, 8 đột biến).
+  Phần A 8 bước ~8,25 h (làm ngay); phần B 2 bước ~2 h sau 13 B11b. Không CẦN NGƯỜI DÙNG để bắt đầu.
+  THÔNG BÁO người dùng (backlog): "Zero-Leakage" Cấp 2 ở README.md:18 và docs/audit/final_status.md:13,24 mâu thuẫn reports/audit_round3/PROVENANCE.md:74.
   VIỆC (đã giao 08:33): vslt-coder 13 B9a + B9b (chẩn đoán smoke CPU theo §0B.3, quy tắc R0/R1/R2 đặt trước; R0 → CẦN PLANNER, R2-FAIL → CẦN NGƯỜI DÙNG, dừng)
   → B9c (song song được) → B9d → B9e (cổng GPU, ghim v4, đẩy K2 v4) → B9f. Song song/xen kẽ: coder 11 B2 (sign_segmenter); planner kế hoạch 14 (đính chính CSLR unseen);
   planner sửa kế hoạch 08 §3.2 dòng 152 (fps_last 30.0 → 0.0) trước khi code 08.
