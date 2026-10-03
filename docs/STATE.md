@@ -346,6 +346,9 @@
     kết thúc ký hiệu, không chặn khung; (3) ĐO độ trễ từng chặng ra HUD + JSON (số báo cáo chỉ từ JSON). Web sau báo cáo: cân nhắc MediaPipe JS chỉ kèm test
     tương đương. README:203 `realtime_demo.py --webcam` sai (đúng: --source 0); realtime_demo.py là demo Cấp 2, KHÔNG có Cấp 1.
 
+- (2026-10-03 15:40) "Tập trung xử lý cho hoàn thiện chạy demo tốt phần ký tự trước để trình bày": thứ tự kế hoạch 15 sau B5 = B6 (hiệu chỉnh tham số tách
+  ký hiệu) + sửa theo phản hồi webcam U1/U2 của người dùng TRƯỚC; B7 (replay SUMMARY) / B8 (tài liệu) / B9 chỉ làm phần cần cho buổi trình bày; mọi việc khác chờ.
+
 - (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy" — ĐÃ BỊ THAY bởi quyết định 20:15 ngay dưới.
 
 - (2026-10-02 20:15) LUẬT TẮT MÁY (thay mọi quyết định tắt máy trước đây: 2026-09-29 18:55, 2026-10-01 19:35, 2026-10-01 20:00, 2026-10-02 20:10):
