@@ -1,0 +1,1147 @@
+{
+  "generated_by": {
+    "command": "python scripts/level1_segment_report.py --out reports/level1_realtime_2026-10-03/tone_evidence.json --u1-json _work/_plan15_u1/u1_2026-10-03_1650.json",
+    "git_commit": "72167b9057baf00928f63c481e822aba9fd27fd2",
+    "code_dirty": false,
+    "code_paths": [
+      "scripts/level1_segment_report.py",
+      "src",
+      "configs/level1_realtime.json"
+    ],
+    "utc": "2026-10-03T15:49:46+00:00",
+    "python": "3.11.9",
+    "numpy": "2.4.6",
+    "torch": "2.6.0+cu124",
+    "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "os": "Windows-10-10.0.26200-SP0"
+  },
+  "note": "train data / out-of-fold predictions; not webcam accuracy",
+  "plan": "docs/plans/15-lan-sua-1.md §3.A.3 (step A1)",
+  "inputs": {
+    "manifest": {
+      "path": "data/external/alphabet_hands_kaggle/alphabet_hands/manifest.csv",
+      "sha256": "7b31acba8c9b50acc3679719f7f8ba36cffbf963c3cb6b50a81d4d3e55257ca9"
+    },
+    "primary_report": {
+      "path": "reports/alphabet_nested_2026-09-25/primary/nested_report.json",
+      "sha256": "f6f862b312e43cb4bf125c9f451db4af88708d41f7af6927ab56bd5304818447"
+    },
+    "primary_predictions": {
+      "path": "reports/alphabet_nested_2026-09-25/primary/nested_predictions.csv",
+      "sha256": "212d0fd62457bfa2c329f56d6989568eae1e6de353e8a05849fc4bf98ad148db"
+    },
+    "variants_report": {
+      "path": "reports/alphabet_nested_2026-09-25/variants/nested_report.json",
+      "sha256": "e51970294e211a867e80a1ecd71965d8cb20f2c1bb3cafc90ba26bd0241a797b"
+    },
+    "config": {
+      "path": "configs/level1_realtime.json",
+      "sha256": "b967a9c9b20d131e61c4afb00bb8694e975092d8708ec950efdd17b056c7634e"
+    },
+    "checkpoint": {
+      "path": "checkpoints/alphabet_best.pt",
+      "sha256": "a6311820ba778b6b38a33cffffd58602b2bb840b8b35326b5bf46086e5b708a2",
+      "min_detected_frames": 3
+    }
+  },
+  "nested_per_class": {
+    "source_run": "frame",
+    "folds": [
+      {
+        "test_signer": "hauuto_hau",
+        "tones": {
+          "n": 30,
+          "correct": 15,
+          "top1": 50.0,
+          "report_top1": 50.0
+        },
+        "letters": {
+          "n": 130,
+          "correct": 108,
+          "top1": 83.07692307692308,
+          "report_top1": 83.07692307692308
+        },
+        "per_class": {
+          "dấu sắc": {
+            "n": 6,
+            "correct": 0,
+            "top1": 0.0,
+            "predicted_as": {
+              "a": 4,
+              "dấu hỏi": 1,
+              "dấu ngã": 1
+            },
+            "errors_to_tone": 2,
+            "errors_to_letter": 4,
+            "errors_to_other": 0
+          },
+          "dấu huyền": {
+            "n": 6,
+            "correct": 0,
+            "top1": 0.0,
+            "predicted_as": {
+              "dấu hỏi": 2,
+              "dấu ngã": 2,
+              "a": 1,
+              "l": 1
+            },
+            "errors_to_tone": 4,
+            "errors_to_letter": 2,
+            "errors_to_other": 0
+          },
+          "dấu hỏi": {
+            "n": 6,
+            "correct": 4,
+            "top1": 66.66666666666667,
+            "predicted_as": {
+              "dấu hỏi": 4,
+              "a": 1,
+              "l": 1
+            },
+            "errors_to_tone": 0,
+            "errors_to_letter": 2,
+            "errors_to_other": 0
+          },
+          "dấu ngã": {
+            "n": 6,
+            "correct": 5,
+            "top1": 83.33333333333333,
+            "predicted_as": {
+              "dấu ngã": 5,
+              "dấu hỏi": 1
+            },
+            "errors_to_tone": 1,
+            "errors_to_letter": 0,
+            "errors_to_other": 0
+          },
+          "dấu nặng": {
+            "n": 6,
+            "correct": 6,
+            "top1": 100.0,
+            "predicted_as": {
+              "dấu nặng": 6
+            },
+            "errors_to_tone": 0,
+            "errors_to_letter": 0,
+            "errors_to_other": 0
+          }
+        }
+      },
+      {
+        "test_signer": "hauuto_khoi",
+        "tones": {
+          "n": 30,
+          "correct": 14,
+          "top1": 46.666666666666664,
+          "report_top1": 46.666666666666664
+        },
+        "letters": {
+          "n": 130,
+          "correct": 112,
+          "top1": 86.15384615384616,
+          "report_top1": 86.15384615384616
+        },
+        "per_class": {
+          "dấu sắc": {
+            "n": 6,
+            "correct": 6,
+            "top1": 100.0,
+            "predicted_as": {
+              "dấu sắc": 6
+            },
+            "errors_to_tone": 0,
+            "errors_to_letter": 0,
+            "errors_to_other": 0
+          },
+          "dấu huyền": {
+            "n": 6,
+            "correct": 0,
+            "top1": 0.0,
+            "predicted_as": {
+              "dấu nặng": 4,
+              "dấu ngã": 1,
+              "x": 1
+            },
+            "errors_to_tone": 5,
+            "errors_to_letter": 1,
+            "errors_to_other": 0
+          },
+          "dấu hỏi": {
+            "n": 6,
+            "correct": 0,
+            "top1": 0.0,
+            "predicted_as": {
+              "i": 4,
+              "dấu sắc": 1,
+              "y": 1
+            },
+            "errors_to_tone": 1,
+            "errors_to_letter": 5,
+            "errors_to_other": 0
+          },
+          "dấu ngã": {
+            "n": 6,
+            "correct": 3,
+            "top1": 50.0,
+            "predicted_as": {
+              "dấu ngã": 3,
+              "dấu sắc": 3
+            },
+            "errors_to_tone": 3,
+            "errors_to_letter": 0,
+            "errors_to_other": 0
+          },
+          "dấu nặng": {
+            "n": 6,
+            "correct": 5,
+            "top1": 83.33333333333333,
+            "predicted_as": {
+              "dấu nặng": 5,
+              "x": 1
+            },
+            "errors_to_tone": 0,
+            "errors_to_letter": 1,
+            "errors_to_other": 0
+          }
+        }
+      },
+      {
+        "test_signer": "hauuto_tai",
+        "tones": {
+          "n": 30,
+          "correct": 3,
+          "top1": 10.0,
+          "report_top1": 10.0
+        },
+        "letters": {
+          "n": 126,
+          "correct": 99,
+          "top1": 78.57142857142857,
+          "report_top1": 78.57142857142857
+        },
+        "per_class": {
+          "dấu sắc": {
+            "n": 6,
+            "correct": 0,
+            "top1": 0.0,
+            "predicted_as": {
+              "dấu ngã": 4,
+              "a": 1,
+              "dấu hỏi": 1
+            },
+            "errors_to_tone": 5,
+            "errors_to_letter": 1,
+            "errors_to_other": 0
+          },
+          "dấu huyền": {
+            "n": 6,
+            "correct": 1,
+            "top1": 16.666666666666668,
+            "predicted_as": {
+              "ơ": 4,
+              "dấu huyền": 1,
+              "i": 1
+            },
+            "errors_to_tone": 0,
+            "errors_to_letter": 5,
+            "errors_to_other": 0
+          },
+          "dấu hỏi": {
+            "n": 6,
+            "correct": 0,
+            "top1": 0.0,
+            "predicted_as": {
+              "dấu huyền": 5,
+              "dấu ngã": 1
+            },
+            "errors_to_tone": 6,
+            "errors_to_letter": 0,
+            "errors_to_other": 0
+          },
+          "dấu ngã": {
+            "n": 6,
+            "correct": 1,
+            "top1": 16.666666666666668,
+            "predicted_as": {
+              "dấu huyền": 4,
+              "dấu hỏi": 1,
+              "dấu ngã": 1
+            },
+            "errors_to_tone": 5,
+            "errors_to_letter": 0,
+            "errors_to_other": 0
+          },
+          "dấu nặng": {
+            "n": 6,
+            "correct": 1,
+            "top1": 16.666666666666668,
+            "predicted_as": {
+              "p": 3,
+              "g": 2,
+              "dấu nặng": 1
+            },
+            "errors_to_tone": 0,
+            "errors_to_letter": 5,
+            "errors_to_other": 0
+          }
+        }
+      },
+      {
+        "test_signer": "hauuto_vy",
+        "tones": {
+          "n": 30,
+          "correct": 17,
+          "top1": 56.666666666666664,
+          "report_top1": 56.666666666666664
+        },
+        "letters": {
+          "n": 130,
+          "correct": 123,
+          "top1": 94.61538461538461,
+          "report_top1": 94.61538461538461
+        },
+        "per_class": {
+          "dấu sắc": {
+            "n": 6,
+            "correct": 4,
+            "top1": 66.66666666666667,
+            "predicted_as": {
+              "dấu sắc": 4,
+              "dấu hỏi": 1,
+              "l": 1
+            },
+            "errors_to_tone": 1,
+            "errors_to_letter": 1,
+            "errors_to_other": 0
+          },
+          "dấu huyền": {
+            "n": 6,
+            "correct": 1,
+            "top1": 16.666666666666668,
+            "predicted_as": {
+              "ô": 3,
+              "dấu huyền": 1,
+              "r": 1,
+              "â": 1
+            },
+            "errors_to_tone": 0,
+            "errors_to_letter": 5,
+            "errors_to_other": 0
+          },
+          "dấu hỏi": {
+            "n": 6,
+            "correct": 4,
+            "top1": 66.66666666666667,
+            "predicted_as": {
+              "dấu hỏi": 4,
+              "dấu huyền": 2
+            },
+            "errors_to_tone": 2,
+            "errors_to_letter": 0,
+            "errors_to_other": 0
+          },
+          "dấu ngã": {
+            "n": 6,
+            "correct": 2,
+            "top1": 33.333333333333336,
+            "predicted_as": {
+              "dấu huyền": 3,
+              "dấu ngã": 2,
+              "dấu sắc": 1
+            },
+            "errors_to_tone": 4,
+            "errors_to_letter": 0,
+            "errors_to_other": 0
+          },
+          "dấu nặng": {
+            "n": 6,
+            "correct": 6,
+            "top1": 100.0,
+            "predicted_as": {
+              "dấu nặng": 6
+            },
+            "errors_to_tone": 0,
+            "errors_to_letter": 0,
+            "errors_to_other": 0
+          }
+        }
+      }
+    ],
+    "total": {
+      "tones": {
+        "n": 120,
+        "correct": 49,
+        "top1": 40.833333333333336
+      },
+      "per_class": {
+        "dấu sắc": {
+          "n": 24,
+          "correct": 10,
+          "top1": 41.666666666666664,
+          "predicted_as": {
+            "dấu sắc": 10,
+            "a": 5,
+            "dấu ngã": 5,
+            "dấu hỏi": 3,
+            "l": 1
+          },
+          "errors_to_tone": 8,
+          "errors_to_letter": 6,
+          "errors_to_other": 0
+        },
+        "dấu huyền": {
+          "n": 24,
+          "correct": 2,
+          "top1": 8.333333333333334,
+          "predicted_as": {
+            "dấu nặng": 4,
+            "ơ": 4,
+            "dấu ngã": 3,
+            "ô": 3,
+            "dấu huyền": 2,
+            "dấu hỏi": 2,
+            "a": 1,
+            "i": 1,
+            "l": 1,
+            "r": 1,
+            "x": 1,
+            "â": 1
+          },
+          "errors_to_tone": 9,
+          "errors_to_letter": 13,
+          "errors_to_other": 0
+        },
+        "dấu hỏi": {
+          "n": 24,
+          "correct": 8,
+          "top1": 33.333333333333336,
+          "predicted_as": {
+            "dấu hỏi": 8,
+            "dấu huyền": 7,
+            "i": 4,
+            "a": 1,
+            "dấu ngã": 1,
+            "dấu sắc": 1,
+            "l": 1,
+            "y": 1
+          },
+          "errors_to_tone": 9,
+          "errors_to_letter": 7,
+          "errors_to_other": 0
+        },
+        "dấu ngã": {
+          "n": 24,
+          "correct": 11,
+          "top1": 45.833333333333336,
+          "predicted_as": {
+            "dấu ngã": 11,
+            "dấu huyền": 7,
+            "dấu sắc": 4,
+            "dấu hỏi": 2
+          },
+          "errors_to_tone": 13,
+          "errors_to_letter": 0,
+          "errors_to_other": 0
+        },
+        "dấu nặng": {
+          "n": 24,
+          "correct": 18,
+          "top1": 75.0,
+          "predicted_as": {
+            "dấu nặng": 18,
+            "p": 3,
+            "g": 2,
+            "x": 1
+          },
+          "errors_to_tone": 0,
+          "errors_to_letter": 6,
+          "errors_to_other": 0
+        }
+      }
+    },
+    "check": {
+      "fold_tones_top1_max_abs_diff": 0.0,
+      "tones_mean_recomputed": 40.83333333333333,
+      "tones_mean_report": 40.83333333333333,
+      "tones_mean_abs_diff": 0.0,
+      "tolerance": 1e-09,
+      "rows_outside_report_folds": 0,
+      "matches": true
+    }
+  },
+  "variants_summary": {
+    "path": "reports/alphabet_nested_2026-09-25/variants/nested_report.json",
+    "sha256": "e51970294e211a867e80a1ecd71965d8cb20f2c1bb3cafc90ba26bd0241a797b",
+    "protocol": "nested LOSO: outer test signer, inner leave-one-signer-out validation over the 3 others",
+    "seed": 42,
+    "clips": {
+      "hauuto": 636,
+      "qipedc": 46
+    },
+    "variants": {
+      "frame": {
+        "tones": {
+          "mean": 40.83333333333333,
+          "sd": 20.971762320196525,
+          "n_folds": 4
+        },
+        "letters": {
+          "mean": 85.60439560439559,
+          "sd": 6.766352082828326,
+          "n_folds": 4
+        }
+      },
+      "time": {
+        "tones": {
+          "mean": 38.33333333333333,
+          "sd": 16.887426837300737,
+          "n_folds": 4
+        },
+        "letters": {
+          "mean": 85.6043956043956,
+          "sd": 6.219560176798591,
+          "n_folds": 4
+        }
+      },
+      "frame_traj": {
+        "tones": {
+          "mean": 36.666666666666664,
+          "sd": 17.638342073763937,
+          "n_folds": 4
+        },
+        "letters": {
+          "mean": 77.10622710622711,
+          "sd": 5.7074722223280006,
+          "n_folds": 4
+        }
+      },
+      "time_traj": {
+        "tones": {
+          "mean": 40.0,
+          "sd": 15.634719199411432,
+          "n_folds": 4
+        },
+        "letters": {
+          "mean": 76.33699633699634,
+          "sd": 7.445544906359943,
+          "n_folds": 4
+        }
+      }
+    }
+  },
+  "train_profiles": {
+    "source": "hauuto clips of the manifest (training data of the deployed checkpoint)",
+    "n_manifest_hauuto": 640,
+    "n_clips": 636,
+    "n_letter_clips": 516,
+    "n_tone_clips": 120,
+    "excluded_below_min_detected_frames": [
+      {
+        "sample_id": "hauuto_q_tai_A_001",
+        "detected_frames": 0,
+        "frames": 46
+      },
+      {
+        "sample_id": "hauuto_q_tai_B_001",
+        "detected_frames": 0,
+        "frames": 65
+      },
+      {
+        "sample_id": "hauuto_v_tai_B_001",
+        "detected_frames": 0,
+        "frames": 90
+      },
+      {
+        "sample_id": "hauuto_y_tai_A_001",
+        "detected_frames": 2,
+        "frames": 92
+      }
+    ],
+    "motion_params": {
+      "motion_window_ms": 200,
+      "hand_lost_ms": 300
+    },
+    "motion_params_note": "M_t depends only on motion_window_ms and hand_lost_ms (design values of the config); still_speed / move_speed are those of calibration rule 1",
+    "thresholds": {
+      "still_speed": 2.5306153884920786,
+      "move_speed": 5.061230776984157
+    },
+    "definitions": {
+      "M_t": "Level1SignSegmenter.motion read after each push of the clip (every frame, None without a value); on a frame without a hand the segmenter keeps its last value and its still / moving state (it only updates them on hand frames), the profile uses the value as the segmenter holds it",
+      "timestamps": "i * 1000 / fps of the manifest, ms",
+      "duration_ms": "ts of the last frame - ts of the first frame",
+      "first_move_ms / last_move_ms": "ts of the first / last frame with M_t >= move_speed; none -> clip 'no_motion' (counted apart, no number given)",
+      "leading_still_ms": "first_move_ms - ts of the first frame",
+      "trailing_still_ms": "ts of the last frame - last_move_ms",
+      "moving_ms": "last_move_ms - first_move_ms",
+      "longest_still_ms": "longest run of consecutive frames with M_t <= still_speed (ts of its last frame - ts of its first frame, as the segmenter's hold timer); 0.0 when the clip has no such frame",
+      "longest_internal_still_ms": "as longest_still_ms, only frames with first_move_ms < ts < last_move_ms; no_motion clips excluded",
+      "median_motion": "median of the M_t values of the clip that are not None; None (excluded) when there is none",
+      "percentiles": "numpy.percentile, linear interpolation"
+    },
+    "groups": {
+      "letters": {
+        "n_clips": 516,
+        "n_no_motion": 322,
+        "n_without_still_frame": 2,
+        "duration_ms": {
+          "n": 516,
+          "p5": 1650.4126031507876,
+          "p10": 1650.4126031507876,
+          "p50": 3137.720488466757,
+          "p90": 3383.492120024931,
+          "p95": 3542.247201624711
+        },
+        "leading_still_ms": {
+          "n": 194,
+          "p5": 34.507288771202596,
+          "p10": 35.922120842014515,
+          "p50": 275.34462085646544,
+          "p90": 1281.5137776859024,
+          "p95": 1738.6774409661466
+        },
+        "trailing_still_ms": {
+          "n": 194,
+          "p5": 0.0,
+          "p10": 0.0,
+          "p50": 2530.9078615550425,
+          "p90": 3036.8718365640657,
+          "p95": 3155.5780120853033
+        },
+        "moving_ms": {
+          "n": 194,
+          "p5": 0.0,
+          "p10": 34.48895953384277,
+          "p50": 205.95908279555124,
+          "p90": 2659.917603714103,
+          "p95": 2973.0117471685026
+        },
+        "longest_still_ms": {
+          "n": 516,
+          "p5": 485.85922740468163,
+          "p10": 826.7833747907235,
+          "p50": 2694.6016544597137,
+          "p90": 3304.295584259537,
+          "p95": 3495.0172389363815
+        },
+        "longest_internal_still_ms": {
+          "n": 194,
+          "p5": 0.0,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 398.7674460757658,
+          "p95": 540.5615047458024
+        },
+        "median_motion": {
+          "n": 516,
+          "p5": 0.13184736706884262,
+          "p10": 0.15088085802500273,
+          "p50": 0.4539298959154503,
+          "p90": 2.5306153884920786,
+          "p95": 3.7941979655258073
+        }
+      },
+      "tones": {
+        "n_clips": 120,
+        "n_no_motion": 69,
+        "n_without_still_frame": 0,
+        "duration_ms": {
+          "n": 120,
+          "p5": 1650.4126031507876,
+          "p10": 1650.4126031507876,
+          "p50": 3159.9316361854926,
+          "p90": 3353.3273508713933,
+          "p95": 3433.7235256052313
+        },
+        "leading_still_ms": {
+          "n": 51,
+          "p5": 36.08685342445116,
+          "p10": 36.2515860068878,
+          "p50": 290.0126880551024,
+          "p90": 1041.7415044184208,
+          "p95": 1618.7127504891505
+        },
+        "trailing_still_ms": {
+          "n": 51,
+          "p5": 577.807607979343,
+          "p10": 750.1875468867216,
+          "p50": 2138.8435744063804,
+          "p90": 2857.2412131226547,
+          "p95": 2885.0565246461897
+        },
+        "moving_ms": {
+          "n": 51,
+          "p5": 35.50201906751835,
+          "p10": 68.84918585837721,
+          "p50": 242.04702627939145,
+          "p90": 975.2438109527383,
+          "p95": 1250.6797172376291
+        },
+        "longest_still_ms": {
+          "n": 120,
+          "p5": 487.6219054763691,
+          "p10": 892.7231807951988,
+          "p50": 2137.366190099863,
+          "p90": 3306.0973881830637,
+          "p95": 3386.7068778360867
+        },
+        "longest_internal_still_ms": {
+          "n": 51,
+          "p5": 0.0,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 359.2212084201451,
+          "p95": 497.5720547863991
+        },
+        "median_motion": {
+          "n": 120,
+          "p5": 0.21017761283968056,
+          "p10": 0.25737417902651166,
+          "p50": 0.6563107536641816,
+          "p90": 1.784906516039525,
+          "p95": 2.221405662690822
+        }
+      },
+      "dấu sắc": {
+        "n_clips": 24,
+        "n_no_motion": 10,
+        "n_without_still_frame": 0,
+        "duration_ms": {
+          "n": 24,
+          "p5": 1650.4126031507876,
+          "p10": 1906.3264399669324,
+          "p50": 3159.9316361854926,
+          "p90": 3353.319876931327,
+          "p95": 3378.9674046519003
+        },
+        "leading_still_ms": {
+          "n": 14,
+          "p5": 36.13627319918215,
+          "p10": 38.09659867157858,
+          "p50": 482.5051175604556,
+          "p90": 935.0026086675529,
+          "p95": 957.5088369985922
+        },
+        "trailing_still_ms": {
+          "n": 14,
+          "p5": 1557.1637211789136,
+          "p10": 1847.4648257540643,
+          "p50": 2147.0854124636253,
+          "p90": 2433.913395010044,
+          "p95": 2656.2787724246396
+        },
+        "moving_ms": {
+          "n": 14,
+          "p5": 61.53932697250219,
+          "p10": 82.62087793663338,
+          "p50": 382.2362827499443,
+          "p90": 900.7607498091907,
+          "p95": 946.7290936723498
+        },
+        "longest_still_ms": {
+          "n": 24,
+          "p5": 778.3195798949737,
+          "p10": 1012.1687645707461,
+          "p50": 2102.662771009599,
+          "p90": 3217.4228528679,
+          "p95": 3334.0412220641615
+        },
+        "longest_internal_still_ms": {
+          "n": 14,
+          "p5": 0.0,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 309.5565227118864,
+          "p95": 327.1112915828042
+        },
+        "median_motion": {
+          "n": 24,
+          "p5": 0.2519932732571938,
+          "p10": 0.281411316743709,
+          "p50": 0.42633778194867133,
+          "p90": 0.7305754326204665,
+          "p95": 0.7384081734296617
+        }
+      },
+      "dấu huyền": {
+        "n_clips": 24,
+        "n_no_motion": 10,
+        "n_without_still_frame": 0,
+        "duration_ms": {
+          "n": 24,
+          "p5": 1650.4126031507876,
+          "p10": 1856.9160703773678,
+          "p50": 3148.218563370233,
+          "p90": 3342.0166102872668,
+          "p95": 3380.096738023539
+        },
+        "leading_still_ms": {
+          "n": 14,
+          "p5": 34.561430656488085,
+          "p10": 35.08017843000548,
+          "p50": 332.5532307492316,
+          "p90": 1077.6360870076605,
+          "p95": 1485.2257625909012
+        },
+        "trailing_still_ms": {
+          "n": 14,
+          "p5": 854.6270718232047,
+          "p10": 1107.7337704591896,
+          "p50": 2052.5942686409185,
+          "p90": 2673.492507484541,
+          "p95": 2749.822020569337
+        },
+        "moving_ms": {
+          "n": 14,
+          "p5": 0.0,
+          "p10": 32.32990875781306,
+          "p50": 241.43281155077935,
+          "p90": 1025.073776545007,
+          "p95": 1384.3092470585639
+        },
+        "longest_still_ms": {
+          "n": 24,
+          "p5": 423.8559639909977,
+          "p10": 643.0811489063803,
+          "p50": 1817.8673380601756,
+          "p90": 3242.8638298014143,
+          "p95": 3332.4897417133484
+        },
+        "longest_internal_still_ms": {
+          "n": 14,
+          "p5": 0.0,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 249.9244165850463,
+          "p95": 708.7983074915601
+        },
+        "median_motion": {
+          "n": 24,
+          "p5": 0.21028812576453912,
+          "p10": 0.23256983551315868,
+          "p50": 0.9531925825762566,
+          "p90": 2.322127600240656,
+          "p95": 2.5815193814468533
+        }
+      },
+      "dấu hỏi": {
+        "n_clips": 24,
+        "n_no_motion": 17,
+        "n_without_still_frame": 0,
+        "duration_ms": {
+          "n": 24,
+          "p5": 1650.4126031507876,
+          "p10": 1856.9160703773678,
+          "p50": 3194.207836456559,
+          "p90": 3353.3024377378397,
+          "p95": 3554.0509553267602
+        },
+        "leading_still_ms": {
+          "n": 7,
+          "p5": 36.64075424206988,
+          "p10": 37.029922477251965,
+          "p50": 206.5475575751317,
+          "p90": 352.50548458920593,
+          "p95": 399.3750819897834
+        },
+        "trailing_still_ms": {
+          "n": 7,
+          "p5": 978.0102228462014,
+          "p10": 1618.0811245749503,
+          "p50": 2616.269062618335,
+          "p90": 2791.3721225303607,
+          "p95": 2845.749501540692
+        },
+        "moving_ms": {
+          "n": 7,
+          "p5": 192.434443448701,
+          "p10": 213.23631790110926,
+          "p50": 253.76110204821458,
+          "p90": 1372.4353070744535,
+          "p95": 2169.3957851082664
+        },
+        "longest_still_ms": {
+          "n": 24,
+          "p5": 905.9993482900613,
+          "p10": 949.6773787919794,
+          "p50": 2560.6412416244957,
+          "p90": 3282.5614937979594,
+          "p95": 3508.2538537196497
+        },
+        "longest_internal_still_ms": {
+          "n": 7,
+          "p5": 0.0,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 375.4881345749477,
+          "p95": 657.1042355061572
+        },
+        "median_motion": {
+          "n": 24,
+          "p5": 0.19897223669845024,
+          "p10": 0.20277754874771964,
+          "p50": 0.35445950738915205,
+          "p90": 1.2216884618727277,
+          "p95": 1.534274362914668
+        }
+      },
+      "dấu ngã": {
+        "n_clips": 24,
+        "n_no_motion": 16,
+        "n_without_still_frame": 0,
+        "duration_ms": {
+          "n": 24,
+          "p5": 1651.5225788474925,
+          "p10": 1911.5063265515548,
+          "p50": 3176.4622373651337,
+          "p90": 3349.865025731597,
+          "p95": 3353.32361390136
+        },
+        "leading_still_ms": {
+          "n": 8,
+          "p5": 131.20234928327906,
+          "p10": 153.64994054589474,
+          "p50": 665.1064614984632,
+          "p90": 1930.9917189822074,
+          "p95": 1989.2763034885172
+        },
+        "trailing_still_ms": {
+          "n": 8,
+          "p5": 682.8544552619225,
+          "p10": 719.1107353675835,
+          "p50": 1780.4627837111063,
+          "p90": 2611.947454755087,
+          "p95": 2740.966811748221
+        },
+        "moving_ms": {
+          "n": 8,
+          "p5": 47.6212798867822,
+          "p10": 60.66441316222275,
+          "p50": 214.84815865719673,
+          "p90": 892.8661180408619,
+          "p95": 1171.4647791581865
+        },
+        "longest_still_ms": {
+          "n": 24,
+          "p5": 549.6382290440928,
+          "p10": 777.1314769964921,
+          "p50": 1632.4840936620078,
+          "p90": 3275.2875000944114,
+          "p95": 3314.195758146453
+        },
+        "longest_internal_still_ms": {
+          "n": 8,
+          "p5": 0.0,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 152.25666122892866,
+          "p95": 329.8894326626787
+        },
+        "median_motion": {
+          "n": 24,
+          "p5": 0.45746752973740085,
+          "p10": 0.48592054871749196,
+          "p50": 1.0409625442565802,
+          "p90": 1.9934885385812642,
+          "p95": 2.1953462113087294
+        }
+      },
+      "dấu nặng": {
+        "n_clips": 24,
+        "n_no_motion": 16,
+        "n_without_still_frame": 0,
+        "duration_ms": {
+          "n": 24,
+          "p5": 1650.4126031507876,
+          "p10": 1652.632554544197,
+          "p50": 3159.9316361854926,
+          "p90": 3360.6631985425447,
+          "p95": 3518.6332335091506
+        },
+        "leading_still_ms": {
+          "n": 8,
+          "p5": 36.80511156091941,
+          "p10": 37.18433159814377,
+          "p50": 120.24087742733496,
+          "p90": 671.986964740917,
+          "p95": 1014.1894810140661
+        },
+        "trailing_still_ms": {
+          "n": 8,
+          "p5": 223.18079519879967,
+          "p10": 446.36159039759934,
+          "p50": 2667.56900656746,
+          "p90": 2961.7123854114075,
+          "p95": 3083.5954197482856
+        },
+        "moving_ms": {
+          "n": 8,
+          "p5": 47.7740445408338,
+          "p10": 59.12219755797256,
+          "p50": 194.81624034363495,
+          "p90": 896.4741185296324,
+          "p95": 935.8589647411853
+        },
+        "longest_still_ms": {
+          "n": 24,
+          "p5": 455.7389347336834,
+          "p10": 724.3332310999049,
+          "p50": 2700.1666064189494,
+          "p90": 3250.2465704294814,
+          "p95": 3424.040237442423
+        },
+        "longest_internal_still_ms": {
+          "n": 8,
+          "p5": 0.0,
+          "p10": 0.0,
+          "p50": 0.0,
+          "p90": 461.36534133533377,
+          "p95": 474.4936234058514
+        },
+        "median_motion": {
+          "n": 24,
+          "p5": 0.26381730829329075,
+          "p10": 0.33626145099365135,
+          "p50": 0.6240367135588887,
+          "p90": 1.7667145266915423,
+          "p95": 1.9137685497024433
+        }
+      }
+    }
+  },
+  "calibration": {
+    "rules": "plan 15 lần sửa 1 §3.A.3 rules 1-6 (pre-registered)",
+    "design_inputs": {
+      "move_over_still_ratio": 2.0,
+      "hold_ms_design": 400
+    },
+    "config_values_before": {
+      "still_speed": 1.0,
+      "move_speed": 2.0,
+      "hold_ms": 400,
+      "max_segment_ms": 4000
+    },
+    "values": {
+      "still_speed": 2.5306153884920786,
+      "move_speed": 5.061230776984157,
+      "hold_ms": 400.0,
+      "max_segment_ms": 3543,
+      "tail_still_keep_ms": 400.0
+    },
+    "inputs": {
+      "rule1_still_speed": {
+        "p90_of_letter_clip_median_motion": 2.5306153884920786,
+        "n_letter_clips_with_value": 516,
+        "n_letter_clips_without_value": 0
+      },
+      "rule1_move_speed": {
+        "still_speed": 2.5306153884920786,
+        "move_over_still_ratio": 2.0
+      },
+      "rule3_hold_ms": {
+        "hold_ms_design": 400.0,
+        "p10_letter_longest_still_ms": 826.7833747907235,
+        "n_letter_clips": 516,
+        "n_letter_clips_without_still_frame": 2
+      },
+      "rule4_max_segment_ms": {
+        "p95_duration_ms_all_clips": 3542.247201624711,
+        "n_clips": 636
+      },
+      "rule5_tail_still_keep_ms": {
+        "hold_ms": 400.0,
+        "p50_trailing_still_ms_clips_with_motion": 2437.1824797473564,
+        "n_clips_with_motion": 245,
+        "n_no_motion": 391
+      }
+    },
+    "rule6": {
+      "p90_tone_longest_internal_still_ms": 359.2212084201451,
+      "hold_ms": 400.0,
+      "n_tone_clips_with_motion": 51,
+      "n_tone_clips_no_motion": 69,
+      "triggered": false,
+      "meaning": "triggered = at least 10% of the tone clips hold still >= hold_ms between their first and last motion (the segmenter would cut them in two) -> coder stops, planner decides"
+    }
+  },
+  "u1": {
+    "path": "_work/_plan15_u1/u1_2026-10-03_1650.json",
+    "sha256": "2fc2f2058872fac5d5fb0b3fa86cb8ae2d4576cba2aef70b09f147c3ea1a509f",
+    "copied": false,
+    "expected": null,
+    "session_git_commit": "2cf1f341a06c0fb89111421ad18ec49a9e017aae",
+    "session_code_dirty": false,
+    "n_segments": 105,
+    "frames": {
+      "n": 105,
+      "p5": 17.0,
+      "p10": 18.0,
+      "p50": 25.0,
+      "p90": 59.60000000000005,
+      "p95": 87.8
+    },
+    "detected_frames": {
+      "n": 105,
+      "p5": 17.0,
+      "p10": 18.0,
+      "p50": 25.0,
+      "p90": 59.60000000000005,
+      "p95": 85.59999999999998
+    },
+    "duration_ms": {
+      "n": 105,
+      "p5": 619.5386599996709,
+      "p10": 655.8114000006578,
+      "p50": 912.0390999996744,
+      "p90": 2141.005100000273,
+      "p95": 3114.279379999789
+    },
+    "duration_ms_max": 3999.6675999991567,
+    "close_reason": {
+      "hand_lost": 15,
+      "hold": 89,
+      "end_of_stream": 1
+    },
+    "status": {
+      "ok": 105
+    },
+    "prediction_kind": {
+      "tone": 28,
+      "letter": 77
+    },
+    "prediction": {
+      "g": 29,
+      "dấu ngã": 10,
+      "dấu nặng": 6,
+      "y": 6,
+      "d": 5,
+      "dấu hỏi": 5,
+      "x": 5,
+      "dấu huyền": 4,
+      "h": 4,
+      "v": 4,
+      "a": 3,
+      "dấu sắc": 3,
+      "p": 3,
+      "s": 3,
+      "c": 2,
+      "e": 2,
+      "t": 2,
+      "đ": 2,
+      "ơ": 2,
+      "k": 1,
+      "n": 1,
+      "o": 1,
+      "q": 1,
+      "ô": 1
+    },
+    "accepted": 69,
+    "accepted_rate": 0.6571428571428571,
+    "session_max_segment_ms": 4000,
+    "session_processing_fps": 24.924601172834837,
+    "n_segments_at_cap": 1,
+    "at_cap_definition": "duration_ms >= session max_segment_ms - 1000 / session processing_fps (one processed frame interval short of the cap or longer: the buffer was cut by max_segment_ms)",
+    "word_gaps": 24,
+    "note": "webcam session without --expected is not accuracy; aggregate only, the file stays in _work/"
+  }
+}
