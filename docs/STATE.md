@@ -3,13 +3,13 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-10-03 08:33 (giờ Việt Nam)
-- HEAD: feba7a1 (+ commit state này) | Nhánh: feat/vslt-complete
+- Cập nhật lần cuối: 2026-10-03 13:40 (giờ Việt Nam)
+- HEAD: 49ad46b (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 78% lúc 10:30 ngày 3/10, reset 13:30 VN; 7 ngày 67% (reset 09:00 8/10 — chỉ còn ~2–3 cửa sổ 5h trước đó).
-  ƯU TIÊN MỚI (quyết định 10:30): Level 1 realtime desktop. VIỆC KẾ TIẾP (sau 13:30): vslt-planner lập KẾ HOẠCH 15 (Level 1 realtime + ghép từ, app
-  OpenCV) — gọn, chia bước nhỏ, ưu tiên phần demo chạy được trước. Kế hoạch 13/11/14 TẠM DỪNG (13 dừng sau B9d, việc kế tiếp của 13 khi tiếp tục: B9c).
+- Trạng thái phiên: ĐANG CHẠY — 13:40 ngày 3/10 giao vslt-planner KẾ HOẠCH 15 (Level 1 realtime desktop + ghép từ; yêu cầu: "Quyết định của người dùng"
+  2026-10-03 10:30 + 10:45). 5h 0% (reset 18:30 VN), 7 ngày 68% (reset 09:00 8/10). Cổng: 0 + 33 (est planner max 2/19/33) ≤ 90 → đạt.
+  Kế hoạch 13/11/14 TẠM DỪNG (13 dừng sau B9d; tiếp tục từ B9c). Người dùng nhắn "đã hồi quota triển khai đi" 13:37.
   Coder 13 B9d XONG (12ed4a7, 5ee935c, d2bbad1; đã push): scripts/retrain_amendment.py; reports/retrain_2026-10-02/preregistration_amendment_ls2.json
   (sha256 52f05598…ccac, sinh tại 5ee935c code sạch): changes jobs.k2.cslr.train.argv + "--skip-smoke-test", whitelist chỉ cờ đó, decision R2-PASS,
   expected_backbone_transfer 62/352207, amends preregistration ea12b44 (không sửa), 9 khóa unchanged kèm sha. Giả định cho B9c: đọc `changes`/`whitelist` như trên;
@@ -416,3 +416,4 @@
 - 2026-10-02 16:22 | dừng theo hạn mức (86%) | 13 sửa trước B5 xong | Lưu STATE, push, hẹn giờ 19:42 làm tiếp B5.
 - 2026-10-02 20:05 | khôi phục sau chờ hạn mức (sleep nền bị dừng khi phiên cũ kết thúc; người dùng nhắn "continue") | STATE khớp git (HEAD e03d988); sửa HEAD ghi eea8906 → e03d988, giờ reset 19:40 → 19:20 | Giao coder 13 B5.
 - 2026-10-03 08:33 | khôi phục sau chờ hạn mức (người dùng nhắn "continue") | STATE khớp git (HEAD feba7a1), không agent/kernel chạy | Giao coder 13 B9a+B9b.
+- 2026-10-03 13:40 | khôi phục sau chờ hạn mức (sleep nền bị dừng khi phiên cũ kết thúc; người dùng nhắn "đã hồi quota triển khai đi") | STATE khớp git (HEAD 49ad46b), không agent/kernel chạy | Giao planner kế hoạch 15.
