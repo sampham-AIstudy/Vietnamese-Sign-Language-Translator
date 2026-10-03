@@ -365,6 +365,10 @@
 - (2026-10-03 15:40) "Tập trung xử lý cho hoàn thiện chạy demo tốt phần ký tự trước để trình bày": thứ tự kế hoạch 15 sau B5 = B6 (hiệu chỉnh tham số tách
   ký hiệu) + sửa theo phản hồi webcam U1/U2 của người dùng TRƯỚC; B7 (replay SUMMARY) / B8 (tài liệu) / B9 chỉ làm phần cần cho buổi trình bày; mọi việc khác chờ.
 
+- (2026-10-03 17:20) Level 1 thành "sản phẩm" (không chỉ demo): tính năng chọn = KHUNG TEXT KIỂU BỘ GÕ (chữ đang gõ có con trỏ, dấu đổi ngay khi ký dấu mới
+  á→à như Telex — compose() đã có luật "dấu sau thay dấu trước", âm tiết đang gõ tô sáng, từ trước cố định). KHÔNG chọn: copy/lưu file, TTS, bản web (để sau).
+  Ưu tiên: SONG SONG — planner làm MỘT lần sửa kế hoạch 15 cho cả (1) nhận dấu thanh (phát hiện wrist_trajectory False) và (2) khung text bộ gõ; coder làm xen kẽ.
+
 - (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy" — ĐÃ BỊ THAY bởi quyết định 20:15 ngay dưới.
 
 - (2026-10-02 20:15) LUẬT TẮT MÁY (thay mọi quyết định tắt máy trước đây: 2026-09-29 18:55, 2026-10-01 19:35, 2026-10-01 20:00, 2026-10-02 20:10):
