@@ -7,7 +7,7 @@
 - HEAD: 49ad46b (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 22:20 ngày 3/10 người dùng nhắn "dùng prompt để triển khai nốt và sau khi xong thì tiếp tục công việc" ⇒ rule mới ĐÃ commit
+- Trạng thái phiên: TẠM DỪNG THEO YÊU CẦU NGƯỜI DÙNG (23:10 ngày 3/10: "tạm dừng, để tôi khởi động lại máy rồi chạy tiếp"). Không agent/agy chạy; đã lưu + push. Xem khối "T2 DỞ" bên dưới. [Lịch sử phiên:] 22:20 ngày 3/10 người dùng nhắn "dùng prompt để triển khai nốt và sau khi xong thì tiếp tục công việc" ⇒ rule mới ĐÃ commit
   (ba5e139 setup agy: cầu nối + guard + cổng hạn mức agy; 0a1314b .gitattributes LF cho *.sh; bf8f290 sửa parser --steps; 7fbb752 progress T1). Kế hoạch 15 lần sửa 1 đã có khối scope (§3b).
   T1 (92fce21) được orchestrator XÁC MINH ĐỘC LẬP: 6 module level 1 = Ran 78 OK; AC1-ngắn 16 module + textbox = Ran 245 OK, 0 skip (_work/_plan15/t1_short.log). CHƯA review (reviewer chạy sau C1).
   A1 LẦN 1 (agy Opus/high, 22:20–22:28): CHẠM 100% hạn mức 5h nhóm claude của agy (exit 14) — +77 điểm 5h / +41 tuần trong ~8 phút (ước lượng cũ 8 = sai ~10 lần; đã nâng
@@ -19,6 +19,13 @@
   DỮ LIỆU CHO A2/A3 (từ JSON, không gõ tay): still_speed 1.0→2.53 (thay đổi lớn nhất, A3 phải kiểm TRƯỚC/SAU), move_speed 2.0→5.06, max_segment_ms 4000→3543, tail_still_keep_ms=400 (A2 cắt đuôi gần như no-op: p50 trailing_still 2437ms);
   391/636 clip no_motion. `--write-config` CHƯA có (thuộc A2). Agy tự thêm nhánh danh sách rỗng trong calibrate (triggered=False) — planner có thể xem lại. Gemini sửa bản nháp Opus chỉ 21 dòng (2 lỗi thật).
   Tiếp: T2 (Hud khung text + phím 1–5, gemini/high) → sau T2 báo người dùng thử U1b. KHÔNG sửa STATE/plan trong lúc agy chạy (guard worktree báo nhầm).
+  T2 DỞ (23:10): agy gemini-3.8-flash-high chạy T2 từ 22:57, bị DỪNG THỦ CÔNG (Stop-Process, script tự ghi sổ usage +5.1 điểm 5h gemini, guard sạch) và subagent coder bị TaskStop để người dùng khởi động lại máy.
+  Phần dở lưu ở commit `WIP 15: T2` ad7c126: level1_demo.py (+142/-19: Hud khung text, phím 1–5), tests/test_level1_demo.py (+129), 15-progress.md, ledger. Orchestrator chạy `tests.test_level1_demo` trên bản dở: Ran 25 OK (log _work/_plan15/t2_wip_demo.log).
+  CHƯA kiểm T2: chưa chạy AC1-ngắn đủ, chưa kiểm mọi AC-TD1…TD7 có test tương ứng, chưa impact thật cho Hud/KEY_ACTIONS/_hud_lines, chưa kiểm bằng mắt, chưa commit `15: T2` hoàn chỉnh, chưa ghi progress mục T2 (có thể dở).
+  VIỆC KẾ TIẾP khi người dùng nhắn "tiếp tục": (1) khôi phục theo CLAUDE.md; (2) KHÔNG giao lại T2 từ đầu — giao vslt-coder (agy gemini/high; nhóm claude của agy reset 02:46 4/10 → sau đó mới dùng opus được) với `--steps T2` và dặn "hoàn thiện từ commit WIP ad7c126:
+  đọc diff, đối chiếu AC-TD1…TD7, chạy impact thật, chạy AC1-ngắn, commit `15: T2`"; (3) xác minh độc lập (AC1-ngắn lệnh ở docs/plans/15-level1-realtime-desktop.md dòng 250–253 + textbox + segment_report; test chập chờn test_hand_landmarks_ws TestReset); (4) báo người dùng thử U1b (khung text + phím 1–5);
+  (5) sau đó A2 (opus/high khi nhóm claude agy hồi; có `--write-config` + tail_still_keep_ms), A3, C1, reviewer một lần sau C1. Hạn mức lúc dừng: Claude 5h ~42% (reset ~02:40), 7 ngày ~85% (reset 09:00 8/10); agy gemini 5h ~24% / tuần ~52%; agy claude 5h 100% (reset 02:46) / tuần 53%.
+  Tiến trình agy.exe cũ pid 1232 (từ 21:45, trước đợt này) có thể còn — máy khởi động lại sẽ tắt nó.
   Hạn mức Claude: 5h ~32% (reset 02:40 4/10), 7 ngày 84% (reset 09:00 8/10); coder bridge ~9–10 điểm/lần.
   Coder 15 (cầu nối agy) T1 XONG (92fce21 agy; 3f08b5d tiến độ): src/inference/level1_textbox.py textbox_view, KEY_NAMES tone_1..5 + Level1Speller.view +
   key("tone_*") source "key" trong level1_core.py; test mới chỉ thêm; tự chạy lại AC1-ngắn 16 module + test_level1_textbox: Ran 245 OK, 0 skip; guard chính known=9.
