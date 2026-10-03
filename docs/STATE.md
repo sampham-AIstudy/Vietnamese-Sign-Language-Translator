@@ -9,6 +9,7 @@
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
 - Trạng thái phiên: ĐANG CHẠY — 21:58 ngày 3/10 giao vslt-coder 15 bước 1–3 của lần sửa 1 (T1 lõi khung text + phím dấu, A1 bằng chứng/hiệu chỉnh tone_evidence.json,
   T2 vẽ khung text + phím 1–5). 5h 20% (reset 02:40 4/10), 7 ngày 83% (reset 09:00 8/10). Cổng: 20 + 36 ≤ 90 → đạt.
+  NGƯỜI DÙNG (22:05): "xong task tạm dừng chút tôi cập nhật rule mới" ⇒ coder xong chặng này thì LƯU + DỪNG, KHÔNG giao việc kế tiếp cho tới khi người dùng báo.
   CẤU HÌNH MỚI CỦA NGƯỜI DÙNG (21:45, chưa commit — không đụng): .claude/agents/vslt-coder.md giờ là CẦU NỐI giao code cho Antigravity CLI `agy`
   (scripts/agy_code.sh, mặc định gemini-3.1-pro-high) rồi tự xác minh git/test; .claude/agents/vslt-coder-claude.md = DỰ PHÒNG (chỉ khi agy không khả dụng
   VÀ người dùng đồng ý). Orchestrator dùng vslt-coder (agy) từ nay.
@@ -392,6 +393,9 @@
 - 2026-10-03: PHÂN VAI MỚI — Claude = Planner/Reviewer/Orchestrator; **Antigravity (agy) = Coder**. Cầu nối: `scripts/agy_code.sh` (agy -p --mode accept-edits),
   subagent `vslt-coder` là lớp mỏng gọi script + xác minh độc lập bằng git/test. `vslt-coder-claude` chỉ là DỰ PHÒNG khi agy hỏng/hết hạn mức (cần người dùng đồng ý).
   Quy tắc cho agy: `docs/prompts/agy_coder.md` + phần VSLT trong `AGENTS.md`. Log agy: `_work/agy_logs/`.
+  Kiểm soát agy: git hook (`scripts/githooks/`, bật qua env, không đổi cấu hình repo) + `scripts/agy_guard.py` (scope trong kế hoạch, bảo vệ file người dùng,
+  chống nới test, bắt `--no-verify`). Model: `--model gemini|opus|sonnet` tự lấy bản mới nhất, effort do vslt-coder chọn theo loại việc;
+  cổng hạn mức agy `scripts/agy_usage.py` (cùng quy tắc ≤ 90% 5h / ≤ 95% tuần), sổ `docs/agy_usage_ledger.csv`.
 
 ## Câu hỏi chờ người dùng
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
