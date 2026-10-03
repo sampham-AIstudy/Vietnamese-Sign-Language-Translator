@@ -59,3 +59,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-03T08:58Z,vslt-coder,15,B5 latency + AC-L,71,80,9,2,ok
 2026-10-03T14:53Z,vslt-planner,15,revision 1 (tones + textbox),0,20,20,3,ok
 2026-10-03T15:14Z,vslt-coder(agy bridge),15,T1 (rev1),20,32,12,1,ok (agy usage separate; incl. orchestrator turns)
+2026-10-03T18:04Z,vslt-coder(agy bridge),15,T2 finish from WIP,42,57,15,2,ok
