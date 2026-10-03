@@ -1,0 +1,108 @@
+{
+  "_about": "Level 1 desktop realtime parameters (plan 15). Every key = {value, source, reason}. source 'design' = chosen by reasoning before any measurement (not a measured number); 'calibrated: <json>@<commit>' = computed by scripts/level1_segment_report.py --write-config on TRAIN clips. Read by src/inference/level1_core.load_level1_config (no defaults in code).",
+  "motion_window_ms": {
+    "value": 200,
+    "source": "design",
+    "reason": "median over about 5 frames of a 24 fps webcam: removes one-frame landmark jitter spikes while adding little lag to the still/moving decision"
+  },
+  "still_speed": {
+    "value": 1.0,
+    "source": "design",
+    "reason": "hand-lengths per second; a held letter only shows tracker jitter (a small fraction of the palm per frame); to be replaced by the train-clip calibration rule of plan 15 section 3.6 (B6b)"
+  },
+  "move_over_still_ratio": {
+    "value": 2.0,
+    "source": "design",
+    "reason": "hysteresis between still and moving so jitter around one threshold does not flip the state every frame"
+  },
+  "move_speed": {
+    "value": 2.0,
+    "source": "design",
+    "reason": "still_speed x move_over_still_ratio (plan 15 section 3.6)"
+  },
+  "hold_ms_design": {
+    "value": 400,
+    "source": "design",
+    "reason": "upper bound of the hold before a letter is emitted: short enough to feel responsive, long enough that a slow transition between two letters is not taken as a hold"
+  },
+  "hold_ms": {
+    "value": 400,
+    "source": "design",
+    "reason": "= hold_ms_design until the calibration rule min(hold_ms_design, p10 of the longest still run per train clip) is applied (B6b)"
+  },
+  "rearm_move_ms": {
+    "value": 150,
+    "source": "design",
+    "reason": "a deliberate bounce or shift of the hand (a few frames of clear motion) re-arms the segmenter for a repeated letter; shorter wobbles do not"
+  },
+  "hand_lost_ms": {
+    "value": 300,
+    "source": "design",
+    "reason": "a few missed detections in a row are tracker dropouts; a longer absence means the hand left the frame"
+  },
+  "word_gap_ms": {
+    "value": 1000,
+    "source": "design",
+    "reason": "lowering the hand for about a second ends a word; must be >= hand_lost_ms"
+  },
+  "max_segment_ms": {
+    "value": 4000,
+    "source": "design",
+    "reason": "a training clip is one whole sign of a few seconds; older frames are dropped from the buffer so a segment never spans much more than one sign"
+  },
+  "min_sign_frames": {
+    "value": 6,
+    "source": "design",
+    "reason": "a segment needs a few frames with a hand (at least the checkpoint min_detected_frames, the segmenter takes the larger of the two)"
+  },
+  "accept_confidence": {
+    "value": 0.5,
+    "source": "design",
+    "reason": "top-1 softmax probability must be a majority to add a token automatically; lower ones are shown greyed and can be accepted with the a key"
+  },
+  "top_k": {
+    "value": 5,
+    "source": "design",
+    "reason": "same number of candidates as the web /sequence call (scripts/hand_live_check.TOP_K)"
+  },
+  "camera_width": {
+    "value": 640,
+    "source": "design",
+    "reason": "requested capture width; matches the 640x480 hauuto training clips (manifest.csv); the real size is read from each frame"
+  },
+  "camera_height": {
+    "value": 480,
+    "source": "design",
+    "reason": "requested capture height; see camera_width"
+  },
+  "camera_api": {
+    "value": "dshow",
+    "source": "design",
+    "reason": "Windows DirectShow backend; 'msmf' or 'any' can be compared (the value read back is written to the JSON)"
+  },
+  "camera_buffersize": {
+    "value": 1,
+    "source": "design",
+    "reason": "ask the driver to keep as few queued frames as possible so the newest frame is processed (not every backend honours it; read back into the JSON)"
+  },
+  "hud_font_size": {
+    "value": 26,
+    "source": "design",
+    "reason": "readable Vietnamese text on a 640x480 window"
+  },
+  "hud_rolling_frames": {
+    "value": 60,
+    "source": "design",
+    "reason": "number of recent frames used for the rolling p50 per stage shown on the HUD (about two seconds of webcam frames)"
+  },
+  "font_paths": {
+    "value": [
+      "C:/Windows/Fonts/arial.ttf",
+      "C:/Windows/Fonts/segoeui.ttf",
+      "C:/Windows/Fonts/tahoma.ttf",
+      "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+    ],
+    "source": "design",
+    "reason": "TrueType fonts with Vietnamese glyphs searched in order when --font is not given; none found -> the app stops with a message (no broken text)"
+  }
+}
