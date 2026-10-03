@@ -1,0 +1,29 @@
+{
+  "args": {
+    "data_root": "/tmp/vslt/data/external/vsl_gh",
+    "vocab_path": "/tmp/diag_scratch/vocab_full/gloss_vocab_canonical.txt",
+    "checkpoint_path": "/kaggle/input/notebooks/phmvnsm33/vsl-retrain-stgcn-tier1/k1/stgcn_best.pt",
+    "checkpoint_exists": true,
+    "device": "cpu",
+    "sentence_split": null
+  },
+  "passed": false,
+  "stdout": "\n============================================================\nSTARTING SMOKE TEST / FIRST-RUN SAFETY CHECK\n============================================================\nRunning 10 overfit epochs on 8 samples...\n  Smoke Epoch 01/10: Train CTC Loss = 73.9842\n  Smoke Epoch 02/10: Train CTC Loss = 39.3926\n  Smoke Epoch 03/10: Train CTC Loss = 5.2698\n  Smoke Epoch 04/10: Train CTC Loss = 3.9687\n  Smoke Epoch 05/10: Train CTC Loss = 2.7867\n  Smoke Epoch 06/10: Train CTC Loss = 1.9965\n  Smoke Epoch 07/10: Train CTC Loss = 2.6013\n  Smoke Epoch 08/10: Train CTC Loss = 2.1663\n  Smoke Epoch 09/10: Train CTC Loss = 1.6284\n  Smoke Epoch 10/10: Train CTC Loss = 1.6109\nSmoke Test Initial Loss: 73.9842 -> Final Loss: 1.6109\nSmoke Test Decoded Samples: [{'sample_id': 'SENT001_S02_R03_F', 'annotation_source': 'source', 'reference': 'TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN', 'prediction': '<BLANK_ONLY>'}, {'sample_id': 'SENT001_S02_R01_F', 'annotation_source': 'source', 'reference': 'TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN', 'prediction': '<BLANK_ONLY>'}]\n[SMOKE TEST FAILED] Loss decreased: True, Non-empty output: False\n",
+  "smoke_losses": [
+    "73.9842",
+    "39.3926",
+    "5.2698",
+    "3.9687",
+    "2.7867",
+    "1.9965",
+    "2.6013",
+    "2.1663",
+    "1.6284",
+    "1.6109"
+  ],
+  "seconds": 41.49,
+  "part": "D2",
+  "torch": "2.11.0+cpu",
+  "torch_num_threads": 2,
+  "part_seconds": 41.49
+}

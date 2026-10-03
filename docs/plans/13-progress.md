@@ -679,8 +679,34 @@ Tệp tạm: `_work/_plan13_tmp/`.
 - Đẩy: `PYTHONUTF8=1 .venv/Scripts/kaggle kernels push -p _work/_plan13_tmp/smoke_diag_push` lúc **2026-10-03T02:14:29Z** → "Kernel version 1 successfully
   pushed." (`B9b_push.log`, `B9b_push_time.txt`). Slug **`phmvnsm33/vsl-retrain-cslr-smoke-diag` version 1** (private, CPU). Theo dõi: `B9b_status_log.txt`.
 
+### B9b [LS2] phần 2 — kết quả chẩn đoán + quyết định (lượt 10). Log: `_work/_plan13_tmp/ls2/B9b_*`, output `_work/_plan13_tmp/smoke_diag/`
+- Theo dõi (`B9b_status_log.txt`, `kaggle kernels status` thật): 2026-10-03T02:15:49Z RUNNING; 02:23:10Z (≥ 5 phút sau) **COMPLETE**. Tải:
+  `PYTHONUTF8=1 .venv/Scripts/kaggle kernels output phmvnsm33/vsl-retrain-cslr-smoke-diag -p _work/_plan13_tmp/smoke_diag` (`_download.txt`);
+  `sha256sum -c SHA256SUMS` → mọi file OK. `env.json`: `exit` 0, `total_minutes` 7.3 (CPU, 0 GPU-phút), `commit` = ghim `acf274c…a965`.
+- Commit bản chép (`.venv/Scripts/python _work/_plan13_tmp/ls2/b9b_write_reports.py`, `open "xb"`, kiểm với `SHA256SUMS`):
+  `reports/retrain_2026-10-02/k2_ls2_smoke_diag/{smoke_diag.json, smoke_diag.log (stdout kernel), env.json, SHA256SUMS, logs/*, parts/D0–D4.json,
+  push_record.json, local_recheck.json}`. `parts/D4_progress.jsonl` KHÔNG commit (đuôi `.jsonl` bị AC0(b) cấm; nội dung trùng `parts/D4.json`; sha256 có trong
+  `SHA256SUMS`) — đã CHUYỂN (không xóa) sang `_work/_plan13_tmp/ls2/moved_from_reports/`.
+- Số (chép từ `smoke_diag.json` / `local_recheck.json`, không gõ tay số mới):
+  - Đầu vào 6/6 MATCH (`inputs_ok` true); `generated_by.code_dirty` false, torch `2.11.0+cpu`, 2 luồng, python 3.13.15, device cpu.
+  - D0: 8 mẫu train smoke TRÙNG nhau giữa split câu và `sentence_split=None` (`identical_train8` true, đều SENT001_S01…S03); val[0] KHÁC
+    (`identical_val0` false) ⇒ `identical` false (val[0] không dùng trong tiêu chí smoke).
+  - D1 (smoke nguyên bản, CPU): **FAIL** (`passed` false; 10 loss in ra, giải mã `<BLANK_ONLY>`), 0.77 phút.
+  - D4-i: `transferred_keys_count` 62, `transferred_params` 352207, 0 khóa lệch shape, 62 khóa `data_bn.*`/`blocks.*` ở CẢ hai model ⇒ R0 KHÔNG kích hoạt.
+  - D4-ii: `fidelity_ok` true (10/10 loss 4 số khớp D1); thêm: giải mã epoch 10 của D4 tái tạo đúng dòng giải mã D1 (true).
+  - D5: epoch 10 — eval `total_hyp_words` 0, WER 100.0, tỉ lệ khung blank 1.0 (cả eval lẫn BN-train-only); epoch 60 — train loss 0.2033 < epoch 1 70.8364,
+    eval loss 0.2031, `total_hyp_words` 32 > 0, WER 20.0 < 100 (BN-train-only cũng 32 / 20.0).
+  - D2 (công thức cũ, vocab 372) FAIL; D3 (không backbone) FAIL — chỉ giải thích (không là đầu vào quyết định).
+- **Quyết định (§0B.3, tính trong kernel bằng `decide()` ở ghim, tính lại local bằng chính hàm đó + một phép tính độc lập — `local_recheck.json`, cả 3 khớp):
+  `R2-PASS`** ⇒ **đường P** với bằng chứng "pipeline học và phát nhãn được trên 8 mẫu sau 120 bước; 20 bước không đủ". Không R0, không R2-FAIL ⇒ không điểm
+  dừng CẦN PLANNER/CẦN NGƯỜI DÙNG. Q4 (thông báo, không chặn): K2 v4 sẽ chạy CSLR với `--skip-smoke-test` qua amendment công khai (B9d) — người dùng phủ
+  nhận trước B9e → dừng trước khi đẩy v4.
+- Nhận xét (giải thích, KHÔNG là đầu vào quyết định): D2/D3 cũng FAIL ở 10 epoch ⇒ phù hợp H1 (bình nguyên blank) hơn H3/H4/H6; BN-train-only cho cùng
+  `total_hyp_words`/WER với eval ở cả 2 mốc (loss chỉ lệch nhỏ) ⇒ không ủng hộ H2; D1 FAIL trên CPU ⇒ không phải lỗi riêng GPU/AMP (H5). Đây là đọc số, không phải kết luận đã chứng minh.
+- **Dừng ở đây theo lệnh orchestrator** (R2-PASS): B9c–B9f giao lượt sau.
+
 ## Đang làm
-- **ĐANG LÀM B9a/B9b** (lượt 10, Lần sửa 2, mốc HEAD `714d9c9`, 2026-10-03): B9a ghi nhận K2 v3 ERROR; B9b chẩn đoán smoke D0–D5 theo §0B.3 — chạy trên KAGGLE CPU (quyết định người dùng 2026-10-03 02:55: không train local), không local.
+- **B9a + B9b XONG** (lượt 10): v3 ghi nhận (`32c1356`); chẩn đoán `phmvnsm33/vsl-retrain-cslr-smoke-diag` v1 COMPLETE (CPU, ghim `acf274c`) → **R2-PASS** (đường P). Dừng trước B9c (B9c–B9f lượt sau).
 - **B9 phần 1 XONG** (lượt 9): ghim `28a126e`; K2 train `phmvnsm33/vsl-retrain-cslr-vit5` v3 đẩy 18:48:35Z, RUNNING 18:49:43Z. Chờ phần 2 (tải output, kiểm, commit) — lượt sau.
 - **B8 XONG** (lượt 8): K1 `phmvnsm33/vsl-retrain-stgcn-tier1` v1 COMPLETE (ghim `c0c70d2`), 39/39 kiểm, `stgcn_best.pt` sha256 `2204becd…bac2` trong `k1_outputs.json`. Dừng trước B9 (KHÔNG làm B9).
 - **B7 XONG** (lượt 7, lần 2): K2 preflight v2 `phmvnsm33/vsl-retrain-cslr-vit5` COMPLETE, 44/44 khớp preregistration, ghim `c0c70d2`. Dừng trước B8 (KHÔNG làm B8). Lần 1 (v1 ERROR) — xem mục B7 / B7 lần 2.
@@ -701,6 +727,7 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | K2-preflight v2 (v2, ghim `c0c70d2`) | 2.63 (CPU, không accelerator; COMPLETE) | 0 GPU-phút; `reports/retrain_2026-10-02/k2_preflight/env.json` |
 | K1 stgcn Tier 1 (`phmvnsm33/vsl-retrain-stgcn-tier1` v1, ghim `c0c70d2`) | 1.58 (GPU, 2× Tesla T4 hiển thị; COMPLETE) | **1.58 GPU-phút** (`env.json` `total_minutes`; trần 0.75 h = 45'); `kaggle quota` GPU used 4.15h → 4.18h; `reports/retrain_2026-10-02/k1/env.json` |
 | K2-train v3 (`phmvnsm33/vsl-retrain-cslr-vit5` v3, ghim `28a126e`; ERROR: smoke CSLR) | 12.14 (GPU, 2× Tesla T4; ERROR) | **12.14 GPU-phút** (`env.json` `total_minutes`); `reports/retrain_2026-10-02/k2_train_v3/env.json` |
+| Chẩn đoán smoke B9b (`phmvnsm33/vsl-retrain-cslr-smoke-diag` v1, ghim `acf274c`) | 7.3 (CPU, không accelerator; COMPLETE) | 0 GPU-phút; `reports/retrain_2026-10-02/k2_ls2_smoke_diag/env.json` |
 | **Tổng GPU kế hoạch 13** | **13.72 phút** (≈ 0.23 h; 1.58 + 12.14) | trần tổng 2.5 h |
 
 ## Nhật ký detect-changes
@@ -750,3 +777,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B9ls2-a (B9a) | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, 16 file `A` trong `reports/retrain_2026-10-02/k2_train_v3/`) | "Changes: 17 files, 1 symbols / Affected processes: 192 / Risk level: critical" — symbol duy nhất mục markdown của 13-progress (nối nhầm như B7a); 16 file JSON/log dữ liệu, không symbol, không mã nào đọc (`dc_B9ls2_a.txt`) |
 | B9ls2-b1 (ghim B9b) | `analyze --index-only` rồi `detect-changes --scope staged` (`A` 2 file `kaggle/vsl-retrain-cslr-smoke-diag/`, `M tests/test_retrain_tools.py` chỉ thêm, `M docs/plans/13-progress.md`) | "Changes: 4 files, 77 symbols / Affected processes: 200 / Risk level: critical" — symbol đổi = hằng/hàm của kernel MỚI + lớp test mới + mục markdown; luồng liệt kê (`Run_harmonized → …`, `Main → …`, `Measure_and_compare → …`) là nối nhầm qua tên `main`/`run`/mục markdown như B7r2/B9; không file nào import kernel mới (`git grep retrain_cslr_smoke_diag_kernel -- src scripts backend kaggle train.py` → chỉ metadata + chính nó); 0 symbol có sẵn bị sửa (`dc_B9ls2_b1.txt`) |
 | B9ls2-b2 (đẩy diag) | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, ghi ghim + bản đẩy + giờ đẩy, chỉ thêm) | "Changes: 1 files, 3 symbols / Affected processes: 190 / Risk level: critical" — 3 symbol đều là mục markdown của 13-progress (nối nhầm như B7a); không mã nào đọc file này (`dc_B9ls2_b2.txt`) |
+| B9ls2-b3 (kết quả B9b) | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, 21 file `A` trong `reports/retrain_2026-10-02/k2_ls2_smoke_diag/`) | "Changes: 22 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown của 13-progress (nối nhầm như B7a); 21 file JSON/log dữ liệu, không symbol, không mã nào đọc (`dc_B9ls2_b3.txt`) |

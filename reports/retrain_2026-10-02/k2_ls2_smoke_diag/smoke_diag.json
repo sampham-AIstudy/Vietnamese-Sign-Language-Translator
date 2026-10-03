@@ -1,0 +1,1873 @@
+{
+  "plan_ref": "docs/plans/13-train-lai-checkpoint-thieu.md §0B.3",
+  "inputs_ok": true,
+  "location": "Kaggle CPU kernel (user decision 2026-10-03 02:55: no training on the local machine); §0B.3 local CPU otherwise unchanged",
+  "constants": {
+    "part_timeout_minutes": 30.0,
+    "smoke_epochs": 10,
+    "diag_epochs": 60,
+    "measure_epochs": [
+      10,
+      60
+    ],
+    "parts_order": [
+      "D0",
+      "D1",
+      "D4",
+      "D2",
+      "D3"
+    ]
+  },
+  "inputs": [
+    {
+      "name": "dataset_canonical_json",
+      "measured": "d53ab70100e2b2cd70ed32ec6893aa0bcdffab0c4389f27b7d3b8838f6c9a881",
+      "expected": "d53ab70100e2b2cd70ed32ec6893aa0bcdffab0c4389f27b7d3b8838f6c9a881",
+      "plan_prefix": "d53ab701",
+      "plan_suffix": null,
+      "ok": true,
+      "rule": "lf_sha256",
+      "path": "/tmp/vslt/data/external/vsl_gh/dataset_canonical.json"
+    },
+    {
+      "name": "keypoints_frontal",
+      "measured": "596429252ff53caf1948fc9ed6e416952ee1a33876aa8972c25fcc9786e3bcae",
+      "expected": "596429252ff53caf1948fc9ed6e416952ee1a33876aa8972c25fcc9786e3bcae",
+      "plan_prefix": "59642925",
+      "plan_suffix": null,
+      "ok": true,
+      "rule": "dir_digest",
+      "n_files": 4200,
+      "n_files_expected": 4200,
+      "path": "/tmp/vslt/data/external/vsl_gh/keypoints_frontal"
+    },
+    {
+      "name": "vocab_train_322",
+      "measured": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0",
+      "expected": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0",
+      "plan_prefix": "c0af13db",
+      "plan_suffix": null,
+      "ok": true,
+      "rule": "sha256",
+      "n_tokens": 322,
+      "n_tokens_expected": 322,
+      "path": "/tmp/vslt/data/external/vsl_gh/gloss_vocab_canonical.txt"
+    },
+    {
+      "name": "vocab_full_372",
+      "measured": "dd7bc3da8f83e1e3400a85a0bfc4a7d8e882224647a23279a63b8f31d3601d11",
+      "expected": "dd7bc3da8f83e1e3400a85a0bfc4a7d8e882224647a23279a63b8f31d3601d11",
+      "plan_prefix": "dd7bc3da",
+      "plan_suffix": null,
+      "ok": true,
+      "rule": "sha256",
+      "n_tokens": 372,
+      "n_tokens_expected": 372,
+      "path": "/tmp/diag_scratch/vocab_full/gloss_vocab_canonical.txt"
+    },
+    {
+      "name": "k1_stgcn_best_pt",
+      "measured": "2204becd2662840d2425a5935366b48f059b95feb7b73c1d0d1ded3d2da1bac2",
+      "expected": "2204becd2662840d2425a5935366b48f059b95feb7b73c1d0d1ded3d2da1bac2",
+      "plan_prefix": "2204becd",
+      "plan_suffix": "bac2",
+      "ok": true,
+      "rule": "sha256",
+      "path": "/kaggle/input/notebooks/phmvnsm33/vsl-retrain-stgcn-tier1/k1/stgcn_best.pt"
+    },
+    {
+      "name": "sentence_split_v1",
+      "measured": "289b2ac158419d6a5e7487a256bdb9a6bf8fbac9bc76fb167fbfa9a86d8421a4",
+      "expected": "289b2ac158419d6a5e7487a256bdb9a6bf8fbac9bc76fb167fbfa9a86d8421a4",
+      "rule": "split_file_sha256 (LF)",
+      "path": "/tmp/vslt/configs/vslgh_sentence_split_v1.json",
+      "ok": true
+    }
+  ],
+  "cfg": {
+    "repo": "/tmp/vslt",
+    "data_root": "/tmp/vslt/data/external/vsl_gh",
+    "vocab_322": "/tmp/vslt/data/external/vsl_gh/gloss_vocab_canonical.txt",
+    "vocab_372": "/tmp/diag_scratch/vocab_full/gloss_vocab_canonical.txt",
+    "backbone": "/kaggle/input/notebooks/phmvnsm33/vsl-retrain-stgcn-tier1/k1/stgcn_best.pt",
+    "split_path": "configs/vslgh_sentence_split_v1.json",
+    "missing_backbone": "/tmp/diag_scratch/no_backbone/stgcn_best.pt"
+  },
+  "generated_by": {
+    "command": "Kaggle kernel phmvnsm33/vsl-retrain-cslr-smoke-diag (pushed copy of kaggle/vsl-retrain-cslr-smoke-diag/retrain_cslr_smoke_diag_kernel.py at the pin, PIN_COMMIT line only); parts: python kaggle/vsl-retrain-cslr-smoke-diag/retrain_cslr_smoke_diag_kernel.py --part <P> --cfg <cfg.json> --out parts/<P>.json",
+    "git_commit": "acf274c04e9dc4b7f0f9b7881b49bb1942a5e965",
+    "code_dirty": false,
+    "code_dirty_files": [],
+    "torch": "2.11.0+cpu",
+    "torch_num_threads": 2,
+    "python": "3.13.15",
+    "device": "cpu",
+    "cuda_available": false
+  },
+  "D0": {
+    "sentence_split_v1": {
+      "train_subset_range8": [
+        "SENT001_S01_R01_F",
+        "SENT001_S01_R02_F",
+        "SENT001_S01_R03_F",
+        "SENT001_S02_R01_F",
+        "SENT001_S02_R02_F",
+        "SENT001_S02_R03_F",
+        "SENT001_S03_R01_F",
+        "SENT001_S03_R02_F"
+      ],
+      "val_index0": "SENT002_S05_R01_F",
+      "n_train": 2880,
+      "n_val": 30
+    },
+    "sentence_split_none": {
+      "train_subset_range8": [
+        "SENT001_S01_R01_F",
+        "SENT001_S01_R02_F",
+        "SENT001_S01_R03_F",
+        "SENT001_S02_R01_F",
+        "SENT001_S02_R02_F",
+        "SENT001_S02_R03_F",
+        "SENT001_S03_R01_F",
+        "SENT001_S03_R02_F"
+      ],
+      "val_index0": "SENT001_S05_R01_F",
+      "n_train": 3600,
+      "n_val": 300
+    },
+    "identical_train8": true,
+    "identical_val0": false,
+    "identical": false,
+    "part": "D0",
+    "torch": "2.11.0+cpu",
+    "torch_num_threads": 2,
+    "part_seconds": 0.44,
+    "status": "complete",
+    "wall_minutes": 0.17,
+    "timeout_minutes": 30.0
+  },
+  "D1": {
+    "args": {
+      "data_root": "/tmp/vslt/data/external/vsl_gh",
+      "vocab_path": "/tmp/vslt/data/external/vsl_gh/gloss_vocab_canonical.txt",
+      "checkpoint_path": "/kaggle/input/notebooks/phmvnsm33/vsl-retrain-stgcn-tier1/k1/stgcn_best.pt",
+      "checkpoint_exists": true,
+      "device": "cpu",
+      "sentence_split": "configs/vslgh_sentence_split_v1.json"
+    },
+    "passed": false,
+    "stdout": "\n============================================================\nSTARTING SMOKE TEST / FIRST-RUN SAFETY CHECK\n============================================================\nRunning 10 overfit epochs on 8 samples...\n  Smoke Epoch 01/10: Train CTC Loss = 70.8364\n  Smoke Epoch 02/10: Train CTC Loss = 31.1576\n  Smoke Epoch 03/10: Train CTC Loss = 4.4320\n  Smoke Epoch 04/10: Train CTC Loss = 4.2961\n  Smoke Epoch 05/10: Train CTC Loss = 3.0669\n  Smoke Epoch 06/10: Train CTC Loss = 1.9760\n  Smoke Epoch 07/10: Train CTC Loss = 2.4797\n  Smoke Epoch 08/10: Train CTC Loss = 2.3933\n  Smoke Epoch 09/10: Train CTC Loss = 1.7713\n  Smoke Epoch 10/10: Train CTC Loss = 1.6697\nSmoke Test Initial Loss: 70.8364 -> Final Loss: 1.6697\nSmoke Test Decoded Samples: [{'sample_id': 'SENT001_S01_R01_F', 'annotation_source': 'source', 'reference': 'TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN', 'prediction': '<BLANK_ONLY>'}, {'sample_id': 'SENT001_S02_R02_F', 'annotation_source': 'source', 'reference': 'TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN', 'prediction': '<BLANK_ONLY>'}]\n[SMOKE TEST FAILED] Loss decreased: True, Non-empty output: False\n",
+    "smoke_losses": [
+      "70.8364",
+      "31.1576",
+      "4.4320",
+      "4.2961",
+      "3.0669",
+      "1.9760",
+      "2.4797",
+      "2.3933",
+      "1.7713",
+      "1.6697"
+    ],
+    "seconds": 41.89,
+    "part": "D1",
+    "torch": "2.11.0+cpu",
+    "torch_num_threads": 2,
+    "part_seconds": 41.89,
+    "status": "complete",
+    "wall_minutes": 0.77,
+    "timeout_minutes": 30.0
+  },
+  "D4": {
+    "status": "complete",
+    "train_losses": [
+      70.83637237548828,
+      31.1575927734375,
+      4.431954622268677,
+      4.296067237854004,
+      3.06693172454834,
+      1.9759972095489502,
+      2.479657769203186,
+      2.393312692642212,
+      1.7713364362716675,
+      1.6697290539741516,
+      1.585257887840271,
+      1.4700517058372498,
+      1.4208990931510925,
+      1.3157449960708618,
+      1.257079005241394,
+      1.1691879630088806,
+      1.1312348246574402,
+      1.0551390647888184,
+      1.0002631545066833,
+      0.9418804347515106,
+      0.8804741203784943,
+      0.8401796221733093,
+      0.7664282023906708,
+      0.729870080947876,
+      0.6826279759407043,
+      0.6568789482116699,
+      0.6248280107975006,
+      0.5867131054401398,
+      0.553677499294281,
+      0.5136594772338867,
+      0.4797976315021515,
+      0.44870825111866,
+      0.41404180228710175,
+      0.3720099925994873,
+      0.3380908668041229,
+      0.3132520616054535,
+      0.284992977976799,
+      0.26295892894268036,
+      0.25338053703308105,
+      0.24588114023208618,
+      0.23690754175186157,
+      0.22801567614078522,
+      0.222395621240139,
+      0.2199891358613968,
+      0.21634597331285477,
+      0.21439755707979202,
+      0.21174237877130508,
+      0.21018965542316437,
+      0.2090260460972786,
+      0.2087187021970749,
+      0.20730479061603546,
+      0.205832377076149,
+      0.20683203637599945,
+      0.20504476875066757,
+      0.2053099125623703,
+      0.2043459713459015,
+      0.20373009890317917,
+      0.20304027199745178,
+      0.20449097454547882,
+      0.2032921090722084
+    ],
+    "train_losses_4dp": [
+      "70.8364",
+      "31.1576",
+      "4.4320",
+      "4.2961",
+      "3.0669",
+      "1.9760",
+      "2.4797",
+      "2.3933",
+      "1.7713",
+      "1.6697",
+      "1.5853",
+      "1.4701",
+      "1.4209",
+      "1.3157",
+      "1.2571",
+      "1.1692",
+      "1.1312",
+      "1.0551",
+      "1.0003",
+      "0.9419",
+      "0.8805",
+      "0.8402",
+      "0.7664",
+      "0.7299",
+      "0.6826",
+      "0.6569",
+      "0.6248",
+      "0.5867",
+      "0.5537",
+      "0.5137",
+      "0.4798",
+      "0.4487",
+      "0.4140",
+      "0.3720",
+      "0.3381",
+      "0.3133",
+      "0.2850",
+      "0.2630",
+      "0.2534",
+      "0.2459",
+      "0.2369",
+      "0.2280",
+      "0.2224",
+      "0.2200",
+      "0.2163",
+      "0.2144",
+      "0.2117",
+      "0.2102",
+      "0.2090",
+      "0.2087",
+      "0.2073",
+      "0.2058",
+      "0.2068",
+      "0.2050",
+      "0.2053",
+      "0.2043",
+      "0.2037",
+      "0.2030",
+      "0.2045",
+      "0.2033"
+    ],
+    "epochs": [
+      {
+        "epoch": 1,
+        "train_loss": 70.83637237548828,
+        "train_loss_4dp": "70.8364",
+        "batch_ids": [
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R02_F"
+          ],
+          [
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R03_F"
+          ]
+        ],
+        "seconds": 3.69
+      },
+      {
+        "epoch": 2,
+        "train_loss": 31.1575927734375,
+        "train_loss_4dp": "31.1576",
+        "batch_ids": [
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R02_F"
+          ],
+          [
+            "SENT001_S03_R02_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R02_F"
+          ]
+        ],
+        "seconds": 3.18
+      },
+      {
+        "epoch": 3,
+        "train_loss": 4.431954622268677,
+        "train_loss_4dp": "4.4320",
+        "batch_ids": [
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S02_R02_F"
+          ],
+          [
+            "SENT001_S01_R01_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S01_R02_F"
+          ]
+        ],
+        "seconds": 3.05
+      },
+      {
+        "epoch": 4,
+        "train_loss": 4.296067237854004,
+        "train_loss_4dp": "4.2961",
+        "batch_ids": [
+          [
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R02_F"
+          ],
+          [
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R02_F"
+          ]
+        ],
+        "seconds": 3.02
+      },
+      {
+        "epoch": 5,
+        "train_loss": 3.06693172454834,
+        "train_loss_4dp": "3.0669",
+        "batch_ids": [
+          [
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S03_R01_F"
+          ],
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R03_F"
+          ]
+        ],
+        "seconds": 3.15
+      },
+      {
+        "epoch": 6,
+        "train_loss": 1.9759972095489502,
+        "train_loss_4dp": "1.9760",
+        "batch_ids": [
+          [
+            "SENT001_S02_R01_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R01_F"
+          ],
+          [
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R03_F"
+          ]
+        ],
+        "seconds": 3.1
+      },
+      {
+        "epoch": 7,
+        "train_loss": 2.479657769203186,
+        "train_loss_4dp": "2.4797",
+        "batch_ids": [
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R03_F"
+          ],
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S03_R02_F"
+          ]
+        ],
+        "seconds": 3.14
+      },
+      {
+        "epoch": 8,
+        "train_loss": 2.393312692642212,
+        "train_loss_4dp": "2.3933",
+        "batch_ids": [
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S02_R01_F"
+          ],
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S03_R01_F"
+          ]
+        ],
+        "seconds": 3.12
+      },
+      {
+        "epoch": 9,
+        "train_loss": 1.7713364362716675,
+        "train_loss_4dp": "1.7713",
+        "batch_ids": [
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R03_F"
+          ],
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S03_R02_F"
+          ]
+        ],
+        "seconds": 3.09
+      },
+      {
+        "epoch": 10,
+        "train_loss": 1.6697290539741516,
+        "train_loss_4dp": "1.6697",
+        "batch_ids": [
+          [
+            "SENT001_S02_R01_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R02_F"
+          ],
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S03_R02_F"
+          ]
+        ],
+        "seconds": 3.09
+      },
+      {
+        "epoch": 11,
+        "train_loss": 1.585257887840271,
+        "train_loss_4dp": "1.5853",
+        "batch_ids": [
+          [
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S01_R02_F"
+          ],
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R03_F"
+          ]
+        ],
+        "seconds": 3.09
+      },
+      {
+        "epoch": 12,
+        "train_loss": 1.4700517058372498,
+        "train_loss_4dp": "1.4701",
+        "batch_ids": [
+          [
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R03_F"
+          ],
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R03_F"
+          ]
+        ],
+        "seconds": 3.14
+      },
+      {
+        "epoch": 13,
+        "train_loss": 1.4208990931510925,
+        "train_loss_4dp": "1.4209",
+        "batch_ids": [
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R01_F"
+          ],
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S03_R02_F"
+          ]
+        ],
+        "seconds": 3.05
+      },
+      {
+        "epoch": 14,
+        "train_loss": 1.3157449960708618,
+        "train_loss_4dp": "1.3157",
+        "batch_ids": [
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S03_R01_F"
+          ],
+          [
+            "SENT001_S02_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R02_F"
+          ]
+        ],
+        "seconds": 3.01
+      },
+      {
+        "epoch": 15,
+        "train_loss": 1.257079005241394,
+        "train_loss_4dp": "1.2571",
+        "batch_ids": [
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S03_R01_F"
+          ],
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S03_R02_F"
+          ]
+        ],
+        "seconds": 2.94
+      },
+      {
+        "epoch": 16,
+        "train_loss": 1.1691879630088806,
+        "train_loss_4dp": "1.1692",
+        "batch_ids": [
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R02_F"
+          ],
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R01_F"
+          ]
+        ],
+        "seconds": 3.2
+      },
+      {
+        "epoch": 17,
+        "train_loss": 1.1312348246574402,
+        "train_loss_4dp": "1.1312",
+        "batch_ids": [
+          [
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R02_F"
+          ],
+          [
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S03_R01_F"
+          ]
+        ],
+        "seconds": 3.13
+      },
+      {
+        "epoch": 18,
+        "train_loss": 1.0551390647888184,
+        "train_loss_4dp": "1.0551",
+        "batch_ids": [
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R01_F"
+          ],
+          [
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S03_R01_F"
+          ]
+        ],
+        "seconds": 3.23
+      },
+      {
+        "epoch": 19,
+        "train_loss": 1.0002631545066833,
+        "train_loss_4dp": "1.0003",
+        "batch_ids": [
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R01_F"
+          ],
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S03_R02_F"
+          ]
+        ],
+        "seconds": 3.12
+      },
+      {
+        "epoch": 20,
+        "train_loss": 0.9418804347515106,
+        "train_loss_4dp": "0.9419",
+        "batch_ids": [
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S03_R01_F"
+          ],
+          [
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S03_R02_F"
+          ]
+        ],
+        "seconds": 3.14
+      },
+      {
+        "epoch": 21,
+        "train_loss": 0.8804741203784943,
+        "train_loss_4dp": "0.8805",
+        "batch_ids": [
+          [
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S03_R01_F"
+          ],
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R03_F"
+          ]
+        ],
+        "seconds": 3.27
+      },
+      {
+        "epoch": 22,
+        "train_loss": 0.8401796221733093,
+        "train_loss_4dp": "0.8402",
+        "batch_ids": [
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R03_F"
+          ],
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R02_F"
+          ]
+        ],
+        "seconds": 3.07
+      },
+      {
+        "epoch": 23,
+        "train_loss": 0.7664282023906708,
+        "train_loss_4dp": "0.7664",
+        "batch_ids": [
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S01_R03_F"
+          ],
+          [
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S03_R01_F"
+          ]
+        ],
+        "seconds": 3.19
+      },
+      {
+        "epoch": 24,
+        "train_loss": 0.729870080947876,
+        "train_loss_4dp": "0.7299",
+        "batch_ids": [
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R03_F"
+          ],
+          [
+            "SENT001_S01_R01_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R02_F"
+          ]
+        ],
+        "seconds": 3.2
+      },
+      {
+        "epoch": 25,
+        "train_loss": 0.6826279759407043,
+        "train_loss_4dp": "0.6826",
+        "batch_ids": [
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R01_F"
+          ],
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S03_R01_F"
+          ]
+        ],
+        "seconds": 3.23
+      },
+      {
+        "epoch": 26,
+        "train_loss": 0.6568789482116699,
+        "train_loss_4dp": "0.6569",
+        "batch_ids": [
+          [
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R02_F"
+          ],
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R03_F"
+          ]
+        ],
+        "seconds": 3.17
+      },
+      {
+        "epoch": 27,
+        "train_loss": 0.6248280107975006,
+        "train_loss_4dp": "0.6248",
+        "batch_ids": [
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R01_F"
+          ],
+          [
+            "SENT001_S01_R02_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R01_F"
+          ]
+        ],
+        "seconds": 3.15
+      },
+      {
+        "epoch": 28,
+        "train_loss": 0.5867131054401398,
+        "train_loss_4dp": "0.5867",
+        "batch_ids": [
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R03_F"
+          ],
+          [
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S03_R02_F"
+          ]
+        ],
+        "seconds": 3.13
+      },
+      {
+        "epoch": 29,
+        "train_loss": 0.553677499294281,
+        "train_loss_4dp": "0.5537",
+        "batch_ids": [
+          [
+            "SENT001_S03_R02_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R01_F"
+          ],
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R01_F"
+          ]
+        ],
+        "seconds": 3.14
+      },
+      {
+        "epoch": 30,
+        "train_loss": 0.5136594772338867,
+        "train_loss_4dp": "0.5137",
+        "batch_ids": [
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R02_F"
+          ],
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R01_F"
+          ]
+        ],
+        "seconds": 3.2
+      },
+      {
+        "epoch": 31,
+        "train_loss": 0.4797976315021515,
+        "train_loss_4dp": "0.4798",
+        "batch_ids": [
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R03_F"
+          ],
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R01_F"
+          ]
+        ],
+        "seconds": 3.14
+      },
+      {
+        "epoch": 32,
+        "train_loss": 0.44870825111866,
+        "train_loss_4dp": "0.4487",
+        "batch_ids": [
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S03_R02_F"
+          ],
+          [
+            "SENT001_S01_R01_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R02_F"
+          ]
+        ],
+        "seconds": 3.24
+      },
+      {
+        "epoch": 33,
+        "train_loss": 0.41404180228710175,
+        "train_loss_4dp": "0.4140",
+        "batch_ids": [
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R03_F"
+          ],
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R01_F"
+          ]
+        ],
+        "seconds": 3.22
+      },
+      {
+        "epoch": 34,
+        "train_loss": 0.3720099925994873,
+        "train_loss_4dp": "0.3720",
+        "batch_ids": [
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S03_R02_F"
+          ],
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R02_F"
+          ]
+        ],
+        "seconds": 3.31
+      },
+      {
+        "epoch": 35,
+        "train_loss": 0.3380908668041229,
+        "train_loss_4dp": "0.3381",
+        "batch_ids": [
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S02_R03_F"
+          ],
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S01_R02_F"
+          ]
+        ],
+        "seconds": 3.07
+      },
+      {
+        "epoch": 36,
+        "train_loss": 0.3132520616054535,
+        "train_loss_4dp": "0.3133",
+        "batch_ids": [
+          [
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R02_F"
+          ],
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R01_F"
+          ]
+        ],
+        "seconds": 3.02
+      },
+      {
+        "epoch": 37,
+        "train_loss": 0.284992977976799,
+        "train_loss_4dp": "0.2850",
+        "batch_ids": [
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S03_R02_F"
+          ],
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S02_R02_F"
+          ]
+        ],
+        "seconds": 3.18
+      },
+      {
+        "epoch": 38,
+        "train_loss": 0.26295892894268036,
+        "train_loss_4dp": "0.2630",
+        "batch_ids": [
+          [
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R01_F"
+          ],
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R02_F"
+          ]
+        ],
+        "seconds": 3.25
+      },
+      {
+        "epoch": 39,
+        "train_loss": 0.25338053703308105,
+        "train_loss_4dp": "0.2534",
+        "batch_ids": [
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R02_F"
+          ],
+          [
+            "SENT001_S02_R01_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R03_F"
+          ]
+        ],
+        "seconds": 3.22
+      },
+      {
+        "epoch": 40,
+        "train_loss": 0.24588114023208618,
+        "train_loss_4dp": "0.2459",
+        "batch_ids": [
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R03_F"
+          ],
+          [
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R03_F"
+          ]
+        ],
+        "seconds": 3.2
+      },
+      {
+        "epoch": 41,
+        "train_loss": 0.23690754175186157,
+        "train_loss_4dp": "0.2369",
+        "batch_ids": [
+          [
+            "SENT001_S01_R01_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S03_R02_F"
+          ],
+          [
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R03_F"
+          ]
+        ],
+        "seconds": 3.07
+      },
+      {
+        "epoch": 42,
+        "train_loss": 0.22801567614078522,
+        "train_loss_4dp": "0.2280",
+        "batch_ids": [
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R01_F"
+          ],
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S01_R02_F"
+          ]
+        ],
+        "seconds": 3.4
+      },
+      {
+        "epoch": 43,
+        "train_loss": 0.222395621240139,
+        "train_loss_4dp": "0.2224",
+        "batch_ids": [
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R03_F"
+          ],
+          [
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S03_R01_F"
+          ]
+        ],
+        "seconds": 3.27
+      },
+      {
+        "epoch": 44,
+        "train_loss": 0.2199891358613968,
+        "train_loss_4dp": "0.2200",
+        "batch_ids": [
+          [
+            "SENT001_S03_R02_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R01_F"
+          ],
+          [
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R03_F"
+          ]
+        ],
+        "seconds": 3.22
+      },
+      {
+        "epoch": 45,
+        "train_loss": 0.21634597331285477,
+        "train_loss_4dp": "0.2163",
+        "batch_ids": [
+          [
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R02_F"
+          ],
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R02_F"
+          ]
+        ],
+        "seconds": 3.24
+      },
+      {
+        "epoch": 46,
+        "train_loss": 0.21439755707979202,
+        "train_loss_4dp": "0.2144",
+        "batch_ids": [
+          [
+            "SENT001_S03_R02_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R01_F"
+          ],
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S02_R02_F"
+          ]
+        ],
+        "seconds": 3.27
+      },
+      {
+        "epoch": 47,
+        "train_loss": 0.21174237877130508,
+        "train_loss_4dp": "0.2117",
+        "batch_ids": [
+          [
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R02_F"
+          ],
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R02_F"
+          ]
+        ],
+        "seconds": 3.1
+      },
+      {
+        "epoch": 48,
+        "train_loss": 0.21018965542316437,
+        "train_loss_4dp": "0.2102",
+        "batch_ids": [
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R03_F"
+          ],
+          [
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R01_F"
+          ]
+        ],
+        "seconds": 3.14
+      },
+      {
+        "epoch": 49,
+        "train_loss": 0.2090260460972786,
+        "train_loss_4dp": "0.2090",
+        "batch_ids": [
+          [
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R03_F"
+          ],
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S01_R01_F"
+          ]
+        ],
+        "seconds": 3.22
+      },
+      {
+        "epoch": 50,
+        "train_loss": 0.2087187021970749,
+        "train_loss_4dp": "0.2087",
+        "batch_ids": [
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S01_R01_F"
+          ],
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R03_F"
+          ]
+        ],
+        "seconds": 3.06
+      },
+      {
+        "epoch": 51,
+        "train_loss": 0.20730479061603546,
+        "train_loss_4dp": "0.2073",
+        "batch_ids": [
+          [
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S03_R01_F"
+          ],
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S03_R02_F"
+          ]
+        ],
+        "seconds": 3.21
+      },
+      {
+        "epoch": 52,
+        "train_loss": 0.205832377076149,
+        "train_loss_4dp": "0.2058",
+        "batch_ids": [
+          [
+            "SENT001_S03_R02_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R01_F"
+          ],
+          [
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R01_F"
+          ]
+        ],
+        "seconds": 3.2
+      },
+      {
+        "epoch": 53,
+        "train_loss": 0.20683203637599945,
+        "train_loss_4dp": "0.2068",
+        "batch_ids": [
+          [
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R03_F"
+          ],
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S03_R01_F"
+          ]
+        ],
+        "seconds": 3.04
+      },
+      {
+        "epoch": 54,
+        "train_loss": 0.20504476875066757,
+        "train_loss_4dp": "0.2050",
+        "batch_ids": [
+          [
+            "SENT001_S02_R02_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R03_F"
+          ],
+          [
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R01_F"
+          ]
+        ],
+        "seconds": 3.12
+      },
+      {
+        "epoch": 55,
+        "train_loss": 0.2053099125623703,
+        "train_loss_4dp": "0.2053",
+        "batch_ids": [
+          [
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R01_F"
+          ],
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R02_F"
+          ]
+        ],
+        "seconds": 3.12
+      },
+      {
+        "epoch": 56,
+        "train_loss": 0.2043459713459015,
+        "train_loss_4dp": "0.2043",
+        "batch_ids": [
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R01_F"
+          ],
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R02_F"
+          ]
+        ],
+        "seconds": 3.09
+      },
+      {
+        "epoch": 57,
+        "train_loss": 0.20373009890317917,
+        "train_loss_4dp": "0.2037",
+        "batch_ids": [
+          [
+            "SENT001_S01_R03_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R01_F"
+          ],
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R01_F"
+          ]
+        ],
+        "seconds": 3.17
+      },
+      {
+        "epoch": 58,
+        "train_loss": 0.20304027199745178,
+        "train_loss_4dp": "0.2030",
+        "batch_ids": [
+          [
+            "SENT001_S01_R02_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R01_F"
+          ],
+          [
+            "SENT001_S03_R02_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R03_F"
+          ]
+        ],
+        "seconds": 3.18
+      },
+      {
+        "epoch": 59,
+        "train_loss": 0.20449097454547882,
+        "train_loss_4dp": "0.2045",
+        "batch_ids": [
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S03_R02_F",
+            "SENT001_S03_R01_F"
+          ],
+          [
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S02_R01_F"
+          ]
+        ],
+        "seconds": 3.07
+      },
+      {
+        "epoch": 60,
+        "train_loss": 0.2032921090722084,
+        "train_loss_4dp": "0.2033",
+        "batch_ids": [
+          [
+            "SENT001_S03_R01_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S03_R02_F"
+          ],
+          [
+            "SENT001_S02_R03_F",
+            "SENT001_S01_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S01_R02_F"
+          ]
+        ],
+        "seconds": 2.96
+      }
+    ],
+    "measures": {
+      "10": {
+        "eval": {
+          "loss": 1.621,
+          "total_samples": 8,
+          "wer": 100.0,
+          "substitutions": 0,
+          "deletions": 40,
+          "insertions": 0,
+          "total_ref_words": 40,
+          "total_hyp_words": 0,
+          "qualitative_examples": [
+            {
+              "sample_id": "SENT001_S01_R01_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "<BLANK_ONLY>"
+            },
+            {
+              "sample_id": "SENT001_S02_R02_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "<BLANK_ONLY>"
+            },
+            {
+              "sample_id": "SENT001_S03_R02_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "<BLANK_ONLY>"
+            },
+            {
+              "sample_id": "SENT001_S01_R02_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "<BLANK_ONLY>"
+            },
+            {
+              "sample_id": "SENT001_S03_R01_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "<BLANK_ONLY>"
+            },
+            {
+              "sample_id": "SENT001_S02_R01_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "<BLANK_ONLY>"
+            },
+            {
+              "sample_id": "SENT001_S01_R03_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "<BLANK_ONLY>"
+            },
+            {
+              "sample_id": "SENT001_S02_R03_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "<BLANK_ONLY>"
+            }
+          ]
+        },
+        "eval_fixed_order": {
+          "loss": 1.6210136413574219,
+          "total_hyp_words": 0,
+          "wer": 100.0,
+          "total_ref_words": 40,
+          "substitutions": 0,
+          "deletions": 40,
+          "insertions": 0,
+          "blank_frame_fraction": 1.0,
+          "n_frames": 581,
+          "hyp_lengths": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "sample_ids": [
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S03_R02_F"
+          ]
+        },
+        "bn_train_only": {
+          "loss": 1.6292203068733215,
+          "total_hyp_words": 0,
+          "wer": 100.0,
+          "total_ref_words": 40,
+          "substitutions": 0,
+          "deletions": 40,
+          "insertions": 0,
+          "blank_frame_fraction": 1.0,
+          "n_frames": 581,
+          "hyp_lengths": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "sample_ids": [
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S03_R02_F"
+          ],
+          "n_batchnorm_modules": 10
+        }
+      },
+      "60": {
+        "eval": {
+          "loss": 0.2031,
+          "total_samples": 8,
+          "wer": 20.0,
+          "substitutions": 0,
+          "deletions": 8,
+          "insertions": 0,
+          "total_ref_words": 40,
+          "total_hyp_words": 32,
+          "qualitative_examples": [
+            {
+              "sample_id": "SENT001_S01_R03_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "TÔI ĐĂNG-KÝ SỨC-KHỎE MUỐN"
+            },
+            {
+              "sample_id": "SENT001_S03_R01_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "TÔI ĐĂNG-KÝ SỨC-KHỎE MUỐN"
+            },
+            {
+              "sample_id": "SENT001_S03_R02_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "TÔI ĐĂNG-KÝ SỨC-KHỎE MUỐN"
+            },
+            {
+              "sample_id": "SENT001_S02_R02_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "TÔI ĐĂNG-KÝ SỨC-KHỎE MUỐN"
+            },
+            {
+              "sample_id": "SENT001_S01_R02_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "TÔI ĐĂNG-KÝ SỨC-KHỎE MUỐN"
+            },
+            {
+              "sample_id": "SENT001_S02_R03_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "TÔI ĐĂNG-KÝ SỨC-KHỎE MUỐN"
+            },
+            {
+              "sample_id": "SENT001_S01_R01_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "TÔI ĐĂNG-KÝ SỨC-KHỎE MUỐN"
+            },
+            {
+              "sample_id": "SENT001_S02_R01_F",
+              "annotation_source": "source",
+              "reference": "TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN",
+              "prediction": "TÔI ĐĂNG-KÝ SỨC-KHỎE MUỐN"
+            }
+          ]
+        },
+        "eval_fixed_order": {
+          "loss": 0.2031235545873642,
+          "total_hyp_words": 32,
+          "wer": 20.0,
+          "total_ref_words": 40,
+          "substitutions": 0,
+          "deletions": 8,
+          "insertions": 0,
+          "blank_frame_fraction": 0.8898450946643718,
+          "n_frames": 581,
+          "hyp_lengths": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ],
+          "sample_ids": [
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S03_R02_F"
+          ]
+        },
+        "bn_train_only": {
+          "loss": 0.20303158462047577,
+          "total_hyp_words": 32,
+          "wer": 20.0,
+          "total_ref_words": 40,
+          "substitutions": 0,
+          "deletions": 8,
+          "insertions": 0,
+          "blank_frame_fraction": 0.8898450946643718,
+          "n_frames": 581,
+          "hyp_lengths": [
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4,
+            4
+          ],
+          "sample_ids": [
+            "SENT001_S01_R01_F",
+            "SENT001_S01_R02_F",
+            "SENT001_S01_R03_F",
+            "SENT001_S02_R01_F",
+            "SENT001_S02_R02_F",
+            "SENT001_S02_R03_F",
+            "SENT001_S03_R01_F",
+            "SENT001_S03_R02_F"
+          ],
+          "n_batchnorm_modules": 10
+        }
+      }
+    },
+    "transfer_info": {
+      "checkpoint_path": "/kaggle/input/notebooks/phmvnsm33/vsl-retrain-stgcn-tier1/k1/stgcn_best.pt",
+      "transferred_keys_count": 62,
+      "skipped_keys_count": 3,
+      "transferred_params": 352207,
+      "total_params": 2300197,
+      "trainable_params": 2300197,
+      "backbone_frozen": false
+    },
+    "key_analysis": {
+      "n_transferred_keys": 62,
+      "n_shape_mismatch_keys": 0,
+      "shape_mismatch_keys": [],
+      "skipped_keys": [
+        "A",
+        "classifier.1.weight",
+        "classifier.1.bias"
+      ],
+      "n_prefix_keys_model": 62,
+      "n_prefix_keys_ckpt": 62,
+      "n_prefix_keys_in_both": 62,
+      "prefix_keys_only_in_model": [],
+      "prefix_keys_only_in_ckpt": []
+    },
+    "n_vocab": 322,
+    "part": "D4",
+    "torch": "2.11.0+cpu",
+    "torch_num_threads": 2,
+    "part_seconds": 196.16,
+    "wall_minutes": 3.34,
+    "timeout_minutes": 30.0
+  },
+  "D2": {
+    "args": {
+      "data_root": "/tmp/vslt/data/external/vsl_gh",
+      "vocab_path": "/tmp/diag_scratch/vocab_full/gloss_vocab_canonical.txt",
+      "checkpoint_path": "/kaggle/input/notebooks/phmvnsm33/vsl-retrain-stgcn-tier1/k1/stgcn_best.pt",
+      "checkpoint_exists": true,
+      "device": "cpu",
+      "sentence_split": null
+    },
+    "passed": false,
+    "stdout": "\n============================================================\nSTARTING SMOKE TEST / FIRST-RUN SAFETY CHECK\n============================================================\nRunning 10 overfit epochs on 8 samples...\n  Smoke Epoch 01/10: Train CTC Loss = 73.9842\n  Smoke Epoch 02/10: Train CTC Loss = 39.3926\n  Smoke Epoch 03/10: Train CTC Loss = 5.2698\n  Smoke Epoch 04/10: Train CTC Loss = 3.9687\n  Smoke Epoch 05/10: Train CTC Loss = 2.7867\n  Smoke Epoch 06/10: Train CTC Loss = 1.9965\n  Smoke Epoch 07/10: Train CTC Loss = 2.6013\n  Smoke Epoch 08/10: Train CTC Loss = 2.1663\n  Smoke Epoch 09/10: Train CTC Loss = 1.6284\n  Smoke Epoch 10/10: Train CTC Loss = 1.6109\nSmoke Test Initial Loss: 73.9842 -> Final Loss: 1.6109\nSmoke Test Decoded Samples: [{'sample_id': 'SENT001_S02_R03_F', 'annotation_source': 'source', 'reference': 'TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN', 'prediction': '<BLANK_ONLY>'}, {'sample_id': 'SENT001_S02_R01_F', 'annotation_source': 'source', 'reference': 'TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN', 'prediction': '<BLANK_ONLY>'}]\n[SMOKE TEST FAILED] Loss decreased: True, Non-empty output: False\n",
+    "smoke_losses": [
+      "73.9842",
+      "39.3926",
+      "5.2698",
+      "3.9687",
+      "2.7867",
+      "1.9965",
+      "2.6013",
+      "2.1663",
+      "1.6284",
+      "1.6109"
+    ],
+    "seconds": 41.49,
+    "part": "D2",
+    "torch": "2.11.0+cpu",
+    "torch_num_threads": 2,
+    "part_seconds": 41.49,
+    "status": "complete",
+    "wall_minutes": 0.78,
+    "timeout_minutes": 30.0
+  },
+  "D3": {
+    "args": {
+      "data_root": "/tmp/vslt/data/external/vsl_gh",
+      "vocab_path": "/tmp/vslt/data/external/vsl_gh/gloss_vocab_canonical.txt",
+      "checkpoint_path": "/tmp/diag_scratch/no_backbone/stgcn_best.pt",
+      "checkpoint_exists": false,
+      "device": "cpu",
+      "sentence_split": "configs/vslgh_sentence_split_v1.json"
+    },
+    "passed": false,
+    "stdout": "\n============================================================\nSTARTING SMOKE TEST / FIRST-RUN SAFETY CHECK\n============================================================\nRunning 10 overfit epochs on 8 samples...\n  Smoke Epoch 01/10: Train CTC Loss = 70.7490\n  Smoke Epoch 02/10: Train CTC Loss = 28.8466\n  Smoke Epoch 03/10: Train CTC Loss = 4.4282\n  Smoke Epoch 04/10: Train CTC Loss = 4.3242\n  Smoke Epoch 05/10: Train CTC Loss = 3.0171\n  Smoke Epoch 06/10: Train CTC Loss = 1.9752\n  Smoke Epoch 07/10: Train CTC Loss = 2.4720\n  Smoke Epoch 08/10: Train CTC Loss = 2.4826\n  Smoke Epoch 09/10: Train CTC Loss = 1.8386\n  Smoke Epoch 10/10: Train CTC Loss = 1.6752\nSmoke Test Initial Loss: 70.7490 -> Final Loss: 1.6752\nSmoke Test Decoded Samples: [{'sample_id': 'SENT001_S01_R01_F', 'annotation_source': 'source', 'reference': 'TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN', 'prediction': '<BLANK_ONLY>'}, {'sample_id': 'SENT001_S02_R02_F', 'annotation_source': 'source', 'reference': 'TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN', 'prediction': '<BLANK_ONLY>'}]\n[SMOKE TEST FAILED] Loss decreased: True, Non-empty output: False\n",
+    "smoke_losses": [
+      "70.7490",
+      "28.8466",
+      "4.4282",
+      "4.3242",
+      "3.0171",
+      "1.9752",
+      "2.4720",
+      "2.4826",
+      "1.8386",
+      "1.6752"
+    ],
+    "seconds": 36.05,
+    "part": "D3",
+    "torch": "2.11.0+cpu",
+    "torch_num_threads": 2,
+    "part_seconds": 36.05,
+    "status": "complete",
+    "wall_minutes": 0.68,
+    "timeout_minutes": 30.0
+  },
+  "fidelity": {
+    "fidelity_ok": true,
+    "n_d1": 10,
+    "n_d4": 10,
+    "mismatches": []
+  },
+  "d4_epoch10_reproduces_d1_decoded_samples": true,
+  "decision_rule": {
+    "decision": "R2-PASS",
+    "stop": null,
+    "reasons": [
+      "D1 FAIL on CPU",
+      "D5 epoch 60: losses finite, loss decreased, total_hyp_words 32 > 0, WER 20.0 < 100"
+    ]
+  },
+  "decision": "R2-PASS"
+}

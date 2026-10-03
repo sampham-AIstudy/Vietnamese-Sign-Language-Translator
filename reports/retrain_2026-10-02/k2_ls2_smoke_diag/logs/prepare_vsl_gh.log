@@ -1,0 +1,57 @@
+======================================================================
+STEP 1: Copying and verifying frontal keypoint files
+======================================================================
+Discovered frontal keypoint files in source: 4200
+Successfully copied and verified 4200/4200 frontal keypoints.
+
+======================================================================
+STEP 2: Copying and canonicalizing annotations
+======================================================================
+Discovered annotation files in source: 4200
+Copied all 4200/4200 raw source annotations verbatim.
+  Created canonical link: SENT192_S03_R02_F..txt -> SENT192_S03_R02_F.txt
+  Created canonical link: SENT194_S04_R03_F..txt -> SENT194_S04_R03_F.txt
+  Created canonical link: SENT215_S03_R02_F..txt -> SENT215_S03_R02_F.txt
+  Created canonical link: SENT248_S05_R01_F..txt -> SENT248_S05_R01_F.txt
+  Generated canonical annotation: SENT236_S01_R03_F.txt
+  Generated canonical annotation: SENT285_S04_R03_F.txt
+
+======================================================================
+STEP 3: Copying splits and vocabulary files
+======================================================================
+  Copied split: train.txt
+  Copied split: val.txt
+  Copied split: test.txt
+  Copied LOSO split: dataset_loso_s01.json
+  Copied LOSO split: dataset_loso_s02.json
+  Copied LOSO split: dataset_loso_s03.json
+  Copied LOSO split: dataset_loso_s04.json
+  Copied LOSO split: dataset_loso_s05.json
+  Copied LOSO split: dataset_loso_s06.json
+  Copied vocab/stats: gloss_vocab.txt
+  Copied vocab/stats: trans_vocab.txt
+  Copied vocab/stats: dataset_stats.json
+
+======================================================================
+STEP 4: Reconstructing dataset_canonical.json
+======================================================================
+Saved canonical metadata to: /tmp/vslt/data/external/vsl_gh/dataset_canonical.json
+Total entries in dataset_canonical: 4200
+Total unique sentences accounted for: 300 (min: SENT001, max: SENT300)
+Signer distribution: {'S01': 900, 'S02': 900, 'S03': 900, 'S04': 900, 'S05': 300, 'S06': 300}
+Empty gloss sequences: 0
+Missing translations: 0
+Missing keypoint files: 0
+
+======================================================================
+STEP 5: Full Keypoint Integrity & 67-Joint Conversion Verification
+======================================================================
+Keypoint Files Checked: 4,200
+Corrupted Files: 0
+Shape Errors: 0
+Dtype Errors: 0
+Successful 67-joint Conversions: 4200/4200
+
+Validation report saved to: /tmp/vslt/reports/vsl_gh_validation.json
+
+ALL VSL-GH CANONICAL DATA VALIDATION CHECKS PASSED!

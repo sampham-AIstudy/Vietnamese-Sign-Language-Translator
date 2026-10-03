@@ -1,0 +1,146 @@
+{
+  "generated_by": {
+    "command": "Kaggle kernel phmvnsm33/vsl-retrain-cslr-smoke-diag (pushed copy of kaggle/vsl-retrain-cslr-smoke-diag/retrain_cslr_smoke_diag_kernel.py at the pin, PIN_COMMIT line only); parts: python kaggle/vsl-retrain-cslr-smoke-diag/retrain_cslr_smoke_diag_kernel.py --part <P> --cfg <cfg.json> --out parts/<P>.json",
+    "git_commit": "acf274c04e9dc4b7f0f9b7881b49bb1942a5e965",
+    "code_dirty": false,
+    "code_dirty_files": [],
+    "torch": "2.11.0+cpu",
+    "torch_num_threads": 2,
+    "python": "3.13.15",
+    "device": "cpu",
+    "cuda_available": false
+  },
+  "smoke_diag_json_sha256": "1d446ebf4befc27e6b28e9a88e8b0d90f198b0ba4b33a5f802b6bf47fcb964c5",
+  "decision_in_json": "R2-PASS",
+  "decide_at_pin": {
+    "decision": "R2-PASS",
+    "stop": null,
+    "reasons": [
+      "D1 FAIL on CPU",
+      "D5 epoch 60: losses finite, loss decreased, total_hyp_words 32 > 0, WER 20.0 < 100"
+    ]
+  },
+  "independent": "R2-PASS",
+  "inputs_ok": true,
+  "inputs": {
+    "dataset_canonical_json": "d53ab701",
+    "keypoints_frontal": "59642925",
+    "vocab_train_322": "c0af13db",
+    "vocab_full_372": "dd7bc3da",
+    "k1_stgcn_best_pt": "2204becd",
+    "sentence_split_v1": "289b2ac1"
+  },
+  "D0": {
+    "identical_train8": true,
+    "identical_val0": false,
+    "identical": false
+  },
+  "D0_train8_split": [
+    "SENT001_S01_R01_F",
+    "SENT001_S01_R02_F",
+    "SENT001_S01_R03_F",
+    "SENT001_S02_R01_F",
+    "SENT001_S02_R02_F",
+    "SENT001_S02_R03_F",
+    "SENT001_S03_R01_F",
+    "SENT001_S03_R02_F"
+  ],
+  "D0_val0": [
+    "SENT002_S05_R01_F",
+    "SENT001_S05_R01_F"
+  ],
+  "D1_passed": false,
+  "D1_losses": [
+    "70.8364",
+    "31.1576",
+    "4.4320",
+    "4.2961",
+    "3.0669",
+    "1.9760",
+    "2.4797",
+    "2.3933",
+    "1.7713",
+    "1.6697"
+  ],
+  "D1_status": "complete",
+  "D1_min": 0.77,
+  "D2_passed": false,
+  "D2_losses": [
+    "73.9842",
+    "39.3926",
+    "5.2698",
+    "3.9687",
+    "2.7867",
+    "1.9965",
+    "2.6013",
+    "2.1663",
+    "1.6284",
+    "1.6109"
+  ],
+  "D3_passed": false,
+  "D3_losses": [
+    "70.7490",
+    "28.8466",
+    "4.4282",
+    "4.3242",
+    "3.0171",
+    "1.9752",
+    "2.4720",
+    "2.4826",
+    "1.8386",
+    "1.6752"
+  ],
+  "D4_i": {
+    "transfer_info": {
+      "checkpoint_path": "/kaggle/input/notebooks/phmvnsm33/vsl-retrain-stgcn-tier1/k1/stgcn_best.pt",
+      "transferred_keys_count": 62,
+      "skipped_keys_count": 3,
+      "transferred_params": 352207,
+      "total_params": 2300197,
+      "trainable_params": 2300197,
+      "backbone_frozen": false
+    },
+    "n_transferred_keys": 62,
+    "n_shape_mismatch_keys": 0,
+    "n_prefix_keys_model": 62,
+    "n_prefix_keys_ckpt": 62,
+    "n_prefix_keys_in_both": 62,
+    "prefix_keys_only_in_model": [],
+    "prefix_keys_only_in_ckpt": [],
+    "n_skipped": 3
+  },
+  "D4_ii": {
+    "fidelity_ok": true,
+    "n_d1": 10,
+    "n_d4": 10,
+    "mismatches": []
+  },
+  "d4_epoch10_reproduces_d1_decoded_samples": true,
+  "D4_status": "complete",
+  "D4_min": 3.34,
+  "loss_e1": 70.83637237548828,
+  "loss_e10": 1.6697290539741516,
+  "loss_e60": 0.2032921090722084,
+  "e10": {
+    "eval_loss": 1.621,
+    "eval_total_hyp_words": 0,
+    "eval_wer": 100.0,
+    "eval_ref_words": 40,
+    "bn_train_only_total_hyp_words": 0,
+    "bn_train_only_wer": 100.0,
+    "blank_frac_eval": 1.0,
+    "blank_frac_bn_train": 1.0,
+    "eval_fixed_total_hyp_words": 0
+  },
+  "e60": {
+    "eval_loss": 0.2031,
+    "eval_total_hyp_words": 32,
+    "eval_wer": 20.0,
+    "eval_ref_words": 40,
+    "bn_train_only_total_hyp_words": 32,
+    "bn_train_only_wer": 20.0,
+    "blank_frac_eval": 0.8898450946643718,
+    "blank_frac_bn_train": 0.8898450946643718,
+    "eval_fixed_total_hyp_words": 32
+  }
+}

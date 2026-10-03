@@ -1,0 +1,18 @@
+
+============================================================
+STARTING SMOKE TEST / FIRST-RUN SAFETY CHECK
+============================================================
+Running 10 overfit epochs on 8 samples...
+  Smoke Epoch 01/10: Train CTC Loss = 70.8364
+  Smoke Epoch 02/10: Train CTC Loss = 31.1576
+  Smoke Epoch 03/10: Train CTC Loss = 4.4320
+  Smoke Epoch 04/10: Train CTC Loss = 4.2961
+  Smoke Epoch 05/10: Train CTC Loss = 3.0669
+  Smoke Epoch 06/10: Train CTC Loss = 1.9760
+  Smoke Epoch 07/10: Train CTC Loss = 2.4797
+  Smoke Epoch 08/10: Train CTC Loss = 2.3933
+  Smoke Epoch 09/10: Train CTC Loss = 1.7713
+  Smoke Epoch 10/10: Train CTC Loss = 1.6697
+Smoke Test Initial Loss: 70.8364 -> Final Loss: 1.6697
+Smoke Test Decoded Samples: [{'sample_id': 'SENT001_S01_R01_F', 'annotation_source': 'source', 'reference': 'TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN', 'prediction': '<BLANK_ONLY>'}, {'sample_id': 'SENT001_S02_R02_F', 'annotation_source': 'source', 'reference': 'TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN', 'prediction': '<BLANK_ONLY>'}]
+[SMOKE TEST FAILED] Loss decreased: True, Non-empty output: False

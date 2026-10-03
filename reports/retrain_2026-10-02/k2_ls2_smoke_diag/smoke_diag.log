@@ -1,0 +1,52 @@
+[{"stream_name":"stdout","time":3.362670458,"data":"PINNED COMMIT acf274c04e9dc4b7f0f9b7881b49bb1942a5e965\n"}
+,{"stream_name":"stdout","time":3.404162488,"data":"PREREGISTRATION reports/retrain_2026-10-02/preregistration.json commit ea12b44734840a0c0ccb7d35944d0db7df701091 (ancestor of the pin)\n"}
+,{"stream_name":"stdout","time":3.404203819,"data":"$ /usr/bin/python3 -m pip install -q safetensors==0.8.0 sentencepiece==0.2.2 tokenizers==0.22.2 transformers==4.57.6  (cwd=/tmp, log=/kaggle/working/diag/logs/pip.log)\n"}
+,{"stream_name":"stdout","time":28.687840402,"data":"$ git clone -q https://github.com/nguyentheanh822/Vietnamese-Sign-Language-Translation.git /tmp/vslt/clone/Vietnamese-Sign-Language-Translation  (cwd=/tmp, log=/kaggle/working/diag/logs/clone.log)\n"}
+,{"stream_name":"stdout","time":69.940183971,"data":"$ git -C /tmp/vslt/clone/Vietnamese-Sign-Language-Translation checkout -q 6c351e63c0b2cf1b5e2e8056bb3bf2d6f31dc90a  (cwd=/tmp, log=/kaggle/working/diag/logs/clone.log)\n"}
+,{"stream_name":"stdout","time":70.412988446,"data":"UPSTREAM vsl_gh 6c351e63c0b2cf1b5e2e8056bb3bf2d6f31dc90a\n"}
+,{"stream_name":"stdout","time":70.41308781,"data":"$ /usr/bin/python3 scripts/prepare_canonical_vsl_gh.py  (cwd=/tmp/vslt, log=/kaggle/working/diag/logs/prepare_vsl_gh.log)\n"}
+,{"stream_name":"stdout","time":83.071110534,"data":"$ /usr/bin/python3 scripts/build_gloss_vocab_canonical.py --canonical data/external/vsl_gh/dataset_canonical.json --out data/external/vsl_gh/gloss_vocab_canonical.txt --sentence-split configs/vslgh_sentence_split_v1.json --split train  (cwd=/tmp/vslt, log=/kaggle/working/diag/logs/vocab.log)\n"}
+,{"stream_name":"stdout","time":87.802474142,"data":"$ /usr/bin/python3 scripts/build_gloss_vocab_canonical.py --canonical data/external/vsl_gh/dataset_canonical.json --out /tmp/diag_scratch/vocab_full/gloss_vocab_canonical.txt  (cwd=/tmp/vslt, log=/kaggle/working/diag/logs/vocab_full.log)\n"}
+,{"stream_name":"stdout","time":93.956442241,"data":"MATCH    input dataset_canonical_json: d53ab70100e2b2cd70ed32ec6893aa0bcdffab0c4389f27b7d3b8838f6c9a881\n"}
+,{"stream_name":"stdout","time":93.956485506,"data":"MATCH    input keypoints_frontal: 596429252ff53caf1948fc9ed6e416952ee1a33876aa8972c25fcc9786e3bcae\n"}
+,{"stream_name":"stdout","time":93.956493217,"data":"MATCH    input vocab_train_322: c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0\n"}
+,{"stream_name":"stdout","time":93.956499448,"data":"MATCH    input vocab_full_372: dd7bc3da8f83e1e3400a85a0bfc4a7d8e882224647a23279a63b8f31d3601d11\n"}
+,{"stream_name":"stdout","time":93.956506281,"data":"MATCH    input k1_stgcn_best_pt: 2204becd2662840d2425a5935366b48f059b95feb7b73c1d0d1ded3d2da1bac2\n"}
+,{"stream_name":"stdout","time":93.956510534,"data":"MATCH    input sentence_split_v1: 289b2ac158419d6a5e7487a256bdb9a6bf8fbac9bc76fb167fbfa9a86d8421a4\n"}
+,{"stream_name":"stdout","time":95.708169008,"data":"$ /usr/bin/python3 /tmp/vslt/kaggle/vsl-retrain-cslr-smoke-diag/retrain_cslr_smoke_diag_kernel.py --part D0 --cfg /tmp/diag_scratch/cfg.json --out /kaggle/working/diag/parts/D0.json  (cwd=/tmp/vslt, log=/kaggle/working/diag/logs/D0.log)\n"}
+,{"stream_name":"stdout","time":105.858948286,"data":"PART D0: complete (0.17 min)\n"}
+,{"stream_name":"stdout","time":105.859376993,"data":"$ /usr/bin/python3 /tmp/vslt/kaggle/vsl-retrain-cslr-smoke-diag/retrain_cslr_smoke_diag_kernel.py --part D1 --cfg /tmp/diag_scratch/cfg.json --out /kaggle/working/diag/parts/D1.json  (cwd=/tmp/vslt, log=/kaggle/working/diag/logs/D1.log)\n"}
+,{"stream_name":"stdout","time":151.842483946,"data":"PART D1: complete (0.77 min)\n"}
+,{"stream_name":"stdout","time":151.842519402,"data":"\n"}
+,{"stream_name":"stdout","time":151.842526769,"data":"============================================================\n"}
+,{"stream_name":"stdout","time":151.842532994,"data":"STARTING SMOKE TEST / FIRST-RUN SAFETY CHECK\n"}
+,{"stream_name":"stdout","time":151.842550923,"data":"============================================================\n"}
+,{"stream_name":"stdout","time":151.842556402,"data":"Running 10 overfit epochs on 8 samples...\n"}
+,{"stream_name":"stdout","time":151.842561534,"data":"  Smoke Epoch 01/10: Train CTC Loss = 70.8364\n"}
+,{"stream_name":"stdout","time":151.842566339,"data":"  Smoke Epoch 02/10: Train CTC Loss = 31.1576\n"}
+,{"stream_name":"stdout","time":151.842571024,"data":"  Smoke Epoch 03/10: Train CTC Loss = 4.4320\n"}
+,{"stream_name":"stdout","time":151.842575642,"data":"  Smoke Epoch 04/10: Train CTC Loss = 4.2961\n"}
+,{"stream_name":"stdout","time":151.842580221,"data":"  Smoke Epoch 05/10: Train CTC Loss = 3.0669\n"}
+,{"stream_name":"stdout","time":151.842584682,"data":"  Smoke Epoch 06/10: Train CTC Loss = 1.9760\n"}
+,{"stream_name":"stdout","time":151.842589179,"data":"  Smoke Epoch 07/10: Train CTC Loss = 2.4797\n"}
+,{"stream_name":"stdout","time":151.842593649,"data":"  Smoke Epoch 08/10: Train CTC Loss = 2.3933\n"}
+,{"stream_name":"stdout","time":151.842598356,"data":"  Smoke Epoch 09/10: Train CTC Loss = 1.7713\n"}
+,{"stream_name":"stdout","time":151.842602728,"data":"  Smoke Epoch 10/10: Train CTC Loss = 1.6697\n"}
+,{"stream_name":"stdout","time":151.842607071,"data":"Smoke Test Initial Loss: 70.8364 -\u003e Final Loss: 1.6697\n"}
+,{"stream_name":"stdout","time":151.842612653,"data":"Smoke Test Decoded Samples: [{'sample_id': 'SENT001_S01_R01_F', 'annotation_source': 'source', 'reference': 'TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN', 'prediction': '\u003cBLANK_ONLY\u003e'}, {'sample_id': 'SENT001_S02_R02_F', 'annotation_source': 'source', 'reference': 'TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN', 'prediction': '\u003cBLANK_ONLY\u003e'}]\n"}
+,{"stream_name":"stdout","time":151.842620765,"data":"[SMOKE TEST FAILED] Loss decreased: True, Non-empty output: False\n"}
+,{"stream_name":"stdout","time":151.842625638,"data":"\n"}
+,{"stream_name":"stdout","time":151.842629933,"data":"$ /usr/bin/python3 /tmp/vslt/kaggle/vsl-retrain-cslr-smoke-diag/retrain_cslr_smoke_diag_kernel.py --part D4 --cfg /tmp/diag_scratch/cfg.json --out /kaggle/working/diag/parts/D4.json  (cwd=/tmp/vslt, log=/kaggle/working/diag/logs/D4.log)\n"}
+,{"stream_name":"stdout","time":352.045503334,"data":"PART D4: complete (3.34 min)\n"}
+,{"stream_name":"stdout","time":352.045825949,"data":"$ /usr/bin/python3 /tmp/vslt/kaggle/vsl-retrain-cslr-smoke-diag/retrain_cslr_smoke_diag_kernel.py --part D2 --cfg /tmp/diag_scratch/cfg.json --out /kaggle/working/diag/parts/D2.json  (cwd=/tmp/vslt, log=/kaggle/working/diag/logs/D2.log)\n"}
+,{"stream_name":"stdout","time":398.55346695,"data":"PART D2: complete (0.78 min)\n"}
+,{"stream_name":"stdout","time":398.554537938,"data":"$ /usr/bin/python3 /tmp/vslt/kaggle/vsl-retrain-cslr-smoke-diag/retrain_cslr_smoke_diag_kernel.py --part D3 --cfg /tmp/diag_scratch/cfg.json --out /kaggle/working/diag/parts/D3.json  (cwd=/tmp/vslt, log=/kaggle/working/diag/logs/D3.log)\n"}
+,{"stream_name":"stdout","time":439.178396518,"data":"PART D3: complete (0.68 min)\n"}
+,{"stream_name":"stdout","time":439.180401351,"data":"DECISION {\"decision\": \"R2-PASS\", \"stop\": null, \"reasons\": [\"D1 FAIL on CPU\", \"D5 epoch 60: losses finite, loss decreased, total_hyp_words 32 \u003e 0, WER 20.0 \u003c 100\"]}\n"}
+,{"stream_name":"stderr","time":442.788885007,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":442.788933149,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":443.233179343,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":443.233285394,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":444.292143642,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":445.960754,"data":"[NbConvertApp] Writing 452291 bytes to __results__.html\n"}
+]

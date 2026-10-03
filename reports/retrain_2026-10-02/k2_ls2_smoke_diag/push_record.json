@@ -1,0 +1,44 @@
+{
+  "generated_by": {
+    "command": "PYTHONIOENCODING=utf-8 .venv/Scripts/python _work/_plan13_tmp/ls2/b9b_write_reports.py",
+    "git_commit": "d7e2fdd8fcafda83d8310bb67cedfe3e42c3c639",
+    "push_check": ".venv/Scripts/python _work/_plan13_tmp/ls2/b9b_make_push.py <pin>"
+  },
+  "kernel": "phmvnsm33/vsl-retrain-cslr-smoke-diag",
+  "kernel_version": 1,
+  "push_utc_start": "2026-10-03T02:14:29Z",
+  "push_utc_end": "2026-10-03T02:14:32Z",
+  "pin": "acf274c04e9dc4b7f0f9b7881b49bb1942a5e965",
+  "diff_lines": [
+    {
+      "line": 44,
+      "pinned": "PIN_COMMIT = None   # full 40-hex commit of the pinned code; set only in the pushed copy (plan 13 §0B.6(a) mechanism)",
+      "pushed": "PIN_COMMIT = \"acf274c04e9dc4b7f0f9b7881b49bb1942a5e965\"   # full 40-hex commit of the pinned code; set only in the pushed copy (plan 13 §0B.6(a) mechanism)"
+    }
+  ],
+  "kernel_sha256": "48c808c50d409c01f81c6dd1f818411160cd30f11c5e53e434db926e44703404",
+  "metadata_sha256": "3c99b4f2e7a555771cc8e9b15194cc4faa8b0c64732560378b67bb25a7d7261c",
+  "metadata_equals_pinned": true,
+  "metadata": {
+    "id": "phmvnsm33/vsl-retrain-cslr-smoke-diag",
+    "title": "vsl-retrain-cslr-smoke-diag",
+    "code_file": "retrain_cslr_smoke_diag_kernel.py",
+    "language": "python",
+    "kernel_type": "script",
+    "is_private": true,
+    "enable_gpu": false,
+    "enable_internet": true,
+    "dataset_sources": [],
+    "kernel_sources": [
+      "phmvnsm33/vsl-retrain-stgcn-tier1"
+    ],
+    "competition_sources": [],
+    "model_sources": []
+  },
+  "check_pin": "OK",
+  "same_as_pinned": "OK",
+  "pushed_dir_files_sha256": {
+    "kernel-metadata.json": "3c99b4f2e7a555771cc8e9b15194cc4faa8b0c64732560378b67bb25a7d7261c",
+    "retrain_cslr_smoke_diag_kernel.py": "48c808c50d409c01f81c6dd1f818411160cd30f11c5e53e434db926e44703404"
+  }
+}
