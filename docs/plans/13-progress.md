@@ -668,6 +668,16 @@ Tệp tạm: `_work/_plan13_tmp/`.
 - Slug trước khi đẩy (`B9b_status_before.txt`, 2026-10-03T02:10:31Z): `kernels status` → "Permission 'kernels.get' was denied"; `kernels list --mine -s vsl-retrain`
   chỉ có K1, K2 ⇒ slug chưa tồn tại.
 - **Commit này = commit ghim B9b** (hash ghi ở commit sau).
+- **Ghim B9b: `acf274c04e9dc4b7f0f9b7881b49bb1942a5e965`** (`acf274c`); push GitHub `8463168..acf274c`, `git ls-remote` == ghim (`B9b_push_git.log`).
+  Tổ tiên: commit Lần sửa 2 (§0B) ⊂ `32c1356` (B9a) ⊂ `acf274c`. Giữa B9a và ghim có 2 commit của orchestrator/planner (`3f6b1dc` kế hoạch 14, `8463168`
+  Lần sửa 3 §0C — "KHÔNG đổi B9a–B9f, §0B.3"); đã đọc, không ảnh hưởng B9b.
+- Bản đẩy `_work/_plan13_tmp/smoke_diag_push/` (`.venv/Scripts/python _work/_plan13_tmp/ls2/b9b_make_push.py acf274c…a965` → `B9b_push_check.json`):
+  file ở ghim thay ĐÚNG dòng 44 (`PIN_COMMIT`), `check_pin` + `same_as_pinned` OK; metadata == metadata ở ghim (CPU, private, `kernel_sources` K1).
+  sha256 kernel đẩy `48c808c50d409c01f81c6dd1f818411160cd30f11c5e53e434db926e44703404`, metadata `3c99b4f2e7a555771cc8e9b15194cc4faa8b0c64732560378b67bb25a7d7261c`.
+  `__pycache__` do lần nạp kiểm sinh ra được CHUYỂN (không xóa) sang `_work/_plan13_tmp/ls2/push_pycache_moved/` trước khi đẩy.
+- `kaggle quota` trước khi đẩy (`B9b_quota_before.txt`): GPU used 0.00h / 30.00h (refreshAt 2026-10-10) — kernel này CPU, 0 GPU-phút; không cần cổng GPU.
+- Đẩy: `PYTHONUTF8=1 .venv/Scripts/kaggle kernels push -p _work/_plan13_tmp/smoke_diag_push` lúc **2026-10-03T02:14:29Z** → "Kernel version 1 successfully
+  pushed." (`B9b_push.log`, `B9b_push_time.txt`). Slug **`phmvnsm33/vsl-retrain-cslr-smoke-diag` version 1** (private, CPU). Theo dõi: `B9b_status_log.txt`.
 
 ## Đang làm
 - **ĐANG LÀM B9a/B9b** (lượt 10, Lần sửa 2, mốc HEAD `714d9c9`, 2026-10-03): B9a ghi nhận K2 v3 ERROR; B9b chẩn đoán smoke D0–D5 theo §0B.3 — chạy trên KAGGLE CPU (quyết định người dùng 2026-10-03 02:55: không train local), không local.
@@ -739,3 +749,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B9ls2-0 (ĐANG LÀM) | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +1 dòng "ĐANG LÀM B9a/B9b") | "Changes: 1 files, 1 symbols / Affected processes: 192 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); không mã nào đọc file này (`dc_B9ls2_0.txt`) |
 | B9ls2-a (B9a) | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, 16 file `A` trong `reports/retrain_2026-10-02/k2_train_v3/`) | "Changes: 17 files, 1 symbols / Affected processes: 192 / Risk level: critical" — symbol duy nhất mục markdown của 13-progress (nối nhầm như B7a); 16 file JSON/log dữ liệu, không symbol, không mã nào đọc (`dc_B9ls2_a.txt`) |
 | B9ls2-b1 (ghim B9b) | `analyze --index-only` rồi `detect-changes --scope staged` (`A` 2 file `kaggle/vsl-retrain-cslr-smoke-diag/`, `M tests/test_retrain_tools.py` chỉ thêm, `M docs/plans/13-progress.md`) | "Changes: 4 files, 77 symbols / Affected processes: 200 / Risk level: critical" — symbol đổi = hằng/hàm của kernel MỚI + lớp test mới + mục markdown; luồng liệt kê (`Run_harmonized → …`, `Main → …`, `Measure_and_compare → …`) là nối nhầm qua tên `main`/`run`/mục markdown như B7r2/B9; không file nào import kernel mới (`git grep retrain_cslr_smoke_diag_kernel -- src scripts backend kaggle train.py` → chỉ metadata + chính nó); 0 symbol có sẵn bị sửa (`dc_B9ls2_b1.txt`) |
+| B9ls2-b2 (đẩy diag) | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, ghi ghim + bản đẩy + giờ đẩy, chỉ thêm) | "Changes: 1 files, 3 symbols / Affected processes: 190 / Risk level: critical" — 3 symbol đều là mục markdown của 13-progress (nối nhầm như B7a); không mã nào đọc file này (`dc_B9ls2_b2.txt`) |
