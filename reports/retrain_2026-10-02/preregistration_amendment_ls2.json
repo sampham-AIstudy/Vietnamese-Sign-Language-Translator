@@ -1,0 +1,125 @@
+{
+  "plan": "docs/plans/13-train-lai-checkpoint-thieu.md",
+  "amendment": "ls2",
+  "reason_ref": "docs/plans/13 §0B.3",
+  "generated_by": {
+    "script": "scripts/retrain_amendment.py",
+    "command": "python scripts/retrain_amendment.py --date 2026-10-02",
+    "git_commit": "5ee935c275014224e42b9b80b633c253e3cbd1d8",
+    "code_dirty": false,
+    "code_dirty_files": [],
+    "generated_at_utc": "2026-10-03T02:47:23Z",
+    "python": "3.11.9",
+    "platform": "Windows-10-10.0.26200-SP0"
+  },
+  "date": "2026-10-02",
+  "amends": {
+    "path": "reports/retrain_2026-10-02/preregistration.json",
+    "commit": "ea12b44734840a0c0ccb7d35944d0db7df701091",
+    "sha256": "7ce00ce5f491e8e7547c7a187efbfffb3b3d8f203b1381a68344d52d1b85ce6b",
+    "lf_sha256": "7ce00ce5f491e8e7547c7a187efbfffb3b3d8f203b1381a68344d52d1b85ce6b",
+    "note": "preregistration.json is not modified; this file is applied on top of it"
+  },
+  "whitelist": {
+    "jobs.k2.cslr.train.argv": [
+      "--skip-smoke-test"
+    ]
+  },
+  "changes": {
+    "jobs.k2.cslr.train.argv": [
+      "src/training/train_cslr.py",
+      "--sentence-split",
+      "configs/vslgh_sentence_split_v1.json",
+      "--skip-smoke-test"
+    ]
+  },
+  "changes_detail": {
+    "jobs.k2.cslr.train.argv": {
+      "registered": [
+        "src/training/train_cslr.py",
+        "--sentence-split",
+        "configs/vslgh_sentence_split_v1.json"
+      ],
+      "added": [
+        "--skip-smoke-test"
+      ]
+    }
+  },
+  "flag_ref": "src/training/train_cslr.py:836",
+  "decision": "R2-PASS",
+  "decision_rule": "R2",
+  "decision_reasons": [
+    "D1 FAIL on CPU",
+    "D5 epoch 60: losses finite, loss decreased, total_hyp_words 32 > 0, WER 20.0 < 100"
+  ],
+  "evidence": {
+    "smoke_diag": {
+      "path": "reports/retrain_2026-10-02/k2_ls2_smoke_diag/smoke_diag.json",
+      "commit": "565cfcac31b3f80a67f709523eeaa1cfb0a858e1",
+      "sha256": "1d446ebf4befc27e6b28e9a88e8b0d90f198b0ba4b33a5f802b6bf47fcb964c5",
+      "lf_sha256": "1d446ebf4befc27e6b28e9a88e8b0d90f198b0ba4b33a5f802b6bf47fcb964c5",
+      "decision": "R2-PASS",
+      "diag_git_commit": "acf274c04e9dc4b7f0f9b7881b49bb1942a5e965"
+    },
+    "k2_train_v3_cslr_log": {
+      "path": "reports/retrain_2026-10-02/k2_train_v3/logs/cslr.log",
+      "commit": "32c135657c1f46f87b208fd6b732ebf6de8e482a",
+      "sha256": "91353ac6772333211d61dbf2ff01168d3cc9121a13d6a76f48844b9b741dcc8c",
+      "lf_sha256": "91353ac6772333211d61dbf2ff01168d3cc9121a13d6a76f48844b9b741dcc8c"
+    }
+  },
+  "expected_backbone_transfer": {
+    "transferred_keys_count": 62,
+    "transferred_params": 352207,
+    "source": "smoke_diag.json D4.transfer_info (D4-i), cross-checked with D4.key_analysis",
+    "kernel_check": "exactly one '[MODEL] Transferred N' line in the CSLR log with N == transferred_params"
+  },
+  "unchanged": [
+    {
+      "key": "jobs.k2.cslr.sanity",
+      "what": "§3.6 sanity checks of the CSLR job (finite losses, best epoch >= 1, best_val_wer < 100, LEAK CHECK before the first epoch, backbone transferred)",
+      "sha256": "6ff2306a5ca8c6a57aa14e1829fe8b517d9c260bbdf346396505448572606215"
+    },
+    {
+      "key": "jobs.k2.cslr.selection",
+      "what": "epoch selection rule (min val WER on the val split)",
+      "sha256": "7832d9455466635921b564d3414811f44ac52c41914111487082577372d4fc07"
+    },
+    {
+      "key": "jobs.k2.cslr.test_policy",
+      "what": "test protocol: no test in the kernel, one deferred local evaluation (§3.12)",
+      "sha256": "c6b212588885d89ecb3b480d1ed71f441821af0de92591570cd715fb28d54a31"
+    },
+    {
+      "key": "evaluation_protocol",
+      "what": "§3.12 evaluation protocol",
+      "sha256": "059a261939597877b602774ab81c0587c51e857a6150c81f3a0d7f861b6f723f"
+    },
+    {
+      "key": "jobs.k2.backbone",
+      "what": "backbone file + sha256 rule (K1 output)",
+      "sha256": "2662cdfba0fa3a8403b947b5309c09af25764074b21bb24c7abe274fd0341c52"
+    },
+    {
+      "key": "jobs.k2.watchdog_minutes",
+      "what": "watchdog",
+      "sha256": "1253e9373e781b7500266caa55150e08e210bc8cd8cc70d89985e3600155e860"
+    },
+    {
+      "key": "jobs.k2.gpu_cap_hours",
+      "what": "GPU cap of K2",
+      "sha256": "f4881c772c8950930750e103abbe15b6720b84168921e66850d5800500ea0865"
+    },
+    {
+      "key": "jobs.gpu_budget",
+      "what": "GPU budget of plan 13",
+      "sha256": "532a554fc07d9bc1cc39aa5fd0ad936d89a68daa187d3cdaca7fdbed703122bb"
+    },
+    {
+      "key": "jobs.rerun_policy",
+      "what": "rerun policy",
+      "sha256": "d38b96db7cddf10e15de53be9b0629a6070bf4d2ce3d47d5fcb05921f4cc1b58"
+    }
+  ],
+  "unchanged_rule": "every preregistration key other than the whitelisted one is unchanged; the listed keys are the ones §0B.3 names explicitly (sha256 = canonical JSON of the registered value)"
+}

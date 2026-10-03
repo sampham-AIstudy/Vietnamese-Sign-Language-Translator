@@ -705,8 +705,23 @@ Tệp tạm: `_work/_plan13_tmp/`.
   `total_hyp_words`/WER với eval ở cả 2 mốc (loss chỉ lệch nhỏ) ⇒ không ủng hộ H2; D1 FAIL trên CPU ⇒ không phải lỗi riêng GPU/AMP (H5). Đây là đọc số, không phải kết luận đã chứng minh.
 - **Dừng ở đây theo lệnh orchestrator** (R2-PASS): B9c–B9f giao lượt sau.
 
+### B9d [LS2] — amendment `preregistration_amendment_ls2.json` (lượt 11, mốc HEAD `3af52d7`). Log: `_work/_plan13_tmp/b9d_amendment_stdout.txt`
+- Test đỏ trước: `12ed4a7` (lớp MỚI `TestRetrainAmendment`, 11 test; `ModuleNotFoundError: retrain_amendment`). Script + test xanh: `5ee935c`
+  (`scripts/retrain_amendment.py`). Sửa trong test MỚI của chính B9d ở `5ee935c`: chỉ thứ tự fixture (`fake_git()` dựng trước khi xóa file), không đổi khẳng định.
+  `git diff 3af52d7 -- tests/test_retrain_tools.py | grep -c "^-[^-]"` → 0.
+- Lệnh: `.venv/Scripts/python scripts/retrain_amendment.py --date 2026-10-02` tại `5ee935c` (code + 3 file đầu vào sạch) → rc 0; stdout (chép nguyên ở log trên):
+  `sha256 52f05598837717732ae794dbc568c589f3516ea791479121d6e34d87902bccac`, `decision R2-PASS`, `decision_rule R2`,
+  `changes {"jobs.k2.cslr.train.argv": [src/training/train_cslr.py, --sentence-split, configs/vslgh_sentence_split_v1.json, --skip-smoke-test]}`,
+  `expected_backbone_transfer {transferred_keys_count 62, transferred_params 352207}` (chép bằng code từ `smoke_diag.json` D4.transfer_info, đối chiếu D4.key_analysis).
+- Bằng chứng trỏ tới (trong file amendment, tính bằng code): preregistration `ea12b44` (1 commit, không đổi, sha256 blob == LF bản làm việc);
+  `smoke_diag.json` `565cfca`; `k2_train_v3/logs/cslr.log` `32c1356`; `flag_ref src/training/train_cslr.py:836`; 9 khóa "không đổi" kèm sha256 JSON chuẩn hóa.
+- Giả định coder (planner xác nhận ở B9c nếu cần): định dạng `changes` = {khóa: giá trị mới}; `whitelist` = {khóa: phần thêm}; KHÔNG sửa
+  `jobs.k2.cslr.train.command` (chuỗi hiển thị) vì danh sách trắng chỉ có `argv` — kernel chạy theo `argv` (`retrain_cslr_vit5_kernel.py:617`).
+- Test: `.venv/Scripts/python -m unittest tests.test_retrain_tools` → 149 OK (1 skip = test trạng thái repo khi chưa có amendment); sau khi sinh:
+  `-m unittest tests.test_retrain_tools.TestRetrainAmendment` → 11 OK, 0 skip.
+
 ## Đang làm
-- **ĐANG LÀM B9d** (lượt 11, mốc HEAD `3af52d7`): scripts/retrain_amendment.py + test → `preregistration_amendment_ls2.json`. KHÔNG làm B9c/B9e/B9f, KHÔNG đẩy kernel.
+- **B9d XONG** (lượt 11): `scripts/retrain_amendment.py` (`5ee935c`) + amendment `reports/retrain_2026-10-02/preregistration_amendment_ls2.json` (sha256 `52f05598…ccac`). B9c, B9e, B9f chưa làm (lượt sau); KHÔNG đẩy kernel.
 - **B9a + B9b XONG** (lượt 10): v3 ghi nhận (`32c1356`); chẩn đoán `phmvnsm33/vsl-retrain-cslr-smoke-diag` v1 COMPLETE (CPU, ghim `acf274c`) → **R2-PASS** (đường P). Dừng trước B9c (B9c–B9f lượt sau).
 - **B9 phần 1 XONG** (lượt 9): ghim `28a126e`; K2 train `phmvnsm33/vsl-retrain-cslr-vit5` v3 đẩy 18:48:35Z, RUNNING 18:49:43Z. Chờ phần 2 (tải output, kiểm, commit) — lượt sau.
 - **B8 XONG** (lượt 8): K1 `phmvnsm33/vsl-retrain-stgcn-tier1` v1 COMPLETE (ghim `c0c70d2`), 39/39 kiểm, `stgcn_best.pt` sha256 `2204becd…bac2` trong `k1_outputs.json`. Dừng trước B9 (KHÔNG làm B9).
@@ -781,3 +796,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B9ls2-b3 (kết quả B9b) | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, 21 file `A` trong `reports/retrain_2026-10-02/k2_ls2_smoke_diag/`) | "Changes: 22 files, 1 symbols / Affected processes: 193 / Risk level: critical" — symbol duy nhất mục markdown của 13-progress (nối nhầm như B7a); 21 file JSON/log dữ liệu, không symbol, không mã nào đọc (`dc_B9ls2_b3.txt`) |
 | B9ls2-d0 (WIP B9d test đỏ) | `analyze --index-only` rồi `detect-changes --scope staged` (`M tests/test_retrain_tools.py` chỉ thêm 282 dòng, 0 dòng xóa; `M docs/plans/13-progress.md` +1 dòng "ĐANG LÀM B9d") | "Changes: 2 files, 25 symbols / Affected processes: 193 / Risk level: critical" — symbol đổi = lớp test MỚI `TestRetrainAmendment` + hàm/hằng fixture mới (`_amend_diag`, `_amend_prereg`, `AMEND_*`) + mục markdown; luồng liệt kê (`Run_harmonized → …`, `Main → …`, `Measure_and_compare → …`) là nối nhầm như B9ls2-b1; 0 symbol có sẵn bị sửa (`dc_B9ls2_d0.txt`) |
 | B9ls2-d1 (script B9d) | `analyze --index-only` rồi `detect-changes --scope staged` (`A scripts/retrain_amendment.py`, `M tests/test_retrain_tools.py` sửa thứ tự fixture trong test MỚI của chính B9d — 2 dòng, không đổi khẳng định; so 3af52d7 vẫn 0 dòng xóa) | "Changes: 2 files, 31 symbols / Affected processes: 4 / Risk level: medium" — symbol đổi = hằng/hàm của script MỚI; 4 luồng đều là `Main → …` bên trong chính script mới (`_pos_int`, `Lf_sha256`, `_git`, `Input_rels`); không file nào khác import `retrain_amendment` (grep src/scripts/backend/kaggle/train.py → 0); 0 symbol có sẵn bị sửa (`dc_B9ls2_d1.txt`) |
+| B9ls2-d2 (amendment B9d) | `analyze --index-only` rồi `detect-changes --scope staged` (`A reports/retrain_2026-10-02/preregistration_amendment_ls2.json`, `M docs/plans/13-progress.md` mục B9d + "Đang làm") | "Changes: 2 files, 1 symbols / Affected processes: 192 / Risk level: critical" — symbol duy nhất mục markdown của 13-progress (nối nhầm như B7a); JSON amendment không symbol, chưa mã nào đọc (B9c sẽ đọc) (`dc_B9ls2_d2.txt`) |
