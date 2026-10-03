@@ -7,8 +7,10 @@
 - HEAD: 49ad46b (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 15:15 ngày 3/10 giao vslt-coder 15 B4 (CHỈ test tương đương AC-E1/E3). 5h 59% (reset 18:30 VN), 7 ngày 76% (reset 09:00 8/10).
-  Cổng: 59 + 15 (est theo cỡ: B4 1,5 h ≈ 1/4 chặng MVP 6 h tốn 36) = 74 ≤ 90 → đạt. Chờ người dùng thử U1 (webcam).
+- Trạng thái phiên: ĐANG CHẠY — 15:35 ngày 3/10 giao vslt-coder 15 B5 (đo độ trễ đầy đủ + AC-L). 5h 71% (reset 18:30 VN), 7 ngày 77% (reset 09:00 8/10).
+  Cổng: 71 + 12 (B4 cùng cỡ tốn 12) = 83 ≤ 90 → đạt. Chờ người dùng thử U1 (webcam).
+  Coder 15 B4 XONG (aee18be): tests/test_level1_equivalence.py 9 test — E1 BẰNG HỆT trên 10 clip (8 hauuto + 2 qipedc): landmark, đặc trưng, classify == /sequence;
+  E3 OK (không Hands(/resize; cv2.flip chỉ ở display_view; khung đưa vào process là đúng đối tượng reader trả về). AC1-ngắn 16 module Ran 230 OK.
   Coder 15 MVP B0–B3 XONG (4e4d9e3, 966ea4b, 58b31ce, 75e3116, e749212; đã push): file mới configs/level1_realtime.json, src/inference/level1_{segmenter,core,timing}.py,
   level1_demo.py, tests/test_level1_{segmenter,core,demo,guard}.py. Lệnh demo: `.venv\Scripts\python level1_demo.py --source 0 --display-mirror` (+ --out-json).
   Test 15: segmenter 18, core 20, demo 12, guard 4 OK; C1 classify == POST /sequence bằng hệt trên 4 clip hauuto; guard chính Ran 28 OK known=9 (0 mới); AC1-đủ B0
@@ -400,6 +402,7 @@
 - Của người dùng: xóa data/alphabet_landmarks_full.csv, data/hand_data.csv, data (2)/Dataset/Labels/label.csv
   (đã chuyển sang data/Dataset/Labels/label.csv). Không commit, không khôi phục.
 - Nhiều file/thư mục untracked (data/, clone/, .agents/, .claude/skills/, data/splits/...): không add.
+- (phát hiện 2026-10-03 15:30) ` M README.md` chưa commit — KHÔNG do agent kế hoạch 15 (coder báo là thay đổi của người dùng); không đụng, không commit; hỏi người dùng.
 
 ## Nhật ký khôi phục (thêm dòng mỗi lần khôi phục sau khi bị ngắt)
 - 2026-09-28 11:05 | bootstrap (không phải ngắt) | kế hoạch 04 code xong, chưa review | Điền STATE từ git log + progress_log. Sửa so với bản mẫu:
