@@ -7,9 +7,14 @@
 - HEAD: feba7a1 (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 08:58 ngày 3/10: vslt-coder 13 B9a/B9b đang chạy (B9a xong 32c1356); giao vslt-planner sửa nhỏ 13 (§3.9/B12 chồng lấn 14,
-  AC0(a) thêm 14) + 08 (§3.2 dòng 152 fps_last 30.0 → 0.0, AC-T thêm module mới của 11). 5h 23% (số lúc 08:43), reset 13:30 VN; 7 ngày 60%.
-  Cổng: 23 + 15 (coder đang chạy) + 32 (planner) = 70 ≤ 90 → đạt.
+- Trạng thái phiên: ĐANG CHẠY — 09:15 ngày 3/10: vslt-coder 13 B9b (chẩn đoán smoke trên Kaggle CPU) đang chạy. 5h 56% (số lúc 09:07), reset 13:30 VN; 7 ngày 64%.
+  Planner sửa nhỏ 13 + 08 XONG (phụ lục, commit cùng lượt này; orchestrator chèn dòng con trỏ vào file gốc): docs/plans/13-lan-sua-3.md (§0C: B12 → B12a/B12b,
+  bỏ đính chính rò rỉ (thuộc 14), bàn giao reports/retrain_2026-10-02/eval/test_eval.json cho 14 B7 + kiểm sentence_split_sha256 ở AC12, AC0(a) thêm 11/14;
+  thứ tự 13 B11b → 14 B7/B8 → 13 B12b → 13 B13); docs/plans/08-lan-sua-2026-10-03.md (n = 1 → fps_last 0.0; AC-T thêm module 11/14 + luật "có ở HEAD thì phải
+  chạy"; đo trên commit `^(WIP )?08:`; 08 B1 chỉ sau commit `11: B2`; F1–F12).
+  CẦN PLANNER 11 (GẤP, TRƯỚC coder 11 B2) — F2: AC4 ca (b) TestSegmenterSingleFrame của 11 dùng luồng khung khoảng cách KHÔNG đều, đòi giống hệt mã fps trung bình cũ →
+  sẽ đỏ sau 08 B1 mà 08 không được sửa test; đề xuất: khoảng cách đều trong mỗi đoạn liên tục, nhánh n = 1 vẫn xảy ra nhờ khoảng hở + reset().
+  VIỆC KẾ TIẾP: coder 13 trả về → (R1/R2-PASS) coder 13 B9c–B9e; xen: planner 11 sửa F2 → coder 11 B2…; coder 14 phần A.
   Planner 14 XONG (docs/plans/14-dinh-chinh-cslr-unseen.md, commit cùng lượt này): chưa có JSON chứng minh "300/300 câu đã thấy" → B1 thêm
   scripts/audit_cslr_sentence_coverage.py → reports/cslr_claims_<D>/old_cslr_sentence_coverage.json; README:60 gắn nhãn sai thứ hai (WER 32.80% đo trên 300 clip S06,
   không phải 30 câu); số trong tài liệu sinh bằng scripts/render_cslr_claims.py (khối giữa marker); sửa trực tiếp README, EVALUATION, docs/cslr_streaming_design.md,

@@ -1,5 +1,7 @@
 # Kế hoạch 13 — Train lại checkpoint thiếu trên Kaggle (stgcn_best, CSLR + vocab, ViT5) + gỡ Modal
 
+> **Lần sửa 3 — XONG (planner, 2026-10-03, nhỏ).** §0C ở `docs/plans/13-lan-sua-3.md`: B12 tách B12a/B12b, bỏ dòng đính chính rò rỉ (chuyển kế hoạch 14), bàn giao test_eval.json cho 14 B7, AC0(a) thêm kế hoạch 14. Không đổi B9a–B9f, §0B.3, preregistration.
+>
 > **Lần sửa 2 — XONG (planner, 2026-10-03).** Sau K2 v3 ERROR (smoke test CSLR giải mã toàn blank; checkpoint ViT5 mất vì kernel chỉ chép output khi mọi
 > job thành công). Chi tiết, bằng chứng, quy tắc quyết định đăng ký trước, thay đổi tiêu chí + lý do: **§0B**. Chỗ sửa trong thân đánh dấu **[LS2]**.
 > Coder làm tiếp từ **B9a** (§0B.9); KHÔNG đẩy lại K2 trước khi B9b ra quyết định theo §0B.3.

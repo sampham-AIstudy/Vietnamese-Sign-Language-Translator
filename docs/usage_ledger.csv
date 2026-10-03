@@ -50,3 +50,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-02T19:26Z,vslt-coder,11,B0-B1,54,55+,?,0,stale (usage written 02:14 VN before coder end)
 2026-10-02T19:45Z,vslt-planner,13,revision 2 (smoke fail analysis + B9a-f),55,88,33,4,ok (55 reading from 02:14 may be low; includes orchestrator turns)
 2026-10-03T01:55Z,vslt-planner,14,full plan,0,23,23,4,noisy (coder 13 B9a/B9b ran concurrently)
+2026-10-03T02:15Z,vslt-planner,13+08,small revisions (addenda),23,56,33,4,noisy (coder 13 B9b ran concurrently)

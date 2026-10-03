@@ -2,6 +2,8 @@
 
 **Trạng thái: XONG (chờ orchestrator)**
 
+> **Lần sửa (2026-10-03, nhỏ) — XONG:** xem `docs/plans/08-lan-sua-2026-10-03.md` (ghi đè §3.2 nhánh n = 1 → 0.0 theo kế hoạch 11; AC-T thêm module 11/14 + luật "có ở HEAD thì phải chạy"; đo trên commit `08:`; B1 sau commit `11: B2`; CẦN PLANNER 11 mục F2).
+
 **Điểm dừng:** KHÔNG cần người dùng trước khi code. Có điểm dừng CÓ ĐIỀU KIỆN (§7), trong đó một nhánh của luật D9
 ("keep_0.5_needs_user") sẽ thành câu hỏi CẦN NGƯỜI DÙNG sau khi có số TRAIN/VAL.
 
