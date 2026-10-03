@@ -7,11 +7,14 @@
 - HEAD: 49ad46b (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 80% lúc 15:58 ngày 3/10, reset 18:30 VN; 7 ngày 79% (reset 09:00 8/10). Không agent chạy. Đã lưu + push.
-  Không giao B6 (est ~12: 92 > 90; B6a riêng ~9 sát ngưỡng — không mạo hiểm chạm giới hạn). Chờ phản hồi webcam U1 của người dùng.
-  VIỆC KẾ TIẾP (sau 18:30): vslt-coder 15 B6a/B6b (hiệu chỉnh still_speed/hold_ms trên clip TRAIN theo quy tắc đặt trước) — LƯU Ý từ B5: MediaPipe p50 ~64–70 ms/khung
-  trên máy này ⇒ realtime chỉ xử lý ~11–15 khung/s, bỏ ~một nửa khung (rủi ro §6.1 khoảng cách khung không đều là THẬT) ⇒ hiệu chỉnh phải dùng chế độ
-  --pace realtime (giống webcam), không chỉ headless; + sửa theo phản hồi U1/U2. Sau đó B7 (replay) gọn, B8 phần cần cho trình bày.
+- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 80%+ (reset 18:30 VN), 7 ngày 79% (reset 09:00 8/10). Không agent chạy.
+  PHẢN HỒI U1 (người dùng, 3/10 ~16:50, webcam): "chữ đứng yên cơ bản OK; các ký tự DẤU (có chuyển động, không chỉ dừng) đo còn lỗi".
+  JSON của lần thử: _work/u1.json (bản sao _work/_plan15_u1/u1_2026-10-03_1650.json; KHÔNG commit, không có --expected ⇒ không phải số độ chính xác):
+  frames_read 11779, processed 9632, dropped 2146, processing_fps 24.9, capture_fps 30.5, 105 segment, 33 word_gap; nhiều segment dài (88–108 khung) ra
+  "dấu ngã"/"d" confidence thấp bị từ chối; dấu sắc/hỏi/huyền/ngã có lúc nhận được với conf cao; chữ tĩnh (g, v, h, k, t, s, o) conf cao.
+  VIỆC KẾ TIẾP (sau 18:30): vslt-planner LẦN SỬA 15 (nhỏ): tách ký hiệu cho DẤU THANH có chuyển động (đọc video mẫu tone_* của hauuto + u1.json +
+  level1_segmenter.py): cửa sổ phân loại phải chứa trọn quỹ đạo dấu, phát khi kết thúc chuyển động, xử lý segment quá dài (≫ 30 khung), lấy mẫu khi fps
+  xử lý thấp; giữ tương đương với train; gộp với B6 (hiệu chỉnh) → coder 15 làm ngay.
   Coder 15 B5 XONG (3ebc7b9, 3dc87aa; đã push): HUD p50 9 chặng + processed/s + dropped; JSON counts.dropped/capture_fps; TestLatencyAcL + TestHudStatsLines;
   test level1 demo+guard 22 OK; AC1-ngắn Ran 236 OK. Số thử (KHÔNG phải số báo cáo, _work/_plan15/b5_paced_*.json, clip train a_hau_A_001 640×480 23.584 fps):
   headless-paced 48/75 xử lý, p50 mediapipe 63.6 ms, frame_total 87.4 ms; window-paced 36/75, p50 mediapipe 69.9, frame_total 102.2 (p95 154.8), classify 29.7,
