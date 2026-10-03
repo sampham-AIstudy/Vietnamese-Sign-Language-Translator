@@ -408,7 +408,10 @@
 
 - (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy" — ĐÃ BỊ THAY bởi quyết định 20:15 ngay dưới.
 
-- (2026-10-02 20:15) LUẬT TẮT MÁY (thay mọi quyết định tắt máy trước đây: 2026-09-29 18:55, 2026-10-01 19:35, 2026-10-01 20:00, 2026-10-02 20:10):
+- (2026-10-04 01:15) LUẬT TẮT MÁY MỚI (THAY quyết định 2026-10-02 20:15 ngay dưới): "đơn giản ko cần lưu luật tắt máy, khi nào tôi yêu cầu tắt thì lúc đó
+  mới tắt thôi đừng tự suy diễn". ⇒ Chỉ tắt khi người dùng yêu cầu rõ trong hội thoại; không mang yêu cầu cũ sang phiên mới. Trước khi tắt vẫn: lưu STATE,
+  commit, push, không "ahead", không agent/tiến trình nền; lệnh `MSYS_NO_PATHCONV=1 shutdown /s /t 300 /c "VSLT: tat may sau khi luu STATE. Huy: shutdown /a"` (không /f).
+- [ĐÃ BỊ THAY 2026-10-04 01:15] (2026-10-02 20:15) LUẬT TẮT MÁY (thay mọi quyết định tắt máy trước đây: 2026-09-29 18:55, 2026-10-01 19:35, 2026-10-01 20:00, 2026-10-02 20:10):
   1. Dòng đầu file "Cho phép tắt máy: KHÔNG" là mặc định. Chỉ tắt khi dòng này là CÓ và do NGƯỜI DÙNG đổi; agent không tự đổi.
   2. Trước khi tắt (mọi điều kiện): `git status -sb` không có "ahead"; ghi slug + giờ bắt đầu + giờ dự kiến xong của mọi kernel Kaggle
      đang chạy; không còn tiến trình nền trên máy (agent, sleep, server…); ghi "Trạng thái phiên: ĐÃ TẮT MÁY CÓ CHỦ ĐÍCH lúc HH:MM".
