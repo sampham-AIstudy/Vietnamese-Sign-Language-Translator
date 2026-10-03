@@ -4,10 +4,10 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM: B5 (đo độ trễ đầy đủ + test AC-L), bắt đầu 2026-10-03, mốc HEAD c845b06
+- ĐANG LÀM: — (B5 xong; chờ orchestrator)
 - Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`)
-- Xong thêm: B4 (commit `15: B4`).
-- Còn lại: B5–B9.
+- Xong thêm: B4 (commit `15: B4`), B5 (3ebc7b9).
+- Còn lại: B6a–B9.
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -127,12 +127,33 @@ Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_wo
 - AC1-ngắn đủ 16 module → `_work/_plan15/b5_short.log`: `Ran 236 tests in 216.419s` — `OK` (230 của B4 + 6 mới; 0 skip; test chập
   chờn OK lần này). G1 trong đó: "[DoD7-guard] known=9 allowed=36", "[scope] serving=45 main=59"; tests.test_level1_guard OK.
 
+- Đo thử tại commit sạch 3ebc7b9 (code_dirty false; KHÔNG phải báo cáo, JSON trong `_work/`, không commit; số chính thức: B7):
+  `python level1_demo.py --source data/external/hauuto_raw/raw/raw/hau/a_hau_A_001.mp4 --pace realtime --headless --out-json
+  _work/_plan15/b5_paced_headless.json` và cùng lệnh không `--headless` (cửa sổ thật, tự đóng) → `_work/_plan15/b5_paced_gui.json`.
+  Máy: cpu "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel", Windows-10-10.0.26200, mediapipe 0.10.14, torch 2.6.0+cu124;
+  nguồn: clip TRAIN hauuto 640×480, fps file 23.584, 75 khung. Số đọc từ JSON (in bằng script đọc JSON):
+  headless-paced: processed 48 / read 75, dropped 27, processing_fps 14.94, capture_fps 23.91; p50 mediapipe 63.6, frame_total 87.4,
+  capture_age 21.7 (ms); warmup mediapipe_first 173.0, classify_first 28.8.
+  cửa sổ-paced: processed 36 / read 75, dropped 39, processing_fps 11.08; p50 mediapipe 69.9, hud 6.6 (p95 40.9 = lúc panel PIL vẽ lại),
+  display 2.5, frame_total 102.2 (p95 154.8); classify 29.7, emit_to_token 127.0 (n = 1).
+  Nhận xét cho planner (không phải điểm dừng): trên máy này MediaPipe (model_complexity 1, giữ như train) chậm hơn nhịp khung clip →
+  khoảng một nửa số khung bị bỏ ở chế độ realtime → khung không cách đều khi vào `resample: frame_index` (rủi ro §6.1 "Nhịp khung")
+  là có thật; độ chính xác chưa đo.
+
 ## Việc người dùng — U1 (sau B3, ~10 phút; không chặn)
 Từ gốc repo, trong .venv: `.venv\Scripts\python level1_demo.py --source 0 --display-mirror`
 (thêm `--out-json _work/u1_webcam.json` nếu muốn xem JSON; không commit). Ký lần lượt vài chữ (a, b, c, o, dấu sắc) rồi 2 từ "ba", "cá"
 (giữ yên mỗi chữ cho tới khi thanh xanh đầy; hạ tay ~1 giây để kết thúc từ; chữ lặp "oo" cần nảy tay hoặc nhấn `r`). Nhận xét: chấm có
 bám tay không, chữ có tự tách không, có phát lặp khi giữ yên không, độ trễ cảm nhận. Nếu webcam không mở: thử `--source 1`, hoặc đổi
 `camera_api` trong configs/level1_realtime.json sang "msmf"/"any" (ghi lại).
+
+## Việc người dùng — U2 (sau B5, ~15 phút; không chặn)
+Từ gốc repo, trong .venv, KHI KHÔNG có thay đổi chưa commit ở level1_demo.py / src / configs/level1_realtime.json (để code_dirty = false,
+AC-L L3). 4 từ × 3 lần, mỗi lần một lệnh (n = 1, 2, 3; ký xong nhấn `q`):
+`.venv\Scripts\python level1_demo.py --source 0 --display-mirror --expected "ba" --out-json reports/level1_realtime_<D>/webcam_ba_<n>.json`
+tương tự `--expected "cá"` → `webcam_ca_<n>.json`, `"mẹ"` → `webcam_me_<n>.json`, `"xoong"` → `webcam_xoong_<n>.json` (nảy tay giữa
+hai chữ o, hoặc nhấn `r`). `<D>` = ngày chạy dạng YYYY-MM-DD (orchestrator thống nhất với thư mục B7). JSON chỉ chứa token, sự kiện, thời
+gian, thống kê; không có video/khung/landmark. Không dùng các phiên này để chỉnh tham số.
 
 ## Quyết định / giả định của coder
 - `load_level1_config` chốt ở `src/inference/level1_core.py` (đúng bảng §3.1); kiểm thêm khóa lạ, kiểu, `source` ∈ {design, "calibrated: …"}.
@@ -174,3 +195,5 @@ bám tay không, chữ có tự tách không, có phát lặp khi giữ yên kh�
   Hud / Level1App (level1_demo.py), FRAME_STAGES / SIGN_STAGES / DRAWN_STAGES / TMP_PARENT / _WindowRecorder / TestLatencyAcL /
   TestHudStatsLines (tests/test_level1_demo.py) — đều của 15. Process "affected" (run_harmonized, measure_and_compare…) là trùng tên,
   không phải người gọi thật (xem mục B5 impact).
+- B5-progress (trước commit `15: B5 tiến độ`): analyze --index-only (exit 0) rồi detect-changes → "Changes: 5 files, 5 symbols, Affected
+  processes: 174, Risk level: critical"; symbol đổi: Section → README.md (người dùng) + 4 Section của 15-progress.md. Chỉ tài liệu.
