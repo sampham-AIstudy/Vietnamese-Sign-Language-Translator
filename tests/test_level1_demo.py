@@ -94,6 +94,8 @@ class TestHeadlessD2(unittest.TestCase):
         self.assertEqual(set(r["config"]["values"]) >= {"hold_ms", "still_speed"}, True)
         self.assertEqual(len(r["config"]["sha256"]), 64)
         self.assertEqual(r["checkpoint"]["sha256"], app_mod.sha256_file(os.path.join(PROJECT_ROOT, CKPT)))
+        self.assertEqual(r["checkpoint"]["path"], "checkpoints/alphabet_best.pt")
+        self.assertEqual(r["config"]["path"], "configs/level1_realtime.json")
         self.assertEqual(r["source"], {"kind": "video", "id": CLIP.replace("\\", "/"), "mode": "headless",
                                        "fps_file": r["source"]["fps_file"]})
         self.assertGreater(r["source"]["fps_file"], 0)
@@ -225,6 +227,22 @@ class TestHudOffscreen(unittest.TestCase):
             app_mod.find_font(None, [os.path.join(PROJECT_ROOT, "_no_such_font_.ttf")])
         with self.assertRaises(app_mod.SourceError):
             app_mod.find_font(os.path.join(PROJECT_ROOT, "_no_such_font_.ttf"), [])
+
+
+class TestDefaultPaths(unittest.TestCase):
+    def test_defaults_found_from_another_directory(self):
+        tmp = tempfile.mkdtemp(prefix="vslt_p15_cwd_")
+        cwd = os.getcwd()
+        os.chdir(tmp)
+        try:
+            for rel in (app_mod.DEFAULT_CONFIG, app_mod.DEFAULT_CHECKPOINT):
+                full = app_mod.resolve_path(rel)
+                self.assertEqual(os.path.normcase(os.path.abspath(full)),
+                                 os.path.normcase(os.path.join(PROJECT_ROOT, rel)))
+                self.assertEqual(app_mod.report_path(full), rel.replace(os.sep, "/"))
+        finally:
+            os.chdir(cwd)
+            shutil.rmtree(tmp, ignore_errors=True)
 
 
 class _CaptureWithoutRate:

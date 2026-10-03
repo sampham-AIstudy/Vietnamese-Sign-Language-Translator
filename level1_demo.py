@@ -47,8 +47,8 @@ from src.inference.level1_segmenter import Level1SignSegmenter, SignSegment, Wor
 from src.inference.level1_timing import (FRAME_STAGES, SIGN_STAGES, StageTimes,  # noqa: E402
                                          rate_from_timestamps)
 
-DEFAULT_CONFIG = os.path.join("configs", "level1_realtime.json")
-DEFAULT_CHECKPOINT = os.path.join("checkpoints", "alphabet_best.pt")
+DEFAULT_CONFIG = os.path.join("configs", "level1_realtime.json")      # relative to the repository root
+DEFAULT_CHECKPOINT = os.path.join("checkpoints", "alphabet_best.pt")  # relative to the repository root
 WINDOW_NAME = "VSLT Level 1"
 EXIT_INPUT_ERROR = 2
 CODE_PATHS = ("level1_demo.py", "src", "configs/level1_realtime.json")
@@ -327,6 +327,24 @@ class Hud:
 
 
 # ---------------------------------------------------------------------------------------------------------- report
+def resolve_path(path: str) -> str:
+    """A relative path that does not exist from the current directory is taken from the repository root (so the
+    app also starts from another directory)."""
+    if os.path.isabs(path) or os.path.exists(path):
+        return path
+    return os.path.join(ROOT, path)
+
+
+def report_path(path: str) -> str:
+    """Path written to the JSON: relative to the repository root when inside it, '/' separators."""
+    full = os.path.abspath(path)
+    try:
+        rel = os.path.relpath(full, ROOT)
+    except ValueError:  # another drive
+        return full.replace("\\", "/")
+    return (full if rel.startswith("..") else rel).replace("\\", "/")
+
+
 def sha256_file(path: str) -> str:
     h = hashlib.sha256()
     with open(path, "rb") as f:
@@ -365,12 +383,16 @@ class Level1App:
                  session_factory=HandLandmarkSession, keep_segments: bool = False):
         self.args = args
         self.argv = list(argv) if argv is not None else []
-        self.cfg = load_level1_config(args.config)
+        self.config_path = resolve_path(args.config)
+        self.checkpoint_path = resolve_path(args.checkpoint)
+        if not os.path.isfile(self.config_path):
+            raise SourceError(f"config not found: {args.config}")
+        self.cfg = load_level1_config(self.config_path)
         self.values = self.cfg["values"]
-        if not os.path.isfile(args.checkpoint):
+        if not os.path.isfile(self.checkpoint_path):
             raise SourceError(f"checkpoint not found: {args.checkpoint}")
-        self.checkpoint_sha256 = sha256_file(args.checkpoint)
-        self.classifier = classifier or Level1Classifier.from_checkpoint(args.checkpoint)
+        self.checkpoint_sha256 = sha256_file(self.checkpoint_path)
+        self.classifier = classifier or Level1Classifier.from_checkpoint(self.checkpoint_path)
         self.session_factory = session_factory
         self.keep_segments = keep_segments
         self.kept_segments: List[SignSegment] = []
@@ -592,6 +614,9 @@ class Level1App:
                 if capture.error is not None:
                     raise capture.error
                 self.counts["frames_read"] = capture.frames_read
+                if self.webcam and capture.frames_read == 0:
+                    raise SourceError(f"webcam {self.args.source} delivered no frame (try another index or "
+                                      "camera_api in the config)")
                 self.counts["frames_dropped"] = slot.dropped
             else:
                 i = 0
@@ -634,9 +659,9 @@ class Level1App:
         counts["processing_fps"] = rate_from_timestamps(self.process_starts)
         return {
             "generated_by": generated_by(self.argv),
-            "config": {"path": self.args.config.replace("\\", "/"), "sha256": self.cfg["sha256"],
+            "config": {"path": report_path(self.config_path), "sha256": self.cfg["sha256"],
                        "values": self.cfg["raw"]},
-            "checkpoint": {"path": self.args.checkpoint.replace("\\", "/"), "sha256": self.checkpoint_sha256},
+            "checkpoint": {"path": report_path(self.checkpoint_path), "sha256": self.checkpoint_sha256},
             "source": source,
             "frame_size": self.frame_size,
             "camera_props": reader.props,
