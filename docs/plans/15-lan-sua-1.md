@@ -1,5 +1,7 @@
 # Kế hoạch 15 — LẦN SỬA 1 (phụ lục): dấu thanh + khung text kiểu bộ gõ
 
+> **LẦN SỬA 2 (2026-10-04):** luật cắt đuôi `tail_still_keep_ms` (§3.A.3 dòng 145–146), config TRƯỚC/SAU của A3 (§3.A.4 dòng 150–156), AC-S15 và bước A2a/A2b được thay/bổ sung bởi `docs/plans/15-lan-sua-2.md` — đọc file đó trước khi làm A2a/A2b/A3.
+
 TRẠNG THÁI: XONG (planner, 2026-10-03). KHÔNG có điểm "CẦN NGƯỜI DÙNG" để bắt đầu (xem §7). Không đổi model mặc định.
 
 Hiệu lực: phụ lục này có hiệu lực như nằm trong `docs/plans/15-level1-realtime-desktop.md` (orchestrator chèn dòng con trỏ vào file gốc).
