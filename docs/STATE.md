@@ -7,9 +7,11 @@
 - HEAD: 49ad46b (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: TẠM DỪNG THEO YÊU CẦU NGƯỜI DÙNG (22:05 "xong task tạm dừng chút tôi cập nhật rule mới") — 22:16 ngày 3/10. Không agent chạy. Đã lưu + push.
-  5h 32% (reset 02:40 4/10), 7 ngày 84% (reset 09:00 8/10). CHỜ người dùng báo tiếp tục + đọc rule mới (đang sửa: .claude/agents/*, AGENTS.md,
-  docs/prompts/orchestrator.md, docs/prompts/usage_guard_addendum.md, docs/plans/15-lan-sua-1.md §3b scope — CHƯA COMMIT, của người dùng, KHÔNG đụng).
+- Trạng thái phiên: ĐANG CHẠY — 22:20 ngày 3/10 người dùng nhắn "dùng prompt để triển khai nốt và sau khi xong thì tiếp tục công việc" ⇒ rule mới ĐÃ commit
+  (ba5e139 setup agy: cầu nối + guard + cổng hạn mức agy; 0a1314b .gitattributes LF cho *.sh; bf8f290 sửa parser --steps; 7fbb752 progress T1). Kế hoạch 15 lần sửa 1 đã có khối scope (§3b).
+  T1 (92fce21) được orchestrator XÁC MINH ĐỘC LẬP: 6 module level 1 = Ran 78 OK; AC1-ngắn 16 module + textbox = Ran 245 OK, 0 skip (_work/_plan15/t1_short.log). CHƯA review (reviewer chạy sau C1).
+  Việc kế tiếp đang giao: vslt-coder (agy) bước A1 (scripts/level1_segment_report.py + tone_evidence.json), rồi T2. KHÔNG sửa STATE/plan trong lúc agy chạy (guard worktree báo nhầm).
+  Hạn mức Claude: 5h ~32% (reset 02:40 4/10), 7 ngày 84% (reset 09:00 8/10); cổng: 32 + 9 ≤ 90 → đạt. Hạn mức agy: xem `scripts/agy_usage.py status` + docs/agy_usage_ledger.csv.
   Coder 15 (cầu nối agy) T1 XONG (92fce21 agy; 3f08b5d tiến độ): src/inference/level1_textbox.py textbox_view, KEY_NAMES tone_1..5 + Level1Speller.view +
   key("tone_*") source "key" trong level1_core.py; test mới chỉ thêm; tự chạy lại AC1-ngắn 16 module + test_level1_textbox: Ran 245 OK, 0 skip; guard chính known=9.
   CHƯA LÀM: A1 (scripts/level1_segment_report.py, tone_evidence.json) và T2 (vẽ khung text trong Hud + map phím 1–5 trong KEY_ACTIONS) ⇒ chưa có demo U1b.
@@ -485,3 +487,4 @@
 - 2026-10-03 08:33 | khôi phục sau chờ hạn mức (người dùng nhắn "continue") | STATE khớp git (HEAD feba7a1), không agent/kernel chạy | Giao coder 13 B9a+B9b.
 - 2026-10-03 13:40 | khôi phục sau chờ hạn mức (sleep nền bị dừng khi phiên cũ kết thúc; người dùng nhắn "đã hồi quota triển khai đi") | STATE khớp git (HEAD 49ad46b), không agent/kernel chạy | Giao planner kế hoạch 15.
 - 2026-10-03 21:45 | khôi phục sau chờ hạn mức (sleep nền bị dừng khi phiên cũ kết thúc; người dùng nhắn "triển khai theo kế hoạch build lv1 tiếp") | STATE khớp git (HEAD eeefa80), không agent chạy | Giao planner lần sửa 15.
+- 2026-10-03 22:20 | tiếp tục sau tạm dừng cập nhật rule (người dùng: "dùng prompt để triển khai nốt và sau khi xong thì tiếp tục công việc") | STATE khớp git (HEAD 7fbb752), 1 tiến trình agy.exe cũ (pid 1232, từ 21:45) còn sống, không việc coder nào đang chạy | Commit rule + sửa progress T1 (AC1-ngắn 245), giao coder 15 A1.
