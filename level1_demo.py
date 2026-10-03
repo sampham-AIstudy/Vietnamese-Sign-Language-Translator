@@ -65,7 +65,18 @@ NOTE = ("Durations are measured inside the app with time.perf_counter, from the 
 HUD_STAGE_LABELS = (("capture_age", "cap_age"), ("mediapipe", "mp"), ("segmenter", "seg"), ("draw_landmarks", "draw"),
                     ("hud", "hud"), ("display", "disp"), ("frame_total", "total"), ("classify", "classify"),
                     ("emit_to_token", "emit>token"))
-KEY_ACTIONS = {8: "backspace", 32: "space", ord("a"): "accept", ord("r"): "repeat", ord("c"): "clear"}
+KEY_ACTIONS = {
+    8: "backspace",
+    32: "space",
+    ord("a"): "accept",
+    ord("r"): "repeat",
+    ord("c"): "clear",
+    ord("1"): "tone_1",
+    ord("2"): "tone_2",
+    ord("3"): "tone_3",
+    ord("4"): "tone_4",
+    ord("5"): "tone_5",
+}
 KEY_QUIT = (ord("q"), 27)
 KEY_PAUSE = ord("p")
 STATE_LABELS = {"no_hand": "không thấy tay", "moving": "đang chuyển động", "holding": "đang giữ yên"}
@@ -294,6 +305,17 @@ class Hud:
     """Text panel drawn with PIL (Vietnamese glyphs), shown below the camera image. The panel image is rebuilt only
     when its text changes (cache)."""
 
+    BG_RGB = (20, 20, 20)
+    BG_BGR = (20, 20, 20)
+    TEXT_RGB = (255, 255, 255)
+    TEXT_BGR = (255, 255, 255)
+    HIGHLIGHT_RGB = (45, 75, 125)
+    HIGHLIGHT_BGR = (125, 75, 45)
+    CURSOR_RGB = (255, 215, 0)
+    CURSOR_BGR = (0, 215, 255)
+    PREVIEW_RGB = (130, 140, 150)
+    PREVIEW_BGR = (150, 140, 130)
+
     def __init__(self, font_path: str, font_size: int):
         from PIL import ImageFont
         self.font = ImageFont.truetype(font_path, font_size)
@@ -303,30 +325,113 @@ class Hud:
         self._key = None
         self._panel = None
 
-    def _build(self, width: int, big: List[str], small: List[str], n_stats: int) -> np.ndarray:
+    def _fit_committed(self, committed: str, active: str, max_w: float) -> str:
+        """Drops committed syllables from the start (prepending '…') until cursor fits in max_w."""
+        if not committed:
+            return ""
+        if self.font.getlength(committed + active) <= max_w:
+            return committed
+        import re
+        words = re.findall(r"\S+\s*", committed)
+        if not words:
+            return "… "
+        for i in range(1, len(words) + 1):
+            rem = "".join(words[i:])
+            cand = "… " + rem if rem else "… "
+            if self.font.getlength(cand + active) <= max_w:
+                return cand
+        return "… "
+
+    def _build(self, width: int, view: Any, small: List[str], n_stats: int) -> np.ndarray:
         from PIL import Image, ImageDraw
-        height = self.line_h * len(big) + self.small_h * (len(small) + n_stats) + 8  # + lines for the live stats
-        img = Image.new("RGB", (width, height), (20, 20, 20))
+        is_view_dict = isinstance(view, dict)
+        num_big = 1 if is_view_dict else len(view)
+        height = self.line_h * num_big + self.small_h * (len(small) + n_stats) + 8  # + lines for the live stats
+        img = Image.new("RGB", (width, height), self.BG_RGB)
         d = ImageDraw.Draw(img)
         y = 4
-        for text in big:
-            d.text((8, y), text, font=self.font, fill=(255, 255, 255))
+
+        if not is_view_dict:
+            for text in view:
+                d.text((8, y), text, font=self.font, fill=self.TEXT_RGB)
+                y += self.line_h
+        else:
+            committed = view.get("committed", "")
+            active = view.get("active", "")
+            preview = view.get("preview")
+
+            x0 = 8
+            max_cursor_w = max(width - 24 - x0, 100)
+            disp_committed = self._fit_committed(committed, active, max_cursor_w)
+
+            # 1. Committed text
+            w_comm = self.font.getlength(disp_committed) if disp_committed else 0.0
+            if disp_committed:
+                d.text((x0, y), disp_committed, font=self.font, fill=self.TEXT_RGB)
+
+            # 2. Active text with highlight background
+            x_active = x0 + w_comm
+            w_act = self.font.getlength(active) if active else 0.0
+            if active and w_act > 0:
+                rect_x0 = int(round(x_active))
+                rect_x1 = int(round(x_active + w_act))
+                d.rectangle([(rect_x0, y), (rect_x1, y + self.line_h - 2)], fill=self.HIGHLIGHT_RGB)
+                d.text((rect_x0, y), active, font=self.font, fill=self.TEXT_RGB)
+
+            # 3. Cursor
+            x_cursor = int(round(x_active + w_act))
+            d.line([(x_cursor, y + 2), (x_cursor, y + self.line_h - 4)], fill=self.CURSOR_RGB, width=2)
+
+            # 4. Preview
+            if preview is not None and (preview.get("token") is not None or preview.get("prediction") is not None):
+                conf = preview.get("confidence")
+                conf_str = f"{conf:.2f}" if conf is not None else ""
+                active_if = preview.get("active_if_accepted", "")
+                if active_if:
+                    prev_label = f" {active_if} (a: nhận, {conf_str})"
+                else:
+                    prev_label = f" (a: nhận, {conf_str})"
+                x_prev = x_cursor + 4
+                d.text((x_prev, y), prev_label, font=self.font, fill=self.PREVIEW_RGB)
+
             y += self.line_h
+
         for text in small:
             d.text((8, y), text, font=self.small, fill=(200, 220, 255))
             y += self.small_h
         return cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
 
-    def compose(self, view: np.ndarray, big: List[str], small: List[str], hold_progress: float,
+    @staticmethod
+    def _view_cache_key(v: Any) -> tuple:
+        if not isinstance(v, dict):
+            return tuple(v)
+        prev = v.get("preview")
+        if prev is not None:
+            prev_key = (prev.get("token"), prev.get("prediction"), prev.get("confidence"), prev.get("active_if_accepted"))
+        else:
+            prev_key = None
+        tc_key = tuple((tc.get("from"), tc.get("to")) for tc in v.get("tone_changes", []))
+        warn_key = tuple(w.get("code") for w in v.get("warnings", []))
+        return (
+            v.get("committed"),
+            v.get("active"),
+            v.get("text"),
+            v.get("cursor"),
+            prev_key,
+            tc_key,
+            warn_key,
+        )
+
+    def compose(self, view: np.ndarray, text_or_view: Any, small: List[str], hold_progress: float,
                 stats_lines: Sequence[str] = ()) -> np.ndarray:
         """Window image = the camera image with the text panel stacked BELOW it (the hand is never covered); a
         green bar on top of the panel shows the hold progress. The PIL panel (Vietnamese text) is cached; the live
         stats lines (ASCII, change every frame) are drawn with cv2.putText on the last lines of the panel."""
         w = view.shape[1]
         stats_lines = list(stats_lines)
-        key = (w, tuple(big), tuple(small), len(stats_lines))
+        key = (w, self._view_cache_key(text_or_view), tuple(small), len(stats_lines))
         if key != self._key:
-            self._panel, self._key = self._build(w, big, small, len(stats_lines)), key
+            self._panel, self._key = self._build(w, text_or_view, small, len(stats_lines)), key
         out = np.vstack([view, self._panel])
         y = view.shape[0]
         if hold_progress > 0:
@@ -520,8 +625,7 @@ class Level1App:
 
     # -------------------------------------------------------------- one frame
     def _hud_lines(self):
-        comp = self.speller.composed()
-        big = ["Văn bản: " + (comp["text"] or "")]
+        tb_view = self.speller.view
         st = self.segmenter.status()
         state = "tạm dừng (p)" if self.paused else STATE_LABELS[st["state"]]
         r = self.last_result
@@ -533,12 +637,18 @@ class Level1App:
             mark = "nhận" if r.get("accepted") else "chưa nhận (a: nhận)"
             last = f"Ký hiệu #{r['seq']}: {r['prediction']}  {r['confidence']:.2f}  {mark}"
         small = [last, "Trạng thái: " + state]
-        for w in comp["warnings"][-2:]:
+        tc_list = tb_view.get("tone_changes", [])
+        if tc_list:
+            last_tc = tc_list[-1]
+            f_tone = last_tc["from"].replace("dấu ", "")
+            t_tone = last_tc["to"].replace("dấu ", "")
+            small.append(f"đổi dấu: {f_tone} → {t_tone}")
+        for w in tb_view.get("warnings", []):
             small.append("Cảnh báo: " + w["code"])
-        small.append("Backspace xóa | Space cách | a nhận | r lặp chữ | c xóa hết | p dừng | q thoát")
+        small.append("1-5 dấu | Backspace xóa | Space cách | a nhận | r lặp chữ | c xóa hết | p dừng | q thoát")
         dropped = self.slot.dropped if self.slot is not None else 0
         stats = hud_stats_lines(self.times, self.process_starts, self.values["hud_rolling_frames"], dropped)
-        return big, small, st["hold_progress"], stats
+        return tb_view, small, st["hold_progress"], stats
 
     def _process(self, session, frame: np.ndarray, t_cap: float, ts_ms: float) -> None:
         t0 = time.perf_counter()
@@ -565,8 +675,8 @@ class Level1App:
         t3 = time.perf_counter()
         self.times.add("draw_landmarks", (t3 - t2) * 1000.0)
         view = display_view(frame, self.args.display_mirror)
-        big, small, progress, stats = self._hud_lines()
-        view = self.hud.compose(view, big, small, progress, stats)
+        tb_view, small, progress, stats = self._hud_lines()
+        view = self.hud.compose(view, tb_view, small, progress, stats)
         t4 = time.perf_counter()
         self.times.add("hud", (t4 - t3) * 1000.0)
         cv2.imshow(WINDOW_NAME, view)

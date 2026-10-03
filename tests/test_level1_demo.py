@@ -526,5 +526,134 @@ class TestHudStatsLines(unittest.TestCase):
         self.assertTrue(np.array_equal(two[:48], view))
 
 
+class TestHudTextboxAcTD(unittest.TestCase):
+    """Plan 15 Lần sửa 1 §5 AC-TD: HUD textbox rendering & key actions (offscreen, no GUI)."""
+
+    @classmethod
+    def setUpClass(cls):
+        from src.inference.level1_core import load_level1_config
+        values = load_level1_config(os.path.join(PROJECT_ROOT, "configs", "level1_realtime.json"))["values"]
+        cls.font_path = app_mod.find_font(None, values["font_paths"])
+        cls.font_size = values["hud_font_size"]
+        cls.hud = app_mod.Hud(cls.font_path, cls.font_size)
+
+    def test_td1_camera_image_not_covered(self):
+        from src.inference.level1_textbox import textbox_view
+        view = np.full((100, 320, 3), 123, dtype=np.uint8)
+        tb_view = textbox_view(["b", "a"])
+        out = self.hud.compose(view, tb_view, ["small line"], 0.5)
+        self.assertEqual(out.shape[1], 320)
+        self.assertGreater(out.shape[0], 100)
+        self.assertTrue(np.array_equal(out[:100, :320], view))
+
+    def test_td2_highlight_in_active_not_committed(self):
+        from src.inference.level1_textbox import textbox_view
+        tb_view = textbox_view(["m", "e", "dấu nặng", " ", "c", "a", "dấu sắc"])
+        panel = self.hud._build(640, tb_view, [], 0)
+
+        x0 = 8
+        w_comm = int(round(self.hud.font.getlength("mẹ ")))
+        x_comm_end = x0 + w_comm
+        w_act = int(round(self.hud.font.getlength("cá")))
+        x_act_end = x_comm_end + w_act
+
+        y0 = 4
+        y1 = y0 + self.hud.line_h
+
+        comm_box = panel[y0:y1, x0:x_comm_end]
+        has_hl_in_comm = np.any(np.all(comm_box == self.hud.HIGHLIGHT_BGR, axis=-1))
+        self.assertFalse(has_hl_in_comm, "Highlight color found in committed region")
+
+        act_box = panel[y0:y1, x_comm_end:x_act_end]
+        has_hl_in_act = np.any(np.all(act_box == self.hud.HIGHLIGHT_BGR, axis=-1))
+        self.assertTrue(has_hl_in_act, "Highlight color missing in active region")
+
+    def test_td3_cursor_column_has_cursor_color(self):
+        from src.inference.level1_textbox import textbox_view
+        tb_view = textbox_view(["m", "e", "dấu nặng", " ", "c", "a", "dấu sắc"])
+        panel = self.hud._build(640, tb_view, [], 0)
+
+        x0 = 8
+        x_cursor = x0 + int(round(self.hud.font.getlength("mẹ cá")))
+        y0 = 4
+        y1 = y0 + self.hud.line_h
+
+        col_cursor = panel[y0:y1, x_cursor]
+        has_cursor = np.any(np.all(col_cursor == self.hud.CURSOR_BGR, axis=-1))
+        self.assertTrue(has_cursor, "Cursor color missing in cursor column")
+
+    def test_td4_preview_muted_color_right_of_cursor(self):
+        from src.inference.level1_textbox import textbox_view
+        tb_view_no_prev = textbox_view(["c", "a", "dấu sắc"])
+        panel_no_prev = self.hud._build(640, tb_view_no_prev, [], 0)
+
+        x0 = 8
+        x_cursor = x0 + int(round(self.hud.font.getlength("cá")))
+        y0 = 4
+        y1 = y0 + self.hud.line_h
+
+        right_no_prev = panel_no_prev[y0:y1, x_cursor + 2:]
+        self.assertFalse(np.any(np.all(right_no_prev == self.hud.PREVIEW_BGR, axis=-1)))
+
+        tb_view_with_prev = textbox_view(
+            ["c", "a", "dấu sắc"],
+            rejected={"prediction": "dấu huyền", "confidence": 0.4},
+        )
+        panel_with_prev = self.hud._build(640, tb_view_with_prev, [], 0)
+
+        right_with_prev = panel_with_prev[y0:y1, x_cursor + 2:]
+        self.assertTrue(np.any(np.all(right_with_prev == self.hud.PREVIEW_BGR, axis=-1)))
+
+    def test_td5_long_text_within_panel_and_ellipsis(self):
+        from src.inference.level1_textbox import textbox_view
+        tokens = ["b", "a", " "] * 39 + ["c", "a"]
+        tb_view = textbox_view(tokens)
+
+        panel_width = 640
+        panel = self.hud._build(panel_width, tb_view, [], 0)
+
+        disp_committed = self.hud._fit_committed(tb_view["committed"], tb_view["active"], panel_width - 24 - 8)
+        self.assertIn("…", disp_committed)
+        self.assertEqual(tb_view["active"], "ca")
+
+        x0 = 8
+        x_cursor = x0 + int(round(self.hud.font.getlength(disp_committed + tb_view["active"])))
+        self.assertLess(x_cursor, panel_width)
+        self.assertGreater(x_cursor, 0)
+
+    def test_td6_caching(self):
+        from src.inference.level1_textbox import textbox_view
+        view = np.zeros((100, 320, 3), dtype=np.uint8)
+        tb_view1 = textbox_view(["b", "a"])
+        out1 = self.hud.compose(view, tb_view1, ["status: ok"], 0.0)
+        p1 = self.hud._panel
+
+        out2 = self.hud.compose(view, tb_view1, ["status: ok"], 0.5)
+        self.assertIs(self.hud._panel, p1)
+
+        tb_view2 = textbox_view(["b", "a", "dấu sắc"])
+        out3 = self.hud.compose(view, tb_view2, ["status: ok"], 0.5)
+        self.assertIsNot(self.hud._panel, p1)
+
+    def test_td7_keys_1_to_5(self):
+        app = app_mod.Level1App(args_for("--source", CLIP, "--headless"))
+        self.assertEqual(app.speller.tokens, [])
+        keys = [
+            (ord("1"), "tone_1", "dấu sắc"),
+            (ord("2"), "tone_2", "dấu huyền"),
+            (ord("3"), "tone_3", "dấu hỏi"),
+            (ord("4"), "tone_4", "dấu ngã"),
+            (ord("5"), "tone_5", "dấu nặng"),
+        ]
+        for code, name, expected_token in keys:
+            app._key(code)
+            self.assertEqual(app.speller.tokens[-1], expected_token)
+            ev = app.speller.events[-1]
+            self.assertEqual(ev["source"], "key")
+            self.assertEqual(ev["key"], name)
+            self.assertEqual(ev["token"], expected_token)
+
+
 if __name__ == "__main__":
     unittest.main()
+

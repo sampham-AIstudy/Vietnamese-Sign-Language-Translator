@@ -4,10 +4,10 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM: đã xong A1 (chỉ A1 được giao trong lượt này)
+- ĐANG LÀM: T2 (khung text trong Hud + phím 1–5 trong KEY_ACTIONS + test AC-TD1..TD7)
 - Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`)
-- Xong thêm: B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo).
-- Còn lại: T2, A2, A3, C1, A4, C2.
+- Xong thêm: B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3).
+- Còn lại: A2, A3, C1, A4, C2.
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
