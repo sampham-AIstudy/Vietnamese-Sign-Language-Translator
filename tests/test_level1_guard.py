@@ -26,6 +26,7 @@ from tests.test_backend_source_guard import (  # noqa: E402
 PLAN15_FILES = (
     "src/inference/level1_segmenter.py",
     "src/inference/level1_core.py",
+    "src/inference/level1_timing.py",
 )
 ENTRYPOINTS_15 = PLAN15_FILES
 
