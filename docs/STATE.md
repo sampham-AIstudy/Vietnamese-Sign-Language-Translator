@@ -3,11 +3,11 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-10-03 13:40 (giờ Việt Nam)
-- HEAD: 49ad46b (+ commit state này) | Nhánh: feat/vslt-complete
+- Cập nhật lần cuối: 2026-10-04 00:40 (giờ Việt Nam)
+- HEAD: d7f5a26 (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: TẠM DỪNG THEO YÊU CẦU NGƯỜI DÙNG (23:10 ngày 3/10: "tạm dừng, để tôi khởi động lại máy rồi chạy tiếp"). Không agent/agy chạy; đã lưu + push. Xem khối "T2 DỞ" bên dưới. [Lịch sử phiên:] 22:20 ngày 3/10 người dùng nhắn "dùng prompt để triển khai nốt và sau khi xong thì tiếp tục công việc" ⇒ rule mới ĐÃ commit
+- Trạng thái phiên: ĐANG CHẠY — 00:40 ngày 4/10 giao vslt-coder (agy gemini/high) HOÀN THIỆN T2 từ WIP ad7c126 (--steps T2; không làm lại từ đầu). Claude 5h 42% (reset 02:40), 7 ngày 85% (reset 09:00 8/10). Cổng Claude: 42 + 10 (cầu nối ~9–10) ≤ 90 → đạt; cổng agy do agy_code.sh tự chạy. Sau T2: báo người dùng thử U1b; rồi A2, A3, C1, reviewer một lần sau C1. [Lịch sử phiên:] 22:20 ngày 3/10 người dùng nhắn "dùng prompt để triển khai nốt và sau khi xong thì tiếp tục công việc" ⇒ rule mới ĐÃ commit
   (ba5e139 setup agy: cầu nối + guard + cổng hạn mức agy; 0a1314b .gitattributes LF cho *.sh; bf8f290 sửa parser --steps; 7fbb752 progress T1). Kế hoạch 15 lần sửa 1 đã có khối scope (§3b).
   T1 (92fce21) được orchestrator XÁC MINH ĐỘC LẬP: 6 module level 1 = Ran 78 OK; AC1-ngắn 16 module + textbox = Ran 245 OK, 0 skip (_work/_plan15/t1_short.log). CHƯA review (reviewer chạy sau C1).
   A1 LẦN 1 (agy Opus/high, 22:20–22:28): CHẠM 100% hạn mức 5h nhóm claude của agy (exit 14) — +77 điểm 5h / +41 tuần trong ~8 phút (ước lượng cũ 8 = sai ~10 lần; đã nâng
@@ -377,6 +377,8 @@
   chạy tới epoch 60) cũng chạy trên Kaggle (kernel CPU, 0 GPU) thay vì CPU local; chỉ việc rất nhẹ (test đơn vị, dữ liệu giả, đối chiếu JSON) chạy local.
   Eval MỘT lần B11b (suy luận 30 câu) giữ local như kế hoạch trừ khi người dùng muốn khác.
 
+- (2026-10-04 00:37) Google Drive KHÔNG còn khởi động cùng máy: trước khi dùng G:, mở app bằng `C:\Users\Admin\Desktop\Google Drive.lnk` (vd `cmd //c start "" "C:\Users\Admin\Desktop\Google Drive.lnk"`),
+  chờ ổ G: xuất hiện rồi mới đọc/ghi `G:\My Drive\VSLT\`. Các luật Drive khác giữ nguyên.
 - (2026-10-03 03:10) Google Drive: người dùng cài Google Drive for desktop (stream, ổ G:, cache giới hạn ~20 GB, khởi động cùng máy) và tạo thư mục
   `G:\My Drive\VSLT`. Agent CHỈ đọc/ghi trong `G:\My Drive\VSLT\` (lưu trữ/tải tài liệu, bản sao checkpoint…); KHÔNG mở/liệt kê/sửa phần còn lại
   của Drive (dữ liệu cá nhân). Không đồng bộ thư mục Project lên Drive. Không cần MCP. Đã thử 03:08: ghi/đọc file 5 MB, sha256 khớp (file thử đã xóa;
@@ -504,3 +506,4 @@
 - 2026-10-03 21:45 | khôi phục sau chờ hạn mức (sleep nền bị dừng khi phiên cũ kết thúc; người dùng nhắn "triển khai theo kế hoạch build lv1 tiếp") | STATE khớp git (HEAD eeefa80), không agent chạy | Giao planner lần sửa 15.
 - 2026-10-03 22:20 | tiếp tục sau tạm dừng cập nhật rule (người dùng: "dùng prompt để triển khai nốt và sau khi xong thì tiếp tục công việc") | STATE khớp git (HEAD 7fbb752), 1 tiến trình agy.exe cũ (pid 1232, từ 21:45) còn sống, không việc coder nào đang chạy | Commit rule + sửa progress T1 (AC1-ngắn 245), giao coder 15 A1.
 - 2026-10-03 23:10 | dừng theo yêu cầu người dùng (khởi động lại máy) | T2 đang chạy dở bị dừng sạch: agy Stop-Process, TaskStop subagent, savewip ad7c126 | Lưu STATE, commit, push; tiếp bằng prompt "tiếp tục" (xem Việc kế tiếp).
+- 2026-10-04 00:40 | khôi phục sau khởi động lại máy (người dùng nhắn tiếp tục + dặn mở Google Drive.lnk) | STATE khớp git (HEAD d7f5a26, WIP T2 ad7c126), không agent/agy chạy | Giao vslt-coder hoàn thiện T2 từ WIP.
