@@ -7,7 +7,8 @@
 - HEAD: 49ad46b (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 80%+ (reset 18:30 VN), 7 ngày 79% (reset 09:00 8/10). Không agent chạy.
+- Trạng thái phiên: ĐANG CHẠY — 21:45 ngày 3/10 giao vslt-planner LẦN SỬA kế hoạch 15 (dấu thanh + khung text bộ gõ, quyết định 17:20). 5h 0% (reset 02:40 4/10),
+  7 ngày 80% (reset 09:00 8/10 — còn ~20%: chỉ việc Level 1). Cổng: 0 + 33 ≤ 90 → đạt. Người dùng nhắn "triển khai theo kế hoạch build lv1 tiếp" 21:41.
   PHẢN HỒI U1 (người dùng, 3/10 ~16:50, webcam): "chữ đứng yên cơ bản OK; các ký tự DẤU (có chuyển động, không chỉ dừng) đo còn lỗi".
   JSON của lần thử: _work/u1.json (bản sao _work/_plan15_u1/u1_2026-10-03_1650.json; KHÔNG commit, không có --expected ⇒ không phải số độ chính xác):
   frames_read 11779, processed 9632, dropped 2146, processing_fps 24.9, capture_fps 30.5, 105 segment, 33 word_gap; nhiều segment dài (88–108 khung) ra
@@ -458,3 +459,4 @@
 - 2026-10-02 20:05 | khôi phục sau chờ hạn mức (sleep nền bị dừng khi phiên cũ kết thúc; người dùng nhắn "continue") | STATE khớp git (HEAD e03d988); sửa HEAD ghi eea8906 → e03d988, giờ reset 19:40 → 19:20 | Giao coder 13 B5.
 - 2026-10-03 08:33 | khôi phục sau chờ hạn mức (người dùng nhắn "continue") | STATE khớp git (HEAD feba7a1), không agent/kernel chạy | Giao coder 13 B9a+B9b.
 - 2026-10-03 13:40 | khôi phục sau chờ hạn mức (sleep nền bị dừng khi phiên cũ kết thúc; người dùng nhắn "đã hồi quota triển khai đi") | STATE khớp git (HEAD 49ad46b), không agent/kernel chạy | Giao planner kế hoạch 15.
+- 2026-10-03 21:45 | khôi phục sau chờ hạn mức (sleep nền bị dừng khi phiên cũ kết thúc; người dùng nhắn "triển khai theo kế hoạch build lv1 tiếp") | STATE khớp git (HEAD eeefa80), không agent chạy | Giao planner lần sửa 15.
