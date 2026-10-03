@@ -3110,11 +3110,12 @@ class TestRetrainAmendment(_Scratch):
 
     def test_missing_input_and_bad_date_exit_2(self):
         rels = self.build()
+        git = self.fake_git()  # built while the file still exists
         os.remove(self.J(rels["cslr_log"]))
-        rc, _, err = self.run_main()
+        rc, _, err = self.run_main(git=git)
         self.assertEqual(rc, 2, err)
         self.assertFalse(os.path.exists(self.out_path()))
-        rc, _, _ = self.run_main(["--date", "2026-13-40", "--root", self.root])
+        rc, _, _ = self.run_main(["--date", "2026-13-40", "--root", self.root], git=git)
         self.assertEqual(rc, 2)
 
     def test_git_info_on_a_real_repository(self):
