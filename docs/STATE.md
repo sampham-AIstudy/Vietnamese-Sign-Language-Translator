@@ -7,7 +7,13 @@
 - HEAD: feba7a1 (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 09:15 ngày 3/10: vslt-coder 13 B9b (chẩn đoán smoke trên Kaggle CPU) đang chạy. 5h 56% (số lúc 09:07), reset 13:30 VN; 7 ngày 64%.
+- Trạng thái phiên: ĐANG CHẠY — 09:32 ngày 3/10 giao vslt-coder 13 B9d (CHỈ 1 bước nhỏ: scripts/retrain_amendment.py + commit amendment). 5h 68% (reset 13:30 VN), 7 ngày 65%.
+  Cổng: 68 + 15 (est coder max 15/7/9) = 83 ≤ 90 → đạt; B9c (2 h mã) để cửa sổ sau. Sau B9d: nhiều khả năng dừng chờ hạn mức.
+  Coder 13 B9a + B9b XONG (15a6079, 32c1356, acf274c = ghim chẩn đoán, d7e2fdd, 565cfca; đã push): kernel phmvnsm33/vsl-retrain-cslr-smoke-diag v1 COMPLETE
+  (orchestrator kiểm), 7,3 CPU-phút, 0 GPU. D0 8 mẫu train smoke trùng công thức cũ; D1 smoke nguyên bản FAIL (loss 70.84 → 1.67, toàn blank); D4 backbone chuyển
+  62 khóa / 352207 tham số, 0 lệch (R0 không kích hoạt); D4-ii trung thực 10/10; D5 epoch 60: train loss 0.2033, 32 từ dự đoán, WER 20.0 (8 mẫu) ⇒ QUYẾT ĐỊNH R2-PASS
+  (decide() ở kernel + local + tính độc lập khớp). Số trong reports/retrain_2026-10-02/k2_ls2_smoke_diag/smoke_diag.json. Test 180 OK/2 skip. kaggle quota GPU 0,00 h/30 h
+  (tuần mới). Q4 áp dụng: K2 v4 chạy CSLR với --skip-smoke-test qua amendment (B9d). Lệch đã ghi: chạy Kaggle CPU thay local (quyết định 02:55).
   Planner sửa nhỏ 13 + 08 XONG (phụ lục, commit cùng lượt này; orchestrator chèn dòng con trỏ vào file gốc): docs/plans/13-lan-sua-3.md (§0C: B12 → B12a/B12b,
   bỏ đính chính rò rỉ (thuộc 14), bàn giao reports/retrain_2026-10-02/eval/test_eval.json cho 14 B7 + kiểm sentence_split_sha256 ở AC12, AC0(a) thêm 11/14;
   thứ tự 13 B11b → 14 B7/B8 → 13 B12b → 13 B13); docs/plans/08-lan-sua-2026-10-03.md (n = 1 → fps_last 0.0; AC-T thêm module 11/14 + luật "có ở HEAD thì phải
