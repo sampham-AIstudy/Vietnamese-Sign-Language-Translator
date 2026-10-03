@@ -322,6 +322,12 @@
   - TẠM DỪNG HẾT kế hoạch 13, 11, 14 (giữ nguyên trạng thái đã lưu, làm tiếp SAU khi báo cáo xong); dồn hạn mức cho Level 1.
   - Ràng buộc vẫn giữ: đầu vào realtime phải giống lúc train (cùng extractor/tiền xử lý — skill vsl-landmark-consistency); không thêm vi phạm guard DoD 7
     (tests/test_backend_source_guard.py); quyết định 16:15 (realtime_demo.py không còn --source mock) vẫn áp; số liệu báo cáo chỉ từ JSON.
+  - (10:45) Người dùng chạy tab Đánh vần trên web thấy CÓ ĐỘ TRỄ (chấm landmark chạy theo tay chậm). Nguyên nhân theo kiến trúc (chưa đo): vòng
+    trình duyệt → JPEG → WS → MediaPipe server → về; chấm vẽ lên khung hiện tại bằng tọa độ của khung cũ. Yêu cầu cho kế hoạch 15: (1) LÕI Cấp 1 dùng chung
+    (extract + tiền xử lý giống train + tách ký hiệu tự động + phân loại + ghép từ) để web dùng lại sau; (2) app desktop: luồng đọc webcam riêng lấy khung MỚI
+    NHẤT, bỏ khung cũ; MediaPipe chế độ video/tracking (thông số khớp train hoặc có test tương đương); vẽ chấm ngay trên đúng khung đã xử lý; phân loại chỉ khi
+    kết thúc ký hiệu, không chặn khung; (3) ĐO độ trễ từng chặng ra HUD + JSON (số báo cáo chỉ từ JSON). Web sau báo cáo: cân nhắc MediaPipe JS chỉ kèm test
+    tương đương. README:203 `realtime_demo.py --webcam` sai (đúng: --source 0); realtime_demo.py là demo Cấp 2, KHÔNG có Cấp 1.
 
 - (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy" — ĐÃ BỊ THAY bởi quyết định 20:15 ngay dưới.
 
