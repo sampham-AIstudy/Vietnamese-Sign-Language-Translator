@@ -29,7 +29,11 @@ HEAD = ["time_utc", "group", "model", "effort", "plan", "steps", "five_before", 
 FIVE_LIMIT, WEEK_LIMIT = 90.0, 95.0
 LADDER = ["max", "xhigh", "high", "medium", "low"]
 # GIÁ TRỊ KHỞI ĐẦU CHƯA ĐO: điểm % của cửa sổ 5h cho MỘT bước kế hoạch. Thay bằng số đo thật khi sổ có dữ liệu.
-DEFAULT_PER_STEP = {"low": 3.0, "medium": 5.0, "high": 8.0, "xhigh": 12.0, "max": 12.0}
+# Nhóm claude (Opus/Sonnet): ĐO 3/10 — Opus/high, 1 bước A1 = +77 điểm 5h (+41 tuần) trong ~8 phút rồi chạm 100% (CẬN DƯỚI). Các mức khác suy theo tỉ lệ, chưa đo.
+DEFAULT_PER_STEP_BY_GROUP = {
+    "gemini": {"low": 3.0, "medium": 5.0, "high": 12.0, "xhigh": 18.0, "max": 18.0},
+    "claude": {"low": 25.0, "medium": 45.0, "high": 77.0, "xhigh": 100.0, "max": 100.0},
+}
 DEFAULT_WEEK_RATIO = 1.0  # chưa đo: coi 1 điểm 5h = 1 điểm tuần (thận trọng)
 VN = dt.timezone(dt.timedelta(hours=7))
 
@@ -71,8 +75,9 @@ def estimate(group, effort, steps):
         per = max(float(r["five_delta"]) / int(r["steps"]) for r in rows)
         wk = max(float(r["week_delta"]) / int(r["steps"]) for r in rows)
         return per * steps, wk * steps, "measured"
-    per = DEFAULT_PER_STEP[effort]
-    return per * steps, per * DEFAULT_WEEK_RATIO * steps, "unmeasured"
+    per = DEFAULT_PER_STEP_BY_GROUP[group][effort]
+    ratio = 0.55 if group == "claude" else DEFAULT_WEEK_RATIO  # claude đo được tuần/5h ≈ 0.54
+    return per * steps, per * ratio * steps, "unmeasured"
 
 
 def candidates(pref, effort):
@@ -120,7 +125,7 @@ def cmd_choose(pref, effort, steps, plan):
         if g not in u:
             continue
         mid, flag = pm.pick(fam, eff) if fam in ("gemini", "opus", "sonnet") else (fam, "")
-        e5, ew, src = estimate(g, eff if eff in DEFAULT_PER_STEP else "high", steps)
+        e5, ew, src = estimate(g, eff if eff in LADDER else "high", steps)
         ok5 = u[g]["five_used"] + e5 <= FIVE_LIMIT
         okw = u[g]["week_used"] + ew <= WEEK_LIMIT
         if ok5 and okw:

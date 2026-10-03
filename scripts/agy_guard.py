@@ -5,6 +5,7 @@ Chế độ:
   snapshot <plan.md> <dir>   chụp trạng thái TRƯỚC khi agy chạy (file của người dùng, hash, phạm vi cho phép)
   staged   <dir>             kiểm tra thứ đang staged (gọi từ pre-commit hook)
   range    <dir>             kiểm tra mọi commit từ mốc snapshot tới HEAD (bắt cả `--no-verify`)
+  savewip  <dir> <thông-điệp>  lưu phần dở TRONG phạm vi thành 1 commit WIP (khi agy bị ngắt vì hạn mức); bỏ qua file của người dùng
   worktree <dir>             kiểm tra thay đổi chưa commit: file của người dùng có bị đụng không, file ngoài phạm vi
 
 Phạm vi cho phép = khối ```scope trong kế hoạch (mỗi dòng 1 glob; `*` khớp cả '/'; kết thúc bằng '/' = cả thư mục).
@@ -197,6 +198,21 @@ def main():
         print(f"[agy-guard] snapshot: {len(ents)} đường dẫn của người dùng được bảo vệ, scope={len(read_scope(plan))} mẫu")
         return 0
     snap = load(sys.argv[2])
+    if mode == "savewip":
+        now = {p: st for p, st in porcelain().items() if not p.startswith("_work/")}
+        files = [p for p in now if p not in snap["porcelain"] and not in_protected(p, snap["protected"])
+                 and not SECRET_FILES.search(p) and not BIG_BINARY.search(p) and match(p, snap["scope"] + ALWAYS_OK)]
+        if not files:
+            print("[agy-guard] savewip: không có gì trong phạm vi để lưu")
+            return 0
+        git("add", "--", *files)
+        b, w = check_diff(["--cached"], snap)
+        if b:
+            git("reset", "-q", "--", *files, check=False)
+            return report(b, w, "savewip (không commit)")
+        git("commit", "-q", "-m", sys.argv[3] + "\n\nCo-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>")
+        print(f"[agy-guard] savewip: đã commit {git('rev-parse', '--short', 'HEAD').strip()} gồm {len(files)} đường dẫn: {', '.join(files)}")
+        return 0
     if mode == "staged":
         b, w = check_diff(["--cached"], snap)
         return report(b, w, "pre-commit")

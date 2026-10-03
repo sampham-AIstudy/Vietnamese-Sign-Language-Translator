@@ -8,7 +8,7 @@
 #   --effort: mặc định high (env AGY_EFFORT). Cổng hạn mức có thể HẠ effort / đổi họ nếu hạn mức không đủ.
 #   --units: số bước kế hoạch giao lần này (mặc định suy ra từ --steps; không có --steps thì coi là 3).
 #   --dry-run: chỉ chụp snapshot + chọn model + in kết quả cổng, KHÔNG chạy agy.
-# Trình tự: snapshot guard -> cổng hạn mức (chọn model/effort) -> agy (git hook chặn commit sai) -> ghi sổ usage -> kiểm tra guard.
+# Trình tự: snapshot guard -> cổng hạn mức (chọn model/effort) -> agy (git hook chặn commit sai) -> ghi sổ usage -> (bị ngắt: lưu WIP) -> kiểm tra guard.
 # Mã thoát: 0=DONE, 10=CẦN PLANNER, 11=BỊ CHẶN, 12=agy không in STATUS, 13=hết giờ, 14=agy chạm giới hạn hạn mức giữa chừng,
 #           20=KHÔNG ĐỦ hạn mức (chưa chạy), 21=GUARD phát hiện vi phạm, 2=sai tham số, 3=thiếu agy
 # Log đầy đủ: _work/agy_logs/<giờ>-<kế hoạch>.log
@@ -98,6 +98,12 @@ QUOTA=0
 grep -qiE "credits balance is too low|quota (is )?(exhausted|exceeded)|RESOURCE_EXHAUSTED|rate.?limit exceeded|daily (quota|limit)" "$LOG" && QUOTA=1
 NOTE=""; [ "$QUOTA" -eq 1 ] && NOTE="limit_hit"; [ "$RC" -eq 124 ] && NOTE="${NOTE:+$NOTE,}timeout"
 "$PY" scripts/agy_usage.py record "$UNITS" ${NOTE:+--note "$NOTE"} | tee -a "$LOG"
+
+# 4b) Bị ngắt (hạn mức/hết giờ): LƯU phần dở trong phạm vi vào commit WIP để không mất (guard lọc file của người dùng)
+if [ "$QUOTA" -eq 1 ] || [ "$RC" -eq 124 ]; then
+  PNUM="$(basename "$PLAN" | sed 's/^\([0-9][0-9]*\).*/\1/')"
+  "$PY" scripts/agy_guard.py savewip "$GDIR" "WIP ${PNUM}: agy bị ngắt (${NOTE}) — bản dở CHƯA kiểm, đọc ${PLAN} + progress" 2>&1 | tee -a "$LOG"
+fi
 
 # 5) Guard sau chạy (bắt cả --no-verify, file của người dùng bị sửa, thay đổi ngoài phạm vi)
 GRC=0
