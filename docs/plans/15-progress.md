@@ -4,10 +4,10 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM: — (B5 xong; chờ orchestrator)
+- ĐANG LÀM: — (T1 xong; chờ planner)
 - Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`)
-- Xong thêm: B4 (commit `15: B4`), B5 (3ebc7b9).
-- Còn lại: B6a–B9.
+- Xong thêm: B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21).
+- Còn lại: A1, T2, A2, A3, C1, A4, C2.
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -197,3 +197,12 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   không phải người gọi thật (xem mục B5 impact).
 - B5-progress (trước commit `15: B5 tiến độ`): analyze --index-only (exit 0) rồi detect-changes → "Changes: 5 files, 5 symbols, Affected
   processes: 174, Risk level: critical"; symbol đổi: Section → README.md (người dùng) + 4 Section của 15-progress.md. Chỉ tài liệu.
+
+## T1 — textbox logic + tone keys
+- File: `src/inference/level1_textbox.py`, `tests/test_level1_textbox.py`, `src/inference/level1_core.py` (`Level1Speller.view`, `KEY_NAMES`, `key`), `tests/test_level1_core.py` (AC-K), `tests/test_level1_guard.py` (`PLAN15_FILES`).
+- AC-TB: Viết trước test, sau đó code (AC-TB1..8 OK).
+- AC-K: Phím `tone_1`..`tone_5` thêm đúng dấu và giữ đúng text.
+- G2/G3: `test_level1_guard` chạy thành công; thêm `level1_textbox.py` vào `PLAN15_FILES`, không có finding mới ở code của 15.
+- AC1-ngắn: chạy các module level 1 (textbox, segmenter, core, demo, guard, equivalence), `Ran 78 tests OK` với 0 failures/errors.
+- detect-changes trước commit: `Changes: 9 files, 6 symbols`, xác nhận symbol là các class Level1Speller, TestSpellerC4C7 của T1.
+- Đã push: Git commit hash `92fce21` nhánh `feat/vslt-complete`.
