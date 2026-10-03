@@ -7,8 +7,13 @@
 - HEAD: 49ad46b (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 14:00 ngày 3/10 giao vslt-coder 15 chặng MVP (B0–B3). 5h 23% (reset 18:30 VN), 7 ngày 71% (reset 09:00 8/10).
-  Cổng: 23 + est coder (max 7/9/9 = 9; thực tế chặng 6 h công có thể 30–45) ≤ 90 → đạt.
+- Trạng thái phiên: ĐANG CHẠY — 15:15 ngày 3/10 giao vslt-coder 15 B4 (CHỈ test tương đương AC-E1/E3). 5h 59% (reset 18:30 VN), 7 ngày 76% (reset 09:00 8/10).
+  Cổng: 59 + 15 (est theo cỡ: B4 1,5 h ≈ 1/4 chặng MVP 6 h tốn 36) = 74 ≤ 90 → đạt. Chờ người dùng thử U1 (webcam).
+  Coder 15 MVP B0–B3 XONG (4e4d9e3, 966ea4b, 58b31ce, 75e3116, e749212; đã push): file mới configs/level1_realtime.json, src/inference/level1_{segmenter,core,timing}.py,
+  level1_demo.py, tests/test_level1_{segmenter,core,demo,guard}.py. Lệnh demo: `.venv\Scripts\python level1_demo.py --source 0 --display-mirror` (+ --out-json).
+  Test 15: segmenter 18, core 20, demo 12, guard 4 OK; C1 classify == POST /sequence bằng hệt trên 4 clip hauuto; guard chính Ran 28 OK known=9 (0 mới); AC1-đủ B0
+  Ran 522 failures=1 errors=1 skipped=1 (có sẵn: ViT5, stgcn_best, test chập chờn test_reset_segments_and_graphs — chập chờn cả khi cất file 15).
+  Tham số config đều là GIÁ TRỊ THIẾT KẾ (chưa hiệu chỉnh — B6). Chưa có JSON báo cáo (B5/B7).
   Planner 15 XONG (docs/plans/15-level1-realtime-desktop.md, commit cùng lượt này): không CẦN NGƯỜI DÙNG; mọi file mới (không sửa backend/main.py, README,
   guard chính, realtime_demo.py, file 11/13/14); alphabet_best.pt BiGRU [30,63], tiền xử lý trong checkpoint, dấu thanh = 5 lớp có chuyển động; dùng lại
   HandLandmarkSession (hand_live.py), alphabet_clip_features, compose(). Tách ký hiệu: tốc độ tay (độ dài bàn tay/giây, trung vị cửa sổ) → phát khi giữ yên
