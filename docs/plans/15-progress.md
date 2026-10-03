@@ -4,9 +4,10 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM: — (chặng MVP B0–B3 xong; chờ orchestrator / U1 của người dùng)
+- ĐANG LÀM: — (B4 xong; chờ orchestrator)
 - Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`)
-- Còn lại: B4–B9 (ngoài chặng này). B4 (AC-E1/E3) là bước kế tiếp theo kế hoạch.
+- Xong thêm: B4 (commit `15: B4`).
+- Còn lại: B5–B9.
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -87,6 +88,24 @@ Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_wo
 - AC0: `git diff --name-only 6c4f5e0..HEAD` = 10 file, đều trong §3.1; sha256 checkpoint không đổi (a6311820…08a2); backend/main.py,
   README.md, realtime_demo.py, tests/test_backend_source_guard.py không đổi.
 
+## B4 — test tương đương AC-E1 / AC-E3
+- File: `tests/test_level1_equivalence.py` (9 test). Không sửa file mã nào; không symbol có sẵn nào bị sửa.
+- E1 (BẰNG HỆT, không dung sai): 10 clip `hand_live_check.select_clips(read_manifest(), 8, 0)` (8 hauuto + 2 qipedc). Mỗi clip chạy CHÍNH
+  app (`Level1App` headless, `VideoFileReader`, mọi khung, `HandLandmarkSession` mới mỗi clip; lớp con `RecordingSession` chỉ gọi
+  `process` thật và ghi kết quả; reader được bọc spy) so với `_extract_one` (import nguyên vẹn) chạy vào thư mục tạm
+  `_work/_plan15_tmp/vslt_p15_e1_*` (xóa ở tearDown). Khóa so: số khung, detected, landmark (float32 [21,3], `array_equal` cả mảng),
+  handedness, score (float32), fps đọc từ file == metadata fps, frame_size; segment = trọn clip → `Level1Classifier.features`
+  `array_equal` `alphabet_clip_features` trên kết quả offline (+ timestamps bằng hệt); `classify` == `/sequence`
+  (`body_from_npz(offline)`) ở prediction, confidence, candidates. KẾT QUẢ: cả 10 clip BẰNG HỆT (log `_work/_plan15/b4_equiv.log`;
+  in từ lần chạy: số khung/detected/fps và prediction mỗi clip).
+- E3: AST trên `level1_demo.py` + `src/inference/level1_*.py`: không gọi `Hands(`/`resize`; `cv2.flip` chỉ trong `display_view` (đúng 1);
+  tự kiểm bộ duyệt AST. Spy: khung đưa vào `process` `is` đối tượng reader trả về — headless (mọi khung, đúng thứ tự) và
+  `--pace realtime --headless` (mỗi khung xử lý là một đối tượng đã đọc, thứ tự tăng, không bản sao).
+- `python -m unittest tests.test_level1_equivalence -v` → `Ran 9 tests in 172.519s` `OK`.
+- AC1-ngắn đủ 16 module → `_work/_plan15/b4_short.log`: `Ran 230 tests in 464.261s` — `OK` (0 skip; test chập chờn OK lần này).
+  G1 trong đó: "[DoD7-guard] known=9 allowed=36", "[scope] serving=45 main=59"; tests.test_level1_guard OK.
+- Giả định: thư mục tạm của test nằm dưới `_work/_plan15_tmp/` (quy tắc file tạm của orchestrator), không dùng %TEMP%.
+
 ## Việc người dùng — U1 (sau B3, ~10 phút; không chặn)
 Từ gốc repo, trong .venv: `.venv\Scripts\python level1_demo.py --source 0 --display-mirror`
 (thêm `--out-json _work/u1_webcam.json` nếu muốn xem JSON; không commit). Ký lần lượt vài chữ (a, b, c, o, dấu sắc) rồi 2 từ "ba", "cá"
@@ -126,3 +145,6 @@ bám tay không, chữ có tự tách không, có phát lặp khi giữ yên kh�
 - B3 (trước commit `15: B3`): analyze (exit 0) rồi detect-changes → "Changes: 6 files, 4 symbols, Affected processes: 164, Risk level:
   critical"; symbol đổi: Section → README.md (người dùng), Level1App (level1_demo.py), TestHeadlessD2 + TestDefaultPaths
   (tests/test_level1_demo.py) — đều của 15. Không symbol có sẵn ngoài 15 bị sửa.
+- B4 (trước commit `15: B4`): analyze --index-only (exit 0) rồi detect-changes → "Changes: 5 files, 3 symbols, Affected processes: 174,
+  Risk level: critical"; symbol đổi: Section → README.md (người dùng), 2 Section của docs/plans/15-progress.md. File test mới untracked
+  nên chưa hiện. Không symbol có sẵn nào bị sửa (không cần impact).
