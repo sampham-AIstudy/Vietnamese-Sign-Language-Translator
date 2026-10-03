@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Chỉ hoạt động khi scripts/agy_code.sh bật AGY_GUARD=1 (được tiêm qua GIT_CONFIG_*, không đổi cấu hình repo).
+[ "${AGY_GUARD:-}" = "1" ] || exit 0
+exec "${AGY_PY:-python}" scripts/agy_guard.py staged "${AGY_GUARD_DIR:?}"

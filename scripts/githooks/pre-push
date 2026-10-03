@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+[ "${AGY_GUARD:-}" = "1" ] || exit 0
+echo "[agy-guard] agy không được push; orchestrator/người dùng sẽ push." >&2
+exit 1

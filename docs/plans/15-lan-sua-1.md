@@ -194,6 +194,23 @@ Lý do `hand_lost`/`end_of_stream` không đổi. Kiểm khi nạp config: 0 < t
   thêm token dấu với `source: "key"`, ghi `key` trong nhật ký sự kiện. Dòng hướng dẫn HUD cập nhật.
 - Không thêm: copy/lưu file, TTS, web (quyết định 17:20).
 
+## 3b. Phạm vi file (máy đọc được — hook git của agy chặn commit ngoài danh sách này)
+_Thêm bởi orchestrator 2026-10-03 từ danh sách file CÓ SẴN trong §2.5 và §4; không đổi thiết kế/tiêu chí. Planner có thể chỉnh ở lần sửa sau._
+Độ khó: L; vùng nhạy cảm: có (bộ tách đoạn, tiền xử lý dùng chung train–realtime) → coder dùng opus/high cho A1–A3, gemini/high cho T1–T2, C1.
+```scope
+src/inference/level1_textbox.py
+src/inference/level1_core.py
+src/inference/level1_segmenter.py
+level1_demo.py
+configs/level1_realtime.json
+scripts/level1_segment_report.py
+scripts/level1_replay_clips.py
+tests/test_level1_*.py
+docs/level1_desktop.md
+docs/progress_log.md
+reports/level1_realtime_*
+```
+
 ## 4. Chia việc (mỗi bước 1 commit `15: <mã> …`; bước sinh JSON có thêm 1 commit báo cáo, sinh tại commit code sạch)
 
 Quy ước giữ nguyên §4 gốc: lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`; file tạm `_work/_plan15/`; `git commit -- <đường dẫn

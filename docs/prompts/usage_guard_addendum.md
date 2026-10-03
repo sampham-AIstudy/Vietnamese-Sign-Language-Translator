@@ -53,3 +53,12 @@ Tạo file nếu chưa có, dòng đầu:
 - Coi là sai sót của ước lượng, không phải lỗi bình thường. Xem orchestrator_resume_addendum.md mục 4 để khôi phục.
 - Ghi 1 dòng vào docs/usage_ledger.csv với quality=`limit_hit` và ghi vào STATE.md "ước lượng đã sai, tăng biên an toàn":
   đổi hệ số 1.5 thành 2.0 cho các lần sau cho đến khi người dùng cho phép đổi lại.
+
+## 7. Hạn mức của agy (Coder) — tách biệt với hạn mức Claude
+- Nguồn: `scripts/agy_usage.py status` (đọc `agy -p "/usage" --output-format json`, không tốn token). Hai nhóm, mỗi nhóm có 5h và tuần:
+  `gemini` (Flash/Pro) và `claude` (Opus/Sonnet/GPT-OSS). Việc code giao cho agy KHÔNG tính vào cửa sổ 5h của Claude.
+- Cổng: `dùng_5h + 1.0 × est ≤ 90` và `dùng_tuần + est_tuần ≤ 95`, est từ docs/agy_usage_ledger.csv (lớn nhất 3 dòng `ok` gần nhất cùng nhóm+effort),
+  chưa có số đo thì dùng giá trị khởi đầu CHƯA ĐO (cố ý thận trọng) trong scripts/agy_usage.py. `scripts/agy_code.sh` tự chạy cổng, tự ghi sổ.
+- Không đủ: hạ effort → đổi họ model → WAIT (mã 20, kèm giờ reset). Không đọc được usage: chỉ chạy phương án rẻ nhất và coi là "KHÔNG BIẾT".
+- agy chạm giới hạn giữa chừng (mã 14): làm đúng mục 5 (lưu STATE.md, commit WIP, dừng sạch); đã có commit WIP từng bước + progress file.
+- Commit docs/agy_usage_ledger.csv cùng progress_log. Cập nhật STATE.md "hạn mức agy" khi ghi trạng thái phiên.

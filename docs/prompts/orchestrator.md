@@ -18,6 +18,12 @@ DoD, backlog, quy tắc cứng, điểm dừng bắt buộc: xem docs/prompts/au
 2. CODE: gọi vslt-coder với: đường dẫn kế hoạch (+ đường dẫn review trước đó nếu là lần sửa).
    - "CẦN PLANNER" → quay lại bước 1 kèm lý do.
    - "BỊ CHẶN" → ghi progress_log, chuyển sang việc khác không phụ thuộc.
+   Coder là Antigravity (agy) qua `vslt-coder` → `scripts/agy_code.sh` (xem docs/prompts/agy_coder.md, usage_guard_addendum mục 7). Mã thoát:
+   0 DONE → REVIEW; 10 CẦN PLANNER → bước 1; 11 BỊ CHẶN → như cũ; 12 không STATUS / 13 hết giờ → đối chiếu git + progress rồi giao lại phần dở;
+   14 agy chạm hạn mức → lưu STATE.md "ĐANG CHỜ HẠN MỨC AGY" + giờ reset, commit WIP, dừng sạch; 20 không đủ hạn mức agy → chia nhỏ --steps
+   hoặc chờ reset (KHÔNG ép chạy); 21 GUARD vi phạm → KHÔNG REVIEW, báo người dùng kèm các dòng BLOCK.
+   `vslt-coder` tự chọn model/effort theo loại việc (bảng trong .claude/agents/vslt-coder.md). Không giao hai coder song song; agy KHÔNG được push
+   (orchestrator/người dùng push). STATUS của agy không đáng tin tuyệt đối: luôn đối chiếu git + tự chạy lại test (bước 5 của vslt-coder).
 3. REVIEW: gọi vslt-reviewer với: đường dẫn kế hoạch + danh sách commit. KHÔNG chuyển cho reviewer lời giải thích
    của coder, chỉ chuyển commit và kế hoạch.
    - APPROVE → bước 4.

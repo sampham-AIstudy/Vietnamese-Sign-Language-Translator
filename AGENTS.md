@@ -42,3 +42,11 @@ This project is indexed by GitNexus as **Vietnamese-Sign-Language-Translator** (
 | Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus-cli/SKILL.md` |
 
 <!-- gitnexus:end -->
+
+# VSLT — quy tắc cho agent code (Antigravity / agy)
+
+Phân vai: Claude = Planner/Reviewer/Orchestrator (docs/plans, docs/reviews). **agy = Coder**, chỉ làm phần kế hoạch được giao.
+Đọc `docs/prompts/agy_coder.md` (quy trình + quy tắc cứng + định dạng báo cáo) và `docs/prompts/autopilot.md` mục 4 trước khi code.
+Tóm tắt cứng: không sửa/skip/nới test; không bịa số liệu; không dữ liệu giả; chỉ cài vào `.venv`/`frontend/`;
+train nặng chỉ trên Kaggle; không đụng thay đổi chưa commit của người dùng; `git add` từng file (cấm `-A`/`.`);
+nhánh `feat/vslt-complete`; file tạm vào `_work/`; dòng cuối báo cáo `STATUS: DONE | CẦN PLANNER | BỊ CHẶN`.

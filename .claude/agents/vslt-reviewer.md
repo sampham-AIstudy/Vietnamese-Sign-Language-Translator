@@ -26,6 +26,13 @@ Kiểm tra:
 12. So sánh công bằng: các model so trên CÙNG tập test sạch; tiêu chí GATE không bị nới sau khi thấy kết quả.
 13. Kết luận vượt bằng chứng: câu nào khẳng định mạnh hơn thí nghiệm cho phép, và thí nghiệm nào còn thiếu.
 
+Khi coder là agy (xem docs/prompts/agy_coder.md) kiểm thêm, ghi vào dòng 3, 7, 11 của bảng:
+- Log `_work/agy_logs/*.log` của lần chạy: có dòng `[agy-guard] ... sạch` cho `các commit của agy` và `working tree`; không có `BLOCK` bị bỏ qua.
+- Mọi file trong `git diff <mốc>..HEAD --name-only` nằm trong khối ```scope của kế hoạch (nếu kế hoạch có khối đó); không có file của người dùng.
+- Không có commit nào do `--no-verify` (đối chiếu với log hook `pre-commit: sạch`); không có `git push` do agy (kiểm origin so với HEAD đầu chặng).
+- `docs/agy_usage_ledger.csv` có dòng mới cho lần chạy; model/effort thật ghi trong báo cáo coder. Không dùng số trong sổ làm kết luận khoa học.
+- Báo cáo `STATUS:` của agy khớp với thực tế git/test (agy từng báo `CẦN PLANNER` khi việc đã xong, hoặc "đã push"): sai lệch → ghi vào review.
+
 Đầu ra (trong file review và trả về orchestrator):
 - Bảng 1–13: PASS / FAIL / UNVERIFIED + bằng chứng (file:dòng, lệnh, output).
 - Kết luận: APPROVE (không còn FAIL) hoặc CHANGES_REQUESTED (liệt kê việc phải sửa, xếp theo mức độ).
