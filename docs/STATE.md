@@ -7,8 +7,17 @@
 - HEAD: 49ad46b (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 21:45 ngày 3/10 giao vslt-planner LẦN SỬA kế hoạch 15 (dấu thanh + khung text bộ gõ, quyết định 17:20). 5h 0% (reset 02:40 4/10),
-  7 ngày 80% (reset 09:00 8/10 — còn ~20%: chỉ việc Level 1). Cổng: 0 + 33 ≤ 90 → đạt. Người dùng nhắn "triển khai theo kế hoạch build lv1 tiếp" 21:41.
+- Trạng thái phiên: ĐANG CHẠY — 21:58 ngày 3/10 giao vslt-coder 15 bước 1–3 của lần sửa 1 (T1 lõi khung text + phím dấu, A1 bằng chứng/hiệu chỉnh tone_evidence.json,
+  T2 vẽ khung text + phím 1–5). 5h 20% (reset 02:40 4/10), 7 ngày 83% (reset 09:00 8/10). Cổng: 20 + 36 ≤ 90 → đạt.
+  CẤU HÌNH MỚI CỦA NGƯỜI DÙNG (21:45, chưa commit — không đụng): .claude/agents/vslt-coder.md giờ là CẦU NỐI giao code cho Antigravity CLI `agy`
+  (scripts/agy_code.sh, mặc định gemini-3.1-pro-high) rồi tự xác minh git/test; .claude/agents/vslt-coder-claude.md = DỰ PHÒNG (chỉ khi agy không khả dụng
+  VÀ người dùng đồng ý). Orchestrator dùng vslt-coder (agy) từ nay.
+  Planner LẦN SỬA 1 kế hoạch 15 XONG (docs/plans/15-lan-sua-1.md, commit cùng lượt này; con trỏ đã chèn vào file gốc): BẰNG CHỨNG dấu thanh yếu ngay offline —
+  reports/alphabet_nested_2026-09-25/primary/nested_report.json: dấu top-1 40.83 (sd 20.97; hau 50.0 khoi 46.67 tai 10.0 vy 56.67), chữ cái 85.60; biến thể
+  quỹ đạo cổ tay (variants/nested_report.json) dấu 36.67/40.00, chữ cái 77.11/76.34 ⇒ A(b) train lại có quỹ đạo KHÔNG làm (dữ liệu bác); A(a) sửa tách đoạn
+  (max_segment_ms = p95 clip train, tail_still_keep_ms cắt giữ yên thừa; quy tắc giữ config đặt trước). Dự phòng demo: phím 1–5 kiểu VNI gõ dấu (token source "key",
+  nêu trong Giới hạn, không trình bày như nhận dạng). Khung text: src/inference/level1_textbox.py textbox_view() (committed + active == compose(tokens).text).
+  Bước: T1 1,5h → A1 2h → T2 1,5h (demo khung text sau bước 3; người dùng thử U1b) → A2 1h → A3 1h → C1 1h → (A4, C2 tùy chọn). Cắt: A4 → C2 → summary C1 → A3+A2.
   PHẢN HỒI U1 (người dùng, 3/10 ~16:50, webcam): "chữ đứng yên cơ bản OK; các ký tự DẤU (có chuyển động, không chỉ dừng) đo còn lỗi".
   JSON của lần thử: _work/u1.json (bản sao _work/_plan15_u1/u1_2026-10-03_1650.json; KHÔNG commit, không có --expected ⇒ không phải số độ chính xác):
   frames_read 11779, processed 9632, dropped 2146, processing_fps 24.9, capture_fps 30.5, 105 segment, 33 word_gap; nhiều segment dài (88–108 khung) ra
@@ -379,6 +388,10 @@
   3. Lệnh: `shutdown /s /t 300 /c "VSLT: tat may sau khi luu STATE. Huy: shutdown /a"` (không dùng /f).
      Trong Git Bash phải chặn đổi đường dẫn: `MSYS_NO_PATHCONV=1 shutdown /s /t 300 /c "..."`.
   4. Nếu "Cho phép tắt máy" là KHÔNG: lưu xong (STATE, commit, push) thì dừng và báo người dùng, KHÔNG tắt.
+
+- 2026-10-03: PHÂN VAI MỚI — Claude = Planner/Reviewer/Orchestrator; **Antigravity (agy) = Coder**. Cầu nối: `scripts/agy_code.sh` (agy -p --mode accept-edits),
+  subagent `vslt-coder` là lớp mỏng gọi script + xác minh độc lập bằng git/test. `vslt-coder-claude` chỉ là DỰ PHÒNG khi agy hỏng/hết hạn mức (cần người dùng đồng ý).
+  Quy tắc cho agy: `docs/prompts/agy_coder.md` + phần VSLT trong `AGENTS.md`. Log agy: `_work/agy_logs/`.
 
 ## Câu hỏi chờ người dùng
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?

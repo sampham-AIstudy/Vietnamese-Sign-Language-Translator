@@ -1,6 +1,8 @@
 # Kế hoạch 15 — Cấp 1 (đánh vần chữ cái VSL) realtime trên app desktop OpenCV, tự tách ký hiệu + ghép từ
 
 TRẠNG THÁI: XONG (planner, 2026-10-03). Không có điểm "CẦN NGƯỜI DÙNG" để BẮT ĐẦU (xem §7).
+
+> LẦN SỬA 1 (2026-10-03): xem docs/plans/15-lan-sua-1.md — có hiệu lực như nằm trong file này; thay §3.6, §3.7, §4 B6a–B9, §5 AC-R/AC-E2; bổ sung §3.1, §3.3, §3.4, §6.3, §6.4, §7 (bảng §0 của phụ lục).
 Người lập: vslt-planner, HEAD 5140d8e, nhánh feat/vslt-complete. Kế hoạch 11/13/14 đang TẠM DỪNG — kế hoạch này không phụ thuộc
 và không sửa file của chúng.
 
