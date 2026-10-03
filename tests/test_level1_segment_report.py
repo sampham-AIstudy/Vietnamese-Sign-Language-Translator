@@ -13,6 +13,7 @@ Tests:
 import csv
 import json
 import os
+import shutil
 import sys
 import unittest
 
@@ -24,10 +25,10 @@ if PROJECT_ROOT not in sys.path:
 
 from scripts.level1_segment_report import (  # noqa: E402
     CONFIG, MANIFEST, PRIMARY_PREDICTIONS, PRIMARY_REPORT, TONES, VARIANTS_REPORT,
-    calibrate, clip_timestamps, motion_profile, motion_series,
+    calibrate, clip_timestamps, main, motion_profile, motion_series,
     nested_per_class, read_predictions, u1_summary, variants_summary,
 )
-from src.inference.level1_core import load_level1_config  # noqa: E402
+from src.inference.level1_core import load_level1_config, validate_level1_config  # noqa: E402
 from src.inference.level1_segmenter import Level1SignSegmenter  # noqa: E402
 
 
@@ -254,6 +255,55 @@ class TestVariantsAndU1(unittest.TestCase):
         self.assertIn("accepted", res)
         self.assertIn("session_max_segment_ms", res)
         self.assertIsNotNone(res["n_segments_at_cap"])
+
+
+class TestWriteConfig(unittest.TestCase):
+    """AC-R'1 (d): --write-config only updates 5 keys, source matches pattern."""
+
+    def test_r_prime_1d_write_config(self):
+        evidence_path = os.path.join(PROJECT_ROOT, "reports", "level1_realtime_2026-10-03", "tone_evidence.json")
+        self.assertTrue(os.path.exists(evidence_path), f"Missing {evidence_path}")
+        with open(evidence_path, encoding="utf-8") as f:
+            evidence = json.load(f)
+        cal_values = evidence["calibration"]["values"]
+
+        tmp_dir = os.path.join(PROJECT_ROOT, "_work", "_plan15_tmp")
+        os.makedirs(tmp_dir, exist_ok=True)
+        tmp_cfg = os.path.join(tmp_dir, "test_write_config.json")
+        shutil.copyfile(CONFIG, tmp_cfg)
+
+        try:
+            ret = main(["--write-config", tmp_cfg, "--evidence-json", evidence_path])
+            self.assertEqual(ret, 0)
+
+            with open(tmp_cfg, encoding="utf-8") as f:
+                updated = json.load(f)
+            with open(CONFIG, encoding="utf-8") as f:
+                original = json.load(f)
+
+            cal_keys = {"still_speed", "move_speed", "hold_ms", "max_segment_ms", "tail_still_keep_ms"}
+            # Check the 5 calibrated keys
+            for k in cal_keys:
+                self.assertIn(k, updated)
+                self.assertEqual(updated[k]["value"], cal_values[k])
+                self.assertTrue(
+                    updated[k]["source"].startswith("calibrated: reports/level1_realtime_2026-10-03/tone_evidence.json@"),
+                    f"Unexpected source for {k}: {updated[k]['source']}",
+                )
+                self.assertEqual(updated[k]["reason"], original[k]["reason"])
+
+            # Check all other keys are unchanged
+            other_keys = set(original.keys()) - cal_keys
+            for k in other_keys:
+                self.assertEqual(updated[k], original[k], f"Key {k} was unexpectedly modified")
+
+            # Validate the updated config
+            val = validate_level1_config(updated)
+            for k in cal_keys:
+                self.assertEqual(val[k], cal_values[k])
+        finally:
+            if os.path.exists(tmp_cfg):
+                os.remove(tmp_cfg)
 
 
 if __name__ == "__main__":

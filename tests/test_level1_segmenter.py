@@ -24,7 +24,8 @@ W, H = 640, 480
 PALM = 0.15
 # test-only parameters (motion window shorter than one frame interval: M_t = m_t, so expected times are exact)
 PARAMS = {"motion_window_ms": 30, "still_speed": 1.0, "move_speed": 2.0, "hold_ms": 400, "rearm_move_ms": 120,
-          "hand_lost_ms": 200, "word_gap_ms": 600, "max_segment_ms": 3000, "min_sign_frames": 4}
+          "hand_lost_ms": 200, "word_gap_ms": 600, "max_segment_ms": 3000, "min_sign_frames": 4,
+          "tail_still_keep_ms": 400}
 MIN_DETECTED = 3
 SPEED = 0.6  # image units / s along y -> m = SPEED / PALM = 4 hand-lengths / s (moving)
 
@@ -270,13 +271,58 @@ class TestSegmenter(unittest.TestCase):
         self.assertEqual(out[0].n_frames, 12)
         self.assertEqual(seg.flush(13 * 40.0), [])
 
+    def test_s14_tail_still_keep_ms_equal_hold_ms(self):
+        # On S1:
+        frames_s1, _ = move_then_still(10, 20)
+        ev_base = run(new_seg(tail_still_keep_ms=400), frames_s1)
+        segs_base = segments(ev_base)
+        self.assertEqual(len(segs_base), 1)
+        self.assertEqual(segs_base[0].close_reason, "hold")
+        self.assertEqual(segs_base[0].t_start_ms, 0.0)
+        self.assertEqual(segs_base[0].t_end_ms, 800.0)
+        self.assertEqual(segs_base[0].t_emit_ms, 800.0)
+        self.assertEqual(segs_base[0].n_frames, 21)
+
+        # On S3:
+        f1, y = move_then_still(10, 20)
+        f2, _ = move_then_still(10, 30, y0=y + SPEED * 0.04, start_index=30)
+        ev_s3 = run(new_seg(tail_still_keep_ms=400), f1 + f2)
+        segs_s3 = segments(ev_s3)
+        self.assertEqual(len(segs_s3), 2)
+        self.assertEqual([s.close_reason for s in segs_s3], ["hold", "hold"])
+        self.assertEqual(segs_s3[1].t_start_ms, 1200.0)
+        self.assertEqual(segs_s3[1].t_end_ms, 2000.0)
+        self.assertEqual(segs_s3[1].t_emit_ms, 2000.0)
+
+    def test_s15_tail_still_keep_ms_less_than_hold_ms(self):
+        # hold_ms = 400, tail_still_keep_ms = 200 (< hold_ms)
+        frames, _ = move_then_still(10, 20)
+        ev = run(new_seg(hold_ms=400, tail_still_keep_ms=200), frames)
+        segs = segments(ev)
+        self.assertEqual(len(segs), 1)
+        s = segs[0]
+        self.assertEqual(s.close_reason, "hold")
+        self.assertEqual(s.t_emit_ms, 800.0)  # t_emit unchanged!
+        self.assertLessEqual(s.t_end_ms, 600.0)  # ts <= _still_since + tail_still_keep_ms
+        self.assertEqual(s.t_end_ms, 600.0)
+        self.assertEqual(s.n_frames, 16)
+        self.assertEqual(s.t_start_ms, 0.0)
+
     def test_parameter_checks(self):
         with self.assertRaises(ValueError):
             Level1SignSegmenter({k: v for k, v in PARAMS.items() if k != "hold_ms"}, MIN_DETECTED)
         with self.assertRaises(ValueError):
+            Level1SignSegmenter({k: v for k, v in PARAMS.items() if k != "tail_still_keep_ms"}, MIN_DETECTED)
+        with self.assertRaises(ValueError):
             Level1SignSegmenter({**PARAMS, "move_speed": 1.0}, MIN_DETECTED)
         with self.assertRaises(ValueError):
             Level1SignSegmenter({**PARAMS, "word_gap_ms": 100}, MIN_DETECTED)
+        with self.assertRaises(ValueError):
+            Level1SignSegmenter({**PARAMS, "tail_still_keep_ms": 0}, MIN_DETECTED)
+        with self.assertRaises(ValueError):
+            Level1SignSegmenter({**PARAMS, "tail_still_keep_ms": -50}, MIN_DETECTED)
+        with self.assertRaises(ValueError):
+            Level1SignSegmenter({**PARAMS, "tail_still_keep_ms": 500}, MIN_DETECTED)  # > hold_ms (400)
 
     def test_hud_status(self):
         frames, _ = move_then_still(10, 15)

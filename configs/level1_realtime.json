@@ -30,6 +30,11 @@
     "source": "design",
     "reason": "= hold_ms_design until the calibration rule min(hold_ms_design, p10 of the longest still run per train clip) is applied (B6b)"
   },
+  "tail_still_keep_ms": {
+    "value": 400,
+    "source": "design",
+    "reason": "= hold_ms until the calibration rule min(hold_ms, p50 of trailing_still_ms over moving train clips) is applied (plan 15 section 3.A.3)"
+  },
   "rearm_move_ms": {
     "value": 150,
     "source": "design",

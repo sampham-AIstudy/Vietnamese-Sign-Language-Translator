@@ -35,7 +35,7 @@ import numpy as np
 from src.data.alphabet_preprocessing import EPS, MIDDLE_MCP_IDX, WRIST_IDX, normalize_hand_landmarks
 
 SEGMENTER_KEYS = ("motion_window_ms", "still_speed", "move_speed", "hold_ms", "rearm_move_ms", "hand_lost_ms",
-                  "word_gap_ms", "max_segment_ms", "min_sign_frames")
+                  "word_gap_ms", "max_segment_ms", "min_sign_frames", "tail_still_keep_ms")
 CLOSE_REASONS = ("hold", "hand_lost", "end_of_stream")
 STATES = ("no_hand", "moving", "holding")
 
@@ -108,6 +108,8 @@ class Level1SignSegmenter:
             raise ValueError("move_speed must be > still_speed")
         if self.p["word_gap_ms"] < self.p["hand_lost_ms"]:
             raise ValueError("word_gap_ms must be >= hand_lost_ms")
+        if not (0 < self.p["tail_still_keep_ms"] <= self.p["hold_ms"]):
+            raise ValueError("tail_still_keep_ms must be > 0 and <= hold_ms")
         self.min_frames = max(int(self.p["min_sign_frames"]), int(min_detected_frames))
         self._seq = 0
         self._word_has_sign = False
@@ -268,7 +270,9 @@ class Level1SignSegmenter:
                 held = ts - self._still_since
                 self._hold_progress = min(1.0, held / self.p["hold_ms"])
                 if held >= self.p["hold_ms"] and self._n_detected(self._buf) >= self.min_frames:
-                    seg = self._make_segment(self._buf, ts, "hold")
+                    cutoff = self._still_since + self.p["tail_still_keep_ms"]
+                    buf_for_seg = [f for f in self._buf if f[3] <= cutoff + 1e-6]
+                    seg = self._make_segment(buf_for_seg, ts, "hold")
                     if seg is not None:
                         events.append(seg)
                     self._armed = False

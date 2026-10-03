@@ -29,6 +29,7 @@ CONFIG_SPEC = {
     "move_speed": ("number", "positive"),
     "hold_ms_design": ("number", "positive"),
     "hold_ms": ("number", "positive"),
+    "tail_still_keep_ms": ("number", "positive"),
     "rearm_move_ms": ("number", "positive"),
     "hand_lost_ms": ("number", "positive"),
     "word_gap_ms": ("number", "positive"),
@@ -100,6 +101,8 @@ def validate_level1_config(raw: Dict[str, Any]) -> Dict[str, Any]:
         raise ValueError("config: move_speed must be > still_speed")
     if values["word_gap_ms"] < values["hand_lost_ms"]:
         raise ValueError("config: word_gap_ms must be >= hand_lost_ms")
+    if not (0 < values["tail_still_keep_ms"] <= values["hold_ms"]):
+        raise ValueError("config: tail_still_keep_ms must be > 0 and <= hold_ms")
     return values
 
 

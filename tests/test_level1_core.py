@@ -113,6 +113,36 @@ class TestConfigC8(unittest.TestCase):
         with self.assertRaises(ValueError):
             load_level1_config(p)
 
+    def test_c8b_tail_still_keep_ms(self):
+        # Missing tail_still_keep_ms -> ValueError
+        raw = _real_raw()
+        if "tail_still_keep_ms" in raw:
+            del raw["tail_still_keep_ms"]
+        with self.assertRaises(ValueError):
+            validate_level1_config(raw)
+
+        # tail_still_keep_ms <= 0 -> ValueError
+        raw = _real_raw()
+        raw["tail_still_keep_ms"] = {"value": 0, "source": "design", "reason": "test"}
+        with self.assertRaises(ValueError):
+            validate_level1_config(raw)
+        raw["tail_still_keep_ms"]["value"] = -10
+        with self.assertRaises(ValueError):
+            validate_level1_config(raw)
+
+        # tail_still_keep_ms > hold_ms -> ValueError
+        raw = _real_raw()
+        raw["hold_ms"] = {"value": 400, "source": "design", "reason": "test"}
+        raw["tail_still_keep_ms"] = {"value": 450, "source": "design", "reason": "test"}
+        with self.assertRaises(ValueError):
+            validate_level1_config(raw)
+
+        # Real config loads and has valid tail_still_keep_ms
+        cfg = load_level1_config(CONFIG_PATH)
+        self.assertIn("tail_still_keep_ms", cfg["values"])
+        self.assertGreater(cfg["values"]["tail_still_keep_ms"], 0)
+        self.assertLessEqual(cfg["values"]["tail_still_keep_ms"], cfg["values"]["hold_ms"])
+
 
 
 # ----------------------------------------------------------------------------------------------------------------------

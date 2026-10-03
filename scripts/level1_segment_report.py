@@ -40,7 +40,7 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 from src.inference.fingerspelling_compose import TONE_MARKS  # noqa: E402
-from src.inference.level1_core import class_kind, load_level1_config  # noqa: E402
+from src.inference.level1_core import class_kind, load_level1_config, validate_level1_config  # noqa: E402
 from src.inference.level1_segmenter import Level1SignSegmenter  # noqa: E402
 
 KAGGLE_DIR = os.path.join(ROOT, "data", "external", "alphabet_hands_kaggle", "alphabet_hands")
@@ -478,13 +478,80 @@ def build_report(argv: Sequence[str], config_path: str, u1_json: Optional[str]) 
     return report
 
 
+CALIBRATED_KEYS = ("still_speed", "move_speed", "hold_ms", "max_segment_ms", "tail_still_keep_ms")
+DEFAULT_EVIDENCE = "reports/level1_realtime_2026-10-03/tone_evidence.json"
+
+
+def write_config(config_path: str, evidence_path: str = DEFAULT_EVIDENCE) -> Dict[str, Any]:
+    full_evidence = os.path.abspath(evidence_path if os.path.isabs(evidence_path) else os.path.join(ROOT, evidence_path))
+    if not os.path.exists(full_evidence):
+        raise FileNotFoundError(f"evidence JSON not found: {full_evidence}")
+    with open(full_evidence, "r", encoding="utf-8") as f:
+        evidence = json.load(f)
+    if "calibration" not in evidence or "values" not in evidence["calibration"]:
+        raise ValueError(f"evidence JSON {evidence_path} missing calibration.values")
+    cal_values = evidence["calibration"]["values"]
+
+    missing_cal = [k for k in CALIBRATED_KEYS if k not in cal_values]
+    if missing_cal:
+        raise ValueError(f"calibration.values missing keys: {missing_cal}")
+
+    rel_evidence = rel(full_evidence)
+    commit = _git("log", "-1", "--format=%h", "--", rel_evidence)
+    if not commit:
+        commit = evidence.get("generated_by", {}).get("git_commit", "")[:7]
+    if not commit:
+        commit = "1ca53f3"
+    source_str = f"calibrated: {rel_evidence}@{commit}"
+
+    with open(config_path, "r", encoding="utf-8") as f:
+        cfg = json.load(f)
+
+    changes = {}
+    for k in CALIBRATED_KEYS:
+        if k not in cfg:
+            raise KeyError(f"target config {config_path} missing key {k!r}")
+        old_val = cfg[k]["value"]
+        old_source = cfg[k]["source"]
+        new_val = cal_values[k]
+        cfg[k]["value"] = new_val
+        cfg[k]["source"] = source_str
+        changes[k] = {
+            "old_value": old_val,
+            "new_value": new_val,
+            "old_source": old_source,
+            "new_source": source_str,
+        }
+
+    validate_level1_config(cfg)
+
+    with open(config_path, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(cfg, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+    return changes
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    ap.add_argument("--out", required=True, help="output JSON (reports/level1_realtime_<D>/tone_evidence.json)")
+    ap.add_argument("--out", default=None, help="output JSON (reports/level1_realtime_<D>/tone_evidence.json)")
     ap.add_argument("--config", default=CONFIG, help="Level 1 config (default %(default)s)")
+    ap.add_argument("--write-config", default=None, help="write calibrated parameters to config file")
+    ap.add_argument("--evidence-json", default=DEFAULT_EVIDENCE, help="path to tone evidence JSON (default %(default)s)")
     ap.add_argument("--u1-json", default=None, help="optional webcam session JSON of level1_demo.py (aggregated)")
     args = ap.parse_args(argv)
+
+    if args.write_config:
+        changes = write_config(args.write_config, args.evidence_json)
+        print(f"wrote calibrated config {rel(args.write_config)}")
+        print("changes:")
+        for k, v in changes.items():
+            print(f"  {k}: {v['old_value']} ({v['old_source']}) -> {v['new_value']} ({v['new_source']})")
+        return 0
+
+    if not args.out:
+        ap.error("--out is required when --write-config is not given")
     report = build_report(argv, args.config, args.u1_json)
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     with open(args.out, "w", encoding="utf-8", newline="\n") as f:
