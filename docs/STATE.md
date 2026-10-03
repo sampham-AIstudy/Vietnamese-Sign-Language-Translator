@@ -3,13 +3,13 @@
 > Orchestrator PHẢI đối chiếu file này với `git log` và `docs/progress_log.md` mỗi khi khôi phục, sửa chỗ sai,
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
-- Cập nhật lần cuối: 2026-10-03 01:40 (giờ Việt Nam)
-- HEAD: 48f65dd (+ commit state này) | Nhánh: feat/vslt-complete
+- Cập nhật lần cuối: 2026-10-03 08:33 (giờ Việt Nam)
+- HEAD: feba7a1 (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 88% lúc 02:45 ngày 3/10, reset 06:00 VN; 7 ngày 55%. Không đơn vị nào lọt cổng. Không agent, không kernel chạy.
-  Đã lưu + push. Orchestrator chờ bằng sleep nền ≤ 25 phút.
-  VIỆC KẾ TIẾP (sau 06:00): vslt-coder 13 B9a + B9b (chẩn đoán smoke CPU theo §0B.3, quy tắc R0/R1/R2 đặt trước; R0 → CẦN PLANNER, R2-FAIL → CẦN NGƯỜI DÙNG, dừng)
+- Trạng thái phiên: ĐANG CHẠY — 08:33 ngày 3/10 giao vslt-coder 13 B9a + B9b (B9b chạy trên Kaggle CPU theo quyết định 02:55, không local). 5h 0% (reset 13:30 VN),
+  7 ngày 56%. Cổng: 0 + 15 (est coder max 15/7/9) ≤ 90 → đạt. (Trước đó: chờ hạn mức 02:45 → 06:00; người dùng nhắn "continue" 08:30.)
+  VIỆC (đã giao 08:33): vslt-coder 13 B9a + B9b (chẩn đoán smoke CPU theo §0B.3, quy tắc R0/R1/R2 đặt trước; R0 → CẦN PLANNER, R2-FAIL → CẦN NGƯỜI DÙNG, dừng)
   → B9c (song song được) → B9d → B9e (cổng GPU, ghim v4, đẩy K2 v4) → B9f. Song song/xen kẽ: coder 11 B2 (sign_segmenter); planner kế hoạch 14 (đính chính CSLR unseen);
   planner sửa kế hoạch 08 §3.2 dòng 152 (fps_last 30.0 → 0.0) trước khi code 08.
   Planner 13 LẦN SỬA 2 XONG (§0B + [LS2] trong docs/plans/13-train-lai-checkpoint-thieu.md, commit cùng lượt này): smoke = kiểm hạ tầng dừng-sớm (không phải tiêu chí
@@ -290,7 +290,8 @@
   của Drive (dữ liệu cá nhân). Không đồng bộ thư mục Project lên Drive. Không cần MCP. Đã thử 03:08: ghi/đọc file 5 MB, sha256 khớp (file thử đã xóa;
   còn `VSLT\_test\write_test.txt`). Drive upload lên mây chạy nền — trước khi coi là "đã lưu trữ" phải kiểm trạng thái đồng bộ (chưa có cách kiểm qua lệnh).
   Khi người dùng PAUSE sync: G: vẫn đọc/ghi được nhưng file chỉ nằm trong cache máy (đã thử 03:14) — lần pause đó chỉ để thử; (03:20) người dùng: sync LUÔN BẬT,
-  KHÔNG cần nhắc Resume/xác nhận; Drive chỉ là bản sao phụ, nguồn lưu trữ chính vẫn là Kaggle dataset private + manifest sha256.
+  KHÔNG cần nhắc Resume/xác nhận; connector Google Drive của claude.ai (MCP mcp__claude_ai_Google_Drive__*, có từ 3/10 08:30) cũng
+  CHỈ dùng trong thư mục VSLT — không search/list/đọc file ngoài VSLT; Drive chỉ là bản sao phụ, nguồn lưu trữ chính vẫn là Kaggle dataset private + manifest sha256.
 
 - (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy" — ĐÃ BỊ THAY bởi quyết định 20:15 ngay dưới.
 
@@ -378,3 +379,4 @@
 - 2026-10-02 14:22 | khôi phục sau chờ hạn mức (người dùng nhắn "tiếp tục công việc") | STATE khớp git (HEAD cc52880) | Giao coder 13 B3 + B4.
 - 2026-10-02 16:22 | dừng theo hạn mức (86%) | 13 sửa trước B5 xong | Lưu STATE, push, hẹn giờ 19:42 làm tiếp B5.
 - 2026-10-02 20:05 | khôi phục sau chờ hạn mức (sleep nền bị dừng khi phiên cũ kết thúc; người dùng nhắn "continue") | STATE khớp git (HEAD e03d988); sửa HEAD ghi eea8906 → e03d988, giờ reset 19:40 → 19:20 | Giao coder 13 B5.
+- 2026-10-03 08:33 | khôi phục sau chờ hạn mức (người dùng nhắn "continue") | STATE khớp git (HEAD feba7a1), không agent/kernel chạy | Giao coder 13 B9a+B9b.
