@@ -42,17 +42,19 @@ command -v agy >/dev/null 2>&1 || { echo "Không tìm thấy 'agy' trong PATH" >
 
 if [ -z "$UNITS" ]; then
   UNITS="$("$PY" - "$STEPS" <<'EOF'
-import sys
+import re, sys
 s = sys.argv[1].strip()
 if not s:
-    print(3); sys.exit()
+    print(3); sys.exit()          # không có --steps: coi là 3 bước (giả định, thận trọng)
+if len(s) > 40:
+    print(1); sys.exit()          # mô tả tự do (không phải danh sách mã bước) -> coi là 1 bước
 n = 0
-for t in s.split(","):
-    t = t.strip()
-    if "-" in t:
-        a, b = t.split("-", 1); n += int(b) - int(a) + 1
+for t in re.split(r"[,\s]+", s):
+    m = re.fullmatch(r"(\d+)-(\d+)", t)
+    if m:
+        n += int(m.group(2)) - int(m.group(1)) + 1
     elif t:
-        n += 1
+        n += 1                    # mã bước như T1, A1, B5, 3
 print(max(n, 1))
 EOF
 )"
