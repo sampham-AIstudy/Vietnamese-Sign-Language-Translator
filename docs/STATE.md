@@ -13,8 +13,12 @@
   A1 LẦN 1 (agy Opus/high, 22:20–22:28): CHẠM 100% hạn mức 5h nhóm claude của agy (exit 14) — +77 điểm 5h / +41 tuần trong ~8 phút (ước lượng cũ 8 = sai ~10 lần; đã nâng
   giá trị khởi đầu nhóm claude trong scripts/agy_usage.py, sổ docs/agy_usage_ledger.csv có dòng đo thật). Không mất việc: bản nháp scripts/level1_segment_report.py (496 dòng,
   CHƯA test/chạy) đã lưu ở commit WIP f7aa924 (script giờ tự lưu WIP khi bị ngắt: commit 48d95c2). Guard: sạch. Nhóm claude của agy reset 02:46 4/10; gemini 5h 7.8% (02:44), tuần 50.2% (13:40 7/10).
-  Quyết định orchestrator (22:45): cổng tự đổi họ → gemini-3.8-flash-high; giao lại A1 (tiếp từ bản nháp, test-first AC-R'1) bằng gemini. Việc kế tiếp sau A1: T2.
-  KHÔNG sửa STATE/plan trong lúc agy chạy (guard worktree báo nhầm).
+  A1 LẦN 2 (agy gemini-3.8-flash-high, 22:39–22:55): XONG, orchestrator XÁC MINH ĐỘC LẬP — commit 72167b9 (script + tests/test_level1_segment_report.py 8 test OK, +260/-0 trong tests/)
+  và 1ca53f3 (reports/level1_realtime_2026-10-03/tone_evidence.json; git_commit 72167b9, code_dirty false); 4 file, đều trong scope; guard sạch; chi phí agy: gemini 5h +10.3, tuần +1.2.
+  AC1-ngắn (18 module) coder báo Ran 253, 1 FAIL = test_hand_landmarks_ws TestReset (chập chờn đã biết, chạy riêng 2 lần OK). Quy tắc 6 KHÔNG kích hoạt (p90=359ms < hold 400; chỉ 51/120 clip dấu có chuyển động).
+  DỮ LIỆU CHO A2/A3 (từ JSON, không gõ tay): still_speed 1.0→2.53 (thay đổi lớn nhất, A3 phải kiểm TRƯỚC/SAU), move_speed 2.0→5.06, max_segment_ms 4000→3543, tail_still_keep_ms=400 (A2 cắt đuôi gần như no-op: p50 trailing_still 2437ms);
+  391/636 clip no_motion. `--write-config` CHƯA có (thuộc A2). Agy tự thêm nhánh danh sách rỗng trong calibrate (triggered=False) — planner có thể xem lại. Gemini sửa bản nháp Opus chỉ 21 dòng (2 lỗi thật).
+  Tiếp: T2 (Hud khung text + phím 1–5, gemini/high) → sau T2 báo người dùng thử U1b. KHÔNG sửa STATE/plan trong lúc agy chạy (guard worktree báo nhầm).
   Hạn mức Claude: 5h ~32% (reset 02:40 4/10), 7 ngày 84% (reset 09:00 8/10); coder bridge ~9–10 điểm/lần.
   Coder 15 (cầu nối agy) T1 XONG (92fce21 agy; 3f08b5d tiến độ): src/inference/level1_textbox.py textbox_view, KEY_NAMES tone_1..5 + Level1Speller.view +
   key("tone_*") source "key" trong level1_core.py; test mới chỉ thêm; tự chạy lại AC1-ngắn 16 module + test_level1_textbox: Ran 245 OK, 0 skip; guard chính known=9.
