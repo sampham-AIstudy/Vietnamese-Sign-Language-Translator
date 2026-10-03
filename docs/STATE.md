@@ -7,8 +7,14 @@
 - HEAD: feba7a1 (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 09:32 ngày 3/10 giao vslt-coder 13 B9d (CHỈ 1 bước nhỏ: scripts/retrain_amendment.py + commit amendment). 5h 68% (reset 13:30 VN), 7 ngày 65%.
-  Cổng: 68 + 15 (est coder max 15/7/9) = 83 ≤ 90 → đạt; B9c (2 h mã) để cửa sổ sau. Sau B9d: nhiều khả năng dừng chờ hạn mức.
+- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 77% lúc 09:52 ngày 3/10, reset 13:30 VN; 7 ngày 67%. Không đơn vị nào lọt cổng (coder est 15: 92 > 90; planner est 33).
+  Không agent, không kernel chạy. Đã lưu + push. Orchestrator chờ bằng sleep nền ≤ 25 phút.
+  VIỆC KẾ TIẾP (sau 13:30): (1) vslt-coder 13 B9c (kernel K2 lưu output từng job + đọc amendment + kiểm "[MODEL] Transferred N" = 62 khóa/352207 tham số; chỉ thêm test)
+  → B9e (cổng GPU, ghim v4, đẩy K2 v4 GPU) → B9f; (2) xen khi kernel chạy: planner 11 sửa F2 → coder 11 B2…; coder 14 phần A.
+  Coder 13 B9d XONG (12ed4a7, 5ee935c, d2bbad1; đã push): scripts/retrain_amendment.py; reports/retrain_2026-10-02/preregistration_amendment_ls2.json
+  (sha256 52f05598…ccac, sinh tại 5ee935c code sạch): changes jobs.k2.cslr.train.argv + "--skip-smoke-test", whitelist chỉ cờ đó, decision R2-PASS,
+  expected_backbone_transfer 62/352207, amends preregistration ea12b44 (không sửa), 9 khóa unchanged kèm sha. Giả định cho B9c: đọc `changes`/`whitelist` như trên;
+  không đổi chuỗi hiển thị jobs.k2.cslr.train.command (kernel chạy từ argv). Test 149 OK/1 skip + TestRetrainAmendment 11 OK.
   Coder 13 B9a + B9b XONG (15a6079, 32c1356, acf274c = ghim chẩn đoán, d7e2fdd, 565cfca; đã push): kernel phmvnsm33/vsl-retrain-cslr-smoke-diag v1 COMPLETE
   (orchestrator kiểm), 7,3 CPU-phút, 0 GPU. D0 8 mẫu train smoke trùng công thức cũ; D1 smoke nguyên bản FAIL (loss 70.84 → 1.67, toàn blank); D4 backbone chuyển
   62 khóa / 352207 tham số, 0 lệch (R0 không kích hoạt); D4-ii trung thực 10/10; D5 epoch 60: train loss 0.2033, 32 từ dự đoán, WER 20.0 (8 mẫu) ⇒ QUYẾT ĐỊNH R2-PASS
