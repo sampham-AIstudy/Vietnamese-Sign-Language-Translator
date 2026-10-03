@@ -7,8 +7,18 @@
 - HEAD: 49ad46b (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 13:40 ngày 3/10 giao vslt-planner KẾ HOẠCH 15 (Level 1 realtime desktop + ghép từ; yêu cầu: "Quyết định của người dùng"
-  2026-10-03 10:30 + 10:45). 5h 0% (reset 18:30 VN), 7 ngày 68% (reset 09:00 8/10). Cổng: 0 + 33 (est planner max 2/19/33) ≤ 90 → đạt.
+- Trạng thái phiên: ĐANG CHẠY — 14:00 ngày 3/10 giao vslt-coder 15 chặng MVP (B0–B3). 5h 23% (reset 18:30 VN), 7 ngày 71% (reset 09:00 8/10).
+  Cổng: 23 + est coder (max 7/9/9 = 9; thực tế chặng 6 h công có thể 30–45) ≤ 90 → đạt.
+  Planner 15 XONG (docs/plans/15-level1-realtime-desktop.md, commit cùng lượt này): không CẦN NGƯỜI DÙNG; mọi file mới (không sửa backend/main.py, README,
+  guard chính, realtime_demo.py, file 11/13/14); alphabet_best.pt BiGRU [30,63], tiền xử lý trong checkpoint, dấu thanh = 5 lớp có chuyển động; dùng lại
+  HandLandmarkSession (hand_live.py), alphabet_clip_features, compose(). Tách ký hiệu: tốc độ tay (độ dài bàn tay/giây, trung vị cửa sổ) → phát khi giữ yên
+  hold_ms hoặc mất tay; hạ tay word_gap_ms → dấu cách; accept_confidence; phím Backspace/Space/c/p/q/r/a; tham số trong configs/level1_realtime.json
+  (still_speed, hold_ms hiệu chỉnh trên clip TRAIN theo quy tắc đặt trước). Độ trễ: luồng camera khung mới nhất, MediaPipe video mode thông số train,
+  vẽ đúng khung, worker phân loại riêng, đo 7 chặng/khung + 2 chặng/ký hiệu → HUD + JSON. Bước: B0 mốc, B1 segmenter, B2 lõi, B3 app MVP (~6 h),
+  B4 tương đương, B5 đo trễ, B6a/b hiệu chỉnh, B7 replay 10 clip, B8 tài liệu, B9 gộp JSON webcam (~14 h). Việc người dùng: U1 sau B3 (~10 phút, ký a b c o
+  dấu sắc, "ba", "cá"), U2 sau B5 (~15 phút, "ba" "cá" "mẹ" "xoong" ×3 với --expected/--out-json).
+  PHÁT HIỆN: số LOSO 75.1% ± 8.7 trong README thuộc lần chạy real_run, KHÔNG phải checkpoint đang triển khai (nested primary; provenance.json:375-379) —
+  báo cáo phải trích số từ nested_report.json.
   Kế hoạch 13/11/14 TẠM DỪNG (13 dừng sau B9d; tiếp tục từ B9c). Người dùng nhắn "đã hồi quota triển khai đi" 13:37.
   Coder 13 B9d XONG (12ed4a7, 5ee935c, d2bbad1; đã push): scripts/retrain_amendment.py; reports/retrain_2026-10-02/preregistration_amendment_ls2.json
   (sha256 52f05598…ccac, sinh tại 5ee935c code sạch): changes jobs.k2.cslr.train.argv + "--skip-smoke-test", whitelist chỉ cờ đó, decision R2-PASS,
