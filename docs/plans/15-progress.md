@@ -4,7 +4,7 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM: — (B4 xong; chờ orchestrator)
+- ĐANG LÀM: B5 (đo độ trễ đầy đủ + test AC-L), bắt đầu 2026-10-03, mốc HEAD c845b06
 - Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`)
 - Xong thêm: B4 (commit `15: B4`).
 - Còn lại: B5–B9.
@@ -106,6 +106,27 @@ Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_wo
   G1 trong đó: "[DoD7-guard] known=9 allowed=36", "[scope] serving=45 main=59"; tests.test_level1_guard OK.
 - Giả định: thư mục tạm của test nằm dưới `_work/_plan15_tmp/` (quy tắc file tạm của orchestrator), không dùng %TEMP%.
 
+## B5 — đo độ trễ đầy đủ + AC-L (2026-10-03, mốc c845b06)
+- Đã có từ B3 (kiểm lại, không làm lại): 7+2 chặng, warm-up tách riêng (session MediaPipe riêng + `classifier.warmup()`, không vào
+  `stages`), `--pace realtime`, `camera_api`/`CAP_PROP_BUFFERSIZE` từ config (giá trị đọc lại vào `camera_props`), cache panel PIL.
+- Thêm ở B5 (`level1_demo.py`): HUD p50 lăn cho ĐỦ 9 chặng (`hud_stats_lines`, 2 dòng ASCII cv2.putText; trước chỉ mediapipe +
+  frame_total) + processed/s + dropped; `Hud.compose(..., stats_lines)` nhận nhiều dòng, cache khóa theo số dòng;
+  `counts.dropped` (= `frames_dropped`, tên theo AC-L L2; giữ `frames_dropped` vì test D2 cũ dùng), `counts.capture_fps` (từ thời điểm
+  đọc khung, cùng `rate_from_timestamps`), `counts.results_not_displayed` (kết quả về sau khung cuối ở chế độ cửa sổ → không có
+  emit_to_token); NOTE ghi rõ headless không vẽ/hiển thị nên draw_landmarks/hud/display n = 0.
+- Impact (CLI, upstream) trước khi sửa: `_hud_lines`, `_process`, `report`, `_build` báo CRITICAL (74–124 "direct") và `compose`
+  ambiguous — do TRÙNG TÊN với hàm khác trong repo (process run_harmonized/measure_and_compare không liên quan); `CaptureThread` UNKNOWN.
+  Kiểm bằng text search: người gọi thật chỉ là `level1_demo.py` và `tests/test_level1_{demo,equivalence,guard}.py` (đều của 15).
+- Test mới (thêm class, không sửa test cũ) trong `tests/test_level1_demo.py`: `TestLatencyAcL` (L1 trên JSON lệnh D2 headless;
+  L1+L2 trên JSON `--pace realtime --headless` qua CLI: `counts.dropped`, mode paced, processed + dropped == read == số khung file;
+  chế độ cửa sổ paced với các hàm cửa sổ OpenCV thay bằng bộ ghi trong test → đủ 7 chặng khung n == frames_processed,
+  emit_to_token.n + results_not_displayed == classify.n; L3 cơ chế: `generated_by.git_commit` == HEAD, `code_dirty` == git status
+  của CODE_PATHS), `TestHudStatsLines` (p50 lăn đúng cửa sổ, n/a khi rỗng, ASCII; panel thêm đúng 1 dòng / dòng stats).
+  Thư mục tạm dưới `_work/_plan15_tmp/`. L3 trên `reports/level1_realtime_<D>/` để B7 (thư mục chưa có).
+- `python -m unittest tests.test_level1_demo tests.test_level1_guard -v` → `_work/_plan15/b5_demo.log`: `Ran 22 tests in 46.941s` `OK`.
+- AC1-ngắn đủ 16 module → `_work/_plan15/b5_short.log`: `Ran 236 tests in 216.419s` — `OK` (230 của B4 + 6 mới; 0 skip; test chập
+  chờn OK lần này). G1 trong đó: "[DoD7-guard] known=9 allowed=36", "[scope] serving=45 main=59"; tests.test_level1_guard OK.
+
 ## Việc người dùng — U1 (sau B3, ~10 phút; không chặn)
 Từ gốc repo, trong .venv: `.venv\Scripts\python level1_demo.py --source 0 --display-mirror`
 (thêm `--out-json _work/u1_webcam.json` nếu muốn xem JSON; không commit). Ký lần lượt vài chữ (a, b, c, o, dấu sắc) rồi 2 từ "ba", "cá"
@@ -148,3 +169,8 @@ bám tay không, chữ có tự tách không, có phát lặp khi giữ yên kh�
 - B4 (trước commit `15: B4`): analyze --index-only (exit 0) rồi detect-changes → "Changes: 5 files, 3 symbols, Affected processes: 174,
   Risk level: critical"; symbol đổi: Section → README.md (người dùng), 2 Section của docs/plans/15-progress.md. File test mới untracked
   nên chưa hiện. Không symbol có sẵn nào bị sửa (không cần impact).
+- B5 (trước commit `15: B5`): analyze --index-only (exit 0) rồi detect-changes → "Changes: 7 files, 15 symbols, Affected processes: 176,
+  Risk level: critical"; symbol đổi: Section → README.md (người dùng), 3 Section của 15-progress.md, HUD_STAGE_LABELS / CaptureThread /
+  Hud / Level1App (level1_demo.py), FRAME_STAGES / SIGN_STAGES / DRAWN_STAGES / TMP_PARENT / _WindowRecorder / TestLatencyAcL /
+  TestHudStatsLines (tests/test_level1_demo.py) — đều của 15. Process "affected" (run_harmonized, measure_and_compare…) là trùng tên,
+  không phải người gọi thật (xem mục B5 impact).

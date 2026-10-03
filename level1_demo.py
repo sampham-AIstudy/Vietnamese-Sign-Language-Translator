@@ -32,7 +32,7 @@ import sys
 import threading
 import time
 import unicodedata
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Sequence
 
 import cv2
 import numpy as np
@@ -54,9 +54,17 @@ EXIT_INPUT_ERROR = 2
 CODE_PATHS = ("level1_demo.py", "src", "configs/level1_realtime.json")
 NOTE = ("Durations are measured inside the app with time.perf_counter, from the moment a frame is received from "
         "the capture call to the end of each stage (frame_total ends after imshow + waitKey in a window, after the "
-        "segmenter in headless mode). Camera sensor / driver delay and display delay are not measured. These desktop "
-        "numbers do not replace the WebSocket end-to-end measurement required for the web app (DoD 8). A letter "
-        "appears only after the designed hold time (config hold_ms), on top of the processing time.")
+        "segmenter in headless mode). In headless mode nothing is drawn or shown, so draw_landmarks, hud and display "
+        "have n = 0. emit_to_token runs from the moment a segment is emitted to the end of imshow of the first frame "
+        "showing its result (headless: to the moment the result is applied); results that arrive after the last "
+        "frame are never shown (counts.results_not_displayed). warmup = first MediaPipe graph run and first model "
+        "run, measured apart and not included in stages. Camera sensor / driver delay and display delay are not "
+        "measured. These desktop numbers do not replace the WebSocket end-to-end measurement required for the web "
+        "app (DoD 8). A letter appears only after the designed hold time (config hold_ms), on top of the processing "
+        "time.")
+HUD_STAGE_LABELS = (("capture_age", "cap_age"), ("mediapipe", "mp"), ("segmenter", "seg"), ("draw_landmarks", "draw"),
+                    ("hud", "hud"), ("display", "disp"), ("frame_total", "total"), ("classify", "classify"),
+                    ("emit_to_token", "emit>token"))
 KEY_ACTIONS = {8: "backspace", 32: "space", ord("a"): "accept", ord("r"): "repeat", ord("c"): "clear"}
 KEY_QUIT = (ord("q"), 27)
 KEY_PAUSE = ord("p")
@@ -175,6 +183,7 @@ class CaptureThread(threading.Thread):
         super().__init__(daemon=True)
         self.reader, self.slot, self.paced, self.origin = reader, slot, paced, origin
         self.frames_read = 0
+        self.read_times: List[float] = []  # perf_counter (s) of every frame read, for counts.capture_fps
         self.error: Optional[BaseException] = None
         self._stop_event = threading.Event()
 
@@ -193,6 +202,7 @@ class CaptureThread(threading.Thread):
                 if frame is None:
                     break
                 t_cap = time.perf_counter()
+                self.read_times.append(t_cap)
                 if self.reader.fps is None:
                     ts_ms = (t_cap - self.origin) * 1000.0
                 else:
@@ -293,9 +303,9 @@ class Hud:
         self._key = None
         self._panel = None
 
-    def _build(self, width: int, big: List[str], small: List[str]) -> np.ndarray:
+    def _build(self, width: int, big: List[str], small: List[str], n_stats: int) -> np.ndarray:
         from PIL import Image, ImageDraw
-        height = self.line_h * len(big) + self.small_h * (len(small) + 1) + 8  # + 1 line for the live stats
+        height = self.line_h * len(big) + self.small_h * (len(small) + n_stats) + 8  # + lines for the live stats
         img = Image.new("RGB", (width, height), (20, 20, 20))
         d = ImageDraw.Draw(img)
         y = 4
@@ -308,22 +318,37 @@ class Hud:
         return cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
 
     def compose(self, view: np.ndarray, big: List[str], small: List[str], hold_progress: float,
-                stats_line: str = "") -> np.ndarray:
+                stats_lines: Sequence[str] = ()) -> np.ndarray:
         """Window image = the camera image with the text panel stacked BELOW it (the hand is never covered); a
         green bar on top of the panel shows the hold progress. The PIL panel (Vietnamese text) is cached; the live
-        stats line (ASCII, changes every frame) is drawn with cv2.putText on the last line of the panel."""
+        stats lines (ASCII, change every frame) are drawn with cv2.putText on the last lines of the panel."""
         w = view.shape[1]
-        key = (w, tuple(big), tuple(small))
+        stats_lines = list(stats_lines)
+        key = (w, tuple(big), tuple(small), len(stats_lines))
         if key != self._key:
-            self._panel, self._key = self._build(w, big, small), key
+            self._panel, self._key = self._build(w, big, small, len(stats_lines)), key
         out = np.vstack([view, self._panel])
         y = view.shape[0]
         if hold_progress > 0:
             cv2.rectangle(out, (0, y), (int(w * hold_progress), y + 3), (0, 200, 0), -1)
-        if stats_line:
-            cv2.putText(out, stats_line, (8, out.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (160, 255, 160), 1,
-                        cv2.LINE_AA)
+        for i, line in enumerate(stats_lines):
+            base = out.shape[0] - 10 - (len(stats_lines) - 1 - i) * self.small_h
+            cv2.putText(out, line, (8, base), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (160, 255, 160), 1, cv2.LINE_AA)
         return out
+
+
+def hud_stats_lines(times: StageTimes, process_starts: Sequence[float], rolling: int, dropped: int) -> List[str]:
+    """Live stats shown on the HUD: rolling p50 (last `rolling` values, ms) of every frame stage and of both sign
+    stages, frames processed per second over the last `rolling` frames, frames dropped so far. 'n/a' = nothing
+    measured yet."""
+    def p50(stage):
+        v = times.rolling_p50(stage)
+        return "n/a" if v is None else f"{v:.1f}"
+    labels = dict(HUD_STAGE_LABELS)
+    frame = " | ".join(f"{labels[s]} {p50(s)}" for s in FRAME_STAGES)
+    sign = " | ".join(f"{labels[s]} {p50(s)}" for s in SIGN_STAGES)
+    rate = rate_from_timestamps(list(process_starts)[-int(rolling):])
+    return ["p50 (ms) " + frame, f"p50 (ms) {sign} | processed/s {rate:.1f} | dropped {int(dropped)}"]
 
 
 # ---------------------------------------------------------------------------------------------------------- report
@@ -419,6 +444,7 @@ class Level1App:
         self.t_emit_perf: Dict[int, float] = {}
         self.pending_display: List[int] = []
         self.process_starts: List[float] = []
+        self.read_times: List[float] = []
         self.counts = {"frames_read": 0, "frames_processed": 0, "frames_dropped": 0, "segments": 0, "word_gaps": 0}
         self.frame_size = None
         self.paused = False
@@ -507,15 +533,11 @@ class Level1App:
             mark = "nhận" if r.get("accepted") else "chưa nhận (a: nhận)"
             last = f"Ký hiệu #{r['seq']}: {r['prediction']}  {r['confidence']:.2f}  {mark}"
         small = [last, "Trạng thái: " + state]
-        p50 = {s: self.times.rolling_p50(s) for s in ("mediapipe", "frame_total")}
-        fmt = {k: ("n/a" if v is None else f"{v:.0f}") for k, v in p50.items()}
-        rate = rate_from_timestamps(self.process_starts[-self.values["hud_rolling_frames"]:])
         for w in comp["warnings"][-2:]:
             small.append("Cảnh báo: " + w["code"])
         small.append("Backspace xóa | Space cách | a nhận | r lặp chữ | c xóa hết | p dừng | q thoát")
         dropped = self.slot.dropped if self.slot is not None else 0
-        stats = (f"p50 mediapipe {fmt['mediapipe']} | p50 frame_total {fmt['frame_total']} | "
-                 f"processed/s {rate:.1f} | dropped {dropped}")
+        stats = hud_stats_lines(self.times, self.process_starts, self.values["hud_rolling_frames"], dropped)
         return big, small, st["hold_progress"], stats
 
     def _process(self, session, frame: np.ndarray, t_cap: float, ts_ms: float) -> None:
@@ -618,6 +640,7 @@ class Level1App:
                     raise SourceError(f"webcam {self.args.source} delivered no frame (try another index or "
                                       "camera_api in the config)")
                 self.counts["frames_dropped"] = slot.dropped
+                self.read_times = capture.read_times
             else:
                 i = 0
                 while not self.quit:
@@ -625,6 +648,7 @@ class Level1App:
                     if frame is None:
                         break
                     t_cap = time.perf_counter()
+                    self.read_times.append(t_cap)
                     self._process(session, frame, t_cap, i * 1000.0 / reader.fps)
                     i += 1
                 self.counts["frames_read"] = i
@@ -656,7 +680,10 @@ class Level1App:
         if reader.fps is not None:
             source["fps_file"] = reader.fps
         counts = dict(self.counts)
+        counts["dropped"] = counts["frames_dropped"]  # same count under the name of plan 15 AC-L L2
         counts["processing_fps"] = rate_from_timestamps(self.process_starts)
+        counts["capture_fps"] = rate_from_timestamps(self.read_times)
+        counts["results_not_displayed"] = len(self.pending_display)
         return {
             "generated_by": generated_by(self.argv),
             "config": {"path": report_path(self.config_path), "sha256": self.cfg["sha256"],

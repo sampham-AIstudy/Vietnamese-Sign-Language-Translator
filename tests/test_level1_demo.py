@@ -340,5 +340,191 @@ class TestWorkerD5(unittest.TestCase):
             os.chdir(cwd)
 
 
+# ------------------------------------------------------------------------------------------------- AC-L (B5)
+FRAME_STAGES = STAGES[:7]
+SIGN_STAGES = STAGES[7:]
+DRAWN_STAGES = ("draw_landmarks", "hud", "display")
+TMP_PARENT = os.path.join(PROJECT_ROOT, "_work", "_plan15_tmp")
+
+
+def _git_out(*args):
+    return subprocess.run(["git", *args], cwd=PROJECT_ROOT, capture_output=True, text=True, check=True).stdout.strip()
+
+
+class _WindowRecorder:
+    """Stands in for the OpenCV window calls in the AC-L window-mode test (defined in the test; no window opens):
+    records the images given to imshow; every other step of the frame path is the app's own."""
+
+    def __init__(self):
+        self.shown = []
+
+    def imshow(self, name, image):
+        self.shown.append(image.shape)
+
+    @staticmethod
+    def waitKey(delay):
+        return -1
+
+    @staticmethod
+    def getWindowProperty(name, prop):
+        return 1.0
+
+    @staticmethod
+    def namedWindow(*a, **k):
+        return None
+
+    @staticmethod
+    def destroyAllWindows():
+        return None
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestLatencyAcL(unittest.TestCase):
+    """AC-L L1 / L2 / L3 (generation mechanism) on real runs of the app over the D2 clip: headless (the D2 command),
+    paced headless (CLI), paced in window mode (window calls recorded, see _WindowRecorder)."""
+
+    @classmethod
+    def setUpClass(cls):
+        os.makedirs(TMP_PARENT, exist_ok=True)
+        cls.tmp = tempfile.mkdtemp(prefix="vslt_p15_l_", dir=TMP_PARENT)
+        cls.runs = {}
+        for name, extra in (("headless", ["--headless"]), ("paced", ["--pace", "realtime", "--headless"])):
+            out = os.path.join(cls.tmp, name + ".json")
+            proc = subprocess.run([PY, "level1_demo.py", "--source", CLIP, *extra, "--out-json", out],
+                                  cwd=PROJECT_ROOT, capture_output=True, text=True, env=ENV, timeout=900)
+            report = None
+            if proc.returncode == 0:
+                with open(out, encoding="utf-8") as f:
+                    report = json.load(f)
+            cls.runs[name] = (proc, report)
+        cls.head = _git_out("rev-parse", "HEAD")
+        cls.dirty = bool(_git_out("status", "--porcelain", "--", *app_mod.CODE_PATHS))
+        rec = cls.recorder = _WindowRecorder()
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            from unittest import mock
+            with mock.patch.multiple(app_mod.cv2, imshow=rec.imshow, waitKey=rec.waitKey,
+                                     getWindowProperty=rec.getWindowProperty, namedWindow=rec.namedWindow,
+                                     destroyAllWindows=rec.destroyAllWindows):
+                cls.window_report = app_mod.Level1App(args_for("--source", CLIP, "--pace", "realtime")).run()
+        finally:
+            os.chdir(cwd)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def report(self, name):
+        proc, report = self.runs[name]
+        self.assertEqual(proc.returncode, 0, proc.stderr[-2000:])
+        return report
+
+    def check_stage_shape(self, r):
+        self.assertEqual(tuple(r["stages"]), STAGES)  # 7 frame stages + 2 sign stages, nothing else
+        for s in STAGES:
+            st = r["stages"][s]
+            self.assertEqual(set(st), {"n", "mean", "p50", "p95"})
+            if st["n"] == 0:
+                self.assertEqual((st["mean"], st["p50"], st["p95"]), (None, None, None))
+            else:
+                for k in ("mean", "p50", "p95"):
+                    self.assertTrue(np.isfinite(st[k]) and st[k] >= 0, (s, k, st[k]))
+                self.assertLessEqual(st["p50"], st["p95"])
+        processed = r["counts"]["frames_processed"]
+        self.assertGreater(processed, 0)
+        self.assertEqual(r["stages"]["mediapipe"]["n"], processed)  # warm-up runs are not in the stages
+        for s in ("capture_age", "segmenter", "frame_total"):
+            self.assertEqual(r["stages"][s]["n"], processed, s)
+        self.assertGreaterEqual(len(r["segments"]), 1)
+        self.assertEqual(r["stages"]["classify"]["n"], len(r["segments"]))
+        self.assertEqual(set(r["warmup"]), {"mediapipe_first_ms", "classify_first_ms"})
+        for v in r["warmup"].values():
+            self.assertIsInstance(v, float)
+            self.assertGreater(v, 0.0)
+
+    def test_l1_headless_d2_json(self):
+        r = self.report("headless")
+        self.check_stage_shape(r)
+        self.assertEqual(r["source"]["mode"], "headless")
+        for s in DRAWN_STAGES:  # nothing drawn or shown without a window
+            self.assertEqual(r["stages"][s]["n"], 0, s)
+        self.assertEqual(r["stages"]["emit_to_token"]["n"], len(r["segments"]))
+        self.assertEqual(r["counts"]["dropped"], 0)
+        self.assertEqual(r["counts"]["results_not_displayed"], 0)
+        self.assertGreater(r["counts"]["capture_fps"], 0.0)
+
+    def test_l1_l2_paced_json(self):
+        r = self.report("paced")
+        self.check_stage_shape(r)
+        self.assertEqual(r["source"]["mode"], "paced")
+        c = r["counts"]
+        self.assertIn("dropped", c)
+        self.assertIsInstance(c["dropped"], int)
+        self.assertEqual(c["dropped"], c["frames_dropped"])
+        self.assertEqual(c["frames_processed"] + c["dropped"], c["frames_read"])  # each frame read: processed or dropped
+        self.assertEqual(c["frames_read"], self.report("headless")["counts"]["frames_read"])  # the whole file was read
+        self.assertGreater(c["capture_fps"], 0.0)
+        self.assertGreater(c["processing_fps"], 0.0)
+        for s in DRAWN_STAGES:
+            self.assertEqual(r["stages"][s]["n"], 0, s)
+        self.assertEqual(r["stages"]["emit_to_token"]["n"], len(r["segments"]))
+
+    def test_l1_window_mode_measures_every_stage(self):
+        r = self.window_report
+        self.check_stage_shape(r)
+        self.assertEqual(r["source"]["mode"], "paced")
+        processed = r["counts"]["frames_processed"]
+        for s in FRAME_STAGES:
+            self.assertEqual(r["stages"][s]["n"], processed, s)
+        self.assertEqual(len(self.recorder.shown), processed)
+        h = r["frame_size"]["height"]
+        for shape in self.recorder.shown:
+            self.assertGreater(shape[0], h)  # camera image + HUD panel below it
+        self.assertEqual(r["stages"]["emit_to_token"]["n"] + r["counts"]["results_not_displayed"],
+                         r["stages"]["classify"]["n"])
+        self.assertEqual(r["counts"]["frames_processed"] + r["counts"]["dropped"], r["counts"]["frames_read"])
+
+    def test_l3_generated_by_commit_and_dirty_flag(self):
+        self.assertEqual(app_mod.CODE_PATHS, ("level1_demo.py", "src", "configs/level1_realtime.json"))
+        for r in (self.report("headless"), self.report("paced"), self.window_report):
+            g = r["generated_by"]
+            self.assertEqual(g["git_commit"], self.head)
+            self.assertIs(g["code_dirty"], self.dirty)
+
+
+class TestHudStatsLines(unittest.TestCase):
+    """The HUD shows a rolling p50 of every stage (last `rolling` values) + processed/s + dropped frames."""
+
+    def test_rolling_p50_every_stage(self):
+        from src.inference.level1_timing import StageTimes
+        times = StageTimes(STAGES, rolling=3)
+        for i, s in enumerate(STAGES[:-1]):  # emit_to_token left empty
+            for v in (1000.0, 1000.0, 2.0 + i, 4.0 + i, 3.0 + i):  # the two first values leave the window
+                times.add(s, v)
+        starts = [0.0, 0.1, 0.2, 0.3, 0.4]
+        lines = app_mod.hud_stats_lines(times, starts, rolling=3, dropped=7)
+        self.assertEqual(len(lines), 2)
+        text = "\n".join(lines)
+        labels = dict(app_mod.HUD_STAGE_LABELS)
+        self.assertEqual(set(labels), set(STAGES))
+        for i, s in enumerate(STAGES[:-1]):
+            self.assertIn(f"{labels[s]} {float(np.median([2.0 + i, 4.0 + i, 3.0 + i])):.1f}", text)
+        self.assertIn(f"{labels['emit_to_token']} n/a", text)
+        self.assertIn("processed/s 10.0", text)  # 2 intervals over the last 3 starts, 0.2 s
+        self.assertIn("dropped 7", text)
+        self.assertTrue(text.isascii())  # drawn with cv2.putText
+
+    def test_panel_reserves_stats_lines(self):
+        from src.inference.level1_core import load_level1_config
+        values = load_level1_config(os.path.join(PROJECT_ROOT, "configs", "level1_realtime.json"))["values"]
+        hud = app_mod.Hud(app_mod.find_font(None, values["font_paths"]), values["hud_font_size"])
+        view = np.zeros((48, 320, 3), dtype=np.uint8)
+        one = hud.compose(view, ["Văn bản: bá"], ["x"], 0.0, ["a"])
+        two = hud.compose(view, ["Văn bản: bá"], ["x"], 0.0, ["a", "b"])
+        self.assertEqual(two.shape[0] - one.shape[0], hud.small_h)
+        self.assertTrue(np.array_equal(two[:48], view))
+
+
 if __name__ == "__main__":
     unittest.main()
