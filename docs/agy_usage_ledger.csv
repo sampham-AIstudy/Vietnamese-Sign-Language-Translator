@@ -1,0 +1,2 @@
+time_utc,group,model,effort,plan,steps,five_before,five_after,five_delta,week_delta,quality
+2026-10-03T15:27Z,claude,claude-opus-5-5-high,high,docs/plans/15-lan-sua-1.md,1,23.0,100,77.0,41.3,ok limit_hit
