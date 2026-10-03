@@ -56,3 +56,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-03T06:57Z,vslt-planner,15,full plan,0,23,23,3,ok
 2026-10-03T08:12Z,vslt-coder,15,MVP B0-B3 (~6h work),23,59,36,5,ok
 2026-10-03T08:32Z,vslt-coder,15,B4 equivalence tests,59,71,12,1,ok
+2026-10-03T08:58Z,vslt-coder,15,B5 latency + AC-L,71,80,9,2,ok

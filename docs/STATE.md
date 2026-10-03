@@ -7,8 +7,15 @@
 - HEAD: 49ad46b (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 15:35 ngày 3/10 giao vslt-coder 15 B5 (đo độ trễ đầy đủ + AC-L). 5h 71% (reset 18:30 VN), 7 ngày 77% (reset 09:00 8/10).
-  Cổng: 71 + 12 (B4 cùng cỡ tốn 12) = 83 ≤ 90 → đạt. Chờ người dùng thử U1 (webcam).
+- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 80% lúc 15:58 ngày 3/10, reset 18:30 VN; 7 ngày 79% (reset 09:00 8/10). Không agent chạy. Đã lưu + push.
+  Không giao B6 (est ~12: 92 > 90; B6a riêng ~9 sát ngưỡng — không mạo hiểm chạm giới hạn). Chờ phản hồi webcam U1 của người dùng.
+  VIỆC KẾ TIẾP (sau 18:30): vslt-coder 15 B6a/B6b (hiệu chỉnh still_speed/hold_ms trên clip TRAIN theo quy tắc đặt trước) — LƯU Ý từ B5: MediaPipe p50 ~64–70 ms/khung
+  trên máy này ⇒ realtime chỉ xử lý ~11–15 khung/s, bỏ ~một nửa khung (rủi ro §6.1 khoảng cách khung không đều là THẬT) ⇒ hiệu chỉnh phải dùng chế độ
+  --pace realtime (giống webcam), không chỉ headless; + sửa theo phản hồi U1/U2. Sau đó B7 (replay) gọn, B8 phần cần cho trình bày.
+  Coder 15 B5 XONG (3ebc7b9, 3dc87aa; đã push): HUD p50 9 chặng + processed/s + dropped; JSON counts.dropped/capture_fps; TestLatencyAcL + TestHudStatsLines;
+  test level1 demo+guard 22 OK; AC1-ngắn Ran 236 OK. Số thử (KHÔNG phải số báo cáo, _work/_plan15/b5_paced_*.json, clip train a_hau_A_001 640×480 23.584 fps):
+  headless-paced 48/75 xử lý, p50 mediapipe 63.6 ms, frame_total 87.4 ms; window-paced 36/75, p50 mediapipe 69.9, frame_total 102.2 (p95 154.8), classify 29.7,
+  emit_to_token 127.0 ms (n=1). U2 (người dùng): `--expected "ba" --out-json reports/level1_realtime_<D>/webcam_ba_<n>.json` ×3 cho ba/cá/mẹ/xoong (chỉ khi code sạch).
   Coder 15 B4 XONG (aee18be): tests/test_level1_equivalence.py 9 test — E1 BẰNG HỆT trên 10 clip (8 hauuto + 2 qipedc): landmark, đặc trưng, classify == /sequence;
   E3 OK (không Hands(/resize; cv2.flip chỉ ở display_view; khung đưa vào process là đúng đối tượng reader trả về). AC1-ngắn 16 module Ran 230 OK.
   Coder 15 MVP B0–B3 XONG (4e4d9e3, 966ea4b, 58b31ce, 75e3116, e749212; đã push): file mới configs/level1_realtime.json, src/inference/level1_{segmenter,core,timing}.py,
