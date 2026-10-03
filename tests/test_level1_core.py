@@ -259,6 +259,22 @@ class TestSpellerC4C7(unittest.TestCase):
         with self.assertRaises(ValueError):
             sp.key("x")
 
+    def test_ack_tone_keys(self):
+        sp = Level1Speller(0.5)
+        tones = ["tone_1", "tone_2", "tone_3", "tone_4", "tone_5"]
+        expected_tones = ["dấu sắc", "dấu huyền", "dấu hỏi", "dấu ngã", "dấu nặng"]
+        
+        for i, name in enumerate(tones):
+            self.assertTrue(sp.key(name))
+            self.assertEqual(sp.tokens[-1], expected_tones[i])
+            event = sp.events[-1]
+            self.assertEqual(event["source"], "key")
+            self.assertEqual(event["key"], name)
+            self.assertEqual(sp.text, compose(sp.tokens)["text"])
+            
+        with self.assertRaises(ValueError):
+            sp.key("tone_6")
+
     def test_c6_text_is_compose(self):
         for tokens, text in ((["b", "a", "dấu sắc"], "bá"), (["m", "e", "dấu nặng", " ", "c", "a", "dấu sắc"], "mẹ cá")):
             sp = Level1Speller(0.5)

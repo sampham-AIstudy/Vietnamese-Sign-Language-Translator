@@ -28,6 +28,7 @@ PLAN15_FILES = (
     "src/inference/level1_segmenter.py",
     "src/inference/level1_core.py",
     "src/inference/level1_timing.py",
+    "src/inference/level1_textbox.py",
 )
 ENTRYPOINTS_15 = ("level1_demo.py",)
 

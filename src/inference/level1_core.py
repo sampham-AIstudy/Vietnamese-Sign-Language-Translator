@@ -204,7 +204,7 @@ class Level1Classifier:
 # ----------------------------------------------------------------------------------------------------------------------
 # Speller (plan 15 §3.4)
 # ----------------------------------------------------------------------------------------------------------------------
-KEY_NAMES = ("backspace", "space", "accept", "repeat", "clear")
+KEY_NAMES = ("backspace", "space", "accept", "repeat", "clear", "tone_1", "tone_2", "tone_3", "tone_4", "tone_5")
 
 
 class Level1Speller:
@@ -228,6 +228,11 @@ class Level1Speller:
         self._result_t: Dict[int, Optional[float]] = {}
 
     # ---------------------------------------------------------------- text
+    @property
+    def view(self) -> Dict[str, Any]:
+        from src.inference.level1_textbox import textbox_view
+        return textbox_view(self.tokens, self.rejected)
+
     def composed(self) -> Dict[str, Any]:
         return compose(self.tokens)
 
@@ -321,6 +326,18 @@ class Level1Speller:
                 return False
             self.tokens.append(self.tokens[-1])
             self._log("add", self.tokens[-1], "key", t_ms, key=name)
+            return True
+        if name.startswith("tone_"):
+            tone_map = {
+                "tone_1": "dấu sắc",
+                "tone_2": "dấu huyền",
+                "tone_3": "dấu hỏi",
+                "tone_4": "dấu ngã",
+                "tone_5": "dấu nặng"
+            }
+            tone = tone_map[name]
+            self.tokens.append(tone)
+            self._log("add", tone, "key", t_ms, key=name)
             return True
         # clear
         if not self.tokens and self.rejected is None:
