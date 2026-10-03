@@ -1,0 +1,3 @@
+# Script chạy bằng bash (Git Bash/Linux) phải luôn là LF, kể cả khi core.autocrlf=true
+*.sh text eol=lf
+scripts/githooks/* text eol=lf
