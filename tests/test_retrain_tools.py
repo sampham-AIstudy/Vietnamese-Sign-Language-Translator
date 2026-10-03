@@ -2894,5 +2894,287 @@ class TestSmokeDiagKernel(_Scratch):
         self.assertEqual([e["batch_ids"] for e in with_m["epochs"]], [e["batch_ids"] for e in without["epochs"]])
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# B9d — scripts/retrain_amendment.py (plan 13 §0B.3 path P, §0B.9 B9d)
+# ---------------------------------------------------------------------------------------------------------------------
+AMEND_DATE = "2026-10-02"
+AMEND_ARGV0 = ["src/training/train_cslr.py", "--sentence-split", "configs/vslgh_sentence_split_v1.json"]
+
+
+def _amend_diag(decision="R2-PASS", **over):
+    d = {"inputs_ok": True,
+         "generated_by": {"git_commit": "d" * 40, "code_dirty": False},
+         "D4": {"transfer_info": {"transferred_keys_count": 62, "transferred_params": 352207},
+                "key_analysis": {"n_transferred_keys": 62, "n_shape_mismatch_keys": 0, "n_prefix_keys_in_both": 62}},
+         "fidelity": {"fidelity_ok": True},
+         "decision_rule": {"decision": decision, "stop": None, "reasons": ["reason one", "reason two"]},
+         "decision": decision}
+    d.update(over)
+    return d
+
+
+def _amend_prereg(argv=None):
+    return {"plan": "x", "evaluation_protocol": {"bleu": "sacrebleu"},
+            "jobs": {"gpu_budget": {"hours": 2.5}, "rerun_policy": "once",
+                     "k2": {"watchdog_minutes": 30, "gpu_cap_hours": 2.0,
+                            "backbone": {"path": "checkpoints/stgcn_best.pt"},
+                            "cslr": {"train": {"argv": list(AMEND_ARGV0 if argv is None else argv), "command": "c"},
+                                     "selection": {"rule": "min val WER"}, "test_policy": "deferred",
+                                     "sanity": ["every loss finite"]}}}}
+
+
+class TestRetrainAmendment(_Scratch):
+    @classmethod
+    def setUpClass(cls):
+        import retrain_amendment as A
+        cls.A = A
+
+    def J(self, rel):
+        return os.path.join(self.root, *rel.split("/"))
+
+    def build(self, diag=None, prereg=None):
+        A = self.A
+        self.root = self.p("root")
+        rels = A.input_rels(AMEND_DATE)
+        write_bytes(self.J(rels["preregistration"]),
+                    (json.dumps(prereg or _amend_prereg(), ensure_ascii=False, indent=2) + "\n").encode("utf-8"))
+        write_bytes(self.J(rels["smoke_diag"]),
+                    (json.dumps(diag or _amend_diag(), ensure_ascii=False, indent=2) + "\n").encode("utf-8"))
+        write_bytes(self.J(rels["cslr_log"]), b"Smoke Epoch 1\r\nRuntimeError: Smoke test failed!\r\n")
+        write_bytes(self.J(A.FLAG_FILE),
+                    ('x = 1\n    parser.add_argument("' + A.FLAG + '", action="store_true")\n').encode("utf-8"))
+        return rels
+
+    def fake_git(self, **over):
+        rels = self.A.input_rels(AMEND_DATE)
+        files = {}
+        for i, (name, rel) in enumerate(sorted(rels.items())):
+            with open(self.J(rel), "rb") as f:
+                blob = f.read().replace(b"\r\n", b"\n")
+            files[rel] = {"commits": [str(i + 1) * 40], "n_commits": 1, "commit": str(i + 1) * 40,
+                          "is_ancestor_of_head": True, "blob_sha256": sha(blob)}
+        g = {"head": "a" * 40, "code_dirty": False, "code_dirty_files": [], "files": files}
+        for k, v in over.items():
+            if k in rels:
+                g["files"][rels[k]].update(v)
+            else:
+                g[k] = v
+        return lambda root, rels_: json.loads(json.dumps(g))
+
+    def run_main(self, argv=None, git=None):
+        from unittest import mock
+        out, err = io.StringIO(), io.StringIO()
+        argv = ["--date", AMEND_DATE, "--root", self.root] if argv is None else argv
+        with mock.patch.object(self.A, "git_info", git or self.fake_git()), contextlib.redirect_stdout(out), \
+                contextlib.redirect_stderr(err):
+            rc = self.A.main(argv)
+        return rc, out.getvalue(), err.getvalue()
+
+    def out_path(self):
+        return self.J(self.A.output_rel(AMEND_DATE))
+
+    def test_r2_pass_writes_exactly_the_whitelisted_key(self):
+        rels = self.build()
+        with open(self.J(rels["preregistration"]), "rb") as f:
+            prereg_before = f.read()
+        rc, out, err = self.run_main()
+        self.assertEqual(rc, 0, err)
+        with open(self.out_path(), "rb") as f:
+            raw = f.read()
+        am = json.loads(raw.decode("utf-8"))
+        self.assertEqual(json.loads(out)["sha256"], sha(raw))
+        # exactly one key, value = registered argv + ["--skip-smoke-test"]
+        self.assertEqual(list(am["changes"]), ["jobs.k2.cslr.train.argv"])
+        self.assertEqual(am["changes"]["jobs.k2.cslr.train.argv"], AMEND_ARGV0 + ["--skip-smoke-test"])
+        self.assertEqual(am["changes_detail"]["jobs.k2.cslr.train.argv"],
+                         {"registered": AMEND_ARGV0, "added": ["--skip-smoke-test"]})
+        self.assertEqual(am["whitelist"], {"jobs.k2.cslr.train.argv": ["--skip-smoke-test"]})
+        self.assertEqual(am["reason_ref"], "docs/plans/13 §0B.3")
+        self.assertEqual((am["decision"], am["decision_rule"]), ("R2-PASS", "R2"))
+        self.assertEqual(am["decision_reasons"], ["reason one", "reason two"])
+        # numbers copied by code from D4-i
+        self.assertEqual(am["expected_backbone_transfer"]["transferred_keys_count"], 62)
+        self.assertEqual(am["expected_backbone_transfer"]["transferred_params"], 352207)
+        # evidence: path + commit + sha256 of the committed blob + LF sha256 of the working copy
+        g = self.fake_git()(None, None)["files"]
+        for key, name in (("smoke_diag", "smoke_diag"), ("k2_train_v3_cslr_log", "cslr_log")):
+            ev = am["evidence"][key]
+            self.assertEqual(ev["path"], rels[name])
+            self.assertEqual(ev["commit"], g[rels[name]]["commit"])
+            self.assertEqual(ev["sha256"], g[rels[name]]["blob_sha256"])
+            self.assertEqual(ev["lf_sha256"], D.lf_sha256(self.J(rels[name])))
+        self.assertEqual(am["evidence"]["smoke_diag"]["decision"], "R2-PASS")
+        self.assertEqual(am["evidence"]["smoke_diag"]["diag_git_commit"], "d" * 40)
+        self.assertEqual(am["amends"]["path"], rels["preregistration"])
+        self.assertEqual(am["amends"]["commit"], g[rels["preregistration"]]["commit"])
+        self.assertEqual(am["amends"]["sha256"], g[rels["preregistration"]]["blob_sha256"])
+        # unchanged list: every key present, digest = canonical JSON of the registered value
+        pr = _amend_prereg()
+        keys = [u["key"] for u in am["unchanged"]]
+        for k in ("jobs.k2.cslr.sanity", "jobs.k2.cslr.selection", "jobs.k2.cslr.test_policy", "evaluation_protocol",
+                  "jobs.k2.watchdog_minutes", "jobs.k2.gpu_cap_hours", "jobs.gpu_budget", "jobs.rerun_policy",
+                  "jobs.k2.backbone"):
+            self.assertIn(k, keys)
+        for u in am["unchanged"]:
+            v = pr
+            for part in u["key"].split("."):
+                v = v[part]
+            self.assertEqual(u["sha256"], self.A.canonical_sha256(v))
+        self.assertEqual(am["flag_ref"], f"{self.A.FLAG_FILE}:2")
+        gb = am["generated_by"]
+        self.assertEqual((gb["script"], gb["git_commit"], gb["code_dirty"]),
+                         ("scripts/retrain_amendment.py", "a" * 40, False))
+        self.assertIn("--date 2026-10-02", gb["command"])
+        self.assertNotIn("--root", gb["command"])
+        # the preregistration is never written
+        with open(self.J(rels["preregistration"]), "rb") as f:
+            self.assertEqual(f.read(), prereg_before)
+
+    def test_r1_maps_to_rule_r1(self):
+        self.build(diag=_amend_diag("R1"))
+        rc, _, err = self.run_main()
+        self.assertEqual(rc, 0, err)
+        with open(self.out_path(), encoding="utf-8") as f:
+            self.assertEqual(json.load(f)["decision_rule"], "R1")
+
+    def test_decision_not_path_p_exits_3_and_writes_nothing(self):
+        for dec in ("R2-FAIL", "R0", "R2", "", None):
+            with self.subTest(dec=dec):
+                self.build(diag=_amend_diag(dec))
+                rc, _, err = self.run_main()
+                self.assertEqual(rc, 3, err)
+                self.assertFalse(os.path.exists(self.out_path()))
+
+    def test_inconsistent_diag_exits_3(self):
+        bad = [
+            _amend_diag(decision_rule={"decision": "R2-FAIL", "stop": "x", "reasons": []}),
+            _amend_diag(fidelity={"fidelity_ok": False}),
+            _amend_diag(inputs_ok=False),
+            _amend_diag(generated_by={"git_commit": "d" * 40, "code_dirty": True}),
+        ]
+        for tweak in ({"transferred_params": 0}, {"transferred_keys_count": 61}, {"transferred_params": None}):
+            d = _amend_diag()
+            d["D4"]["transfer_info"].update(tweak)
+            bad.append(d)
+        d = _amend_diag()
+        d["D4"]["key_analysis"]["n_shape_mismatch_keys"] = 1
+        bad.append(d)
+        d = _amend_diag()
+        d["D4"]["key_analysis"]["n_prefix_keys_in_both"] = 63
+        bad.append(d)
+        d = _amend_diag()
+        del d["D4"]["transfer_info"]
+        bad.append(d)
+        for i, diag in enumerate(bad):
+            with self.subTest(i=i):
+                self.build(diag=diag)
+                rc, _, err = self.run_main()
+                self.assertEqual(rc, 3, err)
+                self.assertFalse(os.path.exists(self.out_path()))
+
+    def test_argv_already_amended_or_missing_exits_3(self):
+        for argv in (AMEND_ARGV0 + ["--skip-smoke-test"], []):
+            with self.subTest(argv=argv):
+                self.build(prereg=_amend_prereg(argv))
+                rc, _, err = self.run_main()
+                self.assertEqual(rc, 3, err)
+                self.assertFalse(os.path.exists(self.out_path()))
+
+    def test_refuses_to_overwrite(self):
+        self.build()
+        write_bytes(self.out_path(), b"old\n")
+        rc, _, err = self.run_main()
+        self.assertEqual(rc, 2, err)
+        with open(self.out_path(), "rb") as f:
+            self.assertEqual(f.read(), b"old\n")
+
+    def test_code_dirty_exits_2(self):
+        self.build()
+        rc, _, err = self.run_main(git=self.fake_git(code_dirty=True, code_dirty_files=[" M scripts/x.py"]))
+        self.assertEqual(rc, 2, err)
+        self.assertFalse(os.path.exists(self.out_path()))
+
+    def test_git_evidence_problems_exit_2(self):
+        self.build()
+        cases = [{"preregistration": {"n_commits": 2, "commits": ["1" * 40, "9" * 40]}},
+                 {"preregistration": {"n_commits": 0, "commits": [], "commit": None}},
+                 {"smoke_diag": {"n_commits": 0, "commits": [], "commit": None}},
+                 {"smoke_diag": {"n_commits": 2, "commits": ["2" * 40, "8" * 40]}},
+                 {"cslr_log": {"is_ancestor_of_head": False}},
+                 {"smoke_diag": {"blob_sha256": "0" * 64}}]
+        for over in cases:
+            with self.subTest(over=over):
+                rc, _, err = self.run_main(git=self.fake_git(**over))
+                self.assertEqual(rc, 2, err)
+                self.assertFalse(os.path.exists(self.out_path()))
+
+    def test_missing_input_and_bad_date_exit_2(self):
+        rels = self.build()
+        os.remove(self.J(rels["cslr_log"]))
+        rc, _, err = self.run_main()
+        self.assertEqual(rc, 2, err)
+        self.assertFalse(os.path.exists(self.out_path()))
+        rc, _, _ = self.run_main(["--date", "2026-13-40", "--root", self.root])
+        self.assertEqual(rc, 2)
+
+    def test_git_info_on_a_real_repository(self):
+        A = self.A
+        rels = self.build()
+        env = {**os.environ, "GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@t", "GIT_COMMITTER_NAME": "t",
+               "GIT_COMMITTER_EMAIL": "t@t"}
+
+        def git(*a):
+            return subprocess.run(["git", "-c", "core.autocrlf=false", *a], cwd=self.root, env=env,
+                                  capture_output=True, check=True)
+
+        git("init", "-q")
+        git("config", "core.autocrlf", "false")
+        git("add", rels["preregistration"], A.FLAG_FILE)
+        git("commit", "-q", "-m", "prereg")
+        git("add", rels["smoke_diag"], rels["cslr_log"])
+        git("commit", "-q", "-m", "evidence")
+        gi = A.git_info(self.root, list(rels.values()))
+        self.assertFalse(gi["code_dirty"], gi["code_dirty_files"])
+        self.assertEqual(len(gi["head"]), 40)
+        for rel in rels.values():
+            f = gi["files"][rel]
+            self.assertEqual((f["n_commits"], f["is_ancestor_of_head"]), (1, True))
+            with open(self.J(rel), "rb") as fh:
+                self.assertEqual(f["blob_sha256"], sha(fh.read()))
+        with open(self.J(rels["preregistration"]), "ab") as fh:
+            fh.write(b" ")
+        self.assertTrue(A.git_info(self.root, list(rels.values()))["code_dirty"])
+
+    def test_real_preregistration_committed_once_and_amendment_consistent(self):
+        """Repository state: preregistration.json has exactly one commit and no local change; if the amendment
+        exists it points at that commit and blob, and changes only the whitelisted key."""
+        A = self.A
+        rels = A.input_rels(AMEND_DATE)
+        pre = rels["preregistration"]
+        log = subprocess.run(["git", "log", "--format=%H", "--", pre], cwd=ROOT, capture_output=True, text=True)
+        commits = log.stdout.split()
+        self.assertEqual(len(commits), 1, commits)
+        st = subprocess.run(["git", "status", "--porcelain", "--", pre], cwd=ROOT, capture_output=True, text=True)
+        self.assertEqual(st.stdout.strip(), "")
+        out = os.path.join(ROOT, *A.output_rel(AMEND_DATE).split("/"))
+        if not os.path.exists(out):
+            self.skipTest("amendment not generated yet")
+        with open(out, encoding="utf-8") as f:
+            am = json.load(f)
+        blob = subprocess.run(["git", "show", f"{commits[0]}:{pre}"], cwd=ROOT, capture_output=True).stdout
+        self.assertEqual((am["amends"]["commit"], am["amends"]["sha256"]), (commits[0], sha(blob)))
+        prereg = json.loads(blob.decode("utf-8"))
+        reg = prereg["jobs"]["k2"]["cslr"]["train"]["argv"]
+        self.assertEqual(am["changes"], {"jobs.k2.cslr.train.argv": reg + ["--skip-smoke-test"]})
+        with open(os.path.join(ROOT, *am["evidence"]["smoke_diag"]["path"].split("/")), encoding="utf-8") as f:
+            diag = json.load(f)
+        self.assertIn(diag["decision"], ("R1", "R2-PASS"))
+        self.assertEqual(am["decision"], diag["decision"])
+        ti = diag["D4"]["transfer_info"]
+        self.assertEqual(am["expected_backbone_transfer"]["transferred_params"], ti["transferred_params"])
+        self.assertEqual(am["expected_backbone_transfer"]["transferred_keys_count"], ti["transferred_keys_count"])
+
+
+
 if __name__ == "__main__":
     unittest.main()
