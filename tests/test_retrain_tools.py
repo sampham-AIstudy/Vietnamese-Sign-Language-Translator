@@ -2640,5 +2640,259 @@ class TestK2PushedModeLine(unittest.TestCase):
             K1.same_as_pinned(k1_text + '\nMODE = "train"\n', k1_text)
 
 
+
+# =====================================================================================================================
+# B9b [LS2] — CSLR smoke-test diagnosis kernel (kaggle/vsl-retrain-cslr-smoke-diag), plan 13 §0B.3.
+# Pure helpers + the decision rule on hand-written dicts; the instrumented copy of the run_smoke_test loop is compared
+# with the UNCHANGED run_smoke_test on a tiny fake dataset (2 epochs, 8 fake samples; no real data, no GPU).
+# =====================================================================================================================
+DIAG_DIR = os.path.join(ROOT, "kaggle", "vsl-retrain-cslr-smoke-diag")
+
+
+def _diag_ok(**over):
+    """A diagnosis dict on which every check passes and D1 FAILS (the R2 branch); `over` replaces top-level keys."""
+    losses = [50.0 - 0.5 * i for i in range(60)]
+    d = {"inputs_ok": True,
+         "D1": {"passed": False, "status": "complete"},
+         "D4": {"status": "complete",
+                "transfer_info": {"transferred_keys_count": 30, "transferred_params": 1000},
+                "key_analysis": {"n_shape_mismatch_keys": 0, "n_prefix_keys_in_both": 30},
+                "train_losses": losses,
+                "measures": {"60": {"eval": {"loss": 1.0, "total_hyp_words": 12, "wer": 40.0}}}},
+         "fidelity": {"fidelity_ok": True}}
+    d.update(over)
+    return d
+
+
+class TestSmokeDiagKernel(_Scratch):
+    @classmethod
+    def setUpClass(cls):
+        with open(os.path.join(DIAG_DIR, "kernel-metadata.json"), encoding="utf-8") as f:
+            cls.meta = json.load(f)
+        cls.path = os.path.join(DIAG_DIR, cls.meta["code_file"])
+        cls.K = _load_kernel(cls.path, "plan13_smoke_diag_kernel")
+        with open(cls.path, encoding="utf-8") as f:
+            cls.text = f.read()
+
+    # --- metadata / static ------------------------------------------------------------------------------------------
+    def test_metadata_private_cpu_k1_source(self):
+        m = self.meta
+        self.assertEqual(m["id"], "phmvnsm33/vsl-retrain-cslr-smoke-diag")
+        self.assertEqual(m["id"], self.K.SLUG)
+        self.assertIs(m["is_private"], True)
+        self.assertIs(m["enable_gpu"], False)  # CPU, no accelerator (§0B.3: device cpu)
+        self.assertIs(m["enable_internet"], True)
+        self.assertEqual((m["language"], m["kernel_type"]), ("python", "script"))
+        self.assertEqual(m["kernel_sources"], ["phmvnsm33/vsl-retrain-stgcn-tier1"])
+        self.assertEqual(m["dataset_sources"], [])
+        self.assertEqual(self.K.KERNEL_FILE_IN_REPO,
+                         "kaggle/vsl-retrain-cslr-smoke-diag/retrain_cslr_smoke_diag_kernel.py")
+        self.assertTrue(os.path.isfile(os.path.join(ROOT, self.K.K2_FILE_IN_REPO)))
+
+    def test_static_constants_and_no_forbidden_calls(self):
+        code, tree = _code_strings_and_names(self.path)
+        self.assertIsNone(_module_constant(tree, "PIN_COMMIT"))
+        self.assertEqual(self.K.PART_TIMEOUT_S, 30 * 60)
+        self.assertEqual(_module_constant(tree, "DIAG_EPOCHS"), 60)
+        self.assertEqual(_module_constant(tree, "MEASURE_EPOCHS"), (10, 60))
+        self.assertEqual(_module_constant(tree, "SMOKE_EPOCHS"), 10)
+        joined = "\n".join(code)
+        for forbidden in ("eval_sentsplit", "evaluate_test", "train_cslr.py", "--skip-smoke-test", "symlink", "rmtree",
+                          "unlink", "shutil", "test", "train_translation_stage"):
+            self.assertNotIn(forbidden, code, forbidden)
+        for forbidden in ("eval_sentsplit", "--skip-smoke-test", "rmtree", "shutil", "evaluate_test("):
+            self.assertNotIn(forbidden, joined, forbidden)
+        self.assertEqual(self.K.CODE_PATHS, ("src", "scripts", "configs", "train.py", "evaluate_test.py", "kaggle"))
+        # D1/D2/D3 call the real run_smoke_test; the instrumented copy is the only training loop
+        self.assertEqual(self.text.count("T.run_smoke_test("), 1)
+        self.assertEqual(self.text.count("optimizer.zero_grad()"), 1)
+
+    def test_same_as_pinned_pin_line_only(self):
+        pushed = self.text.replace("PIN_COMMIT = None", 'PIN_COMMIT = "' + "c" * 40 + '"', 1)
+        self.K.same_as_pinned(pushed, self.text)
+        self.K.same_as_pinned(pushed.replace("\n", "\r\n"), self.text)
+        with self.assertRaises(self.K.KernelError):
+            self.K.same_as_pinned(pushed.replace("DIAG_EPOCHS = 60", "DIAG_EPOCHS = 61", 1), self.text)
+        self.assertEqual(self.K.check_pin("a" * 40), "a" * 40)
+        for bad in (None, "a" * 39, "A" * 40):
+            with self.assertRaises(self.K.KernelError):
+                self.K.check_pin(bad)
+
+    # --- pure helpers -----------------------------------------------------------------------------------------------
+    def test_parse_smoke_losses_on_the_v3_log(self):
+        with open(os.path.join(ROOT, "reports", "retrain_2026-10-02", "k2_train_v3", "logs", "cslr.log"),
+                  encoding="utf-8") as f:
+            text = f.read()
+        got = self.K.parse_smoke_losses(text)
+        m = re.search(r"Smoke Test Initial Loss: (\S+) -> Final Loss: (\S+)", text)
+        self.assertEqual(len(got), 10)
+        self.assertEqual((got[0], got[-1]), (m.group(1), m.group(2)))
+        with self.assertRaises(self.K.KernelError):
+            self.K.parse_smoke_losses("  Smoke Epoch 02/10: Train CTC Loss = 1.0000\n")
+
+    def test_fidelity(self):
+        a = [f"{x:.4f}" for x in range(10)]
+        self.assertTrue(self.K.fidelity(a, a + ["9.9999"] * 50)["fidelity_ok"])
+        bad = list(a)
+        bad[3] = "3.0001"
+        r = self.K.fidelity(a, bad)
+        self.assertFalse(r["fidelity_ok"])
+        self.assertEqual(r["mismatches"], [{"epoch": 4, "d1": "3.0000", "d4": "3.0001"}])
+        self.assertFalse(self.K.fidelity(a, a[:9])["fidelity_ok"])  # D4 stopped before epoch 10
+        self.assertFalse(self.K.fidelity(a[:9], a)["fidelity_ok"])
+        self.assertFalse(self.K.fidelity(None, a)["fidelity_ok"])
+
+    def test_transfer_analysis(self):
+        model = {"data_bn.weight": [201], "blocks.0.w": [64, 3], "blocks.1.w": [64, 64], "blocks.2.w": [128, 64],
+                 "bigru.w": [10], "fc.weight": [5, 512]}
+        ck = {"data_bn.weight": [201], "blocks.0.w": [64, 3], "blocks.1.w": [64, 64], "fc.weight": [50, 128]}
+        r = self.K.transfer_analysis(ck, model)
+        self.assertEqual((r["n_transferred_keys"], r["n_shape_mismatch_keys"], r["n_prefix_keys_in_both"]), (3, 0, 3))
+        self.assertEqual(r["prefix_keys_only_in_model"], ["blocks.2.w"])
+        self.assertEqual(r["skipped_keys"], ["fc.weight"])
+        ck["blocks.1.w"] = [32, 64]
+        r = self.K.transfer_analysis(ck, model)
+        self.assertEqual((r["n_transferred_keys"], r["n_shape_mismatch_keys"], r["n_prefix_keys_in_both"]), (2, 1, 3))
+        self.assertIn("blocks.1.w (shape mismatch", r["shape_mismatch_keys"][0])
+
+    # --- decision rule §0B.3 ----------------------------------------------------------------------------------------
+    def test_decide_r2_pass_and_r1(self):
+        r = self.K.decide(_diag_ok())
+        self.assertEqual((r["decision"], r["stop"]), ("R2-PASS", None))
+        d = _diag_ok()
+        d["D1"] = {"passed": True}
+        self.assertEqual((self.K.decide(d)["decision"], self.K.decide(d)["stop"]), ("R1", None))
+        d["D4"]["measures"] = {}  # D5 is not a decision input when D1 passes
+        self.assertEqual(self.K.decide(d)["decision"], "R1")
+
+    def test_decide_r0(self):
+        for change in ({"transferred_params": 0}, {"transferred_keys_count": 29}):
+            d = _diag_ok()
+            d["D4"]["transfer_info"].update(change)
+            self.assertEqual((self.K.decide(d)["decision"], self.K.decide(d)["stop"]), ("R0", "CAN_PLANNER"), change)
+        d = _diag_ok()
+        d["D4"]["key_analysis"]["n_shape_mismatch_keys"] = 1
+        self.assertEqual(self.K.decide(d)["decision"], "R0")
+        d = _diag_ok()
+        d["D1"] = {"passed": True}
+        d["D4"]["transfer_info"]["transferred_params"] = 0
+        self.assertEqual(self.K.decide(d)["decision"], "R0")  # R0 blocks even when D1 passes
+
+    def test_decide_r2_fail(self):
+        nan = float("nan")
+        cases = [("wer", 100.0), ("wer", 120.0), ("total_hyp_words", 0), ("loss", nan), ("wer", None)]
+        for key, val in cases:
+            d = _diag_ok()
+            d["D4"]["measures"]["60"]["eval"][key] = val
+            self.assertEqual((self.K.decide(d)["decision"], self.K.decide(d)["stop"]), ("R2-FAIL", "CAN_NGUOI_DUNG"),
+                             (key, val))
+        d = _diag_ok()
+        d["D4"]["train_losses"][59] = d["D4"]["train_losses"][0]  # not lower than epoch 1
+        self.assertEqual(self.K.decide(d)["decision"], "R2-FAIL")
+        d = _diag_ok()
+        d["D4"]["train_losses"][30] = float("inf")
+        self.assertEqual(self.K.decide(d)["decision"], "R2-FAIL")
+        d = _diag_ok()  # timeout before epoch 60
+        d["D4"]["train_losses"] = d["D4"]["train_losses"][:45]
+        d["D4"]["measures"] = {"10": d["D4"]["measures"]["60"]}
+        d["D4"]["status"] = "timeout: watchdog"
+        self.assertEqual(self.K.decide(d)["decision"], "R2-FAIL")
+
+    def test_decide_stops_without_decision(self):
+        for d in (_diag_ok(inputs_ok=False), _diag_ok(fidelity={"fidelity_ok": False}),
+                  _diag_ok(D1={"status": "timeout"}), _diag_ok(D4={"status": "exit 1"}), {}):
+            r = self.K.decide(d)
+            self.assertEqual((r["decision"], r["stop"]), (None, "CAN_PLANNER"), d)
+
+    # --- instrumented copy == run_smoke_test (fake data, 2 epochs) --------------------------------------------------
+    def _fake_env(self):
+        import builtins
+        import numpy as np
+        import torch
+        from src.training import train_cslr as T
+        vocab_path = self.p("vocab.txt")
+        write_bytes(vocab_path, "".join(t + "\n" for t in ["<blank>", "<unk>", "A", "B", "C", "D", "E"]).encode())
+        n_classes = len(T.VSLGlossVocabulary.from_file(vocab_path))
+
+        class FakeDS(torch.utils.data.Dataset):
+            def __init__(self, canonical_json, keypoints_dir, split, vocabulary, conversion_mode, normalize,
+                         sentence_split):
+                rs = np.random.RandomState(0 if split == "train" else 1)  # local generator: no global RNG use
+                self.samples = [{"id": f"{split}_{i}", "kp": rs.randn(10 + 3 * i, 67, 3).astype(np.float32),
+                                 "g": rs.randint(2, n_classes, size=2 + i % 2)} for i in range(9)]
+
+            def __len__(self):
+                return len(self.samples)
+
+            def __getitem__(self, idx):
+                s = self.samples[idx]
+                return {"sample_id": s["id"], "length": s["kp"].shape[0], "keypoints": torch.tensor(s["kp"]),
+                        "joint_mask": torch.ones(s["kp"].shape[:2]), "gloss_ids": torch.tensor(s["g"], dtype=torch.long),
+                        "translation": "", "annotation_source": "source"}
+
+        model = T.STGCNBiGRU_CSLR(num_joints=67, in_channels=3, num_classes=n_classes, channel_dims=[64, 64, 128],
+                                  temporal_downsample=2, hidden_size=256, num_gru_layers=2, dropout=0.1)
+        sd = {k: v for k, v in model.state_dict().items() if k.startswith(("data_bn.", "blocks."))}
+        sd["fc_iso.weight"] = torch.zeros(3, 4)
+        ckpt = self.p("stgcn_best.pt")
+        torch.save({"model_state_dict": sd}, ckpt)
+        orig = T.VSLGHContinuousDataset
+        T.VSLGHContinuousDataset = FakeDS
+        # run_smoke_test is NOT modified: only its module-level name `range` is shadowed so that its fixed 10-epoch loop
+        # runs 2 epochs here (local smoke limit); every other range() call is the builtin
+        T.range = lambda *a: builtins.range(1, 3) if a == (1, 11) else builtins.range(*a)
+
+        def restore():
+            T.VSLGHContinuousDataset = orig
+            del T.range
+        self.addCleanup(restore)
+        cfg = {"data_root": self.p("data"), "vocab_322": vocab_path, "backbone": ckpt, "split_path": None}
+        return T, cfg, len(sd) - 1
+
+    def test_instrumented_copy_reproduces_run_smoke_test(self):
+        from pathlib import Path
+        import torch
+        T, cfg, n_keys = self._fake_env()
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            T.run_smoke_test(Path(cfg["data_root"]), Path(cfg["vocab_322"]), Path(cfg["backbone"]),
+                             torch.device("cpu"), sentence_split=None)
+        d1 = self.K.parse_smoke_losses(buf.getvalue())
+        self.assertEqual(len(d1), 2)
+        progress = self.p("D4_progress.jsonl")
+
+        def emit(kind, obj):
+            with open(progress, "a", encoding="utf-8") as f:
+                f.write(json.dumps({"kind": kind, **obj}, ensure_ascii=False) + "\n")
+        rec = self.K.instrumented_smoke(T, cfg, epochs=2, measure_at=(2,), on_record=emit)
+        self.assertEqual(rec["train_losses_4dp"], d1)  # D4-ii on fake data
+        # the epoch-2 measurement repeats the evaluate_cslr call of run_smoke_test (same RNG state -> same samples)
+        dec = re.search(r"Smoke Test Decoded Samples: (.*)", buf.getvalue()).group(1)
+        self.assertEqual(dec, str(rec["measures"]["2"]["eval"]["qualitative_examples"][:2]))
+        ti, ka = rec["transfer_info"], rec["key_analysis"]
+        self.assertEqual(ti["transferred_keys_count"], n_keys)
+        self.assertEqual(ka["n_prefix_keys_in_both"], n_keys)
+        self.assertEqual(ka["n_transferred_keys"], n_keys)
+        self.assertEqual(ka["skipped_keys"], ["fc_iso.weight"])
+        m = rec["measures"]["2"]
+        for part in ("eval_fixed_order", "bn_train_only"):
+            self.assertEqual(m[part]["n_frames"], sum((10 + 3 * i + 1) // 2 for i in range(8)))
+            self.assertTrue(0.0 <= m[part]["blank_frame_fraction"] <= 1.0)
+            self.assertEqual(m[part]["sample_ids"], [f"train_{i}" for i in range(8)])
+        self.assertGreater(m["bn_train_only"]["n_batchnorm_modules"], 0)
+        # the append-only progress file rebuilds the same record (used when D4 times out)
+        part = self.K.d4_from_progress(progress)
+        self.assertEqual(part["train_losses"], rec["train_losses"])
+        self.assertEqual(part["transfer_info"], rec["transfer_info"])
+        self.assertEqual(set(part["measures"]), {"2"})
+
+    def test_measurement_does_not_change_the_training_trajectory(self):
+        T, cfg, _ = self._fake_env()
+        with_m = self.K.instrumented_smoke(T, cfg, epochs=2, measure_at=(1,))
+        without = self.K.instrumented_smoke(T, cfg, epochs=2, measure_at=())
+        self.assertEqual(with_m["train_losses"], without["train_losses"])
+        self.assertEqual([e["batch_ids"] for e in with_m["epochs"]], [e["batch_ids"] for e in without["epochs"]])
+
+
 if __name__ == "__main__":
     unittest.main()

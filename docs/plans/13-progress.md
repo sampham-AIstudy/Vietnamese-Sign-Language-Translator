@@ -637,6 +637,38 @@ Tệp tạm: `_work/_plan13_tmp/`.
 - Số (chép từ `reports/retrain_2026-10-02/k2_train_v3/env.json`): `error` "KernelError: failed jobs: ['cslr']", `exit` 1, `total_minutes` 12.14, `commit` `28a126e…386f`,
   `mode` "train"; checkpoint ViT5 không được lưu (§0B.1). Không sửa mã.
 
+### B9b [LS2] phần 1 — kernel chẩn đoán smoke (Kaggle CPU) + test (lượt 10, mốc HEAD `32c1356`). Log: `_work/_plan13_tmp/ls2/B9b_*`
+- **Lệch nơi chạy so với §0B.3 (ghi theo lệnh orchestrator):** §0B.3 viết "local, CPU"; quyết định người dùng 2026-10-03 02:55 (`docs/STATE.md`
+  "Quyết định của người dùng": không train local) ⇒ chạy trên **Kaggle CPU** (kernel private mới `phmvnsm33/vsl-retrain-cslr-smoke-diag`,
+  `enable_gpu: false`, không accelerator, `kernel_sources` = output K1). Nội dung D0–D5, timeout 30 phút/lần chạy, epoch 60, quy tắc R0/R1/R2 GIỮ NGUYÊN.
+  Runner nằm trong file kernel (commit, ghim) thay vì `_work/_plan13_tmp/ls2/smoke_diag.py` (Kaggle cần mã ở commit ghim); output tải về
+  `_work/_plan13_tmp/smoke_diag/`, bản commit ở `reports/retrain_2026-10-02/k2_ls2_smoke_diag/`.
+- File mới: `kaggle/vsl-retrain-cslr-smoke-diag/{retrain_cslr_smoke_diag_kernel.py, kernel-metadata.json}`; `tests/test_retrain_tools.py` chỉ THÊM
+  lớp `TestSmokeDiagKernel` (12 test; `git diff HEAD -- tests/test_retrain_tools.py | grep -c "^-[^-]"` → 0). Không sửa symbol có sẵn nào ⇒ không cần impact
+  sửa; `src/training/train_cslr.py` không đổi (`git diff --stat -- src/training/train_cslr.py` rỗng).
+- Cơ chế: ghim + bản đẩy như K1/K2 (§0B.6(a)): file repo `PIN_COMMIT = None`; bản đẩy = file ở ghim thay đúng dòng PIN; kernel tự kiểm `same_as_pinned`
+  (chỉ dòng PIN). Đầu vào như K2: clone ghim; nạp chính file kernel K2 ở ghim (importlib) để dùng `load_prereg`, `pip_pinned`, `clone_upstreams` (chỉ
+  `vsl_gh`), `run_ok`, `find_k1_backbone`; dữ liệu VSL-GH dựng lại bằng argv đăng ký; vocab 322 bằng argv đăng ký; vocab 372 = cùng argv bỏ
+  `--sentence-split … --split train`, `--out` vào scratch. Kiểm đầu vào TRƯỚC khi chạy (giá trị kỳ vọng ĐỌC từ preregistration/`k1_outputs.json`, đối chiếu
+  thêm tiền tố §0B.3 `d53ab701`, `59642925`, `c0af13db`, `dd7bc3da`, `2204becd…bac2`; split `split_file_sha256`); lệch → dừng, không chạy phần nào.
+- Phần chạy (tiến trình con, `device=cpu`, timeout 30 phút/phần): D0, D1 (gọi `run_smoke_test` nguyên bản, chụp stdout), D4 (bản sao vòng lặp smoke có đo
+  đạc tới epoch 60, đo ở epoch 10/60; mọi trạng thái RNG được lưu/khôi phục quanh phép đo ⇒ không đổi quỹ đạo train; tiến độ ghi nối tiếp
+  `parts/D4_progress.jsonl` để còn dữ liệu nếu hết giờ), D2, D3. Thứ tự: D0, D1, D4, D2, D3 (đầu vào quyết định trước). `decide()` cài đúng R0 → kiểm trung
+  thực → R1 → R2 (epoch 60) của §0B.3; thiếu D1 / D4-i / trung thực sai / đầu vào lệch → `decision` null + `stop` CAN_PLANNER.
+- **Giả định diễn giải (đặt TRƯỚC khi có kết quả):** (1) R2 "loss hữu hạn" = mọi train loss epoch 1–60 VÀ loss eval epoch 60 hữu hạn (chặt hơn);
+  "loss epoch 60 < loss epoch 1" = train loss in ra (đúng đại lượng của smoke); `total_hyp_words`/WER = `evaluate_cslr` chế độ eval trên 8 mẫu
+  (cùng lời gọi như smoke gốc). (2) R0 xét TRƯỚC kiểm trung thực và trước R1 (R0 là lỗi chặn). (3) Không chạy được D1 (hết 30 phút) → không có luật ⇒
+  CAN_PLANNER. (4) Bỏ `pip_pinned`? KHÔNG — vẫn cài như K2 cho cùng môi trường.
+- Test: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_retrain_tools tests.test_sentence_split_guard` → `Ran 180 tests` `OK (skipped=2)`
+  (168 cũ + 12 mới; 2 skip có sẵn "10k cleaned chưa đặt") (`B9b_full_suites.log`). Test tương đương bản sao ↔ `run_smoke_test` chạy trên dữ liệu GIẢ (8 mẫu
+  giả, 2 epoch — bóng tên `range` cấp module trong test để vòng 10 epoch cố định chạy 2 epoch; KHÔNG sửa `run_smoke_test`). Đột biến (bỏ khôi phục RNG)
+  → test quỹ đạo FAIL (`B9b_mutation.log`: "MUTANT_DETECTED").
+- Kiểm khô local KHÔNG train (`.venv/Scripts/python _work/_plan13_tmp/ls2/b9b_local_dry.py`, `B9b_local_dry.log`): `check_inputs` trên bản local → 6/6
+  khớp; `part_d0` chạy được (chỉ đọc danh sách mẫu). Bắt 1 lỗi trước khi đẩy (`split_file_sha256` nhận bytes). Đây không phải kết quả chính thức (là Kaggle).
+- Slug trước khi đẩy (`B9b_status_before.txt`, 2026-10-03T02:10:31Z): `kernels status` → "Permission 'kernels.get' was denied"; `kernels list --mine -s vsl-retrain`
+  chỉ có K1, K2 ⇒ slug chưa tồn tại.
+- **Commit này = commit ghim B9b** (hash ghi ở commit sau).
+
 ## Đang làm
 - **ĐANG LÀM B9a/B9b** (lượt 10, Lần sửa 2, mốc HEAD `714d9c9`, 2026-10-03): B9a ghi nhận K2 v3 ERROR; B9b chẩn đoán smoke D0–D5 theo §0B.3 — chạy trên KAGGLE CPU (quyết định người dùng 2026-10-03 02:55: không train local), không local.
 - **B9 phần 1 XONG** (lượt 9): ghim `28a126e`; K2 train `phmvnsm33/vsl-retrain-cslr-vit5` v3 đẩy 18:48:35Z, RUNNING 18:49:43Z. Chờ phần 2 (tải output, kiểm, commit) — lượt sau.
@@ -706,3 +738,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B9d | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, dòng đẩy K2 v3 + "Đang làm" thay 1 dòng) | "Changes: 1 files, 1 symbols / Affected processes: 191 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a) (`dc_B9d.txt`) |
 | B9ls2-0 (ĐANG LÀM) | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +1 dòng "ĐANG LÀM B9a/B9b") | "Changes: 1 files, 1 symbols / Affected processes: 192 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); không mã nào đọc file này (`dc_B9ls2_0.txt`) |
 | B9ls2-a (B9a) | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, 16 file `A` trong `reports/retrain_2026-10-02/k2_train_v3/`) | "Changes: 17 files, 1 symbols / Affected processes: 192 / Risk level: critical" — symbol duy nhất mục markdown của 13-progress (nối nhầm như B7a); 16 file JSON/log dữ liệu, không symbol, không mã nào đọc (`dc_B9ls2_a.txt`) |
+| B9ls2-b1 (ghim B9b) | `analyze --index-only` rồi `detect-changes --scope staged` (`A` 2 file `kaggle/vsl-retrain-cslr-smoke-diag/`, `M tests/test_retrain_tools.py` chỉ thêm, `M docs/plans/13-progress.md`) | "Changes: 4 files, 77 symbols / Affected processes: 200 / Risk level: critical" — symbol đổi = hằng/hàm của kernel MỚI + lớp test mới + mục markdown; luồng liệt kê (`Run_harmonized → …`, `Main → …`, `Measure_and_compare → …`) là nối nhầm qua tên `main`/`run`/mục markdown như B7r2/B9; không file nào import kernel mới (`git grep retrain_cslr_smoke_diag_kernel -- src scripts backend kaggle train.py` → chỉ metadata + chính nó); 0 symbol có sẵn bị sửa (`dc_B9ls2_b1.txt`) |

@@ -1,0 +1,14 @@
+{
+  "id": "phmvnsm33/vsl-retrain-cslr-smoke-diag",
+  "title": "vsl-retrain-cslr-smoke-diag",
+  "code_file": "retrain_cslr_smoke_diag_kernel.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": false,
+  "enable_internet": true,
+  "dataset_sources": [],
+  "kernel_sources": ["phmvnsm33/vsl-retrain-stgcn-tier1"],
+  "competition_sources": [],
+  "model_sources": []
+}
