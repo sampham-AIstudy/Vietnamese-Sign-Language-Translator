@@ -4,9 +4,9 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM: A2 (bước 1: code + test + config thiết kế)
-- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126).
-- Còn lại: A2, A3, C1, A4, C2.
+- ĐANG LÀM: (chưa) — kế tiếp A3
+- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`).
+- Còn lại: A3, C1, A4, C2.
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -200,6 +200,7 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - A1-báo cáo: sinh `reports/level1_realtime_2026-10-03/tone_evidence.json` tại commit sạch `72167b9`. Chạy analyze --index-only và detect-changes trước commit báo cáo.
 - T2 (trước commit `15: T2`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 4 files, 1 symbols, Affected processes: 170, Risk level: critical". Symbol đổi: Section ? → README.md (người dùng). Index sạch, không có partial/truncated.
 - A2-code (trước commit `15: A2 — tail_still_keep_ms + --write-config + test`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 11 files, 7 symbols, Affected processes: 174, Risk level: critical". Symbol đổi: Section ? → README.md (người dùng) + symbol của A2: CALIBRATED_KEYS, DEFAULT_EVIDENCE (scripts/level1_segment_report.py), Level1SignSegmenter (src/inference/level1_segmenter.py), TestConfigC8 (tests/test_level1_core.py), TestWriteConfig (tests/test_level1_segment_report.py), TestSegmenter (tests/test_level1_segmenter.py). Index sạch, không có partial/truncated.
+- A2-config (trước commit `15: A2 config hiệu chỉnh`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 5 files, 1 symbols, Affected processes: 174, Risk level: critical". Symbol đổi: Section ? → README.md (người dùng). Index sạch, không có partial/truncated.
 
 ## T1 — textbox logic + tone keys
 - File: `src/inference/level1_textbox.py`, `tests/test_level1_textbox.py`, `src/inference/level1_core.py` (`Level1Speller.view`, `KEY_NAMES`, `key`), `tests/test_level1_core.py` (AC-K), `tests/test_level1_guard.py` (`PLAN15_FILES`).
@@ -283,4 +284,18 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   - AC-E1 tương đương (`tests.test_level1_equivalence -v`): `Ran 9 tests in 77.906s` — `OK`, cả 10 clip BẰNG HỆT (bit-identical).
   - Guard chính (`tests.test_backend_source_guard -v`): `Ran 28 tests in 4.470s` — `OK`, `[DoD7-guard] known=9 allowed=36`, `[scope] serving=45 main=60`.
   - AC1-ngắn 18 module: `Ran 264 tests in 270.856s` — `OK`, 0 fail, 0 errors, 0 skip (log: `_work/_plan15/a2_short_1.log`). Test chập chờn `test_reset_segments_and_graphs` pass.
+- Bảng giá trị cấu hình cũ -> mới (in tự động bằng code từ `6067611:configs/level1_realtime.json` và `configs/level1_realtime.json`):
+  | Khóa | Giá trị cũ (thiết kế) | Nguồn cũ | Giá trị mới (hiệu chỉnh) | Nguồn mới |
+  |---|---|---|---|---|
+  | `still_speed` | `1.0` | `design` | `2.5306153884920786` | `calibrated: reports/level1_realtime_2026-10-03/tone_evidence.json@1ca53f3` |
+  | `move_speed` | `2.0` | `design` | `5.061230776984157` | `calibrated: reports/level1_realtime_2026-10-03/tone_evidence.json@1ca53f3` |
+  | `hold_ms` | `400` | `design` | `400.0` | `calibrated: reports/level1_realtime_2026-10-03/tone_evidence.json@1ca53f3` |
+  | `max_segment_ms` | `4000` | `design` | `3543` | `calibrated: reports/level1_realtime_2026-10-03/tone_evidence.json@1ca53f3` |
+  | `tail_still_keep_ms` | `400` | `design` | `400.0` | `calibrated: reports/level1_realtime_2026-10-03/tone_evidence.json@1ca53f3` |
+- Kết quả test kiểm chứng sau hiệu chỉnh config (bước 6):
+  - 6 module Level 1 (`tests.test_level1_textbox tests.test_level1_segment_report tests.test_level1_segmenter tests.test_level1_core tests.test_level1_demo tests.test_level1_guard -v`): `Ran 88 tests in 54.093s` — `OK`, 0 fail, 0 skip (log: `_work/_plan15/a2_level1_suite.log`).
+  - AC-E1 tương đương (`tests.test_level1_equivalence -v`): `Ran 9 tests in 79.116s` — `OK`, cả 10 clip BẰNG HỆT (bit-identical, log: `_work/_plan15/a2_equiv.log`).
+  - Guard chính (`tests.test_backend_source_guard -v`): `Ran 28 tests in 4.236s` — `OK`, `[DoD7-guard] known=9 allowed=36`, `[scope] serving=45 main=60` (log: `_work/_plan15/a2_guard.log`).
+  - AC1-ngắn 18 module: `Ran 264 tests in 225.786s` — `OK`, 0 fail, 0 errors, 0 skip (log: `_work/_plan15/a2_short_2.log`).
+
 

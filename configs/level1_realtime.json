@@ -6,8 +6,8 @@
     "reason": "median over about 5 frames of a 24 fps webcam: removes one-frame landmark jitter spikes while adding little lag to the still/moving decision"
   },
   "still_speed": {
-    "value": 1.0,
-    "source": "design",
+    "value": 2.5306153884920786,
+    "source": "calibrated: reports/level1_realtime_2026-10-03/tone_evidence.json@1ca53f3",
     "reason": "hand-lengths per second; a held letter only shows tracker jitter (a small fraction of the palm per frame); to be replaced by the train-clip calibration rule of plan 15 section 3.6 (B6b)"
   },
   "move_over_still_ratio": {
@@ -16,8 +16,8 @@
     "reason": "hysteresis between still and moving so jitter around one threshold does not flip the state every frame"
   },
   "move_speed": {
-    "value": 2.0,
-    "source": "design",
+    "value": 5.061230776984157,
+    "source": "calibrated: reports/level1_realtime_2026-10-03/tone_evidence.json@1ca53f3",
     "reason": "still_speed x move_over_still_ratio (plan 15 section 3.6)"
   },
   "hold_ms_design": {
@@ -26,13 +26,13 @@
     "reason": "upper bound of the hold before a letter is emitted: short enough to feel responsive, long enough that a slow transition between two letters is not taken as a hold"
   },
   "hold_ms": {
-    "value": 400,
-    "source": "design",
+    "value": 400.0,
+    "source": "calibrated: reports/level1_realtime_2026-10-03/tone_evidence.json@1ca53f3",
     "reason": "= hold_ms_design until the calibration rule min(hold_ms_design, p10 of the longest still run per train clip) is applied (B6b)"
   },
   "tail_still_keep_ms": {
-    "value": 400,
-    "source": "design",
+    "value": 400.0,
+    "source": "calibrated: reports/level1_realtime_2026-10-03/tone_evidence.json@1ca53f3",
     "reason": "= hold_ms until the calibration rule min(hold_ms, p50 of trailing_still_ms over moving train clips) is applied (plan 15 section 3.A.3)"
   },
   "rearm_move_ms": {
@@ -51,8 +51,8 @@
     "reason": "lowering the hand for about a second ends a word; must be >= hand_lost_ms"
   },
   "max_segment_ms": {
-    "value": 4000,
-    "source": "design",
+    "value": 3543,
+    "source": "calibrated: reports/level1_realtime_2026-10-03/tone_evidence.json@1ca53f3",
     "reason": "a training clip is one whole sign of a few seconds; older frames are dropped from the buffer so a segment never spans much more than one sign"
   },
   "min_sign_frames": {
