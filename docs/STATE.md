@@ -7,10 +7,9 @@
 - HEAD: feba7a1 (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 77% lúc 09:52 ngày 3/10, reset 13:30 VN; 7 ngày 67%. Không đơn vị nào lọt cổng (coder est 15: 92 > 90; planner est 33).
-  Không agent, không kernel chạy. Đã lưu + push. Orchestrator chờ bằng sleep nền ≤ 25 phút.
-  VIỆC KẾ TIẾP (sau 13:30): (1) vslt-coder 13 B9c (kernel K2 lưu output từng job + đọc amendment + kiểm "[MODEL] Transferred N" = 62 khóa/352207 tham số; chỉ thêm test)
-  → B9e (cổng GPU, ghim v4, đẩy K2 v4 GPU) → B9f; (2) xen khi kernel chạy: planner 11 sửa F2 → coder 11 B2…; coder 14 phần A.
+- Trạng thái phiên: ĐANG CHỜ HẠN MỨC — 5h 78% lúc 10:30 ngày 3/10, reset 13:30 VN; 7 ngày 67% (reset 09:00 8/10 — chỉ còn ~2–3 cửa sổ 5h trước đó).
+  ƯU TIÊN MỚI (quyết định 10:30): Level 1 realtime desktop. VIỆC KẾ TIẾP (sau 13:30): vslt-planner lập KẾ HOẠCH 15 (Level 1 realtime + ghép từ, app
+  OpenCV) — gọn, chia bước nhỏ, ưu tiên phần demo chạy được trước. Kế hoạch 13/11/14 TẠM DỪNG (13 dừng sau B9d, việc kế tiếp của 13 khi tiếp tục: B9c).
   Coder 13 B9d XONG (12ed4a7, 5ee935c, d2bbad1; đã push): scripts/retrain_amendment.py; reports/retrain_2026-10-02/preregistration_amendment_ls2.json
   (sha256 52f05598…ccac, sinh tại 5ee935c code sạch): changes jobs.k2.cslr.train.argv + "--skip-smoke-test", whitelist chỉ cờ đó, decision R2-PASS,
   expected_backbone_transfer 62/352207, amends preregistration ea12b44 (không sửa), 9 khóa unchanged kèm sha. Giả định cho B9c: đọc `changes`/`whitelist` như trên;
@@ -316,6 +315,13 @@
   Khi người dùng PAUSE sync: G: vẫn đọc/ghi được nhưng file chỉ nằm trong cache máy (đã thử 03:14) — lần pause đó chỉ để thử; (03:20) người dùng: sync LUÔN BẬT,
   KHÔNG cần nhắc Resume/xác nhận; connector Google Drive của claude.ai (MCP mcp__claude_ai_Google_Drive__*, có từ 3/10 08:30) cũng
   CHỈ dùng trong thư mục VSLT — không search/list/đọc file ngoài VSLT; Drive chỉ là bản sao phụ, nguồn lưu trữ chính vẫn là Kaggle dataset private + manifest sha256.
+
+- (2026-10-03 10:30) ƯU TIÊN MỚI — LEVEL 1 ĐỂ BÁO CÁO THẦY (hạn 3–5 ngày, tức khoảng 6–8/10/2026):
+  - Mục tiêu: Cấp 1 (đánh vần chữ cái) chạy REALTIME, tự nhận từng chữ cái liên tục và GHÉP thành từ (không phải Ghi/Dừng từng chữ).
+  - Giao diện demo: APP DESKTOP OpenCV (cửa sổ webcam, chữ hiện trên khung hình) — không phải tab web.
+  - TẠM DỪNG HẾT kế hoạch 13, 11, 14 (giữ nguyên trạng thái đã lưu, làm tiếp SAU khi báo cáo xong); dồn hạn mức cho Level 1.
+  - Ràng buộc vẫn giữ: đầu vào realtime phải giống lúc train (cùng extractor/tiền xử lý — skill vsl-landmark-consistency); không thêm vi phạm guard DoD 7
+    (tests/test_backend_source_guard.py); quyết định 16:15 (realtime_demo.py không còn --source mock) vẫn áp; số liệu báo cáo chỉ từ JSON.
 
 - (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy" — ĐÃ BỊ THAY bởi quyết định 20:15 ngay dưới.
 
