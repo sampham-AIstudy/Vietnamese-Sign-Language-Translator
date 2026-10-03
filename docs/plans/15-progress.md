@@ -4,9 +4,8 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM: T2 (khung text trong Hud + phím 1–5 trong KEY_ACTIONS + test AC-TD1..TD7)
-- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`)
-- Xong thêm: B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3).
+- ĐANG LÀM: A2 (bộ tách tail_still_keep_ms + validate_level1_config + --write-config)
+- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2.
 - Còn lại: A2, A3, C1, A4, C2.
 
 ## B0 — mốc (2026-10-03)
@@ -199,6 +198,7 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   processes: 174, Risk level: critical"; symbol đổi: Section → README.md (người dùng) + 4 Section của 15-progress.md. Chỉ tài liệu.
 - A1-code (trước commit `15: A1 — scripts/level1_segment_report.py + test AC-R'1`): analyze --index-only (exit 0) rồi detect-changes → "Changes: 6 files, 5 symbols, Affected processes: 175, Risk level: critical". Symbol đổi: Section README.md (người dùng) + 4 Section của 15-progress.md. Commit code `72167b9`.
 - A1-báo cáo: sinh `reports/level1_realtime_2026-10-03/tone_evidence.json` tại commit sạch `72167b9`. Chạy analyze --index-only và detect-changes trước commit báo cáo.
+- T2 (trước commit `15: T2`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 4 files, 1 symbols, Affected processes: 170, Risk level: critical". Symbol đổi: Section ? → README.md (người dùng). Index sạch, không có partial/truncated.
 
 ## T1 — textbox logic + tone keys
 - File: `src/inference/level1_textbox.py`, `tests/test_level1_textbox.py`, `src/inference/level1_core.py` (`Level1Speller.view`, `KEY_NAMES`, `key`), `tests/test_level1_core.py` (AC-K), `tests/test_level1_guard.py` (`PLAN15_FILES`).
@@ -229,4 +229,31 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   - Giá trị hiệu chỉnh: still_speed: 2.5306, move_speed: 5.0612, hold_ms: 400.0, max_segment_ms: 3543, tail_still_keep_ms: 400.0.
   - Quy tắc 6 (điểm dừng tách dấu): p90_tone_longest_internal_still_ms = 359.22 ms < hold_ms = 400.0 ms -> triggered: false (KHÔNG kích hoạt điểm dừng).
 - Commit báo cáo: `reports/level1_realtime_2026-10-03/tone_evidence.json` + `docs/plans/15-progress.md`.
+
+## T2 — vẽ khung text trong Hud + map phím 1–5 (KEY_ACTIONS) + test AC-TD1..TD7
+- File: `level1_demo.py`, `tests/test_level1_demo.py`.
+- Tiếp tục và hoàn thiện từ commit WIP `ad7c126` (khung text trong Hud + phím 1–5).
+- Impact GitNexus (upstream):
+  - `Hud`: risk `UNKNOWN`, direct 0, processes_affected 0. Text search xác nhận: chỉ dùng trong `level1_demo.py:543` và `tests/test_level1_demo.py` (đều của 15).
+  - `KEY_ACTIONS`: risk `UNKNOWN`, direct 0, processes_affected 0. Text search xác nhận: chỉ dùng nội bộ trong `level1_demo.py:623-624` (`Level1App._key`).
+  - `_hud_lines`: risk `CRITICAL` (direct 57, processes_affected 22, modules_affected 8 — do trùng tên / false positives cross-process). Text search xác nhận: private method của `Level1App`, chỉ gọi trong `level1_demo.py:678`.
+  - `Level1App`: risk `UNKNOWN`, direct 0, processes_affected 0. Text search xác nhận: chỉ dùng trong `level1_demo.py`, `tests/test_level1_demo.py`, `tests/test_level1_equivalence.py`.
+- Bảng đối chiếu AC-TD1…TD7 ↔ tên test trong `tests/test_level1_demo.py`:
+  | Tiêu chí | Mô tả | Tên test trong `tests/test_level1_demo.py` | Kết quả |
+  |---|---|---|---|
+  | AC-TD1 | Ảnh camera không bị che (array_equal phần camera) | `TestHudTextboxAcTD.test_td1_camera_image_not_covered` | OK |
+  | AC-TD2 | Nền tô sáng trong active, không có trong committed | `TestHudTextboxAcTD.test_td2_highlight_in_active_not_committed` | OK |
+  | AC-TD3 | Cột con trỏ có màu con trỏ | `TestHudTextboxAcTD.test_td3_cursor_column_has_cursor_color` | OK |
+  | AC-TD4 | Màu mờ preview khi có preview, không có khi không preview | `TestHudTextboxAcTD.test_td4_preview_muted_color_right_of_cursor` | OK |
+  | AC-TD5 | Văn bản dài (40 âm tiết) con trỏ nằm trong panel, có "…" | `TestHudTextboxAcTD.test_td5_long_text_within_panel_and_ellipsis` | OK |
+  | AC-TD6 | Cache panel khi cùng view, dựng lại khi view đổi | `TestHudTextboxAcTD.test_td6_caching` | OK |
+  | AC-TD7 | Phím `ord("1")`..`ord("5")` qua `_key` thêm đúng dấu sắc/huyền/hỏi/ngã/nặng (`source == "key"`) | `TestHudTextboxAcTD.test_td7_keys_1_to_5` | OK |
+  - Cơ chế font: `setUpClass` gọi `find_font`, không tìm thấy sẽ fail với `SourceError` chứ không skip (0 skip).
+- Kết quả test thực tế:
+  - 6 module Level 1 (`PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_level1_textbox tests.test_level1_segment_report tests.test_level1_segmenter tests.test_level1_core tests.test_level1_demo tests.test_level1_guard -v`):
+    `Ran 84 tests in 59.471s` — `OK`, 0 skip, 0 fail (log: `_work/_plan15/t2_level1_suite.log`).
+  - Guard chính (`PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_backend_source_guard -v`):
+    `Ran 28 tests in 4.543s` — `OK`, `[DoD7-guard] known=9 allowed=36`, `[scope] serving=45 main=60` (log: `_work/_plan15/t2_guard.log`).
+  - AC1-ngắn 18 module (`PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_alphabet_preprocessing tests.test_aspect_correction tests.test_fingerspelling_api tests.test_fingerspelling_compose tests.test_fingerspelling_limits tests.test_fingerspelling_deployed tests.test_hand_landmarks_ws tests.test_hand_live_equivalence tests.test_alphabet_ckpt_provenance tests.test_status_privacy tests.test_backend_source_guard tests.test_level1_segmenter tests.test_level1_core tests.test_level1_demo tests.test_level1_equivalence tests.test_level1_guard tests.test_level1_textbox tests.test_level1_segment_report -v`):
+    `Ran 260 tests in 268.320s` — `OK`, 0 skip, 0 fail (log: `_work/_plan15/t2_short.log`). E1 bằng hệt cả 10 clip.
 
