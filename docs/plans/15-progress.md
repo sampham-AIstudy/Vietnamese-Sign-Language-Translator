@@ -4,8 +4,8 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM: B3
-- Xong: B0 (4e4d9e3), B1 (966ea4b), B2
+- ĐANG LÀM: B3 (WIP đã commit: app + test AC-D OK; còn sửa nhỏ: đường dẫn mặc định theo gốc repo, webcam không trả khung)
+- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce)
 - Còn lại (chặng này): B3. Ngoài chặng: B4–B9.
 
 ## B0 — mốc (2026-10-03)
@@ -84,3 +84,6 @@ Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_wo
   critical". Symbol đổi: Section → README.md (người dùng) + symbol MỚI của 15: class_kind, Level1Classifier, Level1Speller
   (level1_core.py), segment_from_npz, TestClassifierC1C3, ok, TestSpellerC4C7, TestTimingAcT (tests/test_level1_core.py). Không symbol có
   sẵn ngoài 15 bị sửa.
+- B3-WIP (trước commit `WIP 15: B3`): analyze (exit 0) rồi detect-changes → "Changes: 5 files, 2 symbols, Affected processes: 176,
+  Risk level: critical"; symbol đổi: Section → README.md (người dùng), TestLevel1Guard (tests/test_level1_guard.py, của 15).
+  level1_demo.py + tests/test_level1_demo.py là file mới (untracked) nên chưa hiện.

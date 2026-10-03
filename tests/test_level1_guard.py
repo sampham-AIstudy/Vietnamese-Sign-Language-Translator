@@ -24,11 +24,12 @@ from tests.test_backend_source_guard import (  # noqa: E402
     ALL_RULES, ALLOWED, KNOWN_VIOLATIONS, _read, finding_key, scan_source, serving_closure)
 
 PLAN15_FILES = (
+    "level1_demo.py",
     "src/inference/level1_segmenter.py",
     "src/inference/level1_core.py",
     "src/inference/level1_timing.py",
 )
-ENTRYPOINTS_15 = PLAN15_FILES
+ENTRYPOINTS_15 = ("level1_demo.py",)
 
 
 class TestLevel1Guard(unittest.TestCase):
@@ -42,7 +43,8 @@ class TestLevel1Guard(unittest.TestCase):
     def test_g2_closure_contains_plan15_files_and_shared_modules(self):
         for f in PLAN15_FILES:
             self.assertIn(f, self.closure)
-        for f in ("src/data/alphabet_preprocessing.py",):
+        for f in ("src/data/alphabet_preprocessing.py", "src/inference/hand_live.py",
+                  "src/inference/fingerspelling_compose.py", "src/models/alphabet_temporal.py"):
             self.assertIn(f, self.closure)
         scripts = {os.path.relpath(p, PROJECT_ROOT).replace(os.sep, "/")
                    for p in glob.glob(os.path.join(PROJECT_ROOT, "scripts", "level1_*.py"))}
