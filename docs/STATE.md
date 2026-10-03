@@ -15,6 +15,12 @@
   VIỆC KẾ TIẾP (sau 18:30): vslt-planner LẦN SỬA 15 (nhỏ): tách ký hiệu cho DẤU THANH có chuyển động (đọc video mẫu tone_* của hauuto + u1.json +
   level1_segmenter.py): cửa sổ phân loại phải chứa trọn quỹ đạo dấu, phát khi kết thúc chuyển động, xử lý segment quá dài (≫ 30 khung), lấy mẫu khi fps
   xử lý thấp; giữ tương đương với train; gộp với B6 (hiệu chỉnh) → coder 15 làm ngay.
+  PHÁT HIỆN orchestrator (đọc checkpoint + mã, 3/10 ~17:00): segmenter CÓ gửi chuỗi (16–108 khung, cắt về đầu chuyển động, đóng khi giữ yên hold_ms),
+  resample frame_index → 30 khung; NHƯNG preprocessing của alphabet_best.pt = wrist_centered_palm_scale, wrist_trajectory False ⇒ model KHÔNG thấy quỹ đạo tay
+  trong không khí, chỉ thấy hình dạng ngón theo thời gian ⇒ nếu dấu thanh hauuto khác nhau chủ yếu ở quỹ đạo thì lỗi ở MODEL. Planner phải: (a) xem video
+  tone_* hauuto + kết quả theo lớp của dấu trong nested_report.json; (b) sửa tách đoạn (bỏ phần giữ yên thừa, giới hạn độ dài ~ clip train); (c) nếu cần
+  quỹ đạo: phương án train lại trên Kaggle với features_with_wrist_trajectory = ĐỔI MODEL MẶC ĐỊNH ⇒ GATE + người dùng duyệt; ước lượng thời gian vs hạn báo cáo;
+  dự phòng: demo chữ tĩnh tốt + nêu giới hạn dấu thanh.
   Coder 15 B5 XONG (3ebc7b9, 3dc87aa; đã push): HUD p50 9 chặng + processed/s + dropped; JSON counts.dropped/capture_fps; TestLatencyAcL + TestHudStatsLines;
   test level1 demo+guard 22 OK; AC1-ngắn Ran 236 OK. Số thử (KHÔNG phải số báo cáo, _work/_plan15/b5_paced_*.json, clip train a_hau_A_001 640×480 23.584 fps):
   headless-paced 48/75 xử lý, p50 mediapipe 63.6 ms, frame_total 87.4 ms; window-paced 36/75, p50 mediapipe 69.9, frame_total 102.2 (p95 154.8), classify 29.7,
