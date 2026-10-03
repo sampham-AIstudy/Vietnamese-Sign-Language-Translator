@@ -7,9 +7,17 @@
 - HEAD: 49ad46b (+ commit state này) | Nhánh: feat/vslt-complete
 - Cho phép tắt máy: KHÔNG
   (Chỉ NGƯỜI DÙNG được đổi dòng này; agent/orchestrator không tự đổi. Luật đầy đủ: "Quyết định của người dùng" 2026-10-02 20:15.)
-- Trạng thái phiên: ĐANG CHẠY — 21:58 ngày 3/10 giao vslt-coder 15 bước 1–3 của lần sửa 1 (T1 lõi khung text + phím dấu, A1 bằng chứng/hiệu chỉnh tone_evidence.json,
-  T2 vẽ khung text + phím 1–5). 5h 20% (reset 02:40 4/10), 7 ngày 83% (reset 09:00 8/10). Cổng: 20 + 36 ≤ 90 → đạt.
-  NGƯỜI DÙNG (22:05): "xong task tạm dừng chút tôi cập nhật rule mới" ⇒ coder xong chặng này thì LƯU + DỪNG, KHÔNG giao việc kế tiếp cho tới khi người dùng báo.
+- Trạng thái phiên: TẠM DỪNG THEO YÊU CẦU NGƯỜI DÙNG (22:05 "xong task tạm dừng chút tôi cập nhật rule mới") — 22:16 ngày 3/10. Không agent chạy. Đã lưu + push.
+  5h 32% (reset 02:40 4/10), 7 ngày 84% (reset 09:00 8/10). CHỜ người dùng báo tiếp tục + đọc rule mới (đang sửa: .claude/agents/*, AGENTS.md,
+  docs/prompts/orchestrator.md, docs/prompts/usage_guard_addendum.md, docs/plans/15-lan-sua-1.md §3b scope — CHƯA COMMIT, của người dùng, KHÔNG đụng).
+  Coder 15 (cầu nối agy) T1 XONG (92fce21 agy; 3f08b5d tiến độ): src/inference/level1_textbox.py textbox_view, KEY_NAMES tone_1..5 + Level1Speller.view +
+  key("tone_*") source "key" trong level1_core.py; test mới chỉ thêm; tự chạy lại AC1-ngắn 16 module + test_level1_textbox: Ran 245 OK, 0 skip; guard chính known=9.
+  CHƯA LÀM: A1 (scripts/level1_segment_report.py, tone_evidence.json) và T2 (vẽ khung text trong Hud + map phím 1–5 trong KEY_ACTIONS) ⇒ chưa có demo U1b.
+  Chỉ thị agy soạn sẵn: _work/agy_steps_A1.txt, _work/agy_steps_T2.txt. Log agy: _work/agy_logs/20261003-215442-15-lan-sua-1.log.
+  BẤT THƯỜNG (cầu nối báo): (1) một phiên agy khác chạy song song trên repo (probe, commit "zz: probe ok" f251292 rồi bị reset HEAD~1; 92fce21 không mất);
+  (2) agy in "STATUS: CẦN PLANNER" không lý do — cầu nối coi T1 DONE; (3) agy ghi sai "AC1-ngắn" (chỉ 6 module, Ran 78) trong 15-progress — số đúng 245;
+  không ghi impact; (4) agy_code.sh mới cần `--units 1`; guard worktree báo nhầm nếu orchestrator sửa STATE/plan khi agy chạy ⇒ KHÔNG sửa STATE trong lúc agy chạy;
+  (5) docs/agy_usage_ledger.csv do script tạo, chưa commit. Hạn mức agy lúc kiểm: gemini 5h 7.7% tuần 50.2%; claude 5h 13.3% tuần 7.4%.
   CẤU HÌNH MỚI CỦA NGƯỜI DÙNG (21:45, chưa commit — không đụng): .claude/agents/vslt-coder.md giờ là CẦU NỐI giao code cho Antigravity CLI `agy`
   (scripts/agy_code.sh, mặc định gemini-3.1-pro-high) rồi tự xác minh git/test; .claude/agents/vslt-coder-claude.md = DỰ PHÒNG (chỉ khi agy không khả dụng
   VÀ người dùng đồng ý). Orchestrator dùng vslt-coder (agy) từ nay.
