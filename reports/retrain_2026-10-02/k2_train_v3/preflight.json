@@ -1,0 +1,389 @@
+{
+  "mode": "train",
+  "commit": "28a126ee12d969d858792ee9362fc5cd6f05386f",
+  "rows": [
+    {
+      "key": "sentence_split.sha256",
+      "expected": "289b2ac158419d6a5e7487a256bdb9a6bf8fbac9bc76fb167fbfa9a86d8421a4",
+      "measured": "289b2ac158419d6a5e7487a256bdb9a6bf8fbac9bc76fb167fbfa9a86d8421a4",
+      "ok": true
+    },
+    {
+      "key": "inputs.dataset_canonical_json.lf_sha256",
+      "expected": "d53ab70100e2b2cd70ed32ec6893aa0bcdffab0c4389f27b7d3b8838f6c9a881",
+      "measured": "d53ab70100e2b2cd70ed32ec6893aa0bcdffab0c4389f27b7d3b8838f6c9a881",
+      "ok": true
+    },
+    {
+      "key": "inputs.dataset_canonical_json.n_samples",
+      "expected": 4200,
+      "measured": 4200,
+      "ok": true
+    },
+    {
+      "key": "inputs.keypoints_frontal.dir_digest",
+      "expected": "596429252ff53caf1948fc9ed6e416952ee1a33876aa8972c25fcc9786e3bcae",
+      "measured": "596429252ff53caf1948fc9ed6e416952ee1a33876aa8972c25fcc9786e3bcae",
+      "ok": true
+    },
+    {
+      "key": "inputs.keypoints_frontal.n_files",
+      "expected": 4200,
+      "measured": 4200,
+      "ok": true
+    },
+    {
+      "key": "inputs.vie_vsl_10k_jsonl.lf_sha256",
+      "expected": "c1dcceffc20e4dc2c659902a44b6c00bd3981431caaa131d3e68a94e074440e6",
+      "measured": "c1dcceffc20e4dc2c659902a44b6c00bd3981431caaa131d3e68a94e074440e6",
+      "ok": true
+    },
+    {
+      "key": "inputs.vie_vsl_10k_jsonl.n_lines",
+      "expected": 9405,
+      "measured": 9405,
+      "ok": true
+    },
+    {
+      "key": "inputs.vie_vsl_10k_cleaned_jsonl.lf_sha256",
+      "expected": "f141f64a04d919fc8c9887cc76b2c6cf027c8f996eba3c6df168732d766c1778",
+      "measured": "f141f64a04d919fc8c9887cc76b2c6cf027c8f996eba3c6df168732d766c1778",
+      "ok": true
+    },
+    {
+      "key": "inputs.vie_vsl_10k_cleaned_jsonl.n_records",
+      "expected": 7140,
+      "measured": 7140,
+      "ok": true
+    },
+    {
+      "key": "inputs.gloss_vocab_canonical_txt.sha256",
+      "expected": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0",
+      "measured": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0",
+      "ok": true
+    },
+    {
+      "key": "inputs.gloss_vocab_canonical_txt.n_tokens",
+      "expected": 322,
+      "measured": 322,
+      "ok": true
+    },
+    {
+      "key": "vocab.n_tokens",
+      "expected": 322,
+      "measured": 322,
+      "ok": true
+    },
+    {
+      "key": "vocab.sha256",
+      "expected": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0",
+      "measured": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0",
+      "ok": true
+    },
+    {
+      "key": "vocab.glosses_only_in_val",
+      "expected": [
+        "4",
+        "55",
+        "BẤT-THƯỜNG",
+        "BỎ-RA",
+        "CHI-PHÍ",
+        "CÙNG",
+        "CẬN-THỊ",
+        "GÃI",
+        "HEN-SUYỄN",
+        "KHÍ-HƯ",
+        "KÍNH",
+        "LO-LẮNG",
+        "LÁI-XE",
+        "MỘT-MÌNH",
+        "NGỦ-KHÓ",
+        "NHÀ",
+        "RA",
+        "SUỐT",
+        "THI",
+        "TUỔI",
+        "TÁO-BÓN",
+        "XEM",
+        "Ù"
+      ],
+      "measured": [
+        "4",
+        "55",
+        "BẤT-THƯỜNG",
+        "BỎ-RA",
+        "CHI-PHÍ",
+        "CÙNG",
+        "CẬN-THỊ",
+        "GÃI",
+        "HEN-SUYỄN",
+        "KHÍ-HƯ",
+        "KÍNH",
+        "LO-LẮNG",
+        "LÁI-XE",
+        "MỘT-MÌNH",
+        "NGỦ-KHÓ",
+        "NHÀ",
+        "RA",
+        "SUỐT",
+        "THI",
+        "TUỔI",
+        "TÁO-BÓN",
+        "XEM",
+        "Ù"
+      ],
+      "ok": true
+    },
+    {
+      "key": "vocab.glosses_only_in_test",
+      "expected": [
+        "1-NGÀY",
+        "CHO-TÔI",
+        "CHÀO",
+        "CUỐI-CÙNG",
+        "CẢM-ƠN",
+        "GIẢI-THÍCH",
+        "GIẤY-PHÉP",
+        "KHÔNG-HIỂU",
+        "KIÊNG",
+        "KỲ",
+        "LÂY",
+        "LẤY-THUỐC",
+        "LỐI-SỐNG",
+        "MUA",
+        "MẤY-LẦN",
+        "MẶN",
+        "NGHIÊM-TRỌNG",
+        "NGHỈ",
+        "SAU",
+        "SẼ",
+        "THAY-ĐỔI",
+        "THỂ-DỤC",
+        "THỨC-KHUYA",
+        "XEM",
+        "ĐÁNG-LO",
+        "ĐƠN",
+        "ẢNH-HƯỞNG",
+        "ỐM"
+      ],
+      "measured": [
+        "1-NGÀY",
+        "CHO-TÔI",
+        "CHÀO",
+        "CUỐI-CÙNG",
+        "CẢM-ƠN",
+        "GIẢI-THÍCH",
+        "GIẤY-PHÉP",
+        "KHÔNG-HIỂU",
+        "KIÊNG",
+        "KỲ",
+        "LÂY",
+        "LẤY-THUỐC",
+        "LỐI-SỐNG",
+        "MUA",
+        "MẤY-LẦN",
+        "MẶN",
+        "NGHIÊM-TRỌNG",
+        "NGHỈ",
+        "SAU",
+        "SẼ",
+        "THAY-ĐỔI",
+        "THỂ-DỤC",
+        "THỨC-KHUYA",
+        "XEM",
+        "ĐÁNG-LO",
+        "ĐƠN",
+        "ẢNH-HƯỞNG",
+        "ỐM"
+      ],
+      "ok": true
+    },
+    {
+      "key": "vocab.test_ref_tokens_total",
+      "expected": 128,
+      "measured": 128,
+      "ok": true
+    },
+    {
+      "key": "vocab.test_ref_tokens_oov",
+      "expected": 29,
+      "measured": 29,
+      "ok": true
+    },
+    {
+      "key": "vocab_full_reference.n_tokens",
+      "expected": 372,
+      "measured": 372,
+      "ok": true
+    },
+    {
+      "key": "vocab_full_reference.sha256",
+      "expected": "dd7bc3da8f83e1e3400a85a0bfc4a7d8e882224647a23279a63b8f31d3601d11",
+      "measured": "dd7bc3da8f83e1e3400a85a0bfc4a7d8e882224647a23279a63b8f31d3601d11",
+      "ok": true
+    },
+    {
+      "key": "counts_after_split.clean10k.train",
+      "expected": 6423,
+      "measured": 6423,
+      "ok": true
+    },
+    {
+      "key": "counts_after_split.clean10k.val",
+      "expected": 713,
+      "measured": 713,
+      "ok": true
+    },
+    {
+      "key": "counts_after_split.cslr.test",
+      "expected": 30,
+      "measured": 30,
+      "ok": true
+    },
+    {
+      "key": "counts_after_split.cslr.train",
+      "expected": 2880,
+      "measured": 2880,
+      "ok": true
+    },
+    {
+      "key": "counts_after_split.cslr.val",
+      "expected": 30,
+      "measured": 30,
+      "ok": true
+    },
+    {
+      "key": "counts_after_split.vslgh_text.test",
+      "expected": 30,
+      "measured": 30,
+      "ok": true
+    },
+    {
+      "key": "counts_after_split.vslgh_text.train",
+      "expected": 240,
+      "measured": 240,
+      "ok": true
+    },
+    {
+      "key": "counts_after_split.vslgh_text.val",
+      "expected": 30,
+      "measured": 30,
+      "ok": true
+    },
+    {
+      "key": "counts_default.clean10k.train",
+      "expected": 6426,
+      "measured": 6426,
+      "ok": true
+    },
+    {
+      "key": "counts_default.clean10k.val",
+      "expected": 714,
+      "measured": 714,
+      "ok": true
+    },
+    {
+      "key": "counts_default.cslr.test",
+      "expected": 300,
+      "measured": 300,
+      "ok": true
+    },
+    {
+      "key": "counts_default.cslr.train",
+      "expected": 3600,
+      "measured": 3600,
+      "ok": true
+    },
+    {
+      "key": "counts_default.cslr.val",
+      "expected": 300,
+      "measured": 300,
+      "ok": true
+    },
+    {
+      "key": "counts_default.vslgh_text.test",
+      "expected": 30,
+      "measured": 30,
+      "ok": true
+    },
+    {
+      "key": "counts_default.vslgh_text.train",
+      "expected": 240,
+      "measured": 240,
+      "ok": true
+    },
+    {
+      "key": "counts_default.vslgh_text.val",
+      "expected": 30,
+      "measured": 30,
+      "ok": true
+    },
+    {
+      "key": "clean10k_excluded.n_train",
+      "expected": 3,
+      "measured": 3,
+      "ok": true
+    },
+    {
+      "key": "clean10k_excluded.n_val",
+      "expected": 1,
+      "measured": 1,
+      "ok": true
+    },
+    {
+      "key": "clean10k_excluded.by_reason.L1",
+      "expected": 2,
+      "measured": 2,
+      "ok": true
+    },
+    {
+      "key": "clean10k_excluded.by_reason.L2",
+      "expected": 0,
+      "measured": 0,
+      "ok": true
+    },
+    {
+      "key": "clean10k_excluded.by_reason.near_dup",
+      "expected": 2,
+      "measured": 2,
+      "ok": true
+    },
+    {
+      "key": "clean10k_excluded.ids",
+      "expected": [
+        "PAR_10K_02347",
+        "PAR_10K_02536",
+        "PAR_10K_03112",
+        "PAR_10K_05270"
+      ],
+      "measured": [
+        "PAR_10K_02347",
+        "PAR_10K_02536",
+        "PAR_10K_03112",
+        "PAR_10K_05270"
+      ],
+      "ok": true
+    },
+    {
+      "key": "leak_check.total",
+      "expected": 0,
+      "measured": 0,
+      "ok": true
+    },
+    {
+      "key": "test_keypoints_digest",
+      "expected": "4bf83012afe85d2477da4f8a3f3e89fde4e89cf8ffb14e221aee97912fb8c5dc",
+      "measured": "4bf83012afe85d2477da4f8a3f3e89fde4e89cf8ffb14e221aee97912fb8c5dc",
+      "ok": true
+    },
+    {
+      "key": "test_keypoints_digest_repro_v2",
+      "expected": "27e3c15a2fda67487e1327f3ef00c3aae7bcd00fa36b06592c160627a54bc188",
+      "measured": "27e3c15a2fda67487e1327f3ef00c3aae7bcd00fa36b06592c160627a54bc188",
+      "ok": true
+    }
+  ],
+  "n_rows": 44,
+  "n_mismatch": 0,
+  "leak_check_total": 0
+}

@@ -1,0 +1,7 @@
+[CLEAN] Loaded 9405 raw pairs from /tmp/vslt/data/external/parallel_text/vie_vsl_10k.jsonl
+[CLEAN] Finished cleaning:
+  - Identical pairs removed: 2259
+  - Severe misalignments removed: 6
+  - Fixed corrupted artifacts: 3
+  - Cleaned pairs retained: 7140 (75.92%)
+  - Saved to: /tmp/vslt/data/external/parallel_text/vie_vsl_10k_cleaned.jsonl

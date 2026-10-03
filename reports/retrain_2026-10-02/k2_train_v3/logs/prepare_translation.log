@@ -1,0 +1,21 @@
+======================================================================
+STEP 1: Reading parallel corpus text files
+======================================================================
+Loaded 10000 parallel lines from source files.
+
+======================================================================
+STEP 2: Normalization and Deduplication
+======================================================================
+Original pairs:  10000
+Duplicate pairs: 595
+Final pairs:     9405
+VSL vocabulary size: 3764 unique tokens
+Vie vocabulary size: 3774 unique tokens
+
+======================================================================
+STEP 3: Writing JSONL and validation report
+======================================================================
+Canonical dataset saved to: /tmp/vslt/data/external/parallel_text/vie_vsl_10k.jsonl
+Validation report saved to: /kaggle/working/k2/translation_corpus_validation.json
+
+CANONICAL TRANSLATION CORPUS GENERATION COMPLETE!

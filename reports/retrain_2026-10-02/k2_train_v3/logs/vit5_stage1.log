@@ -1,0 +1,31 @@
+[STAGE 1] Training on device: cuda
+[STAGE 1] GPU: Tesla T4
+LEAK CHECK OK (vit5_stage1): n_items=7136
+[STAGE 1] Sentence split v1: excluded train=3 val=1
+[STAGE 1] Dataset loaded: Train=6423 pairs, Val=713 pairs
+[STAGE 1] Effective batch size: 16, Steps per epoch: 401
+/tmp/vslt/scripts/train_translation_stage1.py:167: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  scheduler.step()
+  [Epoch 1/3] Step 200/803 | Batch Loss: 0.8353 | LR: 4.17e-05
+  [Epoch 1/3] Step 400/803 | Batch Loss: 0.9300 | LR: 4.93e-05
+  [Epoch 1/3] Step 600/803 | Batch Loss: 1.1406 | LR: 4.67e-05
+  [Epoch 1/3] Step 800/803 | Batch Loss: 1.0216 | LR: 4.22e-05
+
+>>> [Epoch 1/3 Complete] Train Loss: 1.3065 | Val Loss: 0.5758 | Time: 159.1s
+  --> Saved new best Stage 1 checkpoint to: /tmp/vslt/checkpoints/vit5_stage1/best_model (Val Loss: 0.5758)
+  [Epoch 2/3] Step 200/803 | Batch Loss: 0.5174 | LR: 3.62e-05
+  [Epoch 2/3] Step 400/803 | Batch Loss: 0.3159 | LR: 2.93e-05
+  [Epoch 2/3] Step 600/803 | Batch Loss: 0.3836 | LR: 2.21e-05
+  [Epoch 2/3] Step 800/803 | Batch Loss: 0.5463 | LR: 1.51e-05
+
+>>> [Epoch 2/3 Complete] Train Loss: 0.4507 | Val Loss: 0.5288 | Time: 152.5s
+  --> Saved new best Stage 1 checkpoint to: /tmp/vslt/checkpoints/vit5_stage1/best_model (Val Loss: 0.5288)
+  [Epoch 3/3] Step 200/803 | Batch Loss: 0.2531 | LR: 8.83e-06
+  [Epoch 3/3] Step 400/803 | Batch Loss: 0.1630 | LR: 4.05e-06
+  [Epoch 3/3] Step 600/803 | Batch Loss: 0.3979 | LR: 1.02e-06
+  [Epoch 3/3] Step 800/803 | Batch Loss: 0.2281 | LR: 1.05e-10
+
+>>> [Epoch 3/3 Complete] Train Loss: 0.2946 | Val Loss: 0.5494 | Time: 155.1s
+
+[STAGE 1 COMPLETE] Best Val Loss: 0.5288 in 469.3s
+[STAGE 1] Saved history log to: /tmp/vslt/reports/vit5_stage1_history.json

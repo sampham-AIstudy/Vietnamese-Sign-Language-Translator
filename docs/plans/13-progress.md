@@ -628,6 +628,15 @@ Tệp tạm: `_work/_plan13_tmp/`.
   CHECK OK, 0 PRIMARY TEST EVALUATION, 1 TEST DEFERRED, env `mode` == "train" + `commit` == ghim `28a126e`) → commit `reports/retrain_2026-10-02/k2/`
   + 3 `*_used_ids.json`; sổ GPU. Lưu ý watchdog cắt job → §7.2-1 CẦN NGƯỜI DÙNG.
 
+### B9 phần 2 (v3 ERROR) — B9a [LS2] ghi nhận (lượt 10, mốc HEAD `15a6079`). Log: `_work/_plan13_tmp/ls2/B9a_record.log`
+- Output v3 do orchestrator tải (`_work/_plan13_tmp/k2_train_v3/_download.txt`, lệnh `kaggle kernels output phmvnsm33/vsl-retrain-cslr-vit5 -p _work/_plan13_tmp/k2_train_v3`).
+- `PYTHONIOENCODING=utf-8 .venv/Scripts/python _work/_plan13_tmp/ls2/b9a_record_v3.py` → chép (`open "xb"`, đích chưa có) `SHA256SUMS`, `env.json`, `preflight.json`,
+  `translation_corpus_validation.json`, `logs/*.log` (10 file), stdout kernel → `reports/retrain_2026-10-02/k2_train_v3/` + `local_crosscheck.json`
+  (sinh bằng code: kiểm từng file output với `SHA256SUMS` → `n_failed` 0; `env` mode/commit/error/jobs; 10 loss smoke đọc từ `logs/cslr.log`).
+  KHÔNG chép `gloss_vocab_canonical.txt` (sha256 nằm ở `SHA256SUMS` và `local_crosscheck.json.not_committed_kernel_outputs`). Không file mô hình nào (output v3 không có).
+- Số (chép từ `reports/retrain_2026-10-02/k2_train_v3/env.json`): `error` "KernelError: failed jobs: ['cslr']", `exit` 1, `total_minutes` 12.14, `commit` `28a126e…386f`,
+  `mode` "train"; checkpoint ViT5 không được lưu (§0B.1). Không sửa mã.
+
 ## Đang làm
 - **ĐANG LÀM B9a/B9b** (lượt 10, Lần sửa 2, mốc HEAD `714d9c9`, 2026-10-03): B9a ghi nhận K2 v3 ERROR; B9b chẩn đoán smoke D0–D5 theo §0B.3 — chạy trên KAGGLE CPU (quyết định người dùng 2026-10-03 02:55: không train local), không local.
 - **B9 phần 1 XONG** (lượt 9): ghim `28a126e`; K2 train `phmvnsm33/vsl-retrain-cslr-vit5` v3 đẩy 18:48:35Z, RUNNING 18:49:43Z. Chờ phần 2 (tải output, kiểm, commit) — lượt sau.
@@ -649,7 +658,8 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | K2-preflight v1 (`phmvnsm33/vsl-retrain-cslr-vit5` v1) | 105.0 (CPU, không accelerator; ERROR: watchdog giết hf_probe) | 0 GPU-phút; `_work/_plan13_tmp/k2_preflight_v1/k2/env.json` |
 | K2-preflight v2 (v2, ghim `c0c70d2`) | 2.63 (CPU, không accelerator; COMPLETE) | 0 GPU-phút; `reports/retrain_2026-10-02/k2_preflight/env.json` |
 | K1 stgcn Tier 1 (`phmvnsm33/vsl-retrain-stgcn-tier1` v1, ghim `c0c70d2`) | 1.58 (GPU, 2× Tesla T4 hiển thị; COMPLETE) | **1.58 GPU-phút** (`env.json` `total_minutes`; trần 0.75 h = 45'); `kaggle quota` GPU used 4.15h → 4.18h; `reports/retrain_2026-10-02/k1/env.json` |
-| **Tổng GPU kế hoạch 13** | **1.58 phút** (≈ 0.03 h) | trần tổng 2.5 h |
+| K2-train v3 (`phmvnsm33/vsl-retrain-cslr-vit5` v3, ghim `28a126e`; ERROR: smoke CSLR) | 12.14 (GPU, 2× Tesla T4; ERROR) | **12.14 GPU-phút** (`env.json` `total_minutes`); `reports/retrain_2026-10-02/k2_train_v3/env.json` |
+| **Tổng GPU kế hoạch 13** | **13.72 phút** (≈ 0.23 h; 1.58 + 12.14) | trần tổng 2.5 h |
 
 ## Nhật ký detect-changes
 | Bước | Lệnh | Kết quả (nguyên văn risk) |
@@ -695,3 +705,4 @@ Tệp tạm: `_work/_plan13_tmp/`.
 | B9c | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, ghi hash ghim B9 + bản đẩy, chỉ thêm) | "Changes: 1 files, 1 symbols / Affected processes: 195 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a) (`dc_B9c.txt`) |
 | B9d | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, dòng đẩy K2 v3 + "Đang làm" thay 1 dòng) | "Changes: 1 files, 1 symbols / Affected processes: 191 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a) (`dc_B9d.txt`) |
 | B9ls2-0 (ĐANG LÀM) | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, +1 dòng "ĐANG LÀM B9a/B9b") | "Changes: 1 files, 1 symbols / Affected processes: 192 / Risk level: critical" — symbol duy nhất mục markdown `Kế hoạch 13 — tiến độ (coder)` (nối nhầm như B7a); không mã nào đọc file này (`dc_B9ls2_0.txt`) |
+| B9ls2-a (B9a) | `analyze --index-only` rồi `detect-changes --scope staged` (`M docs/plans/13-progress.md`, 16 file `A` trong `reports/retrain_2026-10-02/k2_train_v3/`) | "Changes: 17 files, 1 symbols / Affected processes: 192 / Risk level: critical" — symbol duy nhất mục markdown của 13-progress (nối nhầm như B7a); 16 file JSON/log dữ liệu, không symbol, không mã nào đọc (`dc_B9ls2_a.txt`) |

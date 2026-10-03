@@ -1,0 +1,27 @@
+[INIT] Using device: cuda
+[INIT] GPU: Tesla T4
+LEAK CHECK OK (cslr): n_train_samples=2880, n_val_samples=30, n_train_sentences=240, n_val_sentences=30, n_vocab_tokens=322
+
+============================================================
+STARTING SMOKE TEST / FIRST-RUN SAFETY CHECK
+============================================================
+Running 10 overfit epochs on 8 samples...
+  Smoke Epoch 01/10: Train CTC Loss = 78.0081
+  Smoke Epoch 02/10: Train CTC Loss = 77.8921
+  Smoke Epoch 03/10: Train CTC Loss = 63.9242
+  Smoke Epoch 04/10: Train CTC Loss = 30.9929
+  Smoke Epoch 05/10: Train CTC Loss = 4.4809
+  Smoke Epoch 06/10: Train CTC Loss = 4.3370
+  Smoke Epoch 07/10: Train CTC Loss = 3.1192
+  Smoke Epoch 08/10: Train CTC Loss = 2.0082
+  Smoke Epoch 09/10: Train CTC Loss = 2.3009
+  Smoke Epoch 10/10: Train CTC Loss = 2.3260
+Smoke Test Initial Loss: 78.0081 -> Final Loss: 2.3260
+Smoke Test Decoded Samples: [{'sample_id': 'SENT001_S02_R02_F', 'annotation_source': 'source', 'reference': 'TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN', 'prediction': '<BLANK_ONLY>'}, {'sample_id': 'SENT001_S02_R01_F', 'annotation_source': 'source', 'reference': 'TÔI ĐĂNG-KÝ KHÁM SỨC-KHỎE MUỐN', 'prediction': '<BLANK_ONLY>'}]
+[SMOKE TEST FAILED] Loss decreased: True, Non-empty output: False
+Traceback (most recent call last):
+  File "/tmp/vslt/src/training/train_cslr.py", line 875, in <module>
+    train_cslr(cfg, skip_smoke_test=args.skip_smoke_test)
+  File "/tmp/vslt/src/training/train_cslr.py", line 402, in train_cslr
+    raise RuntimeError("Smoke test failed! Halting full training as per Section 10 safety protocol.")
+RuntimeError: Smoke test failed! Halting full training as per Section 10 safety protocol.

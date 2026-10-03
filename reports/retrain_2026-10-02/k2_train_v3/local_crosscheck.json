@@ -1,0 +1,169 @@
+{
+  "generated_by": {
+    "command": "PYTHONIOENCODING=utf-8 .venv/Scripts/python _work/_plan13_tmp/ls2/b9a_record_v3.py",
+    "git_commit": "15a6079ee9b7c976d3d22129101231a77e523120",
+    "source": "PYTHONUTF8=1 .venv/Scripts/kaggle kernels output phmvnsm33/vsl-retrain-cslr-vit5 -p _work/_plan13_tmp/k2_train_v3"
+  },
+  "kernel": "phmvnsm33/vsl-retrain-cslr-vit5",
+  "kernel_version": 3,
+  "kernel_version_source": "_work/_plan13_tmp/B9_push.log ('Kernel version 3 successfully pushed.')",
+  "status": "ERROR",
+  "env_mode": "train",
+  "env_commit": "28a126ee12d969d858792ee9362fc5cd6f05386f",
+  "env_error": "KernelError: failed jobs: ['cslr']",
+  "env_exit": 1,
+  "total_minutes": 12.14,
+  "n_gpu": 2,
+  "gpus": [
+    "Tesla T4",
+    "Tesla T4"
+  ],
+  "torch": "2.10.0+cu128",
+  "jobs": {
+    "cslr": {
+      "start_utc": "2026-10-02T18:52:02Z",
+      "gpu": "0",
+      "end_utc": "2026-10-02T18:52:13Z",
+      "minutes": 0.18,
+      "exit": 1
+    },
+    "vit5_stage1": {
+      "start_utc": "2026-10-02T18:52:02Z",
+      "gpu": "1",
+      "end_utc": "2026-10-02T19:00:11Z",
+      "minutes": 8.14,
+      "exit": 0
+    },
+    "vit5_stage2": {
+      "start_utc": "2026-10-02T19:00:11Z",
+      "gpu": "1",
+      "end_utc": "2026-10-02T19:01:28Z",
+      "minutes": 1.28,
+      "exit": 0
+    }
+  },
+  "cslr_smoke_losses_from_log": [
+    "78.0081",
+    "77.8921",
+    "63.9242",
+    "30.9929",
+    "4.4809",
+    "4.3370",
+    "3.1192",
+    "2.0082",
+    "2.3009",
+    "2.3260"
+  ],
+  "cslr_smoke_failed_line_present": true,
+  "vit5_checkpoints_saved": false,
+  "vit5_checkpoints_note": "kernel train() copies checkpoints only after all jobs succeed (plan 13 §0B.1); output has no vit5_stage*/ directories",
+  "sha256sums_checks": [
+    {
+      "file": "env.json",
+      "in_SHA256SUMS": true,
+      "sha256": "7a408d16e5ac5d47e853641ef66a3ae0f59c2672d0af7d0c177d81ce8ec114a4",
+      "match": true
+    },
+    {
+      "file": "gloss_vocab_canonical.txt",
+      "in_SHA256SUMS": true,
+      "sha256": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0",
+      "match": true
+    },
+    {
+      "file": "logs/clean_10k.log",
+      "in_SHA256SUMS": true,
+      "sha256": "f4098fe4faf41fc4db598cf849b5500e76954121f7acede411bad2973196f98f",
+      "match": true
+    },
+    {
+      "file": "logs/clone.log",
+      "in_SHA256SUMS": true,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "match": true
+    },
+    {
+      "file": "logs/cslr.log",
+      "in_SHA256SUMS": true,
+      "sha256": "91353ac6772333211d61dbf2ff01168d3cc9121a13d6a76f48844b9b741dcc8c",
+      "match": true
+    },
+    {
+      "file": "logs/hf_preflight.log",
+      "in_SHA256SUMS": true,
+      "sha256": "083489b99dc6c94a94e53c5c0f42d966884c60494daf44ac810da3a86ea86755",
+      "match": true
+    },
+    {
+      "file": "logs/pip.log",
+      "in_SHA256SUMS": true,
+      "sha256": "b9eebba83a1fc14980d82fe90eae29bfca20e6e9714fb0e64a6888793cd552b7",
+      "match": true
+    },
+    {
+      "file": "logs/prepare_translation.log",
+      "in_SHA256SUMS": true,
+      "sha256": "f570b6141b0d5d31f1fb5b1777f9f4bcca83d1759ac0847dd7ede20f5df18191",
+      "match": true
+    },
+    {
+      "file": "logs/prepare_vsl_gh.log",
+      "in_SHA256SUMS": true,
+      "sha256": "f7f5b593503ebbaa908b0e4a905f09ade0f3cc25f09eafbbfa0dbe59fccee768",
+      "match": true
+    },
+    {
+      "file": "logs/vit5_stage1.log",
+      "in_SHA256SUMS": true,
+      "sha256": "63cbf399b0c8f9dfbcc4d8732e576af5fc90f7820b4385aaa1403ffb21c2751e",
+      "match": true
+    },
+    {
+      "file": "logs/vit5_stage2.log",
+      "in_SHA256SUMS": true,
+      "sha256": "db813e8920e9befc07716085ee9b1cba0cfb0d25e90fd8a6664db0453e937857",
+      "match": true
+    },
+    {
+      "file": "logs/vocab.log",
+      "in_SHA256SUMS": true,
+      "sha256": "15109e8cbd55fc8bd736da5d0ed1d0fd91e69a71712550a3e9cc2100304a336e",
+      "match": true
+    },
+    {
+      "file": "preflight.json",
+      "in_SHA256SUMS": true,
+      "sha256": "906d618167183ec253bdb5395fc2c6c476aa5a84e86c309f8748a377d022e4ac",
+      "match": true
+    },
+    {
+      "file": "translation_corpus_validation.json",
+      "in_SHA256SUMS": true,
+      "sha256": "8f88801971f35e1708382d18bd358bb837f07d7b8b1d69f5697ad62c811e263f",
+      "match": true
+    }
+  ],
+  "missing_on_disk": [],
+  "n_failed": 0,
+  "not_committed_kernel_outputs": {
+    "gloss_vocab_canonical.txt": "c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0"
+  },
+  "committed_files": [
+    "reports/retrain_2026-10-02/k2_train_v3/SHA256SUMS",
+    "reports/retrain_2026-10-02/k2_train_v3/env.json",
+    "reports/retrain_2026-10-02/k2_train_v3/preflight.json",
+    "reports/retrain_2026-10-02/k2_train_v3/translation_corpus_validation.json",
+    "reports/retrain_2026-10-02/k2_train_v3/logs/clean_10k.log",
+    "reports/retrain_2026-10-02/k2_train_v3/logs/clone.log",
+    "reports/retrain_2026-10-02/k2_train_v3/logs/cslr.log",
+    "reports/retrain_2026-10-02/k2_train_v3/logs/hf_preflight.log",
+    "reports/retrain_2026-10-02/k2_train_v3/logs/pip.log",
+    "reports/retrain_2026-10-02/k2_train_v3/logs/prepare_translation.log",
+    "reports/retrain_2026-10-02/k2_train_v3/logs/prepare_vsl_gh.log",
+    "reports/retrain_2026-10-02/k2_train_v3/logs/vit5_stage1.log",
+    "reports/retrain_2026-10-02/k2_train_v3/logs/vit5_stage2.log",
+    "reports/retrain_2026-10-02/k2_train_v3/logs/vocab.log",
+    "reports/retrain_2026-10-02/k2_train_v3/kernel_stdout_vsl-retrain-cslr-vit5.log",
+    "reports/retrain_2026-10-02/k2_train_v3/local_crosscheck.json"
+  ]
+}

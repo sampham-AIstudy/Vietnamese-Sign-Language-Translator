@@ -1,0 +1,21 @@
+[STAGE 2] Fine-tuning on device: cuda
+[STAGE 2] GPU: Tesla T4
+[STAGE 2] Loading Stage 1 pretrained checkpoint from: /tmp/vslt/checkpoints/vit5_stage1/best_model
+LEAK CHECK OK (vit5_stage2): n_train_samples=240, n_val_samples=30, n_train_sentences=240, n_val_sentences=30
+[STAGE 2] VSL-GH Datasets: Train=240 sentences, Val=30 sentences
+[Stage 2 | Epoch 01/15] Train Loss: 1.7999 | Val Loss: 0.9695 | LR: 1.67e-05 (8.0s)
+  --> Saved new best Stage 2 model: /tmp/vslt/checkpoints/vit5_stage2/best_model (Val Loss: 0.9695)
+[Stage 2 | Epoch 02/15] Train Loss: 0.9960 | Val Loss: 0.6945 | LR: 2.49e-05 (7.3s)
+  --> Saved new best Stage 2 model: /tmp/vslt/checkpoints/vit5_stage2/best_model (Val Loss: 0.6945)
+[Stage 2 | Epoch 03/15] Train Loss: 0.5642 | Val Loss: 0.6625 | LR: 2.42e-05 (7.5s)
+  --> Saved new best Stage 2 model: /tmp/vslt/checkpoints/vit5_stage2/best_model (Val Loss: 0.6625)
+[Stage 2 | Epoch 04/15] Train Loss: 0.3107 | Val Loss: 0.7747 | LR: 2.29e-05 (7.5s)
+[Stage 2 | Epoch 05/15] Train Loss: 0.1965 | Val Loss: 0.8674 | LR: 2.11e-05 (7.2s)
+[Stage 2 | Epoch 06/15] Train Loss: 0.1307 | Val Loss: 1.0117 | LR: 1.88e-05 (7.2s)
+[Stage 2 | Epoch 07/15] Train Loss: 0.0969 | Val Loss: 1.0297 | LR: 1.61e-05 (7.2s)
+[Stage 2 | Epoch 08/15] Train Loss: 0.0694 | Val Loss: 1.2002 | LR: 1.32e-05 (7.3s)
+
+[EARLY STOPPING] Validation loss did not improve for 5 epochs. Halting.
+
+[STAGE 2 COMPLETE] Best Epoch: 3 with Val Loss: 0.6625 in 63.2s
+[STAGE 2] Saved log to: /tmp/vslt/reports/vit5_stage2_history.json

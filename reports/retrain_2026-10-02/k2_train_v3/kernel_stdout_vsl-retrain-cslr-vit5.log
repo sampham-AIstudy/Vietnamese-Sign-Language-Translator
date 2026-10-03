@@ -1,0 +1,103 @@
+[{"stream_name":"stdout","time":1.395090224,"data":"$ git clone -q -b feat/vslt-complete https://github.com/sampham-AIstudy/Vietnamese-Sign-Language-Translator.git /tmp/vslt  (cwd=/tmp, log=/kaggle/working/k2/logs/clone.log)\n"}
+,{"stream_name":"stdout","time":3.51928763,"data":"$ git -C /tmp/vslt checkout -q 28a126ee12d969d858792ee9362fc5cd6f05386f  (cwd=/tmp, log=/kaggle/working/k2/logs/clone.log)\n"}
+,{"stream_name":"stdout","time":3.688528728,"data":"PINNED COMMIT 28a126ee12d969d858792ee9362fc5cd6f05386f\n"}
+,{"stream_name":"stdout","time":3.7041216,"data":"PREREGISTRATION reports/retrain_2026-10-02/preregistration.json commit ea12b44734840a0c0ccb7d35944d0db7df701091 (ancestor of the pin)\n"}
+,{"stream_name":"stdout","time":3.704271836,"data":"$ /usr/bin/python3 -m pip install -q safetensors==0.8.0 sentencepiece==0.2.2 tokenizers==0.22.2 transformers==4.57.6  (cwd=/tmp, log=/kaggle/working/k2/logs/pip.log)\n"}
+,{"stream_name":"stdout","time":26.346282363,"data":"$ git clone -q https://github.com/BichDiep/Parallel-Corpus-Vie-VSL.git /tmp/vslt/clone/Parallel-Corpus-Vie-VSL  (cwd=/tmp, log=/kaggle/working/k2/logs/clone.log)\n"}
+,{"stream_name":"stdout","time":27.914990956,"data":"$ git -C /tmp/vslt/clone/Parallel-Corpus-Vie-VSL checkout -q f57558c3fa79ced8a961cba825157c573fd4c74d  (cwd=/tmp, log=/kaggle/working/k2/logs/clone.log)\n"}
+,{"stream_name":"stdout","time":28.032440835,"data":"UPSTREAM parallel_corpus f57558c3fa79ced8a961cba825157c573fd4c74d\n"}
+,{"stream_name":"stdout","time":28.03260852,"data":"$ git clone -q https://github.com/nguyentheanh822/Vietnamese-Sign-Language-Translation.git /tmp/vslt/clone/Vietnamese-Sign-Language-Translation  (cwd=/tmp, log=/kaggle/working/k2/logs/clone.log)\n"}
+,{"stream_name":"stdout","time":63.855059991,"data":"$ git -C /tmp/vslt/clone/Vietnamese-Sign-Language-Translation checkout -q 6c351e63c0b2cf1b5e2e8056bb3bf2d6f31dc90a  (cwd=/tmp, log=/kaggle/working/k2/logs/clone.log)\n"}
+,{"stream_name":"stdout","time":63.923952178,"data":"UPSTREAM vsl_gh 6c351e63c0b2cf1b5e2e8056bb3bf2d6f31dc90a\n"}
+,{"stream_name":"stdout","time":63.924274435,"data":"$ /usr/bin/python3 scripts/prepare_canonical_vsl_gh.py  (cwd=/tmp/vslt, log=/kaggle/working/k2/logs/prepare_vsl_gh.log)\n"}
+,{"stream_name":"stdout","time":76.879025449,"data":"$ /usr/bin/python3 /tmp/k2_scratch/run_prepare_translation.py /tmp/vslt /kaggle/working/k2/translation_corpus_validation.json  (cwd=/tmp/k2_scratch, log=/kaggle/working/k2/logs/prepare_translation.log)\n"}
+,{"stream_name":"stdout","time":77.244672338,"data":"$ /usr/bin/python3 scripts/clean_10k_translation_corpus.py  (cwd=/tmp/vslt, log=/kaggle/working/k2/logs/clean_10k.log)\n"}
+,{"stream_name":"stdout","time":77.610327848,"data":"$ /usr/bin/python3 scripts/build_gloss_vocab_canonical.py --canonical data/external/vsl_gh/dataset_canonical.json --out data/external/vsl_gh/gloss_vocab_canonical.txt --sentence-split configs/vslgh_sentence_split_v1.json --split train  (cwd=/tmp/vslt, log=/kaggle/working/k2/logs/vocab.log)\n"}
+,{"stream_name":"stdout","time":89.8125891,"data":"$ /usr/bin/python3 /tmp/k2_scratch/hf_probe.py list VietAI/vit5-base  (cwd=/tmp/k2_scratch, log=/kaggle/working/k2/logs/hf_preflight.log)\n"}
+,{"stream_name":"stdout","time":90.679387984,"data":"HF LIST VietAI/vit5-base attempt 1/3: ok in 0.9 s\n"}
+,{"stream_name":"stdout","time":90.679970014,"data":"HF VietAI/vit5-base @ 2209a38d735ede63e88f5aa52bcdc11a05a37b85: 6 file(s) needed, 907111529 B; not downloaded: ['.gitattributes', 'README.md', 'flax_model.msgpack', 'tf_model.h5']\n"}
+,{"stream_name":"stdout","time":90.679986272,"data":"HF FILE 1/6 config.json (702 B): fetching (timeout 120 s per attempt, 3 attempts)\n"}
+,{"stream_name":"stdout","time":90.679992592,"data":"$ /usr/bin/python3 /tmp/k2_scratch/hf_probe.py fetch VietAI/vit5-base 2209a38d735ede63e88f5aa52bcdc11a05a37b85 config.json  (cwd=/tmp/k2_scratch, log=/kaggle/working/k2/logs/hf_preflight.log)\n"}
+,{"stream_name":"stdout","time":91.296247575,"data":"HF FILE 1/6 config.json (702 B) attempt 1/3: ok in 0.6 s\n"}
+,{"stream_name":"stdout","time":91.296276196,"data":"HF FILE 1/6 config.json (702 B): verified sha256 1df0f6db74a362de8d54eb1721f6137fb99b85acaec7d2cd526c0fbbc1fcab90 in 0.16 s\n"}
+,{"stream_name":"stdout","time":91.296281796,"data":"HF FILE 2/6 pytorch_model.bin (903886847 B): fetching (timeout 571 s per attempt, 3 attempts)\n"}
+,{"stream_name":"stdout","time":91.296286164,"data":"$ /usr/bin/python3 /tmp/k2_scratch/hf_probe.py fetch VietAI/vit5-base 2209a38d735ede63e88f5aa52bcdc11a05a37b85 pytorch_model.bin  (cwd=/tmp/k2_scratch, log=/kaggle/working/k2/logs/hf_preflight.log)\n"}
+,{"stream_name":"stdout","time":105.404814453,"data":"HF FILE 2/6 pytorch_model.bin (903886847 B) attempt 1/3: ok in 14.1 s\n"}
+,{"stream_name":"stdout","time":105.40500385,"data":"HF FILE 2/6 pytorch_model.bin (903886847 B): verified sha256 6e666460219d3495e6437ac09061425ccf896532c92ec00cd3e6130cc94f3f44 in 13.67 s\n"}
+,{"stream_name":"stdout","time":105.40501523,"data":"HF FILE 3/6 special_tokens_map.json (2117 B): fetching (timeout 120 s per attempt, 3 attempts)\n"}
+,{"stream_name":"stdout","time":105.405299454,"data":"$ /usr/bin/python3 /tmp/k2_scratch/hf_probe.py fetch VietAI/vit5-base 2209a38d735ede63e88f5aa52bcdc11a05a37b85 special_tokens_map.json  (cwd=/tmp/k2_scratch, log=/kaggle/working/k2/logs/hf_preflight.log)\n"}
+,{"stream_name":"stdout","time":105.971369173,"data":"HF FILE 3/6 special_tokens_map.json (2117 B) attempt 1/3: ok in 0.6 s\n"}
+,{"stream_name":"stdout","time":105.971904155,"data":"HF FILE 3/6 special_tokens_map.json (2117 B): verified sha256 1bf246679a41f9204ef9085d6ebe314cb3ec1c916db54e2a3be6e49c9c839453 in 0.13 s\n"}
+,{"stream_name":"stdout","time":105.971927502,"data":"HF FILE 4/6 spiece.model (820370 B): fetching (timeout 120 s per attempt, 3 attempts)\n"}
+,{"stream_name":"stdout","time":105.971933582,"data":"$ /usr/bin/python3 /tmp/k2_scratch/hf_probe.py fetch VietAI/vit5-base 2209a38d735ede63e88f5aa52bcdc11a05a37b85 spiece.model  (cwd=/tmp/k2_scratch, log=/kaggle/working/k2/logs/hf_preflight.log)\n"}
+,{"stream_name":"stdout","time":106.888927637,"data":"HF FILE 4/6 spiece.model (820370 B) attempt 1/3: ok in 0.9 s\n"}
+,{"stream_name":"stdout","time":106.888960583,"data":"HF FILE 4/6 spiece.model (820370 B): verified sha256 59986b62f9f0b90edafb9b073ea7b93d21114a5841219a1ea2399ade73f729c6 in 0.5 s\n"}
+,{"stream_name":"stdout","time":106.888968074,"data":"HF FILE 5/6 tokenizer.json (2399296 B): fetching (timeout 121 s per attempt, 3 attempts)\n"}
+,{"stream_name":"stdout","time":106.889128463,"data":"$ /usr/bin/python3 /tmp/k2_scratch/hf_probe.py fetch VietAI/vit5-base 2209a38d735ede63e88f5aa52bcdc11a05a37b85 tokenizer.json  (cwd=/tmp/k2_scratch, log=/kaggle/working/k2/logs/hf_preflight.log)\n"}
+,{"stream_name":"stdout","time":107.505390076,"data":"HF FILE 5/6 tokenizer.json (2399296 B) attempt 1/3: ok in 0.6 s\n"}
+,{"stream_name":"stdout","time":107.505428378,"data":"HF FILE 5/6 tokenizer.json (2399296 B): verified sha256 8a92d24897341fe51bc911919dfc6e0cb3e9e0738ad9b200df8cf058aa5f5b2d in 0.21 s\n"}
+,{"stream_name":"stdout","time":107.505451609,"data":"HF FILE 6/6 tokenizer_config.json (2197 B): fetching (timeout 120 s per attempt, 3 attempts)\n"}
+,{"stream_name":"stdout","time":107.505596574,"data":"$ /usr/bin/python3 /tmp/k2_scratch/hf_probe.py fetch VietAI/vit5-base 2209a38d735ede63e88f5aa52bcdc11a05a37b85 tokenizer_config.json  (cwd=/tmp/k2_scratch, log=/kaggle/working/k2/logs/hf_preflight.log)\n"}
+,{"stream_name":"stdout","time":108.07161101,"data":"HF FILE 6/6 tokenizer_config.json (2197 B) attempt 1/3: ok in 0.6 s\n"}
+,{"stream_name":"stdout","time":108.071679133,"data":"HF FILE 6/6 tokenizer_config.json (2197 B): verified sha256 ecb83bb098cb056e05a23df88aec10511e9234aa6122c74f734185a08d461792 in 0.14 s\n"}
+,{"stream_name":"stdout","time":108.07188895,"data":"$ /usr/bin/python3 /tmp/k2_scratch/hf_probe.py load VietAI/vit5-base 2209a38d735ede63e88f5aa52bcdc11a05a37b85  (cwd=/tmp/k2_scratch, log=/kaggle/working/k2/logs/hf_preflight.log)\n"}
+,{"stream_name":"stdout","time":152.163674217,"data":"HF LOAD VietAI/vit5-base (offline) attempt 1/3: ok in 44.1 s\n"}
+,{"stream_name":"stdout","time":152.163725716,"data":"HF_SNAPSHOT VietAI/vit5-base 2209a38d735ede63e88f5aa52bcdc11a05a37b85 n_params=225950976 tokenizer=T5TokenizerFast (1.04 min)\n"}
+,{"stream_name":"stdout","time":164.187277119,"data":"MATCH    sentence_split.sha256: expected=\"289b2ac158419d6a5e7487a256bdb9a6bf8fbac9bc76fb167fbfa9a86d8421a4\" measured=\"289b2ac158419d6a5e7487a256bdb9a6bf8fbac9bc76fb167fbfa9a86d8421a4\"\n"}
+,{"stream_name":"stdout","time":164.187332295,"data":"MATCH    inputs.dataset_canonical_json.lf_sha256: expected=\"d53ab70100e2b2cd70ed32ec6893aa0bcdffab0c4389f27b7d3b8838f6c9a881\" measured=\"d53ab70100e2b2cd70ed32ec6893aa0bcdffab0c4389f27b7d3b8838f6c9a881\"\n"}
+,{"stream_name":"stdout","time":164.1873415,"data":"MATCH    inputs.dataset_canonical_json.n_samples: expected=4200 measured=4200\n"}
+,{"stream_name":"stdout","time":164.187347746,"data":"MATCH    inputs.keypoints_frontal.dir_digest: expected=\"596429252ff53caf1948fc9ed6e416952ee1a33876aa8972c25fcc9786e3bcae\" measured=\"596429252ff53caf1948fc9ed6e416952ee1a33876aa8972c25fcc9786e3bcae\"\n"}
+,{"stream_name":"stdout","time":164.187354231,"data":"MATCH    inputs.keypoints_frontal.n_files: expected=4200 measured=4200\n"}
+,{"stream_name":"stdout","time":164.187359891,"data":"MATCH    inputs.vie_vsl_10k_jsonl.lf_sha256: expected=\"c1dcceffc20e4dc2c659902a44b6c00bd3981431caaa131d3e68a94e074440e6\" measured=\"c1dcceffc20e4dc2c659902a44b6c00bd3981431caaa131d3e68a94e074440e6\"\n"}
+,{"stream_name":"stdout","time":164.187366694,"data":"MATCH    inputs.vie_vsl_10k_jsonl.n_lines: expected=9405 measured=9405\n"}
+,{"stream_name":"stdout","time":164.187372694,"data":"MATCH    inputs.vie_vsl_10k_cleaned_jsonl.lf_sha256: expected=\"f141f64a04d919fc8c9887cc76b2c6cf027c8f996eba3c6df168732d766c1778\" measured=\"f141f64a04d919fc8c9887cc76b2c6cf027c8f996eba3c6df168732d766c1778\"\n"}
+,{"stream_name":"stdout","time":164.187378008,"data":"MATCH    inputs.vie_vsl_10k_cleaned_jsonl.n_records: expected=7140 measured=7140\n"}
+,{"stream_name":"stdout","time":164.187388018,"data":"MATCH    inputs.gloss_vocab_canonical_txt.sha256: expected=\"c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0\" measured=\"c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0\"\n"}
+,{"stream_name":"stdout","time":164.187395577,"data":"MATCH    inputs.gloss_vocab_canonical_txt.n_tokens: expected=322 measured=322\n"}
+,{"stream_name":"stdout","time":164.187405824,"data":"MATCH    vocab.n_tokens: expected=322 measured=322\n"}
+,{"stream_name":"stdout","time":164.187432665,"data":"MATCH    vocab.sha256: expected=\"c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0\" measured=\"c0af13dbdf20e7d5a4dd6644f9c8217d8cfb937e48b7f25c8bf4e021c06213d0\"\n"}
+,{"stream_name":"stdout","time":164.187499325,"data":"MATCH    vocab.glosses_only_in_val: expected=[\"4\", \"55\", \"BẤT-THƯỜNG\", \"BỎ-RA\", \"CHI-PHÍ\", \"CÙNG\", \"CẬN-THỊ\", \"GÃI\", \"HEN-SUYỄN\", \"KHÍ-HƯ\", \"KÍNH\", \"LO-LẮNG\", \"LÁI-X measured=[\"4\", \"55\", \"BẤT-THƯỜNG\", \"BỎ-RA\", \"CHI-PHÍ\", \"CÙNG\", \"CẬN-THỊ\", \"GÃI\", \"HEN-SUYỄN\", \"KHÍ-HƯ\", \"KÍNH\", \"LO-LẮNG\", \"LÁI-X\n"}
+,{"stream_name":"stdout","time":164.188394211,"data":"MATCH    vocab.glosses_only_in_test: expected=[\"1-NGÀY\", \"CHO-TÔI\", \"CHÀO\", \"CUỐI-CÙNG\", \"CẢM-ƠN\", \"GIẢI-THÍCH\", \"GIẤY-PHÉP\", \"KHÔNG-HIỂU\", \"KIÊNG\", \"KỲ\", \"LÂY\", \"LẤY measured=[\"1-NGÀY\", \"CHO-TÔI\", \"CHÀO\", \"CUỐI-CÙNG\", \"CẢM-ƠN\", \"GIẢI-THÍCH\", \"GIẤY-PHÉP\", \"KHÔNG-HIỂU\", \"KIÊNG\", \"KỲ\", \"LÂY\", \"LẤY\n"}
+,{"stream_name":"stdout","time":164.188442658,"data":"MATCH    vocab.test_ref_tokens_total: expected=128 measured=128\n"}
+,{"stream_name":"stdout","time":164.188448244,"data":"MATCH    vocab.test_ref_tokens_oov: expected=29 measured=29\n"}
+,{"stream_name":"stdout","time":164.188452652,"data":"MATCH    vocab_full_reference.n_tokens: expected=372 measured=372\n"}
+,{"stream_name":"stdout","time":164.188461928,"data":"MATCH    vocab_full_reference.sha256: expected=\"dd7bc3da8f83e1e3400a85a0bfc4a7d8e882224647a23279a63b8f31d3601d11\" measured=\"dd7bc3da8f83e1e3400a85a0bfc4a7d8e882224647a23279a63b8f31d3601d11\"\n"}
+,{"stream_name":"stdout","time":164.188466593,"data":"MATCH    counts_after_split.clean10k.train: expected=6423 measured=6423\n"}
+,{"stream_name":"stdout","time":164.188470641,"data":"MATCH    counts_after_split.clean10k.val: expected=713 measured=713\n"}
+,{"stream_name":"stdout","time":164.188474491,"data":"MATCH    counts_after_split.cslr.test: expected=30 measured=30\n"}
+,{"stream_name":"stdout","time":164.188480267,"data":"MATCH    counts_after_split.cslr.train: expected=2880 measured=2880\n"}
+,{"stream_name":"stdout","time":164.188487506,"data":"MATCH    counts_after_split.cslr.val: expected=30 measured=30\n"}
+,{"stream_name":"stdout","time":164.188490314,"data":"MATCH    counts_after_split.vslgh_text.test: expected=30 measured=30\n"}
+,{"stream_name":"stdout","time":164.188492868,"data":"MATCH    counts_after_split.vslgh_text.train: expected=240 measured=240\n"}
+,{"stream_name":"stdout","time":164.188496489,"data":"MATCH    counts_after_split.vslgh_text.val: expected=30 measured=30\n"}
+,{"stream_name":"stdout","time":164.188499078,"data":"MATCH    counts_default.clean10k.train: expected=6426 measured=6426\n"}
+,{"stream_name":"stdout","time":164.188501602,"data":"MATCH    counts_default.clean10k.val: expected=714 measured=714\n"}
+,{"stream_name":"stdout","time":164.188504106,"data":"MATCH    counts_default.cslr.test: expected=300 measured=300\n"}
+,{"stream_name":"stdout","time":164.188506678,"data":"MATCH    counts_default.cslr.train: expected=3600 measured=3600\n"}
+,{"stream_name":"stdout","time":164.188509158,"data":"MATCH    counts_default.cslr.val: expected=300 measured=300\n"}
+,{"stream_name":"stdout","time":164.188511677,"data":"MATCH    counts_default.vslgh_text.test: expected=30 measured=30\n"}
+,{"stream_name":"stdout","time":164.188514248,"data":"MATCH    counts_default.vslgh_text.train: expected=240 measured=240\n"}
+,{"stream_name":"stdout","time":164.188516758,"data":"MATCH    counts_default.vslgh_text.val: expected=30 measured=30\n"}
+,{"stream_name":"stdout","time":164.188519261,"data":"MATCH    clean10k_excluded.n_train: expected=3 measured=3\n"}
+,{"stream_name":"stdout","time":164.188521778,"data":"MATCH    clean10k_excluded.n_val: expected=1 measured=1\n"}
+,{"stream_name":"stdout","time":164.188524237,"data":"MATCH    clean10k_excluded.by_reason.L1: expected=2 measured=2\n"}
+,{"stream_name":"stdout","time":164.188527737,"data":"MATCH    clean10k_excluded.by_reason.L2: expected=0 measured=0\n"}
+,{"stream_name":"stdout","time":164.188545855,"data":"MATCH    clean10k_excluded.by_reason.near_dup: expected=2 measured=2\n"}
+,{"stream_name":"stdout","time":164.1885507,"data":"MATCH    clean10k_excluded.ids: expected=[\"PAR_10K_02347\", \"PAR_10K_02536\", \"PAR_10K_03112\", \"PAR_10K_05270\"] measured=[\"PAR_10K_02347\", \"PAR_10K_02536\", \"PAR_10K_03112\", \"PAR_10K_05270\"]\n"}
+,{"stream_name":"stdout","time":164.188561794,"data":"MATCH    leak_check.total: expected=0 measured=0\n"}
+,{"stream_name":"stdout","time":164.188576415,"data":"MATCH    test_keypoints_digest: expected=\"4bf83012afe85d2477da4f8a3f3e89fde4e89cf8ffb14e221aee97912fb8c5dc\" measured=\"4bf83012afe85d2477da4f8a3f3e89fde4e89cf8ffb14e221aee97912fb8c5dc\"\n"}
+,{"stream_name":"stdout","time":164.188581022,"data":"MATCH    test_keypoints_digest_repro_v2: expected=\"27e3c15a2fda67487e1327f3ef00c3aae7bcd00fa36b06592c160627a54bc188\" measured=\"27e3c15a2fda67487e1327f3ef00c3aae7bcd00fa36b06592c160627a54bc188\"\n"}
+,{"stream_name":"stdout","time":164.188907257,"data":"PREFLIGHT OK: 44 values == preregistration\n"}
+,{"stream_name":"stdout","time":164.188918099,"data":"LEAK CHECK OK (k2 kernel): total=0 cslr=0 vocab=0 vit5_stage1=0 vit5_stage2=0 cslr_test_selection=0\n"}
+,{"stream_name":"stdout","time":164.366177618,"data":"BACKBONE checkpoints/stgcn_best.pt sha256 2204becd2662840d2425a5935366b48f059b95feb7b73c1d0d1ded3d2da1bac2 == k1_outputs.json\n"}
+,{"stream_name":"stdout","time":164.63414808,"data":"$ /usr/bin/python3 src/training/train_cslr.py --sentence-split configs/vslgh_sentence_split_v1.json  (cwd=/tmp/vslt, log=/kaggle/working/k2/logs/cslr.log)\n"}
+,{"stream_name":"stdout","time":164.634747342,"data":"$ /usr/bin/python3 scripts/train_translation_stage1.py --sentence-split configs/vslgh_sentence_split_v1.json  (cwd=/tmp/vslt, log=/kaggle/working/k2/logs/vit5_stage1.log)\n"}
+,{"stream_name":"stdout","time":653.012333401,"data":"$ /usr/bin/python3 scripts/train_translation_stage2.py --sentence-split configs/vslgh_sentence_split_v1.json --stage1-path checkpoints/vit5_stage1/best_model  (cwd=/tmp/vslt, log=/kaggle/working/k2/logs/vit5_stage2.log)\n"}
+,{"stream_name":"stdout","time":729.982663322,"data":"K2 FAILED: KernelError: failed jobs: ['cslr']\n"}
+,{"stream_name":"stderr","time":733.306560896,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":733.306611214,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":733.617872691,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":733.617905041,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":734.383723336,"data":"[NbConvertApp] Converting notebook __script__.ipynb to html\n"}
+,{"stream_name":"stderr","time":735.400405887,"data":"[NbConvertApp] Writing 447280 bytes to __results__.html\n"}
+]
