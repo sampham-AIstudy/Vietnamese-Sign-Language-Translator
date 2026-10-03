@@ -10,8 +10,12 @@
 - Trạng thái phiên: ĐANG CHẠY — 22:20 ngày 3/10 người dùng nhắn "dùng prompt để triển khai nốt và sau khi xong thì tiếp tục công việc" ⇒ rule mới ĐÃ commit
   (ba5e139 setup agy: cầu nối + guard + cổng hạn mức agy; 0a1314b .gitattributes LF cho *.sh; bf8f290 sửa parser --steps; 7fbb752 progress T1). Kế hoạch 15 lần sửa 1 đã có khối scope (§3b).
   T1 (92fce21) được orchestrator XÁC MINH ĐỘC LẬP: 6 module level 1 = Ran 78 OK; AC1-ngắn 16 module + textbox = Ran 245 OK, 0 skip (_work/_plan15/t1_short.log). CHƯA review (reviewer chạy sau C1).
-  Việc kế tiếp đang giao: vslt-coder (agy) bước A1 (scripts/level1_segment_report.py + tone_evidence.json), rồi T2. KHÔNG sửa STATE/plan trong lúc agy chạy (guard worktree báo nhầm).
-  Hạn mức Claude: 5h ~32% (reset 02:40 4/10), 7 ngày 84% (reset 09:00 8/10); cổng: 32 + 9 ≤ 90 → đạt. Hạn mức agy: xem `scripts/agy_usage.py status` + docs/agy_usage_ledger.csv.
+  A1 LẦN 1 (agy Opus/high, 22:20–22:28): CHẠM 100% hạn mức 5h nhóm claude của agy (exit 14) — +77 điểm 5h / +41 tuần trong ~8 phút (ước lượng cũ 8 = sai ~10 lần; đã nâng
+  giá trị khởi đầu nhóm claude trong scripts/agy_usage.py, sổ docs/agy_usage_ledger.csv có dòng đo thật). Không mất việc: bản nháp scripts/level1_segment_report.py (496 dòng,
+  CHƯA test/chạy) đã lưu ở commit WIP f7aa924 (script giờ tự lưu WIP khi bị ngắt: commit 48d95c2). Guard: sạch. Nhóm claude của agy reset 02:46 4/10; gemini 5h 7.8% (02:44), tuần 50.2% (13:40 7/10).
+  Quyết định orchestrator (22:45): cổng tự đổi họ → gemini-3.8-flash-high; giao lại A1 (tiếp từ bản nháp, test-first AC-R'1) bằng gemini. Việc kế tiếp sau A1: T2.
+  KHÔNG sửa STATE/plan trong lúc agy chạy (guard worktree báo nhầm).
+  Hạn mức Claude: 5h ~32% (reset 02:40 4/10), 7 ngày 84% (reset 09:00 8/10); coder bridge ~9–10 điểm/lần.
   Coder 15 (cầu nối agy) T1 XONG (92fce21 agy; 3f08b5d tiến độ): src/inference/level1_textbox.py textbox_view, KEY_NAMES tone_1..5 + Level1Speller.view +
   key("tone_*") source "key" trong level1_core.py; test mới chỉ thêm; tự chạy lại AC1-ngắn 16 module + test_level1_textbox: Ran 245 OK, 0 skip; guard chính known=9.
   CHƯA LÀM: A1 (scripts/level1_segment_report.py, tone_evidence.json) và T2 (vẽ khung text trong Hud + map phím 1–5 trong KEY_ACTIONS) ⇒ chưa có demo U1b.
