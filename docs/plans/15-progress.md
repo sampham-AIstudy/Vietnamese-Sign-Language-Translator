@@ -4,9 +4,9 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM (phiên cloud 2026-10-04, nhánh `cloud/2026-10-04-level1-rearm`): R2 — mã + test xong; CHẠY (pose_evidence.json, --write-pose-config) BỊ CHẶN trên cloud vì thiếu dữ liệu. Phiên cloud KHÔNG có dữ liệu gitignored (KAGGLE_KEY giữ chỗ) — mọi bước cần dữ liệu ghi rõ là chờ local.
+- ĐANG LÀM (phiên cloud 2026-10-04, nhánh `cloud/2026-10-04-level1-rearm`): R2 + R3 — mã + test xong; CHẠY (pose_evidence.json, rearm_check_r3.json, 2 commit config) BỊ CHẶN trên cloud vì thiếu dữ liệu — lệnh cho local ở mục R2/R3. Phiên cloud KHÔNG có dữ liệu gitignored (KAGGLE_KEY giữ chỗ) — mọi bước cần dữ liệu ghi rõ là chờ local.
 - Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a). R1 (commit `15: R1` trên nhánh cloud; CHỜ LOCAL: AC-S18 + S18b trên clip thật). A2b (`71fc664` mã + `4b5d736` config; AC-W3 đạt).
-- Còn lại: R2 (chạy + 2 commit JSON/config), R3, U1c, A3, C1, (R4, A4, C2).
+- Còn lại: R2 (chạy + commit JSON + commit config), R3 (chạy + commit JSON + commit config), U1c, A3, C1, (R4, A4, C2).
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -207,6 +207,7 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - R1 (cloud, trước commit `15: R1`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 6 files, 20 symbols, Affected processes: 8, Risk level: high"; không có cờ partial/truncated. Symbol đổi: SEGMENTER_KEYS, pose_distance (mới), Level1SignSegmenter (__init__, reset, _clear_pose_state (mới), _close_lost, push), CONFIG_SPEC, _check_value, FILL_RULES, _fill_missing, TestConfigProvenanceA2a + test của nó, file test mới tests/test_level1_rearm.py. 8 luồng bị ảnh hưởng: `main`/`run_segmenter_on_stream` của scripts/level1_rearm_check.py và `main` → `_check_value` (load config) — đều thuộc kế hoạch 15.
 - A2b-code (cloud, trước commit `15: A2b — write_config …`): `analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 2 files, 17 symbols, Affected processes: 2, Risk level: medium"; không có cờ partial/truncated. Symbol đổi: `scripts/level1_segment_report.py` (CALIBRATION_REASONS, committed_evidence_ref (mới), write_config) + `tests/test_level1_segment_report.py` (TestWriteConfigA2b + helper). 2 luồng: `main` → `write_config` của script.
 - R2-code (cloud, trước commit `15: R2 — code`): `analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 1 files, 15 symbols, Affected processes: 14, Risk level: high"; không có cờ partial/truncated. Symbol đổi: chỉ `scripts/level1_segment_report.py` (longest_still_run, POSE_*, hand_shape, _session, clip_pose_profile, pose_calibration, pose_report, write_pose_config, main); file test mới untracked chưa hiện. 14 luồng đều là `main` của script → hàm mới / bộ tách (chỉ GỌI). Impact `main`: LOW lower-bound (người gọi: điểm vào CLI + test).
+- R3-code (cloud, trước commit `15: R3 — code`): `analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 1 files, 22 symbols, Affected processes: 9, Risk level: high"; không có cờ partial/truncated. Symbol đổi: chỉ `scripts/level1_rearm_check.py` (NOTE_VI, GATE_*, calculate_metrics, parse_override, apply_overrides, single_clip_rates, evaluate_gates, whole_clip_segment, write_rules_config, run_rearm_check, create_parser, main …); file test mới untracked chưa hiện. 9 luồng đều là `main` của script. Impact trước sửa (upstream): calculate_metrics / run_rearm_check / create_parser LOW (exact, chỉ trong script), main LOW lower-bound (CLI).
 
 ## T1 — textbox logic + tone keys
 - File: `src/inference/level1_textbox.py`, `tests/test_level1_textbox.py`, `src/inference/level1_core.py` (`Level1Speller.view`, `KEY_NAMES`, `key`), `tests/test_level1_core.py` (AC-K), `tests/test_level1_guard.py` (`PLAN15_FILES`).
@@ -527,3 +528,38 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
      → kiểm `generated_by.code_dirty == false` → commit JSON (`15: R2 — pose_evidence.json`). Mã thoát 2 / `stop_rule.triggered` ⇒ P2 coverage < 0.80 ⇒ DỪNG, báo planner.
   2. `… --write-pose-config configs/level1_realtime.json --pose-evidence-json reports/level1_realtime_<D>/pose_evidence.json` → `git diff` chỉ khối
      `rearm_pose_dist` → chạy lại test Level 1 → commit (`15: R2 config`).
+
+## R3 — kiểm gate G1–G6 trên chuỗi ghép (15-lan-sua-3 §3.5, §4 #6, §5 R3) — phiên cloud 2026-10-04: MÃ XONG, CHƯA CHẠY
+- Mã (`scripts/level1_rearm_check.py`): `--set NAME:KEY=JSON` (ghi đè 1 khóa config, kiểm lại bằng `validate_level1_config`, ghi vào
+  `configs.<name>.overrides`) — dùng để tạo config `on` = config R2 đã commit + `pose_change_rules=true` thay cho bản sao trong `_work/` của §4 #6
+  (LỆCH nhỏ, có lợi cho nguồn gốc: `git_commit` của config vẫn ghi được); chuỗi L có thêm `one_rate_covered`/`n_clips_covered` (cặp (clip trước,
+  clip này) có `pose_distance(ref_trước, ref) >= rearm_pose_dist` của chính config đó; `ref` = hình dạng tham chiếu của R2 (`clip_pose_profile`)
+  tính trên clip CHƯA cắt — cùng đường dữ liệu với P2; cặp thiếu ref ⇒ không tính là covered); `label_agrees` (chỉ khi có checkpoint: clip có
+  đúng 1 segment, nhãn model của segment == nhãn model của trọn clip chưa cắt; báo cáo, không gate); `--gates GATE:BASELINE` chạy G6
+  (`single_clip_rates`: mọi clip hauuto có ≥ `min_detected_frames` khung có tay, chưa cắt, bộ tách mới mỗi clip, flush ts cuối + 1 ms như AC-S18;
+  LỆCH nhỏ so với AC-S18: AC-S18 lấy mọi clip với min_frames = min_sign_frames, ở đây dùng bộ lọc + `min_detected_frames` của checkpoint như AC-R1)
+  và đánh giá G1–G6 với ngưỡng ĐẶT TRƯỚC hằng trong script (`GATE_THRESHOLDS`: 0.90 / 0.05 / 0.05 / 0.02; thiếu join hoặc giá trị ⇒ gate trượt);
+  JSON thêm `note_vi` "chuỗi ghép từ clip train — kiểm logic, không phải độ chính xác", `single_clip`, `gates`; thoát mã 3 khi có gate trượt.
+  `--write-rules-config CONFIG --rearm-json JSON`: đặt `pose_change_rules = true` (source design, reason ghi `<json>@<commit>`) CHỈ khi JSON đã
+  commit và sạch (helper A2b `committed_evidence_ref`), `generated_by.code_dirty` false và `gates.all_pass` true; chỉ khóa đó đổi.
+  `checkpoint_path=None` + `min_detected_frames` cho phép chạy không checkpoint (khi đó `label_agrees` None) — dùng cho test tổng hợp.
+- Test viết TRƯỚC `tests/test_level1_rearm_gates.py` (13 test): ĐỎ trên mã trước R3: `Ran 12 — FAILED (errors=18 tính cả subTest)`
+  (`_work/_cloud/r3_red.log`; test thứ 13 RA9 phía R3 thêm ngay sau, cũng đỏ vì chưa import). XANH: cùng `tests.test_level1_rearm_check` →
+  `Ran 28 — OK` (`_work/_cloud/r3_green.log`): covered với khoảng cách None; override (parse, kiểm kiểu, khóa lạ); G1–G6 đạt / biên bao gồm
+  (0.90, 0.05) / từng gate trượt riêng / config off và giá trị chỉ-báo-cáo không bị gate / thiếu join ⇒ trượt; G6 trên clip tổng hợp (A→B: tắt 1
+  segment, bật 2); chạy đầu-cuối trên manifest + npz TỔNG HỢP (1 người ký, chuỗi L 5 clip) với config thật + `rearm_pose_dist` ghi đè cho hình dạng
+  tổng hợp: bật ⇒ L/join 0 `one_rate` 1.0, tắt thấp hơn; `write_rules_config` (chưa commit / gate trượt / code bẩn ⇒ RuntimeError, config giữ từng
+  byte; thành công ⇒ chỉ `pose_change_rules` đổi). Test RC1–RC4 + A2a cũ không sửa, vẫn xanh.
+- Level 1 (10 module): `Ran 152 — FAILED (failures=1, errors=5, skipped=19)` = đúng các lỗi/skip thiếu dữ liệu đã có (không thêm). Guard chính
+  `known=9 allowed=36` OK.
+- **Ghi nhận cho planner (TỔNG HỢP, không phải số liệu, không dùng để chỉnh gì):** trên manifest tổng hợp của test, mối ghép 600 ms (15 khung nội
+  suy chậm, tốc độ hình dạng < still_speed) cho phần lớn segment đa số khung "join" (rác theo luật gán): luật 3 chỉ khởi động lại đồng hồ hold khi
+  lệch ≥ `rearm_pose_dist` so với `hold_ref`, nên hold có thể bắt đầu giữa mối ghép khi quãng còn lại < ngưỡng; segment bắt đầu từ `_pose_since`
+  (giữa mối ghép). Đã trace từng khung: hành vi đúng chữ §3.2, không phải lỗi cài đặt. Hệ quả có thể: G5 (join 600) trượt trên dữ liệu thật — nếu
+  vậy là điểm DỪNG của R3, báo planner, không nới gate.
+- **BỊ CHẶN (thiếu dữ liệu):** thử chạy lệnh R3 → `FileNotFoundError …/checkpoints/alphabet_best.pt`. KHÔNG có `rearm_check_r3.json`, KHÔNG có số
+  G1–G6, `pose_change_rules` vẫn false. Việc local (SAU khi xong R2 config; mỗi bước tại commit sạch):
+  1. `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/level1_rearm_check.py --config off=configs/level1_realtime.json --config on=configs/level1_realtime.json --set on:pose_change_rules=true --gates on:off --join-ms 0,300,600 --out reports/level1_realtime_<D>/rearm_check_r3.json`
+     → mã thoát 0 = G1–G6 đạt, 3 = có gate trượt ⇒ DỪNG, ghi số từ JSON, báo planner (không nới gate) → commit JSON (`15: R3 — rearm_check_r3.json`).
+  2. Chỉ khi đạt: `… scripts/level1_rearm_check.py --write-rules-config configs/level1_realtime.json --rearm-json reports/level1_realtime_<D>/rearm_check_r3.json`
+     → `git diff` chỉ khối `pose_change_rules` → chạy lại test Level 1 + AC-E1 → commit (`15: R3 config`) → báo người dùng U1c.
