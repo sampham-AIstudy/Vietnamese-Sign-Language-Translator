@@ -4,9 +4,9 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM: (chưa) — kế tiếp A3
-- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`).
-- Còn lại: A3, C1, A4, C2.
+- ĐANG LÀM: (chưa) — kế tiếp A2a
+- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`).
+- Còn lại: A2a, R1, A2b, R2, R3, U1c, A3, C1, (R4, A4, C2).
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -201,6 +201,8 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - T2 (trước commit `15: T2`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 4 files, 1 symbols, Affected processes: 170, Risk level: critical". Symbol đổi: Section ? → README.md (người dùng). Index sạch, không có partial/truncated.
 - A2-code (trước commit `15: A2 — tail_still_keep_ms + --write-config + test`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 11 files, 7 symbols, Affected processes: 174, Risk level: critical". Symbol đổi: Section ? → README.md (người dùng) + symbol của A2: CALIBRATED_KEYS, DEFAULT_EVIDENCE (scripts/level1_segment_report.py), Level1SignSegmenter (src/inference/level1_segmenter.py), TestConfigC8 (tests/test_level1_core.py), TestWriteConfig (tests/test_level1_segment_report.py), TestSegmenter (tests/test_level1_segmenter.py). Index sạch, không có partial/truncated.
 - A2-config (trước commit `15: A2 config hiệu chỉnh`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 5 files, 1 symbols, Affected processes: 174, Risk level: critical". Symbol đổi: Section ? → README.md (người dùng). Index sạch, không có partial/truncated.
+- R0-code (trước commit `15: R0 — scripts/level1_rearm_check.py + test AC-RC1..RC4`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 5 files, 3 symbols, Affected processes: 0, Risk level: low". Symbol đổi: Section ? → README.md (người dùng) + Section 15-progress.md. File mới untracked. Index sạch, không có partial/truncated. Commit code `a3970a6`.
+- R0-báo cáo: sinh `reports/level1_realtime_2026-10-04/rearm_check_r0.json` tại commit mã sạch `a3970a6` (`code_dirty: false`).
 
 ## T1 — textbox logic + tone keys
 - File: `src/inference/level1_textbox.py`, `tests/test_level1_textbox.py`, `src/inference/level1_core.py` (`Level1Speller.view`, `KEY_NAMES`, `key`), `tests/test_level1_core.py` (AC-K), `tests/test_level1_guard.py` (`PLAN15_FILES`).
@@ -297,5 +299,50 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   - AC-E1 tương đương (`tests.test_level1_equivalence -v`): `Ran 9 tests in 79.116s` — `OK`, cả 10 clip BẰNG HỆT (bit-identical, log: `_work/_plan15/a2_equiv.log`).
   - Guard chính (`tests.test_backend_source_guard -v`): `Ran 28 tests in 4.236s` — `OK`, `[DoD7-guard] known=9 allowed=36`, `[scope] serving=45 main=60` (log: `_work/_plan15/a2_guard.log`).
   - AC1-ngắn 18 module: `Ran 264 tests in 225.786s` — `OK`, 0 fail, 0 errors, 0 skip (log: `_work/_plan15/a2_short_2.log`).
+
+## R0 — ghép chuỗi train clip kiểm re-arm (scripts/level1_rearm_check.py + AC-RC1..RC4)
+- File: `scripts/level1_rearm_check.py`, `tests/test_level1_rearm_check.py`.
+- TDD viết test trước: `tests/test_level1_rearm_check.py` (9 test) bao phủ AC-RC1..RC4.
+  - RC1: bỏ khung không tay đầu/cuối; clip mất tay bên trong >= hand_lost_ms (200ms) bị loại (đoán và đếm đúng 9 clip hauuto); kích thước/fps lệch bị loại và đếm.
+  - RC2: `join_ms == 0` không có khung chèn; `join_ms > 0` đúng `round(J * fps / 1000)` khung nội suy tuyến tính landmark thô, nguồn `join`, handedness của clip trước.
+  - RC3: gán đa số nguồn, segment rác (đa số `join`), `order_ok`, các tỉ lệ (`one_rate`, `miss_rate`, `multi_rate`, `garbage_per_clip`, `hand_lost`, `one_rate_covered`) trên chuỗi tổng hợp 3 clip.
+  - RC4: `--join-ms` là bắt buộc (không mặc định); JSON đầy đủ `generated_by`, `sha256` config, và câu thông báo `"train clips concatenated to test the segmenter logic; not accuracy, not a webcam session"`.
+- Kết quả test kiểm thử mã R0:
+  - Unit test mới: `python -m unittest tests/test_level1_rearm_check.py -v` → `Ran 9 tests in 0.181s` — `OK`.
+  - 7 module Level 1: `Ran 97 tests in 60.547s` — `OK`, 0 fail, 0 skip.
+  - Guard chính (`tests.test_backend_source_guard -v`): `Ran 28 tests in 4.419s` — `OK`, `known=9 allowed=36`, `serving=45 main=60`.
+  - AC1-ngắn 19 module (`tests.test_alphabet_preprocessing` .. `tests.test_level1_rearm_check`): `Ran 273 tests in 293.031s` — `OK`, 0 fail, 0 errors, 0 skip. AC-E1 bit-identical cả 10 clips.
+- Commit code: `a3970a6` (`15: R0 — scripts/level1_rearm_check.py + test AC-RC1..RC4`).
+- Báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json` (sinh tại commit sạch `a3970a6`):
+  - Lệnh: `python scripts/level1_rearm_check.py --config current=configs/level1_realtime.json --config before_a2=_work/_plan15/config_before.json --join-ms 0,300,600 --out reports/level1_realtime_2026-10-04/rearm_check_r0.json`
+  - `git_commit`: `a3970a682cd77e5ed3d65265f85f03d9abc52f9f`, `code_dirty`: `False`.
+  - Số liệu đọc trực tiếp từ JSON:
+    | Config | Chuỗi | Join (ms) | n_clips | one_rate | miss_rate | multi_rate | garbage/clip | hand_lost | order_ok |
+    |---|---|---|---|---|---|---|---|---|---|
+    | `current` | L | 0 | 193 | 0.3109 (31.09%) | 0.6684 (66.84%) | 0.0207 | 0.0000 | 0 | True |
+    | `current` | L | 300 | 193 | 0.3731 (37.31%) | 0.6010 (60.10%) | 0.0259 | 0.0000 | 0 | True |
+    | `current` | L | 600 | 193 | 0.3109 (31.09%) | 0.6632 (66.32%) | 0.0259 | 0.0000 | 0 | True |
+    | `current` | T | 0 | 35 | 0.7714 | 0.2286 | 0.0000 | 0.0000 | 0 | True |
+    | `current` | T | 300 | 35 | 0.8000 | 0.2000 | 0.0000 | 0.0000 | 0 | True |
+    | `current` | T | 600 | 35 | 0.7429 | 0.2571 | 0.0000 | 0.0000 | 0 | True |
+    | `current` | O | 0 | 25 | 0.6400 | 0.3600 | 0.0000 | 0.0000 | 0 | True |
+    | `current` | O | 300 | 25 | 0.6400 | 0.3600 | 0.0000 | 0.0000 | 0 | True |
+    | `current` | O | 600 | 25 | 0.6400 | 0.3600 | 0.0000 | 0.0000 | 0 | True |
+    | `before_a2` | L | 0 | 193 | 0.4145 (41.45%) | 0.5699 (57.00%) | 0.0155 | 0.0000 | 0 | True |
+    | `before_a2` | L | 300 | 193 | 0.6632 (66.32%) | 0.3005 (30.05%) | 0.0363 | 0.0000 | 0 | True |
+    | `before_a2` | L | 600 | 193 | 0.4819 (48.19%) | 0.4922 (49.22%) | 0.0259 | 0.0000 | 0 | True |
+    | `before_a2` | T | 0 | 35 | 0.8857 | 0.1000 | 0.0143 | 0.0000 | 0 | True |
+    | `before_a2` | T | 300 | 35 | 0.8714 | 0.0429 | 0.0857 | 0.0000 | 0 | True |
+    | `before_a2` | T | 600 | 35 | 0.8857 | 0.1000 | 0.0143 | 0.0000 | 0 | True |
+    | `before_a2` | O | 0 | 25 | 0.6800 | 0.3200 | 0.0000 | 0.0000 | 0 | True |
+    | `before_a2` | O | 300 | 25 | 0.6800 | 0.3200 | 0.0000 | 0.0000 | 0 | True |
+    | `before_a2` | O | 600 | 25 | 0.6800 | 0.3200 | 0.0000 | 0.0000 | 0 | True |
+  - **Áp dụng luật R0 (§5):**
+    - Điều kiện bác bỏ: `config 'current', chuỗi L, join 0 VÀ 300 đều có one_rate >= 0.90` -> giả thuyết sai.
+    - Kết quả đo: join 0 có `one_rate = 0.3109 < 0.90`, join 300 có `one_rate = 0.3731 < 0.90`.
+    - Kết luận luật R0: Giả thuyết ĐÚNG (bộ tách hiện tại bị kẹt chuyển chữ cái liên tiếp, miss tới 60–67% do thiếu re-arm tư thế). KHÔNG BỊ BÁC BỎ, ĐI TIẾP sang các bước tiếp theo.
+  - **Số đếm cặp hold -> segment liền nhau của U1 (§2.2):**
+    - Lệnh: `python -c "import json;e=json.load(open('_work/_plan15_u1/u1_2026-10-03_1650.json',encoding='utf-8'))['events'];print(sum(1 for a,b in zip(e,e[1:]) if a.get('close_reason')=='hold' and b['event']=='segment'))"`
+    - Kết quả: `64` cặp.
 
 
