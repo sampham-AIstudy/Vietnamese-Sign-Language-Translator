@@ -205,6 +205,7 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - R0-báo cáo: sinh `reports/level1_realtime_2026-10-04/rearm_check_r0.json` tại commit mã sạch `a3970a6` (`code_dirty: false`).
 - A2a (cloud, trước commit `15: A2a`): `npx -y gitnexus@latest analyze` (đầu phiên) rồi `node .gitnexus/run.cjs analyze --index-only` (exit 0) và `detect-changes --scope all --repo .` → "Changes: 3 files, 21 symbols, Affected processes: 8, Risk level: high"; không có cờ partial/truncated. Symbol đổi: các Section của 15-progress.md + `scripts/level1_rearm_check.py` (GIT_SPEC_PREFIX, FILL_RULES, _git_bytes, _fill_missing, resolve_config_spec, load_and_prepare_manifest_clips, run_rearm_check) + `tests/test_level1_rearm_check.py` (TestConfigProvenanceA2a, _git_out). 8 luồng bị ảnh hưởng đều là `main` của scripts/level1_rearm_check.py. Risk HIGH = chỉ trong script R0 (không có người gọi ngoài script + test). Không có thay đổi chưa commit của người dùng trên cloud.
 - R1 (cloud, trước commit `15: R1`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 6 files, 20 symbols, Affected processes: 8, Risk level: high"; không có cờ partial/truncated. Symbol đổi: SEGMENTER_KEYS, pose_distance (mới), Level1SignSegmenter (__init__, reset, _clear_pose_state (mới), _close_lost, push), CONFIG_SPEC, _check_value, FILL_RULES, _fill_missing, TestConfigProvenanceA2a + test của nó, file test mới tests/test_level1_rearm.py. 8 luồng bị ảnh hưởng: `main`/`run_segmenter_on_stream` của scripts/level1_rearm_check.py và `main` → `_check_value` (load config) — đều thuộc kế hoạch 15.
+- A2b-code (cloud, trước commit `15: A2b — write_config …`): `analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 2 files, 17 symbols, Affected processes: 2, Risk level: medium"; không có cờ partial/truncated. Symbol đổi: `scripts/level1_segment_report.py` (CALIBRATION_REASONS, committed_evidence_ref (mới), write_config) + `tests/test_level1_segment_report.py` (TestWriteConfigA2b + helper). 2 luồng: `main` → `write_config` của script.
 
 ## T1 — textbox logic + tone keys
 - File: `src/inference/level1_textbox.py`, `tests/test_level1_textbox.py`, `src/inference/level1_core.py` (`Level1Speller.view`, `KEY_NAMES`, `key`), `tests/test_level1_core.py` (AC-K), `tests/test_level1_guard.py` (`PLAN15_FILES`).
@@ -458,3 +459,25 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   (manifest/npz, checkpoint, video hauuto, nested_predictions.csv, file U1) — KHÔNG phải pass. `test_hand_landmarks_ws` (chập chờn) ok.
   Guard chính `known=9 allowed=36`, `tests.test_level1_guard` OK.
 - CHỜ LOCAL (cần dữ liệu): AC-S18 + S18b trên clip thật (luật tắt bằng hệt 4a55bf0), AC-E1, AC-C1, AC-D, AC-R'1a/b.
+
+## A2b — write_config: bỏ dự phòng commit gõ tay, reason theo quy tắc (15-lan-sua-2 §4 AC-W1…W3, §6, §7 #4b) — phiên cloud 2026-10-04
+- Impact `write_config`: risk LOW (exact), direct 1 (`main` của `scripts/level1_segment_report.py`); text search: chỉ `main` + `tests/test_level1_segment_report.py`.
+- Mã (`scripts/level1_segment_report.py`): hàm mới `committed_evidence_ref(evidence_path)` → (đường dẫn tương đối, commit rút gọn bằng
+  `git rev-parse --short=7` của `git log -1 --format=%H -- <evidence>`); evidence chưa track / có thay đổi chưa commit / không có commit →
+  `RuntimeError` TRƯỚC khi mở config (config không bị ghi). Bỏ dự phòng `generated_by.git_commit` và chuỗi gõ tay (grep `1ca53f3` trong
+  `scripts/*.py` = 0). `write_config` ghi `reason` của 5 khóa = `CALIBRATION_REASONS[k]` (chuỗi cố định mô tả quy tắc của `calibrate()`, không
+  chữ số); `changes` trả thêm `old_reason`/`new_reason`. Helper này sẽ được `--write-pose-config` (R2) dùng lại.
+- Test viết TRƯỚC (`tests/test_level1_segment_report.py::TestWriteConfigA2b`, 5 test, dùng config/evidence tạm trong thư mục tạm chưa track của
+  repo; không ghi config thật): W1 evidence chưa commit (bản sao có `generated_by.git_commit`) → RuntimeError + config giữ từng byte; W1 evidence
+  bẩn (mock `git status` trả ` M …`) → RuntimeError + config giữ từng byte; W1 không còn `1ca53f3` trong `scripts/*.py`; W2 reason == hằng của
+  script, không có chữ số, khác reason thiết kế ở b0620a9, thứ tự khóa giữ, khóa khác bằng hệt (so `json.dumps` từng khóa); W3 value 5 khóa
+  bằng hệt `git show b0620a9:configs/level1_realtime.json` (so `json.dumps`, giữ kiểu int/float) và source == `calibrated: <evidence>@<short>`
+  (short lấy bằng git trong test) == source ở b0620a9.
+  - ĐỎ trên mã trước A2b (4c8c210): `Ran 6 — FAILED (failures=3, errors=1)`: W1 ×3 FAIL "RuntimeError not raised"/thấy `1ca53f3`, W2 ERROR
+    (chưa có `CALIBRATION_REASONS`), W3 ok (đúng kỳ vọng: value không được đổi). Log `_work/_cloud/a2b_red.log`.
+  - XANH sau mã: 5/5 ok (`_work/_cloud/a2b_green_code.log`).
+- **Đỏ TẠM (đã biết trước, do thiết kế 2 commit của 15-lan-sua-2 §7 #4b):** test cũ A2 `TestWriteConfig.test_r_prime_1d_write_config` khẳng định
+  `reason` sau ghi == `reason` của config thật trên đĩa. Ở commit mã A2b, config thật còn reason thiết kế cũ còn `write_config` ghi reason quy
+  tắc (AC-W2) ⇒ FAIL tạm. Test KHÔNG sửa; nó xanh lại sau commit config sinh lại (bước dưới), vì khi đó config thật mang đúng reason quy tắc.
+- Level 1 (8 module) ở commit mã: `Ran 128 — FAILED (failures=2, errors=5, skipped=19)` = 6 lỗi/19 skip thiếu dữ liệu như R1 + `test_r_prime_1d` đỏ tạm.
+  Guard chính `known=9 allowed=36` OK.

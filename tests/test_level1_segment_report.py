@@ -306,5 +306,103 @@ class TestWriteConfig(unittest.TestCase):
                 os.remove(tmp_cfg)
 
 
+EVIDENCE_REL = "reports/level1_realtime_2026-10-03/tone_evidence.json"
+CAL_KEYS = ("still_speed", "move_speed", "hold_ms", "max_segment_ms", "tail_still_keep_ms")
+A2_CONFIG_COMMIT = "b0620a9"  # `15: A2 config hiệu chỉnh` (plan 15 lần sửa 2 AC-W3)
+
+
+def _git_text(*args):
+    """git output; a missing commit (shallow clone) FAILS the caller, it is never skipped."""
+    import subprocess
+    r = subprocess.run(["git", *args], cwd=PROJECT_ROOT, capture_output=True, text=True, encoding="utf-8")
+    if r.returncode != 0:
+        raise AssertionError(f"git {' '.join(args)} failed: {r.stderr.strip()}")
+    return r.stdout
+
+
+class TestWriteConfigA2b(unittest.TestCase):
+    """plan 15 lần sửa 2 §4 AC-W1..W3 (step A2b): no hand-typed commit, rule reasons, values of b0620a9. Uses temporary
+    config / evidence copies; configs/level1_realtime.json is never written by these tests."""
+
+    def setUp(self):
+        import tempfile
+        self.tmp = tempfile.mkdtemp(dir=PROJECT_ROOT, prefix="_tmp_a2b_")  # inside the repo, untracked
+        self.cfg = os.path.join(self.tmp, "config.json")
+        shutil.copyfile(CONFIG, self.cfg)
+        with open(self.cfg, "rb") as f:
+            self.cfg_bytes = f.read()
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def _cfg_unchanged(self):
+        with open(self.cfg, "rb") as f:
+            self.assertEqual(f.read(), self.cfg_bytes, "config must not be written when write_config fails")
+
+    def test_w1_uncommitted_evidence_raises_and_keeps_config(self):
+        from scripts.level1_segment_report import write_config
+        ev = os.path.join(self.tmp, "tone_evidence.json")
+        shutil.copyfile(os.path.join(PROJECT_ROOT, EVIDENCE_REL), ev)  # untracked copy, has generated_by.git_commit
+        with open(ev, encoding="utf-8") as f:
+            self.assertTrue(json.load(f)["generated_by"]["git_commit"])  # a fallback would have something to use
+        with self.assertRaises(RuntimeError):
+            write_config(self.cfg, ev)
+        self._cfg_unchanged()
+
+    def test_w1_dirty_evidence_raises_and_keeps_config(self):
+        from unittest import mock
+        import scripts.level1_segment_report as sr
+        real_git = sr._git
+
+        def git_dirty(*args):
+            if args[:1] == ("status",):
+                return f" M {EVIDENCE_REL}"
+            return real_git(*args)
+        with mock.patch.object(sr, "_git", side_effect=git_dirty):
+            with self.assertRaises(RuntimeError):
+                sr.write_config(self.cfg, EVIDENCE_REL)
+        self._cfg_unchanged()
+
+    def test_w1_no_hand_typed_commit_in_scripts(self):
+        for root, _, files in os.walk(os.path.join(PROJECT_ROOT, "scripts")):
+            for name in files:
+                if name.endswith(".py"):
+                    with open(os.path.join(root, name), encoding="utf-8", errors="replace") as f:
+                        self.assertNotIn("1ca53f3", f.read(), name)
+
+    def test_w2_rule_reasons_and_other_keys_byte_identical(self):
+        import re
+        from scripts.level1_segment_report import CALIBRATION_REASONS, write_config
+        with open(self.cfg, encoding="utf-8") as f:
+            before = json.load(f)
+        write_config(self.cfg, EVIDENCE_REL)
+        with open(self.cfg, encoding="utf-8") as f:
+            after = json.load(f)
+        old_design = json.loads(_git_text("show", f"{A2_CONFIG_COMMIT}:configs/level1_realtime.json"))
+        self.assertEqual(set(CALIBRATION_REASONS), set(CAL_KEYS))
+        for k in CAL_KEYS:
+            reason = after[k]["reason"]
+            self.assertEqual(reason, CALIBRATION_REASONS[k], k)
+            self.assertIsNone(re.search(r"\d", reason), f"{k}: reason must not contain a digit: {reason!r}")
+            self.assertNotEqual(reason, old_design[k]["reason"], f"{k}: the old design reason must be gone")
+        self.assertEqual(list(after), list(before))
+        for k in before:
+            if k not in CAL_KEYS:
+                self.assertEqual(json.dumps(after[k], ensure_ascii=False), json.dumps(before[k], ensure_ascii=False), k)
+
+    def test_w3_values_and_source_equal_b0620a9(self):
+        from scripts.level1_segment_report import write_config
+        write_config(self.cfg, EVIDENCE_REL)
+        with open(self.cfg, encoding="utf-8") as f:
+            after = json.load(f)
+        a2 = json.loads(_git_text("show", f"{A2_CONFIG_COMMIT}:configs/level1_realtime.json"))
+        full = _git_text("log", "-1", "--format=%H", "--", EVIDENCE_REL).strip()
+        short = _git_text("rev-parse", "--short=7", full).strip()
+        for k in CAL_KEYS:
+            self.assertEqual(json.dumps(after[k]["value"]), json.dumps(a2[k]["value"]), k)
+            self.assertEqual(after[k]["source"], f"calibrated: {EVIDENCE_REL}@{short}", k)
+            self.assertEqual(after[k]["source"], a2[k]["source"], k)
+
+
 if __name__ == "__main__":
     unittest.main()

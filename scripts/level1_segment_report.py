@@ -31,7 +31,7 @@ import platform
 import subprocess
 import sys
 from collections import Counter
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 
@@ -480,6 +480,40 @@ def build_report(argv: Sequence[str], config_path: str, u1_json: Optional[str]) 
 
 CALIBRATED_KEYS = ("still_speed", "move_speed", "hold_ms", "max_segment_ms", "tail_still_keep_ms")
 DEFAULT_EVIDENCE = "reports/level1_realtime_2026-10-03/tone_evidence.json"
+# reason written with each calibrated key (plan 15 lần sửa 2 §6.1, AC-W2): the rule of calibrate(), no measured number
+CALIBRATION_REASONS = {
+    "still_speed": "calibrated on the train clips of the deployed checkpoint: the ninetieth percentile, over the letter "
+                   "clips, of the per-clip median of the segmenter motion signal M_t",
+    "move_speed": "calibrated: still_speed multiplied by move_over_still_ratio (design), so moving is a fixed multiple "
+                  "of the still threshold (hysteresis)",
+    "hold_ms": "calibrated on the train clips of the deployed checkpoint: the smaller of hold_ms_design and the tenth "
+               "percentile, over the letter clips, of the longest still run of each clip",
+    "max_segment_ms": "calibrated on the train clips of the deployed checkpoint: the ninety-fifth percentile, over all "
+                      "clips, of the clip duration, rounded up to a whole millisecond",
+    "tail_still_keep_ms": "calibrated on the train clips of the deployed checkpoint: the smaller of hold_ms and the "
+                          "median, over the clips with motion, of the still time after the last motion",
+}
+
+
+def committed_evidence_ref(evidence_path: str) -> Tuple[str, str]:
+    """(repo-relative path, abbreviated commit) of an evidence JSON that is committed and has no uncommitted change.
+    RuntimeError otherwise: the commit is always read from git, never typed by hand and never taken from the JSON's
+    generated_by (that is the commit of the code, not of the JSON) — plan 15 lần sửa 2 AC-W1. Shared by write_config
+    and the pose calibration of step R2."""
+    full = os.path.abspath(evidence_path if os.path.isabs(evidence_path) else os.path.join(ROOT, evidence_path))
+    rel_path = rel(full)
+    if _git("ls-files", "--error-unmatch", "--", rel_path) is None:
+        raise RuntimeError(f"evidence {rel_path} is not tracked by git: commit it before writing the config")
+    status = _git("status", "--porcelain", "--", rel_path)
+    if status is None or status != "":
+        raise RuntimeError(f"evidence {rel_path} has uncommitted changes: commit it before writing the config")
+    full_commit = _git("log", "-1", "--format=%H", "--", rel_path)
+    if not full_commit:
+        raise RuntimeError(f"evidence {rel_path} is in no commit: commit it before writing the config")
+    short = _git("rev-parse", "--short=7", full_commit)
+    if not short:
+        raise RuntimeError(f"cannot abbreviate commit {full_commit}")
+    return rel_path, short
 
 
 def write_config(config_path: str, evidence_path: str = DEFAULT_EVIDENCE) -> Dict[str, Any]:
@@ -496,12 +530,7 @@ def write_config(config_path: str, evidence_path: str = DEFAULT_EVIDENCE) -> Dic
     if missing_cal:
         raise ValueError(f"calibration.values missing keys: {missing_cal}")
 
-    rel_evidence = rel(full_evidence)
-    commit = _git("log", "-1", "--format=%h", "--", rel_evidence)
-    if not commit:
-        commit = evidence.get("generated_by", {}).get("git_commit", "")[:7]
-    if not commit:
-        commit = "1ca53f3"
+    rel_evidence, commit = committed_evidence_ref(full_evidence)
     source_str = f"calibrated: {rel_evidence}@{commit}"
 
     with open(config_path, "r", encoding="utf-8") as f:
@@ -513,14 +542,18 @@ def write_config(config_path: str, evidence_path: str = DEFAULT_EVIDENCE) -> Dic
             raise KeyError(f"target config {config_path} missing key {k!r}")
         old_val = cfg[k]["value"]
         old_source = cfg[k]["source"]
+        old_reason = cfg[k]["reason"]
         new_val = cal_values[k]
         cfg[k]["value"] = new_val
         cfg[k]["source"] = source_str
+        cfg[k]["reason"] = CALIBRATION_REASONS[k]
         changes[k] = {
             "old_value": old_val,
             "new_value": new_val,
             "old_source": old_source,
             "new_source": source_str,
+            "old_reason": old_reason,
+            "new_reason": CALIBRATION_REASONS[k],
         }
 
     validate_level1_config(cfg)
