@@ -20,6 +20,17 @@ letter to the next without pressing anything; this segmenter cuts the stream int
   lost for >= hand_lost_ms (reason "hand_lost", tail cut at the last hand frame) or on flush() ("end_of_stream");
 - re-arm after moving continuously for >= rearm_move_ms (the buffer is cut back to the start of that motion, so the
   whole motion of a tone mark is kept) or after the hand was lost;
+- pose rules (plan 15 lần sửa 3 §3.2), only when pose_change_rules is true (false: the code above is the whole
+  behaviour and rearm_pose_dist is never read): pose_distance(N_a, N_b) = mean over the 21 points of |N_a - N_b| (3D,
+  hand lengths);
+  1. anchor: when a 'hold' fires, anchor = mean N of the hand frames in [t_emit - motion_window_ms, t_emit]; cleared by
+     any re-arm, reset() and a lost hand;
+  2. pose re-arm (OR with the motion re-arm): while not armed and anchored, pose_since = first hand frame of the current
+     run of hand frames with pose_distance(N_t, anchor) >= rearm_pose_dist (a frame below it ends the run); re-arm when
+     ts - pose_since >= rearm_move_ms, the buffer is cut back to pose_since;
+  3. stable hold: while the hold clock runs, hold_ref = N of the frame that started it; a frame with
+     pose_distance(N_t, hold_ref) >= rearm_pose_dist restarts the hold clock there (armed or not), so a slow change of
+     hand shape is not emitted half-way;
 - a WordGap after the hand is lost for >= word_gap_ms, only when a sign was emitted since the previous WordGap.
 
 All durations are in milliseconds of the pushed timestamps (not frame counts). Parameters come from the caller
@@ -37,7 +48,8 @@ import numpy as np
 from src.data.alphabet_preprocessing import EPS, MIDDLE_MCP_IDX, WRIST_IDX, normalize_hand_landmarks
 
 SEGMENTER_KEYS = ("motion_window_ms", "still_speed", "move_speed", "hold_ms", "rearm_move_ms", "hand_lost_ms",
-                  "word_gap_ms", "max_segment_ms", "min_sign_frames", "tail_still_keep_ms")
+                  "word_gap_ms", "max_segment_ms", "min_sign_frames", "tail_still_keep_ms", "pose_change_rules",
+                  "rearm_pose_dist")
 CLOSE_REASONS = ("hold", "hand_lost", "end_of_stream")
 STATES = ("no_hand", "moving", "holding")
 
@@ -88,6 +100,13 @@ def aspect_points(landmarks: np.ndarray, width: int, height: int) -> np.ndarray:
     return p
 
 
+def pose_distance(n_a: np.ndarray, n_b: np.ndarray) -> float:
+    """Distance between two normalised hand shapes N [21, 3]: mean over the 21 points of the 3D distance, in hand
+    lengths (the shape term of frame_motion without the division by dt)."""
+    diff = np.asarray(n_a, dtype=np.float64) - np.asarray(n_b, dtype=np.float64)
+    return float(np.mean(np.linalg.norm(diff, axis=-1)))
+
+
 def frame_motion(prev_p: np.ndarray, prev_n: np.ndarray, cur_p: np.ndarray, cur_n: np.ndarray, dt_s: float) -> float:
     """m_t = max(wrist speed, hand-shape speed) in hand-lengths per second (module docstring)."""
     palm_prev = float(np.linalg.norm(prev_p[MIDDLE_MCP_IDX, :2] - prev_p[WRIST_IDX, :2]))
@@ -112,6 +131,12 @@ class Level1SignSegmenter:
             raise ValueError("word_gap_ms must be >= hand_lost_ms")
         if not (0 < self.p["tail_still_keep_ms"] <= self.p["hold_ms"]):
             raise ValueError("tail_still_keep_ms must be > 0 and <= hold_ms")
+        if not isinstance(self.p["pose_change_rules"], bool):
+            raise ValueError("pose_change_rules must be a bool")
+        dist = self.p["rearm_pose_dist"]
+        if isinstance(dist, bool) or not isinstance(dist, (int, float, np.floating, np.integer)) \
+                or not np.isfinite(dist) or not dist > 0:
+            raise ValueError("rearm_pose_dist must be a finite number > 0")
         self.min_frames = max(int(self.p["min_sign_frames"]), int(min_detected_frames))
         self._seq = 0
         self._word_has_sign = False
@@ -134,6 +159,14 @@ class Level1SignSegmenter:
         self._size: Optional[Tuple[int, int]] = None
         self.motion: Optional[float] = None
         self._hold_progress = 0.0
+        self._clear_pose_state()
+
+    def _clear_pose_state(self) -> None:
+        """Pose rules state (plan 15 lần sửa 3 §3.2); only filled when pose_change_rules is true."""
+        self._anchor: Optional[np.ndarray] = None
+        self._pose_since: Optional[float] = None
+        self._hold_ref: Optional[np.ndarray] = None
+        self._recent_n: Deque[Tuple[float, np.ndarray]] = deque()
 
     @property
     def state(self) -> str:
@@ -208,6 +241,7 @@ class Level1SignSegmenter:
         self._move_since = None
         self._hold_progress = 0.0
         self.motion = None
+        self._clear_pose_state()
 
     # ------------------------------------------------------------------ API
     def push(self, ts_ms: float, landmarks: Optional[np.ndarray], handedness: str, width: int,
@@ -246,6 +280,12 @@ class Level1SignSegmenter:
                 self._hist.append((ts, frame_motion(self._prev[0], self._prev[1], p, n,
                                                     (ts - self._prev[2]) / 1000.0)))
             self._prev = (p, n, ts)
+            rules = self.p["pose_change_rules"]
+            if rules:  # hand shapes of the last motion_window_ms, for the anchor (rule 1)
+                self._recent_n.append((ts, n))
+                horizon = ts - self.p["motion_window_ms"]
+                while self._recent_n and self._recent_n[0][0] < horizon:
+                    self._recent_n.popleft()
             self.motion = self._motion_now(ts)
             if self.motion is None:
                 self._still_since = None
@@ -260,11 +300,37 @@ class Level1SignSegmenter:
                 self._still_since = None
             # in between: hysteresis, both timers kept
 
+            if rules:
+                # rule 3: the hold clock only runs while the hand shape stays within rearm_pose_dist of where it began
+                if self._still_since is None:
+                    self._hold_ref = None
+                elif self._still_since == ts or self._hold_ref is None:
+                    self._hold_ref = n
+                elif pose_distance(n, self._hold_ref) >= self.p["rearm_pose_dist"]:
+                    self._still_since = ts
+                    self._hold_ref = n
+                # rule 2: run of hand frames far from the anchor
+                if not self._armed and self._anchor is not None:
+                    if pose_distance(n, self._anchor) >= self.p["rearm_pose_dist"]:
+                        if self._pose_since is None:
+                            self._pose_since = ts
+                    else:
+                        self._pose_since = None
+
             if (not self._armed and self._move_since is not None
                     and ts - self._move_since >= self.p["rearm_move_ms"]):
                 self._armed = True
                 start = self._move_since
                 self._buf = [f for f in self._buf if f[3] >= start]
+                self._anchor = None
+                self._pose_since = None
+            if (rules and not self._armed and self._pose_since is not None
+                    and ts - self._pose_since >= self.p["rearm_move_ms"]):
+                self._armed = True
+                start = self._pose_since
+                self._buf = [f for f in self._buf if f[3] >= start]
+                self._anchor = None
+                self._pose_since = None
             self._trim(ts)
 
             self._hold_progress = 0.0
@@ -283,6 +349,9 @@ class Level1SignSegmenter:
                     self._armed = False
                     self._buf = []
                     self._hold_progress = 0.0
+                    if rules:  # rule 1: anchor = mean hand shape of [t_emit - motion_window_ms, t_emit]
+                        self._anchor = np.mean(np.stack([m for _, m in self._recent_n]), axis=0)
+                        self._pose_since = None
         else:
             self._last_has_hand = False
             self._prev = None  # the next hand frame has no consecutive pair

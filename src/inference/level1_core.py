@@ -21,7 +21,7 @@ import numpy as np
 from src.data.alphabet_preprocessing import DEFAULT_ALPHABET_PREPROCESSING, alphabet_clip_features
 from src.inference.fingerspelling_compose import SPACE, compose, token_kind
 
-# key -> (kind, check); kind: "number" | "int" | "str" | "str_list"
+# key -> (kind, check); kind: "number" | "int" | "bool" | "str" | "str_list"
 CONFIG_SPEC = {
     "motion_window_ms": ("number", "positive"),
     "still_speed": ("number", "positive"),
@@ -31,6 +31,9 @@ CONFIG_SPEC = {
     "hold_ms": ("number", "positive"),
     "tail_still_keep_ms": ("number", "positive"),
     "rearm_move_ms": ("number", "positive"),
+    "pose_change_rules": ("bool", "bool"),
+    "rearm_pose_dist": ("number", "positive"),
+    "pose_over_jitter_ratio": ("number", "above_one"),
     "hand_lost_ms": ("number", "positive"),
     "word_gap_ms": ("number", "positive"),
     "max_segment_ms": ("number", "positive"),
@@ -64,6 +67,9 @@ def _check_value(key: str, value: Any) -> None:
             raise ValueError(f"config {key}: value must be > 1, got {value!r}")
         if check == "unit_interval" and not 0 < value <= 1:
             raise ValueError(f"config {key}: value must be in (0, 1], got {value!r}")
+    elif kind == "bool":
+        if not isinstance(value, bool):  # a real JSON true / false; 0 / 1 are refused
+            raise ValueError(f"config {key}: value must be true or false, got {value!r}")
     elif kind == "str":
         if not isinstance(value, str):
             raise ValueError(f"config {key}: value must be a string, got {value!r}")

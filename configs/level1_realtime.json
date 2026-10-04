@@ -38,7 +38,22 @@
   "rearm_move_ms": {
     "value": 150,
     "source": "design",
-    "reason": "a deliberate bounce or shift of the hand (a few frames of clear motion) re-arms the segmenter for a repeated letter; shorter wobbles do not"
+    "reason": "minimum duration of continuous evidence before the segmenter re-arms after an emitted letter: clear motion (M_t >= move_speed) or, when pose_change_rules is true, a hand shape at >= rearm_pose_dist from the shape anchored at the emission (plan 15 lần sửa 3 section 3.2); a deliberate bounce or shift of the hand re-arms for a repeated letter, shorter wobbles do not"
+  },
+  "pose_change_rules": {
+    "value": false,
+    "source": "design",
+    "reason": "switch of the pose re-arm rules of plan 15 lần sửa 3 section 3.2 (re-arm on a change of hand shape, stable-shape hold); false until the rules pass gates G1-G6 of step R3 on train clips concatenated by scripts/level1_rearm_check.py; false = the segmenter of step A2a exactly"
+  },
+  "rearm_pose_dist": {
+    "value": 1.0,
+    "source": "design",
+    "reason": "placeholder, never read while pose_change_rules is false; replaced in step R2 by rule P1 of plan 15 lần sửa 3 section 3.4 (pose_over_jitter_ratio x p95 over letter train clips of the hand-shape jitter in the longest still run); unit: hand lengths (mean point distance of normalised shapes)"
+  },
+  "pose_over_jitter_ratio": {
+    "value": 2.0,
+    "source": "design",
+    "reason": "the pose re-arm threshold is this multiple of the hand-shape jitter seen while one letter is held (same idea as move_over_still_ratio); read only by the calibration of rearm_pose_dist (rule P1), not by the segmenter"
   },
   "hand_lost_ms": {
     "value": 300,

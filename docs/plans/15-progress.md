@@ -4,9 +4,9 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM (phiên cloud 2026-10-04, nhánh `cloud/2026-10-04-level1-rearm`): R1 (15-lan-sua-3 §3.2, §4 #3). Phiên cloud KHÔNG có dữ liệu gitignored (KAGGLE_KEY giữ chỗ) — mọi bước cần dữ liệu ghi rõ là chờ local.
-- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a).
-- Còn lại: R1, A2b, R2, R3, U1c, A3, C1, (R4, A4, C2).
+- ĐANG LÀM (phiên cloud 2026-10-04, nhánh `cloud/2026-10-04-level1-rearm`): A2b (15-lan-sua-2 §4 AC-W1..W3, §7 #4b). Phiên cloud KHÔNG có dữ liệu gitignored (KAGGLE_KEY giữ chỗ) — mọi bước cần dữ liệu ghi rõ là chờ local.
+- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a). R1 (commit `15: R1` trên nhánh cloud; CHỜ LOCAL: AC-S18 + S18b trên clip thật).
+- Còn lại: A2b, R2, R3, U1c, A3, C1, (R4, A4, C2).
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -204,6 +204,7 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - R0-code (trước commit `15: R0 — scripts/level1_rearm_check.py + test AC-RC1..RC4`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 5 files, 3 symbols, Affected processes: 0, Risk level: low". Symbol đổi: Section ? → README.md (người dùng) + Section 15-progress.md. File mới untracked. Index sạch, không có partial/truncated. Commit code `a3970a6`.
 - R0-báo cáo: sinh `reports/level1_realtime_2026-10-04/rearm_check_r0.json` tại commit mã sạch `a3970a6` (`code_dirty: false`).
 - A2a (cloud, trước commit `15: A2a`): `npx -y gitnexus@latest analyze` (đầu phiên) rồi `node .gitnexus/run.cjs analyze --index-only` (exit 0) và `detect-changes --scope all --repo .` → "Changes: 3 files, 21 symbols, Affected processes: 8, Risk level: high"; không có cờ partial/truncated. Symbol đổi: các Section của 15-progress.md + `scripts/level1_rearm_check.py` (GIT_SPEC_PREFIX, FILL_RULES, _git_bytes, _fill_missing, resolve_config_spec, load_and_prepare_manifest_clips, run_rearm_check) + `tests/test_level1_rearm_check.py` (TestConfigProvenanceA2a, _git_out). 8 luồng bị ảnh hưởng đều là `main` của scripts/level1_rearm_check.py. Risk HIGH = chỉ trong script R0 (không có người gọi ngoài script + test). Không có thay đổi chưa commit của người dùng trên cloud.
+- R1 (cloud, trước commit `15: R1`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 6 files, 20 symbols, Affected processes: 8, Risk level: high"; không có cờ partial/truncated. Symbol đổi: SEGMENTER_KEYS, pose_distance (mới), Level1SignSegmenter (__init__, reset, _clear_pose_state (mới), _close_lost, push), CONFIG_SPEC, _check_value, FILL_RULES, _fill_missing, TestConfigProvenanceA2a + test của nó, file test mới tests/test_level1_rearm.py. 8 luồng bị ảnh hưởng: `main`/`run_segmenter_on_stream` của scripts/level1_rearm_check.py và `main` → `_check_value` (load config) — đều thuộc kế hoạch 15.
 
 ## T1 — textbox logic + tone keys
 - File: `src/inference/level1_textbox.py`, `tests/test_level1_textbox.py`, `src/inference/level1_core.py` (`Level1Speller.view`, `KEY_NAMES`, `key`), `tests/test_level1_core.py` (AC-K), `tests/test_level1_guard.py` (`PLAN15_FILES`).
@@ -403,3 +404,57 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - Test (cloud, không dữ liệu): 7 module Level 1 trước sửa (HEAD 3e6a15e) → `Ran 100 — FAILED (failures=1, errors=4, skipped=19)`; toàn bộ 5
   lỗi + 19 skip là do thiếu file gitignored (manifest.csv, nested_predictions.csv, checkpoint, video hauuto, file U1). Guard chính
   `tests.test_backend_source_guard` → `Ran 28 — OK`, `[DoD7-guard] known=9 allowed=36`; `tests.test_level1_guard` → `Ran 4 — OK`.
+
+## R1 — luật re-arm theo tư thế (15-lan-sua-3 §3.2, §4 #3, §5 AC-RA1…RA11) — phiên cloud 2026-10-04
+- File: `src/inference/level1_segmenter.py` (`pose_distance` public; `SEGMENTER_KEYS` + `pose_change_rules`, `rearm_pose_dist`; kiểm kiểu
+  trong `__init__`; trạng thái `_anchor`, `_pose_since`, `_hold_ref`, `_recent_n` xóa ở `reset()`/`_close_lost`; luật 1–3 trong `push`; docstring),
+  `src/inference/level1_core.py` (kind `"bool"` trong `_check_value` — chỉ nhận true/false thật; `CONFIG_SPEC` + `pose_change_rules` bool,
+  `rearm_pose_dist` > 0, `pose_over_jitter_ratio` > 1), `configs/level1_realtime.json` (3 khóa mới, `source: design`: `pose_change_rules` false,
+  `rearm_pose_dist` 1.0 GIỮ CHỖ — reason ghi "không đọc khi luật tắt, thay bằng P1 ở R2", `pose_over_jitter_ratio` 2.0; reason `rearm_move_ms`
+  cập nhật chữ: bằng chứng liên tục cho cả re-arm chuyển động và tư thế; sinh bằng `json.dump(indent=2, ensure_ascii=False)` như `write_config`,
+  các khóa khác giữ từng byte), `scripts/level1_rearm_check.py` (`FILL_RULES` điền thêm 3 khóa R1 cho config git cũ), test.
+- **Impact trước sửa** (GitNexus, upstream): `SEGMENTER_KEYS` UNKNOWN (0 caller; text search: chỉ dùng trong `level1_segmenter.py`);
+  `CONFIG_SPEC` UNKNOWN (text search: `level1_core.py` + `tests/test_level1_core.py`); `Level1SignSegmenter.__init__` UNKNOWN lower-bound (text search
+  `Level1SignSegmenter(`: `level1_demo.py:544`, `scripts/level1_rearm_check.py`, `scripts/level1_segment_report.py`, tests của 15);
+  `_check_value` LOW (direct: `validate_level1_config`); `validate_level1_config` LOW (direct: `load_level1_config`, `resolve_config_spec`,
+  `write_config`); `reset` LOW (direct: `__init__`, `level1_demo.py` `_key`); **`_close_lost` HIGH** (direct: `flush`, `push` cùng lớp; 4 process
+  qua các script/demo của 15); `push` HIGH lower-bound (xem mục A2a). Cảnh báo HIGH ghi nhận: mọi người gọi đều là file kế hoạch 15; luật tắt
+  ⇒ không đọc `rearm_pose_dist`, không gọi `pose_distance` (AC-RA9 kiểm bằng mock: 0 lần gọi).
+- **Test viết TRƯỚC (đỏ)** `tests/test_level1_rearm.py` (16 test) chạy trên mã trước R1 (HEAD b545ce7): `Ran 16 — FAILED (failures=14 (tính cả
+  subTest), errors=6)`: RA1 và RA4 FAIL `['hold'] != ['hold', 'hold']` (tái hiện lỗi U1b: chỉ 1 segment khi đổi hình dạng tay không rút tay);
+  RA7 ×3 ERROR (không có `_anchor`/`_pose_since`); RA9 ×2 ERROR (không có `pose_distance`); RA10 FAIL/ERROR (khóa mới chưa có, segmenter nhận
+  tham số sai). RA2, RA3, RA5, RA6, RA8, RA11 + test kiểm chuỗi OK ngay trên mã cũ (đúng kỳ vọng: là tính chất "không được phá"). Log
+  `_work/_cloud/r1_red.log`.
+- **Xanh sau R1:** `python -m unittest tests.test_level1_rearm -v` → `Ran 16 — OK` (`_work/_cloud/r1_green.log`).
+- Chuỗi test (tổng hợp có kiểm soát, docstring ghi rõ): hình dạng A/B giữ cổ tay và MCP giữa cố định ⇒ N tuyến tính, `pose_distance` biết trước;
+  mọi khoảng cách trong assert tính bằng công thức viết tay trong test (không dùng hàm được kiểm). Params test riêng `PARAMS_RA`
+  (motion_window 120 ms = trung vị 3 giá trị m; rearm_pose_dist 0.15). RA1: chuyển A→B 200 ms, tốc độ hình dạng 1.5 (giữa still 1.0 và move 2.0,
+  test assert < move); segment 2 bắt đầu đúng khung đầu có d ≥ ngưỡng. RA4: chuyển 2 s, tốc độ 0.5 ≤ still, vượt ngưỡng sau 320 ms < hold 400
+  (test assert cả hai). RA6: luật tắt ⇒ sự kiện bằng hệt giữa rearm_pose_dist 0.15 và 7.5 VÀ bằng hệt bộ tách của commit A2a (`b545ce7`, nạp
+  bằng `git show`) trên 7 luồng RA + 4 luồng S16/S17 (2 lưới × tail = hold, hold/2). RA8: khung phát lệch 0.9×ngưỡng, sau đó tay dừng ở phía
+  ngược 0.3×ngưỡng ⇒ neo 1 khung sẽ cách 1.2×ngưỡng (re-arm), neo trung bình cửa sổ 4 khung cách 0.525×ngưỡng (không) — test assert cả hai.
+  RA11: `status()` đúng 4 khóa cũ, cùng giá trị với property, và bằng hệt `status()` của bộ tách A2a khi luật tắt.
+- **Ngoại lệ test cũ (đúng §4 lần sửa 3):** `tests/test_level1_segmenter.py` PARAMS thêm `pose_change_rules: False, rearm_pose_dist: 0.2,
+  pose_over_jitter_ratio: 2.0`; bộ dựng config AC-S18 (`s18_configs`) ép `pose_change_rules = False` cho (a) và điền 3 khóa cho (b) (3ebc7b9) —
+  không đổi assertion. THÊM test `test_s18b_rearm_pose_dist_unused_when_rules_off` (§0 lần sửa 3: hai giá trị rearm_pose_dist ⇒ bằng hệt trên
+  mọi clip hauuto) — cần dữ liệu, CHƯA chạy được trên cloud.
+- **LỆCH cần reviewer xem (test A2a do chính phiên cloud viết ở b545ce7, chưa review):** 3 test `TestConfigProvenanceA2a` đỏ sau R1 vì config
+  3ebc7b9 thiếu thêm 3 khóa R1 (không nạp được) và test ghim tập khóa điền = {tail_still_keep_ms}. Sửa: (1) mã — `FILL_RULES` điền
+  `pose_change_rules = false` (luật chưa tồn tại ở commit đó ⇒ hành vi trước luật, AC-RA6) và `rearm_pose_dist`, `pose_over_jitter_ratio` lấy
+  từ `configs/level1_realtime.json` trên đĩa (không được bộ tách đọc khi luật tắt), ghi vào `configs.<name>.filled`; (2) test — 2 assertion đổi:
+  `filled` mong đợi thêm đúng 3 khóa R1 (`R1_KEYS`), vòng so giá trị bỏ qua đúng các khóa có trong `filled` (thay vì chỉ tail); test HEAD đổi
+  từ `filled == {}` thành `set(filled) == các khóa CONFIG_SPEC thiếu ở HEAD` (test cũ đỏ ở MỌI lần thêm khóa config trước commit). Không nới:
+  mọi khóa không điền vẫn so bằng hệt với blob git. Nếu reviewer không chấp nhận ⇒ hoàn tác 2 assertion, CẦN PLANNER.
+- Quyết định nhỏ (không có trong đặc tả, ghi để review): (a) neo đặt mỗi khi luật hold kích hoạt (armed → False), kể cả khi `_make_segment`
+  trả None sau cắt đuôi — để luôn có đường re-arm theo tư thế; (b) khung không tay (mất tay ngắn < hand_lost_ms) KHÔNG xóa `_pose_since`
+  (đối xứng với `_move_since`: chỉ khung có tay cập nhật); (c) thứ tự trong một khung: phân loại still/move → luật 3 → theo dõi luật 2 →
+  re-arm chuyển động → re-arm tư thế → `_trim` → kiểm phát hold; (d) KHÔNG thêm khóa tùy chọn `rearm` vào `status()` (giữ đúng 4 khóa);
+  (e) cửa sổ neo đóng hai đầu [t_emit − motion_window_ms, t_emit] (khác cửa sổ chuyển động mở đầu trái) theo đúng chữ §3.2.
+- Môi trường: venv cloud thiếu `seaborn` (có trong requirements.txt, thiếu trong `scripts/cloud_setup.sh`) ⇒ 6 module AC1 (backend) lỗi import;
+  đã `pip install "seaborn>=0.12.0"` vào `.venv` (0.13.2), chạy lại mốc.
+- **AC1-ngắn (19 module + tests.test_level1_rearm)**, so với mốc chạy cùng máy tại worktree sạch `b545ce7` (`_work/_cloud/ac1_base_b545ce7.log`):
+  mốc `Ran 282 — FAILED (failures=1, errors=4, skipped=43)`; R1 `Ran 299 — FAILED (failures=1, errors=5, skipped=43)`. So từng test: KHÁC duy nhất
+  là 16 test RA mới (ok) và `test_s18b…` mới (ERROR thiếu manifest). 1 FAIL + 4 ERROR + 43 skip còn lại GIỐNG mốc, đều do thiếu file gitignored
+  (manifest/npz, checkpoint, video hauuto, nested_predictions.csv, file U1) — KHÔNG phải pass. `test_hand_landmarks_ws` (chập chờn) ok.
+  Guard chính `known=9 allowed=36`, `tests.test_level1_guard` OK.
+- CHỜ LOCAL (cần dữ liệu): AC-S18 + S18b trên clip thật (luật tắt bằng hệt 4a55bf0), AC-E1, AC-C1, AC-D, AC-R'1a/b.

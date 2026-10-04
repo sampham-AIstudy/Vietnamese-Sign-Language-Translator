@@ -25,7 +25,7 @@ PALM = 0.15
 # test-only parameters (motion window shorter than one frame interval: M_t = m_t, so expected times are exact)
 PARAMS = {"motion_window_ms": 30, "still_speed": 1.0, "move_speed": 2.0, "hold_ms": 400, "rearm_move_ms": 120,
           "hand_lost_ms": 200, "word_gap_ms": 600, "max_segment_ms": 3000, "min_sign_frames": 4,
-          "tail_still_keep_ms": 400}
+          "tail_still_keep_ms": 400, "pose_change_rules": False, "rearm_pose_dist": 0.2, "pose_over_jitter_ratio": 2.0}
 MIN_DETECTED = 3
 SPEED = 0.6  # image units / s along y -> m = SPEED / PALM = 4 hand-lengths / s (moving)
 
@@ -512,6 +512,10 @@ def s18_configs():
     if "tail_still_keep_ms" in before:
         raise AssertionError(f"config at {BEFORE_CONFIG_COMMIT} already has tail_still_keep_ms")
     before["tail_still_keep_ms"] = before["hold_ms"]
+    # plan 15 lần sửa 3 §0: AC-S18 runs with the pose rules off for both configs (keys filled, assertions unchanged)
+    cur["pose_change_rules"] = False
+    before.update({"pose_change_rules": False, "rearm_pose_dist": cur["rearm_pose_dist"],
+                   "pose_over_jitter_ratio": cur["pose_over_jitter_ratio"]})
     return {"a_current": cur, "b_before_3ebc7b9_tail_eq_hold": before}
 
 
@@ -553,6 +557,24 @@ class TestRealClipsS18(unittest.TestCase):
                 assert_events_identical(self, got, ref, f"{cfg_name}/{clip['sample_id']}")
                 n_clips += 1
             self.assertEqual(n_clips, n_rows, cfg_name)
+
+    def test_s18b_rearm_pose_dist_unused_when_rules_off(self):
+        """plan 15 lần sửa 3 §0: with pose_change_rules false two different rearm_pose_dist values give identical
+        events on every hauuto clip (the key is not read when the rules are off)."""
+        import csv
+        from scripts.level1_segment_report import MANIFEST, clip_timestamps, load_train_clips
+        with open(MANIFEST, encoding="utf-8") as f:
+            n_rows = sum(1 for r in csv.DictReader(f) if r["source"] == "hauuto")
+        data = load_train_clips(MANIFEST, 0)
+        self.assertEqual(len(data["clips"]), n_rows)
+        for cfg_name, values in s18_configs().items():
+            self.assertIs(values["pose_change_rules"], False, cfg_name)
+            other = {**values, "rearm_pose_dist": values["rearm_pose_dist"] * 0.01}
+            for clip in data["clips"]:
+                ts = clip_timestamps(len(clip["detected"]), clip["fps"])
+                assert_events_identical(self, run_clip(Level1SignSegmenter, values, clip, ts),
+                                        run_clip(Level1SignSegmenter, other, clip, ts),
+                                        f"{cfg_name}/{clip['sample_id']}")
 
 
 if __name__ == "__main__":

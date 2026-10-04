@@ -20,6 +20,7 @@ from typing import Any, Dict, List
 import numpy as np
 
 from scripts.level1_rearm_check import (
+    FILL_RULES,
     assign_segments_to_clips,
     build_concatenated_sequence,
     calculate_metrics,
@@ -245,6 +246,9 @@ def _git_out(*args) -> bytes:
     return r.stdout
 
 
+R1_KEYS = ("pose_change_rules", "rearm_pose_dist", "pose_over_jitter_ratio")  # config keys added by plan 15 R1
+
+
 class TestConfigProvenanceA2a(unittest.TestCase):
     """A2a (b): configs.<name>.git_commit names the commit the config comes from; never an empty string
     (rearm_check_r0.json at 1acb4a5 had configs.before_a2.git_commit == "" for a config built from 3ebc7b9)."""
@@ -265,18 +269,22 @@ class TestConfigProvenanceA2a(unittest.TestCase):
         self.assertEqual(meta["path"], self.PATH)
         blob = _git_out("show", f"{full}:{self.PATH}")
         self.assertEqual(meta["sha256"], hashlib.sha256(blob).hexdigest())
-        self.assertEqual(meta["filled"], {"tail_still_keep_ms": "= hold_ms of this config"})
+        self.assertEqual(meta["filled"], {"tail_still_keep_ms": "= hold_ms of this config",
+                                          **{k: FILL_RULES[k] for k in R1_KEYS}})
         self.assertEqual(values["tail_still_keep_ms"], values["hold_ms"])
+        self.assertIs(values["pose_change_rules"], False)
         raw = json.loads(blob.decode("utf-8"))
         self.assertNotIn("tail_still_keep_ms", raw)
         for key, value in values.items():
-            if key != "tail_still_keep_ms":
+            if key not in meta["filled"]:
                 self.assertEqual(value, raw[key]["value"], key)
 
     def test_git_spec_without_missing_key_fills_nothing(self):
         from scripts.level1_rearm_check import resolve_config_spec
+        from src.inference.level1_core import CONFIG_SPEC
         _, _, meta = resolve_config_spec(f"cur=git:HEAD:{self.PATH}")
-        self.assertEqual(meta["filled"], {})
+        at_head = json.loads(_git_out("show", f"HEAD:{self.PATH}").decode("utf-8"))
+        self.assertEqual(set(meta["filled"]), {k for k in CONFIG_SPEC if k not in at_head})
         self.assertEqual(meta["git_commit"], _git_out("rev-parse", "HEAD").decode().strip())
 
     def test_tracked_path_records_last_commit_when_clean(self):

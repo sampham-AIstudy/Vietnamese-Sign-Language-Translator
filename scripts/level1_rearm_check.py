@@ -62,9 +62,16 @@ def _git(*args) -> Optional[str]:
 
 
 GIT_SPEC_PREFIX = "git:"
-# keys added to the config after some commits, filled so that an older config reproduces its own behaviour
-# (plan 15 lần sửa 2 §2/§5: tail_still_keep_ms == hold_ms keeps every buffered frame = behaviour before the key)
-FILL_RULES = {"tail_still_keep_ms": "= hold_ms of this config"}
+# keys added to the config after some commits, filled so that an older config reproduces its own behaviour:
+# - tail_still_keep_ms == hold_ms keeps every buffered frame = behaviour before the key (plan 15 lần sửa 2 §2/§5);
+# - pose_change_rules false = the segmenter without the pose rules (lần sửa 3 §3.2, AC-RA6); rearm_pose_dist and
+#   pose_over_jitter_ratio are then never read by the segmenter, the values of DEFAULT_CONFIG only make the config valid
+FILL_RULES = {
+    "tail_still_keep_ms": "= hold_ms of this config",
+    "pose_change_rules": "= false (the pose rules did not exist at this commit)",
+    "rearm_pose_dist": "= value in configs/level1_realtime.json on disk (not read while pose_change_rules is false)",
+    "pose_over_jitter_ratio": "= value in configs/level1_realtime.json on disk (not read by the segmenter)",
+}
 
 
 def _git_bytes(*args) -> bytes:
@@ -86,6 +93,16 @@ def _fill_missing(raw: Dict[str, Any]) -> Dict[str, str]:
                       "tail_still_keep_ms == hold_ms reproduces the behaviour before the key",
         }
         filled["tail_still_keep_ms"] = FILL_RULES["tail_still_keep_ms"]
+    if "pose_change_rules" not in raw:
+        reason = "filled by scripts/level1_rearm_check.py: the key did not exist at this commit"
+        raw["pose_change_rules"] = {"value": False, "source": "design", "reason": reason}
+        filled["pose_change_rules"] = FILL_RULES["pose_change_rules"]
+        with open(DEFAULT_CONFIG, encoding="utf-8") as f:
+            disk = json.load(f)
+        for key in ("rearm_pose_dist", "pose_over_jitter_ratio"):
+            if key not in raw:
+                raw[key] = {"value": disk[key]["value"], "source": "design", "reason": reason}
+                filled[key] = FILL_RULES[key]
     return filled
 
 
