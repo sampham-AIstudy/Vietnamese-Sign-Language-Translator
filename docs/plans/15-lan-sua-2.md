@@ -1,5 +1,7 @@
 # 15 — LẦN SỬA 2 (nhỏ): luật cắt đuôi `tail_still_keep_ms`, A3, 3 điểm nhỏ
 
+> **LẦN SỬA 3 (2026-10-04):** re-arm chữ liên tiếp không rút tay (luật tư thế `pose_change_rules`/`rearm_pose_dist`), thứ tự bước mới R0 → A2a → R1 → A2b → R2 → R3 → A3 → C1, bổ sung AC-S18 và config SAU của A3 — đọc `docs/plans/15-lan-sua-3.md` trước khi làm bất kỳ bước nào còn lại của 15.
+
 Có hiệu lực như nằm trong kế hoạch 15 (đè lên `docs/plans/15-lan-sua-1.md` ở đúng các chỗ nêu trong §3). Mọi phần khác của
 15 / 15-lan-sua-1 giữ nguyên. Không có điểm dừng CẦN NGƯỜI DÙNG (xem §8).
 
