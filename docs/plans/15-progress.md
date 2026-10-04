@@ -481,3 +481,20 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   tắc (AC-W2) ⇒ FAIL tạm. Test KHÔNG sửa; nó xanh lại sau commit config sinh lại (bước dưới), vì khi đó config thật mang đúng reason quy tắc.
 - Level 1 (8 module) ở commit mã: `Ran 128 — FAILED (failures=2, errors=5, skipped=19)` = 6 lỗi/19 skip thiếu dữ liệu như R1 + `test_r_prime_1d` đỏ tạm.
   Guard chính `known=9 allowed=36` OK.
+- **A2b config (sinh lại tại commit mã sạch `71fc664`, `git status --porcelain -- scripts src configs` rỗng):**
+  `PYTHONIOENCODING=utf-8 .venv/bin/python scripts/level1_segment_report.py --write-config configs/level1_realtime.json` (log
+  `_work/_cloud/a2b_write_config.log`). **AC-W3 ĐẠT:** value 5 khóa bằng hệt `git show b0620a9:configs/level1_realtime.json` (so `json.dumps`:
+  still_speed, move_speed, hold_ms 400.0 float, max_segment_ms 3543 int, tail_still_keep_ms 400.0 float); `source` không đổi
+  (`calibrated: reports/level1_realtime_2026-10-03/tone_evidence.json@1ca53f3` — commit lấy bằng git); thứ tự khóa giữ; mọi khóa khác (kể cả 3
+  khóa R1) bằng hệt từng byte; `git diff --stat` = 5 dòng reason. Bảng reason cũ → mới (in bằng code từ hai file):
+  | Khóa | reason cũ (thiết kế, từ config trước A2b) | reason mới (quy tắc, `CALIBRATION_REASONS`) |
+  |---|---|---|
+  | `still_speed` | hand-lengths per second; a held letter only shows tracker jitter (a small fraction of the palm per frame); to be replaced by the train-clip calibration rule of plan 15 section 3.6 (B6b) | calibrated on the train clips of the deployed checkpoint: the ninetieth percentile, over the letter clips, of the per-clip median of the segmenter motion signal M_t |
+  | `move_speed` | still_speed x move_over_still_ratio (plan 15 section 3.6) | calibrated: still_speed multiplied by move_over_still_ratio (design), so moving is a fixed multiple of the still threshold (hysteresis) |
+  | `hold_ms` | = hold_ms_design until the calibration rule min(hold_ms_design, p10 of the longest still run per train clip) is applied (B6b) | calibrated on the train clips of the deployed checkpoint: the smaller of hold_ms_design and the tenth percentile, over the letter clips, of the longest still run of each clip |
+  | `max_segment_ms` | a training clip is one whole sign of a few seconds; older frames are dropped from the buffer so a segment never spans much more than one sign | calibrated on the train clips of the deployed checkpoint: the ninety-fifth percentile, over all clips, of the clip duration, rounded up to a whole millisecond |
+  | `tail_still_keep_ms` | = hold_ms until the calibration rule min(hold_ms, p50 of trailing_still_ms over moving train clips) is applied (plan 15 section 3.A.3) | calibrated on the train clips of the deployed checkpoint: the smaller of hold_ms and the median, over the clips with motion, of the still time after the last motion |
+- Sau commit config: AC1-ngắn (19 module + test_level1_rearm) `Ran 304 — FAILED (failures=1, errors=5, skipped=43)`; so từng test với mốc
+  b545ce7: khác duy nhất là test mới (16 RA ok, 5 W ok, S18b ERROR thiếu manifest); `test_r_prime_1d_write_config` XANH lại (đỏ tạm đã hết).
+  Lỗi/skip còn lại giống mốc, đều do thiếu dữ liệu gitignored.
+- detect-changes trước commit config: "Changes: 2 files" (configs/level1_realtime.json + 15-progress; không symbol mã) — ghi ở dòng này.
