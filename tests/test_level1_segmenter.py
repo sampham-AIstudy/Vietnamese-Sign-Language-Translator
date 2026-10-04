@@ -337,5 +337,223 @@ class TestSegmenter(unittest.TestCase):
         self.assertLess(st["hold_progress"], 1.0)
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 2 §4: AC-S16 / AC-S17 / AC-S18
+REF_COMMIT = "4a55bf0"          # segmenter before tail_still_keep_ms ("no filtering" reference, plan 15 lần sửa 2 §4)
+BEFORE_CONFIG_COMMIT = "3ebc7b9"  # config before A2 (AC-S18 config (b))
+
+
+def _git_show(spec):
+    """`git show <spec>` as text; a missing commit (shallow clone) FAILS the caller, it is never skipped."""
+    import subprocess
+    r = subprocess.run(["git", "show", spec], cwd=PROJECT_ROOT, capture_output=True, text=True, encoding="utf-8")
+    if r.returncode != 0:
+        raise AssertionError(f"git show {spec} failed (missing commit / shallow clone?): {r.stderr.strip()}")
+    return r.stdout
+
+
+_REF_MODULE = None
+
+
+def reference_segmenter_module():
+    """The segmenter at REF_COMMIT loaded from `git show` into a temporary in-memory module (nothing is written to
+    the repo; the module is removed from sys.modules after loading)."""
+    global _REF_MODULE
+    if _REF_MODULE is None:
+        import types
+        src = _git_show(f"{REF_COMMIT}:src/inference/level1_segmenter.py")
+        name = f"_level1_segmenter_ref_{REF_COMMIT}"
+        mod = types.ModuleType(name)
+        mod.__file__ = f"<git show {REF_COMMIT}:src/inference/level1_segmenter.py>"
+        sys.modules[name] = mod  # dataclass processing looks the module up while the class body runs
+        try:
+            exec(compile(src, mod.__file__, "exec"), mod.__dict__)
+        finally:
+            sys.modules.pop(name, None)
+        _REF_MODULE = mod
+    return _REF_MODULE
+
+
+def run_detail(seg, frames):
+    """Like run(), also returns seg._still_since right after each frame that emitted a 'hold' segment."""
+    out, still_at_emit = [], {}
+    for i, (ts, lm, hd) in enumerate(frames):
+        evs = seg.push(ts, lm, hd if lm is not None else "", W, H)
+        for ev in evs:
+            out.append((i, ev))
+            if isinstance(ev, SignSegment) and ev.close_reason == "hold":
+                still_at_emit[ev.seq] = seg._still_since
+    return out, still_at_emit
+
+
+def irregular_grid_33_47(t_max):
+    """Timestamps with dt alternating 33 / 47 ms."""
+    ts = [0.0]
+    while ts[-1] < t_max:
+        ts.append(ts[-1] + (33.0 if len(ts) % 2 else 47.0))
+    return ts
+
+
+def fps_grid(t_max, fps=23.584):
+    """Real-fps grid i * 1000 / fps (hauuto fps)."""
+    ts, i = [], 0
+    while not ts or ts[-1] < t_max:
+        ts.append(i * 1000.0 / fps)
+        i += 1
+    return ts
+
+
+# two signs: moving [0, 400) -> still [400, 1300) -> moving [1300, 1700) -> still [1700, 2600]
+PHASES = ((0.0, 400.0, True), (400.0, 1300.0, False), (1300.0, 1700.0, True), (1700.0, 2600.0, False))
+STILL_STARTS = (400.0, 1700.0)  # the times at which the test makes the hand stop
+T_MAX = PHASES[-1][1]
+
+
+def phase_position(t, y0=0.3):
+    """Wrist y at time t: moves at SPEED during the moving phases, stays during the still phases."""
+    moved = 0.0
+    for a, b, moving in PHASES:
+        if moving:
+            moved += max(0.0, min(t, b) - a)
+    return y0 + SPEED * moved / 1000.0
+
+
+def phase_frames(grid):
+    return [(t, hand_at(phase_position(t)), "Left") for t in grid]
+
+
+def assert_events_identical(tc, got, ref, where):
+    tc.assertEqual(len(got), len(ref), f"{where}: number of events")
+    for k, ((_, a), (_, b)) in enumerate(zip(got, ref)):
+        tc.assertEqual(type(a).__name__, type(b).__name__, f"{where}: event {k} type")
+        if type(a).__name__ == "WordGap":
+            tc.assertEqual((a.seq, a.t_ms), (b.seq, b.t_ms), f"{where}: event {k}")
+            continue
+        tc.assertTrue(np.array_equal(a.raw_landmarks, b.raw_landmarks), f"{where}: event {k} raw_landmarks")
+        tc.assertEqual(a.raw_landmarks.dtype, b.raw_landmarks.dtype, f"{where}: event {k} raw dtype")
+        tc.assertTrue(np.array_equal(a.detected, b.detected), f"{where}: event {k} detected")
+        tc.assertTrue(np.array_equal(a.handedness, b.handedness), f"{where}: event {k} handedness")
+        tc.assertTrue(np.array_equal(a.timestamps_ms, b.timestamps_ms), f"{where}: event {k} timestamps_ms")
+        tc.assertEqual((a.seq, a.close_reason, a.t_start_ms, a.t_end_ms, a.t_emit_ms, a.frame_width,
+                        a.frame_height),
+                       (b.seq, b.close_reason, b.t_start_ms, b.t_end_ms, b.t_emit_ms, b.frame_width,
+                        b.frame_height), f"{where}: event {k} fields")
+
+
+HOLD_S16 = 390.0  # with dt 33/47 (pairs of 80 ms) and dt 42.40 ms no hand-held time lands exactly on 390 ms
+
+
+class TestTailIrregularS16S17(unittest.TestCase):
+    """AC-S16 / AC-S17 (plan 15 lần sửa 2 §4): uneven frame intervals, emit frame with held > hold_ms."""
+
+    GRIDS = {"dt_33_47": irregular_grid_33_47(T_MAX), "fps_23.584": fps_grid(T_MAX)}
+
+    def _params(self, tail):
+        return {**PARAMS, "hold_ms": HOLD_S16, "tail_still_keep_ms": tail}
+
+    def test_s16_irregular_tail_equal_hold_identical_to_reference(self):
+        ref_mod = reference_segmenter_module()
+        for name, grid in self.GRIDS.items():
+            with self.subTest(grid=name):
+                frames = phase_frames(grid)
+                p = self._params(HOLD_S16)
+                got, still_at = run_detail(Level1SignSegmenter(p, MIN_DETECTED), frames)
+                ref = run(ref_mod.Level1SignSegmenter(p, MIN_DETECTED), frames)
+                holds = [e for _, e in got if isinstance(e, SignSegment) and e.close_reason == "hold"]
+                self.assertEqual(len(holds), 2, name)
+                for s in holds:
+                    held = s.t_emit_ms - still_at[s.seq]
+                    self.assertGreater(held, p["hold_ms"], f"{name}: the emit frame must have held > hold_ms")
+                    self.assertEqual(s.t_end_ms, s.t_emit_ms, name)
+                    n_hand = sum(1 for ts, lm, _ in frames if lm is not None and s.t_start_ms <= ts <= s.t_emit_ms)
+                    self.assertEqual(s.n_frames, n_hand, name)
+                assert_events_identical(self, got, ref, name)
+
+    def test_s17_irregular_tail_half_hold_prefix_and_cut(self):
+        for name, grid in self.GRIDS.items():
+            with self.subTest(grid=name):
+                frames = phase_frames(grid)
+                ts_all = [f[0] for f in frames]
+                max_dt = float(max(np.diff(ts_all)))
+                full = segments(run(Level1SignSegmenter(self._params(HOLD_S16), MIN_DETECTED), frames))
+                tail = HOLD_S16 / 2.0
+                half = segments(run(Level1SignSegmenter(self._params(tail), MIN_DETECTED), frames))
+                self.assertEqual(len(half), len(full), name)
+                self.assertEqual(len(half), 2, name)
+                for k, (h, f) in enumerate(zip(half, full)):
+                    self.assertEqual(h.close_reason, "hold", name)
+                    self.assertEqual(h.t_emit_ms, f.t_emit_ms, f"{name}: t_emit unchanged")
+                    n = h.n_frames
+                    self.assertLessEqual(n, f.n_frames, name)
+                    self.assertEqual(h.t_start_ms, f.t_start_ms, name)
+                    self.assertTrue(np.array_equal(h.raw_landmarks, f.raw_landmarks[:n]), f"{name}: prefix raw")
+                    self.assertTrue(np.array_equal(h.detected, f.detected[:n]), f"{name}: prefix detected")
+                    self.assertTrue(np.array_equal(h.handedness, f.handedness[:n]), f"{name}: prefix handedness")
+                    self.assertTrue(np.array_equal(h.timestamps_ms, f.timestamps_ms[:n]), f"{name}: prefix ts")
+                    cutoff = h.t_emit_ms - (HOLD_S16 - tail)
+                    self.assertLessEqual(h.t_end_ms, cutoff, name)
+                    i_end = ts_all.index(h.t_end_ms)
+                    if i_end + 1 < len(frames) and frames[i_end + 1][1] is not None:
+                        self.assertGreater(ts_all[i_end + 1], cutoff, f"{name}: cut no more than needed")
+                    self.assertGreaterEqual(h.t_end_ms - STILL_STARTS[k], tail - max_dt, name)
+
+
+# ------------------------------------------------------------------ AC-S18 (real hauuto clips)
+CURRENT_CONFIG = os.path.join(PROJECT_ROOT, "configs", "level1_realtime.json")
+
+
+def s18_configs():
+    """AC-S18 configs: name -> config values. (a) configs/level1_realtime.json; (b) the config at
+    BEFORE_CONFIG_COMMIT with tail_still_keep_ms = hold_ms (that config predates the key)."""
+    import json
+    from src.inference.level1_core import load_level1_config
+    cur = dict(load_level1_config(CURRENT_CONFIG)["values"])
+    raw = json.loads(_git_show(f"{BEFORE_CONFIG_COMMIT}:configs/level1_realtime.json"))
+    before = {k: v["value"] for k, v in raw.items() if isinstance(v, dict) and "value" in v}
+    if "tail_still_keep_ms" in before:
+        raise AssertionError(f"config at {BEFORE_CONFIG_COMMIT} already has tail_still_keep_ms")
+    before["tail_still_keep_ms"] = before["hold_ms"]
+    return {"a_current": cur, "b_before_3ebc7b9_tail_eq_hold": before}
+
+
+def run_clip(seg_cls, params, clip, timestamps):
+    """One fresh segmenter per clip, every frame pushed, flush 1 ms after the last frame (as boundary_check.py)."""
+    seg = seg_cls(params, int(params["min_sign_frames"]))
+    evs = []
+    for i, t in enumerate(timestamps):
+        det = bool(clip["detected"][i])
+        evs += seg.push(float(t), clip["raw"][i] if det else None, clip["handedness"][i] if det else "",
+                        clip["width"], clip["height"])
+    evs += seg.flush(float(timestamps[-1]) + 1.0)
+    return [(None, e) for e in evs]
+
+
+class TestRealClipsS18(unittest.TestCase):
+    """AC-S18 (plan 15 lần sửa 2 §4): every hauuto clip of the manifest, HEAD segmenter == segmenter at 4a55bf0.
+    Behaviour-equivalence check on the train clips of the checkpoint; not accuracy. No skip: missing data or a
+    missing commit fails."""
+
+    def test_s18_all_hauuto_clips_identical_to_reference(self):
+        import csv
+        from scripts.level1_segment_report import MANIFEST, clip_timestamps, load_train_clips
+        with open(MANIFEST, encoding="utf-8") as f:
+            n_rows = sum(1 for r in csv.DictReader(f) if r["source"] == "hauuto")
+        data = load_train_clips(MANIFEST, 0)  # 0: no clip is dropped here
+        self.assertEqual(data["excluded"], [])
+        self.assertEqual(len(data["clips"]), n_rows)
+        self.assertEqual(data["n_manifest_hauuto"], n_rows)
+        self.assertGreater(n_rows, 0)
+        ref_mod = reference_segmenter_module()
+        for cfg_name, values in s18_configs().items():
+            self.assertEqual(values["tail_still_keep_ms"], values["hold_ms"], cfg_name)
+            n_clips = 0
+            for clip in data["clips"]:
+                ts = clip_timestamps(len(clip["detected"]), clip["fps"])
+                got = run_clip(Level1SignSegmenter, values, clip, ts)
+                ref = run_clip(ref_mod.Level1SignSegmenter, values, clip, ts)
+                assert_events_identical(self, got, ref, f"{cfg_name}/{clip['sample_id']}")
+                n_clips += 1
+            self.assertEqual(n_clips, n_rows, cfg_name)
+
+
 if __name__ == "__main__":
     unittest.main()

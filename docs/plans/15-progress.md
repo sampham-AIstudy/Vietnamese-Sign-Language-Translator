@@ -4,7 +4,7 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM: (chưa) — kế tiếp A2a
+- ĐANG LÀM: A2a (15-lan-sua-2 §2/§4/§7 + 15-lan-sua-3 §4 #2) — viết AC-S16/S17/S18 trước, rồi sửa luật cắt đuôi
 - Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`).
 - Còn lại: A2a, R1, A2b, R2, R3, U1c, A3, C1, (R4, A4, C2).
 

@@ -14,7 +14,9 @@ letter to the next without pressing anything; this segmenter cuts the stream int
   invented for "no measurement", and None is not "still");
 - still: M_t <= still_speed; moving: M_t >= move_speed (> still_speed, hysteresis: in between the previous state is
   kept); the still / moving classification is only updated on frames with a hand;
-- emit a SignSegment when armed and still for >= hold_ms with enough hand frames (reason "hold"), when the hand is
+- emit a SignSegment when armed and still for >= hold_ms with enough hand frames (reason "hold"; the segment keeps the
+  buffered frames with ts <= t_emit - (hold_ms - tail_still_keep_ms), t_emit = timestamp of the emitting frame, so
+  tail_still_keep_ms == hold_ms keeps every buffered frame), when the hand is
   lost for >= hand_lost_ms (reason "hand_lost", tail cut at the last hand frame) or on flush() ("end_of_stream");
 - re-arm after moving continuously for >= rearm_move_ms (the buffer is cut back to the start of that motion, so the
   whole motion of a tone mark is kept) or after the hand was lost;
@@ -270,8 +272,11 @@ class Level1SignSegmenter:
                 held = ts - self._still_since
                 self._hold_progress = min(1.0, held / self.p["hold_ms"])
                 if held >= self.p["hold_ms"] and self._n_detected(self._buf) >= self.min_frames:
-                    cutoff = self._still_since + self.p["tail_still_keep_ms"]
-                    buf_for_seg = [f for f in self._buf if f[3] <= cutoff + 1e-6]
+                    if self.p["tail_still_keep_ms"] >= self.p["hold_ms"]:
+                        buf_for_seg = self._buf  # no filtering: identical to the behaviour before the key
+                    else:
+                        cutoff = ts - (self.p["hold_ms"] - self.p["tail_still_keep_ms"])
+                        buf_for_seg = [f for f in self._buf if f[3] <= cutoff + 1e-6]
                     seg = self._make_segment(buf_for_seg, ts, "hold")
                     if seg is not None:
                         events.append(seg)
