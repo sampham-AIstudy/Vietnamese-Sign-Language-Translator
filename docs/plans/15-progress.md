@@ -4,9 +4,9 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM: A2a (15-lan-sua-2 §2/§4/§7 + 15-lan-sua-3 §4 #2) — viết AC-S16/S17/S18 trước, rồi sửa luật cắt đuôi
-- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`).
-- Còn lại: A2a, R1, A2b, R2, R3, U1c, A3, C1, (R4, A4, C2).
+- ĐANG LÀM (phiên cloud 2026-10-04, nhánh `cloud/2026-10-04-level1-rearm`): R1 (15-lan-sua-3 §3.2, §4 #3). Phiên cloud KHÔNG có dữ liệu gitignored (KAGGLE_KEY giữ chỗ) — mọi bước cần dữ liệu ghi rõ là chờ local.
+- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a).
+- Còn lại: R1, A2b, R2, R3, U1c, A3, C1, (R4, A4, C2).
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -203,6 +203,7 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - A2-config (trước commit `15: A2 config hiệu chỉnh`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 5 files, 1 symbols, Affected processes: 174, Risk level: critical". Symbol đổi: Section ? → README.md (người dùng). Index sạch, không có partial/truncated.
 - R0-code (trước commit `15: R0 — scripts/level1_rearm_check.py + test AC-RC1..RC4`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 5 files, 3 symbols, Affected processes: 0, Risk level: low". Symbol đổi: Section ? → README.md (người dùng) + Section 15-progress.md. File mới untracked. Index sạch, không có partial/truncated. Commit code `a3970a6`.
 - R0-báo cáo: sinh `reports/level1_realtime_2026-10-04/rearm_check_r0.json` tại commit mã sạch `a3970a6` (`code_dirty: false`).
+- A2a (cloud, trước commit `15: A2a`): `npx -y gitnexus@latest analyze` (đầu phiên) rồi `node .gitnexus/run.cjs analyze --index-only` (exit 0) và `detect-changes --scope all --repo .` → "Changes: 3 files, 21 symbols, Affected processes: 8, Risk level: high"; không có cờ partial/truncated. Symbol đổi: các Section của 15-progress.md + `scripts/level1_rearm_check.py` (GIT_SPEC_PREFIX, FILL_RULES, _git_bytes, _fill_missing, resolve_config_spec, load_and_prepare_manifest_clips, run_rearm_check) + `tests/test_level1_rearm_check.py` (TestConfigProvenanceA2a, _git_out). 8 luồng bị ảnh hưởng đều là `main` của scripts/level1_rearm_check.py. Risk HIGH = chỉ trong script R0 (không có người gọi ngoài script + test). Không có thay đổi chưa commit của người dùng trên cloud.
 
 ## T1 — textbox logic + tone keys
 - File: `src/inference/level1_textbox.py`, `tests/test_level1_textbox.py`, `src/inference/level1_core.py` (`Level1Speller.view`, `KEY_NAMES`, `key`), `tests/test_level1_core.py` (AC-K), `tests/test_level1_guard.py` (`PLAN15_FILES`).
@@ -319,24 +320,25 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   - Số liệu đọc trực tiếp từ JSON:
     | Config | Chuỗi | Join (ms) | n_clips | one_rate | miss_rate | multi_rate | garbage/clip | hand_lost | order_ok |
     |---|---|---|---|---|---|---|---|---|---|
-    | `current` | L | 0 | 193 | 0.3109 (31.09%) | 0.6684 (66.84%) | 0.0207 | 0.0000 | 0 | True |
-    | `current` | L | 300 | 193 | 0.3731 (37.31%) | 0.6010 (60.10%) | 0.0259 | 0.0000 | 0 | True |
-    | `current` | L | 600 | 193 | 0.3109 (31.09%) | 0.6632 (66.32%) | 0.0259 | 0.0000 | 0 | True |
-    | `current` | T | 0 | 35 | 0.7714 | 0.2286 | 0.0000 | 0.0000 | 0 | True |
-    | `current` | T | 300 | 35 | 0.8000 | 0.2000 | 0.0000 | 0.0000 | 0 | True |
-    | `current` | T | 600 | 35 | 0.7429 | 0.2571 | 0.0000 | 0.0000 | 0 | True |
+    | `current` | L | 0 | 193 | 0.3109 | 0.6684 | 0.0207 | 0.0000 | 0 | True |
+    | `current` | L | 300 | 193 | 0.3731 | 0.6010 | 0.0259 | 0.0000 | 0 | True |
+    | `current` | L | 600 | 193 | 0.3109 | 0.6632 | 0.0259 | 0.0104 | 0 | True |
+    | `current` | T | 0 | 70 | 0.7714 | 0.2286 | 0.0000 | 0.0000 | 0 | True |
+    | `current` | T | 300 | 70 | 0.8000 | 0.2000 | 0.0000 | 0.0000 | 0 | True |
+    | `current` | T | 600 | 70 | 0.7429 | 0.2571 | 0.0000 | 0.0000 | 0 | True |
     | `current` | O | 0 | 25 | 0.6400 | 0.3600 | 0.0000 | 0.0000 | 0 | True |
     | `current` | O | 300 | 25 | 0.6400 | 0.3600 | 0.0000 | 0.0000 | 0 | True |
     | `current` | O | 600 | 25 | 0.6400 | 0.3600 | 0.0000 | 0.0000 | 0 | True |
-    | `before_a2` | L | 0 | 193 | 0.4145 (41.45%) | 0.5699 (57.00%) | 0.0155 | 0.0000 | 0 | True |
-    | `before_a2` | L | 300 | 193 | 0.6632 (66.32%) | 0.3005 (30.05%) | 0.0363 | 0.0000 | 0 | True |
-    | `before_a2` | L | 600 | 193 | 0.4819 (48.19%) | 0.4922 (49.22%) | 0.0259 | 0.0000 | 0 | True |
-    | `before_a2` | T | 0 | 35 | 0.8857 | 0.1000 | 0.0143 | 0.0000 | 0 | True |
-    | `before_a2` | T | 300 | 35 | 0.8714 | 0.0429 | 0.0857 | 0.0000 | 0 | True |
-    | `before_a2` | T | 600 | 35 | 0.8857 | 0.1000 | 0.0143 | 0.0000 | 0 | True |
+    | `before_a2` | L | 0 | 193 | 0.4145 | 0.5699 | 0.0155 | 0.0000 | 0 | True |
+    | `before_a2` | L | 300 | 193 | 0.6632 | 0.3005 | 0.0363 | 0.0000 | 0 | True |
+    | `before_a2` | L | 600 | 193 | 0.4819 | 0.4922 | 0.0259 | 0.0104 | 0 | True |
+    | `before_a2` | T | 0 | 70 | 0.8857 | 0.1000 | 0.0143 | 0.0000 | 0 | True |
+    | `before_a2` | T | 300 | 70 | 0.8714 | 0.0429 | 0.0857 | 0.0000 | 0 | True |
+    | `before_a2` | T | 600 | 70 | 0.8857 | 0.1000 | 0.0143 | 0.0000 | 0 | True |
     | `before_a2` | O | 0 | 25 | 0.6800 | 0.3200 | 0.0000 | 0.0000 | 0 | True |
     | `before_a2` | O | 300 | 25 | 0.6800 | 0.3200 | 0.0000 | 0.0000 | 0 | True |
     | `before_a2` | O | 600 | 25 | 0.6800 | 0.3200 | 0.0000 | 0.0000 | 0 | True |
+    _(Bảng trên SINH LẠI bằng code từ JSON ở A2a, cloud 2026-10-04, làm tròn 4 chữ số; thay bảng gõ tay cũ của 1acb4a5 có 4 chỗ sai: chuỗi T `n_clips` ghi 35 ở cả 6 dòng — JSON là 70; `current` L join 600 `garbage/clip` ghi 0.0000 — JSON 0.0104; `before_a2` L join 600 `garbage/clip` ghi 0.0000 — JSON 0.0104 (chỗ này prompt cloud không nêu, phát hiện khi sinh lại); `before_a2` L join 0 `miss_rate` ghi kèm "(57.00%)" — JSON 0.5699… = 56.99%. Các số khác của bảng cũ khớp JSON.)_
   - **Áp dụng luật R0 (§5):**
     - Điều kiện bác bỏ: `config 'current', chuỗi L, join 0 VÀ 300 đều có one_rate >= 0.90` -> giả thuyết sai.
     - Kết quả đo: join 0 có `one_rate = 0.3109 < 0.90`, join 300 có `one_rate = 0.3731 < 0.90`.
@@ -346,3 +348,58 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
     - Kết quả: `64` cặp.
 
 
+  - **(c) Clip bị loại vì `min_detected_frames` (ghi bổ sung ở A2a, cloud 2026-10-04):** script R0 (`load_and_prepare_manifest_clips`) loại clip có số
+    khung có tay < `min_detected_frames` của checkpoint TRƯỚC khi cắt đầu/cuối — bộ lọc này KHÔNG có trong §3.5 của 15-lan-sua-3 (lệch đặc tả,
+    ghi nhận). Lý do giữ: (1) cùng bộ lọc với A1 (`scripts/level1_segment_report.py` `load_train_clips(manifest, min_detected_frames)`; AC-R1 / R'2
+    "MỌI clip hauuto có ≥ `min_detected_frames` khung có tay"); (2) clip như vậy không thể tạo segment riêng (min_frames của bộ tách =
+    max(`min_sign_frames`, `min_detected_frames`)) và `alphabet_clip_features` từ chối nó ⇒ luôn là "miss" không liên quan tới re-arm.
+    Số đếm từ JSON `manifest_summary`: n_manifest_hauuto 640, n_prepared_clips 628, excluded `min_detected_frames` 4, `internal_hand_lost` 8
+    (liệt kê id), `no_hand_frames` 0. JSON cũ không liệt kê id của 4 clip min_detected_frames → A2a thêm `min_detected_frames_sample_ids` và
+    `no_hand_frames_sample_ids` vào `excluded` (có hiệu lực từ lần sinh lại). Ghi chú: dòng RC1 ở trên ghi "đếm đúng 9 clip hauuto" — JSON R0
+    ghi `internal_hand_lost` = 8 (+ 4 min_detected_frames = 12 clip bị loại).
+
+## A2a — hoàn tất luật cắt đuôi (15-lan-sua-2 §2, §4, §7) — phiên cloud 2026-10-04, nhánh `cloud/2026-10-04-level1-rearm`
+- Mã A2a KHÔNG viết lại: nằm ở WIP `dddfde8` (`src/inference/level1_segmenter.py` +8/−3: `tail_still_keep_ms >= hold_ms` ⇒ không lọc
+  (`buf_for_seg = self._buf`), ngược lại `cutoff = ts − (hold_ms − tail_still_keep_ms)`, lọc `ts ≤ cutoff + 1e-6`; docstring mô-đun;
+  `tests/test_level1_segmenter.py` +218: AC-S16, AC-S17, AC-S18). Đã đọc `git show dddfde8`: khớp 15-lan-sua-2 §2 và §4.
+- Môi trường cloud: Linux, Python 3.11.15, mediapipe 0.10.14, torch 2.6.0+cpu (`.venv` → `/opt/vslt-venv`). **KHÔNG có dữ liệu gitignored**:
+  biến `KAGGLE_KEY` của environment cloud là chuỗi giữ chỗ của docs/CLOUD.md (không phải key) ⇒ không khôi phục được `manifest.csv`/npz,
+  `checkpoints/alphabet_best.pt`, `reports/alphabet_nested_2026-09-25/primary/nested_predictions.csv`, video hauuto. Mọi test cần dữ liệu
+  ERROR/FAIL/skip vì thiếu file — KHÔNG coi là pass (liệt kê ở dưới).
+- **Đỏ tại 6067611 (cloud):** worktree tạm tại `6067611` + `tests/test_level1_segmenter.py` của HEAD →
+  `Ran 23 tests — FAILED (failures=3, errors=1)`: FAIL `test_s16…` (grid `dt_33_47`), FAIL `test_s16…` (grid `fps_23.584`), FAIL `test_s17…`
+  (grid `fps_23.584`); ERROR `test_s18…` = `FileNotFoundError …/manifest.csv` (thiếu dữ liệu — KHÔNG phải bằng chứng đỏ của S18; bằng chứng
+  đỏ S18 là log local của orchestrator `_work/_bridge_verify/red_6067611.log`, failures=4, theo STATE.md). Log cloud: `_work/_cloud/red_6067611.log`.
+- **Xanh ở HEAD (cloud):** `python -m unittest tests.test_level1_segmenter -v` → `Ran 23 tests — FAILED (errors=1)`: s16, s17 ok; lỗi duy nhất
+  là `test_s18…` ERROR thiếu manifest. ⇒ **S18 (636+ clip thật, bằng hệt 4a55bf0) CHƯA kiểm được trên cloud — local PHẢI chạy lại**
+  `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_level1_segmenter -v` trước khi coi A2a là xong.
+- **Impact (GitNexus qua `npx -y gitnexus@latest analyze`, rồi `node .gitnexus/run.cjs impact <symbol> --direction upstream --repo .`):**
+  - `Level1SignSegmenter` (class): risk LOW (exact), direct 3 = IMPORTS từ `level1_demo.py`, `scripts/level1_rearm_check.py`,
+    `scripts/level1_segment_report.py`; processes 0.
+  - `Level1SignSegmenter.push` (method sửa ở A2a): **risk HIGH** (epistemic `lower-bound`: 16 call site bị bỏ vì không xác định kiểu receiver),
+    direct 3 (`run_segmenter_on_stream`, `motion_series`, `Level1App._process`), processes_affected 4 (`main` của `scripts/level1_segment_report.py`,
+    `level1_demo.py`, `scripts/level1_rearm_check.py`; `run_segmenter_on_stream`). CẢNH BÁO HIGH ghi nhận: mọi người gọi trong đồ thị là file của
+    kế hoạch 15; text search `.push(` (ngoài `.venv`) thêm `src/inference/harmonized_live.py:157` và `tests/test_sign_segmenter.py` — đó là
+    `push` của bộ tách Cấp 2 (`sign_segmenter`, lớp khác), không bị ảnh hưởng. Hành vi chỉ khác khi `tail_still_keep_ms < hold_ms`; config hiện
+    hành có tail == hold == 400.0 ⇒ không đổi segment (AC-S18 khóa — chờ local).
+  - `run_rearm_check`, `load_and_prepare_manifest_clips` (sửa (b)/(c) dưới): risk LOW (exact), direct 1, chỉ trong `scripts/level1_rearm_check.py`
+    (+ `tests/test_level1_rearm_check.py` theo text search).
+- **(a)** bảng R0 trong mục R0 ở trên được SINH LẠI từ JSON (4 chỗ sai của 1acb4a5 ghi ngay dưới bảng).
+- **(b) `configs.before_a2.git_commit = ""`:** nguyên nhân: config TRƯỚC là file chưa track `_work/_plan15/config_before.json` ⇒
+  `git log -1 --format=%H -- <file>` ra chuỗi rỗng. Tái hiện bằng script cũ (a3970a6 nạp từ `git show`, config 3ebc7b9 điền tail = hold, file
+  chưa track) → `configs.before_a2.git_commit = ''` (`_work/_cloud/a2a_b_red.log`). Sửa trong `scripts/level1_rearm_check.py`:
+  - hàm mới `resolve_config_spec`: `NAME=git:REV:PATH` đọc config bằng `git show REV:PATH` (không ghi file), điền khóa thiếu theo `FILL_RULES`
+    (`tail_still_keep_ms = hold_ms` của chính config, ghi vào `configs.<name>.filled`), `git_commit` = hash đầy đủ của REV (lấy bằng git, không
+    gõ), sha256 của blob git; `NAME=PATH`: `git_commit` = commit cuối của PATH chỉ khi PATH được track VÀ không có thay đổi chưa commit, ngược lại
+    `None` (không bao giờ chuỗi rỗng) + `committed: false`.
+  - `excluded` thêm `min_detected_frames_sample_ids`, `no_hand_frames_sample_ids` (mục (c)).
+  - Test thêm (chỉ THÊM, không sửa test cũ) `tests/test_level1_rearm_check.py::TestConfigProvenanceA2a` (6 test): git spec → hash đầy đủ bắt
+    đầu bằng 3ebc7b9, sha256 blob, `filled`, các giá trị khác bằng config gốc; HEAD spec không điền gì; path tracked sạch → commit cuối; path
+    chưa track trong repo → `None`; `run_rearm_check` ghi đúng commit; spec sai → ValueError. Kết quả: `Ran 15 tests — OK`.
+  - Lệnh sinh lại R0 (thay `--config before_a2=_work/_plan15/config_before.json`):
+    `python scripts/level1_rearm_check.py --config current=configs/level1_realtime.json --config before_a2=git:3ebc7b9:configs/level1_realtime.json --join-ms 0,300,600 --out reports/level1_realtime_2026-10-04/rearm_check_r0.json`
+    **CHƯA chạy được trên cloud (thiếu manifest/npz/checkpoint) ⇒ JSON R0 CHƯA sinh lại; số R0 cũ/mới: chưa có số mới.** Local chạy lệnh trên
+    tại commit A2a sạch (sau commit này, TRƯỚC commit R1 — khi R1 thêm khóa config, config 3ebc7b9 thiếu thêm khóa tư thế) rồi so số với bảng R0.
+- Test (cloud, không dữ liệu): 7 module Level 1 trước sửa (HEAD 3e6a15e) → `Ran 100 — FAILED (failures=1, errors=4, skipped=19)`; toàn bộ 5
+  lỗi + 19 skip là do thiếu file gitignored (manifest.csv, nested_predictions.csv, checkpoint, video hauuto, file U1). Guard chính
+  `tests.test_backend_source_guard` → `Ran 28 — OK`, `[DoD7-guard] known=9 allowed=36`; `tests.test_level1_guard` → `Ran 4 — OK`.

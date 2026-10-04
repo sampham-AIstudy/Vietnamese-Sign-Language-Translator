@@ -235,5 +235,86 @@ class TestRearmCheckAcRC(unittest.TestCase):
                       res["note"])
 
 
+def _git_out(*args) -> bytes:
+    """git output; a missing commit (shallow clone) FAILS the caller, it is never skipped."""
+    import subprocess
+    from scripts.level1_rearm_check import ROOT
+    r = subprocess.run(["git", *args], cwd=ROOT, capture_output=True)
+    if r.returncode != 0:
+        raise AssertionError(f"git {' '.join(args)} failed: {r.stderr.decode('utf-8', 'replace').strip()}")
+    return r.stdout
+
+
+class TestConfigProvenanceA2a(unittest.TestCase):
+    """A2a (b): configs.<name>.git_commit names the commit the config comes from; never an empty string
+    (rearm_check_r0.json at 1acb4a5 had configs.before_a2.git_commit == "" for a config built from 3ebc7b9)."""
+
+    BEFORE = "3ebc7b9"
+    PATH = "configs/level1_realtime.json"
+
+    def test_git_spec_records_full_commit_sha_and_fill(self):
+        import hashlib
+        from scripts.level1_rearm_check import resolve_config_spec
+        name, values, meta = resolve_config_spec(f"before_a2=git:{self.BEFORE}:{self.PATH}")
+        full = _git_out("rev-parse", "--verify", f"{self.BEFORE}^{{commit}}").decode().strip()
+        self.assertEqual(name, "before_a2")
+        self.assertEqual(len(full), 40)
+        self.assertTrue(full.startswith(self.BEFORE))
+        self.assertEqual(meta["git_commit"], full)
+        self.assertTrue(meta["committed"])
+        self.assertEqual(meta["path"], self.PATH)
+        blob = _git_out("show", f"{full}:{self.PATH}")
+        self.assertEqual(meta["sha256"], hashlib.sha256(blob).hexdigest())
+        self.assertEqual(meta["filled"], {"tail_still_keep_ms": "= hold_ms of this config"})
+        self.assertEqual(values["tail_still_keep_ms"], values["hold_ms"])
+        raw = json.loads(blob.decode("utf-8"))
+        self.assertNotIn("tail_still_keep_ms", raw)
+        for key, value in values.items():
+            if key != "tail_still_keep_ms":
+                self.assertEqual(value, raw[key]["value"], key)
+
+    def test_git_spec_without_missing_key_fills_nothing(self):
+        from scripts.level1_rearm_check import resolve_config_spec
+        _, _, meta = resolve_config_spec(f"cur=git:HEAD:{self.PATH}")
+        self.assertEqual(meta["filled"], {})
+        self.assertEqual(meta["git_commit"], _git_out("rev-parse", "HEAD").decode().strip())
+
+    def test_tracked_path_records_last_commit_when_clean(self):
+        from scripts.level1_rearm_check import resolve_config_spec
+        _, _, meta = resolve_config_spec(f"current={self.PATH}")
+        dirty = _git_out("status", "--porcelain", "--", self.PATH).decode().strip()
+        expected = None if dirty else _git_out("log", "-1", "--format=%H", "--", self.PATH).decode().strip()
+        self.assertEqual(meta["git_commit"], expected)
+        self.assertEqual(meta["committed"], expected is not None)
+
+    def test_untracked_path_records_none_not_empty(self):
+        import shutil
+        import tempfile
+        from scripts.level1_rearm_check import ROOT, resolve_config_spec
+        with tempfile.TemporaryDirectory(dir=ROOT, prefix="_tmp_rearm_a2a_") as d:  # inside the repo, untracked
+            path = os.path.join(d, "config_copy.json")
+            shutil.copyfile(os.path.join(ROOT, self.PATH), path)
+            _, _, meta = resolve_config_spec(f"copy={path}")
+        self.assertIsNone(meta["git_commit"])
+        self.assertFalse(meta["committed"])
+
+    def test_run_rearm_check_reports_git_spec_commit(self):
+        res = run_rearm_check(
+            config_specs=[f"current={self.PATH}", f"before_a2=git:{self.BEFORE}:{self.PATH}"],
+            join_ms_list=[0.0],
+            synthetic_only=True,
+        )
+        commit = res["configs"]["before_a2"]["git_commit"]
+        self.assertTrue(commit and commit.startswith(self.BEFORE), commit)
+        self.assertNotEqual(res["configs"]["current"]["git_commit"], "")
+
+    def test_bad_specs_raise(self):
+        from scripts.level1_rearm_check import resolve_config_spec
+        for spec in ("no_equals_sign", "x=git:no_colon", "x=git:0000000:configs/level1_realtime.json"):
+            with self.subTest(spec=spec):
+                with self.assertRaises(ValueError):
+                    resolve_config_spec(spec)
+
+
 if __name__ == "__main__":
     unittest.main()

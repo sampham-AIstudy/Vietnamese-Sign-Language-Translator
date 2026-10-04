@@ -26,7 +26,9 @@ if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
 from src.inference.fingerspelling_compose import TONE_MARKS  # noqa: E402
-from src.inference.level1_core import Level1Classifier, class_kind, load_level1_config  # noqa: E402
+from src.inference.level1_core import (  # noqa: E402
+    Level1Classifier, class_kind, load_level1_config, validate_level1_config,
+)
 from src.inference.level1_segmenter import Level1SignSegmenter, SignSegment  # noqa: E402
 
 KAGGLE_DIR = os.path.join(ROOT, "data", "external", "alphabet_hands_kaggle", "alphabet_hands")
@@ -57,6 +59,67 @@ def _git(*args) -> Optional[str]:
     except (OSError, subprocess.CalledProcessError):
         return None
     return r.stdout.strip()
+
+
+GIT_SPEC_PREFIX = "git:"
+# keys added to the config after some commits, filled so that an older config reproduces its own behaviour
+# (plan 15 lần sửa 2 §2/§5: tail_still_keep_ms == hold_ms keeps every buffered frame = behaviour before the key)
+FILL_RULES = {"tail_still_keep_ms": "= hold_ms of this config"}
+
+
+def _git_bytes(*args) -> bytes:
+    r = subprocess.run(["git", *args], cwd=ROOT, capture_output=True)
+    if r.returncode != 0:
+        raise ValueError(f"git {' '.join(args)} failed: {r.stderr.decode('utf-8', 'replace').strip()}")
+    return r.stdout
+
+
+def _fill_missing(raw: Dict[str, Any]) -> Dict[str, str]:
+    """Fill the keys of FILL_RULES that a config read from an older commit lacks; returns {key: rule} of what was
+    filled (recorded in the report)."""
+    filled = {}
+    if "tail_still_keep_ms" not in raw and isinstance(raw.get("hold_ms"), dict) and "value" in raw["hold_ms"]:
+        raw["tail_still_keep_ms"] = {
+            "value": raw["hold_ms"]["value"],
+            "source": "design",
+            "reason": "filled by scripts/level1_rearm_check.py: the key did not exist at this commit; "
+                      "tail_still_keep_ms == hold_ms reproduces the behaviour before the key",
+        }
+        filled["tail_still_keep_ms"] = FILL_RULES["tail_still_keep_ms"]
+    return filled
+
+
+def resolve_config_spec(spec: str) -> Tuple[str, Dict[str, Any], Dict[str, Any]]:
+    """NAME=PATH or NAME=git:REV:PATH -> (name, values, meta).
+
+    - PATH: the file on disk; meta.git_commit = last commit of PATH when PATH is tracked and has no uncommitted
+      change, else None (never an empty string) and meta.committed = False.
+    - git:REV:PATH: the config read with `git show REV:PATH` (nothing written to disk); keys of FILL_RULES missing
+      at REV are filled and listed in meta.filled; meta.git_commit = full hash of REV; sha256 of the git blob.
+    """
+    if "=" not in spec:
+        raise ValueError(f"Config spec must be NAME=PATH or NAME={GIT_SPEC_PREFIX}REV:PATH, got {spec!r}")
+    name, target = spec.split("=", 1)
+    if target.startswith(GIT_SPEC_PREFIX):
+        rev_path = target[len(GIT_SPEC_PREFIX):]
+        if ":" not in rev_path:
+            raise ValueError(f"Config spec {spec!r}: expected {GIT_SPEC_PREFIX}REV:PATH")
+        rev, path = rev_path.split(":", 1)
+        commit = _git_bytes("rev-parse", "--verify", f"{rev}^{{commit}}").decode("utf-8").strip()
+        data = _git_bytes("show", f"{commit}:{path}")
+        raw = json.loads(data.decode("utf-8"))
+        filled = _fill_missing(raw)
+        values = validate_level1_config(raw)
+        meta = {"path": path, "source": f"git show {rev}:{path}", "sha256": hashlib.sha256(data).hexdigest(),
+                "git_commit": commit, "committed": True, "filled": filled}
+        return name, values, meta
+    cfg = load_level1_config(target)
+    tracked = _git("ls-files", "--error-unmatch", "--", target) is not None
+    status = _git("status", "--porcelain", "--", target)
+    commit = _git("log", "-1", "--format=%H", "--", target) if tracked and status == "" else None
+    meta = {"path": rel(target), "sha256": cfg["sha256"], "git_commit": commit or None,
+            "committed": bool(commit)}
+    return name, cfg["values"], meta
 
 
 def generated_by(argv: Sequence[str]) -> Dict[str, Any]:
@@ -460,6 +523,8 @@ def load_and_prepare_manifest_clips(
             "internal_hand_lost": len(excluded_internal_lost),
             "no_hand_frames": len(excluded_no_hand),
             "internal_hand_lost_sample_ids": excluded_internal_lost,
+            "min_detected_frames_sample_ids": excluded_min_det,
+            "no_hand_frames_sample_ids": excluded_no_hand,
         },
     }
 
@@ -549,16 +614,9 @@ def run_rearm_check(
     configs_meta = {}
     loaded_configs = {}
     for spec in config_specs:
-        if "=" not in spec:
-            raise ValueError(f"Config spec must be NAME=PATH, got {spec!r}")
-        name, path = spec.split("=", 1)
-        cfg = load_level1_config(path)
-        configs_meta[name] = {
-            "path": rel(path),
-            "sha256": cfg["sha256"],
-            "git_commit": _git("log", "-1", "--format=%H", "--", path),
-        }
-        loaded_configs[name] = cfg["values"]
+        name, values, meta = resolve_config_spec(spec)
+        configs_meta[name] = meta
+        loaded_configs[name] = values
 
     if synthetic_only:
         return {
