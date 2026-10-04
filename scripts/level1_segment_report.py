@@ -19,6 +19,11 @@ Writes ONE JSON (default: reports/level1_realtime_<D>/tone_evidence.json) with:
 
 Timestamps of a clip = i * 1000 / fps of the manifest. This is NOT accuracy: train data / out-of-fold predictions.
 --write-config is not part of this step (plan step A2).
+
+Step R2 (plan 15 lần sửa 3 §3.4), separate JSON: --pose-evidence --out reports/level1_realtime_<D>/pose_evidence.json
+computes rules P1 (rearm_pose_dist = pose_over_jitter_ratio x p95 over letter clips of the hand-shape jitter in the
+longest still run) and P2 (coverage of the letter pairs per signer / session, pre-registered stop below 0.80);
+--write-pose-config <config> --pose-evidence-json <json> writes only rearm_pose_dist (commit of the JSON read with git).
 """
 import argparse
 import csv
@@ -28,9 +33,10 @@ import json
 import math
 import os
 import platform
+import itertools
 import subprocess
 import sys
-from collections import Counter
+from collections import Counter, defaultdict
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
@@ -41,7 +47,8 @@ if ROOT not in sys.path:
 
 from src.inference.fingerspelling_compose import TONE_MARKS  # noqa: E402
 from src.inference.level1_core import class_kind, load_level1_config, validate_level1_config  # noqa: E402
-from src.inference.level1_segmenter import Level1SignSegmenter  # noqa: E402
+from src.data.alphabet_preprocessing import normalize_hand_landmarks  # noqa: E402
+from src.inference.level1_segmenter import Level1SignSegmenter, aspect_points, pose_distance  # noqa: E402
 
 KAGGLE_DIR = os.path.join(ROOT, "data", "external", "alphabet_hands_kaggle", "alphabet_hands")
 MANIFEST = os.path.join(KAGGLE_DIR, "manifest.csv")
@@ -223,6 +230,22 @@ def motion_series(raw_landmarks: np.ndarray, detected: np.ndarray, handedness: S
     return out
 
 
+def longest_still_run(ts: Sequence[float], flags: Sequence[bool]) -> Optional[Tuple[int, int]]:
+    """(first, last) frame index of the run whose duration _longest_run returns (the first run reaching it); None
+    when no flag is set."""
+    best, best_run, start = -1.0, None, None
+    for i, ok in enumerate(flags):
+        if ok:
+            if start is None:
+                start = i
+            d = float(ts[i]) - float(ts[start])
+            if d > best:
+                best, best_run = d, (start, i)
+        else:
+            start = None
+    return best_run
+
+
 def _longest_run(ts: Sequence[float], flags: Sequence[bool]) -> float:
     best, start = 0.0, None
     for i, ok in enumerate(flags):
@@ -372,6 +395,162 @@ def load_train_clips(manifest_path: str, min_detected_frames: int) -> Dict[str, 
                       "raw": raw, "detected": det, "handedness": hand, "width": int(r["width"]),
                       "height": int(r["height"]), "fps": float(r["fps"])})
     return {"n_manifest_hauuto": len(rows), "clips": clips, "excluded": excluded}
+
+
+# ------------------------------------------------------------------------------------- pose evidence (step R2)
+POSE_NOTE = "train data of the deployed checkpoint; not accuracy"
+POSE_COVERAGE_STOP = 0.80  # plan 15 lần sửa 3 §3.4 P2: pre-registered stop point (coverage below it -> stop)
+POSE_REASON = ("calibrated on the train clips of the deployed checkpoint: pose_over_jitter_ratio times the "
+               "ninety-fifth percentile, over the letter clips, of the hand-shape jitter in the longest still run of "
+               "each clip (ninety-fifth percentile of the pose distance to the mean shape of that run)")
+POSE_DEFINITIONS = {
+    "N_t": "hand shape of a hand frame: normalize_hand_landmarks(aspect_points(raw, W, H)), computed exactly as "
+           "Level1SignSegmenter.push does (hand_shape)",
+    "pose_distance": "src.inference.level1_segmenter.pose_distance: mean over the 21 points of the 3D distance between "
+                     "two N, in hand lengths",
+    "still run": "the longest run of consecutive frames with M_t <= still_speed of the config (M_t as in "
+                 "DEFINITIONS of tone_evidence: Level1SignSegmenter.motion after each push; the same run as "
+                 "longest_still_ms, the first one when tied); only its hand frames are used",
+    "ref": "mean N over the hand frames of the still run of a clip",
+    "jitter_clip": "p95 over the hand frames of the still run of pose_distance(N_t, ref)",
+    "P1": "rearm_pose_dist = pose_over_jitter_ratio x p95 over the letter clips with a still frame of jitter_clip; "
+          "letter clips without a still frame are counted apart and left out",
+    "P2": "per (signer, session) and per pair of different letter classes: ref of the clip with the smallest "
+          "sample_id of each class, between = pose_distance(ref_a, ref_b); coverage = share of the pairs with "
+          "between >= rearm_pose_dist; stop (no config written) when coverage < 0.80",
+    "session": "the session letter of sample_id (hauuto_<symbol>_<signer>_<session>_<nnn>)",
+    "percentiles": "numpy.percentile, linear interpolation",
+}
+
+
+def hand_shape(raw: np.ndarray, width: int, height: int) -> np.ndarray:
+    """N of one hand frame with the same functions and dtypes as Level1SignSegmenter.push."""
+    p = aspect_points(raw, width, height)
+    return normalize_hand_landmarks(p.astype(np.float32)).astype(np.float64)
+
+
+def _session(sample_id: str) -> str:
+    return sample_id.rsplit("_", 2)[1]
+
+
+def clip_pose_profile(clip: Dict[str, Any], params: Dict[str, Any], min_detected_frames: int) -> Dict[str, Any]:
+    """Still run, ref and jitter_clip of one clip (POSE_DEFINITIONS)."""
+    ts = clip_timestamps(len(clip["detected"]), clip["fps"])
+    motion = motion_series(clip["raw"], clip["detected"], clip["handedness"], clip["width"], clip["height"], ts,
+                           params, min_detected_frames)
+    flags = [m is not None and m <= params["still_speed"] for m in motion]
+    run = longest_still_run(ts, flags)
+    out = {"sample_id": clip["sample_id"], "symbol": clip["symbol"], "kind": clip["kind"],
+           "signer_id": clip["signer_id"], "session": _session(clip["sample_id"]), "has_still": False,
+           "run_ms": None, "run_hand_frames": 0, "jitter_clip": None, "ref": None}
+    if run is None:
+        return out
+    idx = [i for i in range(run[0], run[1] + 1) if bool(clip["detected"][i])]
+    if not idx:
+        return out
+    shapes = [hand_shape(clip["raw"][i], clip["width"], clip["height"]) for i in idx]
+    ref = np.mean(np.stack(shapes), axis=0)
+    dists = [pose_distance(n, ref) for n in shapes]
+    out.update({"has_still": True, "run_ms": [float(ts[run[0]]), float(ts[run[1]])], "run_hand_frames": len(idx),
+                "jitter_clip": float(np.percentile(np.asarray(dists, dtype=np.float64), 95)), "ref": ref})
+    return out
+
+
+def pose_calibration(profiles: Sequence[Dict[str, Any]], ratio: float) -> Dict[str, Any]:
+    """Rules P1 and P2 of plan 15 lần sửa 3 §3.4 on clip profiles (clip_pose_profile)."""
+    letters = [p for p in profiles if p["kind"] == "letter"]
+    with_still = [p for p in letters if p["has_still"]]
+    jitters = [p["jitter_clip"] for p in with_still]
+    p95_jitter = _pct(jitters, 95, "rearm_pose_dist (letter clips with a still frame)")
+    rearm_pose_dist = float(ratio) * p95_jitter
+    groups: Dict[Tuple[str, str], List[Dict[str, Any]]] = defaultdict(list)
+    for p in letters:
+        groups[(p["signer_id"], p["session"])].append(p)
+    pairs, without_ref = [], []
+    for (signer, session), ps in sorted(groups.items()):
+        first: Dict[str, Dict[str, Any]] = {}
+        for p in ps:
+            if p["symbol"] not in first or p["sample_id"] < first[p["symbol"]]["sample_id"]:
+                first[p["symbol"]] = p
+        for sym in sorted(first):
+            if not first[sym]["has_still"]:
+                without_ref.append({"signer_id": signer, "session": session, "symbol": sym})
+        refs = {sym: p for sym, p in first.items() if p["has_still"]}
+        for a, b in itertools.combinations(sorted(refs), 2):
+            pairs.append({"signer_id": signer, "session": session, "a": a, "b": b,
+                          "sample_ids": [refs[a]["sample_id"], refs[b]["sample_id"]],
+                          "between": pose_distance(refs[a]["ref"], refs[b]["ref"])})
+    if not pairs:
+        raise ValueError("no letter pair with a reference shape (P2)")
+    below = [p for p in pairs if p["between"] < rearm_pose_dist]
+    coverage = 1.0 - len(below) / len(pairs)
+    grouped: Dict[Tuple[str, str], List[Dict[str, Any]]] = defaultdict(list)
+    for p in below:
+        grouped[(p["a"], p["b"])].append(p)
+    pairs_below = [{"pair": [a, b], "n_signers": len({p["signer_id"] for p in ps}),
+                    "signers": sorted({p["signer_id"] for p in ps}), "n_sessions": len(ps),
+                    "between": sorted(p["between"] for p in ps)}
+                   for (a, b), ps in sorted(grouped.items(), key=lambda kv: (-len(kv[1]), kv[0]))]
+    return {
+        "values": {"rearm_pose_dist": rearm_pose_dist},
+        "inputs": {"pose_over_jitter_ratio": float(ratio), "p95_letter_jitter_clip": p95_jitter,
+                   "n_letter_clips": len(letters), "n_letter_clips_with_still": len(with_still),
+                   "letter_clips_without_still": sorted(p["sample_id"] for p in letters if not p["has_still"])},
+        "p1": {"jitter_clip": percentile_stats(jitters),
+               "jitter_clip_by_symbol": {sym: percentile_stats([p["jitter_clip"] for p in with_still
+                                                                if p["symbol"] == sym])
+                                         for sym in sorted({p["symbol"] for p in with_still})}},
+        "p2": {"n_pairs": len(pairs), "n_pairs_below": len(below), "coverage": coverage,
+               "between": percentile_stats([p["between"] for p in pairs]),
+               "classes_without_ref": without_ref, "pairs_below": pairs_below,
+               "stop_rule": {"threshold": POSE_COVERAGE_STOP, "triggered": bool(coverage < POSE_COVERAGE_STOP)}},
+    }
+
+
+def pose_report(argv: Sequence[str], config_path: str, manifest_path: str, loaded: Dict[str, Any],
+                min_detected_frames: int) -> Dict[str, Any]:
+    """pose_evidence.json content (AC-RP3) from clips loaded with load_train_clips."""
+    cfg = load_level1_config(config_path)
+    params = cfg["values"]
+    profiles = [clip_pose_profile(c, params, min_detected_frames) for c in loaded["clips"]]
+    cal = pose_calibration(profiles, params["pose_over_jitter_ratio"])
+    return {
+        "generated_by": generated_by(argv),
+        "note": POSE_NOTE,
+        "definitions": POSE_DEFINITIONS,
+        "manifest": {"path": rel(manifest_path), "sha256": sha256_file(manifest_path)},
+        "config": {"path": rel(config_path), "sha256": cfg["sha256"], "still_speed": params["still_speed"],
+                   "pose_over_jitter_ratio": params["pose_over_jitter_ratio"],
+                   "rearm_pose_dist_before": params["rearm_pose_dist"]},
+        "train_clips": {"n_manifest_hauuto": loaded["n_manifest_hauuto"], "n_clips": len(loaded["clips"]),
+                        "excluded_min_detected_frames": loaded["excluded"],
+                        "min_detected_frames": int(min_detected_frames)},
+        "calibration": cal,
+    }
+
+
+def write_pose_config(config_path: str, evidence_path: str) -> Dict[str, Any]:
+    """Write rearm_pose_dist of a committed pose_evidence.json into the config (only that key; value, source with the
+    commit read by committed_evidence_ref, POSE_REASON). RuntimeError (config untouched) when the evidence is not
+    committed / dirty or when its P2 stop rule fired."""
+    full = os.path.abspath(evidence_path if os.path.isabs(evidence_path) else os.path.join(ROOT, evidence_path))
+    with open(full, encoding="utf-8") as f:
+        evidence = json.load(f)
+    cal = evidence["calibration"]
+    if cal["p2"]["stop_rule"]["triggered"]:
+        raise RuntimeError(f"P2 stop rule fired (coverage {cal['p2']['coverage']} < "
+                           f"{cal['p2']['stop_rule']['threshold']}): rearm_pose_dist is not written")
+    rel_evidence, commit = committed_evidence_ref(full)
+    with open(config_path, encoding="utf-8") as f:
+        cfg = json.load(f)
+    old = dict(cfg["rearm_pose_dist"])
+    cfg["rearm_pose_dist"] = {"value": cal["values"]["rearm_pose_dist"],
+                              "source": f"calibrated: {rel_evidence}@{commit}", "reason": POSE_REASON}
+    validate_level1_config(cfg)
+    with open(config_path, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(cfg, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    return {"rearm_pose_dist": {"old": old, "new": cfg["rearm_pose_dist"]}}
 
 
 # ------------------------------------------------------------------------------------------------- U1 session
@@ -573,7 +752,35 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--write-config", default=None, help="write calibrated parameters to config file")
     ap.add_argument("--evidence-json", default=DEFAULT_EVIDENCE, help="path to tone evidence JSON (default %(default)s)")
     ap.add_argument("--u1-json", default=None, help="optional webcam session JSON of level1_demo.py (aggregated)")
+    ap.add_argument("--pose-evidence", action="store_true",
+                    help="step R2: write the pose evidence JSON (rules P1, P2) to --out instead of tone_evidence")
+    ap.add_argument("--write-pose-config", default=None,
+                    help="step R2: write rearm_pose_dist of --pose-evidence-json into this config")
+    ap.add_argument("--pose-evidence-json", default=None,
+                    help="committed pose_evidence.json read by --write-pose-config (required with it)")
     args = ap.parse_args(argv)
+
+    if args.write_pose_config:
+        if not args.pose_evidence_json:
+            ap.error("--pose-evidence-json is required with --write-pose-config")
+        change = write_pose_config(args.write_pose_config, args.pose_evidence_json)["rearm_pose_dist"]
+        print(f"wrote rearm_pose_dist into {rel(args.write_pose_config)}: {change['old']['value']} "
+              f"({change['old']['source']}) -> {change['new']['value']} ({change['new']['source']})")
+        return 0
+    if args.pose_evidence:
+        if not args.out:
+            ap.error("--out is required with --pose-evidence")
+        from src.inference.level1_core import Level1Classifier
+        min_det = Level1Classifier.from_checkpoint(DEPLOYED_CKPT).min_detected_frames
+        report = pose_report(argv, args.config, MANIFEST, load_train_clips(MANIFEST, min_det), min_det)
+        os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
+        with open(args.out, "w", encoding="utf-8", newline="\n") as f:
+            json.dump(report, f, ensure_ascii=False, indent=2)
+            f.write("\n")
+        cal = report["calibration"]
+        print(f"wrote {rel(args.out)}: rearm_pose_dist {cal['values']['rearm_pose_dist']}, P2 coverage "
+              f"{cal['p2']['coverage']} ({cal['p2']['n_pairs']} pairs), stop {cal['p2']['stop_rule']['triggered']}")
+        return 2 if cal["p2"]["stop_rule"]["triggered"] else 0
 
     if args.write_config:
         changes = write_config(args.write_config, args.evidence_json)

@@ -4,9 +4,9 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM (phiên cloud 2026-10-04, nhánh `cloud/2026-10-04-level1-rearm`): A2b (15-lan-sua-2 §4 AC-W1..W3, §7 #4b). Phiên cloud KHÔNG có dữ liệu gitignored (KAGGLE_KEY giữ chỗ) — mọi bước cần dữ liệu ghi rõ là chờ local.
-- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a). R1 (commit `15: R1` trên nhánh cloud; CHỜ LOCAL: AC-S18 + S18b trên clip thật).
-- Còn lại: A2b, R2, R3, U1c, A3, C1, (R4, A4, C2).
+- ĐANG LÀM (phiên cloud 2026-10-04, nhánh `cloud/2026-10-04-level1-rearm`): R2 — mã + test xong; CHẠY (pose_evidence.json, --write-pose-config) BỊ CHẶN trên cloud vì thiếu dữ liệu. Phiên cloud KHÔNG có dữ liệu gitignored (KAGGLE_KEY giữ chỗ) — mọi bước cần dữ liệu ghi rõ là chờ local.
+- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a). R1 (commit `15: R1` trên nhánh cloud; CHỜ LOCAL: AC-S18 + S18b trên clip thật). A2b (`71fc664` mã + `4b5d736` config; AC-W3 đạt).
+- Còn lại: R2 (chạy + 2 commit JSON/config), R3, U1c, A3, C1, (R4, A4, C2).
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -206,6 +206,7 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - A2a (cloud, trước commit `15: A2a`): `npx -y gitnexus@latest analyze` (đầu phiên) rồi `node .gitnexus/run.cjs analyze --index-only` (exit 0) và `detect-changes --scope all --repo .` → "Changes: 3 files, 21 symbols, Affected processes: 8, Risk level: high"; không có cờ partial/truncated. Symbol đổi: các Section của 15-progress.md + `scripts/level1_rearm_check.py` (GIT_SPEC_PREFIX, FILL_RULES, _git_bytes, _fill_missing, resolve_config_spec, load_and_prepare_manifest_clips, run_rearm_check) + `tests/test_level1_rearm_check.py` (TestConfigProvenanceA2a, _git_out). 8 luồng bị ảnh hưởng đều là `main` của scripts/level1_rearm_check.py. Risk HIGH = chỉ trong script R0 (không có người gọi ngoài script + test). Không có thay đổi chưa commit của người dùng trên cloud.
 - R1 (cloud, trước commit `15: R1`): `node .gitnexus/run.cjs analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 6 files, 20 symbols, Affected processes: 8, Risk level: high"; không có cờ partial/truncated. Symbol đổi: SEGMENTER_KEYS, pose_distance (mới), Level1SignSegmenter (__init__, reset, _clear_pose_state (mới), _close_lost, push), CONFIG_SPEC, _check_value, FILL_RULES, _fill_missing, TestConfigProvenanceA2a + test của nó, file test mới tests/test_level1_rearm.py. 8 luồng bị ảnh hưởng: `main`/`run_segmenter_on_stream` của scripts/level1_rearm_check.py và `main` → `_check_value` (load config) — đều thuộc kế hoạch 15.
 - A2b-code (cloud, trước commit `15: A2b — write_config …`): `analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 2 files, 17 symbols, Affected processes: 2, Risk level: medium"; không có cờ partial/truncated. Symbol đổi: `scripts/level1_segment_report.py` (CALIBRATION_REASONS, committed_evidence_ref (mới), write_config) + `tests/test_level1_segment_report.py` (TestWriteConfigA2b + helper). 2 luồng: `main` → `write_config` của script.
+- R2-code (cloud, trước commit `15: R2 — code`): `analyze --index-only` (exit 0) rồi `detect-changes --scope all --repo .` → "Changes: 1 files, 15 symbols, Affected processes: 14, Risk level: high"; không có cờ partial/truncated. Symbol đổi: chỉ `scripts/level1_segment_report.py` (longest_still_run, POSE_*, hand_shape, _session, clip_pose_profile, pose_calibration, pose_report, write_pose_config, main); file test mới untracked chưa hiện. 14 luồng đều là `main` của script → hàm mới / bộ tách (chỉ GỌI). Impact `main`: LOW lower-bound (người gọi: điểm vào CLI + test).
 
 ## T1 — textbox logic + tone keys
 - File: `src/inference/level1_textbox.py`, `tests/test_level1_textbox.py`, `src/inference/level1_core.py` (`Level1Speller.view`, `KEY_NAMES`, `key`), `tests/test_level1_core.py` (AC-K), `tests/test_level1_guard.py` (`PLAN15_FILES`).
@@ -497,4 +498,32 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - Sau commit config: AC1-ngắn (19 module + test_level1_rearm) `Ran 304 — FAILED (failures=1, errors=5, skipped=43)`; so từng test với mốc
   b545ce7: khác duy nhất là test mới (16 RA ok, 5 W ok, S18b ERROR thiếu manifest); `test_r_prime_1d_write_config` XANH lại (đỏ tạm đã hết).
   Lỗi/skip còn lại giống mốc, đều do thiếu dữ liệu gitignored.
-- detect-changes trước commit config: "Changes: 2 files" (configs/level1_realtime.json + 15-progress; không symbol mã) — ghi ở dòng này.
+- detect-changes trước commit config (chạy khi chỉ config đổi, trước khi viết dòng này): "Diff touched 1 file(s) but no indexed symbols overlap those hunks — not a clean tree." (JSON config không có symbol mã). [Sửa ở commit R2: bản ghi trước ghi nhầm "Changes: 2 files".]
+
+## R2 — hiệu chỉnh rearm_pose_dist (15-lan-sua-3 §3.4 P1/P2, §4 #5, §5 AC-RP1…RP4) — phiên cloud 2026-10-04: MÃ XONG, CHƯA CHẠY
+- Mã (`scripts/level1_segment_report.py`, cùng script A1/A2b): `hand_shape` (N đúng như `push`: `normalize_hand_landmarks(aspect_points(raw).astype(float32)).astype(float64)`),
+  `longest_still_run` (chỉ số của đúng đoạn mà `_longest_run` đo; đoạn đầu tiên khi bằng nhau), `clip_pose_profile` (M_t = `motion_series` của A1 →
+  đoạn đứng yên dài nhất với `still_speed` của config → `ref` = trung bình N các khung có tay của đoạn, `jitter_clip` = p95 `pose_distance(N_t, ref)`),
+  `pose_calibration` (P1: `rearm_pose_dist = pose_over_jitter_ratio × p95` qua clip chữ cái có khung đứng yên; clip không có → đếm + liệt kê, bỏ;
+  P2: mỗi (người ký, phiên), mỗi cặp lớp chữ cái khác nhau, ref của clip sample_id nhỏ nhất; `coverage`; danh sách cặp dưới ngưỡng gộp theo cặp nhãn
+  kèm số người ký; lớp có clip đầu không có đoạn đứng yên → `classes_without_ref`; luật dừng `coverage < 0.80`), `pose_report` (JSON: `generated_by`,
+  `note` "train data of the deployed checkpoint; not accuracy", `definitions`, sha256 manifest + config, `calibration`), `write_pose_config`
+  (chỉ ghi `rearm_pose_dist`: value + `source: calibrated: <evidence>@<commit>` lấy qua `committed_evidence_ref` của A2b + `POSE_REASON` không chữ số;
+  evidence chưa commit/bẩn → RuntimeError trước khi mở config; P2 đã kích hoạt → RuntimeError, không ghi). CLI: `--pose-evidence --out <json>`
+  (thoát mã 2 nếu P2 kích hoạt), `--write-pose-config <config> --pose-evidence-json <json>`. `pose_distance` của script LÀ hàm của bộ tách (`is`).
+- Test viết TRƯỚC `tests/test_level1_pose_evidence.py` (11 test; clip tổng hợp có kiểm soát; giá trị mong đợi tính bằng công thức viết tay của
+  `tests/test_level1_rearm.py`): ĐỎ trên mã trước R2: `Ran 11 — FAILED (errors=11)` (hàm chưa có; `_work/_cloud/r2_red.log`). Sửa 1 lỗi dựng dữ liệu
+  trong chính test mới (chưa commit): cặp (a, b) của s2 đặt cách 0.05 không nằm dưới ngưỡng ≈ 2 × jitter ≈ 0.02 như chú thích nói → đổi thành 0.01.
+  XANH: `Ran 11 — OK` (`_work/_cloud/r2_green.log`): RA9 phía script (`is`, `hand_shape` == N trong bộ tách, `longest_still_run` khớp `_longest_run`
+  trên 200 dãy ngẫu nhiên), RP1 (hồ sơ clip, P1, P2, clip không đứng yên, không có clip chữ cái đứng yên → ValueError), RP2 (chưa commit / bẩn /
+  P2 kích hoạt → RuntimeError + config giữ từng byte; thành công → chỉ `rearm_pose_dist` đổi, helper A2b được gọi đúng 1 lần), RP3 (khóa JSON).
+  RP4: 5 test A2b (AC-W1…W3) + `test_r_prime_1d` vẫn xanh, không sửa.
+- Level 1 (9 module, gồm test_level1_rearm + test_level1_pose_evidence): `Ran 139 — FAILED (failures=1, errors=5, skipped=19)` = đúng các lỗi/skip thiếu
+  dữ liệu đã có từ R1 (không thêm). Guard chính `known=9 allowed=36` OK.
+- **BỊ CHẶN (thiếu dữ liệu):** thử `python scripts/level1_segment_report.py --pose-evidence --out _work/_cloud/pose_try.json` →
+  `FileNotFoundError …/checkpoints/alphabet_best.pt` (cần checkpoint cho `min_detected_frames` + manifest/npz). KHÔNG có `pose_evidence.json`, KHÔNG có
+  số P1/P2, `rearm_pose_dist` trong config vẫn là giá trị giữ chỗ của R1, `pose_change_rules` vẫn false. Việc local (theo thứ tự, mỗi bước tại commit sạch):
+  1. `PYTHONIOENCODING=utf-8 .venv/Scripts/python scripts/level1_segment_report.py --pose-evidence --out reports/level1_realtime_<D>/pose_evidence.json`
+     → kiểm `generated_by.code_dirty == false` → commit JSON (`15: R2 — pose_evidence.json`). Mã thoát 2 / `stop_rule.triggered` ⇒ P2 coverage < 0.80 ⇒ DỪNG, báo planner.
+  2. `… --write-pose-config configs/level1_realtime.json --pose-evidence-json reports/level1_realtime_<D>/pose_evidence.json` → `git diff` chỉ khối
+     `rearm_pose_dist` → chạy lại test Level 1 → commit (`15: R2 config`).
