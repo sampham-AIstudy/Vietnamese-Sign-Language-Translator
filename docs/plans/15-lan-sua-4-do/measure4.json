@@ -1,0 +1,13 @@
+{
+ "all_letters": {
+  "rearm_pose_dist": 0.6918647633547109,
+  "coverage": 0.37832759160663954,
+  "n_pairs": 3193
+ },
+ "without_diacritic_letters": {
+  "rearm_pose_dist": 0.42239286918479035,
+  "coverage": 0.8122160524987381,
+  "n_pairs": 1981
+ },
+ "coverage_all_pairs_at_threshold_without_diacritics": 0.7536945812807881
+}

@@ -1,0 +1,329 @@
+{
+ "note": "planner light measurement; hauuto = train clips of the deployed checkpoint (optimistic); qipedc = 46 alphabet clips of one other signer, not in train; synthetic concatenation; not accuracy",
+ "motion_rearm_lower_threshold": {
+  "rearm_move_ms": 150,
+  "n_letter_clips": 510,
+  "X=1": {
+   "join300_share_rearmed": 0.9837837837837838,
+   "join600_share_rearmed": 0.7783783783783784,
+   "letter_clips_share_with_run_after_400ms": 0.4843137254901961
+  },
+  "X=1.5": {
+   "join300_share_rearmed": 0.8540540540540541,
+   "join600_share_rearmed": 0.6,
+   "letter_clips_share_with_run_after_400ms": 0.3686274509803922
+  },
+  "X=2": {
+   "join300_share_rearmed": 0.7081081081081081,
+   "join600_share_rearmed": 0.4864864864864865,
+   "letter_clips_share_with_run_after_400ms": 0.2647058823529412
+  },
+  "X=2.531": {
+   "join300_share_rearmed": 0.5891891891891892,
+   "join600_share_rearmed": 0.3945945945945946,
+   "letter_clips_share_with_run_after_400ms": 0.21764705882352942
+  },
+  "X=5.061": {
+   "join300_share_rearmed": 0.2756756756756757,
+   "join600_share_rearmed": 0.14594594594594595,
+   "letter_clips_share_with_run_after_400ms": 0.09803921568627451
+  }
+ },
+ "decoders": [
+  {
+   "window_ms": 1000,
+   "conf": 0.8,
+   "stable_ms": 300,
+   "need_still": false,
+   "L0": {
+    "one_rate": 0.9896,
+    "garbage_per_clip": 0.1244,
+    "token_error_rate": 0.1347
+   },
+   "L300": {
+    "one_rate": 0.9896,
+    "garbage_per_clip": 0.1399,
+    "token_error_rate": 0.1451
+   },
+   "L600": {
+    "one_rate": 0.9948,
+    "garbage_per_clip": 0.1658,
+    "token_error_rate": 0.1658
+   },
+   "single_letter": {
+    "n": 510,
+    "zero": 0.0039,
+    "multi": 0.2314,
+    "one_and_same_label": 0.7412
+   },
+   "single_tone": {
+    "n": 117,
+    "zero": 0.0085,
+    "multi": 0.2308,
+    "one_and_same_label": 0.735
+   }
+  },
+  {
+   "window_ms": 1000,
+   "conf": 0.8,
+   "stable_ms": 300,
+   "need_still": true,
+   "L0": {
+    "one_rate": 0.8808,
+    "garbage_per_clip": 0.0984,
+    "token_error_rate": 0.1762
+   },
+   "L300": {
+    "one_rate": 0.8808,
+    "garbage_per_clip": 0.1036,
+    "token_error_rate": 0.1813
+   },
+   "L600": {
+    "one_rate": 0.886,
+    "garbage_per_clip": 0.1347,
+    "token_error_rate": 0.1813
+   },
+   "single_letter": {
+    "n": 510,
+    "zero": 0.0431,
+    "multi": 0.1431,
+    "one_and_same_label": 0.7275
+   },
+   "single_tone": {
+    "n": 117,
+    "zero": 0.0598,
+    "multi": 0.1795,
+    "one_and_same_label": 0.7009
+   }
+  },
+  {
+   "window_ms": 1000,
+   "conf": 0.9,
+   "stable_ms": 300,
+   "need_still": false,
+   "L0": {
+    "one_rate": 0.9793,
+    "garbage_per_clip": 0.0518,
+    "token_error_rate": 0.0725
+   },
+   "L300": {
+    "one_rate": 0.9793,
+    "garbage_per_clip": 0.0777,
+    "token_error_rate": 0.0984
+   },
+   "L600": {
+    "one_rate": 0.9845,
+    "garbage_per_clip": 0.0777,
+    "token_error_rate": 0.0933
+   },
+   "single_letter": {
+    "n": 510,
+    "zero": 0.0137,
+    "multi": 0.1902,
+    "one_and_same_label": 0.7647
+   },
+   "single_tone": {
+    "n": 117,
+    "zero": 0.0769,
+    "multi": 0.1282,
+    "one_and_same_label": 0.7521
+   }
+  },
+  {
+   "window_ms": 1000,
+   "conf": 0.9,
+   "stable_ms": 300,
+   "need_still": true,
+   "L0": {
+    "one_rate": 0.8549,
+    "garbage_per_clip": 0.0466,
+    "token_error_rate": 0.1658
+   },
+   "L300": {
+    "one_rate": 0.8549,
+    "garbage_per_clip": 0.0725,
+    "token_error_rate": 0.1762
+   },
+   "L600": {
+    "one_rate": 0.8653,
+    "garbage_per_clip": 0.0777,
+    "token_error_rate": 0.1658
+   },
+   "single_letter": {
+    "n": 510,
+    "zero": 0.0686,
+    "multi": 0.1176,
+    "one_and_same_label": 0.7255
+   },
+   "single_tone": {
+    "n": 117,
+    "zero": 0.1111,
+    "multi": 0.1026,
+    "one_and_same_label": 0.735
+   }
+  },
+  {
+   "window_ms": 1000,
+   "conf": 0.8,
+   "stable_ms": 400,
+   "need_still": false,
+   "L0": {
+    "one_rate": 0.9896,
+    "garbage_per_clip": 0.0933,
+    "token_error_rate": 0.1036
+   },
+   "L300": {
+    "one_rate": 0.9896,
+    "garbage_per_clip": 0.1192,
+    "token_error_rate": 0.1295
+   },
+   "L600": {
+    "one_rate": 0.9896,
+    "garbage_per_clip": 0.1399,
+    "token_error_rate": 0.1451
+   },
+   "single_letter": {
+    "n": 510,
+    "zero": 0.0059,
+    "multi": 0.2078,
+    "one_and_same_label": 0.7588
+   },
+   "single_tone": {
+    "n": 117,
+    "zero": 0.0684,
+    "multi": 0.1966,
+    "one_and_same_label": 0.7179
+   }
+  },
+  {
+   "window_ms": 1000,
+   "conf": 0.8,
+   "stable_ms": 400,
+   "need_still": true,
+   "L0": {
+    "one_rate": 0.8601,
+    "garbage_per_clip": 0.0674,
+    "token_error_rate": 0.1762
+   },
+   "L300": {
+    "one_rate": 0.8601,
+    "garbage_per_clip": 0.0829,
+    "token_error_rate": 0.1917
+   },
+   "L600": {
+    "one_rate": 0.8601,
+    "garbage_per_clip": 0.114,
+    "token_error_rate": 0.1917
+   },
+   "single_letter": {
+    "n": 510,
+    "zero": 0.0608,
+    "multi": 0.1078,
+    "one_and_same_label": 0.7255
+   },
+   "single_tone": {
+    "n": 117,
+    "zero": 0.1282,
+    "multi": 0.1368,
+    "one_and_same_label": 0.6667
+   }
+  },
+  {
+   "window_ms": 1500,
+   "conf": 0.9,
+   "stable_ms": 300,
+   "need_still": false,
+   "L0": {
+    "one_rate": 0.943,
+    "garbage_per_clip": 0.0674,
+    "token_error_rate": 0.0622
+   },
+   "L300": {
+    "one_rate": 0.9741,
+    "garbage_per_clip": 0.0622,
+    "token_error_rate": 0.0622
+   },
+   "L600": {
+    "one_rate": 0.9896,
+    "garbage_per_clip": 0.0674,
+    "token_error_rate": 0.0725
+   },
+   "single_letter": {
+    "n": 510,
+    "zero": 0.0098,
+    "multi": 0.2176,
+    "one_and_same_label": 0.7686
+   },
+   "single_tone": {
+    "n": 117,
+    "zero": 0.0256,
+    "multi": 0.1538,
+    "one_and_same_label": 0.8205
+   }
+  },
+  {
+   "window_ms": 1500,
+   "conf": 0.9,
+   "stable_ms": 300,
+   "need_still": true,
+   "L0": {
+    "one_rate": 0.8497,
+    "garbage_per_clip": 0.0674,
+    "token_error_rate": 0.1295
+   },
+   "L300": {
+    "one_rate": 0.8756,
+    "garbage_per_clip": 0.0518,
+    "token_error_rate": 0.1295
+   },
+   "L600": {
+    "one_rate": 0.8964,
+    "garbage_per_clip": 0.0622,
+    "token_error_rate": 0.1295
+   },
+   "single_letter": {
+    "n": 510,
+    "zero": 0.0549,
+    "multi": 0.149,
+    "one_and_same_label": 0.7392
+   },
+   "single_tone": {
+    "n": 117,
+    "zero": 0.0598,
+    "multi": 0.1282,
+    "one_and_same_label": 0.8034
+   }
+  }
+ ],
+ "qipedc": {
+  "n": 46,
+  "whole_correct": 28,
+  "too_few": 0,
+  "decoder_counts": {
+   "w1000_c0.8_s300_still0_emits": 41,
+   "w1000_c0.8_s300_still0_has_correct": 29,
+   "w1000_c0.8_s300_still0_whole_label_emitted": 29,
+   "w1000_c0.8_s300_still1_emits": 36,
+   "w1000_c0.8_s300_still1_has_correct": 27,
+   "w1000_c0.8_s300_still1_whole_label_emitted": 27,
+   "w1000_c0.9_s300_still0_emits": 36,
+   "w1000_c0.9_s300_still0_has_correct": 25,
+   "w1000_c0.9_s300_still0_whole_label_emitted": 25,
+   "w1000_c0.9_s300_still1_emits": 29,
+   "w1000_c0.9_s300_still1_has_correct": 22,
+   "w1000_c0.9_s300_still1_whole_label_emitted": 22,
+   "w1000_c0.8_s400_still0_emits": 36,
+   "w1000_c0.8_s400_still0_has_correct": 26,
+   "w1000_c0.8_s400_still0_whole_label_emitted": 26,
+   "w1000_c0.8_s400_still1_emits": 31,
+   "w1000_c0.8_s400_still1_has_correct": 23,
+   "w1000_c0.8_s400_still1_whole_label_emitted": 23,
+   "w1500_c0.9_s300_still0_emits": 30,
+   "w1500_c0.9_s300_still0_has_correct": 21,
+   "w1500_c0.9_s300_still0_whole_label_emitted": 20,
+   "w1500_c0.9_s300_still1_emits": 24,
+   "w1500_c0.9_s300_still1_has_correct": 17,
+   "w1500_c0.9_s300_still1_whole_label_emitted": 16
+  }
+ }
+}

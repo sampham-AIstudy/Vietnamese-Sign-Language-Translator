@@ -1,0 +1,507 @@
+{
+ "note": "planner light measurement on TRAIN clips of the deployed checkpoint (hauuto); concatenated streams are synthetic; not accuracy",
+ "config_sha_note": "configs/level1_realtime.json at HEAD",
+ "join_motion": {
+  "still_speed": 2.5306153884920786,
+  "move_speed": 5.061230776984157,
+  "300": {
+   "median_M_in_join": {
+    "n": 185,
+    "p5": 1.143454235953952,
+    "p10": 1.3485468720196683,
+    "p50": 2.688492459339777,
+    "p90": 7.409467353860904,
+    "p95": 10.460553001409552
+   },
+   "max_M_in_join": {
+    "n": 185,
+    "p5": 1.2337897828680784,
+    "p10": 1.4384135894339862,
+    "p50": 3.1357283485946192,
+    "p90": 10.783641271771767,
+    "p95": 15.34352415140445
+   },
+   "share_joins_max_ge_move_speed": 0.2756756756756757,
+   "share_joins_max_le_still_speed": 0.40540540540540543,
+   "n_joins": 185
+  },
+  "600": {
+   "median_M_in_join": {
+    "n": 185,
+    "p5": 0.601684767842073,
+    "p10": 0.7218217848958542,
+    "p50": 1.5083994701802395,
+    "p90": 4.307580199788415,
+    "p95": 5.914724921451049
+   },
+   "max_M_in_join": {
+    "n": 185,
+    "p5": 0.6729518338219895,
+    "p10": 0.7706377270493274,
+    "p50": 1.733889490488704,
+    "p90": 7.834687955936437,
+    "p95": 12.625169453177426
+   },
+   "share_joins_max_ge_move_speed": 0.15675675675675677,
+   "share_joins_max_le_still_speed": 0.6324324324324324,
+   "n_joins": 185
+  }
+ },
+ "letter_clip_motion": {
+  "M_t_all_frames": {
+   "n": 39862,
+   "p5": 0.10940820914293294,
+   "p10": 0.13367606515386646,
+   "p50": 0.4541184679741044,
+   "p90": 3.19654134300029,
+   "p95": 5.517858846817593
+  },
+  "M_t_max_per_clip": {
+   "n": 510,
+   "p5": 0.8283414493559386,
+   "p10": 1.0152251487670187,
+   "p50": 2.7499802963289692,
+   "p90": 18.2098321990917,
+   "p95": 23.803422799136424
+  }
+ },
+ "pose": {
+  "jitter_clip_median_by_symbol": {
+   "a": 0.0259538794792942,
+   "b": 0.02382019065748654,
+   "c": 0.031215498287494932,
+   "d": 0.026225830515459642,
+   "e": 0.024461448152139915,
+   "g": 0.026246157031731637,
+   "h": 0.02749422774739976,
+   "i": 0.03857129256438163,
+   "k": 0.03224575072528388,
+   "l": 0.021372491140529404,
+   "m": 0.06620241112764037,
+   "n": 0.0839122651641371,
+   "o": 0.04637788147278815,
+   "p": 0.12595855674887593,
+   "q": 0.06655284662705857,
+   "r": 0.026870073580444014,
+   "s": 0.04206032832560598,
+   "t": 0.057702960043867546,
+   "u": 0.026085351658891483,
+   "v": 0.022709537379967296,
+   "x": 0.03631205457032352,
+   "y": 0.03242940007063219,
+   "â": 0.2829565365973231,
+   "ê": 0.26050849081167354,
+   "ô": 0.21328078037872902,
+   "ă": 0.2108271766865753,
+   "đ": 0.04498710761511994,
+   "ơ": 0.13438241535306233,
+   "ư": 0.25887154202833873
+  },
+  "jitter_clip_all": {
+   "n": 514,
+   "p5": 0.013627679379782707,
+   "p10": 0.016717079323200226,
+   "p50": 0.06267638367072441,
+   "p90": 0.27850744441040837,
+   "p95": 0.34593238167735546
+  },
+  "nearest_other_letter_dist": {
+   "n": 232,
+   "p5": 0.08913672363389721,
+   "p10": 0.10098753002891597,
+   "p50": 0.21514114327800143,
+   "p90": 0.45276057109556833,
+   "p95": 0.6689192871500301
+  },
+  "nearest_over_own_jitter": {
+   "n": 232,
+   "p5": 0.4494744168695168,
+   "p10": 0.5712647543761299,
+   "p50": 4.814307598874601,
+   "p90": 15.261520457700472,
+   "p95": 20.63508157107644
+  },
+  "share_nearest_over_own_jitter_ge_2": 0.75
+ },
+ "cost_ms_this_cloud_cpu": {
+  "model_forward_1x30x63": {
+   "n": 200,
+   "p50": 2.1438095000121393,
+   "p95": 2.7198602499538533
+  },
+  "features_24_frames": {
+   "n": 200,
+   "p50": 0.05970099999785816,
+   "p95": 0.10019494991979627
+  },
+  "segmenter_push": {
+   "n": 75,
+   "p50": 0.06525600008444599,
+   "p95": 0.10707790007700166
+  },
+  "torch_threads": 4
+ },
+ "whole_clip_train_agreement_with_symbol": 1.0,
+ "sliding_window_L": [
+  {
+   "join_ms": 0,
+   "window_ms": 600,
+   "conf": 0.6,
+   "stable_ms": 200,
+   "one_rate": 0.9792746113989638,
+   "garbage_per_clip": 0.32642487046632124,
+   "token_error_rate": 0.32642487046632124,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 600,
+   "conf": 0.6,
+   "stable_ms": 400,
+   "one_rate": 0.917098445595855,
+   "garbage_per_clip": 0.18134715025906736,
+   "token_error_rate": 0.20207253886010362,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 600,
+   "conf": 0.8,
+   "stable_ms": 200,
+   "one_rate": 0.9585492227979274,
+   "garbage_per_clip": 0.22797927461139897,
+   "token_error_rate": 0.23316062176165803,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 600,
+   "conf": 0.8,
+   "stable_ms": 400,
+   "one_rate": 0.8497409326424871,
+   "garbage_per_clip": 0.11917098445595854,
+   "token_error_rate": 0.18652849740932642,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 600,
+   "conf": 0.9,
+   "stable_ms": 200,
+   "one_rate": 0.9326424870466321,
+   "garbage_per_clip": 0.15025906735751296,
+   "token_error_rate": 0.17098445595854922,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 600,
+   "conf": 0.9,
+   "stable_ms": 400,
+   "one_rate": 0.8186528497409327,
+   "garbage_per_clip": 0.07253886010362694,
+   "token_error_rate": 0.18652849740932642,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 1000,
+   "conf": 0.6,
+   "stable_ms": 200,
+   "one_rate": 0.9948186528497409,
+   "garbage_per_clip": 0.22279792746113988,
+   "token_error_rate": 0.22797927461139897,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 1000,
+   "conf": 0.6,
+   "stable_ms": 400,
+   "one_rate": 0.9948186528497409,
+   "garbage_per_clip": 0.16062176165803108,
+   "token_error_rate": 0.16580310880829016,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 1000,
+   "conf": 0.8,
+   "stable_ms": 200,
+   "one_rate": 0.9896373056994818,
+   "garbage_per_clip": 0.14507772020725387,
+   "token_error_rate": 0.15544041450777202,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 1000,
+   "conf": 0.8,
+   "stable_ms": 400,
+   "one_rate": 0.9896373056994818,
+   "garbage_per_clip": 0.09326424870466321,
+   "token_error_rate": 0.10362694300518134,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 1000,
+   "conf": 0.9,
+   "stable_ms": 200,
+   "one_rate": 0.9792746113989638,
+   "garbage_per_clip": 0.08290155440414508,
+   "token_error_rate": 0.09844559585492228,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 1000,
+   "conf": 0.9,
+   "stable_ms": 400,
+   "one_rate": 0.9430051813471503,
+   "garbage_per_clip": 0.04145077720207254,
+   "token_error_rate": 0.08808290155440414,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 1500,
+   "conf": 0.6,
+   "stable_ms": 200,
+   "one_rate": 0.9948186528497409,
+   "garbage_per_clip": 0.16062176165803108,
+   "token_error_rate": 0.16580310880829016,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 1500,
+   "conf": 0.6,
+   "stable_ms": 400,
+   "one_rate": 0.9585492227979274,
+   "garbage_per_clip": 0.16580310880829016,
+   "token_error_rate": 0.14507772020725387,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 1500,
+   "conf": 0.8,
+   "stable_ms": 200,
+   "one_rate": 0.9948186528497409,
+   "garbage_per_clip": 0.09326424870466321,
+   "token_error_rate": 0.09844559585492228,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 1500,
+   "conf": 0.8,
+   "stable_ms": 400,
+   "one_rate": 0.9326424870466321,
+   "garbage_per_clip": 0.10880829015544041,
+   "token_error_rate": 0.06217616580310881,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 1500,
+   "conf": 0.9,
+   "stable_ms": 200,
+   "one_rate": 0.9844559585492227,
+   "garbage_per_clip": 0.03626943005181347,
+   "token_error_rate": 0.05181347150259067,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 0,
+   "window_ms": 1500,
+   "conf": 0.9,
+   "stable_ms": 400,
+   "one_rate": 0.9015544041450777,
+   "garbage_per_clip": 0.08290155440414508,
+   "token_error_rate": 0.07772020725388601,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 600,
+   "conf": 0.6,
+   "stable_ms": 200,
+   "one_rate": 0.9844559585492227,
+   "garbage_per_clip": 0.36787564766839376,
+   "token_error_rate": 0.36787564766839376,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 600,
+   "conf": 0.6,
+   "stable_ms": 400,
+   "one_rate": 0.917098445595855,
+   "garbage_per_clip": 0.21761658031088082,
+   "token_error_rate": 0.22797927461139897,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 600,
+   "conf": 0.8,
+   "stable_ms": 200,
+   "one_rate": 0.9637305699481865,
+   "garbage_per_clip": 0.2849740932642487,
+   "token_error_rate": 0.2849740932642487,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 600,
+   "conf": 0.8,
+   "stable_ms": 400,
+   "one_rate": 0.8497409326424871,
+   "garbage_per_clip": 0.16062176165803108,
+   "token_error_rate": 0.20207253886010362,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 600,
+   "conf": 0.9,
+   "stable_ms": 200,
+   "one_rate": 0.9326424870466321,
+   "garbage_per_clip": 0.19170984455958548,
+   "token_error_rate": 0.20725388601036268,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 600,
+   "conf": 0.9,
+   "stable_ms": 400,
+   "one_rate": 0.8186528497409327,
+   "garbage_per_clip": 0.09326424870466321,
+   "token_error_rate": 0.19170984455958548,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 1000,
+   "conf": 0.6,
+   "stable_ms": 200,
+   "one_rate": 1.0,
+   "garbage_per_clip": 0.24352331606217617,
+   "token_error_rate": 0.24352331606217617,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 1000,
+   "conf": 0.6,
+   "stable_ms": 400,
+   "one_rate": 0.9948186528497409,
+   "garbage_per_clip": 0.19170984455958548,
+   "token_error_rate": 0.19689119170984457,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 1000,
+   "conf": 0.8,
+   "stable_ms": 200,
+   "one_rate": 0.9948186528497409,
+   "garbage_per_clip": 0.16580310880829016,
+   "token_error_rate": 0.16580310880829016,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 1000,
+   "conf": 0.8,
+   "stable_ms": 400,
+   "one_rate": 0.9896373056994818,
+   "garbage_per_clip": 0.11917098445595854,
+   "token_error_rate": 0.12953367875647667,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 1000,
+   "conf": 0.9,
+   "stable_ms": 200,
+   "one_rate": 0.9792746113989638,
+   "garbage_per_clip": 0.10880829015544041,
+   "token_error_rate": 0.12435233160621761,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 1000,
+   "conf": 0.9,
+   "stable_ms": 400,
+   "one_rate": 0.9481865284974094,
+   "garbage_per_clip": 0.06217616580310881,
+   "token_error_rate": 0.09844559585492228,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 1500,
+   "conf": 0.6,
+   "stable_ms": 200,
+   "one_rate": 1.0,
+   "garbage_per_clip": 0.20207253886010362,
+   "token_error_rate": 0.20207253886010362,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 1500,
+   "conf": 0.6,
+   "stable_ms": 400,
+   "one_rate": 0.9792746113989638,
+   "garbage_per_clip": 0.16062176165803108,
+   "token_error_rate": 0.15025906735751296,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 1500,
+   "conf": 0.8,
+   "stable_ms": 200,
+   "one_rate": 1.0,
+   "garbage_per_clip": 0.11398963730569948,
+   "token_error_rate": 0.11398963730569948,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 1500,
+   "conf": 0.8,
+   "stable_ms": 400,
+   "one_rate": 0.9740932642487047,
+   "garbage_per_clip": 0.08808290155440414,
+   "token_error_rate": 0.07253886010362694,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 1500,
+   "conf": 0.9,
+   "stable_ms": 200,
+   "one_rate": 0.9844559585492227,
+   "garbage_per_clip": 0.06735751295336788,
+   "token_error_rate": 0.07772020725388601,
+   "n_clips": 193
+  },
+  {
+   "join_ms": 300,
+   "window_ms": 1500,
+   "conf": 0.9,
+   "stable_ms": 400,
+   "one_rate": 0.9481865284974094,
+   "garbage_per_clip": 0.06735751295336788,
+   "token_error_rate": 0.05181347150259067,
+   "n_clips": 193
+  }
+ ]
+}

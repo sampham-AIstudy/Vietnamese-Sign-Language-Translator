@@ -1,0 +1,530 @@
+{
+ "w1000_c0.9_s300_replace0": {
+  "L0": {
+   "one_rate": 0.9793,
+   "garbage_per_clip": 0.0518
+  },
+  "L300": {
+   "one_rate": 0.9793,
+   "garbage_per_clip": 0.0777
+  },
+  "L600": {
+   "one_rate": 0.9845,
+   "garbage_per_clip": 0.0777
+  },
+  "single_letter": {
+   "n": 510,
+   "one": 0.7961,
+   "multi": 0.1902,
+   "zero": 0.0137
+  },
+  "single_tone": {
+   "n": 117,
+   "one": 0.7949,
+   "multi": 0.1282,
+   "zero": 0.0769
+  },
+  "top_multi_patterns": [
+   [
+    "e->ê (ê)",
+    19
+   ],
+   [
+    "a->â (â)",
+    17
+   ],
+   [
+    "u->ư (ư)",
+    15
+   ],
+   [
+    "a->ă (ă)",
+    12
+   ],
+   [
+    "o->ơ (ơ)",
+    12
+   ],
+   [
+    "o->ô (ô)",
+    9
+   ],
+   [
+    "e->p (ê)",
+    4
+   ],
+   [
+    "dấu huyền->dấu nặng (dấu huyền)",
+    3
+   ],
+   [
+    "u->i (ư)",
+    2
+   ],
+   [
+    "u->dấu hỏi (ư)",
+    2
+   ],
+   [
+    "dấu sắc->y (dấu sắc)",
+    2
+   ],
+   [
+    "s->ô (ô)",
+    1
+   ],
+   [
+    "s->i (ơ)",
+    1
+   ],
+   [
+    "o->dấu hỏi (ơ)",
+    1
+   ],
+   [
+    "v->r (r)",
+    1
+   ]
+  ]
+ },
+ "w1000_c0.9_s300_replace1": {
+  "L0": {
+   "one_rate": 0.9793,
+   "garbage_per_clip": 0.0207
+  },
+  "L300": {
+   "one_rate": 0.9689,
+   "garbage_per_clip": 0.0363
+  },
+  "L600": {
+   "one_rate": 0.9793,
+   "garbage_per_clip": 0.0311
+  },
+  "single_letter": {
+   "n": 510,
+   "one": 0.9608,
+   "multi": 0.0255,
+   "zero": 0.0137
+  },
+  "single_tone": {
+   "n": 117,
+   "one": 0.7949,
+   "multi": 0.1282,
+   "zero": 0.0769
+  },
+  "top_multi_patterns": [
+   [
+    "ê->p (ê)",
+    4
+   ],
+   [
+    "ư->dấu hỏi (ư)",
+    3
+   ],
+   [
+    "dấu huyền->dấu nặng (dấu huyền)",
+    3
+   ],
+   [
+    "ư->i (ư)",
+    2
+   ],
+   [
+    "dấu sắc->y (dấu sắc)",
+    2
+   ],
+   [
+    "s->ô (ô)",
+    1
+   ],
+   [
+    "s->i (ơ)",
+    1
+   ],
+   [
+    "ơ->dấu hỏi (ơ)",
+    1
+   ],
+   [
+    "v->r (r)",
+    1
+   ],
+   [
+    "dấu huyền->a (dấu huyền)",
+    1
+   ],
+   [
+    "dấu huyền->m (dấu huyền)",
+    1
+   ],
+   [
+    "a->dấu sắc (dấu sắc)",
+    1
+   ],
+   [
+    "dấu sắc->dấu hỏi (dấu sắc)",
+    1
+   ],
+   [
+    "a->dấu hỏi (dấu sắc)",
+    1
+   ],
+   [
+    "q->dấu sắc (dấu sắc)",
+    1
+   ]
+  ]
+ },
+ "w1000_c0.8_s300_replace0": {
+  "L0": {
+   "one_rate": 0.9896,
+   "garbage_per_clip": 0.1244
+  },
+  "L300": {
+   "one_rate": 0.9896,
+   "garbage_per_clip": 0.1399
+  },
+  "L600": {
+   "one_rate": 0.9948,
+   "garbage_per_clip": 0.1658
+  },
+  "single_letter": {
+   "n": 510,
+   "one": 0.7647,
+   "multi": 0.2314,
+   "zero": 0.0039
+  },
+  "single_tone": {
+   "n": 117,
+   "one": 0.7607,
+   "multi": 0.2308,
+   "zero": 0.0085
+  },
+  "top_multi_patterns": [
+   [
+    "e->ê (ê)",
+    18
+   ],
+   [
+    "a->â (â)",
+    17
+   ],
+   [
+    "a->ă (ă)",
+    13
+   ],
+   [
+    "o->ô (ô)",
+    12
+   ],
+   [
+    "u->ư (ư)",
+    12
+   ],
+   [
+    "o->ơ (ơ)",
+    11
+   ],
+   [
+    "dấu ngã->dấu hỏi (dấu ngã)",
+    6
+   ],
+   [
+    "e->p (ê)",
+    5
+   ],
+   [
+    "dấu huyền->dấu nặng (dấu huyền)",
+    4
+   ],
+   [
+    "o->dấu hỏi (ơ)",
+    3
+   ],
+   [
+    "u->i (ư)",
+    3
+   ],
+   [
+    "u->dấu hỏi (ư)",
+    3
+   ],
+   [
+    "dấu sắc->y (dấu sắc)",
+    3
+   ],
+   [
+    "a->v (â)",
+    2
+   ],
+   [
+    "đ->d (d)",
+    2
+   ]
+  ]
+ },
+ "w1000_c0.8_s300_replace1": {
+  "L0": {
+   "one_rate": 0.9793,
+   "garbage_per_clip": 0.0829
+  },
+  "L300": {
+   "one_rate": 0.9793,
+   "garbage_per_clip": 0.0933
+  },
+  "L600": {
+   "one_rate": 0.9845,
+   "garbage_per_clip": 0.1088
+  },
+  "single_letter": {
+   "n": 510,
+   "one": 0.9275,
+   "multi": 0.0686,
+   "zero": 0.0039
+  },
+  "single_tone": {
+   "n": 117,
+   "one": 0.7607,
+   "multi": 0.2308,
+   "zero": 0.0085
+  },
+  "top_multi_patterns": [
+   [
+    "dấu ngã->dấu hỏi (dấu ngã)",
+    6
+   ],
+   [
+    "ê->p (ê)",
+    5
+   ],
+   [
+    "ư->dấu hỏi (ư)",
+    4
+   ],
+   [
+    "dấu huyền->dấu nặng (dấu huyền)",
+    4
+   ],
+   [
+    "ô->p (ô)",
+    3
+   ],
+   [
+    "ơ->dấu hỏi (ơ)",
+    3
+   ],
+   [
+    "ư->i (ư)",
+    3
+   ],
+   [
+    "dấu sắc->y (dấu sắc)",
+    3
+   ],
+   [
+    "â->v (â)",
+    2
+   ],
+   [
+    "đ->d (d)",
+    2
+   ],
+   [
+    "h->t (h)",
+    2
+   ],
+   [
+    "d->dấu huyền (dấu huyền)",
+    2
+   ],
+   [
+    "dấu huyền->dấu ngã (dấu ngã)",
+    2
+   ],
+   [
+    "â->p (â)",
+    1
+   ],
+   [
+    "ê->v (ê)",
+    1
+   ]
+  ]
+ },
+ "w1500_c0.9_s300_replace0": {
+  "L0": {
+   "one_rate": 0.943,
+   "garbage_per_clip": 0.0674
+  },
+  "L300": {
+   "one_rate": 0.9741,
+   "garbage_per_clip": 0.0622
+  },
+  "L600": {
+   "one_rate": 0.9896,
+   "garbage_per_clip": 0.0674
+  },
+  "single_letter": {
+   "n": 510,
+   "one": 0.7725,
+   "multi": 0.2176,
+   "zero": 0.0098
+  },
+  "single_tone": {
+   "n": 117,
+   "one": 0.8205,
+   "multi": 0.1538,
+   "zero": 0.0256
+  },
+  "top_multi_patterns": [
+   [
+    "e->ê (ê)",
+    23
+   ],
+   [
+    "a->ă (ă)",
+    21
+   ],
+   [
+    "a->â (â)",
+    19
+   ],
+   [
+    "u->ư (ư)",
+    18
+   ],
+   [
+    "o->ơ (ơ)",
+    12
+   ],
+   [
+    "o->ô (ô)",
+    10
+   ],
+   [
+    "dấu huyền->dấu nặng (dấu huyền)",
+    3
+   ],
+   [
+    "dấu ngã->dấu hỏi (dấu ngã)",
+    3
+   ],
+   [
+    "dấu sắc->y (dấu sắc)",
+    2
+   ],
+   [
+    "dấu huyền->dấu ngã (dấu ngã)",
+    2
+   ],
+   [
+    "e->p (ê)",
+    1
+   ],
+   [
+    "s->ô (ô)",
+    1
+   ],
+   [
+    "c->ô (ô)",
+    1
+   ],
+   [
+    "s->i (ơ)",
+    1
+   ],
+   [
+    "o->dấu hỏi (ơ)",
+    1
+   ]
+  ]
+ },
+ "w1500_c0.9_s300_replace1": {
+  "L0": {
+   "one_rate": 0.9378,
+   "garbage_per_clip": 0.057
+  },
+  "L300": {
+   "one_rate": 0.9689,
+   "garbage_per_clip": 0.0466
+  },
+  "L600": {
+   "one_rate": 0.9845,
+   "garbage_per_clip": 0.0415
+  },
+  "single_letter": {
+   "n": 510,
+   "one": 0.9745,
+   "multi": 0.0157,
+   "zero": 0.0098
+  },
+  "single_tone": {
+   "n": 117,
+   "one": 0.8205,
+   "multi": 0.1538,
+   "zero": 0.0256
+  },
+  "top_multi_patterns": [
+   [
+    "dấu huyền->dấu nặng (dấu huyền)",
+    3
+   ],
+   [
+    "dấu ngã->dấu hỏi (dấu ngã)",
+    3
+   ],
+   [
+    "dấu sắc->y (dấu sắc)",
+    2
+   ],
+   [
+    "dấu huyền->dấu ngã (dấu ngã)",
+    2
+   ],
+   [
+    "ê->p (ê)",
+    1
+   ],
+   [
+    "s->ô (ô)",
+    1
+   ],
+   [
+    "c->ô (ô)",
+    1
+   ],
+   [
+    "s->i (ơ)",
+    1
+   ],
+   [
+    "ơ->dấu hỏi (ơ)",
+    1
+   ],
+   [
+    "v->r (r)",
+    1
+   ],
+   [
+    "ư->i (ư)",
+    1
+   ],
+   [
+    "ư->dấu hỏi (ư)",
+    1
+   ],
+   [
+    "dấu huyền->a (dấu huyền)",
+    1
+   ],
+   [
+    "dấu huyền->m (dấu huyền)",
+    1
+   ],
+   [
+    "a->dấu sắc (dấu sắc)",
+    1
+   ]
+  ]
+ }
+}

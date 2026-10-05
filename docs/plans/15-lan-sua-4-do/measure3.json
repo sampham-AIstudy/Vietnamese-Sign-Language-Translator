@@ -1,0 +1,162 @@
+[
+ {
+  "win": 1000,
+  "conf": 0.9,
+  "stable": 300,
+  "cut_back": 0,
+  "classifier_rearm": false,
+  "L0": {
+   "one_rate": 0.2332,
+   "garbage_per_clip": 0.1192,
+   "token_error_rate": 0.7668
+  },
+  "L300": {
+   "one_rate": 0.2591,
+   "garbage_per_clip": 0.1554,
+   "token_error_rate": 0.7306
+  },
+  "L600": {
+   "one_rate": 0.228,
+   "garbage_per_clip": 0.1451,
+   "token_error_rate": 0.7617
+  },
+  "single_letter": {
+   "n": 510,
+   "one": 0.8843,
+   "multi": 0.1157
+  },
+  "single_tone": {
+   "n": 117,
+   "one": 0.8718,
+   "multi": 0.1282
+  }
+ },
+ {
+  "win": 1000,
+  "conf": 0.9,
+  "stable": 300,
+  "cut_back": 0,
+  "classifier_rearm": true,
+  "L0": {
+   "one_rate": 0.829,
+   "garbage_per_clip": 0.2798,
+   "token_error_rate": 0.2642
+  },
+  "L300": {
+   "one_rate": 0.829,
+   "garbage_per_clip": 0.3368,
+   "token_error_rate": 0.3212
+  },
+  "L600": {
+   "one_rate": 0.829,
+   "garbage_per_clip": 0.3316,
+   "token_error_rate": 0.3161
+  },
+  "single_letter": {
+   "n": 510,
+   "one": 0.7235,
+   "multi": 0.2765
+  },
+  "single_tone": {
+   "n": 117,
+   "one": 0.5812,
+   "multi": 0.4188
+  }
+ },
+ {
+  "win": 1000,
+  "conf": 0.9,
+  "stable": 300,
+  "cut_back": 300,
+  "classifier_rearm": true,
+  "L0": {
+   "one_rate": 0.8964,
+   "garbage_per_clip": 0.1865,
+   "token_error_rate": 0.1813
+  },
+  "L300": {
+   "one_rate": 0.886,
+   "garbage_per_clip": 0.2539,
+   "token_error_rate": 0.2487
+  },
+  "L600": {
+   "one_rate": 0.8912,
+   "garbage_per_clip": 0.2487,
+   "token_error_rate": 0.2435
+  },
+  "single_letter": {
+   "n": 510,
+   "one": 0.7235,
+   "multi": 0.2765
+  },
+  "single_tone": {
+   "n": 117,
+   "one": 0.5812,
+   "multi": 0.4188
+  }
+ },
+ {
+  "win": 1000,
+  "conf": 0.8,
+  "stable": 300,
+  "cut_back": 0,
+  "classifier_rearm": true,
+  "L0": {
+   "one_rate": 0.829,
+   "garbage_per_clip": 0.342,
+   "token_error_rate": 0.3368
+  },
+  "L300": {
+   "one_rate": 0.829,
+   "garbage_per_clip": 0.399,
+   "token_error_rate": 0.3886
+  },
+  "L600": {
+   "one_rate": 0.829,
+   "garbage_per_clip": 0.399,
+   "token_error_rate": 0.3886
+  },
+  "single_letter": {
+   "n": 510,
+   "one": 0.7098,
+   "multi": 0.2902
+  },
+  "single_tone": {
+   "n": 117,
+   "one": 0.5128,
+   "multi": 0.4872
+  }
+ },
+ {
+  "win": 1500,
+  "conf": 0.9,
+  "stable": 300,
+  "cut_back": 0,
+  "classifier_rearm": true,
+  "L0": {
+   "one_rate": 0.772,
+   "garbage_per_clip": 0.3834,
+   "token_error_rate": 0.3523
+  },
+  "L300": {
+   "one_rate": 0.8135,
+   "garbage_per_clip": 0.3938,
+   "token_error_rate": 0.3782
+  },
+  "L600": {
+   "one_rate": 0.8083,
+   "garbage_per_clip": 0.399,
+   "token_error_rate": 0.399
+  },
+  "single_letter": {
+   "n": 510,
+   "one": 0.7059,
+   "multi": 0.2941
+  },
+  "single_tone": {
+   "n": 117,
+   "one": 0.5385,
+   "multi": 0.4615
+  }
+ }
+]
