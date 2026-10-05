@@ -1250,3 +1250,90 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - Còn cho reviewer / người dùng: hồi quy trên Windows và phiên webcam theo checklist §5 của plan (lệnh ở mục 9 của `docs/level1_desktop.md`).
   Ngưỡng 1.1 / 1.2 và thời gian giữ chưa thử trên webcam; nếu khó kích hoạt thì xem dòng HUD `[Cử chỉ: ...]` có hiện không (không hiện ⇒ hình
   tay chưa qua tiêu chí, thường là ngón cái chưa dang đủ hoặc các ngón chưa tách).
+
+## Lần sửa 10 — coder (phiên cloud 2026-10-05, `docs/plans/15-lan-sua-10.md` @ `8e6d6fb`; khóa tay thuận, làm mượt landmark, nhắc góc tay) — **P1–P3 XONG**
+- Nhánh: commit trên `claude/level1-rearm-rev10-83s46p` (tạo từ `origin/cloud/2026-10-04-level1-rearm` @ `8e6d6fb`), push lên cả nhánh đó và
+  `cloud/2026-10-04-level1-rearm` sau mỗi mục. Thứ tự làm: P2 → P3 → P1 (P1 chờ quyết định của người dùng, xem dưới).
+- Đầu phiên (container mới): `.venv` → `/opt/vslt-venv`, cài `seaborn`; khôi phục (không commit): kernel `phmvnsm33/vsl-extract-alphabet`
+  → 688 file (686 npz + manifest + tasks); `archive_private_kaggle.py restore` 2 manifest (provenance 13 file, step4 18 file) — sha256
+  `checkpoints/alphabet_best.pt` = `a6311820…5b708a2` khớp; 640 mp4 hauuto; 46 video QIPEDC chữ cái theo manifest.
+  GitNexus KHÔNG dùng được trong phiên này (`npx -y gitnexus@latest` bị chặn quyền chạy mã tải về) ⇒ impact bằng text search + `git diff`.
+- Mốc tại `8e6d6fb` (worktree sạch `_work/base10`, dữ liệu symlink; `_work/_plan15/rev10_baseline_*.log`): 12 module Level 1 `Ran 354 — OK
+  (skipped=1)` (skip duy nhất `test_u1_summary`); 2 module mới `Ran 13 — OK`; AC1-ngắn 11 module `Ran 167 — OK`, 0 skip; guard
+  `known=9 allowed=36`, `Ran 28 — OK`. (Lượt mốc đầu thiếu symlink tới file khôi phục trong `reports/` và video QIPEDC ⇒ 2 lỗi + 5 skip
+  không liên quan code; chạy lại sau khi nối đủ.)
+
+### P2 — `LandmarkSmoother` + `--smooth-landmarks` (`f4f4223`)
+- Mã: `level1_core.LandmarkSmoother(alpha_static=0.6, alpha_dynamic=0.9, speed_threshold=0.15)` (giá trị của plan); `filter(ts_ms, lm)` =
+  EMA với trọng số khung mới `alpha_static` khi tốc độ < ngưỡng, `alpha_dynamic` khi ngược lại hoặc bước thời gian ≤ 0; `None` / `reset()`
+  xóa trạng thái, khung đầu giữ nguyên; trả `float32[21, 3]`, không sửa mảng vào; tham số / landmark sai ⇒ `ValueError`.
+  Lựa chọn của coder: tốc độ = khoảng cách x, y giữa tâm bàn tay (trung bình 21 điểm) của khung mới và của đầu ra trước, chia bước thời gian
+  (đơn vị ảnh MediaPipe / giây) — không dùng z vì z là trục nhiễu, tâm bàn tay trung bình hóa rung của từng điểm.
+  `level1_demo`: `--smooth-landmarks` / `--no-smooth-landmarks`; landmark mỗi khung qua bộ lọc ngay sau MediaPipe (trước bộ tách, cửa sổ,
+  cử chỉ, hình vẽ); stage `landmark_smooth` và khóa JSON `landmark_smoothing` (`enabled, alpha_static, alpha_dynamic, speed_threshold,
+  frames_static, frames_dynamic`) chỉ khi bật.
+- **Lệch plan — mặc định TẮT** (plan ghi `default=True`): §1 và AC-10d yêu cầu chạy không cờ mới giữ nguyên hành vi cũ. Bằng chứng: bật
+  mặc định ⇒ `tests.test_level1_demo` `Ran 117 — FAILED (failures=17)` (`_work/_plan15/P2_default_on_evidence.log`): segment / độ tin cậy
+  khác app ở commit trước trong `test_a2_motion_pose_identical_to_before_d2`, `test_s2_motion_pose_segmenter_unchanged`,
+  `test_s2_no_open_palm_same_report_as_before`, `test_m3_default_run_equals_rev7_app`, `test_9d_…`, `test_9c_…`, `test_6b_…`, AC-L, M3.
+  Theo quy tắc không sửa test cũ ⇒ để tắt; lệnh gợi ý ở mục 10 của `docs/level1_desktop.md` bật bằng `--smooth-landmarks`.
+- Impact (text search): `Level1App` chỉ dùng trong `level1_demo.py` + `tests/test_level1_demo.py`; `build_parser` còn dùng ở
+  `scripts/level1_trace_report.py`, `tests/test_level1_equivalence.py` (cờ mới có mặc định, không đổi gì với họ). diff: `level1_demo.py 31+/3−`,
+  `level1_core.py 54+/0−`, `tests/test_level1_core.py 110+/0−`, `tests/test_level1_demo.py 154+/0−`.
+- Test viết TRƯỚC: `TestLandmarkSmootherP2` (8: giá trị mặc định; tay tĩnh + nhiễu Gauss trục z (σ 0.02, seed cố định, trên bàn tay sơ đồ)
+  ⇒ phương sai z ≤ 50 % ở MỌI khớp, trung bình giữ trong 0.2σ, x/y không đổi; bước nhảy lớn ⇒ khung đầu đã đi 90 %, sau 3 khung sai < 1 %;
+  trọng số đúng; None/reset; không sửa đầu vào; tham số/landmark sai), `TestSmoothLandmarksArgsP2` (1), `TestSmoothLandmarksAppP2` (4, clip
+  D2: đầu vào bộ tách và cửa sổ = bộ lọc tính lại từ landmark ghi được, rung z giữa khung kề nhau thấp hơn raw, khối JSON + stage, không cờ ⇒
+  landmark raw và báo cáo bằng app `8e6d6fb` ở 2 chế độ). ĐỎ: core `FAILED (errors=13)` (`P2_red_core.log`), app thoát vì argparse không biết
+  `--smooth-landmarks` (`P2_red.log`, chạy trên mã `8e6d6fb`). XANH: 13 OK; `test_level1_demo` + `core` + `guard` `Ran 173 — OK` (`P2_green.log`).
+
+### P3 — `foreshortening_ratio` + nhắc góc tay + tài liệu mục 10 (`72b5c64`)
+- Mã: `level1_core.foreshortening_ratio(lm)` = `dist_2d(8, 5) / dist_3d(8, 5)` ∈ [0, 1] (None / shape khác [21, 3] / không hữu hạn / đầu ngón
+  trùng MCP ⇒ 1.0). App: `_angle_step` mỗi khung trên `aspect_points` (tính trong stage `segmenter`, không thêm stage), đếm khung có tay
+  liên tiếp với tỉ lệ < `FORESHORTEN_RATIO_MIN` 0.3; > `FORESHORTEN_FRAMES` 3 ⇒ dòng HUD `[Góc tay: Hơi nghiêng tay 20°]` màu vàng
+  (`Hud.HINT_RGB` cho dòng nhỏ bắt đầu `[Góc tay:`). Luôn bật, chỉ HUD (JSON/token/segment không đổi ⇒ AC-10d giữ). Docs mục 10.
+- Thăm dò (script `_work/fs_scan.py`, `_work/fs_clips.py`, không commit; landmark trích trên Kaggle của 640 clip hauuto; kiểm logic, không
+  phải độ chính xác): 31 / 640 clip có chuỗi > 3 khung tỉ lệ < 0.3, nhiều nhất `â` (9 clip), rồi `ê`, `ô`, `p`, `ư`, dấu thanh; clip `a` không có.
+- Test: `TestForeshorteningRatioP3` (3), `TestAngleHintP3` (3: hằng của plan; 3 khung chưa hiện, khung thứ 4 hiện đúng 1 dòng, tay nghiêng
+  hoặc mất tay ⇒ tắt, ở 2 chế độ; dòng vẽ màu vàng), `TestAngleHintClipP3` (2, clip thật `hau/aa_hau_A_001.mp4`: trạng thái dòng sau mỗi khung =
+  luật tính lại từ landmark ghi được và có bật; clip D2 không bật; báo cáo D2 bằng app `8e6d6fb`), `TestDesktopDocP3` (1). ĐỎ (`P3_red.log`):
+  `FAILED (failures=1, errors=8)`; `test_p3_report_unchanged` xanh từ đầu đúng mong đợi. Sửa test trước khi commit: bàn tay sơ đồ ban đầu có
+  ngón trỏ xòe 14° nên tỉ lệ không bằng cos góc nghiêng ⇒ dùng ngón trỏ thẳng đứng (lỗi của test mới, không phải test cũ). Test tài liệu
+  viết sau đoạn tài liệu (không có log đỏ). XANH: 8 OK (`P3_green.log`); `test_level1_demo` + `core` + `guard` `Ran 182 — OK` (`P3_full.log`).
+- Impact: `Hud._build` chỉ gọi từ `Hud.compose`; `_hud_lines` / `_process` chỉ trong `Level1App`. diff: docs `28+`, `level1_demo.py 28+/2−`,
+  `level1_core.py 20+`, tests `54+` / `152+`.
+
+### P1 — `--dominant-hand` (`badb44d`)
+- **Lỗi trong plan, đã hỏi người dùng (thẻ quyết định trong thread):** MediaPipe giả định ảnh đã lật gương; app không bao giờ lật khung khi
+  xử lý, nên tay phải mang nhãn `Left` và `canonicalize_hand_sequence` lật x khi đa số `Left` (docstring của hàm). Dữ liệu train: chỉ 3 / 640
+  clip hauuto đa số `Right`. Thử trên 44 clip train hau/tai (`_work/force_label.py`, không commit; kiểm đường code, không phải độ chính xác):
+  không khóa 42/44 clip có segment dài nhất đúng chữ, khóa `Left` 42/44, khóa `Right` như chữ AC-10b 11/44 ⇒ lệnh checklist §5
+  `--dominant-hand Right` sẽ lật gương tay phải so với dữ liệu train. Làm theo lựa chọn khuyến nghị "Theo tay người ký" (đúng help text của
+  plan "Signer dominant hand"): `DOMINANT_HAND_LABELS = {"Right": "Left", "Left": "Right"}`; AC-10b hiểu là mọi khung có tay nhận MỘT nhãn cố
+  định (nhãn của tay được chọn). Nếu người dùng chọn "Đúng chữ kế hoạch" thì chỉ đổi bảng này (và test mới tương ứng).
+- Ghi chú: canonicalize lật theo ĐA SỐ nhãn trong segment / cửa sổ, không theo từng khung như §0 của plan viết; nhãn đổi qua lại chỉ gây lật
+  khi đa số trong cửa sổ đổi. Trong landmark Kaggle: 67 / 640 clip có ít nhất một lần đổi nhãn, 38 trong đó là `â`, `ă`, `ô`, `ê`, `p`.
+- Mã: `--dominant-hand {Right, Left, auto}` (mặc định `auto`); khóa nhãn ngay sau MediaPipe cho khung có tay (landmark không đổi) ⇒ bộ tách,
+  cửa sổ và mọi bước sau; JSON `dominant_hand = {mode, label}` và HUD `[Tay: Phải]` / `[Tay: Trái]` chỉ khi khóa. Docs mục 10 (lệnh §5 của
+  plan, cách chọn tay, lưu ý driver tự lật gương).
+- Test viết TRƯỚC: `TestDominantHandArgsP1` (2), `TestDominantHandP1` (5, clip thật `khoi/aa_khoi_A_001.mp4` có nhãn Left/Right đổi qua lại:
+  khóa ⇒ mọi khung có tay ở bộ tách / cửa sổ một nhãn, landmark nguyên vẹn, mọi segment canonicalize cùng một chiều (Right ⇒ lật, Left ⇒ không);
+  JSON + HUD; `auto` ⇒ nhãn từng khung và báo cáo bằng app `8e6d6fb` ở 2 chế độ), `TestDesktopDocP1` (1). ĐỎ: args `FAILED (failures=1)`
+  (`P1_red_args.log`), app thoát vì argparse (`P1_red.log`), doc `FAILED (failures=1)` (`P1_red_doc.log`). XANH: 7 OK (`P1_green.log`) + doc OK.
+- Impact: `_process`, `_hud_lines`, `report`, `build_parser` chỉ trong `level1_demo.py` (+ 2 nơi dùng `build_parser` như P2). diff: docs
+  `15+/3−`, `level1_demo.py 24+`, `tests/test_level1_demo.py 138+`.
+
+### Kết thúc lần sửa 10 — AC-10a…AC-10d
+- Commit: `f4f4223` P2, `72b5c64` P3, `badb44d` P1 (+ commit tiến độ này).
+- Hồi quy tại `badb44d` (`_work/_plan15/rev10_final_*.log`): 12 module Level 1 `Ran 384 — OK (skipped=1)` (= 354 cũ + 30 mới; skip duy nhất
+  `test_u1_summary`); 2 module mới `Ran 13 — OK`; AC1-ngắn 11 module `Ran 167 — OK`, 0 skip (gồm AC5 `test_hand_live_equivalence`, AC4-a
+  `test_hand_landmarks_ws`); guard `[DoD7-guard] known=9 allowed=36`, `Ran 28 — OK`.
+- AC-10a: `git diff 8e6d6fb..badb44d --numstat -- tests/` → `test_level1_core.py 164/0`, `test_level1_demo.py 444/0` (cột xóa = 0). File đổi
+  chỉ trong §3 của plan; `configs/` (sha256 `level1_realtime.json` `cc178955…`, `level1_demo_classifier.json` `568f97d8…`,
+  `level1_demo_classifier_rev7.json` `a2aea62e…`), `src/data/alphabet_preprocessing.py`, `backend/main.py`, `realtime_demo.py` không đổi;
+  checkpoint `a6311820…5b708a2` không đổi; không train.
+- AC-10b: đạt theo cách hiểu đã ghi ở P1 (một nhãn cố định trên mọi khung có tay; mọi segment canonicalize một chiều). AC-10c: đạt trên nhiễu
+  sơ đồ (phương sai z ≤ 50 %, bám bước nhảy) và trên clip D2 (rung z thấp hơn raw). AC-10d: đạt (không cờ ⇒ báo cáo bằng app `8e6d6fb`; số ở trên),
+  nhờ `--smooth-landmarks` mặc định tắt (lệch plan, ghi ở P2).
+- Còn cho reviewer / người dùng: xác nhận cách hiểu `--dominant-hand` (thẻ quyết định) và mặc định tắt của `--smooth-landmarks`; hồi quy trên
+  Windows và phiên webcam theo checklist §5 (lệnh ở mục 10 của `docs/level1_desktop.md`); tác dụng lên độ chính xác chưa đo.
