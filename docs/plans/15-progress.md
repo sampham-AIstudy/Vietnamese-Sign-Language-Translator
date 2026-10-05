@@ -817,3 +817,22 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - Theo §3.A.4 + §7 mục 2 (lần sửa 1): DỪNG, báo planner. KHÔNG thử giá trị thứ ba, KHÔNG đổi dung sai, KHÔNG đổi config. `configs/level1_realtime.json`
   giữ nguyên (vẫn là config hiệu chỉnh A2 + A2b). C1 CHƯA làm (phụ thuộc A3 và kết luận này). Chế độ demo `configs/level1_demo_classifier.json`
   (re-arm bằng bộ giải mã nhãn) không thuộc phép kiểm này.
+
+## C1 — coder (cùng phiên, sau quyết định của người dùng)
+- **Người dùng chọn "Làm C1 luôn"** trên thẻ quyết định (2026-10-05 07:35 UTC) sau khi A3 trượt: giữ config hiện tại, ghi A3 trượt vào mục Giới
+  hạn của `docs/level1_desktop.md` và SUMMARY. Không đổi config, không chạy giá trị khác.
+- Mã (`scripts/level1_segment_report.py`, commit `28c0d7d`): `build_summary` + CLI `--summary --out reports/level1_realtime_<D>/SUMMARY.md`:
+  bảng sinh bằng code từ `tone_evidence.json` (`--evidence-json`), `segment_check_{before,after}.json` (kèm kết quả `keep_rule`),
+  `rearm_check_*.json` chế độ decoder (G1–G7), config demo (`_user_decision`) và `webcam_*.json` trong cùng thư mục; mỗi mục ghi đường dẫn @ commit
+  của file + sha256; không ghi giờ hay commit HEAD ⇒ tất định. `docs/level1_desktop.md`: lệnh demo đặt đầu (`--config configs/level1_demo_classifier.json`),
+  bảng phím (`1`–`5`, `n`, Backspace, Space, `r`, `a`, `c`, `p`, `q`), khung text, Giới hạn 1–13 (§6.3 gốc, §6.2 lần sửa 1, lần sửa 3/4/5, A3 trượt),
+  nguồn số liệu; không có chuỗi khớp `\d+(\.\d+)?\s*(ms|%|fps)`.
+- Impact (text search): chỉ thêm hàm + nhánh CLI; `main` chỉ gọi bởi CLI/test. detect-changes (`git diff --stat`): script `160 +`, test `68 +`, doc mới.
+- Test viết TRƯỚC: lớp `TestSummaryC1` (3 test: bảng + tất định trên JSON tổng hợp + CLI, SUMMARY đã commit sinh lại bằng hệt byte, tài liệu).
+  ĐỎ: `Ran 3 — FAILED (failures=1, errors=2)` (`_work/_plan15/C1_red.log`). Test "sinh lại bằng hệt" thêm ở commit SUMMARY (cần file đã commit).
+- Lệnh tại `28c0d7d` sạch: `PYTHONIOENCODING=utf-8 .venv/bin/python scripts/level1_segment_report.py --summary --out reports/level1_realtime_2026-10-05/SUMMARY.md`
+  chạy 2 lần → `cmp` bằng hệt.
+- XANH (cuối): 12 module Level 1 `Ran 227 — OK (skipped=1)` (skip `test_u1_summary`; `_work/_plan15/C1_final_l1.log`); AC1-ngắn phần còn lại 11 module
+  `Ran 167 — OK`, guard `known=9 allowed=36` (`_work/_plan15/C1_final_ac1.log`); sha256 checkpoint không đổi. `git diff 5e9bd42 --numstat -- tests/`
+  → `tests/test_level1_segment_report.py 269 +/0 -` (0 dòng test cũ đổi); `configs/level1_realtime.json`, `backend/main.py`, `realtime_demo.py`,
+  `src/data/alphabet_preprocessing.py` không đổi. AC1-đủ (31 module) KHÔNG chạy trên cloud (thiếu dữ liệu/checkpoint ngoài Level 1) — còn cho local.

@@ -652,6 +652,14 @@ class TestSummaryC1(unittest.TestCase):
         with open(out, encoding="utf-8") as f:
             self.assertEqual(f.read(), a)
 
+    def test_c1_committed_summary_regenerates_byte_identical(self):
+        from scripts.level1_segment_report import build_summary
+        path = os.path.join(PROJECT_ROOT, SUMMARY_REL)
+        self.assertTrue(os.path.exists(path), f"missing {SUMMARY_REL} (generate with --summary)")
+        with open(path, "rb") as f:
+            committed = f.read()
+        self.assertEqual(build_summary(path).encode("utf-8"), committed)
+
     def test_c1_desktop_doc_short_without_measured_numbers(self):
         import re
         self.assertTrue(os.path.exists(DESKTOP_DOC), "missing docs/level1_desktop.md")
