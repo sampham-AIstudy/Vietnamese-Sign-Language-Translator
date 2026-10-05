@@ -468,5 +468,90 @@ class TestOptionalDropoutKeyT2(unittest.TestCase):
                 validate_level1_config(self._with(bad))
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 8 M2
+class TestEnhanceLowLightM2(unittest.TestCase):
+    """AC-8d at the function level (plan 15 lần sửa 8 §2 M2): enhance_low_light(frame_bgr, threshold, clip_limit) ->
+    (frame, enhanced). Mean of the grayscale frame < threshold -> CLAHE (clipLimit = clip_limit, tileGridSize 8x8) on
+    the L channel of LAB, back to BGR, a new array, enhanced True; mean >= threshold -> the very same frame object,
+    enhanced False. The input frame is never modified. The frames are constant or ramp arrays built here to drive the
+    function (no image data)."""
+
+    @staticmethod
+    def _flat(value, h=48, w=64):
+        import numpy as np
+        return np.full((h, w, 3), value, dtype=np.uint8)
+
+    @staticmethod
+    def _dark_ramp(lo=20, hi=40, h=480, w=640):
+        import numpy as np
+        x = np.tile(np.linspace(lo, hi, w).astype(np.uint8), (h, 1))
+        return np.ascontiguousarray(np.dstack([x, x, x]))
+
+    @staticmethod
+    def _reference(frame, clip_limit):
+        """The §2 M2 steps written out here: BGR -> LAB, CLAHE on L, merge, LAB -> BGR."""
+        import cv2
+        lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
+        l_ch, a_ch, b_ch = cv2.split(lab)
+        l_ch = cv2.createCLAHE(clipLimit=clip_limit, tileGridSize=(8, 8)).apply(l_ch)
+        return cv2.cvtColor(cv2.merge((l_ch, a_ch, b_ch)), cv2.COLOR_LAB2BGR)
+
+    @staticmethod
+    def _gray(frame):
+        import cv2
+        return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).astype("float64")
+
+    def test_m2_dark_flat_frame_enhanced(self):
+        import numpy as np
+        from src.inference.level1_core import enhance_low_light
+        frame = self._flat(30)
+        before = frame.copy()
+        out, enhanced = enhance_low_light(frame)
+        self.assertIs(enhanced, True)
+        self.assertIsNot(out, frame)
+        self.assertEqual((out.shape, out.dtype), (frame.shape, frame.dtype))
+        self.assertTrue(np.array_equal(frame, before))             # input not modified
+        self.assertFalse(np.array_equal(out, frame))
+        self.assertGreater(self._gray(out).mean(), self._gray(frame).mean())
+        self.assertTrue(np.array_equal(out, self._reference(before, 2.0)))
+
+    def test_m2_dark_ramp_contrast_raised(self):
+        import numpy as np
+        from src.inference.level1_core import enhance_low_light
+        frame = self._dark_ramp()
+        out, enhanced = enhance_low_light(frame)
+        self.assertIs(enhanced, True)
+        self.assertTrue(np.array_equal(out, self._reference(frame, 2.0)))
+        self.assertGreater(self._gray(out).std(), self._gray(frame).std())
+        out4, _ = enhance_low_light(frame, clip_limit=4.0)        # clip_limit is passed to CLAHE
+        self.assertTrue(np.array_equal(out4, self._reference(frame, 4.0)))
+        self.assertFalse(np.array_equal(out4, out))
+
+    def test_m2_bright_frame_unchanged(self):
+        import numpy as np
+        from src.inference.level1_core import enhance_low_light
+        frame = self._flat(150)
+        before = frame.copy()
+        out, enhanced = enhance_low_light(frame)
+        self.assertIs(enhanced, False)
+        self.assertIs(out, frame)                                  # the very object, no copy
+        self.assertTrue(np.array_equal(frame, before))
+
+    def test_m2_threshold_boundary_and_parameter(self):
+        from src.inference.level1_core import enhance_low_light
+        self.assertIs(enhance_low_light(self._flat(79))[1], True)    # mean 79 < 80
+        self.assertIs(enhance_low_light(self._flat(80))[1], False)   # mean 80 >= 80
+        self.assertIs(enhance_low_light(self._flat(100), threshold=120.0)[1], True)
+        self.assertIs(enhance_low_light(self._flat(30), threshold=20.0)[1], False)
+
+    def test_m2_rejects_non_bgr_uint8(self):
+        import numpy as np
+        from src.inference.level1_core import enhance_low_light
+        with self.assertRaises(ValueError):
+            enhance_low_light(np.full((48, 64), 30, dtype=np.uint8))
+        with self.assertRaises(ValueError):
+            enhance_low_light(np.full((48, 64, 3), 30.0, dtype=np.float32))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -8,6 +8,8 @@ Level 1 ("Đánh vần") core shared by the desktop app (level1_demo.py) and, la
 - Level1Speller: accepts tokens (model result >= accept_confidence, or a key press), keeps the event order and
   composes the text with fingerspelling_compose.compose (never guesses letters; a letter is only replaced by its
   diacritic variant when the label decoder says so, on_label).
+- enhance_low_light(frame_bgr): adaptive CLAHE on the L channel of a dark frame before hand detection (plan 15 lần sửa
+  8 M2; the desktop demo's --auto-enhance only, never on the training / offline path).
 
 No GUI, no thread, no camera.
 """
@@ -15,8 +17,9 @@ import hashlib
 import json
 import numbers
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
+import cv2
 import numpy as np
 
 from src.data.alphabet_preprocessing import DEFAULT_ALPHABET_PREPROCESSING, alphabet_clip_features
@@ -405,3 +408,26 @@ class Level1Speller:
         self.rejected = None
         self._log("clear", None, "key", t_ms, key=name, removed=n)
         return True
+
+
+# ---------------------------------------------------------------------------------------------- low light (lần sửa 8)
+# plan 15 lần sửa 8 §2 M2: design values of the plan (mean gray level of the frame, CLAHE clip limit and tile grid)
+LOW_LIGHT_THRESHOLD = 80.0
+CLAHE_CLIP_LIMIT = 2.0
+CLAHE_TILE_GRID = (8, 8)
+
+
+def enhance_low_light(frame_bgr: np.ndarray, threshold: float = LOW_LIGHT_THRESHOLD,
+                      clip_limit: float = CLAHE_CLIP_LIMIT) -> Tuple[np.ndarray, bool]:
+    """(frame, enhanced). Mean of the grayscale frame < threshold: BGR -> LAB, CLAHE (clipLimit clip_limit, tile grid
+    CLAHE_TILE_GRID) on the L channel, LAB -> BGR -> (new uint8 frame, True). Otherwise (frame_bgr itself, False).
+    frame_bgr (uint8, H x W x 3, BGR) is never modified."""
+    if not (isinstance(frame_bgr, np.ndarray) and frame_bgr.dtype == np.uint8 and frame_bgr.ndim == 3
+            and frame_bgr.shape[2] == 3):
+        raise ValueError("enhance_low_light needs a uint8 BGR frame of shape (H, W, 3)")
+    if float(np.mean(cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2GRAY))) >= threshold:
+        return frame_bgr, False
+    lab = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2LAB)
+    l_ch, a_ch, b_ch = cv2.split(lab)
+    l_ch = cv2.createCLAHE(clipLimit=float(clip_limit), tileGridSize=CLAHE_TILE_GRID).apply(l_ch)
+    return cv2.cvtColor(cv2.merge((l_ch, a_ch, b_ch)), cv2.COLOR_LAB2BGR), True
