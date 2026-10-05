@@ -689,6 +689,213 @@ class TestNextKeyK3(unittest.TestCase):
         self.assertTrue(any("n chữ kế" in line for line in small), small)
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 4 §3.4 / §5: AC-A1…A5 (classifier re-arm in the app)
+def _config_with(tmp_dir, **values):
+    """Copy of configs/level1_realtime.json with some values changed (written under _work/, removed by the test)."""
+    with open(os.path.join(PROJECT_ROOT, "configs", "level1_realtime.json"), encoding="utf-8") as f:
+        raw = json.load(f)
+    for k, v in values.items():
+        raw[k] = dict(raw[k], value=v)
+    path = os.path.join(tmp_dir, "config.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(raw, f, ensure_ascii=False, indent=2)
+    return path
+
+
+BEFORE_D2_COMMIT = "12bd961"  # level1_demo.py before the classifier path (AC-A2 reference)
+
+
+def before_d2_app_module():
+    """level1_demo.py at BEFORE_D2_COMMIT loaded from `git show` into a temporary in-memory module (nothing written)."""
+    import types
+    r = subprocess.run(["git", "show", f"{BEFORE_D2_COMMIT}:level1_demo.py"], cwd=PROJECT_ROOT, capture_output=True,
+                       text=True, encoding="utf-8")
+    if r.returncode != 0:
+        raise AssertionError(f"git show {BEFORE_D2_COMMIT}:level1_demo.py failed: {r.stderr.strip()}")
+    name = f"_level1_demo_ref_{BEFORE_D2_COMMIT}"
+    mod = types.ModuleType(name)
+    mod.__file__ = os.path.join(PROJECT_ROOT, "level1_demo.py")  # same ROOT as the real file
+    sys.modules[name] = mod
+    try:
+        exec(compile(r.stdout, f"<git show {BEFORE_D2_COMMIT}:level1_demo.py>", "exec"), mod.__dict__)
+    finally:
+        sys.modules.pop(name, None)
+    return mod
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestClassifierModeA1A2(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        os.makedirs(TMP_PARENT, exist_ok=True)
+        cls.tmp = tempfile.mkdtemp(prefix="vslt_p15_a_", dir=TMP_PARENT)
+        cls.cfg = _config_with(cls.tmp, rearm_mode="classifier")
+        cls.out = os.path.join(cls.tmp, "a1.json")
+        cls.proc = subprocess.run([PY, "level1_demo.py", "--source", CLIP, "--headless", "--config", cls.cfg,
+                                   "--out-json", cls.out], cwd=PROJECT_ROOT, capture_output=True, text=True, env=ENV,
+                                  timeout=900)
+        cls.report = None
+        if cls.proc.returncode == 0:
+            with open(cls.out, encoding="utf-8") as f:
+                cls.report = json.load(f)
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            cls.report2 = app_mod.Level1App(args_for("--source", CLIP, "--headless", "--config", cls.cfg)).run()
+            cls.motion_new = app_mod.Level1App(args_for("--source", CLIP, "--headless")).run()
+            ref = before_d2_app_module()
+            cls.motion_ref = ref.Level1App(ref.build_parser().parse_args(["--source", CLIP, "--headless"])).run()
+        finally:
+            os.chdir(cwd)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def test_a1_classifier_headless(self):
+        self.assertEqual(self.proc.returncode, 0, self.proc.stderr[-2000:])
+        r = self.report
+        self.assertEqual(r["rearm_mode"], "classifier")
+        st = r["stages"]["window_classify"]
+        self.assertEqual(set(st), {"n", "mean", "p50", "p95"})
+        self.assertGreater(st["n"], 0)
+        c = r["counts"]
+        self.assertEqual(st["n"], c["window_results"])
+        self.assertEqual(c["window_results"], c["window_jobs"])     # headless: every window classified
+        self.assertEqual(c["window_dropped"], 0)
+        self.assertEqual(r["stages"]["classify"]["n"], 0)          # segments are not classified
+        self.assertEqual(c["segments_not_classified"], len(r["segments"]))
+        self.assertEqual(c["label_emits"], len(r["labels"]))
+        self.assertGreaterEqual(len(r["labels"]), 1)
+        from src.inference.fingerspelling_compose import compose
+        self.assertEqual(r["text"], compose(r["tokens"])["text"])
+        model_tokens = [e for e in r["events"] if e.get("event") == "token" and e["source"] == "model"]
+        self.assertEqual(len(model_tokens), len(r["labels"]))
+
+    def test_a1_two_runs_identical(self):
+        a, b = self.report, self.report2
+        self.assertEqual(a["tokens"], b["tokens"])
+        self.assertEqual(a["labels"], b["labels"])
+        self.assertEqual(a["segments"], b["segments"])
+        self.assertEqual(a["counts"]["window_jobs"], b["counts"]["window_jobs"])
+
+    def test_a2_motion_pose_identical_to_before_d2(self):
+        new, ref = self.motion_new, self.motion_ref
+        self.assertEqual(new["rearm_mode"], "motion_pose")
+        self.assertNotIn("window_classify", new["stages"])
+        self.assertEqual(new["labels"], [])
+        self.assertEqual(new["tokens"], ref["tokens"])
+        self.assertEqual(new["segments"], ref["segments"])
+        self.assertEqual(new["text"], ref["text"])
+        self.assertGreaterEqual(len(new["segments"]), 1)
+
+
+class _SlowWindowClassifier:
+    """Deliberately slow classifier for AC-A3 (defined in the test): sleeps, records the thread and the frames the
+    app processed meanwhile, returns a fixed 'ok' result (the decoder logic is AC-D, not this test)."""
+
+    def __init__(self, inner, delay_s):
+        self.inner, self.delay_s = inner, delay_s
+        self.min_detected_frames = inner.min_detected_frames if inner is not None else 6
+        self.app = None
+        self.calls = []
+
+    def warmup(self):
+        return self.inner.warmup()
+
+    def classify(self, segment, top_k):
+        before = self.app.counts["frames_processed"] if self.app is not None else 0
+        time.sleep(self.delay_s)
+        after = self.app.counts["frames_processed"] if self.app is not None else 0
+        self.calls.append({"thread": threading.current_thread(), "processed_meanwhile": after - before,
+                           "t_emit": segment.t_emit_ms})
+        return {"status": "ok", "prediction": "a", "confidence": 0.95}
+
+
+class TestLatestWindowWorkerA3(unittest.TestCase):
+    def test_a3_never_older_and_dropped_counted(self):
+        from src.inference.level1_segmenter import SignSegment
+        slow = _SlowWindowClassifier(None, 0.03)
+        w = app_mod.LatestWindowWorker(slow, 5)
+        w.start()
+        returned, dropped_ids = [], []
+        for k in range(40):
+            seg = SignSegment(seq=k, raw_landmarks=np.zeros((1, 21, 3), np.float32), detected=np.ones(1, bool),
+                              handedness=np.array(["Right"]), timestamps_ms=np.array([k * 5.0]), frame_width=640,
+                              frame_height=480, t_start_ms=k * 5.0, t_end_ms=k * 5.0, t_emit_ms=k * 5.0,
+                              close_reason="window")
+            d = w.submit(k, k * 5.0, seg)
+            if d is not None:
+                dropped_ids.append(d)
+            returned += w.poll()
+            time.sleep(0.005)
+        returned += w.finish()
+        ids = [r[0] for r in returned]
+        self.assertEqual(ids, sorted(ids))
+        self.assertEqual(len(set(ids)), len(ids))
+        self.assertEqual(sorted(ids + dropped_ids), list(range(40)))  # every job: returned or dropped, never both
+        self.assertEqual(w.dropped, len(dropped_ids))
+        self.assertGreater(w.dropped, 0)
+        self.assertEqual(w.submitted, 40)
+        for c in slow.calls:
+            self.assertIsNot(c["thread"], threading.main_thread())
+
+    @unittest.skipUnless(not _MISSING, SKIP_REASON)
+    def test_a3_paced_app_main_loop_keeps_running(self):
+        os.makedirs(TMP_PARENT, exist_ok=True)
+        tmp = tempfile.mkdtemp(prefix="vslt_p15_a3_", dir=TMP_PARENT)
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            inner = Level1Classifier.from_checkpoint(os.path.join(PROJECT_ROOT, CKPT))
+            slow = _SlowWindowClassifier(inner, 0.3)
+            app = app_mod.Level1App(args_for("--source", CLIP, "--pace", "realtime", "--headless", "--config",
+                                             _config_with(tmp, rearm_mode="classifier")), classifier=slow)
+            slow.app = app
+            r = app.run()
+        finally:
+            os.chdir(cwd)
+            shutil.rmtree(tmp, ignore_errors=True)
+        self.assertEqual(r["source"]["mode"], "paced")
+        c = r["counts"]
+        self.assertTrue(slow.calls)
+        for call in slow.calls:
+            self.assertIsNot(call["thread"], threading.main_thread())
+        t_emits = [call["t_emit"] for call in slow.calls]
+        self.assertEqual(t_emits, sorted(t_emits))                 # never an older window after a newer one
+        self.assertTrue(any(call["processed_meanwhile"] > 1 for call in slow.calls))
+        self.assertGreater(c["window_dropped"], 0)
+        self.assertEqual(c["window_results"] + c["window_dropped"], c["window_jobs"])
+        self.assertEqual(c["window_results"], len(slow.calls))
+        self.assertEqual(r["stages"]["window_classify"]["n"], c["window_results"])
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestNextKeyClassifierK3(unittest.TestCase):
+    """AC-K3 in rearm_mode 'classifier': key n calls decoder.force_next (in timestamp order), not the segmenter."""
+
+    def test_k3_classifier_calls_force_next_no_token(self):
+        os.makedirs(TMP_PARENT, exist_ok=True)
+        tmp = tempfile.mkdtemp(prefix="vslt_p15_k3_", dir=TMP_PARENT)
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            app = app_mod.Level1App(args_for("--source", CLIP, "--headless", "--config",
+                                             _config_with(tmp, rearm_mode="classifier")))
+        finally:
+            os.chdir(cwd)
+            shutil.rmtree(tmp, ignore_errors=True)
+        nexts, rearms = [], []
+        app.decoder.force_next = lambda ts: nexts.append(ts)
+        app.segmenter.force_rearm = lambda ts: rearms.append(ts)
+        app.last_ts = 500.0
+        app._key(ord("n"))
+        self.assertEqual(nexts, [500.0])
+        self.assertEqual(rearms, [])
+        self.assertEqual(app.speller.tokens, [])
+        self.assertEqual(app.events[-1], {"event": "key", "key": "next", "source": "key", "t_ms": 500.0})
+
+
 if __name__ == "__main__":
     unittest.main()
 

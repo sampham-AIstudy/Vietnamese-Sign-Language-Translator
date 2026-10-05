@@ -654,3 +654,24 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   Lần chạy đầu sau mã: guard Level 1 G2 bắt hằng số `WINDOW_EDGE_MS = 1e-6` (luật D-binding) → bỏ hằng, dùng `_horizon()`.
 - XANH: 12 module (10 module K1 + decoder + equivalence) `Ran 192 — OK (skipped=1)` (`_work/_plan15/D1_green_l1.log`, skip = `test_u1_summary`);
   AC1-ngắn còn lại `Ran 167 — OK`, guard chính `known=9 allowed=36` (`_work/_plan15/D1_ac1.log`).
+
+### D2 — nối bộ giải mã vào `level1_demo.py` (15-lan-sua-4 §3.4, AC-A1…A5)
+- Mã: `rearm_mode == "classifier"`: mỗi khung (không tạm dừng) → `WindowBuffer.push`; khung có tay và cửa sổ đủ khung → phân loại cửa sổ
+  (headless: đồng bộ, tất định; GUI/paced: `LatestWindowWorker` "chỉ giữ việc mới nhất" — việc chưa chạy bị thay thì bỏ, đếm
+  `window_dropped`, khung đó nhận kết quả None). "Timeline" theo ts (khung / word gap / phím n / tạm dừng) chỉ được áp từ đầu khi đầu đã có kết
+  quả ⇒ decoder nhận đúng thứ tự ts; `LabelEmit` → `Level1Speller.on_label`; nhật ký `{"event": "label"}`. Bộ tách vẫn chạy (HUD, hand_lost,
+  WordGap); segment của nó KHÔNG phân loại, KHÔNG vào speller, đếm `segments_not_classified`. Phím n ở chế độ classifier: mục "next" trong
+  timeline → `decoder.force_next(ts)` (không gọi `force_rearm`). Tạm dừng: reset bộ tách + cửa sổ + decoder (theo thứ tự timeline).
+  JSON: `rearm_mode` (mọi chế độ), `labels` (mọi chế độ; rỗng ở motion_pose), chặng `window_classify` (CHỈ ở classifier — test AC-L cũ khóa
+  `tuple(stages) == STAGES` ở motion_pose), `counts` thêm `window_jobs`, `window_results`, `window_dropped`, `label_emits`, `label_replace`,
+  `segments_not_classified` (chỉ classifier). Thời gian cửa sổ không tính vào chặng `segmenter` (đo riêng). `emit_to_token` chưa đo cho nhãn
+  (chỉ segment) — ghi để planner biết.
+- Impact (text search): `Level1App._process`/`run`/`report`/`_on_events`/`_key` chỉ trong `level1_demo.py` + test; `ClassifyWorker` không đổi.
+  detect-changes thay bằng `git diff --stat`: `level1_demo.py`, `tests/test_level1_demo.py`.
+- Test viết trước (`tests/test_level1_demo.py`: A1 headless classifier ×2 lần CLI + trong tiến trình; A2 motion_pose == `level1_demo.py` của
+  `git show 12bd961` (tokens/segments/text); A3 `LatestWindowWorker` 40 việc + app paced với classifier chậm định nghĩa trong test; K3 nhánh
+  classifier). ĐỎ trên `level1_demo.py` của 12bd961 (mã D2 cất tạm bằng `git stash`): `Ran 6 — FAILED (errors=6)` (`_work/_plan15/D2_red.log`).
+  LỆCH quy trình: mã D2 viết trước test trong phiên; đỏ ghi bằng cách cất mã rồi chạy test mới.
+  A4 = `tests.test_level1_equivalence` (AC-E3) xanh trong lệnh dưới; A5 = guard Level 1 + guard chính xanh.
+- XANH: 12 module `Ran 198 — OK (skipped=1)` (`_work/_plan15/D2_green_l1.log`); AC1-ngắn còn lại `OK`, `known=9 allowed=36` (`_work/_plan15/D2_ac1.log`).
+- Kiểm tay (không phải số liệu): `a_hau_A_001.mp4` headless classifier → tokens `['a']`, 1 nhãn, 73 cửa sổ phân loại.

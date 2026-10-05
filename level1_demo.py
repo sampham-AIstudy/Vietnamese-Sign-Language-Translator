@@ -14,6 +14,12 @@ Keys (window): Backspace delete last token | Space add a space | a accept the la
   r repeat the last letter | n next letter (re-arm: the letter held now is emitted again) | c clear |
   p pause / resume segmentation | q or Esc quit.
 
+Re-arm (config rearm_mode, written to the JSON as rearm_mode; plan 15 lần sửa 4 §3.4):
+  motion_pose  every SignSegment of the segmenter is classified and gives one token (behaviour before lần sửa 4)
+  classifier   at every hand frame the last cls_window_ms are classified (stage window_classify) and the label decoder
+               emits a token when the window label changes; the segmenter still runs for the HUD state, hand_lost and
+               word gaps, its segments are counted but not classified
+
 Modes (written to the JSON as source.mode):
   gui      webcam (newest frame only, camera thread) or a video shown frame by frame; classification in a worker
   paced    video read by the camera thread at the file's frame rate, newest frame only; classification in a worker
@@ -44,7 +50,8 @@ if ROOT not in sys.path:
 
 from src.inference.hand_live import HandLandmarkSession  # noqa: E402
 from src.inference.level1_core import Level1Classifier, Level1Speller, load_level1_config  # noqa: E402
-from src.inference.level1_segmenter import Level1SignSegmenter, SignSegment, WordGap  # noqa: E402
+from src.inference.level1_segmenter import (Level1LabelDecoder, Level1SignSegmenter, SignSegment,  # noqa: E402
+                                            WindowBuffer, WordGap)
 from src.inference.level1_timing import (FRAME_STAGES, SIGN_STAGES, StageTimes,  # noqa: E402
                                          rate_from_timestamps)
 
@@ -79,6 +86,7 @@ KEY_ACTIONS = {
     ord("5"): "tone_5",
     ord("n"): "next",
 }
+WINDOW_STAGES = ("window_classify",)  # rearm_mode 'classifier' only: one window classification per hand frame
 KEY_NEXT = "next"  # app action (segmenter / decoder re-arm), not a Level1Speller key
 KEY_QUIT = (ord("q"), 27)
 KEY_PAUSE = ord("p")
@@ -263,6 +271,65 @@ class ClassifyWorker(threading.Thread):
 
     def finish(self) -> List:
         self._in.put(None)
+        self.join()
+        return self.poll()
+
+
+class LatestWindowWorker(threading.Thread):
+    """Window classifications off the main loop, keeping only the newest job (plan 15 lần sửa 4 §3.4): submit()
+    replaces a job that has not started yet (that job is dropped: returned to the caller and counted in .dropped), so
+    a result older than one already returned never comes back. Results: (job_id, ts_ms, result, classify_ms, error)."""
+
+    def __init__(self, classifier, top_k: int):
+        super().__init__(daemon=True)
+        self.classifier, self.top_k = classifier, top_k
+        self._cond = threading.Condition()
+        self._job = None
+        self._closed = False
+        self._out: "queue.Queue" = queue.Queue()
+        self.submitted = 0
+        self.dropped = 0
+
+    def submit(self, job_id: int, ts_ms: float, seg: SignSegment) -> Optional[int]:
+        """Queues the job; returns the id of the job it replaced (dropped) or None."""
+        with self._cond:
+            dropped = None
+            if self._job is not None:
+                dropped = self._job[0]
+                self.dropped += 1
+            self.submitted += 1
+            self._job = (job_id, ts_ms, seg)
+            self._cond.notify_all()
+            return dropped
+
+    def run(self) -> None:
+        while True:
+            with self._cond:
+                self._cond.wait_for(lambda: self._job is not None or self._closed)
+                if self._job is None:
+                    return
+                job, self._job = self._job, None
+            job_id, ts_ms, seg = job
+            t0 = time.perf_counter()
+            try:
+                result = self.classifier.classify(seg, self.top_k)
+                self._out.put((job_id, ts_ms, result, (time.perf_counter() - t0) * 1000.0, None))
+            except BaseException as e:  # re-raised in the main loop
+                self._out.put((job_id, ts_ms, None, None, e))
+
+    def poll(self) -> List:
+        out = []
+        while True:
+            try:
+                out.append(self._out.get_nowait())
+            except queue.Empty:
+                return out
+
+    def finish(self) -> List:
+        """Runs the job still queued, stops, returns the remaining results."""
+        with self._cond:
+            self._closed = True
+            self._cond.notify_all()
         self.join()
         return self.poll()
 
@@ -546,7 +613,22 @@ class Level1App:
             self.hud = Hud(find_font(args.font, self.values["font_paths"]), self.values["hud_font_size"])
         self.segmenter = Level1SignSegmenter(self.values, self.classifier.min_detected_frames)
         self.speller = Level1Speller(self.values["accept_confidence"])
-        self.times = StageTimes(FRAME_STAGES + SIGN_STAGES, self.values["hud_rolling_frames"])
+        self.rearm_mode = self.values["rearm_mode"]
+        self.classifier_mode = self.rearm_mode == "classifier"
+        stages = FRAME_STAGES + SIGN_STAGES + (WINDOW_STAGES if self.classifier_mode else ())
+        self.times = StageTimes(stages, self.values["hud_rolling_frames"])
+        self.window: Optional[WindowBuffer] = None
+        self.decoder: Optional[Level1LabelDecoder] = None
+        if self.classifier_mode:
+            self.window = WindowBuffer(self.values["cls_window_ms"], self.classifier.min_detected_frames)
+            self.decoder = Level1LabelDecoder(self.values)
+        # classifier mode: frames / word gaps / key n in timestamp order, applied once each frame's window result is in
+        # [kind, ts, has_hand, resolved, result] (kind 'frame' | 'gap' | 'next'; a gap carries its seq in `result`)
+        self.timeline: List[List[Any]] = []
+        self.pending_jobs: Dict[int, List[Any]] = {}
+        self.labels: List[Dict[str, Any]] = []
+        self.window_counts = {"window_jobs": 0, "window_results": 0, "window_dropped": 0, "label_emits": 0,
+                              "label_replace": 0, "segments_not_classified": 0}
         self.segments: Dict[int, Dict[str, Any]] = {}
         self.events: List[Dict[str, Any]] = []
         self.t_emit_perf: Dict[int, float] = {}
@@ -560,6 +642,7 @@ class Level1App:
         self.last_ts: Optional[float] = None
         self.last_result: Optional[Dict[str, Any]] = None
         self.worker: Optional[ClassifyWorker] = None
+        self.window_worker: Optional[LatestWindowWorker] = None
         self.slot: Optional[LatestFrameSlot] = None
         self.warmup = {}
 
@@ -594,6 +677,9 @@ class Level1App:
                 self._log("segment", seq=ev.seq, t_ms=ev.t_emit_ms, close_reason=ev.close_reason)
                 if self.keep_segments:
                     self.kept_segments.append(ev)
+                if self.classifier_mode:  # tokens come from the label decoder; the segment is only counted
+                    self.window_counts["segments_not_classified"] += 1
+                    continue
                 self.speller.segment_emitted(ev.seq)
                 if self.sync_classify:
                     t0 = time.perf_counter()
@@ -604,13 +690,78 @@ class Level1App:
             elif isinstance(ev, WordGap):
                 self.counts["word_gaps"] += 1
                 self._log("word_gap", seq=ev.seq, t_ms=ev.t_ms)
-                self.speller.word_gap(ev.seq, t_ms=ev.t_ms)
+                if self.classifier_mode:  # after the labels of the frames before it
+                    self.timeline.append(["gap", ev.t_ms, False, True, ev.seq])
+                    self._drain_timeline()
+                else:
+                    self.speller.word_gap(ev.seq, t_ms=ev.t_ms)
 
     def _drain_worker(self, results) -> None:
         for seg, result, classify_ms, error in results:
             if error is not None:
                 raise error
             self._apply_result(seg, result, classify_ms)
+
+    # -------------------------------------------------------------- classifier re-arm (plan 15 lần sửa 4 §3.4)
+    def _window_frame(self, ts_ms: float, landmarks, handedness: str, w: int, h: int) -> None:
+        """Window of this frame -> classification (headless: now; otherwise newest-job worker) -> timeline."""
+        self.window.push(ts_ms, landmarks, handedness, w, h)
+        entry = ["frame", ts_ms, landmarks is not None, True, None]
+        self.timeline.append(entry)
+        if landmarks is not None:
+            seg = self.window.segment(ts_ms)
+            if seg is not None:
+                self.window_counts["window_jobs"] += 1
+                if self.sync_classify:
+                    t0 = time.perf_counter()
+                    entry[4] = self.classifier.classify(seg, self.values["top_k"])
+                    self.times.add("window_classify", (time.perf_counter() - t0) * 1000.0)
+                    self.window_counts["window_results"] += 1
+                else:
+                    job_id = self.window_counts["window_jobs"]
+                    entry[3] = False
+                    self.pending_jobs[job_id] = entry
+                    dropped = self.window_worker.submit(job_id, ts_ms, seg)
+                    if dropped is not None:  # its frame has no result: None for the decoder
+                        self.pending_jobs.pop(dropped)[3] = True
+                        self.window_counts["window_dropped"] += 1
+        self._drain_timeline()
+
+    def _window_results(self, results) -> None:
+        for job_id, _ts, result, classify_ms, error in results:
+            if error is not None:
+                raise error
+            self.times.add("window_classify", classify_ms)
+            self.window_counts["window_results"] += 1
+            entry = self.pending_jobs.pop(job_id)
+            entry[3], entry[4] = True, result
+        self._drain_timeline()
+
+    def _drain_timeline(self) -> None:
+        """Applies the timeline from its start while its head is resolved (timestamp order is kept)."""
+        while self.timeline and self.timeline[0][3]:
+            kind, ts_ms, has_hand, _resolved, payload = self.timeline.pop(0)
+            if kind == "gap":
+                self.speller.word_gap(payload, t_ms=ts_ms)
+            elif kind == "next":
+                self.decoder.force_next(ts_ms)
+            elif kind == "reset":
+                self.decoder.reset()
+            else:
+                emit = self.decoder.push(ts_ms, has_hand, payload)
+                if emit is not None:
+                    self._apply_label(emit)
+
+    def _apply_label(self, emit) -> None:
+        d = self.speller.on_label(emit.seq, emit)
+        self.window_counts["label_emits"] += 1
+        if d["action"] == "replace":
+            self.window_counts["label_replace"] += 1
+        self.labels.append({"seq": emit.seq, "ts_ms": emit.ts_ms, "run_since_ms": emit.run_since_ms,
+                            "prediction": emit.prediction, "confidence": emit.confidence, "action": emit.action,
+                            "accepted": d["accepted"], "applied": d["action"]})
+        self._log("label", seq=emit.seq, t_ms=emit.ts_ms, prediction=emit.prediction, action=emit.action)
+        self.last_result = {"seq": emit.seq, **emit.result, "accepted": d["accepted"]}
 
     def _key(self, code: int) -> None:
         if code < 0:
@@ -622,6 +773,10 @@ class Level1App:
             self.paused = not self.paused
             if self.paused:
                 self.segmenter.reset()
+                if self.classifier_mode:
+                    self.window.reset()
+                    self.timeline.append(["reset", self.last_ts, False, True, None])
+                    self._drain_timeline()
             self._log("pause" if self.paused else "resume", t_ms=self.last_ts)
         elif k in KEY_ACTIONS and KEY_ACTIONS[k] == KEY_NEXT:
             self._next_key()
@@ -632,7 +787,11 @@ class Level1App:
         """Key n "chữ kế" (plan 15 lần sửa 4 §3.1): re-arm the segmenter at the last frame so the sign held now is
         emitted again; no token is created here (tokens still come only from the model or the token keys)."""
         if self.last_ts is not None:
-            self.segmenter.force_rearm(self.last_ts)
+            if self.classifier_mode:  # in timestamp order, after the frames already seen
+                self.timeline.append(["next", self.last_ts, False, True, None])
+                self._drain_timeline()
+            else:
+                self.segmenter.force_rearm(self.last_ts)
         self._log("key", key=KEY_NEXT, source="key", t_ms=self.last_ts)
 
     # -------------------------------------------------------------- one frame
@@ -674,12 +833,17 @@ class Level1App:
         self.times.add("mediapipe", (t1 - t0) * 1000.0)
         if not self.paused:
             self._on_events(self.segmenter.push(ts_ms, landmarks, handedness, w, h))
-        self.last_ts = ts_ms
         t2 = time.perf_counter()
         self.times.add("segmenter", (t2 - t1) * 1000.0)
+        if self.classifier_mode and not self.paused:  # a word gap of this frame is a no-hand frame: order unaffected
+            self._window_frame(ts_ms, landmarks, handedness, w, h)
+            t2 = time.perf_counter()
+        self.last_ts = ts_ms
         self.counts["frames_processed"] += 1
         if self.worker is not None:
             self._drain_worker(self.worker.poll())
+        if self.window_worker is not None:
+            self._window_results(self.window_worker.poll())
         if not self.display:
             self.times.add("frame_total", (time.perf_counter() - t_cap) * 1000.0)
             return
@@ -736,6 +900,9 @@ class Level1App:
             if not self.sync_classify:
                 self.worker = ClassifyWorker(self.classifier, self.values["top_k"])
                 self.worker.start()
+                if self.classifier_mode:
+                    self.window_worker = LatestWindowWorker(self.classifier, self.values["top_k"])
+                    self.window_worker.start()
             if self.display:
                 cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_AUTOSIZE)
             origin = time.perf_counter()
@@ -774,12 +941,17 @@ class Level1App:
                     self._process(session, frame, t_cap, i * 1000.0 / reader.fps)
                     i += 1
                 self.counts["frames_read"] = i
+            if self.window_worker is not None:  # the window results come before the end of the stream
+                self._window_results(self.window_worker.finish())
+                self.window_worker = None
             if self.last_ts is not None and not self.paused:
                 self._on_events(self.segmenter.flush(self.last_ts))
             if self.worker is not None:
                 self._drain_worker(self.worker.finish())
                 self.worker = None
         finally:
+            if self.window_worker is not None:
+                self.window_worker.finish()
             if self.worker is not None:
                 self.worker.finish()
             if capture is not None and capture.is_alive():
@@ -806,8 +978,11 @@ class Level1App:
         counts["processing_fps"] = rate_from_timestamps(self.process_starts)
         counts["capture_fps"] = rate_from_timestamps(self.read_times)
         counts["results_not_displayed"] = len(self.pending_display)
+        if self.classifier_mode:
+            counts.update(self.window_counts)
         return {
             "generated_by": generated_by(self.argv),
+            "rearm_mode": self.rearm_mode,
             "config": {"path": report_path(self.config_path), "sha256": self.cfg["sha256"],
                        "values": self.cfg["raw"]},
             "checkpoint": {"path": report_path(self.checkpoint_path), "sha256": self.checkpoint_sha256},
@@ -821,6 +996,7 @@ class Level1App:
             "text": comp["text"],
             "warnings": comp["warnings"],
             "segments": [self.segments[k] for k in sorted(self.segments)],
+            "labels": list(self.labels),
             "events": self.events + self.speller.events,
             "expected": expected,
             "note": NOTE,
