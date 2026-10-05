@@ -1029,3 +1029,47 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   file demo hiện tại + các giá trị lần sửa 7 (ghi nguồn), đổi lệnh ở `docs/level1_desktop.md` — file cũ và test cũ giữ nguyên; (2) cho phép
   ngoại lệ sửa test W3 + sinh lại SUMMARY — trái quy tắc hiện hành; (3) chỉ dùng cờ dòng lệnh (thêm cờ cho ngưỡng dấu / debounce).
   Kỳ vọng "độ trễ đổi tay dưới 1 s" của §2 T2 chưa đo — cần phiên webcam (reviewer checklist §5 mục 3).
+
+### Lần sửa 7 — quyết định của người dùng "File config mới" (2026-10-05) — **XONG**
+- Quyết định (thẻ quyết định trong thread, người dùng chọn "File config mới"): sinh một file config demo MỚI bằng script, từ file demo hiện
+  tại + giá trị lần sửa 7; `configs/level1_demo_classifier.json` và test cũ (AC-W3, SUMMARY) giữ nguyên; lệnh demo đổi sang file mới.
+- `1b6eb94` — `scripts/level1_rearm_check.py --write-rev7-config OUT [--base]`: `write_rev7_config` đọc file demo lần sửa 5 (phải được git
+  theo dõi, không có thay đổi chưa commit, `rearm_mode` = `classifier`; OUT ≠ file gốc — sai ⇒ RuntimeError, không ghi gì), thay
+  `cls_window_ms`, `word_gap_ms` tại chỗ, chèn `cls_conf_tone`, `cls_stable_ms_tone`, `dropout_tolerance_ms` sau `cls_stable_ms`, thêm
+  `_about` (sha256 + commit của file gốc, "do not edit by hand") và `_rev7_decision`; giá trị + lý do nằm trong `REV7_VALUES`, mỗi lý do ghi
+  "lần sửa 7"; không đồng hồ ⇒ cùng gốc cùng byte, LF. Impact (text search, GitNexus không có trên cloud): hàm mới, gọi từ nhánh CLI mới
+  của `main` và test; `scripts/level1_*.py` không nằm trong closure của `level1_demo.py` (guard G2). detect-changes:
+  `scripts/level1_rearm_check.py 86+/0−`, `tests/test_level1_rearm_check.py 84+/0−`. Test viết TRƯỚC `TestWriteRev7Config` (4). ĐỎ:
+  `Ran 4 — FAILED (errors=6)` (thiếu `write_rev7_config` / `REV7_VALUES`; `_work/_plan15/R7a_red.log`); XANH `Ran 4 — OK`, cả module
+  `Ran 37 — OK` (`R7a_green.log`, `R7a_rearm_module.log`).
+- Lựa chọn của coder (báo người dùng trong thread): file mới có `dropout_tolerance_ms` = 60 (§2 T2 của plan nói debounce 1 khung ~60 ms
+  nhưng không ghi khóa nào vào config; khóa thiếu ⇒ debounce tắt) để debounce chạy trong lệnh demo.
+- `acd8bed` — sinh file tại `1b6eb94` (`git status --porcelain -- scripts src configs level1_demo.py` rỗng):
+  `PYTHONIOENCODING=utf-8 .venv/bin/python scripts/level1_rearm_check.py --write-rev7-config configs/level1_demo_classifier_rev7.json`
+  → in `cls_window_ms 1000 -> 700.0, cls_conf_tone - -> 0.78, cls_stable_ms_tone - -> 200.0, dropout_tolerance_ms - -> 60.0,
+  word_gap_ms 1000 -> 2500.0; base configs/level1_demo_classifier.json (sha256 568f97d8…c397e2, commit 2baa7aa) unchanged`
+  (`_work/_plan15/R7b_write.log`); sha256 file mới `a2aea62e…ce4a7d`. `docs/level1_desktop.md`: lệnh mục 1 dùng
+  `--config configs/level1_demo_classifier_rev7.json` (vẫn nêu file lần sửa 5), mục 7 thay đoạn "CHƯA được ghi" bằng mô tả file mới và
+  lệnh sinh; không số đo. Impact (text search): `configs/` không bị quét theo glob ở test nào ngoài `test_level1_gitattributes` (LF —
+  file mới LF); file chỉ được đọc qua `--config`. detect-changes: `configs/level1_demo_classifier_rev7.json 188+/0−`,
+  `docs/level1_desktop.md 13+/9−`, `tests/test_level1_demo.py 125+/0−`, `tests/test_level1_rearm_check.py 42+/0−`.
+- Test viết TRƯỚC: `TestRev7ConfigFile` (3: file được theo dõi và sạch; ghi lại ra file tạm = đúng từng byte file đã commit; giá trị = §2,
+  `rearm_mode` classifier, `_about` chứa sha256 file gốc, file lần sửa 5 không có khóa mới, config mặc định vẫn `motion_pose`),
+  `TestRev7DemoConfig` (5, clip D2 — kiểm đường code, không phải độ chính xác: lệnh demo headless với file mới thoát 0, `rearm_mode`
+  classifier, `config.path`/`sha256` đúng, không `overrides`; app đọc cửa sổ 700, `thresholds("dấu huyền") = (0.78, 200)`, chữ cái giữ
+  `cls_conf`/`cls_stable_ms`, `dropout_tolerance_ms` 60, `word_gap_ms` 2500; dấu thanh 0.80 phát ở 231 ms với HUD `/200 (tone)`, chữ 0.80
+  không phát; một cửa sổ rớt giữa chuỗi: file mới phát ở 1330 với `run_since_ms` 1000, file lần sửa 5 không phát; tay rời khung từ khung
+  41 tới hết clip (ngắn hơn `word_gap_ms` mới, dài hơn cũ): file lần sửa 5 ⇒ 1 word gap + " ", file mới ⇒ 0 word gap, không " "),
+  `TestRev7DesktopDoc` (1). ĐỎ: `Ran 4 — FAILED (failures=1, errors=4)` (file chưa có, tài liệu chưa có lệnh; `R7b_red.log`). Lần chạy
+  xanh đầu `R7b_green.log`: ngoài test "đã commit" (đỏ đúng mong đợi trước commit) còn `test_r7_word_gap` đỏ do CHÍNH TEST đo sai mốc
+  "khung cuối có tay" (lấy `t_end_ms` lớn nhất của segment — ở chế độ `classifier` segment đóng sớm hơn khung cuối có tay); sửa test
+  (chưa commit) sang `segmenter._last_hand_ts`, thêm kiểm mốc word gap của file lần sửa 5; không đổi mã ⇒ `Ran 6 — OK` (`R7b_green2.log`).
+- Hồi quy cuối tại `acd8bed` (`_work/_plan15/rev7b_final_*.log`): 12 module Level 1 `Ran 294 — OK (skipped=1)` (skip duy nhất
+  `test_u1_summary`, thiếu file U1 của người dùng); 2 module mới `Ran 13 — OK`; AC1-ngắn 11 module `Ran 167 — OK`; guard
+  `[DoD7-guard] known=9 allowed=36`, `Ran 28 — OK`.
+- AC-7a: `git diff 5e08fbd..HEAD --numstat -- tests/` → `test_level1_core.py 94/0`, `test_level1_decoder.py 295/0`,
+  `test_level1_demo.py 411/0`, `test_level1_rearm_check.py 126/0` (cột xóa = 0; từ `4f913a2` cũng 0). `configs/level1_realtime.json`
+  (`cc178955…eb54b`), `configs/level1_demo_classifier.json` (`568f97d8…c397e2`) không đổi; sha256 checkpoint `a6311820…5b708a2` không đổi;
+  không train. AC-7b giờ đạt cả ở app với lệnh demo (`TestRev7DemoConfig`).
+- Còn cho reviewer / người dùng: phiên webcam với lệnh mục 1 (kỳ vọng "độ trễ đổi tay dưới 1 s" của §2 T2 chưa đo); AC1-đủ (31 module)
+  không chạy trên cloud.
