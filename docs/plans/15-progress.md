@@ -583,3 +583,16 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   `garbage_per_clip` 0.0104 → 0.0052 (một chuỗi: one 0.3214 → 0.3571, garbage 0.0357 → 0.0). Nguyên nhân (suy luận, chưa trace từng khung): lần cũ chạy
   ở a3970a6 với mã bộ tách TRƯỚC A2a (tail = hold vẫn cắt khung cuối), lần mới dùng luật A2a (tail ≥ hold ⇒ không lọc).
 - Kết luận R0 không đổi: `current` L join 0/300 `one_rate` 0.3109 / 0.3731 < 0.90 ⇒ giả thuyết đứng. detect-changes: chỉ JSON, không symbol nào.
+
+### R2 chạy trên dữ liệu — DỪNG theo luật P2
+- Lệnh tại commit sạch `a66ea13`: `python scripts/level1_segment_report.py --pose-evidence --out reports/level1_realtime_2026-10-05/pose_evidence.json`
+  → mã thoát 2; JSON `generated_by.code_dirty` false.
+- P1 (đọc từ JSON): 516 clip chữ cái, 514 có đoạn đứng yên (thiếu: `hauuto_c_tai_B_001`, `hauuto_m_tai_B_001`); `jitter_clip` p50 0.0627, p90 0.2785,
+  p95 0.3459 ⇒ `rearm_pose_dist` = 2.0 × 0.3459 = **0.6919**.
+- P2: 3193 cặp, 1985 cặp có khoảng cách < ngưỡng ⇒ `coverage` **0.3783 < 0.80** ⇒ `stop_rule.triggered` true. Khoảng cách giữa hai chữ
+  (`between`) p50 0.5802, p10 0.3107 — tức trung vị khoảng cách giữa hai chữ khác nhau còn nhỏ hơn ngưỡng. 300 cặp nhãn dưới ngưỡng, nhiều cặp
+  dưới ngưỡng ở cả 8 phiên (vd. â–ê, ô–ơ, ă–ư, a–b).
+- Theo prompt §2 bước 4: DỪNG. KHÔNG chạy `--write-pose-config` (script cũng từ chối khi P2 kích hoạt), `rearm_pose_dist` trong config giữ giá trị
+  giữ chỗ 1.0, `pose_change_rules` vẫn false; KHÔNG chạy R3, không có số G1–G6. CẦN PLANNER.
+- Quan sát cho planner (không phải đề xuất đổi gate): phân bố jitter lệch đuôi dài (p95 / p50 ≈ 5.5), nên ngưỡng 2 × p95 vượt trung vị khoảng
+  cách giữa hai chữ; hình dạng tay `pose_distance` (N chuẩn hóa) có thể không đủ tách các chữ chỉ khác dấu phụ/hướng.
