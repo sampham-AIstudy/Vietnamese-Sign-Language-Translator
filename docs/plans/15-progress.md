@@ -563,3 +563,23 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
      → mã thoát 0 = G1–G6 đạt, 3 = có gate trượt ⇒ DỪNG, ghi số từ JSON, báo planner (không nới gate) → commit JSON (`15: R3 — rearm_check_r3.json`).
   2. Chỉ khi đạt: `… scripts/level1_rearm_check.py --write-rules-config configs/level1_realtime.json --rearm-json reports/level1_realtime_<D>/rearm_check_r3.json`
      → `git diff` chỉ khối `pose_change_rules` → chạy lại test Level 1 + AC-E1 → commit (`15: R3 config`) → báo người dùng U1c.
+
+## Phiên cloud 2026-10-05 — chạy trên dữ liệu thật (nhánh `cloud/2026-10-04-level1-rearm`, HEAD lúc nhận `4ad3e8c`)
+- Môi trường: Kaggle CLI 2.2.4 dùng `KAGGLE_API_TOKEN` (chạy được: `kaggle datasets list --mine` liệt kê 3 dataset private); cài `seaborn` vào `.venv`.
+  GitNexus 1.6.12 qua `npx -y gitnexus@latest analyze` + `detect-changes --scope all --repo .`.
+- Dữ liệu khôi phục (gitignored, KHÔNG commit): kernel output `phmvnsm33/vsl-extract-alphabet` → `data/external/alphabet_hands_kaggle/alphabet_hands/`
+  (686 npz + manifest.csv + tasks.csv); `archive_private_kaggle.py restore` cả 2 manifest (provenance: 13 file, step4: 18 file) — sha256
+  `checkpoints/alphabet_best.pt` = `a6311820ba778b6b38a33cffffd58602b2bb840b8b35326b5bf46086e5b708a2` (khớp); `hauuto/vietnamese-sign-language-alphabet`
+  → `data/external/hauuto_raw/raw/raw/` (640 mp4); 46 video QIPEDC chữ cái (theo manifest) từ `aresusayhi/vsl-vietnamese-sign-languages` → `data/Dataset/Videos/`.
+- Kiểm A2a + R1 trên dữ liệu tại `4ad3e8c`: 11 module (7 Level 1 + rearm, pose_evidence, rearm_gates, equivalence) → `Ran 161 — OK (skipped=7)`;
+  AC-S18 + S18b (mọi clip hauuto) XANH; `tests.test_level1_equivalence` riêng → `Ran 9 — OK` (AC-E1 + E3, video trích trên Linux, so trên cùng máy).
+  Skip còn lại: `test_u1_summary` (file U1 local `_work/_plan15_u1/…`); 6 skip E1 ở lượt đầu do chưa có video QIPEDC, hết skip sau khi tải.
+
+### R0 sinh lại (A2a (b))
+- Lệnh tại worktree sạch `b545ce7` (data symlink, không track):
+  `python scripts/level1_rearm_check.py --config current=configs/level1_realtime.json --config before_a2=git:3ebc7b9:configs/level1_realtime.json --join-ms 0,300,600 --out reports/level1_realtime_2026-10-04/rearm_check_r0.json`
+  → `generated_by.git_commit` b545ce7…, `code_dirty` false; `configs.before_a2.git_commit` = `3ebc7b9f0d65…` (hết chuỗi rỗng), `filled` = `tail_still_keep_ms`.
+- So với JSON cũ (1acb4a5) bằng code: `current` KHÔNG đổi số nào. Chỉ `before_a2` L join 600 đổi: `one_rate` 0.4819 → 0.4870, `miss_rate` 0.4922 → 0.4870,
+  `garbage_per_clip` 0.0104 → 0.0052 (một chuỗi: one 0.3214 → 0.3571, garbage 0.0357 → 0.0). Nguyên nhân (suy luận, chưa trace từng khung): lần cũ chạy
+  ở a3970a6 với mã bộ tách TRƯỚC A2a (tail = hold vẫn cắt khung cuối), lần mới dùng luật A2a (tail ≥ hold ⇒ không lọc).
+- Kết luận R0 không đổi: `current` L join 0/300 `one_rate` 0.3109 / 0.3731 < 0.90 ⇒ giả thuyết đứng. detect-changes: chỉ JSON, không symbol nào.
