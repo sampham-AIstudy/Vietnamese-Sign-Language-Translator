@@ -696,3 +696,29 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - Test viết (C1–C5 trong `tests/test_level1_rearm_check.py`, 11 test, chuỗi/manifest/classifier giả lập định nghĩa trong test). LỆCH quy trình
   như D2: mã viết trước test; đỏ ghi bằng cách cất mã (`git stash`): `Ran 25 — FAILED (errors=13)` (`_work/_plan15/D3_red.log`).
 - XANH: 12 module `Ran 208 — OK (skipped=1)` (`_work/_plan15/D3_green_l1.log`); AC1-ngắn còn lại `OK`, `known=9 allowed=36` (`_work/_plan15/D3_ac1.log`).
+
+### D4 — gate G1–G7 tại commit sạch (15-lan-sua-4 §5.1) — **DỪNG theo §7 mục 2 (chỉ G6 nhóm dấu thanh trượt) — CẦN NGƯỜI DÙNG**
+- Lệnh tại `1ab5d7b` (`git status --porcelain -- scripts src configs level1_demo.py` rỗng):
+  `PYTHONIOENCODING=utf-8 .venv/bin/python scripts/level1_rearm_check.py --decoder --config off=configs/level1_realtime.json --config on=configs/level1_realtime.json --set 'on:rearm_mode="classifier"' --gates on:off --join-ms 0,300,600 --out reports/level1_realtime_2026-10-05/rearm_check_d4.json`
+  → mã thoát 3, `gates G1-G6: FAILED G6`, `stop: lần sửa 4 §7 item 2` (`_work/_plan15/D4_run.log`). JSON: `generated_by.git_commit` 1ab5d7b…,
+  `code_dirty` false; commit JSON `a58df71`. Tên cờ chốt: `--decoder`, `--set on:rearm_mode="classifier"`, `--gates on:off`,
+  `--write-mode-config CONFIG --rearm-json JSON` (KHÔNG chạy). Chuỗi ghép từ clip train — kiểm logic, không phải độ chính xác.
+- Số (đọc bằng code từ JSON; `on` = classifier 1000/0.9/300, `off` = config hiện hành motion_pose):
+  | Gate | Giá trị | Ngưỡng | Kết quả |
+  |---|---|---|---|
+  | G1 L one_rate join 0 / 300 | 0.9793 / 0.9689 | ≥ 0.90 | ĐẠT |
+  | G2 L multi_rate 0 / 300 / 600 | 0.0 / 0.0 / 0.0 | ≤ 0.05 | ĐẠT |
+  | G3 phát cần mất tay, L/T/O × 3 join | 0 (cả 9) | = 0 | ĐẠT |
+  | G4 L order_ok | true ×3 | true | ĐẠT |
+  | G5 L garbage_per_clip 300 / 600 | 0.0363 / 0.0311 | ≤ 0.05 | ĐẠT |
+  | G6 chữ cái (516 clip) on / off | 0.9593 / 0.8798 | on ≥ off − 0.02 | ĐẠT |
+  | **G6 dấu thanh (120 clip) on / off** | **0.8000 / 0.8500** | on ≥ 0.83 | **TRƯỢT** |
+- Báo cáo (không gate): L join 0/300/600 `on` one 0.9793/0.9689/0.9793, token_error_rate 0.0415/0.0570/0.0466, n_replace 6/10/10 (193 clip);
+  `off` (khối strict cùng định nghĩa) one 0.2332/0.2591/0.2280, rác 0.1192/0.1554/0.1451. T (70 clip) `on` one 0.9714 ×3, rác 0.1143/0.1429/0.1429;
+  `off` one 0.7143/0.7286/0.6857. O (25 cặp chữ lặp) one 0.64 cho cả on/off (chữ lặp liên tiếp không tách được nếu không rút tay / phím n — đúng
+  Giới hạn §6). Clip đơn `on`: chữ cái 495 đúng-1 / 7 không phát / 14 ≥ 2; dấu 96 / 9 / 15. G7 QIPEDC (46 clip, 0 clip thiếu khung): tỉ lệ clip phát
+  nhãn trọn clip `on` 0.5435 (25/46, 34 lần phát) vs `off` 0.7391 (34/46, 60 lần phát); phát đúng ký hiệu `on` 0.5435 vs `off` 0.5652 (trọn clip
+  đúng ký hiệu 28/46).
+- Theo §7 mục 2: DỪNG. `rearm_mode` giữ "motion_pose", KHÔNG chạy `--write-mode-config`, KHÔNG thử tham số khác, KHÔNG nới gate. Người dùng chọn
+  (a) bật classifier cho buổi báo cáo, Giới hạn ghi "dấu thanh liên tiếp kém hơn chế độ cũ; dùng phím 1–5" (G6 dấu vẫn ghi là trượt), hoặc
+  (b) giữ motion_pose + phím n. Khuyến nghị của planner (§7): (a).
