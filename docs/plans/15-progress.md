@@ -1159,3 +1159,93 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - Còn cho reviewer / người dùng: hồi quy trên Windows và phiên webcam theo checklist §5 của plan
   (`python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json --min-detection-conf 0.35 --auto-enhance`);
   tác dụng lên tỉ lệ thấy tay / độ chính xác chưa đo. AC1-đủ (31 module) không chạy trên cloud.
+
+## Lần sửa 9 — coder (phiên cloud 2026-10-05, `docs/plans/15-lan-sua-9.md` @ `03d17b8`; cử chỉ Xòe 5 ngón = dấu cách) — **S1–S3 XONG**
+- Nhánh: commit trên `claude/level1-rearm-rev9-o1gc4j` (tạo từ `origin/cloud/2026-10-04-level1-rearm` @ `03d17b8`), push lên cả nhánh đó và
+  `cloud/2026-10-04-level1-rearm` sau mỗi mục.
+- Đầu phiên (container mới): `.venv` → `/opt/vslt-venv`, cài `seaborn`; khôi phục (không commit): kernel `phmvnsm33/vsl-extract-alphabet`
+  → 686 npz + manifest; `archive_private_kaggle.py restore` 2 manifest (provenance 13 file, step4 18 file) — sha256
+  `checkpoints/alphabet_best.pt` = `a6311820…5b708a2` khớp; 640 mp4 hauuto; 46 video QIPEDC chữ cái theo manifest.
+  GitNexus 1.6.12 dùng được (`npx -y gitnexus@latest analyze` + `impact` + `detect-changes --scope all --repo .`).
+- Mốc tại `03d17b8` (worktree sạch, dữ liệu symlink; `_work/_plan15/rev9_baseline_*.log`): 12 module Level 1 `Ran 322 — OK (skipped=1)`
+  (skip duy nhất `test_u1_summary`, thiếu file U1 của người dùng); 2 module mới `Ran 13 — OK`; AC1-ngắn 11 module `Ran 167 — OK`, 0 skip;
+  guard `known=9 allowed=36`, `Ran 28 — OK`.
+
+### S1 — `is_open_palm_space` (`9e29dc1`)
+- Mã (`src/inference/level1_core.py`): đúng 3 tiêu chí §2 S1 trên khoảng cách 3D (hoặc 2D) giữa các điểm của cùng bàn tay; `None`, shape khác
+  [21, 2|3], giá trị không hữu hạn, cổ tay trùng MCP giữa ⇒ `False`. Hằng: `LONG_FINGERS`, `THUMB_SPREAD_RATIO` = 1.1 (giá trị của plan),
+  `FINGER_SPREAD_MIN` = 1.2 (lựa chọn của coder — plan chỉ ghi "không quá nhỏ"): đầu ngón kề nhau phải cách xa hơn 1.2 lần khoảng MCP tương
+  ứng; ngón khép sát giữ tỉ lệ quanh 1 (cao hơn một chút khi hai ngón dài khác nhau), ngón xòe thì loe ra. Giá trị chọn bằng lập luận hình học
+  trên bàn tay sơ đồ TRƯỚC khi chạy trên dữ liệu thật, không chỉnh sau đó. App đưa vào `aspect_points(landmarks, w, h)` (x, z nhân rộng/cao,
+  như bộ tách) để khoảng cách cùng thang trên mọi trục.
+- Impact: hàm và hằng mới, không symbol cũ nào đổi. detect-changes: `level1_core.py 48+/0−`, `tests/test_level1_core.py 147+/0−`, risk low.
+- Test viết TRƯỚC `TestOpenPalmSpaceS1` (6; bàn tay sơ đồ `SchematicHand` dựng từ góc khớp trong test — không phải dữ liệu): xòe ⇒ True;
+  b, a, c, d, h ⇒ False; từng tiêu chí cần thiết (ngón cái gập + ngón xòe, ngón cái dang + ngón khép, ngón áp út / út gập, đầu ngón cái quặp
+  về cổ tay); ngưỡng 1.1 (dời đầu ngón cái tới 1.02 / 0.98 lần ngưỡng); bất biến vị trí / tỉ lệ / xoay / nghiêng / lật; đầu vào hỏng.
+  ĐỎ: `Ran 6 — FAILED (errors=6)` (`_work/_plan15/S1_red.log`); XANH: `Ran 6 — OK` (`S1_green.log`); `tests.test_level1_core` +
+  `tests.test_level1_guard` `Ran 43 — OK`.
+- Thăm dò trên dữ liệu thật (script `_work/_plan15/S1_real_scan.py`, KHÔNG commit, log `S1_real_scan.log`; kiểm logic, không phải độ chính
+  xác): hàm trên mọi khung có tay của 686 clip train (`aspect_points`, kích thước của manifest). 8 clip có chuỗi khung xòe dài từ 250 ms trở
+  lên, cả 8 là take `A_001` của người ký `khoi` (h, p, s, l, b, g, v, t) và chuỗi nằm ở các khung có tay đầu tiên; xem ảnh khung (không
+  commit) của cả 8: người ký giơ bàn tay xòe 5 ngón thật trước khi làm chữ, khung chữ giữ yên ở cuối clip không bị nhận. Không clip nào
+  có chuỗi xòe dài như vậy trong lúc giữ chữ; các khung lẻ còn lại đều ngắn hơn ngưỡng giữ. Đây là bằng chứng hàm nhận được bàn tay xòe thật
+  (ngưỡng 1.1 đạt được trên tay thật), không phải số đo độ chính xác; webcam chưa thử.
+
+### S2 — `SpaceGestureTracker` + nối vào app (`69f88ce`)
+- Mã (`level1_demo.py`): `SpaceGestureTracker(hold_ms=GESTURE_SPACE_HOLD, rearm_ms=GESTURE_SPACE_REARM)`; `update(ts, is_space, has_hand=True)`
+  đúng §2 S2 (giữ xòe ≥ hold_ms khi armed ⇒ True một lần, disarmed; tư thế khác giữ > rearm_ms hoặc mất tay ⇒ armed; khung khác giữa chuỗi
+  xòe ⇒ đếm giữ lại từ đầu); `held_ms`, `reset()` (gọi khi nhấn `p`); `hold_ms`/`rearm_ms`/ts không hữu hạn hoặc ≤ 0 ⇒ ValueError.
+  Thêm `has_hand` (từ khóa có mặc định) vì plan yêu cầu "mất tay ⇒ rearm" mà chữ ký `update(ts, is_space)` không phân biệt được.
+  `_process`: khung có tay ⇒ `is_open_palm_space(aspect_points(...))` (thời gian tính trong stage `segmenter` — thêm stage sẽ đổi khóa `stages`
+  mà test AC-L cũ khóa); `_gesture_step` → `speller.key("space", t_ms)` + sự kiện `{"event": "gesture_space", "t_ms", "added"}`.
+  Lựa chọn của coder: ở chế độ `classifier` dấu cách đi qua timeline (mục `"space"`, như word gap / phím `n`) để đứng sau nhãn của các khung
+  trước khi kết quả cửa sổ đến muộn (worker); headless thì áp ngay như plan. Mục "có thể bỏ qua nạp khung xòe vào `window.push`": khung xòe
+  được đưa vào cửa sổ như khung KHÔNG có tay (cửa sổ không phân loại tại đó; bộ giải mã thấy không tay ⇒ luật 4 `hand_lost_ms` vẫn áp, nên
+  chữ cuối có thể lặp lại sau dấu cách nếu xòe đủ lâu). `motion_pose`: bộ tách vẫn nhận khung xòe như cũ (plan chỉ nói tới cửa sổ) — ghi ở
+  giới hạn mục 9 của `docs/level1_desktop.md`. HUD: `[Cử chỉ: Dấu cách <giữ>/<hold>]` khi đang giữ (armed), `[Ký hiệu: Dấu cách (Space)]`
+  trong `GESTURE_SPACE_FLASH` (600, giá trị của coder) thời gian luồng sau dấu cách; không có cử chỉ ⇒ không dòng nào (HUD như cũ).
+- Guard: G2 coi mọi binding tên có `ms` gán số gõ tay là số hiệu năng (`hold_ms: float = 250.0` của plan sẽ bị bắt) ⇒ giá trị thiết kế đặt
+  trong hằng `GESTURE_SPACE_HOLD` / `GESTURE_SPACE_REARM` / `GESTURE_SPACE_FLASH` (đơn vị ghi ở chú thích, nêu rõ là giá trị thiết kế, không
+  phải số đo). Cần reviewer xác nhận cách đặt tên này.
+- Impact (GitNexus): `_process` LOW, `_hud_lines` LOW, `_key` LOW, `_drain_timeline` MEDIUM (5 caller trực tiếp, đều trong `Level1App`);
+  detect-changes: `level1_demo.py 122+/3−`, `tests/test_level1_demo.py 295+/0−`, risk high (8 process của `Level1App`/`main`).
+- Test viết TRƯỚC (`tests/test_level1_demo.py`): `TestSpaceGestureTrackerS2` (9: 4 trường hợp của plan + nháy < 150 ms, mất tay, giữ bị ngắt,
+  `hold_ms`/`held_ms`, `reset`), `TestGestureSpaceAppS2` (6, clip thật `khoi/b_khoi_A_001.mp4`: xòe 5 ngón rồi chữ b — đúng 1 dấu cách tại
+  khung mà luật cho (tính lại trong test từ landmark ghi được), chữ b giữ yên không kích hoạt, có token trước ⇒ thêm `' '`, không cửa sổ nào ở
+  khung xòe, segment/token `motion_pose` bằng app `03d17b8`; clip D2 không xòe ⇒ báo cáo bằng app `03d17b8` ở 2 chế độ),
+  `TestGestureSpaceHudS2` (3: dòng tiến độ / flash, thứ tự timeline, tạm dừng). ĐỎ (`_work/_plan15/S2_red.log`): tracker `FAILED (errors=9)`,
+  app `FAILED (failures=5)`, HUD `FAILED (errors=4)`; 1 test app xanh từ đầu đúng mong đợi (khóa "không đổi" / sự kiện của clip). XANH: 18 OK
+  (`S2_green.log`); `tests.test_level1_demo` + `core` + `guard` `Ran 152 — OK`.
+- Kiểm tay (không phải số liệu, `_work/_plan15/S2_palm_clips_explore.log`): 8 clip khoi `A_001` ở cả 2 chế độ ⇒ 1 cử chỉ mỗi clip, token bằng
+  app `03d17b8` (lúc xòe text còn rỗng nên không thêm gì).
+
+### S3 — cờ CLI, JSON, tài liệu (`ab0cd3f`)
+- Mã: `--gesture-space` / `--no-gesture-space` (`argparse.BooleanOptionalAction`, mặc định bật), `--space-hold-ms` (`positive_ms`, mặc định
+  `GESTURE_SPACE_HOLD`). JSON: khóa gốc `gesture_space` = `enabled, hold_ms, rearm_ms, flash_ms, palm_frames, emits, spaces_added`, CHỈ khi
+  đã thấy ít nhất một khung xòe hoặc `--space-hold-ms` khác mặc định (lựa chọn của coder: plan bật mặc định, mà test cũ AC-6b / M3 khóa danh
+  sách khóa của báo cáo khi không cờ ⇒ ghi luôn sẽ phải sửa test cũ). `--no-gesture-space` ⇒ không kiểm hình tay, báo cáo/HUD như `03d17b8`.
+  Docstring + `docs/level1_desktop.md` mục 1 (lệnh gợi ý của plan với `--no-auto-space`), mục 2 (dòng cử chỉ), mục 9 (mới; không số đo).
+- Impact (GitNexus): `build_parser` LOW (2), `Level1App.report` LOW (3). detect-changes: `docs/level1_desktop.md 34+/0−`,
+  `level1_demo.py 21+/0−`, `tests/test_level1_demo.py 157+/0−`, risk low.
+- Test viết TRƯỚC: `TestGestureSpaceArgsS3` (2), `TestGestureSpaceFlagsS3` (4, clip thật: `--no-gesture-space` bằng app `03d17b8` ở 2 chế độ —
+  khóa, token, nhãn, segment, sự kiện, counts, dòng HUD; khối JSON khi bật; `--space-hold-ms 400` (1 dấu cách, muộn hơn) / `500` (chuỗi xòe
+  của clip ngắn hơn ⇒ 0); clip D2 với hold 400 ⇒ khối ghi 0 khung xòe, token như cũ), `TestRev9CommandS3` (1, lệnh gợi ý qua `main` headless
+  trên clip xòe), `TestDesktopDocS3` (1). ĐỎ (`_work/_plan15/S3_red.log`): Args `FAILED (failures=1)`, Flags thoát 2 (argparse từ chối cờ),
+  Command `FAILED (errors=1)`, Doc `FAILED (failures=1)`; test giá trị sai xanh từ đầu (cờ chưa có cũng bị từ chối). XANH: 8 OK
+  (`S3_green.log`; lần đầu Doc đỏ vì tài liệu chỉ ghi `--no-gesture-space`, đã thêm `--gesture-space` vào tài liệu, không đổi test).
+
+### Kết thúc lần sửa 9 — AC-9a…AC-9e
+- Commit: `9e29dc1` S1, `69f88ce` S2, `ab0cd3f` S3 (+ commit tiến độ này).
+- Hồi quy tại `ab0cd3f` (`_work/_plan15/rev9_final_*.log`): 12 module Level 1 `Ran 354 — OK (skipped=1)` (= 322 cũ + 32 mới; skip duy nhất
+  `test_u1_summary`); 2 module mới `Ran 13 — OK`; AC1-ngắn 11 module `Ran 167 — OK`, 0 skip; guard `[DoD7-guard] known=9 allowed=36`,
+  `Ran 28 — OK`.
+- AC-9a: `git diff 03d17b8..HEAD --numstat -- tests/` → `test_level1_core.py 147/0`, `test_level1_demo.py 452/0` (cột xóa = 0). File đổi
+  chỉ trong §3 của plan; `configs/` (sha256 `level1_realtime.json` `cc178955…`, `level1_demo_classifier.json` `568f97d8…`,
+  `level1_demo_classifier_rev7.json` `a2aea62e…`), `src/data/alphabet_preprocessing.py`, `backend/main.py`, `realtime_demo.py` không đổi;
+  checkpoint `a6311820…5b708a2` không đổi; không train.
+- AC-9b: đạt trên bàn tay sơ đồ (b, a, c, d, h ⇒ False; xòe ⇒ True); trên clip train chỉ các bàn tay xòe thật kích hoạt (thăm dò S1, không
+  phải số đo). AC-9c: đạt (`TestSpaceGestureTrackerS2`, clip thật S2/S3). AC-9d: đạt (`test_9d_no_gesture_space_same_as_before`).
+  AC-9e: đạt (số ở trên).
+- Còn cho reviewer / người dùng: hồi quy trên Windows và phiên webcam theo checklist §5 của plan (lệnh ở mục 9 của `docs/level1_desktop.md`).
+  Ngưỡng 1.1 / 1.2 và thời gian giữ chưa thử trên webcam; nếu khó kích hoạt thì xem dòng HUD `[Cử chỉ: ...]` có hiện không (không hiện ⇒ hình
+  tay chưa qua tiêu chí, thường là ngón cái chưa dang đủ hoặc các ngón chưa tách).
