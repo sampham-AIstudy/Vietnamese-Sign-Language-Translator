@@ -1505,6 +1505,131 @@ class TestDesktopDocT4(unittest.TestCase):
         self.assertIsNone(re.search(r"\d+(\.\d+)?\s*(ms|%|fps)", doc))   # no measured number (as AC-R'4 / C1)
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 7, user decision "File config mới"
+REV7_CONFIG = os.path.join("configs", "level1_demo_classifier_rev7.json")
+
+
+def _feed_windows(app, windows, t0=1000.0, dt=33.0):
+    """Window results pushed through the app's timeline (as TestHudToneT4); returns the [classifier] HUD lines."""
+    lines = []
+    for i, (label, conf) in enumerate(windows):
+        app.timeline.append(["frame", t0 + dt * i, True, True, _ok_result(label, conf)])
+        app._drain_timeline()
+        lines.append(app._hud_lines()[1][1])
+    return lines
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestRev7DemoConfig(unittest.TestCase):
+    """The demo command of lần sửa 7, `--config configs/level1_demo_classifier_rev7.json` (written by
+    scripts/level1_rearm_check.py --write-rev7-config), runs rearm_mode classifier with the values of lần sửa 7 §2
+    (window, thresholds of the tone marks, one-frame dropout debounce, word gap) without any flag. The D2 clip is a
+    training clip: this checks the code path, not accuracy."""
+
+    @classmethod
+    def setUpClass(cls):
+        from src.inference.level1_core import load_level1_config
+        os.makedirs(TMP_PARENT, exist_ok=True)
+        cls.tmp = tempfile.mkdtemp(prefix="vslt_p15_r7_", dir=TMP_PARENT)
+        cls.out = os.path.join(cls.tmp, "r7.json")
+        cls.proc = subprocess.run([PY, "level1_demo.py", "--source", CLIP, "--headless", "--config", REV7_CONFIG,
+                                   "--out-json", cls.out], cwd=PROJECT_ROOT, capture_output=True, text=True, env=ENV,
+                                  timeout=900)
+        cls.report = None
+        if cls.proc.returncode == 0:
+            with open(cls.out, encoding="utf-8") as f:
+                cls.report = json.load(f)
+        cls.cfg = load_level1_config(os.path.join(PROJECT_ROOT, REV7_CONFIG))["values"]
+        cls.base = load_level1_config(os.path.join(PROJECT_ROOT, DEMO_CONFIG))["values"]
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            cls.away = {}
+            for name, cfg in (("base", DEMO_CONFIG), ("rev7", REV7_CONFIG)):
+                app = app_mod.Level1App(args_for("--source", CLIP, "--headless", "--config", cfg),
+                                        session_factory=_HandAwaySession)
+                cls.away[name] = (app, app.run())
+        finally:
+            os.chdir(cwd)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def _app(self, config=REV7_CONFIG):
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            return app_mod.Level1App(args_for("--source", CLIP, "--headless", "--config", config))
+        finally:
+            os.chdir(cwd)
+
+    def test_r7_demo_command_runs_classifier_mode(self):
+        self.assertEqual(self.proc.returncode, 0, self.proc.stderr[-2000:])
+        r = self.report
+        self.assertEqual(r["rearm_mode"], "classifier")
+        self.assertEqual(r["config"]["path"], "configs/level1_demo_classifier_rev7.json")
+        self.assertEqual(r["config"]["sha256"], app_mod.sha256_file(os.path.join(PROJECT_ROOT, REV7_CONFIG)))
+        self.assertNotIn("overrides", r["config"])                       # the values come from the file, no flag
+        self.assertNotIn("auto_space", r)
+        self.assertEqual(r["checkpoint"]["sha256"], app_mod.sha256_file(os.path.join(PROJECT_ROOT, CKPT)))
+        self.assertGreater(r["stages"]["window_classify"]["n"], 0)
+        self.assertEqual(r["stages"]["classify"]["n"], 0)
+        self.assertEqual(r["counts"]["label_emits"], len(r["labels"]))
+
+    def test_r7_values_reach_the_app(self):
+        app = self._app()
+        self.assertEqual(app.rearm_mode, "classifier")
+        self.assertEqual(app.window.window_ms, 700.0)
+        self.assertEqual(app.decoder.thresholds("dấu huyền"), (0.78, 200.0))
+        self.assertEqual(app.decoder.thresholds("a"), (self.base["cls_conf"], self.base["cls_stable_ms"]))
+        self.assertEqual(app.decoder.dropout_tolerance_ms, 60.0)
+        self.assertEqual(app.segmenter.p["word_gap_ms"], 2500.0)
+
+    def test_r7_tone_mark_at_its_threshold(self):
+        app = self._app()
+        lines = _feed_windows(app, [("dấu huyền", 0.80)] * 8)
+        self.assertEqual(lines[6], "[classifier] cửa sổ: dấu huyền 0.80 | giữ 198/200 (tone) | cuối: —")
+        self.assertEqual(lines[7], "[classifier] cửa sổ: dấu huyền 0.80 | giữ 231/200 (tone) | cuối: dấu huyền")
+        self.assertEqual([lab["prediction"] for lab in app.labels], ["dấu huyền"])
+        letter = self._app()
+        _feed_windows(letter, [("b", 0.80)] * 20)                         # a letter keeps cls_conf
+        self.assertEqual(letter.labels, [])
+
+    def test_r7_one_frame_dropout_kept(self):
+        stream = [("b", 0.95)] * 5 + [("b", 0.50)] + [("b", 0.95)] * 5   # one window below cls_conf inside the run
+        on, off = self._app(), self._app(DEMO_CONFIG)
+        _feed_windows(on, stream)
+        _feed_windows(off, stream)
+        self.assertEqual([(lab["prediction"], lab["ts_ms"], lab["run_since_ms"]) for lab in on.labels],
+                         [("b", 1330.0, 1000.0)])
+        self.assertEqual(off.labels, [])                                  # lần sửa 5 config: the run restarts
+
+    def test_r7_word_gap(self):
+        app_b, rb = self.away["base"]
+        app, r = self.away["rev7"]
+        last_hand = app.segmenter._last_hand_ts                           # last frame with a hand, then hand away
+        self.assertEqual(app_b.segmenter._last_hand_ts, last_hand)
+        away = app.last_ts - last_hand                                    # hand away until the end of the clip
+        self.assertGreaterEqual(away, self.base["word_gap_ms"])
+        self.assertLess(away, self.cfg["word_gap_ms"])
+        gaps_b = [e["t_ms"] for e in rb["events"] if e.get("event") == "word_gap"]
+        self.assertEqual(len(gaps_b), 1)
+        self.assertGreaterEqual(gaps_b[0] - last_hand, self.base["word_gap_ms"])
+        self.assertEqual(rb["tokens"][-1], " ")                           # lần sửa 5 config: a space
+        self.assertEqual(r["counts"]["word_gaps"], 0)                     # lần sửa 7 config: not yet a word gap
+        self.assertNotIn(" ", r["tokens"])
+
+
+class TestRev7DesktopDoc(unittest.TestCase):
+    def test_r7_doc_demo_command(self):
+        with open(os.path.join(PROJECT_ROOT, "docs", "level1_desktop.md"), encoding="utf-8") as f:
+            doc = f.read()
+        for text in ("--config configs/level1_demo_classifier_rev7.json", "--write-rev7-config",
+                     "--config configs/level1_demo_classifier.json"):
+            self.assertIn(text, doc, text)
+
+
 if __name__ == "__main__":
     unittest.main()
 

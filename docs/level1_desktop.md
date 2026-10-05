@@ -7,13 +7,14 @@ Mọi số đo nằm trong các JSON và `reports/level1_realtime_2026-10-05/SUM
 ## 1. Chạy demo (lệnh dùng cho buổi báo cáo)
 
 ```bash
-python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier.json
+python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json
 ```
 
 - Windows: `.venv\Scripts\python level1_demo.py ...`; cloud/Linux: `.venv/bin/python level1_demo.py ...`.
-- `--config configs/level1_demo_classifier.json` bật chế độ re-arm `classifier` (chữ liên tiếp không cần rút tay). Thiếu cờ này app chạy
-  config mặc định `configs/level1_realtime.json` (chế độ `motion_pose`, phải nảy tay hoặc hạ tay giữa hai chữ). Báo cáo JSON của app ghi
-  `rearm_mode`, `config.path` và `config.sha256` để biết đã chạy chế độ nào.
+- `--config configs/level1_demo_classifier_rev7.json` bật chế độ re-arm `classifier` (chữ liên tiếp không cần rút tay) với các giá trị
+  của lần sửa 7 (mục 7). Config demo trước đó, `--config configs/level1_demo_classifier.json` (lần sửa 5, cùng chế độ, chưa có giá trị lần
+  sửa 7), vẫn chạy được. Thiếu `--config` app chạy config mặc định `configs/level1_realtime.json` (chế độ `motion_pose`, phải nảy tay hoặc
+  hạ tay giữa hai chữ). Báo cáo JSON của app ghi `rearm_mode`, `config.path` và `config.sha256` để biết đã chạy chế độ nào.
 - Ghi lại phiên (tùy chọn): thêm `--expected "<từ>" --out-json reports/level1_realtime_<ngày>/webcam_<từ>_<lần>.json`. App chỉ ghi token,
   sự kiện, thời gian và thống kê; không ghi video, khung hình hay landmark.
 - Chạy trên file video, không cửa sổ: `python level1_demo.py --source <video.mp4> --headless --out-json <file>.json`
@@ -115,10 +116,13 @@ không che vùng tay của ảnh camera.
 - HUD: khi chuỗi đang giữ là một dấu thanh, dòng `[classifier]` hiện thời gian ổn định của dấu thanh kèm `(tone)`:
   `[classifier] cửa sổ: <top1> <conf> | giữ <ms>/<cls_stable_ms_tone> (tone) | cuối: <last>` (chuỗi chữ cái hoặc không có chuỗi ⇒ dòng như
   mục 6).
-- **Giá trị của lần sửa 7 CHƯA được ghi vào `configs/level1_demo_classifier.json`** (`cls_conf_tone`, `cls_stable_ms_tone`, `cls_window_ms`,
-  `word_gap_ms` theo §2 của kế hoạch): file này sinh bằng `scripts/level1_rearm_check.py --write-demo-config`, và test AC-W3 của lần sửa 5
-  (`tests/test_level1_rearm_check.py`) ghim nó bằng config mặc định + `rearm_mode`; sửa file làm đỏ test cũ ⇒ chờ planner. Lệnh ở mục 1
-  vẫn chạy giá trị cũ. Muốn thử trên webcam trong lúc chờ: chép file ra `_work/`, thêm / đổi các khóa trên, chạy `--config _work/<file>.json`
-  (JSON ghi `config.path` và `config.sha256` của file đã dùng; không commit file đó).
+- **Giá trị của lần sửa 7 nằm trong file config demo mới `configs/level1_demo_classifier_rev7.json`** (quyết định của người dùng
+  "File config mới"): file này = `configs/level1_demo_classifier.json` với `cls_window_ms`, `word_gap_ms` đổi và `cls_conf_tone`,
+  `cls_stable_ms_tone`, `dropout_tolerance_ms` thêm theo §2 của kế hoạch, sinh bằng
+  `python scripts/level1_rearm_check.py --write-rev7-config configs/level1_demo_classifier_rev7.json` (`_about` ghi sha256 và commit của
+  file gốc, `_rev7_decision` ghi quyết định; không sửa tay; chạy lại ra đúng từng byte). File demo của lần sửa 5 (test AC-W3 ghim nó bằng
+  config mặc định + `rearm_mode`) và config mặc định không đổi. Các giá trị do planner chọn sau phiên U3 (trace không commit): không phải
+  hiệu chỉnh độc lập, không phải gate. Lệnh ở mục 1 dùng file này; thử giá trị khác: `--cls-window-ms`, hoặc chép file ra `_work/`, sửa
+  khóa, chạy `--config _work/<file>.json` (không commit file đó).
 - `scripts/level1_trace_report.py` vẫn so `conf` với `cls_conf` cho mọi nhãn (chưa biết ngưỡng riêng của dấu thanh và debounce) ⇒ phân
   loại M1/M3 của dấu thanh trên trace chạy với các khóa mới chỉ gần đúng.

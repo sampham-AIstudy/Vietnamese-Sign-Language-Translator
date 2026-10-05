@@ -885,5 +885,47 @@ class TestWriteRev7Config(unittest.TestCase):
         self.assertEqual(rc.load_level1_config(self.out)["values"]["cls_window_ms"], 700.0)
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# Plan 15 lần sửa 7, user decision "File config mới": the committed configs/level1_demo_classifier_rev7.json is the
+# output of --write-rev7-config at a clean commit (same bytes when written again), with the values of lần sửa 7 §2;
+# the demo config of lần sửa 5 and the default config are not changed. If the demo config of lần sửa 5 changes later
+# this test fails on purpose: run the --write-rev7-config command again.
+# ----------------------------------------------------------------------------------------------------------------------
+REV7_CONFIG_REL = "configs/level1_demo_classifier_rev7.json"
+
+
+class TestRev7ConfigFile(unittest.TestCase):
+    def setUp(self):
+        self.path = os.path.join(rc.ROOT, REV7_CONFIG_REL)
+        self.tmp = tempfile.mkdtemp(dir=rc.ROOT, prefix="_tmp_r7f_")  # inside the repo, untracked
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def test_r7_file_is_committed_and_clean(self):
+        self.assertEqual(rc.REV7_DEMO_CONFIG.replace(os.sep, "/"), REV7_CONFIG_REL)
+        self.assertEqual(sr.committed_evidence_ref(self.path)[0], REV7_CONFIG_REL)  # tracked, no uncommitted change
+
+    def test_r7_file_is_the_script_output(self):
+        again = os.path.join(self.tmp, "again.json")
+        rc.write_rev7_config(again)
+        with open(again, "rb") as a, open(self.path, "rb") as b:
+            self.assertEqual(a.read(), b.read())
+
+    def test_r7_file_values(self):
+        new = rc.load_level1_config(self.path)
+        base = rc.load_level1_config(os.path.join(rc.ROOT, DEMO_CONFIG_REL))
+        main = rc.load_level1_config(os.path.join(rc.ROOT, MAIN_CONFIG_REL))
+        for k, v in REV7_PLAN_VALUES.items():
+            self.assertEqual(new["values"][k], v, k)
+        self.assertEqual(new["values"]["rearm_mode"], "classifier")
+        self.assertIn(base["sha256"], new["raw"]["_about"])
+        self.assertEqual(new["raw"]["_rev7_decision"], rc.REV7_DECISION)
+        self.assertEqual(base["values"]["rearm_mode"], "classifier")     # lần sửa 5 demo config: not changed
+        for k in ("cls_conf_tone", "cls_stable_ms_tone", "dropout_tolerance_ms"):
+            self.assertNotIn(k, base["raw"], k)
+        self.assertEqual(main["values"]["rearm_mode"], "motion_pose")     # the default config is not switched
+
+
 if __name__ == "__main__":
     unittest.main()
