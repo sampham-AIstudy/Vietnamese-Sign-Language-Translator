@@ -801,5 +801,89 @@ class TestDemoConfigFileW3(unittest.TestCase):
         self.assertIn(ud["evidence"], raw_d["rearm_mode"]["reason"])
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# Plan 15 lần sửa 7, user decision "File config mới" (2026-10-05): --write-rev7-config writes a NEW demo config =
+# the committed demo config of lần sửa 5 + the values of lần sửa 7 §2; that file and its test (TestDemoConfigFileW3)
+# stay as they are.
+# ----------------------------------------------------------------------------------------------------------------------
+REV7_PLAN_VALUES = {"cls_window_ms": 700.0, "cls_conf_tone": 0.78, "cls_stable_ms_tone": 200.0,
+                    "dropout_tolerance_ms": 60.0, "word_gap_ms": 2500.0}
+REV7_OPTIONAL = ("cls_conf_tone", "cls_stable_ms_tone", "dropout_tolerance_ms")
+
+
+def _sha(path):
+    return rc.sha256_file(path)
+
+
+class TestWriteRev7Config(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(dir=rc.ROOT, prefix="_tmp_r7_")  # inside the repo, untracked
+        self.out = os.path.join(self.tmp, "rev7.json")
+        self.base = os.path.join(rc.ROOT, DEMO_CONFIG_REL)
+        self.base_sha = _sha(self.base)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+        self.assertEqual(_sha(self.base), self.base_sha)                 # the base is never written
+
+    def test_r7_values_are_the_plan(self):
+        self.assertEqual({k: v for k, (v, _reason) in rc.REV7_VALUES.items()}, REV7_PLAN_VALUES)
+        for k, (_v, reason) in rc.REV7_VALUES.items():
+            self.assertIn("lần sửa 7", reason, k)
+        self.assertEqual(rc.REV7_DECISION["choice"], "File config mới")
+
+    def test_r7_written_from_the_committed_demo_config(self):
+        res = rc.write_rev7_config(self.out)
+        new = rc.load_level1_config(self.out)
+        base = rc.load_level1_config(self.base)
+        raw_n, raw_b = new["raw"], base["raw"]
+        for k, v in REV7_PLAN_VALUES.items():
+            self.assertEqual(new["values"][k], v, k)
+            self.assertEqual(raw_n[k]["source"], "design", k)
+            self.assertEqual(raw_n[k]["reason"], rc.REV7_VALUES[k][1], k)
+        for k in raw_b:                                                  # every other key exactly as in the base
+            if k not in REV7_PLAN_VALUES and k != "_about":
+                self.assertEqual(raw_n[k], raw_b[k], k)
+        self.assertEqual(new["values"]["rearm_mode"], "classifier")
+        want_order = [k for k in raw_b if k != "_about"]
+        i = want_order.index("cls_stable_ms") + 1
+        want_order[i:i] = list(REV7_OPTIONAL)                            # optional keys after cls_stable_ms
+        self.assertEqual([k for k in raw_n if k not in ("_about", "_rev7_decision")], want_order)
+        self.assertEqual(list(raw_n)[:2], ["_about", "_rev7_decision"])
+        self.assertEqual(raw_n["_rev7_decision"], rc.REV7_DECISION)
+        rel_base, commit = sr.committed_evidence_ref(self.base)
+        for text in (rel_base, self.base_sha, commit, "do not edit by hand", "--write-rev7-config"):
+            self.assertIn(text, raw_n["_about"], text)
+        self.assertEqual(res["base"], {"path": rel_base, "sha256": self.base_sha, "commit": commit})
+        self.assertEqual(set(res["changed"]), set(REV7_PLAN_VALUES))
+        first = open(self.out, "rb").read()
+        rc.write_rev7_config(self.out)                                   # same inputs, same bytes
+        self.assertEqual(open(self.out, "rb").read(), first)
+        self.assertTrue(first.endswith(b"}\n"))
+        self.assertNotIn(b"\r\n", first)
+
+    def test_r7_refusals_write_nothing(self):
+        untracked = os.path.join(self.tmp, "base_copy.json")
+        shutil.copyfile(self.base, untracked)
+        main_cfg = os.path.join(rc.ROOT, MAIN_CONFIG_REL)
+        for base, out, why in ((untracked, self.out, "base not committed"),
+                               (main_cfg, self.out, "base not rearm_mode classifier"),
+                               (self.base, self.base, "out is the base")):
+            with self.subTest(why=why):
+                before = _sha(base)
+                with self.assertRaises(RuntimeError):
+                    rc.write_rev7_config(out, base)
+                self.assertFalse(os.path.exists(self.out))
+                self.assertEqual(_sha(base), before)
+
+    def test_r7_cli(self):
+        out = io.StringIO()
+        from contextlib import redirect_stdout
+        with redirect_stdout(out):
+            self.assertEqual(rc.main(["--write-rev7-config", self.out]), 0)
+        self.assertIn(_sha(self.out), out.getvalue())
+        self.assertEqual(rc.load_level1_config(self.out)["values"]["cls_window_ms"], 700.0)
+
+
 if __name__ == "__main__":
     unittest.main()
