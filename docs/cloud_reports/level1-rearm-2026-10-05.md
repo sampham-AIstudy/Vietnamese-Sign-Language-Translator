@@ -52,3 +52,43 @@ Lệch kế hoạch / giả định (chi tiết ở `docs/plans/15-progress.md` 
 **Cập nhật sau quyết định:** người dùng chọn (a) Classifier. Bật thử trên config mặc định làm 5 test CŨ đỏ (AC-D2 ×2, AC-L ×3 khóa hành vi
 motion_pose của config mặc định) ⇒ điểm dừng §7 mục 3, CẦN PLANNER chốt cách bật (a). Config giữ "motion_pose"; demo tạm dùng `--config` với bản
 sao đặt `rearm_mode` = "classifier". Chi tiết: 15-progress mục D4.
+
+## Lượt 4 — coder lần sửa 5 (S1 → S2), 2026-10-05
+
+**Trạng thái: XONG, không kích hoạt điểm dừng.** Chế độ classifier (quyết định (a) của người dùng) bật bằng config demo riêng
+`configs/level1_demo_classifier.json`. Config mặc định `configs/level1_realtime.json` giữ `rearm_mode` "motion_pose" (sha256 `cc178955…eb54b`,
+không đổi). 0 dòng test cũ bị đổi.
+
+| Bước | STATUS | Commit | Ghi chú |
+|---|---|---|---|
+| S1 `--write-demo-config` | DONE | `6fed928` | `write_demo_config` + CLI trong `scripts/level1_rearm_check.py`; AC-W1 (11 trường hợp từ chối), AC-W2 (thành công + CLI) |
+| S2 config demo | DONE | `2baa7aa` | sinh tại `6fed928` sạch từ `rearm_check_d4.json@a58df71`; AC-W3 (file = config `on` đã đo), AC-W4 (lệnh demo chạy classifier), AC-W5 |
+
+- Lệnh sinh (S2): `PYTHONIOENCODING=utf-8 .venv/bin/python scripts/level1_rearm_check.py --write-demo-config configs/level1_demo_classifier.json --rearm-json reports/level1_realtime_2026-10-05/rearm_check_d4.json`
+  → thoát 0. **sha256 `configs/level1_demo_classifier.json` = `568f97d8b26a72a075067b2f7fdec7772409d8e3e0a3487c2b4824b206c397e2`.**
+  Trong file: `rearm_mode` = "classifier" (reason ghi "gate G6 tones FAILED (on 0.8000 vs off 0.8500, rule on >= off - 0.02) … not a gate pass;
+  tones: keys 1-5"), khóa `_user_decision` (lựa chọn (a), 2026-10-05, số G6 đọc từ JSON D4), `_about` (nguồn, sha256 + commit config gốc,
+  "do not edit by hand"). Mọi khóa khác bằng hệt config mặc định.
+- Test thật tại `2baa7aa` (unittest, lệnh §4 của prompt cloud):
+  - 7 module Level 1: `Ran 146 — OK (skipped=1)`.
+  - Guard chính: `Ran 28 — OK`, `known=9 allowed=36`.
+  - AC1-ngắn (16 module của kế hoạch 15 + textbox, segment_report, rearm_check): `Ran 322 — OK (skipped=1)`; `test_hand_landmarks_ws` OK lần này.
+  - Skip duy nhất: `test_u1_summary` (file U1 của người dùng chỉ có ở máy local) — không tính là pass.
+  - Trước commit S2, 12 module Level 1 `Ran 217 — OK (skipped=1)`; sha256 checkpoint vẫn `a6311820…5b708a2`.
+- AC-W5: `git diff 281ece1 --numstat -- tests/` chỉ có dòng thêm (`test_level1_demo.py` +38, `test_level1_rearm_check.py` +221, 0 xóa);
+  `configs/level1_realtime.json`, `level1_demo.py`, `src/` không đổi.
+
+**Lệnh cho người dùng thử U1c** (máy local có webcam, từ gốc repo, sau khi kéo nhánh `cloud/2026-10-04-level1-rearm`):
+```
+python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier.json --out-json _work/u1c.json
+```
+Thử: ký "b a c" không rút tay, giữ chữ cuối khoảng 3 s (không được phát lặp), thử "oo" bằng phím `n` giữa hai chữ o, dấu thanh bằng phím 1–5.
+JSON `_work/u1c.json` phải ghi `rearm_mode` "classifier" và `config.path` "configs/level1_demo_classifier.json". Bỏ `--config` thì app chạy
+chế độ cũ motion_pose.
+
+Lệch kế hoạch / giới hạn:
+- GitNexus vẫn không chạy được ⇒ impact bằng text search, detect-changes bằng `git diff --stat` (ghi ở 15-progress).
+- AC-W3 kiểm "git theo dõi file" bằng `git ls-files` (để chạy được trước commit khi file đã `git add`), không bắt file phải sạch.
+- `generated_by.code_dirty` trong JSON của app không phủ file demo (`CODE_PATHS` bị test L3 ghim); đối chiếu bằng `config.sha256`.
+- Đổi giá trị config mặc định sau này sẽ làm AC-W3 đỏ có chủ ý: phải chạy lại D4 rồi lệnh S2, không sửa tay file demo.
+- Chưa làm: U1c (cần webcam của người dùng), A3, C1 (ghi lệnh demo + Giới hạn vào `docs/level1_desktop.md`).
