@@ -576,6 +576,309 @@ def write_rules_config(config_path: str, rearm_json: str) -> Dict[str, Any]:
     return {"pose_change_rules": {"old": old, "new": cfg["pose_change_rules"]}}
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# Step D3 (plan 15 lần sửa 4 §4 #4, §5 D3, §5.1): --decoder — the label decoder of rearm_mode 'classifier'
+# ----------------------------------------------------------------------------------------------------------------------
+EXPLORATORY_PARAMS_NOTE = ("tham số D chọn sau thăm dò planner trên cùng chuỗi L — gate là kiểm logic (cls_window_ms, cls_conf, "
+                           "cls_stable_ms chosen after the planner's exploratory measure on the same L chains; the gates "
+                           "check logic, not an independent result)")
+# pre-registered gates of plan 15 lần sửa 4 §5.1 (thresholds of lần sửa 3 §5 kept; never changed after a result)
+DECODER_GATE_RULES = {
+    "G1": "chain L, joins 0 and 300 ms: one_rate >= 0.90 (gate config; full one_rate, 'covered' dropped)",
+    "G2": "chain L, every join: multi_rate <= 0.05",
+    "G3": "every chain (L, T, O), every join: emissions that needed a lost hand == 0",
+    "G4": "chain L, every join: order_ok",
+    "G5": "chain L, joins 300 and 600 ms: garbage_per_clip <= 0.05 (strict garbage, definitions.garbage)",
+    "G6": "single clips: one_rate(gate) >= one_rate(baseline) - 0.02, letters and tones",
+}
+DECODER_DEFINITIONS = {
+    "segment": "classifier config: one 'append' emission of Level1LabelDecoder; a 'replace' emission is not a new "
+               "segment (counted in n_replace): it moves the last emission to its frame and label, as "
+               "docs/plans/15-lan-sua-4-do/analyze5.py decode_r; motion_pose config: one SignSegment",
+    "clip_of_emission": "the source clip of the frame that emitted (classifier) / of the frame at t_emit (motion_pose, "
+                        "strict block); a frame of an interpolated join has source 'join'",
+    "expected_label": "model label of the whole untrimmed train clip (the training input)",
+    "garbage": "strict (C2): an emission at a 'join' frame OR whose label != expected label of the clip of the "
+               "emission; stricter than R0, which counted segments made mostly of join frames",
+    "one_rate": "share of clips with exactly one non-garbage emission (no 'covered' filter)",
+    "hand_lost": "classifier config: 'append' emissions after a run of >= hand_lost_ms without a hand since the "
+                 "previous emission (an emission that needed the hand to be withdrawn)",
+    "token_error_rate": "Levenshtein distance between the emitted labels and the expected labels (consecutive equal "
+                        "expected labels collapsed: the decoder never repeats a label without a lost hand) / number of "
+                        "expected labels",
+    "single_clip": "every hauuto clip with >= min_detected_frames hand frames, untrimmed; classifier: one fresh window "
+                   "+ decoder per clip, rate = share with exactly one emission; motion_pose: one fresh segmenter, flush "
+                   "1 ms after the last frame, rate = share with exactly one SignSegment (as R3)",
+    "qipedc_g7": "report only: 46 QIPEDC alphabet clips (one signer, not in train); share of clips where the config emits "
+                 "the model label of the whole clip (classifier: any emission; motion_pose: any classified SignSegment)",
+}
+
+
+def decode_chain(seq_data: Dict[str, Any], params: Dict[str, Any], classify, min_detected_frames: int) -> Dict[str, Any]:
+    """WindowBuffer + Level1LabelDecoder over a stream, exactly as level1_demo.py headless in rearm_mode 'classifier'
+    (one window classification per hand frame, decoder fed in frame order). classify(segment) -> result dict of
+    Level1Classifier.classify. Returns final emissions [(frame_index, label)] (a 'replace' moves the last one), the
+    raw emissions, n_replace, n_append_after_lost, n_windows."""
+    from src.inference.level1_segmenter import Level1LabelDecoder, WindowBuffer
+    window = WindowBuffer(params["cls_window_ms"], min_detected_frames)
+    decoder = Level1LabelDecoder(params)
+    ts_all, det, raw, hand = seq_data["timestamps_ms"], seq_data["detected"], seq_data["raw"], seq_data["handedness"]
+    final: List[Tuple[int, str]] = []
+    raw_emits: List[Dict[str, Any]] = []
+    n_replace = n_lost = n_windows = 0
+    last_hand: Optional[float] = None
+    lost_since_emit = False
+    for i in range(len(det)):
+        ts = float(ts_all[i])
+        has = bool(det[i])
+        window.push(ts, raw[i] if has else None, str(hand[i]) if has else "", seq_data["width"], seq_data["height"])
+        result = None
+        if has:
+            last_hand = ts
+            seg = window.segment(ts)
+            if seg is not None:
+                n_windows += 1
+                result = classify(seg)
+        elif last_hand is not None and ts - last_hand >= params["hand_lost_ms"]:
+            lost_since_emit = True
+        emit = decoder.push(ts, has, result)
+        if emit is None:
+            continue
+        raw_emits.append({"index": i, "label": emit.prediction, "action": emit.action,
+                          "confidence": emit.confidence})
+        if emit.action == "replace" and final:
+            final[-1] = (i, emit.prediction)
+            n_replace += 1
+        else:
+            final.append((i, emit.prediction))
+            n_lost += int(lost_since_emit)
+        lost_since_emit = False
+    return {"final": final, "emits": raw_emits, "n_replace": n_replace, "n_append_after_lost": n_lost,
+            "n_windows": n_windows}
+
+
+def levenshtein(a: Sequence[Any], b: Sequence[Any]) -> int:
+    d = list(range(len(b) + 1))
+    for i in range(1, len(a) + 1):
+        prev, d[0] = d[0], i
+        for j in range(1, len(b) + 1):
+            cur = min(d[j] + 1, d[j - 1] + 1, prev + (a[i - 1] != b[j - 1]))
+            prev, d[j] = d[j], cur
+    return d[-1]
+
+
+def strict_chain_metrics(emissions: Sequence[Tuple[int, Optional[str]]], frame_sources: Sequence[Any],
+                         expected: Sequence[Optional[str]]) -> Dict[str, Any]:
+    """Metrics of plan 15 lần sửa 4 §5.1 for one chain: emissions [(frame_index, label)] in order, expected label per
+    clip. Garbage = emission at a 'join' frame or label != expected label of its clip (definitions.garbage)."""
+    n = len(expected)
+    per = Counter()
+    order: List[int] = []
+    n_garbage = 0
+    for idx, label in emissions:
+        src = frame_sources[idx]
+        if src == "join" or label is None or label != expected[int(src)]:
+            n_garbage += 1
+            continue
+        per[int(src)] += 1
+        order.append(int(src))
+    exp_c = [lab for k, lab in enumerate(expected) if k == 0 or lab != expected[k - 1]]
+    return {
+        "n_clips": n,
+        "n_emissions": len(emissions),
+        "n_one": sum(1 for k in range(n) if per[k] == 1),
+        "n_miss": sum(1 for k in range(n) if per[k] == 0),
+        "n_multi": sum(1 for k in range(n) if per[k] >= 2),
+        "n_garbage": n_garbage,
+        "order_ok": all(b >= a for a, b in zip(order, order[1:])),
+        "edit_distance": levenshtein([lab for _, lab in emissions], exp_c),
+        "n_expected_collapsed": len(exp_c),
+    }
+
+
+def _sum_strict(per_seq: Sequence[Dict[str, Any]], extra_keys: Sequence[str] = ()) -> Dict[str, Any]:
+    tot = Counter()
+    for m in per_seq:
+        for k in ("n_clips", "n_emissions", "n_one", "n_miss", "n_multi", "n_garbage", "edit_distance",
+                  "n_expected_collapsed", *extra_keys):
+            tot[k] += m.get(k, 0)
+    n = tot["n_clips"]
+    out = {k: int(v) for k, v in tot.items()}
+    out.update({
+        "one_rate": tot["n_one"] / n if n else 0.0,
+        "miss_rate": tot["n_miss"] / n if n else 0.0,
+        "multi_rate": tot["n_multi"] / n if n else 0.0,
+        "garbage_per_clip": tot["n_garbage"] / n if n else 0.0,
+        "order_ok": all(m["order_ok"] for m in per_seq),
+        "token_error_rate": (tot["edit_distance"] / tot["n_expected_collapsed"]) if tot["n_expected_collapsed"] else None,
+    })
+    return out
+
+
+def evaluate_decoder_gates(results: Dict[str, Any], single: Dict[str, Any], gate_cfg: str,
+                           base_cfg: str) -> Dict[str, Any]:
+    """Gates of plan 15 lần sửa 4 §5.1 on the results of the gate config (classifier), G6 against the baseline. A
+    missing join or value fails its gate."""
+    th = GATE_THRESHOLDS
+    res = results.get(gate_cfg, {})
+
+    def val(chain, join, key):
+        return (res.get(chain) or {}).get(join, {}).get(key)
+
+    gates: Dict[str, Dict[str, Any]] = {}
+    g1 = {j: val("L", j, "one_rate") for j in ("0", "300")}
+    gates["G1"] = {"values": g1, "pass": all(v is not None and v >= th["G1_one_rate_covered_min"] for v in g1.values())}
+    g2 = {j: val("L", j, "multi_rate") for j in GATE_JOINS}
+    gates["G2"] = {"values": g2, "pass": all(v is not None and v <= th["G2_multi_rate_max"] for v in g2.values())}
+    g3 = {f"{c}/{j}": val(c, j, "hand_lost") for c in ("L", "T", "O") for j in GATE_JOINS}
+    gates["G3"] = {"values": g3, "pass": all(v == 0 for v in g3.values())}
+    g4 = {j: val("L", j, "order_ok") for j in GATE_JOINS}
+    gates["G4"] = {"values": g4, "pass": all(v is True for v in g4.values())}
+    g5 = {j: val("L", j, "garbage_per_clip") for j in ("300", "600")}
+    gates["G5"] = {"values": g5, "pass": all(v is not None and v <= th["G5_garbage_per_clip_max"] for v in g5.values())}
+    g6, ok6 = {}, True
+    for kind in ("letter", "tone"):
+        on = ((single.get(gate_cfg) or {}).get(kind) or {}).get("rate")
+        off = ((single.get(base_cfg) or {}).get(kind) or {}).get("rate")
+        g6[kind] = {"gate": on, "baseline": off, "pass": on is not None and off is not None
+                    and on >= off - th["G6_single_drop_max"]}
+        ok6 = ok6 and g6[kind]["pass"]
+    gates["G6"] = {"values": g6, "pass": bool(ok6)}
+    for k in gates:
+        gates[k] = {"rule": DECODER_GATE_RULES[k], **gates[k]}
+    failed = [k for k, g in gates.items() if not g["pass"]]
+    only_g6_tone = failed == ["G6"] and g6["letter"]["pass"] and not g6["tone"]["pass"]
+    return {"gate_config": gate_cfg, "baseline_config": base_cfg, "thresholds": dict(th), "gates": gates,
+            "all_pass": not failed, "failed": failed, "only_g6_tone_failed": only_g6_tone,
+            "stop_point": (None if not failed else
+                           "lần sửa 4 §7 item 2: only G6 tones failed -> STOP, the user chooses (a) or (b)" if only_g6_tone
+                           else "lần sửa 4 §7 item 1: a gate failed -> STOP, config keeps rearm_mode 'motion_pose'")}
+
+
+def single_clip_rates_decoder(clips: Sequence[Dict[str, Any]], params: Dict[str, Any], classify,
+                              min_detected_frames: int, whole_label: Dict[str, Optional[str]]) -> Dict[str, Any]:
+    """G6 for a classifier config: one fresh window + decoder per untrimmed clip; rate = share with exactly one
+    emission (no label check, as the segmenter rate); one_and_label = exactly one emission with the whole-clip label
+    (report only)."""
+    out: Dict[str, Dict[str, Any]] = {}
+    for kind in ("letter", "tone"):
+        n = single = labelled = zero = multi = 0
+        for clip in (c for c in clips if c["kind"] == kind):
+            sd = {"raw": clip["raw"], "detected": clip["detected"], "handedness": clip["handedness"],
+                  "timestamps_ms": seg_report.clip_timestamps(len(clip["detected"]), clip["fps"]),
+                  "width": clip["width"], "height": clip["height"]}
+            fin = decode_chain(sd, params, classify, min_detected_frames)["final"]
+            n += 1
+            single += int(len(fin) == 1)
+            zero += int(len(fin) == 0)
+            multi += int(len(fin) >= 2)
+            labelled += int(len(fin) == 1 and fin[0][1] == whole_label[clip["sample_id"]])
+        out[kind] = {"n": n, "single": single, "rate": (single / n) if n else None, "zero": zero, "multi": multi,
+                     "one_and_label_rate": (labelled / n) if n else None}
+    return out
+
+
+def load_qipedc_clips(manifest_path: str, min_detected_frames: int) -> Dict[str, Any]:
+    """QIPEDC rows of the manifest (G7, report only): clips with >= min_detected_frames hand frames."""
+    with open(manifest_path, encoding="utf-8") as f:
+        rows = [r for r in csv.DictReader(f) if r["source"] == "qipedc"]
+    base = os.path.dirname(manifest_path)
+    clips, too_few = [], []
+    for r in sorted(rows, key=lambda r: r["sample_id"]):
+        with np.load(os.path.join(base, r["landmark_path"])) as z:
+            det = np.asarray(z["detected_mask"], dtype=bool)
+            clip = {"sample_id": r["sample_id"], "symbol": r["symbol"], "kind": class_kind(r["symbol"]),
+                    "raw": np.asarray(z["raw_landmarks"], dtype=np.float32), "detected": det,
+                    "handedness": [str(h) for h in z["handedness_label"]], "width": int(r["width"]),
+                    "height": int(r["height"]), "fps": float(r["fps"])}
+        if int(det.sum()) < min_detected_frames:
+            too_few.append(r["sample_id"])
+        else:
+            clips.append(clip)
+    return {"n_manifest": len(rows), "clips": clips, "too_few_frames": too_few}
+
+
+def qipedc_report(manifest_path: str, configs: Dict[str, Dict[str, Any]], classifier,
+                  min_detected_frames: int) -> Dict[str, Any]:
+    """G7 (report only, plan 15 lần sửa 4 §5.1): per config, share of QIPEDC clips (untrimmed) where the config emits
+    the model label of the whole clip, and where it emits the manifest symbol."""
+    q = load_qipedc_clips(manifest_path, min_detected_frames)
+    out: Dict[str, Any] = {"n_manifest": q["n_manifest"], "n_clips": len(q["clips"]),
+                           "too_few_frames": q["too_few_frames"], "definition": DECODER_DEFINITIONS["qipedc_g7"],
+                           "note": "report only, not a gate: one signer, detection rate about 0.5; the planner saw half "
+                                   "of this measure (the bare decoder) before choosing the parameters",
+                           "configs": {}}
+    for name, p in configs.items():
+        top_k = int(p["top_k"])
+        n_whole_ok = n_symbol = n_whole_is_symbol = n_emits = 0
+        for clip in q["clips"]:
+            whole_seg = whole_clip_segment(clip)
+            r = classifier.classify(whole_seg, top_k)
+            wl = r.get("prediction") if r.get("status") == "ok" else None
+            n_whole_is_symbol += int(wl == clip["symbol"])
+            ts = seg_report.clip_timestamps(len(clip["detected"]), clip["fps"])
+            if p["rearm_mode"] == "classifier":
+                sd = {"raw": clip["raw"], "detected": clip["detected"], "handedness": clip["handedness"],
+                      "timestamps_ms": ts, "width": clip["width"], "height": clip["height"]}
+                labels = [lab for _, lab in decode_chain(sd, p, lambda sg: classifier.classify(sg, top_k),
+                                                         min_detected_frames)["final"]]
+            else:
+                seg = Level1SignSegmenter(p, min_detected_frames)
+                evs = []
+                for i, t in enumerate(ts):
+                    det = bool(clip["detected"][i])
+                    evs += seg.push(float(t), clip["raw"][i] if det else None,
+                                    clip["handedness"][i] if det else "", clip["width"], clip["height"])
+                evs += seg.flush(float(ts[-1]) + 1.0)
+                labels = []
+                for e in evs:
+                    if isinstance(e, SignSegment):
+                        rr = classifier.classify(e, top_k)
+                        labels.append(rr.get("prediction") if rr.get("status") == "ok" else None)
+            n_emits += len(labels)
+            n_whole_ok += int(wl is not None and wl in labels)
+            n_symbol += int(clip["symbol"] in labels)
+        n = len(q["clips"])
+        out["configs"][name] = {"rearm_mode": p["rearm_mode"], "n_emissions": n_emits,
+                                "whole_label_emitted": n_whole_ok, "whole_label_emitted_rate": (n_whole_ok / n) if n else None,
+                                "symbol_emitted": n_symbol, "symbol_emitted_rate": (n_symbol / n) if n else None,
+                                "whole_label_is_symbol": n_whole_is_symbol}
+    return out
+
+
+def write_mode_config(config_path: str, rearm_json: str) -> Dict[str, Any]:
+    """rearm_mode -> 'classifier' (source 'design', reason naming the D4 JSON and its commit), only when the D4 JSON
+    is committed and clean (helper committed_evidence_ref), is a --decoder report generated from clean code, its gate
+    config is a classifier config and all its gates passed; only this key changes. RuntimeError otherwise (config
+    untouched)."""
+    with open(rearm_json, encoding="utf-8") as f:
+        rep = json.load(f)
+    gates = rep.get("gates") or {}
+    if rep.get("mode") != "decoder":
+        raise RuntimeError(f"{rearm_json}: not a --decoder report (step D4)")
+    if gates.get("all_pass") is not True:
+        raise RuntimeError(f"{rearm_json}: gates G1-G6 did not all pass; rearm_mode stays 'motion_pose'")
+    if (rep.get("generated_by") or {}).get("code_dirty") is not False:
+        raise RuntimeError(f"{rearm_json}: generated with uncommitted code (code_dirty not false)")
+    gate_cfg = gates.get("gate_config")
+    if (rep.get("rearm_modes") or {}).get(gate_cfg) != "classifier":
+        raise RuntimeError(f"{rearm_json}: gate config {gate_cfg!r} is not rearm_mode 'classifier'")
+    rel_json, commit = seg_report.committed_evidence_ref(rearm_json)
+    with open(config_path, encoding="utf-8") as f:
+        cfg = json.load(f)
+    old = dict(cfg["rearm_mode"])
+    cfg["rearm_mode"] = {
+        "value": "classifier", "source": "design",
+        "reason": f"label decoder on: gates G1-G6 of plan 15 lần sửa 4 section 5.1 (step D4) passed for config "
+                  f"'{gate_cfg}' in {rel_json}@{commit} ({NOTE}; decoder parameters chosen after an exploratory "
+                  f"measure on the same chains)"}
+    validate_level1_config(cfg)
+    with open(config_path, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(cfg, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    return {"rearm_mode": {"old": old, "new": cfg["rearm_mode"]}}
+
+
 def run_segmenter_on_stream(
     seq_data: Dict[str, Any],
     params: Dict[str, Any],
@@ -778,10 +1081,17 @@ def run_rearm_check(
     min_detected_frames: Optional[int] = None,
     overrides: Sequence[str] = (),
     gates: Optional[Tuple[str, str]] = None,
+    decoder: bool = False,
+    classifier=None,
 ) -> Dict[str, Any]:
     """
     Main evaluation routine running the segmenter across configs and join_ms. checkpoint_path None: no label check
     (label_agrees None) and min_detected_frames must be given; with a checkpoint min_detected_frames comes from it.
+    decoder (step D3, plan 15 lần sửa 4): a config with rearm_mode 'classifier' runs the window classifier + label
+    decoder (metrics of §5.1, strict garbage), a motion_pose config runs the segmenter as before plus the strict
+    block; gates are those of §5.1; G7 (QIPEDC) is reported. The checkpoint is required (no silent skip).
+    classifier: an object with classify(segment, top_k) and min_detected_frames used instead of the checkpoint
+    (tests).
     """
     # Parse config specifications NAME=PATH
     configs_meta = {}
@@ -812,7 +1122,14 @@ def run_rearm_check(
             "results": {},
         }
 
-    classifier = Level1Classifier.from_checkpoint(checkpoint_path) if checkpoint_path is not None else None
+    if decoder and classifier is None:
+        if checkpoint_path is None:
+            raise ValueError("--decoder needs the Level 1 checkpoint (the decoder classifies a sliding window); "
+                             "none given")
+        if not os.path.isfile(checkpoint_path):
+            raise FileNotFoundError(f"--decoder needs the Level 1 checkpoint; not found: {checkpoint_path}")
+    if classifier is None and checkpoint_path is not None:
+        classifier = Level1Classifier.from_checkpoint(checkpoint_path)
     if classifier is not None:
         if min_detected_frames is not None and int(min_detected_frames) != classifier.min_detected_frames:
             raise ValueError("min_detected_frames differs from the checkpoint's")
@@ -843,6 +1160,45 @@ def run_rearm_check(
         r = classifier.classify(segment, top_k)
         return r.get("prediction") if r.get("status") == "ok" else None
 
+    def wlabel(sample_id: str, top_k: int) -> Optional[str]:
+        if sample_id not in whole_label:
+            whole_label[sample_id] = label(whole_clip_segment(whole[sample_id]), top_k)
+        return whole_label[sample_id]
+
+    def run_decoder_chains(cfg_name: str, params: Dict[str, Any], seq_type: str, j_ms: float) -> Dict[str, Any]:
+        top_k = int(params["top_k"])
+        per_seq, details = [], []
+        for seq in candidate_seqs[seq_type]:
+            seq_stream, _ = build_concatenated_sequence(seq["clips"], join_ms=j_ms)
+            kept_ids = [c["sample_id"] for c in seq_stream["kept_clips"]]
+            if not kept_ids:
+                continue
+            expected = [wlabel(sid, top_k) for sid in kept_ids]
+            dec = decode_chain(seq_stream, params, lambda sg: classifier.classify(sg, top_k), min_det)
+            m = strict_chain_metrics(dec["final"], seq_stream["frame_sources"], expected)
+            m.update({"n_replace": dec["n_replace"], "hand_lost": dec["n_append_after_lost"],
+                      "n_windows": dec["n_windows"]})
+            per_seq.append(m)
+            details.append({"seq_id": seq["seq_id"], "sample_ids": kept_ids, "expected": expected,
+                            "emitted": [lab for _, lab in dec["final"]], "metrics": m})
+        out = _sum_strict(per_seq, ("n_replace", "hand_lost", "n_windows"))
+        out.update({"n_sequences": len(candidate_seqs[seq_type]), "label_agrees": None,
+                    "label_agrees_note": "not applicable: an emission counts for a clip only when its label equals "
+                                         "the whole-clip label (definitions.garbage)",
+                    "sequences": details})
+        return out
+
+    def strict_for_segments(segs: Sequence[Dict[str, Any]], seq_stream: Dict[str, Any], kept_ids: Sequence[str],
+                            top_k: int) -> Dict[str, Any]:
+        """Strict metrics (§5.1) of a motion_pose run, for comparison (report only)."""
+        ts_all = seq_stream["timestamps_ms"]
+        ems = []
+        for sg in segs:
+            hit = np.where(np.abs(ts_all - sg["t_emit_ms"]) <= 1e-6)[0]
+            idx = int(hit[0]) if len(hit) else int(sg["end_idx"])
+            ems.append((idx, label(sg["raw_segment"], top_k)))
+        return strict_chain_metrics(ems, seq_stream["frame_sources"], [wlabel(sid, top_k) for sid in kept_ids])
+
     results: Dict[str, Any] = {}
 
     for cfg_name, params in loaded_configs.items():
@@ -851,6 +1207,10 @@ def run_rearm_check(
             results[cfg_name][seq_type] = {}
             for j_ms in join_ms_list:
                 j_key = str(int(j_ms)) if float(j_ms).is_integer() else str(j_ms)
+                if decoder and params["rearm_mode"] == "classifier":
+                    results[cfg_name][seq_type][j_key] = run_decoder_chains(cfg_name, params, seq_type, j_ms)
+                    continue
+                strict_seqs = []
 
                 total_clips = 0
                 total_segs = 0
@@ -911,6 +1271,8 @@ def run_rearm_check(
                     total_one += n_one_s
                     total_miss += n_miss_s
                     total_multi += n_multi_s
+                    if decoder:
+                        strict_seqs.append(strict_for_segments(segs, seq_stream, kept_ids, int(params["top_k"])))
 
                     seq_details.append({
                         "seq_id": seq["seq_id"],
@@ -946,6 +1308,11 @@ def run_rearm_check(
                                      if classifier is not None else None),
                     "sequences": seq_details,
                 }
+                if decoder:
+                    results[cfg_name][seq_type][j_key]["strict"] = {
+                        **_sum_strict(strict_seqs),
+                        "note": "the §5.1 strict metrics of this motion_pose run (emission = the frame at t_emit), "
+                                "for comparison with a classifier config; report only"}
 
     report = {
         "generated_by": generated_by(argv or []),
@@ -964,7 +1331,29 @@ def run_rearm_check(
         "join_ms": list(join_ms_list),
         "results": results,
     }
-    if gates is not None:
+    if decoder:
+        report["mode"] = "decoder"
+        report["rearm_modes"] = {n: p["rearm_mode"] for n, p in loaded_configs.items()}
+        report["definitions"] = DECODER_DEFINITIONS
+        report["exploratory_params_note"] = EXPLORATORY_PARAMS_NOTE
+        report["decoder_params"] = {n: {k: p[k] for k in ("cls_window_ms", "cls_conf", "cls_stable_ms", "hand_lost_ms")}
+                                    for n, p in loaded_configs.items() if p["rearm_mode"] == "classifier"}
+        report["qipedc_g7"] = qipedc_report(manifest_path, loaded_configs, classifier, min_det)
+    if gates is not None and decoder:
+        gate_cfg, base_cfg = gates
+        single = {}
+        for n in (gate_cfg, base_cfg):
+            p = loaded_configs[n]
+            if p["rearm_mode"] == "classifier":
+                top_k = int(p["top_k"])
+                wl = {sid: wlabel(sid, top_k) for sid in whole}
+                single[n] = single_clip_rates_decoder(list(whole.values()), p,
+                                                      lambda sg, k=top_k: classifier.classify(sg, k), min_det, wl)
+            else:
+                single[n] = single_clip_rates(list(whole.values()), p, min_det)
+        report["single_clip"] = {**single, "definition": DECODER_DEFINITIONS["single_clip"]}
+        report["gates"] = evaluate_decoder_gates(results, single, gate_cfg, base_cfg)
+    elif gates is not None:
         gate_cfg, base_cfg = gates
         single = {n: single_clip_rates(list(whole.values()), loaded_configs[n], min_det) for n in (gate_cfg, base_cfg)}
         report["single_clip"] = {**single, "definition": "every hauuto clip with >= min_detected_frames hand frames, "
@@ -1017,6 +1406,13 @@ def create_parser() -> argparse.ArgumentParser:
         help="NAME:KEY=JSON override of one config key (e.g. on:pose_change_rules=true); recorded in the report.",
     )
     parser.add_argument(
+        "--decoder",
+        dest="decoder",
+        action="store_true",
+        help="step D3/D4 (plan 15 lần sửa 4): configs with rearm_mode 'classifier' run the window classifier + label "
+             "decoder; gates of §5.1; G7 QIPEDC reported. Needs the checkpoint.",
+    )
+    parser.add_argument(
         "--gates",
         dest="gates",
         default=None,
@@ -1028,6 +1424,14 @@ def create_parser() -> argparse.ArgumentParser:
 def main(argv: Optional[Sequence[str]] = None) -> int:
     if argv is None:
         argv = sys.argv[1:]
+    if "--write-mode-config" in argv:
+        wp = argparse.ArgumentParser(description="Step D4: rearm_mode -> 'classifier' from a committed D4 JSON.")
+        wp.add_argument("--write-mode-config", required=True, help="config to update")
+        wp.add_argument("--rearm-json", required=True, help="committed --decoder rearm_check JSON with gates (step D4)")
+        wargs = wp.parse_args(argv)
+        change = write_mode_config(wargs.write_mode_config, wargs.rearm_json)["rearm_mode"]
+        print(f"rearm_mode: {change['old']['value']} -> {change['new']['value']} ({change['new']['reason']})")
+        return 0
     if "--write-rules-config" in argv:
         wp = argparse.ArgumentParser(description="Step R3: pose_change_rules -> true from a committed R3 JSON.")
         wp.add_argument("--write-rules-config", required=True, help="config to update")
@@ -1049,15 +1453,22 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     except ValueError as e:
         parser.error(f"Invalid --join-ms values: {args.join_ms!r} ({e})")
 
-    report = run_rearm_check(
-        config_specs=args.configs,
-        join_ms_list=join_ms_list,
-        manifest_path=args.manifest,
-        checkpoint_path=args.checkpoint,
-        argv=argv,
-        overrides=args.overrides,
-        gates=gates,
-    )
+    try:
+        report = run_rearm_check(
+            config_specs=args.configs,
+            join_ms_list=join_ms_list,
+            manifest_path=args.manifest,
+            checkpoint_path=args.checkpoint,
+            argv=argv,
+            overrides=args.overrides,
+            gates=gates,
+            decoder=args.decoder,
+        )
+    except (ValueError, FileNotFoundError) as e:
+        if not args.decoder:
+            raise
+        print(f"level1_rearm_check: {e}", file=sys.stderr)
+        return 2
 
     if args.out:
         out_path = os.path.abspath(args.out)
@@ -1070,6 +1481,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     if "gates" in report:
         failed = [k for k, g in report["gates"]["gates"].items() if not g["pass"]]
         print("gates G1-G6: " + ("ALL PASS" if not failed else "FAILED " + ", ".join(failed)))
+        if report["gates"].get("stop_point"):
+            print("stop: " + report["gates"]["stop_point"])
         return 0 if not failed else 3
     return 0
 

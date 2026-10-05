@@ -675,3 +675,24 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   A4 = `tests.test_level1_equivalence` (AC-E3) xanh trong lệnh dưới; A5 = guard Level 1 + guard chính xanh.
 - XANH: 12 module `Ran 198 — OK (skipped=1)` (`_work/_plan15/D2_green_l1.log`); AC1-ngắn còn lại `OK`, `known=9 allowed=36` (`_work/_plan15/D2_ac1.log`).
 - Kiểm tay (không phải số liệu): `a_hau_A_001.mp4` headless classifier → tokens `['a']`, 1 nhãn, 73 cửa sổ phân loại.
+
+### D3 — `scripts/level1_rearm_check.py --decoder` (15-lan-sua-4 §4 #4, §5 D3, §5.1; AC-C1…C5)
+- Mã: `decode_chain` (WindowBuffer + Level1LabelDecoder đúng như app headless classifier: 1 lần `classify` cho mỗi khung có tay đủ cửa sổ;
+  `replace` dời phát cuối tới khung/nhãn mới như `decode_r` của analyze5; đếm `append` sau một quãng mất tay ≥ hand_lost_ms = "hand_lost"),
+  `strict_chain_metrics` (rác CHẶT C2: phát ở khung join HOẶC nhãn ≠ nhãn trọn clip của clip chứa khung phát; one/miss/multi theo phát
+  không rác; order_ok; khoảng cách Levenshtein với nhãn mong đợi đã gộp lặp liên tiếp), `_sum_strict`, `evaluate_decoder_gates` (G1–G6 §5.1,
+  ngưỡng hằng `GATE_THRESHOLDS` cũ 0.90/0.05/0.05/0.02; G1 = one_rate đầy đủ; G3 = mọi chuỗi L/T/O; thiếu join ⇒ trượt; ghi `failed`,
+  `only_g6_tone_failed`, `stop_point` theo §7 mục 1/2), `single_clip_rates_decoder` (G6: decoder mới mỗi clip chưa cắt; rate = đúng 1 phát,
+  không kiểm nhãn như rate của bộ tách; `one_and_label_rate` chỉ báo cáo), `load_qipedc_clips` + `qipedc_report` (G7 chỉ báo cáo: tỉ lệ clip
+  phát nhãn trọn clip / phát đúng ký hiệu, cho mọi config), `write_mode_config` (+ CLI `--write-mode-config CONFIG --rearm-json JSON`: chỉ
+  đổi `rearm_mode` → "classifier" khi JSON `mode == "decoder"`, `gates.all_pass`, `code_dirty` false, config gate là classifier, JSON đã commit
+  sạch qua `committed_evidence_ref`; ngược lại RuntimeError, config giữ từng byte). `run_rearm_check(decoder=True)`: config classifier →
+  nhánh decoder (label_agrees None, kèm lý do); config motion_pose → như cũ + khối `strict` (cùng định nghĩa §5.1, phát = khung t_emit, chỉ
+  báo cáo); JSON thêm `mode`, `rearm_modes`, `definitions`, `exploratory_params_note`, `decoder_params`, `qipedc_g7`. Thiếu checkpoint với
+  `--decoder` ⇒ ValueError/FileNotFoundError có chữ "checkpoint"; CLI thoát mã 2 kèm thông báo. Tham số `classifier=` chỉ cho test.
+- Impact (text search): `run_rearm_check`/`main` chỉ được gọi bởi CLI và test (`tests/test_level1_rearm_check.py`, `tests/test_level1_rearm_gates.py`,
+  `docs/plans/15-lan-sua-4-do/*.py` chỉ dùng hàm ghép chuỗi); không đổi hành vi khi không có `--decoder`. detect-changes thay bằng
+  `git diff --stat`: `scripts/level1_rearm_check.py`, `tests/test_level1_rearm_check.py`.
+- Test viết (C1–C5 trong `tests/test_level1_rearm_check.py`, 11 test, chuỗi/manifest/classifier giả lập định nghĩa trong test). LỆCH quy trình
+  như D2: mã viết trước test; đỏ ghi bằng cách cất mã (`git stash`): `Ran 25 — FAILED (errors=13)` (`_work/_plan15/D3_red.log`).
+- XANH: 12 module `Ran 208 — OK (skipped=1)` (`_work/_plan15/D3_green_l1.log`); AC1-ngắn còn lại `OK`, `known=9 allowed=36` (`_work/_plan15/D3_ac1.log`).

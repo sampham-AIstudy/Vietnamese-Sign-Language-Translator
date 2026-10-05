@@ -325,5 +325,260 @@ class TestConfigProvenanceA2a(unittest.TestCase):
                     resolve_config_spec(spec)
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 4 §5 D3: AC-C1…C5 (--decoder)
+# The streams, manifests and classifier results below are controlled synthetic data built in this test (dữ liệu tổng
+# hợp có kiểm soát để kiểm logic, không phải dữ liệu thật); the fake classifiers are functions defined here.
+import csv  # noqa: E402
+import re  # noqa: E402
+import shutil  # noqa: E402
+import tempfile  # noqa: E402
+from unittest import mock  # noqa: E402
+
+import scripts.level1_rearm_check as rc  # noqa: E402
+import scripts.level1_segment_report as sr  # noqa: E402
+
+DEC_PARAMS = {"cls_window_ms": 200, "cls_conf": 0.9, "cls_stable_ms": 120, "hand_lost_ms": 300}
+DT_C = 40.0
+
+
+def _chain(blocks):
+    """blocks: list of (source, n_frames, label_or_None_for_no_hand) -> seq_data with frame_sources and the label of
+    every frame (the fake classifier reads the label of the window's last frame)."""
+    srcs, labels, det = [], [], []
+    for src, n, lab in blocks:
+        srcs += [src] * n
+        labels += [lab] * n
+        det += [lab is not None] * n
+    T = len(srcs)
+    sd = {"raw": np.full((T, 21, 3), 0.5, np.float32), "detected": np.array(det, bool),
+          "handedness": ["Right" if d else "" for d in det], "timestamps_ms": np.arange(T) * DT_C,
+          "frame_sources": srcs, "width": 640, "height": 480, "fps": 25.0}
+    return sd, labels
+
+
+def _fake_classify(labels, ts_all):
+    def classify(seg):
+        i = int(np.where(np.abs(ts_all - seg.t_emit_ms) < 1e-6)[0][0])
+        lab = labels[i]
+        conf = 0.5 if lab == "low" else 0.95
+        return {"status": "ok", "prediction": lab, "confidence": conf}
+    return classify
+
+
+class TestDecoderMetricsC1C2(unittest.TestCase):
+    def _run(self, blocks, expected):
+        sd, labels = _chain(blocks)
+        dec = rc.decode_chain(sd, DEC_PARAMS, _fake_classify(labels, sd["timestamps_ms"]), 2)
+        return dec, rc.strict_chain_metrics(dec["final"], sd["frame_sources"], expected)
+
+    def test_c1_c2_join_and_wrong_label_are_garbage(self):
+        dec, m = self._run([(0, 30, "a"), ("join", 10, "x"), (1, 30, "z"), (2, 30, "c")], ["a", "b", "c"])
+        self.assertEqual([lab for _, lab in dec["final"]], ["a", "x", "z", "c"])
+        self.assertEqual((m["n_clips"], m["n_one"], m["n_miss"], m["n_multi"], m["n_garbage"]), (3, 2, 1, 0, 2))
+        self.assertTrue(m["order_ok"])
+        self.assertEqual(m["edit_distance"], 2)          # [a, x, z, c] vs [a, b, c]
+        tot = rc._sum_strict([m])
+        self.assertAlmostEqual(tot["one_rate"], 2 / 3)
+        self.assertAlmostEqual(tot["miss_rate"], 1 / 3)
+        self.assertAlmostEqual(tot["garbage_per_clip"], 2 / 3)
+        self.assertAlmostEqual(tot["token_error_rate"], 2 / 3)
+        self.assertEqual(dec["n_append_after_lost"], 0)
+
+    def test_c1_multi_needs_a_lost_hand_and_is_counted(self):
+        dec, m = self._run([(0, 30, "a"), (1, 20, "b"), (1, 10, None), (1, 20, "b"), (2, 30, "c")],
+                           ["a", "b", "c"])
+        self.assertEqual([lab for _, lab in dec["final"]], ["a", "b", "b", "c"])
+        self.assertEqual((m["n_one"], m["n_multi"], m["n_garbage"]), (2, 1, 0))
+        self.assertEqual(dec["n_append_after_lost"], 1)  # G3 counts this emission
+        self.assertEqual(rc._sum_strict([dict(m, hand_lost=dec["n_append_after_lost"])], ("hand_lost",))["hand_lost"], 1)
+
+    def test_c1_replace_moves_the_last_emission(self):
+        dec, m = self._run([(0, 10, "a"), (0, 20, "â"), (1, 30, "b")], ["â", "b"])
+        self.assertEqual([lab for _, lab in dec["final"]], ["â", "b"])
+        self.assertEqual(dec["n_replace"], 1)
+        self.assertEqual([e["action"] for e in dec["emits"]], ["append", "replace", "append"])
+        self.assertEqual((m["n_one"], m["n_garbage"]), (2, 0))
+
+    def test_c1_low_confidence_and_order(self):
+        dec, m = self._run([(0, 30, "a"), (1, 30, "low"), (2, 30, "c")], ["a", "b", "c"])
+        self.assertEqual((m["n_one"], m["n_miss"], m["n_garbage"]), (2, 1, 0))
+        m2 = rc.strict_chain_metrics([(35, "b"), (5, "a")], ["0"] * 0 + [0] * 30 + [1] * 30, ["a", "b"])
+        self.assertFalse(m2["order_ok"])
+
+    def test_decoder_gates(self):
+        res = {"on": {c: {j: {"one_rate": 0.95, "multi_rate": 0.0, "hand_lost": 0, "order_ok": True,
+                              "garbage_per_clip": 0.0} for j in ("0", "300", "600")} for c in ("L", "T", "O")}}
+        single = {"on": {"letter": {"rate": 0.95}, "tone": {"rate": 0.80}},
+                  "off": {"letter": {"rate": 0.96}, "tone": {"rate": 0.81}}}
+        g = rc.evaluate_decoder_gates(res, single, "on", "off")
+        self.assertTrue(g["all_pass"])
+        self.assertIsNone(g["stop_point"])
+        tone_bad = {"on": single["on"], "off": {"letter": {"rate": 0.96}, "tone": {"rate": 0.90}}}
+        g = rc.evaluate_decoder_gates(res, tone_bad, "on", "off")
+        self.assertEqual(g["failed"], ["G6"])
+        self.assertTrue(g["only_g6_tone_failed"])
+        self.assertIn("§7 item 2", g["stop_point"])
+        res["on"]["L"]["300"]["garbage_per_clip"] = 0.06
+        g = rc.evaluate_decoder_gates(res, single, "on", "off")
+        self.assertEqual(g["failed"], ["G5"])
+        self.assertFalse(g["only_g6_tone_failed"])
+        self.assertIn("§7 item 1", g["stop_point"])
+        res["on"]["L"]["300"]["garbage_per_clip"] = 0.05   # boundary inclusive
+        res["on"]["L"]["0"]["one_rate"] = 0.90
+        self.assertTrue(rc.evaluate_decoder_gates(res, single, "on", "off")["all_pass"])
+        del res["on"]["L"]["600"]
+        self.assertFalse(rc.evaluate_decoder_gates(res, single, "on", "off")["all_pass"])
+
+
+VALUES_C = {"a": 0.1, "b": 0.3, "c": 0.5, "o": 0.7, "dấu sắc": 0.9}
+
+
+class _FakeClassifier:
+    """Defined in the test: the label is the symbol whose constant landmark value is nearest to the last hand frame of
+    the segment; confidence 0.95."""
+    min_detected_frames = 3
+
+    def __init__(self):
+        self.calls = 0
+
+    def classify(self, segment, top_k):
+        self.calls += 1
+        last = segment.raw_landmarks[np.where(segment.detected)[0][-1]]
+        v = float(last.mean())
+        lab = min(VALUES_C, key=lambda s: abs(VALUES_C[s] - v))
+        return {"status": "ok", "prediction": lab, "confidence": 0.95}
+
+
+class TestDecoderRunC3C4(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix="vslt_d3_")
+        rows = []
+        for sym, num in (("a", "001"), ("b", "001"), ("c", "001"), ("o", "001"), ("o", "002"), ("dấu sắc", "001")):
+            sid = f"hauuto_{'tone_s' if sym == 'dấu sắc' else sym}_s1_A_{num}"
+            raws = np.full((40, 21, 3), VALUES_C[sym], np.float32)
+            np.savez(os.path.join(self.tmp, f"{sid}.npz"), raw_landmarks=raws, detected_mask=np.ones(40, bool),
+                     handedness_label=np.array(["Left"] * 40))
+            rows.append({"sample_id": sid, "source": "hauuto", "symbol": sym, "signer_id": "s1",
+                         "landmark_path": f"{sid}.npz", "width": 640, "height": 480, "fps": 25.0})
+        self.manifest = os.path.join(self.tmp, "manifest.csv")
+        with open(self.manifest, "w", encoding="utf-8", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=list(rows[0]))
+            w.writeheader()
+            w.writerows(rows)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def test_c3_decoder_without_checkpoint_fails_clearly(self):
+        cfg = "configs/level1_realtime.json"
+        with self.assertRaises(ValueError) as cm:
+            rc.run_rearm_check([f"off={cfg}"], [0.0], manifest_path=self.manifest, checkpoint_path=None,
+                               min_detected_frames=3, decoder=True)
+        self.assertIn("checkpoint", str(cm.exception))
+        missing = os.path.join(self.tmp, "no_such.pt")
+        with self.assertRaises(FileNotFoundError) as cm:
+            rc.run_rearm_check([f"off={cfg}"], [0.0], manifest_path=self.manifest, checkpoint_path=missing,
+                               decoder=True)
+        self.assertIn("checkpoint", str(cm.exception))
+        import contextlib
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            code = rc.main(["--decoder", "--config", f"off={cfg}", "--join-ms", "0", "--manifest", self.manifest,
+                            "--checkpoint", missing])
+        self.assertEqual(code, 2)
+        self.assertIn("checkpoint", err.getvalue())
+
+    def test_c4_json_keys_and_run(self):
+        fake = _FakeClassifier()
+        rep = rc.run_rearm_check(
+            config_specs=["off=configs/level1_realtime.json", "on=configs/level1_realtime.json"],
+            join_ms_list=[0.0, 300.0, 600.0], manifest_path=self.manifest, checkpoint_path=None,
+            overrides=['on:rearm_mode="classifier"'], gates=("on", "off"), decoder=True, classifier=fake,
+            argv=["--test"])
+        self.assertIsInstance(rep["generated_by"]["code_dirty"], bool)
+        self.assertEqual(len(rep["configs"]["on"]["sha256"]), 64)
+        self.assertIn("train clips concatenated", rep["note"])
+        self.assertIn("not accuracy", rep["note"])
+        self.assertEqual(rep["note_vi"], "chuỗi ghép từ clip train — kiểm logic, không phải độ chính xác")
+        self.assertIn("tham số D chọn sau thăm dò planner trên cùng chuỗi L — gate là kiểm logic",
+                      rep["exploratory_params_note"])
+        for k in ("segment", "garbage", "one_rate", "hand_lost", "single_clip", "qipedc_g7"):
+            self.assertIn(k, rep["definitions"])
+        self.assertEqual(rep["mode"], "decoder")
+        self.assertEqual(rep["rearm_modes"], {"off": "motion_pose", "on": "classifier"})
+        self.assertEqual(rep["configs"]["on"]["overrides"], {"rearm_mode": "classifier"})
+        on_l0 = rep["results"]["on"]["L"]["0"]
+        self.assertEqual(on_l0["n_clips"], 4)                 # a, b, c, o
+        self.assertEqual(on_l0["one_rate"], 1.0)              # constant shapes: one label per clip
+        self.assertEqual(on_l0["garbage_per_clip"], 0.0)
+        self.assertEqual(on_l0["hand_lost"], 0)
+        self.assertIn("strict", rep["results"]["off"]["L"]["0"])
+        self.assertEqual(sorted(rep["gates"]["gates"]), ["G1", "G2", "G3", "G4", "G5", "G6"])
+        self.assertIn("tone", rep["single_clip"]["on"])
+        self.assertEqual(rep["single_clip"]["on"]["letter"]["rate"], 1.0)
+        self.assertEqual(rep["qipedc_g7"]["n_clips"], 0)
+        self.assertIn("on", rep["decoder_params"])
+        self.assertGreater(fake.calls, 0)
+        json.dumps(rep)
+
+
+class TestWriteModeConfigC5(unittest.TestCase):
+    """rearm_mode -> 'classifier' only from a committed, clean --decoder JSON whose gates all passed."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(dir=rc.ROOT, prefix="_tmp_d3_")  # inside the repo, untracked
+        self.cfg = os.path.join(self.tmp, "config.json")
+        shutil.copyfile(os.path.join(rc.ROOT, "configs", "level1_realtime.json"), self.cfg)
+        with open(self.cfg, "rb") as f:
+            self.cfg_bytes = f.read()
+        self.js = os.path.join(self.tmp, "rearm_check_d4.json")
+        self._write()
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def _write(self, all_pass=True, dirty=False, mode="decoder", gate_mode="classifier"):
+        with open(self.js, "w", encoding="utf-8") as f:
+            json.dump({"mode": mode, "generated_by": {"git_commit": "f" * 40, "code_dirty": dirty},
+                       "rearm_modes": {"on": gate_mode, "off": "motion_pose"},
+                       "gates": {"all_pass": all_pass, "gate_config": "on", "baseline_config": "off"}}, f)
+
+    def _unchanged(self):
+        with open(self.cfg, "rb") as f:
+            self.assertEqual(f.read(), self.cfg_bytes)
+
+    def test_c5_uncommitted_json_refused(self):
+        with self.assertRaises(RuntimeError):
+            rc.write_mode_config(self.cfg, self.js)
+        self._unchanged()
+
+    def test_c5_bad_reports_refused(self):
+        for kw in ({"all_pass": False}, {"dirty": True}, {"mode": None}, {"gate_mode": "motion_pose"}):
+            with self.subTest(**{k: str(v) for k, v in kw.items()}):
+                self._write(**kw)
+                with mock.patch.object(sr, "committed_evidence_ref", return_value=("reports/x/d4.json", "abc1234")):
+                    with self.assertRaises(RuntimeError):
+                        rc.write_mode_config(self.cfg, self.js)
+                self._unchanged()
+
+    def test_c5_success_only_rearm_mode(self):
+        with open(self.cfg, encoding="utf-8") as f:
+            before = json.load(f)
+        with mock.patch.object(sr, "committed_evidence_ref", return_value=("reports/x/d4.json", "abc1234")) as h:
+            rc.write_mode_config(self.cfg, self.js)
+        h.assert_called_once()
+        with open(self.cfg, encoding="utf-8") as f:
+            after = json.load(f)
+        self.assertEqual(list(after), list(before))
+        self.assertEqual(after["rearm_mode"]["value"], "classifier")
+        self.assertEqual(after["rearm_mode"]["source"], "design")
+        self.assertIn("reports/x/d4.json@abc1234", after["rearm_mode"]["reason"])
+        for k in before:
+            if k != "rearm_mode":
+                self.assertEqual(json.dumps(after[k], ensure_ascii=False), json.dumps(before[k], ensure_ascii=False), k)
+        sr.validate_level1_config(after)
+        self.assertIsNone(re.search(r"\bfake\b|\bmock\b", after["rearm_mode"]["reason"]))
+
+
 if __name__ == "__main__":
     unittest.main()
