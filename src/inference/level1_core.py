@@ -55,10 +55,11 @@ CONFIG_SPEC = {
     "font_paths": ("str_list", "non_empty"),
 }
 # keys a config may leave out (plan 15 lần sửa 7): checked like CONFIG_SPEC when present; an absent key means the
-# behaviour without it (Level1LabelDecoder falls back to cls_conf / cls_stable_ms)
+# behaviour without it (Level1LabelDecoder falls back to cls_conf / cls_stable_ms, no dropout debounce)
 OPTIONAL_CONFIG_SPEC = {
     "cls_conf_tone": ("number", "unit_interval"),
     "cls_stable_ms_tone": ("number", "positive"),
+    "dropout_tolerance_ms": ("number", "positive"),
 }
 CAMERA_APIS = ("dshow", "msmf", "any")
 REARM_MODES = ("motion_pose", "classifier")  # plan 15 lần sửa 4 §3.3: segmenter re-arm (motion / pose) or label decoder

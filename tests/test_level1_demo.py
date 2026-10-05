@@ -1219,6 +1219,98 @@ def _nullctx():
     return contextlib.nullcontext()
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 7 T2: --cls-window-ms
+def _config_plus(tmp_dir, base, name, **values):
+    """Copy of the config `base` with keys set or added ({value, source 'design', reason}), written under _work/ and
+    removed by the test."""
+    with open(os.path.join(PROJECT_ROOT, base), encoding="utf-8") as f:
+        raw = json.load(f)
+    for k, v in values.items():
+        raw[k] = {"value": v, "source": "design", "reason": "test value (plan 15 lần sửa 7)"}
+    path = os.path.join(tmp_dir, name)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(raw, f, ensure_ascii=False, indent=2)
+    return path
+
+
+class TestClsWindowArgT2(unittest.TestCase):
+    def test_t2_help_and_parsing(self):
+        self.assertIn("--cls-window-ms", app_mod.build_parser().format_help())
+        self.assertIsNone(args_for("--source", CLIP).cls_window_ms)
+        self.assertEqual(args_for("--source", CLIP, "--cls-window-ms", "700").cls_window_ms, 700.0)
+        self.assertEqual(args_for("--source", CLIP, "--cls-window-ms", "650.5").cls_window_ms, 650.5)
+        import contextlib
+        import io
+        for bad in ("0", "-5", "abc", "nan", "inf", ""):
+            with self.subTest(bad=bad), self.assertRaises(SystemExit), \
+                    contextlib.redirect_stderr(io.StringIO()):
+                args_for("--source", CLIP, "--cls-window-ms", bad)
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestClsWindowFlagT2(unittest.TestCase):
+    """--cls-window-ms N = the same run as a config whose cls_window_ms is N (the config file is not changed; the JSON
+    records the override). The D2 clip is a training clip: this checks the code path, not accuracy."""
+
+    @classmethod
+    def setUpClass(cls):
+        os.makedirs(TMP_PARENT, exist_ok=True)
+        cls.tmp = tempfile.mkdtemp(prefix="vslt_p15_t2_", dir=TMP_PARENT)
+        cls.cfg700 = _config_plus(cls.tmp, DEMO_CONFIG, "w700.json", cls_window_ms=700.0)
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            cls.app_flag = app_mod.Level1App(args_for("--source", CLIP, "--headless", "--config", DEMO_CONFIG,
+                                                      "--cls-window-ms", "700"),
+                                             argv=["--source", CLIP, "--headless", "--config", DEMO_CONFIG,
+                                                   "--cls-window-ms", "700"])
+            cls.flag = cls.app_flag.run()
+            cls.cfg = app_mod.Level1App(args_for("--source", CLIP, "--headless", "--config", cls.cfg700)).run()
+            cls.plain = app_mod.Level1App(args_for("--source", CLIP, "--headless", "--config", DEMO_CONFIG)).run()
+        finally:
+            os.chdir(cwd)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def test_t2_flag_equals_config_value(self):
+        self.assertEqual(self.app_flag.window.window_ms, 700.0)
+        self.assertEqual(self.app_flag.values["cls_window_ms"], 700.0)
+        for k in ("tokens", "text", "labels", "segments"):
+            self.assertEqual(self.flag[k], self.cfg[k], k)
+        self.assertEqual(_without_rates(self.flag["counts"]), _without_rates(self.cfg["counts"]))
+        self.assertGreater(self.flag["counts"]["window_results"], 0)
+
+    def test_t2_report_records_the_override(self):
+        c = self.flag["config"]
+        self.assertEqual(c["overrides"], {"cls_window_ms": 700.0})
+        self.assertEqual(c["path"], "configs/level1_demo_classifier.json")
+        self.assertEqual(c["sha256"], app_mod.sha256_file(os.path.join(PROJECT_ROOT, DEMO_CONFIG)))
+        with open(os.path.join(PROJECT_ROOT, DEMO_CONFIG), encoding="utf-8") as f:
+            self.assertEqual(c["values"], json.load(f))                  # the file as it is, not changed
+        self.assertEqual(c["values"]["cls_window_ms"]["value"], 1000)
+        self.assertNotIn("overrides", self.plain["config"])              # no flag: the report keeps its keys
+        self.assertNotIn("overrides", self.cfg["config"])
+        self.assertIn("--cls-window-ms", self.flag["generated_by"]["command"])
+
+    def test_t2_flag_needs_classifier_mode(self):
+        import contextlib
+        import io
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            with self.assertRaises(app_mod.SourceError):
+                app_mod.Level1App(args_for("--source", CLIP, "--headless", "--cls-window-ms", "700"))
+            err = io.StringIO()
+            with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+                code = app_mod.main(["--source", CLIP, "--headless", "--cls-window-ms", "700"])
+        finally:
+            os.chdir(cwd)
+        self.assertEqual(code, app_mod.EXIT_INPUT_ERROR)
+        self.assertIn("--cls-window-ms", err.getvalue())
+
+
 if __name__ == "__main__":
     unittest.main()
 

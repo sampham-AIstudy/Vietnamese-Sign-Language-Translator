@@ -445,5 +445,28 @@ class TestOptionalToneKeysT1(unittest.TestCase):
             validate_level1_config(raw)
 
 
+
+class TestOptionalDropoutKeyT2(unittest.TestCase):
+    """Plan 15 lần sửa 7 T2: optional key dropout_tolerance_ms (absent = no debounce, the decoder of D4)."""
+
+    def _with(self, value):
+        raw = _real_raw()
+        raw["dropout_tolerance_ms"] = {"value": value, "source": "design", "reason": "test value (plan 15 lần sửa 7 T2)"}
+        return raw
+
+    def test_t2_optional_key(self):
+        from src.inference.level1_core import OPTIONAL_CONFIG_SPEC
+        self.assertIn("dropout_tolerance_ms", OPTIONAL_CONFIG_SPEC)
+        self.assertNotIn("dropout_tolerance_ms", CONFIG_SPEC)
+        self.assertNotIn("dropout_tolerance_ms", _real_raw())
+        self.assertEqual(validate_level1_config(self._with(60))["dropout_tolerance_ms"], 60)
+        self.assertNotIn("dropout_tolerance_ms", validate_level1_config(_real_raw()))
+
+    def test_t2_bad_values_rejected(self):
+        for bad in (0, -60, True, "60", float("nan"), None, [60]):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                validate_level1_config(self._with(bad))
+
+
 if __name__ == "__main__":
     unittest.main()

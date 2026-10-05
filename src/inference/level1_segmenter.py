@@ -412,6 +412,7 @@ DECODER_KEYS = ("cls_window_ms", "cls_conf", "cls_stable_ms", "hand_lost_ms")
 # optional (plan 15 lần sửa 7 T1): threshold / stable time of the 5 tone marks; an absent key = cls_conf / cls_stable_ms
 DECODER_TONE_KEYS = {"cls_conf_tone": "cls_conf", "cls_stable_ms_tone": "cls_stable_ms"}
 TONE_LABELS = tuple(TONE_MARKS)
+DROPOUT_KEY = "dropout_tolerance_ms"  # optional (plan 15 lần sửa 7 T2): one-frame dropout debounce; absent = off
 LABEL_ACTIONS = ("append", "replace")
 WINDOW_CLOSE_REASON = "window"
 
@@ -514,6 +515,12 @@ class Level1LabelDecoder:
     4. no hand for >= hand_lost_ms: last = None and the run is cleared (withdraw the hand and sign again = the same
        letter may come again); force_next(ts) (key n): last = None.
     5. timestamps strictly increasing (ValueError otherwise).
+    6. one-frame dropout debounce (plan 15 lần sửa 7 T2), only when dropout_tolerance_ms is given (absent = off, the
+       decoder of D4): a hand frame with a result whose label is None (rule 1) while a run is going on does not end
+       the run at once; the next hand frame with a result decides: its label is the run label and it comes at most
+       dropout_tolerance_ms after the dropped frame -> the run goes on from its start (the dropped frame counts as a
+       frame without result); otherwise the run restarts at the dropped frame exactly as without the debounce. No-hand
+       frames and hand frames without result in between do not decide (rule 1, rule 4 still apply).
     Parameters come from the caller (config); no default value here. Pure computation, not thread-safe."""
 
     def __init__(self, params: Dict[str, Any]):
@@ -534,6 +541,9 @@ class Level1LabelDecoder:
             self.p_tone[base] = value
         if not self.p_tone["cls_conf"] <= 1:
             raise ValueError(f"cls_conf_tone must be in (0, 1], got {self.p_tone['cls_conf']!r}")
+        if DROPOUT_KEY in params:
+            _positive_number(DROPOUT_KEY, params[DROPOUT_KEY])
+        self.dropout_tolerance_ms = float(params[DROPOUT_KEY]) if DROPOUT_KEY in params else 0.0
         self._seq = 0
         self._n_emitted = 0
         self._last_ts: Optional[float] = None
@@ -545,6 +555,7 @@ class Level1LabelDecoder:
         self._run_label: Optional[str] = None
         self._run_since: Optional[float] = None
         self._last_hand_ts: Optional[float] = None
+        self._drop_ts: Optional[float] = None  # rule 6: timestamp of the dropped frame waiting for the next result
 
     @property
     def last_label(self) -> Optional[str]:
@@ -576,6 +587,7 @@ class Level1LabelDecoder:
             if self._last_hand_ts is not None and ts - self._last_hand_ts >= self.p["hand_lost_ms"]:
                 self._last = None
                 self._run_label = None
+                self._drop_ts = None
             return None
         self._last_hand_ts = ts
         if result is None:
@@ -584,6 +596,13 @@ class Level1LabelDecoder:
         min_conf, stable_ms = self.thresholds(result.get("prediction"))
         label = result.get("prediction") if (result.get("status") == "ok" and conf is not None
                                              and conf >= min_conf) else None
+        if self._drop_ts is not None:  # rule 6: this frame decides about the dropped one
+            drop_ts, self._drop_ts = self._drop_ts, None
+            if not (label is not None and label == self._run_label and ts - drop_ts <= self.dropout_tolerance_ms):
+                self._run_label, self._run_since = None, drop_ts  # as if the run had restarted at the dropped frame
+        elif label is None and self._run_label is not None and self.dropout_tolerance_ms > 0:
+            self._drop_ts = ts
+            return None
         if label is None or label != self._run_label:
             self._run_label, self._run_since = label, ts
         if label is None or ts - self._run_since < stable_ms or label == self._last:

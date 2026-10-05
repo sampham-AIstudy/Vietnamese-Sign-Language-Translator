@@ -592,6 +592,16 @@ class Level1App:
             raise SourceError(f"config not found: {args.config}")
         self.cfg = load_level1_config(self.config_path)
         self.values = self.cfg["values"]
+        # command-line values that replace config values for this run (plan 15 lần sửa 7 T2), written to the JSON as
+        # config.overrides; the config file is not changed
+        self.config_overrides: Dict[str, Any] = {}
+        if getattr(args, "cls_window_ms", None) is not None:
+            if self.values["rearm_mode"] != "classifier":
+                raise SourceError("--cls-window-ms needs a config with rearm_mode 'classifier' "
+                                  "(e.g. --config configs/level1_demo_classifier.json)")
+            self.config_overrides["cls_window_ms"] = float(args.cls_window_ms)
+        if self.config_overrides:
+            self.values = {**self.values, **self.config_overrides}
         if not os.path.isfile(self.checkpoint_path):
             raise SourceError(f"checkpoint not found: {args.checkpoint}")
         self.checkpoint_sha256 = sha256_file(self.checkpoint_path)
@@ -1046,11 +1056,24 @@ class Level1App:
             "expected": expected,
             "note": NOTE,
         }
+        if self.config_overrides:  # only with --cls-window-ms: otherwise the report keeps its keys (AC-6b)
+            report["config"]["overrides"] = dict(self.config_overrides)
         if self.trace_windows:  # without the flag the report keeps exactly its keys of before (lần sửa 6 AC-6b)
             report["window_trace"] = {"max_entries": TRACE_MAX_ENTRIES, "n_windows": self.window_trace_n,
                                       "truncated": self.window_trace_n > len(self.window_trace),
                                       "fields": list(TRACE_KEYS), "entries": list(self.window_trace)}
         return report
+
+
+def positive_ms(text: str) -> float:
+    """argparse type of a duration in milliseconds: a finite number > 0."""
+    try:
+        value = float(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"not a number: {text!r}") from None
+    if not np.isfinite(value) or not value > 0:
+        raise argparse.ArgumentTypeError(f"must be a finite number > 0, got {text!r}")
+    return value
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -1069,6 +1092,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--trace-windows", action="store_true",
                    help="rearm_mode classifier: write every window result and the decoder state (window_trace) to "
                         f"the JSON, at most {TRACE_MAX_ENTRIES} entries; no landmark or frame (default off)")
+    p.add_argument("--cls-window-ms", type=positive_ms, default=None,
+                   help="rearm_mode classifier: length of the sliding window in milliseconds for this run, in place "
+                        "of cls_window_ms of the config (the file is not changed; written to the JSON as "
+                        "config.overrides)")
     return p
 
 

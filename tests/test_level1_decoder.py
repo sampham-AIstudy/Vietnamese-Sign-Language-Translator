@@ -502,5 +502,148 @@ class TestToneThresholdsT1(unittest.TestCase):
                              emits(decode(frames, dec=ref.Level1LabelDecoder(PARAMS))), i)
 
 
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Plan 15 lần sửa 7 T2: one-frame dropout debounce (optional key dropout_tolerance_ms). A single hand frame whose window
+# is below its threshold (or not 'ok') inside a run does not restart the run when the very next frame with a result
+# carries the run label again within dropout_tolerance_ms of the dropped frame; otherwise the run restarts at the dropped
+# frame exactly as before. Without the key the decoder is the D4 decoder (AC-7d, TestToneThresholdsT1).
+# ----------------------------------------------------------------------------------------------------------------------
+PARAMS_T2 = {**PARAMS, "dropout_tolerance_ms": 60}
+
+
+def _label_of(result, params):
+    """Window label under the thresholds of the decoder (rule 1), for the reference below."""
+    if result is None or result.get("status") != "ok" or result.get("confidence") is None:
+        return None
+    pred = result.get("prediction")
+    tone = pred in TONE_LABELS
+    need = params.get("cls_conf_tone", params["cls_conf"]) if tone else params["cls_conf"]
+    return pred if result["confidence"] >= need else None
+
+
+def tolerated_dropouts_removed(frames, params):
+    """Reference written apart from the decoder: the stream with every tolerated dropped frame turned into a hand frame
+    without result (which the D4 decoder skips). A dropped frame i is tolerated when the previous and the next hand
+    frames with a result carry the same label L (not None), no hand was lost between them, and the next one comes at
+    most dropout_tolerance_ms after frame i."""
+    tol, lost = params["dropout_tolerance_ms"], params["hand_lost_ms"]
+    decisive = [i for i, (_ts, h, r) in enumerate(frames) if h and r is not None]
+    out = list(frames)
+
+    def hand_lost_between(a, b):
+        last_hand = frames[a][0]
+        for ts, h, _r in frames[a + 1:b]:
+            if h:
+                last_hand = ts
+            elif ts - last_hand >= lost:
+                return True
+        return False
+
+    for n, i in enumerate(decisive):
+        if _label_of(frames[i][2], params) is not None or n == 0 or n + 1 == len(decisive):
+            continue
+        j, k = decisive[n - 1], decisive[n + 1]
+        lj, lk = _label_of(frames[j][2], params), _label_of(frames[k][2], params)
+        if lj is not None and lj == lk and frames[k][0] - frames[i][0] <= tol \
+                and not hand_lost_between(j, i) and not hand_lost_between(i, k):
+            out[i] = (frames[i][0], True, None)
+    return out
+
+
+class TestDropoutDebounceT2(unittest.TestCase):
+    def test_t2_single_low_frame_keeps_the_run(self):
+        frames, _ = stream([("a", 200), ("a", 40, 0.5), ("a", 200)])
+        self.assertEqual(decode(frames), [])                             # D4: the low frame restarts the run
+        em = decode(frames, params=PARAMS_T2)
+        self.assertEqual([(e.prediction, e.run_since_ms, e.ts_ms) for e in em], [("a", 0.0, 320.0)])
+
+    def test_t2_single_bad_status_frame_keeps_the_run(self):
+        frames = [(k * DT, True, ok("a") if k != 5 else {"status": "invalid"}) for k in range(20)]
+        self.assertEqual([e.ts_ms for e in decode(frames)], [6 * DT + 320.0])
+        self.assertEqual([(e.ts_ms, e.run_since_ms) for e in decode(frames, params=PARAMS_T2)], [(320.0, 0.0)])
+
+    def test_t2_tone_below_its_threshold_once(self):
+        params = {**PARAMS_T1, "dropout_tolerance_ms": 60}
+        frames, _ = stream([("dấu huyền", 120, 0.80), ("dấu huyền", 40, 0.70), ("dấu huyền", 200, 0.80)])
+        em = decode(frames, params=params)
+        self.assertEqual([(e.prediction, e.run_since_ms, e.ts_ms) for e in em], [("dấu huyền", 0.0, 200.0)])
+
+    def test_t2_two_low_frames_restart_the_run(self):
+        frames, _ = stream([("a", 200), ("a", 80, 0.5), ("a", 400)])
+        em = decode(frames, params=PARAMS_T2)
+        self.assertEqual([(e.run_since_ms, e.ts_ms) for e in em], [(280.0, 600.0)])
+        self.assertEqual(emits(em), emits(decode(frames)))               # = D4
+
+    def test_t2_tolerance_is_measured_from_the_dropped_frame(self):
+        def run(gap):
+            frames = [(k * 40.0, True, ok("a")) for k in range(6)]       # 0 .. 200
+            frames.append((240.0, True, ok("a", 0.5)))                  # dropped frame
+            frames += [(240.0 + gap + k * 40.0, True, ok("a")) for k in range(10)]
+            return decode(frames, params=PARAMS_T2)
+        self.assertEqual([e.run_since_ms for e in run(60.0)], [0.0])     # back after exactly 60 ms: kept
+        self.assertEqual([e.run_since_ms for e in run(61.0)], [301.0])   # 61 ms: the run restarts
+
+    def test_t2_other_label_after_the_drop_restarts(self):
+        frames, _ = stream([("a", 400), ("a", 40, 0.5), ("b", 500)])
+        self.assertEqual(emits(decode(frames, params=PARAMS_T2)), emits(decode(frames)))
+        frames, _ = stream([("a", 200), ("a", 40, 0.5), ("b", 40), ("a", 400)])
+        self.assertEqual(emits(decode(frames, params=PARAMS_T2)), emits(decode(frames)))
+
+    def test_t2_neutral_frames_between_drop_and_return(self):
+        """A hand frame without result (window too short / job dropped) and a short no-hand frame do not decide."""
+        frames = [(k * 20.0, True, ok("a")) for k in range(10)]          # 0 .. 180
+        frames += [(200.0, True, ok("a", 0.5)), (220.0, True, None), (240.0, False, None)]
+        frames += [(260.0 + k * 20.0, True, ok("a")) for k in range(10)]
+        self.assertEqual([e.run_since_ms for e in decode(frames, params=PARAMS_T2)], [0.0])
+
+    def test_t2_hand_lost_clears_a_pending_drop(self):
+        frames, _ = stream([("a", 200), ("a", 40, 0.5), (None, 400), ("a", 400)])
+        em = decode(frames, params=PARAMS_T2)
+        self.assertEqual(emits(em), emits(decode(frames)))
+        self.assertEqual([e.run_since_ms for e in em], [640.0])
+
+    def test_t2_reset_clears_a_pending_drop(self):
+        dec = Level1LabelDecoder(PARAMS_T2)
+        decode(stream([("a", 200), ("a", 40, 0.5)])[0], dec)
+        dec.reset()
+        em = decode(stream([("a", 400)], t0=240.0)[0], dec)
+        self.assertEqual([e.run_since_ms for e in em], [240.0])
+
+    def test_t2_no_emission_on_the_dropped_frame(self):
+        frames, _ = stream([("a", 320), ("a", 40, 0.5), ("a", 40)])     # 300 ms reached on the dropped frame (320)
+        self.assertEqual(decode(frames), [])
+        em = decode(frames, params=PARAMS_T2)
+        self.assertEqual([(e.ts_ms, e.run_since_ms) for e in em], [(360.0, 0.0)])
+        self.assertEqual(em[0].confidence, 0.95)
+
+    def test_t2_matches_the_reference_on_random_streams(self):
+        ref = segmenter_module_at(BEFORE_REV7_COMMIT)
+        rng = np.random.default_rng(11)
+        n_kept = n_emits = 0
+        for params in (PARAMS_T2, {**PARAMS_T1, "dropout_tolerance_ms": 45}):
+            for i in range(25):
+                frames = random_stream(rng)
+                filtered = tolerated_dropouts_removed(frames, params)
+                n_kept += sum(1 for a, b in zip(frames, filtered) if a is not b)
+                em = decode(frames, params=params)
+                old_params = {k: v for k, v in params.items() if k != "dropout_tolerance_ms"}
+                want = decode(filtered, params=old_params)
+                self.assertEqual(emits(em), emits(want), (params, i))
+                if "cls_conf_tone" not in params:
+                    self.assertEqual(emits(want), emits(decode(filtered, dec=ref.Level1LabelDecoder(PARAMS))))
+                n_emits += len(em)
+        self.assertGreater(n_kept, 20)                                   # the debounce really happened
+        self.assertGreater(n_emits, 50)
+
+    def test_t2_parameter_checked(self):
+        for bad in (0, -60, True, "60", float("nan"), None):
+            with self.subTest(bad=bad):
+                with self.assertRaises(ValueError):
+                    Level1LabelDecoder({**PARAMS, "dropout_tolerance_ms": bad})
+        self.assertEqual(Level1LabelDecoder(PARAMS).dropout_tolerance_ms, 0.0)     # absent = off
+        self.assertEqual(Level1LabelDecoder(PARAMS_T2).dropout_tolerance_ms, 60.0)
+
+
 if __name__ == "__main__":
     unittest.main()
