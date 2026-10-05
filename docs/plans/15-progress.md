@@ -775,3 +775,45 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   (mới, 166 dòng), 2 file test (chỉ thêm), `docs/plans/15-progress.md`.
 - Giới hạn (cho C1): `generated_by.code_dirty` của app không phủ file demo (`CODE_PATHS` bị test L3 ghim); báo cáo app ghi `config.path` +
   `config.sha256` để đối chiếu.
+
+## A3 — coder (phiên cloud 2026-10-05, lượt 5; nhánh `cloud/2026-10-04-level1-rearm`, HEAD lúc nhận `5e9bd42`) — **DỪNG theo §3.A.4 / §7 mục 2 (quy tắc giữ config KHÔNG đạt, AC-R1 trượt) — CẦN PLANNER**
+- Môi trường: container MỚI. `.venv` → `/opt/vslt-venv` (+ `seaborn`), `KAGGLE_API_TOKEN` dùng được. Khôi phục lại theo prompt cloud §1:
+  686 npz `alphabet_hands` (kernel `vsl-extract-alphabet`), 640 mp4 hauuto (+2 file khác), 46 video QIPEDC chữ cái (`-f Dataset/Videos/<id>.mp4`),
+  `scripts/archive_private_kaggle.py restore` 13 file; sha256 `checkpoints/alphabet_best.pt` = `a6311820…5b708a2` (khớp). GitNexus không dùng
+  (như các lượt trước) ⇒ impact = text search, detect-changes = `git diff --stat`.
+- Mốc tại `5e9bd42`: 12 module Level 1 `Ran 217 — OK (skipped=1)` (`_work/_plan15/A3_base_l1.log`, skip = `test_u1_summary`).
+- Mã (`scripts/level1_segment_report.py`, commit `b314d5a`): `segment_check_config` (PATH hoặc `git:REV:PATH` qua `resolve_config_spec` của
+  `level1_rearm_check.py` — khóa thiếu được điền theo `FILL_RULES`, ghi trong `config.filled`; từ chối config khác `motion_pose` hoặc bật luật tư
+  thế), `clip_segment_check` (bộ tách mới mỗi clip, push mọi khung, flush ts cuối + 1 ms như AC-S18/G6; nhãn segment và nhãn trọn clip bằng
+  `Level1Classifier.classify`), `segment_check_groups` (chữ cái / dấu thanh / từng dấu), `segment_check_report`, `keep_rule` (quy tắc giữ §3.A.4
+  + AC-R1, kiểm cùng tập clip), CLI `--segment-check --config … --label … [--manifest …] --out …` và `--keep-rule BEFORE AFTER` (mã thoát 5 = dừng).
+  Tập clip = MỌI dòng hauuto của manifest (640, không loại clip nào; 4 clip dưới `min_detected_frames` được giữ và đánh dấu — bộ tách không
+  phát được cho chúng).
+- Impact (text search): `main` của script chỉ được gọi bởi CLI và test; `level1_rearm_check.py` import module này (`seg_report`), các hàm cũ
+  không đổi (chỉ thêm). detect-changes (`git diff --stat`): `scripts/level1_segment_report.py | 194 +`, `tests/test_level1_segment_report.py | 193 +`
+  (0 dòng xóa).
+- Test viết TRƯỚC: lớp `TestSegmentCheckA3` (7 test: config TRƯỚC 3ebc7b9 điền tail = hold, config SAU b0620a9, từ chối config classifier, đếm
+  segment khớp bộ tách + luật đồng thuận với classifier giả lập trong test, gộp nhóm, quy tắc giữ + AC-R1 + khác tập clip, CLI trên 3 clip).
+  ĐỎ: `Ran 7 — FAILED (errors=7)` (`_work/_plan15/A3_red.log`). XANH: 12 module `Ran 224 — OK (skipped=1)` (`_work/_plan15/A3_green_l1.log`);
+  AC1-ngắn phần còn lại 11 module `Ran 167 — OK`, guard `known=9 allowed=36` (`_work/_plan15/A3_ac1.log`).
+- Lệnh tại `b314d5a` sạch (`git status --porcelain -- scripts src configs level1_demo.py` rỗng; JSON ghi `code_dirty` false):
+  `PYTHONIOENCODING=utf-8 .venv/bin/python scripts/level1_segment_report.py --segment-check --config git:3ebc7b9:configs/level1_realtime.json --label before --out reports/level1_realtime_2026-10-05/segment_check_before.json`
+  và tương tự `--config git:b0620a9:configs/level1_realtime.json --label after --out …/segment_check_after.json`.
+  LỆCH kế hoạch (theo lời người dùng): SAU = config tại `b0620a9` (người dùng ghi rõ); lần sửa 2 §5 ghi "commit config của A2b" (`4b5d736`) —
+  value/source 5 khóa bằng hệt nhau (AC-W3), chỉ `reason` khác ⇒ hành vi bộ tách giống hệt. Cả hai config đều thiếu khóa luật tư thế/`rearm_mode`
+  ⇒ điền `pose_change_rules = false`, `rearm_mode = "motion_pose"` (ghi trong `config.filled`).
+- Số (đọc bằng code từ JSON; 520 clip chữ cái, 120 clip dấu thanh; dữ liệu train của checkpoint — window agreement KHÔNG phải độ chính xác):
+  | Nhóm | single_segment_rate TRƯỚC → SAU | window_agreement_rate TRƯỚC → SAU | Quy tắc |
+  |---|---|---|---|
+  | Dấu thanh | 0.6417 → 0.8500 | **0.6083 → 0.5583** | SAU ≥ TRƯỚC: single đạt, **agreement TRƯỢT** |
+  | Chữ cái | 0.8096 → 0.8731 | **0.7558 → 0.6962** | SAU ≥ TRƯỚC − 0.02: single đạt, **agreement TRƯỢT** |
+  AC-R1 (single với SAU ≥ 0.9): chữ cái 0.8731, dấu thanh 0.8500 ⇒ **TRƯỢT cả hai**.
+  `--keep-rule` → `keep: false`, `ac_r1.pass: false`, `stop: true`, mã thoát 5 (`_work/_plan15/A3_keep_rule.log`).
+  Ghi chú §5 lần sửa 2: vì tail = hold trong SAU, mọi khác biệt TRƯỚC/SAU đến từ still_speed/move_speed/max_segment_ms, không từ cắt đuôi.
+  Đối chiếu: single SAU khớp G6 `off` của D4 (chữ cái 454 clip đúng-1 = 0.8798 × 516 clip D4; dấu 102/120 = 0.85) — 4 clip thêm ở đây là
+  4 clip dưới `min_detected_frames`.
+  Theo dấu (single / agreement, TRƯỚC → SAU): sắc 0.500/0.417 → 0.875/0.375; huyền 0.500/0.500 → 0.792/0.583; hỏi 0.875/0.833 → 0.917/0.833;
+  ngã 0.458/0.417 → 0.792/0.167; nặng 0.875/0.875 → 0.875/0.833.
+- Theo §3.A.4 + §7 mục 2 (lần sửa 1): DỪNG, báo planner. KHÔNG thử giá trị thứ ba, KHÔNG đổi dung sai, KHÔNG đổi config. `configs/level1_realtime.json`
+  giữ nguyên (vẫn là config hiệu chỉnh A2 + A2b). C1 CHƯA làm (phụ thuộc A3 và kết luận này). Chế độ demo `configs/level1_demo_classifier.json`
+  (re-arm bằng bộ giải mã nhãn) không thuộc phép kiểm này.
