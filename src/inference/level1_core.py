@@ -431,3 +431,51 @@ def enhance_low_light(frame_bgr: np.ndarray, threshold: float = LOW_LIGHT_THRESH
     l_ch, a_ch, b_ch = cv2.split(lab)
     l_ch = cv2.createCLAHE(clipLimit=float(clip_limit), tileGridSize=CLAHE_TILE_GRID).apply(l_ch)
     return cv2.cvtColor(cv2.merge((l_ch, a_ch, b_ch)), cv2.COLOR_LAB2BGR), True
+
+
+# ------------------------------------------------------------------------------------------ open palm (lần sửa 9)
+# plan 15 lần sửa 9 §2 S1: (tip, pip, mcp) of the 4 long fingers (index, middle, ring, little finger)
+LONG_FINGERS = ((8, 6, 5), (12, 10, 9), (16, 14, 13), (20, 18, 17))
+# criterion 2 (design value of the plan): thumb tip to little finger MCP > THUMB_SPREAD_RATIO x wrist to middle MCP
+THUMB_SPREAD_RATIO = 1.1
+# criterion 3 (coder's value, the plan only says "not too small"): adjacent fingertips farther apart than
+# FINGER_SPREAD_MIN x their MCPs. Fingers side by side keep their tips about as far apart as their knuckles (ratio
+# near 1, a little more where two fingers differ in length); fingers spread apart fan out (ratio well above 1).
+FINGER_SPREAD_MIN = 1.2
+
+
+def is_open_palm_space(landmarks: Optional[np.ndarray]) -> bool:
+    """True when the hand is the open palm of the space gesture (plan 15 lần sửa 9 §2 S1): all 5 fingers spread.
+    landmarks: the 21 MediaPipe hand points [21, 3] (or [21, 2]) in coordinates with the same scale on every axis
+    (pixels, or MediaPipe output with x and z multiplied by width / height as level1_segmenter.aspect_points does);
+    only distances between points of the same hand are compared, so position, size, rotation and mirroring do not
+    matter.
+      1. the 4 long fingers are straight: for (tip, pip, mcp) dist(tip, wrist) > dist(pip, wrist) and
+         dist(tip, mcp) > dist(pip, mcp);
+      2. the thumb is spread away from the palm and straight: dist(4, 17) > THUMB_SPREAD_RATIO x dist(9, 0) and
+         dist(4, 0) > dist(3, 0) (b: 4 straight fingers, thumb folded across the palm);
+      3. the fingers are apart: dist(8, 12), dist(12, 16), dist(16, 20) > FINGER_SPREAD_MIN x dist of their MCPs
+         (5-9, 9-13, 13-17).
+    None, a shape other than [21, 2] / [21, 3], a non-finite value or a degenerate hand (wrist on the middle MCP) ->
+    False. Pure computation."""
+    if landmarks is None:
+        return False
+    p = np.asarray(landmarks, dtype=np.float64)
+    if p.ndim != 2 or p.shape[0] != 21 or p.shape[1] not in (2, 3) or not np.all(np.isfinite(p)):
+        return False
+
+    def dist(i: int, j: int) -> float:
+        return float(np.linalg.norm(p[i] - p[j]))
+
+    palm = dist(9, 0)
+    if not palm > 0:
+        return False
+    for tip, pip, mcp in LONG_FINGERS:
+        if not (dist(tip, 0) > dist(pip, 0) and dist(tip, mcp) > dist(pip, mcp)):
+            return False
+    if not (dist(4, 17) > THUMB_SPREAD_RATIO * palm and dist(4, 0) > dist(3, 0)):
+        return False
+    for (tip_a, _pa, mcp_a), (tip_b, _pb, mcp_b) in zip(LONG_FINGERS, LONG_FINGERS[1:]):
+        if not dist(tip_a, tip_b) > FINGER_SPREAD_MIN * dist(mcp_a, mcp_b):
+            return False
+    return True

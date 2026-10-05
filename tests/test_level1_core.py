@@ -553,5 +553,152 @@ class TestEnhanceLowLightM2(unittest.TestCase):
             enhance_low_light(np.full((48, 64, 3), 30.0, dtype=np.float32))
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 9 S1
+class SchematicHand:
+    """Schematic right hand (21 MediaPipe points) built here from joint angles to drive the geometry rule of
+    is_open_palm_space: not data, not a measurement of accuracy. Units are pixels (x right, y down, z negative toward
+    the camera), palm facing the camera. Each finger starts at its MCP and has 3 segments; a segment direction is
+    (phi, psi) = angle in the palm plane from "up" (positive toward the little finger) and flexion toward the camera
+    (cumulative per finger)."""
+    PALM = 190.0                                                    # wrist -> middle MCP
+    MCP = {"index": (-45.0, -180.0), "middle": (-10.0, -190.0), "ring": (25.0, -182.0), "pinky": (55.0, -165.0)}
+    LENGTHS = {"index": (0.47, 0.26, 0.21), "middle": (0.52, 0.30, 0.22), "ring": (0.48, 0.28, 0.21),
+               "pinky": (0.38, 0.20, 0.18)}                         # phalanges, in palm lengths
+    FIRST = {"index": 5, "middle": 9, "ring": 13, "pinky": 17}
+    THUMB_CMC = (-35.0, -45.0)
+    THUMB_LENGTHS = (0.36, 0.27, 0.21)
+    SPREAD = {"index": -14.0, "middle": 0.0, "ring": 12.0, "pinky": 24.0}    # fingers fanned out
+    TOGETHER = {"index": 4.0, "middle": 0.0, "ring": -3.0, "pinky": -7.0}    # fingers side by side
+    CURLED = (90.0, 100.0, 60.0)                                             # MCP, PIP, DIP flexion of a fist
+    THUMB_OPEN = ((-50.0, 0.0), (-62.0, 0.0), (-68.0, 0.0))                  # thumb spread away from the palm
+    THUMB_ACROSS = ((-25.0, 20.0), (70.0, 30.0), (95.0, 10.0))               # thumb folded across the palm (b)
+
+    @classmethod
+    def _chain(cls, start, lengths, dirs):
+        import math
+        import numpy as np
+        pts = [np.asarray(start, dtype=np.float64)]
+        for length, (phi, psi) in zip(lengths, dirs):
+            phi, psi = math.radians(phi), math.radians(psi)
+            u = np.array([math.sin(phi) * math.cos(psi), -math.cos(phi) * math.cos(psi), -math.sin(psi)])
+            pts.append(pts[-1] + length * cls.PALM * u)
+        return pts
+
+    @classmethod
+    def build(cls, spread, thumb, flex=None):
+        import numpy as np
+        flex = flex or {}
+        p = np.zeros((21, 3), dtype=np.float64)                     # wrist (0) at the origin
+        for finger, first in cls.FIRST.items():
+            cum = np.cumsum(flex.get(finger, (0.0, 0.0, 0.0)))
+            p[first:first + 4] = cls._chain((*cls.MCP[finger], 0.0), cls.LENGTHS[finger],
+                                            [(spread[finger], c) for c in cum])
+        p[1:5] = cls._chain((*cls.THUMB_CMC, 0.0), cls.THUMB_LENGTHS, thumb)
+        return p
+
+    @classmethod
+    def open_palm(cls):
+        return cls.build(cls.SPREAD, cls.THUMB_OPEN)
+
+    @classmethod
+    def letters(cls):
+        """Schematic shapes of the letters named by AC-9b (b, a, c, d, h)."""
+        curled = {f: cls.CURLED for f in ("middle", "ring", "pinky")}
+        return {
+            "b": cls.build(cls.TOGETHER, cls.THUMB_ACROSS),                       # 4 fingers up together, thumb in
+            "a": cls.build(cls.TOGETHER, ((-15.0, 10.0), (-5.0, 10.0), (0.0, 10.0)),
+                           {f: cls.CURLED for f in cls.FIRST}),                   # fist, thumb along the index
+            "c": cls.build(cls.TOGETHER, ((-35.0, 30.0), (-10.0, 50.0), (20.0, 40.0)),
+                           {f: (35.0, 50.0, 30.0) for f in cls.FIRST}),           # fingers and thumb curved
+            "d": cls.build(cls.TOGETHER, ((-10.0, 40.0), (30.0, 60.0), (60.0, 50.0)), curled),   # index only
+            "h": cls.build({"index": -2.0, "middle": 2.0, "ring": -3.0, "pinky": -7.0}, cls.THUMB_ACROSS,
+                           {f: cls.CURLED for f in ("ring", "pinky")}),           # index + middle together
+        }
+
+
+class TestOpenPalmSpaceS1(unittest.TestCase):
+    """Plan 15 lần sửa 9 §2 S1 / AC-9b: is_open_palm_space(landmarks [21, 3]) is True only when (1) the 4 long fingers
+    are straight (tip farther than PIP from the wrist and from the MCP), (2) the thumb is spread away from the palm
+    (dist(4, 17) > 1.1 x dist(9, 0)) and straight (dist(4, 0) > dist(3, 0)), (3) the fingers are apart (adjacent
+    fingertips farther apart than FINGER_SPREAD_MIN x their MCPs). Hands are SchematicHand shapes built here."""
+
+    def test_s1_open_palm_true(self):
+        from src.inference.level1_core import is_open_palm_space
+        self.assertIs(is_open_palm_space(SchematicHand.open_palm()), True)
+        self.assertIs(is_open_palm_space(SchematicHand.open_palm().astype("float32")), True)
+
+    def test_s1_letters_false(self):
+        from src.inference.level1_core import is_open_palm_space
+        for letter, hand in SchematicHand.letters().items():
+            with self.subTest(letter=letter):
+                self.assertIs(is_open_palm_space(hand), False)
+
+    def test_s1_each_criterion_is_needed(self):
+        from src.inference.level1_core import is_open_palm_space
+        S = SchematicHand
+        cases = {
+            "thumb folded, fingers apart (criterion 2)": S.build(S.SPREAD, S.THUMB_ACROSS),
+            "thumb spread, fingers together (criterion 3)": S.build(S.TOGETHER, S.THUMB_OPEN),
+            "ring finger bent (criterion 1)": S.build(S.SPREAD, S.THUMB_OPEN, {"ring": (80.0, 90.0, 40.0)}),
+            "little finger bent (criterion 1)": S.build(S.SPREAD, S.THUMB_OPEN, {"pinky": S.CURLED}),
+            "thumb spread but its tip bent back toward the wrist (criterion 2)": S.build(
+                S.SPREAD, ((-50.0, 0.0), (-62.0, 0.0), (-150.0, 0.0))),
+        }
+        for name, hand in cases.items():
+            with self.subTest(name):
+                self.assertIs(is_open_palm_space(hand), False)
+
+    def test_s1_thumb_threshold_follows_constant(self):
+        import numpy as np
+        from src.inference import level1_core
+        hand = SchematicHand.open_palm()
+        ratio = np.linalg.norm(hand[4] - hand[17]) / np.linalg.norm(hand[9] - hand[0])
+        self.assertEqual(level1_core.THUMB_SPREAD_RATIO, 1.1)       # value of the plan (§2 S1 criterion 2)
+        self.assertGreater(ratio, level1_core.THUMB_SPREAD_RATIO)
+        # same hand, thumb tip moved along the line to the little finger MCP: ratio just above / just under 1.1
+        for factor, expected in ((1.02, True), (0.98, False)):
+            with self.subTest(factor=factor):
+                moved = hand.copy()
+                target = level1_core.THUMB_SPREAD_RATIO * factor * np.linalg.norm(hand[9] - hand[0])
+                moved[4] = hand[17] + (hand[4] - hand[17]) * target / np.linalg.norm(hand[4] - hand[17])
+                self.assertGreater(np.linalg.norm(moved[4] - moved[0]), np.linalg.norm(moved[3] - moved[0]))
+                self.assertIs(level1_core.is_open_palm_space(moved), expected)
+
+    def test_s1_invariant_to_position_scale_rotation_mirror(self):
+        import math
+        import numpy as np
+        from src.inference.level1_core import is_open_palm_space
+        hand = SchematicHand.open_palm()
+        a = math.radians(70.0)
+        rot_z = np.array([[math.cos(a), -math.sin(a), 0.0], [math.sin(a), math.cos(a), 0.0], [0.0, 0.0, 1.0]])
+        b = math.radians(35.0)
+        tilt_x = np.array([[1.0, 0.0, 0.0], [0.0, math.cos(b), -math.sin(b)], [0.0, math.sin(b), math.cos(b)]])
+        variants = {
+            "image coordinates / 480 + offset": hand / 480.0 + np.array([0.5, 0.8, 0.0]),
+            "rotated in the image plane": hand @ rot_z.T,
+            "tilted toward the camera": hand @ tilt_x.T,
+            "mirrored (left hand)": hand * np.array([-1.0, 1.0, 1.0]),
+        }
+        for name, h in variants.items():
+            with self.subTest(name):
+                self.assertIs(is_open_palm_space(h), True)
+        for letter, h in SchematicHand.letters().items():
+            with self.subTest(letter=letter, variant="mirrored"):
+                self.assertIs(is_open_palm_space(h * np.array([-1.0, 1.0, 1.0])), False)
+
+    def test_s1_missing_or_malformed_false(self):
+        import numpy as np
+        from src.inference.level1_core import is_open_palm_space
+        hand = SchematicHand.open_palm()
+        self.assertIs(is_open_palm_space(None), False)
+        self.assertIs(is_open_palm_space(hand[:20]), False)              # fewer than 21 points
+        self.assertIs(is_open_palm_space(hand.reshape(-1)), False)
+        self.assertIs(is_open_palm_space(np.zeros((21, 3))), False)      # degenerate (every point at the wrist)
+        bad = hand.copy()
+        bad[8, 0] = np.nan
+        self.assertIs(is_open_palm_space(bad), False)
+        self.assertIs(is_open_palm_space(hand[:, :2]), True)             # x, y only: same rule in 2D
+
+
 if __name__ == "__main__":
     unittest.main()
