@@ -1762,6 +1762,380 @@ class TestHandSessionClipM1(unittest.TestCase):
                 self.assertIsInstance(score, float)
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 8 M3 (CLI flags, HUD, camera, doc)
+BEFORE_REV8_COMMIT = "1af1926"   # docs/plans/15-lan-sua-8.md committed; level1_demo.py as lần sửa 7 left it
+# a hauuto clip whose every frame has a mean gray level above the low-light threshold (checked in the test); the D2
+# clip is the opposite (every frame below it)
+BRIGHT_CLIP = os.path.join("data", "external", "hauuto_raw", "raw", "raw", "khoi", "a_khoi_A_001.mp4")
+_MISSING_M3 = [p for p in (CLIP, CKPT, BRIGHT_CLIP) if not os.path.exists(os.path.join(PROJECT_ROOT, p))]
+SKIP_REASON_M3 = "missing (gitignored data / checkpoint): " + ", ".join(_MISSING_M3)
+REV8_COMMAND = ("python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json "
+                "--min-detection-conf 0.35 --auto-enhance")
+HUD_MP_RE = r"^\[MP: conf=(\d\.\d\d) \| CLAHE: (on|off)\]$"
+
+
+def _mean_gray(frame):
+    import cv2
+    return float(np.mean(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)))
+
+
+class _FrameRecordingSession(HandLandmarkSession):
+    """The real HandLandmarkSession (default keywords); keeps every frame object given to process()."""
+    instances = []
+
+    def __init__(self):
+        self.frames_in = []
+        super().__init__()
+        _FrameRecordingSession.instances.append(self)
+
+    def process(self, frame_bgr):
+        self.frames_in.append(frame_bgr)
+        return super().process(frame_bgr)
+
+
+class _SpyReaderM3:
+    """Wraps the app's reader; keeps every frame object it returns."""
+
+    def __init__(self, reader):
+        self._reader = reader
+        self.frames_out = []
+
+    def __getattr__(self, name):
+        return getattr(self._reader, name)
+
+    def read(self):
+        frame = self._reader.read()
+        if frame is not None:
+            self.frames_out.append(frame)
+        return frame
+
+
+class _SpyAppM3(app_mod.Level1App):
+    def _open_reader(self):
+        self.spy_reader = _SpyReaderM3(super()._open_reader())
+        return self.spy_reader
+
+
+def _run_recorded(argv):
+    """(app, report, stream session) of one app run with a fresh _FrameRecordingSession (index 0 = warm-up)."""
+    _FrameRecordingSession.instances = []
+    app = _SpyAppM3(args_for(*argv), argv=list(argv), session_factory=_FrameRecordingSession)
+    report = app.run()
+    sessions = list(_FrameRecordingSession.instances)
+    assert len(sessions) == 2, len(sessions)
+    return app, report, sessions[1]
+
+
+class TestDetectionArgsM3(unittest.TestCase):
+    """§2 M3: --min-detection-conf (default = min_detection_confidence of LEVEL1_HANDS_KWARGS, 0.5; a finite number in
+    (0, 1]) and --auto-enhance (default off)."""
+
+    def test_m3_defaults(self):
+        from src.inference.hand_live import LEVEL1_HANDS_KWARGS
+        a = args_for("--source", "0")
+        self.assertEqual(a.min_detection_conf, 0.5)
+        self.assertEqual(a.min_detection_conf, LEVEL1_HANDS_KWARGS["min_detection_confidence"])
+        self.assertIs(a.auto_enhance, False)
+
+    def test_m3_values(self):
+        a = args_for("--source", "0", "--min-detection-conf", "0.35", "--auto-enhance")
+        self.assertEqual(a.min_detection_conf, 0.35)
+        self.assertIs(a.auto_enhance, True)
+        self.assertEqual(args_for("--source", "0", "--min-detection-conf", "1").min_detection_conf, 1.0)
+
+    def test_m3_rejects_values_outside_unit_interval(self):
+        import contextlib
+        import io
+        for bad in ("0", "-0.1", "1.5", "nan", "inf", "abc"):
+            with self.subTest(bad), contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit):
+                    args_for("--source", "0", "--min-detection-conf", bad)
+
+    def test_m3_help_lists_flags(self):
+        text = app_mod.build_parser().format_help()
+        for opt in ("--min-detection-conf", "--auto-enhance"):
+            self.assertIn(opt, text)
+
+
+@unittest.skipUnless(not _MISSING_M3, SKIP_REASON_M3)
+class TestMinDetectionConfM3(unittest.TestCase):
+    """AC-8c / AC-8b in the app (MediaPipe Hands spied, graphs stay real): --min-detection-conf 0.35 builds the warm-up
+    and the stream graphs with 0.35 and the JSON records it (hand_detection); without the flag, or with 0.5 given,
+    every graph has exactly LEVEL1_HANDS_KWARGS and the run equals the app of lần sửa 7 (1af1926): same JSON keys,
+    tokens, labels, segments, counts. The D2 clip is a training clip: this checks the code path, not accuracy."""
+
+    @classmethod
+    def setUpClass(cls):
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            ref = app_module_at(BEFORE_REV8_COMMIT)
+            base = ["--source", CLIP, "--headless"]
+            cls.graphs, cls.reports = {}, {}
+            for name, extra in (("low", ["--min-detection-conf", "0.35"]), ("default", []),
+                                ("explicit", ["--min-detection-conf", "0.5"])):
+                patcher, spy = _spy_hands()
+                with patcher:
+                    cls.reports[name] = app_mod.Level1App(args_for(*base, *extra), argv=base + extra).run()
+                cls.graphs[name] = spy.graphs
+            patcher, spy = _spy_hands()
+            with patcher:
+                cls.reports["ref"] = ref.Level1App(ref.build_parser().parse_args(base)).run()
+            cls.graphs["ref"] = spy.graphs
+        finally:
+            os.chdir(cwd)
+
+    def test_m3_low_conf_reaches_every_graph(self):
+        from src.inference.hand_live import LEVEL1_HANDS_KWARGS
+        expected = {**LEVEL1_HANDS_KWARGS, "min_detection_confidence": 0.35}
+        graphs = self.graphs["low"]
+        self.assertEqual(len(graphs), 2)                         # warm-up + stream
+        self.assertEqual([g["kwargs"] for g in graphs], [expected, expected])
+        self.assertEqual([g["closes"] for g in graphs], [1, 1])
+        r = self.reports["low"]
+        self.assertEqual(r["hand_detection"], {"min_detection_confidence": 0.35, "auto_enhance": False})
+        self.assertIn("--min-detection-conf", r["generated_by"]["command"])
+        self.assertEqual(r["config"]["sha256"],
+                         app_mod.sha256_file(os.path.join(PROJECT_ROOT, "configs", "level1_realtime.json")))
+        self.assertGreater(r["counts"]["frames_processed"], 0)
+
+    def test_m3_default_graphs_use_level1_hands_kwargs(self):
+        from src.inference.hand_live import LEVEL1_HANDS_KWARGS
+        for name in ("default", "explicit", "ref"):
+            graphs = self.graphs[name]
+            with self.subTest(name):
+                self.assertEqual(len(graphs), 2)
+                self.assertTrue(all(g["kwargs"] == LEVEL1_HANDS_KWARGS for g in graphs))
+
+    def test_m3_default_run_equals_rev7_app(self):
+        ref = self.reports["ref"]
+        for name in ("default", "explicit"):
+            r = self.reports[name]
+            with self.subTest(name):
+                self.assertNotIn("hand_detection", r)
+                self.assertEqual(_key_tree(r), _key_tree(ref))
+                for k in ("tokens", "text", "labels", "segments", "rearm_mode"):
+                    self.assertEqual(r[k], ref[k], k)
+                self.assertEqual(_without_rates(r["counts"]), _without_rates(ref["counts"]))
+                self.assertEqual(tuple(r["stages"]), STAGES)
+
+
+@unittest.skipUnless(not _MISSING_M3, SKIP_REASON_M3)
+class TestAutoEnhanceM3(unittest.TestCase):
+    """AC-8d in the app: with --auto-enhance a frame whose mean gray level is below the threshold reaches MediaPipe as
+    enhance_low_light(frame) (a new array), any other frame as the very object read; the frame drawn and shown stays
+    the camera frame; the JSON counts the enhanced frames and times the step (stage low_light_enhance). Without the
+    flag nothing changes. The D2 clip is dark (every frame below the threshold), the khoi clip bright (every frame
+    above). Training clips: this checks the code path, not accuracy."""
+
+    @classmethod
+    def setUpClass(cls):
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            cls.dark = _run_recorded(["--source", CLIP, "--headless", "--auto-enhance"])
+            cls.bright = _run_recorded(["--source", BRIGHT_CLIP, "--headless", "--auto-enhance"])
+            cls.plain = _run_recorded(["--source", CLIP, "--headless"])
+        finally:
+            os.chdir(cwd)
+
+    def test_m3_clips_are_dark_and_bright(self):
+        from src.inference.level1_core import LOW_LIGHT_THRESHOLD
+        self.assertTrue(all(_mean_gray(f) < LOW_LIGHT_THRESHOLD for f in self.dark[0].spy_reader.frames_out))
+        self.assertTrue(all(_mean_gray(f) >= LOW_LIGHT_THRESHOLD for f in self.bright[0].spy_reader.frames_out))
+
+    def test_m3_dark_frames_enhanced_before_mediapipe(self):
+        from src.inference.level1_core import CLAHE_CLIP_LIMIT, LOW_LIGHT_THRESHOLD, enhance_low_light
+        app, report, session = self.dark
+        read = app.spy_reader.frames_out
+        self.assertGreater(len(read), 0)
+        self.assertEqual(len(session.frames_in), len(read))
+        for f_in, f_read in zip(session.frames_in, read):
+            expected, enhanced = enhance_low_light(f_read)
+            self.assertIs(enhanced, True)
+            self.assertIsNot(f_in, f_read)
+            self.assertTrue(np.array_equal(f_in, expected))
+        n = report["counts"]["frames_processed"]
+        self.assertEqual(report["hand_detection"], {
+            "min_detection_confidence": 0.5, "auto_enhance": True, "frames_enhanced": n,
+            "low_light_threshold": LOW_LIGHT_THRESHOLD, "clahe_clip_limit": CLAHE_CLIP_LIMIT,
+            "clahe_tile_grid": [8, 8]})
+        self.assertEqual(tuple(report["stages"]), STAGES + ("low_light_enhance",))
+        self.assertEqual(report["stages"]["low_light_enhance"]["n"], n)
+        self.assertEqual(report["stages"]["mediapipe"]["n"], n)
+
+    def test_m3_bright_frames_untouched(self):
+        app, report, session = self.bright
+        read = app.spy_reader.frames_out
+        self.assertGreater(len(read), 0)
+        self.assertEqual(len(session.frames_in), len(read))
+        self.assertTrue(all(a is b for a, b in zip(session.frames_in, read)))
+        self.assertEqual(report["hand_detection"]["frames_enhanced"], 0)
+        self.assertEqual(report["stages"]["low_light_enhance"]["n"], report["counts"]["frames_processed"])
+
+    def test_m3_no_flag_frame_is_object_read(self):
+        app, report, session = self.plain
+        read = app.spy_reader.frames_out
+        self.assertTrue(all(a is b for a, b in zip(session.frames_in, read)))
+        self.assertNotIn("hand_detection", report)
+        self.assertEqual(tuple(report["stages"]), STAGES)
+
+    def test_m3_window_shows_camera_frame(self):
+        # window mode, OpenCV window calls recorded (_WindowRecorder): landmarks are drawn on the frame read, never on
+        # the enhanced copy given to MediaPipe
+        from unittest import mock
+        rec = _WindowRecorder()
+        drawn = []
+        real_draw = app_mod.draw_landmarks
+
+        def draw(frame, landmarks):
+            drawn.append(frame)
+            return real_draw(frame, landmarks)
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            with mock.patch.multiple(app_mod.cv2, imshow=rec.imshow, waitKey=rec.waitKey,
+                                     getWindowProperty=rec.getWindowProperty, namedWindow=rec.namedWindow,
+                                     destroyAllWindows=rec.destroyAllWindows), \
+                    mock.patch.object(app_mod, "draw_landmarks", side_effect=draw):
+                app, report, session = _run_recorded(["--source", CLIP, "--auto-enhance"])
+        finally:
+            os.chdir(cwd)
+        read = app.spy_reader.frames_out
+        self.assertEqual(report["source"]["mode"], "gui")
+        self.assertGreater(len(read), 0)
+        self.assertEqual(len(drawn), len(read))
+        self.assertTrue(all(a is b for a, b in zip(drawn, read)))
+        self.assertTrue(all(a is not b for a, b in zip(session.frames_in, read)))
+        self.assertEqual(len(rec.shown), len(read))
+
+
+@unittest.skipUnless(not _MISSING_M3, SKIP_REASON_M3)
+class TestRev8CommandM3(unittest.TestCase):
+    """The demo command of the plan (§2 M3) on the D2 clip in place of the webcam, through main(): exit 0, classifier
+    mode of the lần sửa 7 config, MediaPipe at 0.35, every (dark) frame enhanced. Training clip: code path only."""
+
+    def test_m3_plan_command_headless(self):
+        os.makedirs(TMP_PARENT, exist_ok=True)
+        tmp = tempfile.mkdtemp(prefix="vslt_p15_m3_", dir=TMP_PARENT)
+        try:
+            out = os.path.join(tmp, "rev8.json")
+            argv = REV8_COMMAND.split()[2:]
+            self.assertEqual(argv[:2], ["--source", "0"])
+            argv = ["--source", CLIP, "--headless"] + [a for a in argv[2:] if a != "--display-mirror"]
+            proc = subprocess.run([PY, "level1_demo.py", *argv, "--out-json", out], cwd=PROJECT_ROOT,
+                                  capture_output=True, text=True, env=ENV, timeout=900)
+            self.assertEqual(proc.returncode, 0, proc.stderr[-2000:])
+            with open(out, encoding="utf-8") as f:
+                r = json.load(f)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+        self.assertEqual(r["rearm_mode"], "classifier")
+        self.assertEqual(r["config"]["path"], "configs/level1_demo_classifier_rev7.json")
+        hd = r["hand_detection"]
+        self.assertEqual((hd["min_detection_confidence"], hd["auto_enhance"]), (0.35, True))
+        self.assertEqual(hd["frames_enhanced"], r["counts"]["frames_processed"])
+        self.assertGreater(r["counts"]["window_results"], 0)
+
+
+@unittest.skipUnless(not _MISSING_M3, SKIP_REASON_M3)
+class TestDetectionHudM3(unittest.TestCase):
+    """HUD line "[MP: conf=<x.xx> | CLAHE: on|off]" right under the state / decoder line, only when MediaPipe or the
+    frame differ from the default (--min-detection-conf other than 0.5 or --auto-enhance); without them the HUD lines
+    are those of the app of lần sửa 7."""
+
+    @staticmethod
+    def _small(module, *extra):
+        argv = ["--source", CLIP, "--headless", *extra]
+        app = module.Level1App(module.build_parser().parse_args(argv))
+        return app._hud_lines()[1]
+
+    def test_m3_hud_line_only_when_not_default(self):
+        import re
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            ref = app_module_at(BEFORE_REV8_COMMIT)
+            for cfg in ("configs/level1_realtime.json", "configs/level1_demo_classifier_rev7.json"):
+                with self.subTest(cfg):
+                    plain = self._small(app_mod, "--config", cfg)
+                    self.assertEqual(plain, self._small(ref, "--config", cfg))
+                    self.assertEqual(self._small(app_mod, "--config", cfg, "--min-detection-conf", "0.5"), plain)
+                    self.assertFalse(any(re.match(HUD_MP_RE, s) for s in plain))
+                    for extra, line in ((("--min-detection-conf", "0.35"), "[MP: conf=0.35 | CLAHE: off]"),
+                                        (("--auto-enhance",), "[MP: conf=0.50 | CLAHE: on]"),
+                                        (("--min-detection-conf", "0.35", "--auto-enhance"),
+                                         "[MP: conf=0.35 | CLAHE: on]")):
+                        small = self._small(app_mod, "--config", cfg, *extra)
+                        self.assertRegex(line, HUD_MP_RE)
+                        self.assertEqual(small, plain[:2] + [line] + plain[2:], extra)
+        finally:
+            os.chdir(cwd)
+
+
+class TestCameraDshowM3(unittest.TestCase):
+    """AC-8e (the part a test can check without the user's webcam): every committed config keeps camera_api "dshow",
+    and the webcam reader opens the camera with cv2.CAP_DSHOW and the config's size and buffer (OpenCV capture
+    replaced by a recorder defined here; no camera is opened)."""
+
+    CONFIGS = ("configs/level1_realtime.json", "configs/level1_demo_classifier.json",
+               "configs/level1_demo_classifier_rev7.json")
+
+    def test_m3_configs_keep_dshow(self):
+        for cfg in self.CONFIGS:
+            with open(os.path.join(PROJECT_ROOT, cfg), encoding="utf-8") as f:
+                with self.subTest(cfg):
+                    self.assertEqual(json.load(f)["camera_api"]["value"], "dshow")
+
+    def test_m3_camera_reader_opens_dshow(self):
+        import cv2
+        from unittest import mock
+        from src.inference.level1_core import load_level1_config
+        values = load_level1_config(os.path.join(PROJECT_ROOT, "configs", "level1_demo_classifier_rev7.json"))["values"]
+        calls, sets = [], []
+
+        class _Capture:
+            def __init__(self, index, api):
+                calls.append((index, api))
+                self.props = {}
+
+            def isOpened(self):
+                return True
+
+            def set(self, prop, value):
+                sets.append((prop, value))
+                self.props[prop] = value
+                return True
+
+            def get(self, prop):
+                return float(self.props.get(prop, 0))
+
+            def getBackendName(self):
+                return "DSHOW"
+
+            def release(self):
+                return None
+
+        with mock.patch.object(app_mod.cv2, "VideoCapture", _Capture):
+            reader = app_mod.CameraReader(0, values)
+        self.assertEqual(calls, [(0, cv2.CAP_DSHOW)])
+        self.assertEqual(sets, [(cv2.CAP_PROP_FRAME_WIDTH, values["camera_width"]),
+                                (cv2.CAP_PROP_FRAME_HEIGHT, values["camera_height"]),
+                                (cv2.CAP_PROP_BUFFERSIZE, values["camera_buffersize"])])
+        self.assertEqual(reader.props["camera_api"], "dshow")
+
+
+class TestDesktopDocM3(unittest.TestCase):
+    def test_m3_doc_lists_command_flags_and_json(self):
+        import re
+        with open(os.path.join(PROJECT_ROOT, "docs", "level1_desktop.md"), encoding="utf-8") as f:
+            doc = f.read()
+        for text in (REV8_COMMAND, "--min-detection-conf", "--auto-enhance", "[MP: conf=0.35 | CLAHE: on]",
+                     "hand_detection", "frames_enhanced", "low_light_enhance", "dshow"):
+            self.assertIn(text, doc, text)
+        self.assertIsNone(re.search(r"\d+(\.\d+)?\s*(ms|%|fps)", doc))   # no measured number (as AC-R'4 / C1)
+
+
 if __name__ == "__main__":
     unittest.main()
 

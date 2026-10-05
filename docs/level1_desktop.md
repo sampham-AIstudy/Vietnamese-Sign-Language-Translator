@@ -19,6 +19,7 @@ python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_c
   sự kiện, thời gian và thống kê; không ghi video, khung hình hay landmark.
 - Chạy trên file video, không cửa sổ: `python level1_demo.py --source <video.mp4> --headless --out-json <file>.json`
   (`--pace realtime` để đọc theo nhịp của file và bỏ khung như webcam).
+- Tay để ngang (`â`, `ă`) hoặc phòng thiếu sáng: thêm `--min-detection-conf 0.35 --auto-enhance` (mục 8).
 - Các cờ khác: `python level1_demo.py --help`.
 
 ## 2. Phím
@@ -126,3 +127,28 @@ không che vùng tay của ảnh camera.
   khóa, chạy `--config _work/<file>.json` (không commit file đó).
 - `scripts/level1_trace_report.py` vẫn so `conf` với `cls_conf` cho mọi nhãn (chưa biết ngưỡng riêng của dấu thanh và debounce) ⇒ phân
   loại M1/M3 của dấu thanh trên trace chạy với các khóa mới chỉ gần đúng.
+
+## 8. Tay để ngang và thiếu sáng (kế hoạch 15 lần sửa 8, Tầng 1 — chỉ app demo)
+
+```bash
+python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json --min-detection-conf 0.35 --auto-enhance
+```
+
+- `--min-detection-conf <x>`: ngưỡng `min_detection_confidence` của MediaPipe Hands cho lần chạy này (số trong (0, 1]; mặc định 0.5 =
+  giá trị lúc trích landmark train và của đường WebSocket). Ngưỡng thấp hơn để MediaPipe nhận bàn tay để ngang hoặc ảnh nhòe mà ở 0.5 bị
+  bỏ qua; đổi lại dễ bắt nhầm vật khác thành tay hơn. Cả phiên MediaPipe khởi động (warm-up) lẫn phiên chạy luồng dùng giá trị này.
+  `LEVEL1_HANDS_KWARGS` trong `src/inference/hand_live.py` không đổi (test AC5, AC4-a vẫn so bit-for-bit với 0.5).
+- `--auto-enhance`: khung có độ sáng trung bình (ảnh xám) dưới `LOW_LIGHT_THRESHOLD` (80, `src/inference/level1_core.py`) được tăng tương
+  phản cục bộ bằng CLAHE trên kênh L của LAB (`clipLimit` 2.0, lưới 8 x 8) TRƯỚC khi vào MediaPipe; khung đủ sáng vào MediaPipe nguyên vẹn
+  (không chép). Cửa sổ vẫn hiện ảnh thật của camera: landmark vẽ lên khung gốc. Thời gian CLAHE đo riêng ở stage `low_light_enhance`
+  (không cộng vào `mediapipe`).
+- HUD (chỉ khi khác mặc định): một dòng ngay dưới dòng trạng thái / `[classifier]`, ví dụ `[MP: conf=0.35 | CLAHE: on]` (`CLAHE: off`
+  khi không có `--auto-enhance`).
+- JSON (chỉ khi khác mặc định): gốc JSON có `hand_detection` = `min_detection_confidence`, `auto_enhance` và, với `--auto-enhance`,
+  `frames_enhanced` (số khung đã tăng sáng), `low_light_threshold`, `clahe_clip_limit`, `clahe_tile_grid`. Không cờ (hoặc
+  `--min-detection-conf 0.5`) ⇒ JSON, HUD và mọi khung đưa vào MediaPipe như lần sửa 7.
+- Camera: mọi config giữ `camera_api` = `dshow` (webcam SunplusIT của laptop lỗi khi đọc với `msmf`); kích thước khung và buffer lấy từ
+  config như trước.
+- Giới hạn: hai cờ chỉ là ngưỡng / tiền xử lý của app demo — KHÔNG train lại, checkpoint không đổi. Model Cấp 1 học từ landmark trích ở
+  ngưỡng 0.5 trên ảnh không tăng sáng, nên khung CLAHE và landmark ở ngưỡng thấp có thể lệch phân phối train. Tác dụng lên tỉ lệ thấy tay
+  và độ chính xác CHƯA được đo: cần phiên webcam của người dùng (checklist §5 của kế hoạch); mục này không chép số đo nào.

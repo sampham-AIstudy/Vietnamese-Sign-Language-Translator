@@ -12,6 +12,11 @@ Run (from the project root, inside .venv):
                                                                                  frame only (like a webcam)
   python level1_demo.py --source 0 --config configs/level1_demo_classifier.json --cls-window-ms <N> --no-auto-space
                                     window of N milliseconds for this run; no automatic space (Space key only)
+  python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json \
+                        --min-detection-conf 0.35 --auto-enhance
+                                    MediaPipe hand detection threshold 0.35 for this run (edge-on hands); dark frames
+                                    (mean gray level below the threshold) get CLAHE before MediaPipe, the window still
+                                    shows the camera frame (plan 15 lần sửa 8; HUD line [MP: conf=... | CLAHE: ...])
 Keys (window): Backspace delete last token | Space add a space | a accept the last rejected candidate |
   r repeat the last letter | n next letter (re-arm: the letter held now is emitted again) | c clear |
   p pause / resume segmentation | q or Esc quit.
@@ -31,6 +36,7 @@ The app never writes video, frames or landmarks; the JSON holds tokens, events, 
 """
 import argparse
 import datetime
+import functools
 import hashlib
 import json
 import os
@@ -50,8 +56,9 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-from src.inference.hand_live import HandLandmarkSession  # noqa: E402
-from src.inference.level1_core import Level1Classifier, Level1Speller, load_level1_config  # noqa: E402
+from src.inference.hand_live import LEVEL1_HANDS_KWARGS, HandLandmarkSession  # noqa: E402
+from src.inference.level1_core import (CLAHE_CLIP_LIMIT, CLAHE_TILE_GRID, LOW_LIGHT_THRESHOLD,  # noqa: E402
+                                       Level1Classifier, Level1Speller, enhance_low_light, load_level1_config)
 from src.inference.level1_segmenter import (Level1LabelDecoder, Level1SignSegmenter, SignSegment,  # noqa: E402
                                             WindowBuffer, WordGap)
 from src.inference.level1_timing import (FRAME_STAGES, SIGN_STAGES, StageTimes,  # noqa: E402
@@ -89,6 +96,10 @@ KEY_ACTIONS = {
     ord("n"): "next",
 }
 WINDOW_STAGES = ("window_classify",)  # rearm_mode 'classifier' only: one window classification per hand frame
+# --auto-enhance only (plan 15 lần sửa 8 M3): enhance_low_light of every processed frame, before (not in) mediapipe
+ENHANCE_STAGES = ("low_light_enhance",)
+# --min-detection-conf default: the value of training and of the WebSocket path (LEVEL1_HANDS_KWARGS, not changed)
+DEFAULT_MIN_DETECTION_CONF = LEVEL1_HANDS_KWARGS["min_detection_confidence"]
 KEY_NEXT = "next"  # app action (segmenter / decoder re-arm), not a Level1Speller key
 KEY_QUIT = (ord("q"), 27)
 KEY_PAUSE = ord("p")
@@ -582,7 +593,8 @@ def generated_by(argv: List[str]) -> Dict[str, Any]:
 # ---------------------------------------------------------------------------------------------------------- app
 class Level1App:
     """One run of the app. `classifier` / `session_factory` can be given (tests); keep_segments keeps the emitted
-    SignSegments in memory (tests only; never written)."""
+    SignSegments in memory (tests only; never written). The default session factory builds HandLandmarkSession with
+    --min-detection-conf; a factory given by a test is used as it is."""
 
     def __init__(self, args: argparse.Namespace, argv: Optional[List[str]] = None, classifier=None,
                  session_factory=HandLandmarkSession, keep_segments: bool = False):
@@ -608,6 +620,14 @@ class Level1App:
             raise SourceError(f"checkpoint not found: {args.checkpoint}")
         self.checkpoint_sha256 = sha256_file(self.checkpoint_path)
         self.classifier = classifier or Level1Classifier.from_checkpoint(self.checkpoint_path)
+        # plan 15 lần sửa 8 M3: hand detection of this run (--min-detection-conf, --auto-enhance); with the defaults
+        # every MediaPipe graph has exactly LEVEL1_HANDS_KWARGS and every frame reaches MediaPipe unchanged
+        self.min_detection_conf = float(getattr(args, "min_detection_conf", DEFAULT_MIN_DETECTION_CONF))
+        self.auto_enhance = bool(getattr(args, "auto_enhance", False))
+        self.detection_custom = self.auto_enhance or self.min_detection_conf != DEFAULT_MIN_DETECTION_CONF
+        self.frames_enhanced = 0
+        if session_factory is HandLandmarkSession:
+            session_factory = functools.partial(HandLandmarkSession, min_detection_confidence=self.min_detection_conf)
         self.session_factory = session_factory
         self.keep_segments = keep_segments
         self.kept_segments: List[SignSegment] = []
@@ -630,7 +650,8 @@ class Level1App:
         self.speller = Level1Speller(self.values["accept_confidence"])
         self.rearm_mode = self.values["rearm_mode"]
         self.classifier_mode = self.rearm_mode == "classifier"
-        stages = FRAME_STAGES + SIGN_STAGES + (WINDOW_STAGES if self.classifier_mode else ())
+        stages = (FRAME_STAGES + SIGN_STAGES + (WINDOW_STAGES if self.classifier_mode else ())
+                  + (ENHANCE_STAGES if self.auto_enhance else ()))
         self.times = StageTimes(stages, self.values["hud_rolling_frames"])
         self.window: Optional[WindowBuffer] = None
         self.decoder: Optional[Level1LabelDecoder] = None
@@ -871,6 +892,8 @@ class Level1App:
             last = f"Ký hiệu #{r['seq']}: {r['prediction']}  {r['confidence']:.2f}  {mark}"
         # classifier: the decoder line replaces the segmenter state (the segmenter does not decide the letters there)
         small = [last, self._decoder_line() if self.classifier_mode else "Trạng thái: " + state]
+        if self.detection_custom:  # lần sửa 8: only when MediaPipe or its input differ from the default
+            small.append(f"[MP: conf={self.min_detection_conf:.2f} | CLAHE: {'on' if self.auto_enhance else 'off'}]")
         tc_list = tb_view.get("tone_changes", [])
         if tc_list:
             last_tc = tc_list[-1]
@@ -892,9 +915,15 @@ class Level1App:
         h, w = frame.shape[:2]
         if self.frame_size is None:
             self.frame_size = {"width": int(w), "height": int(h)}
-        landmarks, handedness, _score = session.process(frame)
+        frame_mp, t_mp = frame, t0  # what MediaPipe gets; `frame` (the camera frame) is the one drawn and shown
+        if self.auto_enhance:
+            frame_mp, enhanced = enhance_low_light(frame)
+            self.frames_enhanced += int(enhanced)
+            t_mp = time.perf_counter()
+            self.times.add("low_light_enhance", (t_mp - t0) * 1000.0)
+        landmarks, handedness, _score = session.process(frame_mp)
         t1 = time.perf_counter()
-        self.times.add("mediapipe", (t1 - t0) * 1000.0)
+        self.times.add("mediapipe", (t1 - t_mp) * 1000.0)
         if not self.paused:
             self._on_events(self.segmenter.push(ts_ms, landmarks, handedness, w, h))
         t2 = time.perf_counter()
@@ -1069,6 +1098,12 @@ class Level1App:
             report["auto_space"] = False
         if self.config_overrides:  # only with --cls-window-ms: otherwise the report keeps its keys (AC-6b)
             report["config"]["overrides"] = dict(self.config_overrides)
+        if self.detection_custom:  # only with --min-detection-conf other than the default or --auto-enhance
+            detection = {"min_detection_confidence": self.min_detection_conf, "auto_enhance": self.auto_enhance}
+            if self.auto_enhance:
+                detection.update({"frames_enhanced": self.frames_enhanced, "low_light_threshold": LOW_LIGHT_THRESHOLD,
+                                  "clahe_clip_limit": CLAHE_CLIP_LIMIT, "clahe_tile_grid": list(CLAHE_TILE_GRID)})
+            report["hand_detection"] = detection
         if self.trace_windows:  # without the flag the report keeps exactly its keys of before (lần sửa 6 AC-6b)
             report["window_trace"] = {"max_entries": TRACE_MAX_ENTRIES, "n_windows": self.window_trace_n,
                                       "truncated": self.window_trace_n > len(self.window_trace),
@@ -1084,6 +1119,17 @@ def positive_ms(text: str) -> float:
         raise argparse.ArgumentTypeError(f"not a number: {text!r}") from None
     if not np.isfinite(value) or not value > 0:
         raise argparse.ArgumentTypeError(f"must be a finite number > 0, got {text!r}")
+    return value
+
+
+def detection_conf(text: str) -> float:
+    """argparse type of --min-detection-conf: a finite number in (0, 1]."""
+    try:
+        value = float(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"not a number: {text!r}") from None
+    if not np.isfinite(value) or not 0.0 < value <= 1.0:
+        raise argparse.ArgumentTypeError(f"must be a number in (0, 1], got {text!r}")
     return value
 
 
@@ -1110,6 +1156,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--no-auto-space", action="store_true",
                    help="no space is added when the hand is away for word_gap_ms (the word gap is still detected and "
                         "written to the JSON); spaces come only from the Space key (default: automatic space)")
+    p.add_argument("--min-detection-conf", type=detection_conf, default=DEFAULT_MIN_DETECTION_CONF,
+                   help="MediaPipe min_detection_confidence (default %(default)s; try 0.35 for edge-on hands); "
+                        "written to the JSON as hand_detection when not the default")
+    p.add_argument("--auto-enhance", action="store_true",
+                   help="Enable adaptive CLAHE enhancement for low-light frames before hand detection (mean gray "
+                        f"level below {LOW_LIGHT_THRESHOLD:g}; the window still shows the camera frame; default off)")
     return p
 
 
