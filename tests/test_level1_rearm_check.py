@@ -580,5 +580,172 @@ class TestWriteModeConfigC5(unittest.TestCase):
         self.assertIsNone(re.search(r"\bfake\b|\bmock\b", after["rearm_mode"]["reason"]))
 
 
+# ----------------------------------------------------------------------------------------------------------------------
+# Plan 15 lần sửa 5 (S1): --write-demo-config — AC-W1 (refusals), AC-W2 (success). The D4 JSON here is synthetic (G6 tone
+# numbers 0.7123 / 0.8456 on purpose different from the real ones, so the test proves they are read from the JSON).
+# ----------------------------------------------------------------------------------------------------------------------
+DEMO_EXTRA_KEYS = ("rearm_mode", "_about", "_user_decision")
+
+
+class TestWriteDemoConfigW1W2(unittest.TestCase):
+    """configs/level1_demo_classifier.json only from a committed, clean --decoder JSON in which exactly G6 tones failed
+    (lần sửa 4 §7 item 2, user decision (a)) and whose gate config is the current base config + rearm_mode classifier."""
+
+    JSON_REF = ("reports/x/d4.json", "abc1234")
+    BASE_COMMIT = "def5678"
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(dir=rc.ROOT, prefix="_tmp_s1_")  # inside the repo, untracked
+        self.cfg = os.path.join(self.tmp, "config.json")
+        shutil.copyfile(os.path.join(rc.ROOT, "configs", "level1_realtime.json"), self.cfg)
+        with open(self.cfg, "rb") as f:
+            self.cfg_bytes = f.read()
+        self.cfg_rel = os.path.relpath(self.cfg, rc.ROOT).replace(os.sep, "/")
+        self.js = os.path.join(self.tmp, "rearm_check_d4.json")
+        self.out = os.path.join(self.tmp, "demo.json")
+        self._write()
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def _write(self, all_pass=False, failed=("G6",), only_tone=True, letter_pass=True, tone_pass=False, dirty=False,
+               mode="decoder", gate_mode="classifier", overrides=None, sha=None):
+        g6 = {"letter": {"gate": 0.9512, "baseline": 0.8834, "pass": letter_pass},
+              "tone": {"gate": 0.7123, "baseline": 0.8456, "pass": tone_pass}}
+        rep = {"mode": mode, "generated_by": {"git_commit": "f" * 40, "code_dirty": dirty},
+               "rearm_modes": {"on": gate_mode, "off": "motion_pose"},
+               "configs": {"on": {"path": self.cfg_rel, "sha256": sha or rc.sha256_file(self.cfg), "committed": True,
+                                  "overrides": {"rearm_mode": "classifier"} if overrides is None else overrides},
+                           "off": {"path": self.cfg_rel, "sha256": rc.sha256_file(self.cfg), "committed": True}},
+               "gates": {"all_pass": all_pass, "failed": list(failed), "only_g6_tone_failed": only_tone,
+                         "gate_config": "on", "baseline_config": "off", "thresholds": {"G6_single_drop_max": 0.02},
+                         "gates": {"G6": {"values": g6, "pass": letter_pass and tone_pass}}}}
+        with open(self.js, "w", encoding="utf-8") as f:
+            json.dump(rep, f)
+
+    def _ref(self, path):
+        full = os.path.abspath(path)
+        if full == os.path.abspath(self.js):
+            return self.JSON_REF
+        if full == os.path.abspath(self.cfg):
+            return self.cfg_rel, self.BASE_COMMIT
+        raise AssertionError(f"unexpected committed_evidence_ref({path!r})")
+
+    def _base_unchanged(self):
+        with open(self.cfg, "rb") as f:
+            self.assertEqual(f.read(), self.cfg_bytes)
+
+    # --- AC-W1 -------------------------------------------------------------------------------------------------------
+    def test_w1_uncommitted_json_refused(self):
+        with self.assertRaises(RuntimeError):
+            rc.write_demo_config(self.out, self.js)
+        self.assertFalse(os.path.exists(self.out))
+        self._base_unchanged()
+
+    def test_w1_bad_reports_refused(self):
+        cases = {
+            "all_pass true (use --write-mode-config)": {"all_pass": True, "failed": (), "only_tone": False,
+                                                       "tone_pass": True},
+            "another gate failed": {"failed": ("G1", "G6"), "only_tone": False},
+            "G6 letters failed": {"letter_pass": False, "only_tone": False},
+            "G6 letters failed, flag still true": {"letter_pass": False},
+            "G6 tones passed, flag still true": {"tone_pass": True},
+            "code_dirty true": {"dirty": True},
+            "not a --decoder report": {"mode": None},
+            "gate config not classifier": {"gate_mode": "motion_pose"},
+            "overrides other than rearm_mode": {"overrides": {"rearm_mode": "classifier", "cls_conf": 0.8}},
+            "no override": {"overrides": {}},
+            "base sha256 differs from the JSON": {"sha": "0" * 64},
+        }
+        for name, kw in cases.items():
+            with self.subTest(case=name):
+                self._write(**kw)
+                with mock.patch.object(sr, "committed_evidence_ref", side_effect=self._ref):
+                    with self.assertRaises(RuntimeError):
+                        rc.write_demo_config(self.out, self.js)
+                self.assertFalse(os.path.exists(self.out))
+                self._base_unchanged()
+
+    def test_w1_out_is_base_config_refused(self):
+        with mock.patch.object(sr, "committed_evidence_ref", side_effect=self._ref):
+            with self.assertRaises(RuntimeError):
+                rc.write_demo_config(self.cfg, self.js)
+        self._base_unchanged()
+
+    def test_w1_dirty_base_config_refused(self):
+        def ref(path):
+            if os.path.abspath(path) == os.path.abspath(self.cfg):
+                raise RuntimeError("evidence has uncommitted changes")
+            return self._ref(path)
+        with mock.patch.object(sr, "committed_evidence_ref", side_effect=ref):
+            with self.assertRaises(RuntimeError):
+                rc.write_demo_config(self.out, self.js)
+        self.assertFalse(os.path.exists(self.out))
+        self._base_unchanged()
+
+    def test_w1_existing_out_untouched_on_refusal(self):
+        with open(self.out, "wb") as f:
+            f.write(b"{\"old\": true}\n")
+        self._write(dirty=True)
+        with mock.patch.object(sr, "committed_evidence_ref", side_effect=self._ref):
+            with self.assertRaises(RuntimeError):
+                rc.write_demo_config(self.out, self.js)
+        with open(self.out, "rb") as f:
+            self.assertEqual(f.read(), b"{\"old\": true}\n")
+        self._base_unchanged()
+
+    # --- AC-W2 -------------------------------------------------------------------------------------------------------
+    def test_w2_success_only_rearm_mode_and_markers(self):
+        with open(self.cfg, encoding="utf-8") as f:
+            base = json.load(f)
+        with mock.patch.object(sr, "committed_evidence_ref", side_effect=self._ref):
+            res = rc.write_demo_config(self.out, self.js)
+        self._base_unchanged()
+        loaded = rc.load_level1_config(self.out)
+        self.assertEqual(loaded["values"]["rearm_mode"], "classifier")
+        demo = loaded["raw"]
+        self.assertEqual(list(demo), ["_about", "_user_decision"] + [k for k in base if k != "_about"])
+        for k in base:
+            if k not in DEMO_EXTRA_KEYS:
+                self.assertEqual(json.dumps(demo[k], ensure_ascii=False, sort_keys=True),
+                                 json.dumps(base[k], ensure_ascii=False, sort_keys=True), k)
+        rm = demo["rearm_mode"]
+        self.assertEqual(rm["value"], "classifier")
+        self.assertEqual(rm["source"], "design")
+        for part in ("user decision (a)", "2026-10-05", "G6", "FAILED", "reports/x/d4.json@abc1234", "0.7123", "0.8456",
+                     "0.02", "keys 1-5", "not a gate pass"):
+            self.assertIn(part, rm["reason"])
+        self.assertIsNone(re.search(r"\bfake\b|\bmock\b", rm["reason"]))
+        ud = demo["_user_decision"]
+        self.assertEqual(ud["choice"], "(a) classifier")
+        self.assertEqual(ud["decided"], "2026-10-05")
+        self.assertEqual(ud["recorded_in"], "docs/plans/15-progress.md (D4)")
+        self.assertIn("docs/plans/15-lan-sua-5.md", ud["plans"])
+        self.assertEqual(ud["gate_failed"], "G6 tone")
+        self.assertEqual(ud["g6_tone"]["on"], 0.7123)
+        self.assertEqual(ud["g6_tone"]["off"], 0.8456)
+        self.assertIn("0.02", ud["g6_tone"]["rule"])
+        self.assertEqual(ud["g6_letter"], {"on": 0.9512, "off": 0.8834})
+        self.assertEqual(ud["evidence"], "reports/x/d4.json@abc1234")
+        self.assertIn("not a gate pass", ud["note"])
+        about = demo["_about"]
+        sha = rc.sha256_file(self.cfg)
+        for part in (self.cfg_rel, sha, self.BASE_COMMIT, "reports/x/d4.json@abc1234", "--write-demo-config",
+                     "do not edit by hand", "motion_pose"):
+            self.assertIn(part, about)
+        self.assertEqual(res["base"], {"path": self.cfg_rel, "sha256": sha, "commit": self.BASE_COMMIT})
+        self.assertEqual(res["rearm_mode"]["old"]["value"], "motion_pose")
+        self.assertEqual(res["rearm_mode"]["new"], rm)
+
+    def test_w2_cli(self):
+        with mock.patch.object(sr, "committed_evidence_ref", side_effect=self._ref):
+            with mock.patch("sys.stdout", new_callable=io.StringIO) as out:
+                code = rc.main(["--write-demo-config", self.out, "--rearm-json", self.js])
+        self.assertEqual(code, 0)
+        self.assertEqual(rc.load_level1_config(self.out)["values"]["rearm_mode"], "classifier")
+        self.assertIn(rc.sha256_file(self.out), out.getvalue())
+        self._base_unchanged()
+
+
 if __name__ == "__main__":
     unittest.main()

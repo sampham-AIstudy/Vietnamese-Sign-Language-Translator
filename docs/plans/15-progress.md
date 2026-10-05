@@ -731,3 +731,27 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   ⇒ **Điểm dừng §7 mục 3 (test cũ đỏ) — CẦN PLANNER**: cách bật (a) mà không sửa test cũ (ví dụ test cũ ghim config motion_pose, hoặc chế độ
   chọn bằng cờ/config riêng cho demo) và cách ghi config khi G6 dấu trượt có chủ ý của người dùng. Config giữ "motion_pose".
   Tạm thời cho demo (không đổi repo): chạy app với bản sao config đặt `rearm_mode` = "classifier" qua `--config` (đường này đã kiểm ở AC-A1).
+
+## Lần sửa 5 — coder (phiên cloud 2026-10-05, lượt 4; nhánh `cloud/2026-10-04-level1-rearm`, HEAD lúc nhận `3d1690a`)
+- Môi trường: cùng container lượt 3 (`CLAUDE_CODE_REMOTE=true`, `KAGGLE_API_TOKEN` có, `seaborn` có trong `.venv`); dữ liệu Level 1 còn
+  nguyên, kiểm lại: 686 npz `alphabet_hands`, 642 file hauuto (640 mp4), 46 video QIPEDC, sha256 checkpoint `a6311820…5b708a2` khớp.
+- GitNexus vẫn không dùng được (tải mã ngoài bị chặn) ⇒ impact = text search, detect-changes = `git diff --stat`, như lượt 3.
+
+### S1 — `--write-demo-config` (15-lan-sua-5 §3.1, AC-W1/W2)
+- Mã (`scripts/level1_rearm_check.py`): hằng `DEMO_DECISION` (quyết định (a) 2026-10-05, nơi ghi, kế hoạch) + `write_demo_config(out, json)`:
+  từ chối (RuntimeError, không ghi OUT, config gốc nguyên byte) khi `mode != "decoder"`, `code_dirty` khác false, `all_pass` true (⇒ dùng
+  `--write-mode-config`), không đúng §7 mục 2 (`failed != ["G6"]`, `only_g6_tone_failed` khác true, G6 chữ cái không đạt hoặc G6 dấu không
+  trượt, thiếu số G6), config gate không phải classifier, `overrides` khác đúng `{"rearm_mode": "classifier"}`, OUT là config gốc, JSON hoặc
+  config gốc chưa commit/có thay đổi (`committed_evidence_ref`), sha256 config gốc ≠ `configs[gate].sha256` của JSON. Ghi OUT = config gốc,
+  `_about` mới (nguồn, sha256, commit, JSON@commit, "do not edit by hand"), `_user_decision` (số G6 đọc từ JSON), `rearm_mode` = classifier
+  (source "design", reason ghi rõ G6 dấu thanh TRƯỢT, "not a gate pass", phím 1–5); `validate_level1_config` trước khi ghi. CLI
+  `--write-demo-config OUT --rearm-json JSON` in sha256 file ra.
+- Impact (text search): `main` chỉ được gọi bởi CLI và `tests/test_level1_rearm_check.py` (`rc.main`); nhánh mới chỉ chạy khi có
+  `--write-demo-config`, các nhánh cũ không đổi. Symbol mới: `DEMO_DECISION`, `write_demo_config`. detect-changes (`git diff --stat`):
+  `scripts/level1_rearm_check.py | 92 +`, `tests/test_level1_rearm_check.py | 167 +` (0 dòng xóa).
+- Test viết TRƯỚC: lớp `TestWriteDemoConfigW1W2` (7 test, 11 trường hợp con từ chối; JSON D4 tổng hợp với số G6 0.7123/0.8456 khác số thật).
+  ĐỎ: `Ran 7 — FAILED (errors=17)` (`AttributeError: … no attribute 'write_demo_config'`, `_work/_plan15/S1_red.log`). XANH: `Ran 7 — OK`.
+- Chạy thử (không commit, file vào `_work/`) trên JSON D4 thật: chấp nhận, base `configs/level1_realtime.json` sha256 `cc178955…eb54b`
+  commit `12bd961` = config `on` của `rearm_check_d4.json@a58df71`.
+- XANH: 12 module Level 1 `Ran 215 — OK (skipped=1)` (skip = `test_u1_summary`, thiếu file U1 của người dùng; `_work/_plan15/S1_green_l1.log`);
+  AC1-ngắn phần còn lại 11 module `Ran 167 — OK`, guard `known=9 allowed=36` (`_work/_plan15/S1_ac1.log`); sha256 checkpoint không đổi.
