@@ -24,6 +24,11 @@ Run (from the project root, inside .venv):
                                     hand points smoothed by LandmarkSmoother (adaptive moving average: strong while
                                     the hand is still, light while it moves) before the segmenter, the window, the
                                     gesture and the drawing (plan 15 lần sửa 10 P2; default off)
+  python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json \
+                        --min-detection-conf 0.35 --auto-enhance --dominant-hand Right --smooth-landmarks
+                                    right-handed signer: every hand frame gets the label of a right hand (MediaPipe
+                                    'Left' on the unmirrored frame) so a window never flips between mirrored and not
+                                    (plan 15 lần sửa 10 P1; HUD line [Tay: Phải]); --dominant-hand Left for a left hand
 HUD angle hint (plan 15 lần sửa 10 P3, always on): index finger pointing at the camera (foreshortening_ratio < 0.3) on
   more than 3 consecutive hand frames -> yellow line [Góc tay: Hơi nghiêng tay 20°]; HUD only (JSON unchanged).
 Keys (window): Backspace delete last token | Space add a space | a accept the last rejected candidate |
@@ -138,6 +143,11 @@ SMOOTH_LANDMARKS_DEFAULT = False
 FORESHORTEN_RATIO_MIN = 0.3
 FORESHORTEN_FRAMES = 3
 ANGLE_HINT_LINE = "[Góc tay: Hơi nghiêng tay 20°]"
+# --dominant-hand (plan 15 lần sửa 10 P1): the signer's dominant hand -> the one handedness label given to every hand
+# frame of the run. MediaPipe assumes a mirrored (selfie) image and the app never mirrors the frames it processes, so a
+# right hand gets 'Left' (as in the training clips: canonicalize_hand_sequence mirrors x for a 'Left' majority)
+DOMINANT_HAND_LABELS = {"Right": "Left", "Left": "Right"}
+DOMINANT_HAND_HUD = {"Right": "[Tay: Phải]", "Left": "[Tay: Trái]"}
 
 
 class SourceError(Exception):
@@ -778,6 +788,9 @@ class Level1App:
         self.gesture_counts = {"palm_frames": 0, "spaces_added": 0}
         self.gesture_flash_ts: Optional[float] = None  # stream time of the last gesture space (HUD flash)
         self.foreshortened_run = 0  # consecutive hand frames with foreshortening_ratio < FORESHORTEN_RATIO_MIN (P3)
+        # lần sửa 10 P1: 'auto' -> MediaPipe's label of each frame (None here); Right / Left -> one label for the run
+        self.dominant_hand = getattr(args, "dominant_hand", "auto")
+        self.hand_label: Optional[str] = DOMINANT_HAND_LABELS.get(self.dominant_hand)
         self.trace_windows = bool(getattr(args, "trace_windows", False))
         self.window_trace: List[Dict[str, Any]] = []
         self.window_trace_n = 0
@@ -1047,6 +1060,8 @@ class Level1App:
         small = [last, self._decoder_line() if self.classifier_mode else "Trạng thái: " + state]
         if self.detection_custom:  # lần sửa 8: only when MediaPipe or its input differ from the default
             small.append(f"[MP: conf={self.min_detection_conf:.2f} | CLAHE: {'on' if self.auto_enhance else 'off'}]")
+        if self.hand_label is not None:  # lần sửa 10 P1: only with --dominant-hand Right / Left
+            small.append(DOMINANT_HAND_HUD[self.dominant_hand])
         gesture = self._gesture_line() if self.gesture_space else None
         if gesture is not None:  # lần sửa 9: only while the open palm is held / right after its space
             small.append(gesture)
@@ -1080,6 +1095,8 @@ class Level1App:
             t_mp = time.perf_counter()
             self.times.add("low_light_enhance", (t_mp - t0) * 1000.0)
         landmarks, handedness, _score = session.process(frame_mp)
+        if self.hand_label is not None and landmarks is not None:  # lần sửa 10 P1: --dominant-hand locks the label
+            handedness = self.hand_label
         t1 = time.perf_counter()
         self.times.add("mediapipe", (t1 - t_mp) * 1000.0)
         if self.smooth_landmarks:  # lần sửa 10 P2: a frame without hand resets the smoother
@@ -1279,6 +1296,8 @@ class Level1App:
             report["window_trace"] = {"max_entries": TRACE_MAX_ENTRIES, "n_windows": self.window_trace_n,
                                       "truncated": self.window_trace_n > len(self.window_trace),
                                       "fields": list(TRACE_KEYS), "entries": list(self.window_trace)}
+        if self.hand_label is not None:  # lần sửa 10 P1: only with --dominant-hand Right / Left
+            report["dominant_hand"] = {"mode": self.dominant_hand, "label": self.hand_label}
         if self.smooth_landmarks:  # lần sửa 10 P2: only with --smooth-landmarks
             sm = self.landmark_smoother
             report["landmark_smoothing"] = {"enabled": True, "alpha_static": sm.alpha_static,
@@ -1352,6 +1371,11 @@ def build_parser() -> argparse.ArgumentParser:
                         "--no-gesture-space: the app as before, on by default)")
     p.add_argument("--space-hold-ms", type=positive_ms, default=GESTURE_SPACE_HOLD,
                    help="hold time in milliseconds of the open palm before its space (default %(default)s)")
+    p.add_argument("--dominant-hand", choices=["Right", "Left", "auto"], default="auto",
+                   help="Signer dominant hand: 'Right' or 'Left' fixes handedness and eliminates Left/Right "
+                        "mirror-flipping jitter (every hand frame gets the MediaPipe label of that hand on the unmirrored "
+                        "frame: Right -> 'Left', Left -> 'Right'; written to the JSON as dominant_hand); 'auto' keeps "
+                        "MediaPipe per-frame classification (default: auto)")
     p.add_argument("--smooth-landmarks", action=argparse.BooleanOptionalAction, default=SMOOTH_LANDMARKS_DEFAULT,
                    help="Enable adaptive landmark smoothing to suppress depth jitter: the landmarks of every frame go "
                         "through LandmarkSmoother before the segmenter, the window, the gesture and the drawing "

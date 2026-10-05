@@ -2894,6 +2894,144 @@ class TestDesktopDocP3(unittest.TestCase):
         self.assertIsNone(re.search(r"\d+(\.\d+)?\s*(ms|%|fps)", doc))   # no measured number (as AC-R'4 / C1)
 
 
+
+# ------------------------------------------------------------------ plan 15 lần sửa 10 P1 (dominant hand lock)
+FLIP_CLIP = os.path.join("data", "external", "hauuto_raw", "raw", "raw", "khoi", "aa_khoi_A_001.mp4")
+_MISSING_P1 = [p for p in (CLIP, CKPT, FLIP_CLIP) if not os.path.exists(os.path.join(PROJECT_ROOT, p))]
+SKIP_REASON_P1 = "missing (gitignored data / checkpoint): " + ", ".join(_MISSING_P1)
+HAND_HUD_LINES = {"Right": "[Tay: Phải]", "Left": "[Tay: Trái]"}
+
+
+class TestDominantHandArgsP1(unittest.TestCase):
+    """§2 P1: --dominant-hand {Right, Left, auto}, default auto. The value names the signer's hand; the label fed to the
+    pipeline is the MediaPipe label of that hand on an unmirrored frame (MediaPipe assumes a mirrored image: a right
+    hand is labelled 'Left', see canonicalize_hand_sequence), so the locked run has the canonical form of training."""
+
+    def test_p1_choices_default_mapping(self):
+        text = app_mod.build_parser().format_help()
+        self.assertIn("--dominant-hand", text)
+        self.assertEqual(args_for("--source", CLIP).dominant_hand, "auto")
+        for v in ("Right", "Left", "auto"):
+            self.assertEqual(args_for("--source", CLIP, "--dominant-hand", v).dominant_hand, v)
+        self.assertEqual(app_mod.DOMINANT_HAND_LABELS, {"Right": "Left", "Left": "Right"})
+
+    def test_p1_bad_value_rejected(self):
+        import contextlib
+        import io
+        for bad in ("right", "both", ""):
+            with self.subTest(bad=bad), contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit):
+                    args_for("--source", CLIP, "--dominant-hand", bad)
+
+
+@unittest.skipUnless(not _MISSING_P1, SKIP_REASON_P1)
+class TestDominantHandP1(unittest.TestCase):
+    """AC-10b / AC-10d on FLIP_CLIP (â of signer khoi; training clip: code path, not accuracy), whose MediaPipe labels
+    switch between Left and Right. --dominant-hand Right / Left: every hand frame reaching the segmenter and the window
+    has the one label of that hand (Right -> 'Left', Left -> 'Right'), so every segment canonicalizes the same way
+    (Right: always mirrored, as the training clips of right-handed signers); JSON dominant_hand, HUD line. auto (default):
+    the session's labels pass unchanged and the report is that of the app at 8e6d6fb."""
+
+    @classmethod
+    def setUpClass(cls):
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            ref = app_module_at(BEFORE_REV10_COMMIT)
+            cls.runs = {}
+            for mode, extra in (("motion_pose", []), ("classifier", ["--config", REV7_CONFIG])):
+                base = ["--source", FLIP_CLIP, "--headless", *extra]
+                for hand in ("Right", "Left", "auto"):
+                    flags = [] if hand == "auto" else ["--dominant-hand", hand]
+                    _LandmarkHandRecordingSession.instances = []
+                    app = app_mod.Level1App(args_for(*base, *flags), session_factory=_LandmarkHandRecordingSession,
+                                            keep_segments=True)
+                    rec = _spy_inputs(app)
+                    report = app.run()
+                    cls.runs[(mode, hand)] = {"report": report, "app": app, "rec": rec,
+                                              "seen": _LandmarkHandRecordingSession.instances[1].seen}
+                cls.runs[(mode, "ref")] = ref.Level1App(ref.build_parser().parse_args(base)).run()
+        finally:
+            os.chdir(cwd)
+
+    def test_p1_clip_labels_switch(self):
+        labels = [hd for lm, _w, _h, hd in self.runs[("motion_pose", "auto")]["seen"] if lm is not None]
+        self.assertIn("Left", labels)
+        self.assertIn("Right", labels)
+        self.assertGreater(sum(a != b for a, b in zip(labels, labels[1:])), 0)
+
+    def test_p1_locked_label_on_every_hand_frame(self):
+        for mode in ("motion_pose", "classifier"):
+            for hand, label in (("Right", "Left"), ("Left", "Right")):
+                with self.subTest(mode=mode, hand=hand):
+                    r = self.runs[(mode, hand)]
+                    for name in ("segmenter", "window") if mode == "classifier" else ("segmenter",):
+                        got = [hd for _ts, lm, hd in r["rec"][name] if lm is not None]
+                        self.assertGreater(len(got), 0)
+                        self.assertEqual(set(got), {label}, name)
+                    raw = [lm for lm, _w, _h, _hd in r["seen"]]
+                    seg_lm = [lm for _ts, lm, _hd in r["rec"]["segmenter"]]
+                    self.assertEqual([lm is None for lm in raw], [lm is None for lm in seg_lm])  # landmarks untouched
+                    for a, b in zip(raw, seg_lm):
+                        if a is not None:
+                            np.testing.assert_array_equal(a, b)
+
+    def test_p1_segments_canonicalize_one_way(self):
+        from src.data.alphabet_preprocessing import canonicalize_hand_sequence
+        for hand, mirrored in (("Right", True), ("Left", False)):
+            with self.subTest(hand=hand):
+                segs = self.runs[("motion_pose", hand)]["app"].kept_segments
+                self.assertGreater(len(segs), 0)
+                for seg in segs:
+                    self.assertEqual(set(seg.handedness[seg.detected]), {app_mod.DOMINANT_HAND_LABELS[hand]})
+                    flag = canonicalize_hand_sequence(seg.raw_landmarks, seg.detected, seg.handedness)[2]
+                    self.assertIs(flag, mirrored)
+
+    def test_p1_json_and_hud(self):
+        for mode in ("motion_pose", "classifier"):
+            for hand in ("Right", "Left"):
+                with self.subTest(mode=mode, hand=hand):
+                    r = self.runs[(mode, hand)]
+                    self.assertEqual(r["report"]["dominant_hand"],
+                                     {"mode": hand, "label": app_mod.DOMINANT_HAND_LABELS[hand]})
+                    small = r["app"]._hud_lines()[1]
+                    self.assertEqual(small.count(HAND_HUD_LINES[hand]), 1)
+                    self.assertEqual(small[:2], [s for s in small if s not in HAND_HUD_LINES.values()][:2])
+            small = self.runs[(mode, "auto")]["app"]._hud_lines()[1]
+            self.assertFalse(set(small) & set(HAND_HUD_LINES.values()))
+
+    def test_p1_auto_is_the_app_before(self):
+        for mode in ("motion_pose", "classifier"):
+            with self.subTest(mode=mode):
+                r = self.runs[(mode, "auto")]
+                report, ref = r["report"], self.runs[(mode, "ref")]
+                got = [hd for _ts, lm, hd in r["rec"]["segmenter"] if lm is not None]
+                self.assertEqual(got, [hd for lm, _w, _h, hd in r["seen"] if lm is not None])
+                self.assertNotIn("dominant_hand", report)
+                self.assertEqual(list(report), list(ref))
+                self.assertEqual(_key_tree(report), _key_tree(ref))
+                for k in ("tokens", "text", "labels", "segments", "events", "warnings"):
+                    self.assertEqual(report[k], ref[k], (mode, k))
+                self.assertEqual(_without_rates(report["counts"]), _without_rates(ref["counts"]))
+
+
+
+REV10_COMMAND = ("python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json "
+                 "--min-detection-conf 0.35 --auto-enhance --dominant-hand Right")
+
+
+class TestDesktopDocP1(unittest.TestCase):
+    def test_p1_doc_dominant_hand(self):
+        import re
+        with open(os.path.join(PROJECT_ROOT, "docs", "level1_desktop.md"), encoding="utf-8") as f:
+            doc = f.read()
+        section = doc[doc.index("## 10."):]
+        for text in (REV10_COMMAND, "--dominant-hand Left", "dominant_hand", "[Tay: Phải]", "[Tay: Trái]",
+                     "canonicalize_hand_sequence"):
+            self.assertIn(text, section, text)
+        self.assertIsNone(re.search(r"\d+(\.\d+)?\s*(ms|%|fps)", doc))   # no measured number (as AC-R'4 / C1)
+
+
 if __name__ == "__main__":
     unittest.main()
 

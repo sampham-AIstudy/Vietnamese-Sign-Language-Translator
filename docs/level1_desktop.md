@@ -187,15 +187,26 @@ python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_c
   kích hoạt. Tỉ lệ nhận / bỏ sót trên webcam CHƯA được đo: cần phiên webcam của người dùng (checklist §5 của kế hoạch); mục này không chép
   số đo nào.
 
-## 10. Ngón tay chĩa vào camera: làm mượt landmark và nhắc góc tay (kế hoạch 15 lần sửa 10)
+## 10. Ngón tay chĩa vào camera: khóa tay thuận, làm mượt landmark và nhắc góc tay (kế hoạch 15 lần sửa 10)
 
 ```bash
+python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json --min-detection-conf 0.35 --auto-enhance --dominant-hand Right
 python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json --min-detection-conf 0.35 --auto-enhance --smooth-landmarks
 ```
 
 - Hiện tượng (collinear projection): webcam thường chỉ cho ảnh 2D, không có cảm biến độ sâu. Khi ngón tay chĩa thẳng vào ống kính, các
   khớp MCP, PIP, DIP, TIP nằm gần trên cùng một tia nhìn: khoảng cách 2D giữa chúng co về gần 0, MediaPipe phải đoán độ sâu `z` từ rất ít
   thông tin nên `z` rung theo nhiễu ảnh và bàn tay dễ bị đọc sai (hay gặp ở `â`, `ă`, `ô`, `ê`, `p` — ngón cái và đầu ngón hướng về camera).
+- `--dominant-hand Right | Left | auto` (mặc định `auto`): khi ngón tay chĩa vào camera, MediaPipe không phân biệt được lòng bàn tay
+  với mu bàn tay nên nhãn tay trái / phải của nó đổi qua lại giữa các khung. `canonicalize_hand_sequence` lật gương x khi đa số khung trong
+  một segment / cửa sổ mang nhãn `Left`, nên nhãn đổi qua lại làm cửa sổ lúc lật lúc không. Với `Right` (người ký thuận tay phải) hoặc
+  `Left`, mọi khung có tay nhận MỘT nhãn cố định, bất kể MediaPipe trả về gì. Nhãn đó là nhãn MediaPipe gán cho bàn tay ấy trên khung KHÔNG
+  lật gương (app không bao giờ lật khung khi xử lý; `--display-mirror` chỉ lật hình hiển thị): MediaPipe giả định ảnh đã lật như camera
+  selfie, nên tay phải mang nhãn `Left` (giống clip train của người ký thuận tay phải: x được lật) và tay trái mang nhãn `Right`. Người
+  thuận tay trái dùng `--dominant-hand Left`. HUD có dòng `[Tay: Phải]` / `[Tay: Trái]`; JSON có khóa gốc
+  `dominant_hand` = `{"mode": "Right", "label": "Left"}` (hoặc `Left` / `Right`). `auto` ⇒ nhãn từng khung của MediaPipe, JSON và HUD
+  như lần sửa 9. Lưu ý: nếu driver webcam tự lật gương khung hình trước khi app nhận, nhãn của tay sẽ ngược lại; khi đó chạy thử
+  `auto` và xem nhãn nào chiếm đa số trước khi khóa.
 - `--smooth-landmarks` (mặc định TẮT): 21 điểm của mỗi khung đi qua `LandmarkSmoother` (`src/inference/level1_core.py`) trước bộ tách,
   cửa sổ phân loại, cử chỉ Xòe 5 ngón và hình vẽ khung xương. Đây là trung bình trượt mũ thích ứng: khi tâm bàn tay (trung bình 21 điểm,
   trục x, y) di chuyển chậm hơn `speed_threshold` = 0.15 đơn vị ảnh mỗi giây thì khung mới chỉ chiếm `alpha_static` = 0.6 (làm mượt mạnh,
@@ -210,7 +221,8 @@ python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_c
   `FORESHORTEN_RATIO_MIN` = 0.3 trên hơn `FORESHORTEN_FRAMES` = 3 khung có tay liên tiếp, HUD hiện dòng màu vàng
   `[Góc tay: Hơi nghiêng tay 20°]`: nghiêng bàn tay một chút để camera thấy ngón tay từ bên cạnh. Khung có tỉ lệ từ 0.3 trở lên hoặc mất
   tay ⇒ dòng biến mất. Không đổi JSON, token hay segment.
-- Lệnh gợi ý ở trên kết hợp cấu hình classifier lần sửa 7, ngưỡng phát hiện tay 0.35 và CLAHE (mục 8) với làm mượt landmark.
-- Giới hạn: tác dụng của làm mượt và của lời nhắc lên độ chính xác / tỉ lệ thấy tay CHƯA được đo; trên clip train (chỉ kiểm logic) dòng
+- Hai lệnh gợi ý ở trên kết hợp cấu hình classifier lần sửa 7, ngưỡng phát hiện tay 0.35 và CLAHE (mục 8) với khóa tay thuận
+  (lệnh của checklist §5 kế hoạch) hoặc với làm mượt landmark; có thể dùng cả hai cờ cùng lúc.
+- Giới hạn: tác dụng của khóa tay thuận, của làm mượt và của lời nhắc lên độ chính xác / tỉ lệ thấy tay trên webcam CHƯA được đo; trên clip train (chỉ kiểm logic) dòng
   nhắc xuất hiện ở một số clip (nhiều nhất là `â`) và không xuất hiện ở clip `a` của bộ test D2. Cần phiên webcam của người
   dùng (checklist §5 của kế hoạch); mục này không chép số đo nào.
