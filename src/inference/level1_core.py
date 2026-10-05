@@ -6,7 +6,8 @@ Level 1 ("Đánh vần") core shared by the desktop app (level1_demo.py) and, la
   SignSegment through alphabet_clip_features (the preprocessing shared with training); the result has the keys and
   rounding of POST /api/fingerspelling/sequence plus a status.
 - Level1Speller: accepts tokens (model result >= accept_confidence, or a key press), keeps the event order and
-  composes the text with fingerspelling_compose.compose (never edits or guesses letters).
+  composes the text with fingerspelling_compose.compose (never guesses letters; a letter is only replaced by its
+  diacritic variant when the label decoder says so, on_label).
 
 No GUI, no thread, no camera.
 """
@@ -20,8 +21,9 @@ import numpy as np
 
 from src.data.alphabet_preprocessing import DEFAULT_ALPHABET_PREPROCESSING, alphabet_clip_features
 from src.inference.fingerspelling_compose import SPACE, compose, token_kind
+from src.inference.level1_segmenter import VARIANT_BASE
 
-# key -> (kind, check); kind: "number" | "int" | "bool" | "str" | "str_list"
+# key -> (kind, check); kind: "number" | "int" | "bool" | "str" | "str_list" | "enum" (check = name in ENUMS)
 CONFIG_SPEC = {
     "motion_window_ms": ("number", "positive"),
     "still_speed": ("number", "positive"),
@@ -34,6 +36,10 @@ CONFIG_SPEC = {
     "pose_change_rules": ("bool", "bool"),
     "rearm_pose_dist": ("number", "positive"),
     "pose_over_jitter_ratio": ("number", "above_one"),
+    "rearm_mode": ("enum", "rearm_mode"),
+    "cls_window_ms": ("number", "positive"),
+    "cls_conf": ("number", "unit_interval"),
+    "cls_stable_ms": ("number", "positive"),
     "hand_lost_ms": ("number", "positive"),
     "word_gap_ms": ("number", "positive"),
     "max_segment_ms": ("number", "positive"),
@@ -49,6 +55,8 @@ CONFIG_SPEC = {
     "font_paths": ("str_list", "non_empty"),
 }
 CAMERA_APIS = ("dshow", "msmf", "any")
+REARM_MODES = ("motion_pose", "classifier")  # plan 15 lần sửa 4 §3.3: segmenter re-arm (motion / pose) or label decoder
+ENUMS = {"rearm_mode": REARM_MODES}
 CALIBRATED_PREFIX = "calibrated: "
 
 
@@ -75,6 +83,9 @@ def _check_value(key: str, value: Any) -> None:
             raise ValueError(f"config {key}: value must be a string, got {value!r}")
         if check == "camera_api" and value not in CAMERA_APIS:
             raise ValueError(f"config {key}: value must be one of {CAMERA_APIS}, got {value!r}")
+    elif kind == "enum":
+        if not isinstance(value, str) or value not in ENUMS[check]:
+            raise ValueError(f"config {key}: value must be one of {ENUMS[check]}, got {value!r}")
     elif kind == "str_list":
         if not isinstance(value, list) or not value or not all(isinstance(v, str) and v for v in value):
             raise ValueError(f"config {key}: value must be a non-empty list of strings")
@@ -297,6 +308,29 @@ class Level1Speller:
             self.rejected = {"seq": seq, "status": status, "prediction": prediction, "confidence": conf}
             self._log("reject", prediction, "model", t_ms, seq=seq, confidence=conf, status=status)
         return {"seq": seq, "accepted": accepted, "status": status, "prediction": prediction, "confidence": conf}
+
+    def on_label(self, seq: int, emit) -> Dict[str, Any]:
+        """Label emitted by Level1LabelDecoder (rearm_mode 'classifier', plan 15 lần sửa 4 §3.4), applied at once
+        (no segment queue: the decoder emits in timestamp order). Accepted with the same rule as on_result
+        (confidence >= accept_confidence). action 'append' = token added; 'replace' = the last token is replaced
+        when it is the base letter of the label (VARIANT_BASE), otherwise the label is added."""
+        prediction, conf, t_ms = emit.prediction, emit.confidence, emit.ts_ms
+        accepted = conf is not None and conf >= self.accept_confidence
+        action = None
+        if not accepted:
+            self.rejected = {"seq": seq, "status": "ok", "prediction": prediction, "confidence": conf}
+            self._log("reject", prediction, "model", t_ms, seq=seq, confidence=conf, status="ok")
+        elif emit.action == "replace" and self.tokens and self.tokens[-1] == VARIANT_BASE.get(prediction):
+            old = self.tokens[-1]
+            self.tokens[-1] = prediction
+            action = "replace"
+            self._log("replace", prediction, "model", t_ms, seq=seq, confidence=conf, replaced=old)
+        else:
+            self.tokens.append(prediction)
+            action = "add"
+            self._log("add", prediction, "model", t_ms, seq=seq, confidence=conf)
+        return {"seq": seq, "accepted": accepted, "status": "ok", "prediction": prediction, "confidence": conf,
+                "action": action}
 
     def on_word_gap(self, t_ms: Optional[float] = None) -> bool:
         if self.tokens and self.tokens[-1] != SPACE:

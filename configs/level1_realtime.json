@@ -55,6 +55,26 @@
     "source": "design",
     "reason": "the pose re-arm threshold is this multiple of the hand-shape jitter seen while one letter is held (same idea as move_over_still_ratio); read only by the calibration of rearm_pose_dist (rule P1), not by the segmenter"
   },
+  "rearm_mode": {
+    "value": "motion_pose",
+    "source": "design",
+    "reason": "how a letter is re-armed for the next one: 'motion_pose' = the segmenter (motion re-arm, pose rules when pose_change_rules is true), 'classifier' = the label-change decoder over the classifier result on a sliding window (plan 15 lần sửa 4 section 3.2); stays 'motion_pose' until gates G1-G6 of step D4 pass, switched only by scripts/level1_rearm_check.py --write-mode-config (reason then names the D4 JSON and its commit)"
+  },
+  "cls_window_ms": {
+    "value": 1000,
+    "source": "design",
+    "reason": "length of the sliding window classified at every hand frame in rearm_mode 'classifier'; chosen after the planner's exploratory measure on concatenated train clips (plan 15 lần sửa 4 section 2.3); not an independent calibration: a 1500 ms window behaved alike, a 600 ms window gave many more garbage letters"
+  },
+  "cls_conf": {
+    "value": 0.9,
+    "source": "design",
+    "reason": "minimum top-1 probability of a window for its label to count in rearm_mode 'classifier'; chosen after the planner's exploratory measure on concatenated train clips (plan 15 lần sửa 4 section 2.3); not an independent calibration: a value of 0.8 gave about twice the garbage letters"
+  },
+  "cls_stable_ms": {
+    "value": 300,
+    "source": "design",
+    "reason": "a window label must stay the same for this long before it is emitted in rearm_mode 'classifier' (same order as hold_ms); chosen after the planner's exploratory measure on concatenated train clips (plan 15 lần sửa 4 section 2.3); not an independent calibration"
+  },
   "hand_lost_ms": {
     "value": 300,
     "source": "design",

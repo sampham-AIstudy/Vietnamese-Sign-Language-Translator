@@ -623,3 +623,34 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   `Ran 161 — OK (skipped=1)` (`_work/_plan15/K1_green_l1.log`; skip = `test_u1_summary`, file U1 chỉ có ở local).
   AC1-ngắn còn lại + `test_level1_equivalence`: `Ran 176 — FAILED (failures=1)` = `test_hand_landmarks_ws.TestReset.test_reset_segments_and_graphs`
   (chập chờn đã biết); chạy riêng 3 lần: FAILED / OK / OK (`_work/_plan15/K1_reset_{1,2,3}.log`). Guard chính `known=9 allowed=36`.
+
+### D1 — `WindowBuffer`, `Level1LabelDecoder`, `VARIANT_BASE`, khóa config, `Level1Speller.on_label` (15-lan-sua-4 §3.2–§3.3, AC-D1…D9)
+- Mã (`src/inference/level1_segmenter.py`, thuần numpy): `VARIANT_BASE` (7 cặp ă, â→a; ê→e; ô, ơ→o; ư→u; đ→d), `LabelEmit`, `WindowBuffer`
+  (khung của `cls_window_ms` gần nhất, `segment(t)` = bản sao các khung có ts ≥ t − cls_window_ms + 1e-6 — đúng dung sai của
+  `window_probs` trong `15-lan-sua-4-do/analyze2.py` — gồm cả khung không tay trong cửa sổ, close_reason `"window"`; < `min_detected_frames`
+  ⇒ None; đổi kích thước khung ⇒ cửa sổ bắt đầu lại), `Level1LabelDecoder` (luật 1–5 §3.2, đúng `decode_r` của `analyze5.py`).
+  Chốt diễn giải (ghi rõ vì §3.2 luật 1 viết "None ⇒ chạy mới"): khung có tay mà `result` None (cửa sổ chưa đủ khung / việc bị worker bỏ)
+  là "không có kết quả", KHÔNG cắt chuỗi chạy — giống `analyze5.py` (hàng NaN bị bỏ qua); kết quả có `status` ≠ ok hoặc conf < `cls_conf`
+  là nhãn None ⇒ chạy mới.
+- `src/inference/level1_core.py`: kind `"enum"` (`ENUMS["rearm_mode"] = REARM_MODES = ("motion_pose", "classifier")`), 4 khóa trong
+  `CONFIG_SPEC` (`rearm_mode` enum, `cls_window_ms` > 0, `cls_conf` ∈ (0, 1], `cls_stable_ms` > 0); `Level1Speller.on_label(seq, emit)`
+  (nhận như `on_result`: conf ≥ `accept_confidence`; `replace` chỉ thay khi token cuối đúng là chữ gốc, ngược lại thêm; nhật ký
+  `action "replace"`, `source "model"`, `replaced`).
+- `configs/level1_realtime.json`: thêm sau `pose_over_jitter_ratio` 4 khóa source `design`: `rearm_mode` "motion_pose", `cls_window_ms` 1000,
+  `cls_conf` 0.9, `cls_stable_ms` 300; reason ghi "chosen after the planner's exploratory measure on concatenated train clips … not an
+  independent calibration". Mọi khóa khác giữ từng byte (ghi bằng `json.dumps(indent=2)`, đã kiểm file gốc đúng định dạng đó).
+- `scripts/level1_rearm_check.py`: `FILL_RULES`/`_fill_missing` điền 4 khóa cho config đọc từ commit cũ (`rearm_mode` = "motion_pose";
+  `cls_*` = giá trị trên đĩa, không được đọc khi motion_pose) — cần ngay ở D1 vì `validate_level1_config` đòi khóa mới.
+- **Ngoại lệ test cũ (§4, cùng kiểu R1):** `tests/test_level1_rearm_check.py` `test_git_spec_records_full_commit_sha_and_fill` — dict khóa
+  điền mong đợi thêm 4 khóa D1 (`R1_KEYS + D1_KEYS`), như R1 đã thêm `R1_KEYS` vào đúng dòng này (4c8c210). Không assertion nào khác đổi.
+  LỆCH cần reviewer xem (đây là dict mong đợi của một assertion, không phải config dựng tay). Không test cũ nào khác cần sửa (các test dựng
+  config đều đọc config trên đĩa).
+- Impact (text search, thay GitNexus): `CONFIG_SPEC`/`_check_value`/`validate_level1_config` dùng trong level1_core, level1_rearm_check
+  (`apply_overrides`, `resolve_config_spec`), level1_segment_report (write_config) và test; `_fill_missing` chỉ trong level1_rearm_check;
+  `Level1Speller` thêm phương thức mới, không đổi `on_result`. detect-changes thay bằng `git diff --stat`: 4 file mã/config + 1 test cũ +
+  test mới `tests/test_level1_decoder.py`.
+- Test viết TRƯỚC `tests/test_level1_decoder.py` (22 test): ĐỎ `ImportError: cannot import name 'VARIANT_BASE'` (`_work/_plan15/D1_red.log`).
+  Sửa 1 lỗi dữ liệu trong chính test mới (chưa commit): chuỗi D2 "status invalid" 12 khung quá ngắn để chạy mới đủ 300 ms → 20 khung.
+  Lần chạy đầu sau mã: guard Level 1 G2 bắt hằng số `WINDOW_EDGE_MS = 1e-6` (luật D-binding) → bỏ hằng, dùng `_horizon()`.
+- XANH: 12 module (10 module K1 + decoder + equivalence) `Ran 192 — OK (skipped=1)` (`_work/_plan15/D1_green_l1.log`, skip = `test_u1_summary`);
+  AC1-ngắn còn lại `Ran 167 — OK`, guard chính `known=9 allowed=36` (`_work/_plan15/D1_ac1.log`).

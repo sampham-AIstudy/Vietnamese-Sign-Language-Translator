@@ -247,6 +247,7 @@ def _git_out(*args) -> bytes:
 
 
 R1_KEYS = ("pose_change_rules", "rearm_pose_dist", "pose_over_jitter_ratio")  # config keys added by plan 15 R1
+D1_KEYS = ("rearm_mode", "cls_window_ms", "cls_conf", "cls_stable_ms")  # config keys added by plan 15 lần sửa 4 D1
 
 
 class TestConfigProvenanceA2a(unittest.TestCase):
@@ -270,7 +271,7 @@ class TestConfigProvenanceA2a(unittest.TestCase):
         blob = _git_out("show", f"{full}:{self.PATH}")
         self.assertEqual(meta["sha256"], hashlib.sha256(blob).hexdigest())
         self.assertEqual(meta["filled"], {"tail_still_keep_ms": "= hold_ms of this config",
-                                          **{k: FILL_RULES[k] for k in R1_KEYS}})
+                                          **{k: FILL_RULES[k] for k in R1_KEYS + D1_KEYS}})
         self.assertEqual(values["tail_still_keep_ms"], values["hold_ms"])
         self.assertIs(values["pose_change_rules"], False)
         raw = json.loads(blob.decode("utf-8"))

@@ -399,3 +399,175 @@ class Level1SignSegmenter:
         self._close_lost(ts, "end_of_stream", events)
         self._last_has_hand = False
         return events
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Classifier re-arm (plan 15 lần sửa 4 §3.2): sliding window + label-change decoder
+# ----------------------------------------------------------------------------------------------------------------------
+# diacritic letter -> its base letter (a fact of the Vietnamese alphabet, locked by a test): a letter with a diacritic is
+# signed as the hand shape of the base letter plus a motion, so a window sees the base letter first
+VARIANT_BASE = {"ă": "a", "â": "a", "ê": "e", "ô": "o", "ơ": "o", "ư": "u", "đ": "d"}
+DECODER_KEYS = ("cls_window_ms", "cls_conf", "cls_stable_ms", "hand_lost_ms")
+LABEL_ACTIONS = ("append", "replace")
+WINDOW_CLOSE_REASON = "window"
+
+
+@dataclass
+class LabelEmit:
+    """One label emitted by Level1LabelDecoder. action 'append' = a new letter; 'replace' = the variant of the label
+    emitted just before (VARIANT_BASE) replaces it. result = the classify() dict of the frame that emitted."""
+    seq: int
+    ts_ms: float
+    prediction: str
+    confidence: float
+    action: str
+    run_since_ms: float
+    result: Dict[str, Any]
+
+
+def _positive_number(name: str, value: Any) -> None:
+    if isinstance(value, bool) or not isinstance(value, (int, float, np.integer, np.floating)) \
+            or not np.isfinite(value) or not value > 0:
+        raise ValueError(f"{name} must be a finite number > 0, got {value!r}")
+
+
+class WindowBuffer:
+    """Frames of the last window_ms (plan 15 lần sửa 4 §3.2). push() every frame (with or without a hand, timestamps
+    strictly increasing); segment(t) = SignSegment copy of the frames with ts >= t - window_ms + 1e-6 (the tolerance
+    of the planner's measure, docs/plans/15-lan-sua-4-do/analyze2.py window_probs)
+    (no-hand frames inside the window included, nothing trimmed: the classifier input is formed exactly like a
+    segment, alphabet_clip_features is unchanged), close_reason 'window'; None with < min_detected_frames hand frames.
+    A change of frame size starts the window again (the frames cannot form one clip)."""
+
+    def __init__(self, window_ms: float, min_detected_frames: int):
+        _positive_number("window_ms", window_ms)
+        self.window_ms = float(window_ms)
+        self.min_frames = int(min_detected_frames)
+        self._seq = 0
+        self._last_ts: Optional[float] = None
+        self.reset()
+
+    def reset(self) -> None:
+        self._buf: Deque[Tuple[np.ndarray, bool, str, float, int, int]] = deque()
+        self._size: Optional[Tuple[int, int]] = None
+
+    def _horizon(self, ts: float) -> float:
+        """Oldest timestamp inside the window ending at ts."""
+        return ts - self.window_ms + 1e-6
+
+    def push(self, ts_ms: float, landmarks: Optional[np.ndarray], handedness: str, width: int, height: int) -> None:
+        ts = float(ts_ms)
+        if not np.isfinite(ts):
+            raise ValueError("timestamp must be finite")
+        if self._last_ts is not None and ts <= self._last_ts:
+            raise ValueError(f"timestamps must increase strictly ({ts} after {self._last_ts})")
+        if not (int(width) > 0 and int(height) > 0):
+            raise ValueError("frame size must be positive")
+        self._last_ts = ts
+        size = (int(width), int(height))
+        if self._size != size:
+            self._buf.clear()
+        self._size = size
+        if landmarks is None:
+            self._buf.append((np.zeros((21, 3), dtype=np.float32), False, "", ts, size[0], size[1]))
+        else:
+            raw = np.asarray(landmarks, dtype=np.float32).reshape(21, 3).copy()
+            self._buf.append((raw, True, str(handedness), ts, size[0], size[1]))
+        horizon = self._horizon(ts)
+        while self._buf and self._buf[0][3] < horizon:
+            self._buf.popleft()
+
+    def segment(self, ts_ms: float) -> Optional[SignSegment]:
+        horizon = self._horizon(float(ts_ms))
+        frames = [f for f in self._buf if horizon <= f[3] <= float(ts_ms)]
+        if sum(1 for f in frames if f[1]) < self.min_frames:
+            return None
+        self._seq += 1
+        return SignSegment(
+            seq=self._seq,
+            raw_landmarks=np.stack([f[0] for f in frames]).astype(np.float32, copy=True),
+            detected=np.array([f[1] for f in frames], dtype=bool),
+            handedness=np.array([f[2] for f in frames], dtype=object).astype(str),
+            timestamps_ms=np.array([f[3] for f in frames], dtype=np.float64),
+            frame_width=int(frames[0][4]), frame_height=int(frames[0][5]),
+            t_start_ms=float(frames[0][3]), t_end_ms=float(frames[-1][3]), t_emit_ms=float(ts_ms),
+            close_reason=WINDOW_CLOSE_REASON)
+
+
+class Level1LabelDecoder:
+    """Label-change decoder over the per-frame window classification (plan 15 lần sửa 4 §3.2, rules fixed before the
+    D4 measurement, same as the decoder of docs/plans/15-lan-sua-4-do/analyze5.py):
+
+    1. frame label = result['prediction'] when result['status'] == 'ok' and result['confidence'] >= cls_conf, else
+       None; a label different from the running one (or None) starts a new run at this frame. A hand frame with
+       result None (window too short, or its job dropped by the worker) has no result and leaves the run as it is.
+    2. emit when the label is not None, ts - run_since >= cls_stable_ms and label != last emitted label; then
+       last = label.
+    3. replace: when VARIANT_BASE[label] == last (and a label was emitted before), action 'replace', else 'append'.
+    4. no hand for >= hand_lost_ms: last = None and the run is cleared (withdraw the hand and sign again = the same
+       letter may come again); force_next(ts) (key n): last = None.
+    5. timestamps strictly increasing (ValueError otherwise).
+    Parameters come from the caller (config); no default value here. Pure computation, not thread-safe."""
+
+    def __init__(self, params: Dict[str, Any]):
+        missing = [k for k in DECODER_KEYS if k not in params]
+        if missing:
+            raise ValueError(f"decoder parameters missing: {missing}")
+        self.p = {k: params[k] for k in DECODER_KEYS}
+        for k in ("cls_window_ms", "cls_stable_ms", "hand_lost_ms"):
+            _positive_number(k, self.p[k])
+        conf = self.p["cls_conf"]
+        _positive_number("cls_conf", conf)
+        if not conf <= 1:
+            raise ValueError(f"cls_conf must be in (0, 1], got {conf!r}")
+        self._seq = 0
+        self._n_emitted = 0
+        self._last_ts: Optional[float] = None
+        self.reset()
+
+    def reset(self) -> None:
+        """Clears the last label, the run and the hand clock (tracking paused). The emission counter is kept."""
+        self._last: Optional[str] = None
+        self._run_label: Optional[str] = None
+        self._run_since: Optional[float] = None
+        self._last_hand_ts: Optional[float] = None
+
+    @property
+    def last_label(self) -> Optional[str]:
+        return self._last
+
+    def force_next(self, ts_ms: float) -> None:
+        """Key n "chữ kế": the label held now may be emitted again."""
+        if not np.isfinite(float(ts_ms)):
+            raise ValueError("timestamp must be finite")
+        self._last = None
+
+    def push(self, ts_ms: float, has_hand: bool, result: Optional[Dict[str, Any]]) -> Optional[LabelEmit]:
+        ts = float(ts_ms)
+        if not np.isfinite(ts):
+            raise ValueError("timestamp must be finite")
+        if self._last_ts is not None and ts <= self._last_ts:
+            raise ValueError(f"timestamps must increase strictly ({ts} after {self._last_ts})")
+        self._last_ts = ts
+        if not has_hand:
+            if self._last_hand_ts is not None and ts - self._last_hand_ts >= self.p["hand_lost_ms"]:
+                self._last = None
+                self._run_label = None
+            return None
+        self._last_hand_ts = ts
+        if result is None:
+            return None
+        conf = result.get("confidence")
+        label = result.get("prediction") if (result.get("status") == "ok" and conf is not None
+                                             and conf >= self.p["cls_conf"]) else None
+        if label is None or label != self._run_label:
+            self._run_label, self._run_since = label, ts
+        if label is None or ts - self._run_since < self.p["cls_stable_ms"] or label == self._last:
+            return None
+        replace = self._n_emitted > 0 and self._last is not None and VARIANT_BASE.get(label) == self._last
+        self._last = label
+        self._seq += 1
+        self._n_emitted += 1
+        return LabelEmit(seq=self._seq, ts_ms=ts, prediction=label, confidence=float(conf),
+                         action="replace" if replace else "append", run_since_ms=float(self._run_since),
+                         result=result)
