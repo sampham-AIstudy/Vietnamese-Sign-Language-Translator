@@ -2431,6 +2431,163 @@ class TestGestureSpaceHudS2(unittest.TestCase):
         self.assertEqual(app.space_tracker.n_emits, 0)
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 9 S3 (CLI flags, JSON, doc)
+REV9_COMMAND = ("python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json "
+                "--min-detection-conf 0.35 --auto-enhance --no-auto-space")
+GESTURE_JSON_KEYS = ("enabled", "hold_ms", "rearm_ms", "flash_ms", "palm_frames", "emits", "spaces_added")
+
+
+class TestGestureSpaceArgsS3(unittest.TestCase):
+    """§2 S3: --gesture-space / --no-gesture-space (default on) and --space-hold-ms (default 250, a finite number > 0)."""
+
+    def test_s3_help_and_defaults(self):
+        text = app_mod.build_parser().format_help()
+        for flag in ("--gesture-space", "--no-gesture-space", "--space-hold-ms"):
+            self.assertIn(flag, text)
+        a = args_for("--source", CLIP)
+        self.assertIs(a.gesture_space, True)
+        self.assertEqual(a.space_hold_ms, 250.0)
+        self.assertEqual(a.space_hold_ms, app_mod.GESTURE_SPACE_HOLD)
+        self.assertIs(args_for("--source", CLIP, "--no-gesture-space").gesture_space, False)
+        self.assertIs(args_for("--source", CLIP, "--no-gesture-space", "--gesture-space").gesture_space, True)
+        self.assertEqual(args_for("--source", CLIP, "--space-hold-ms", "400").space_hold_ms, 400.0)
+
+    def test_s3_bad_hold_rejected(self):
+        import contextlib
+        import io
+        for bad in ("0", "-5", "abc", "nan", "inf"):
+            with self.subTest(bad=bad), contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit):
+                    args_for("--source", CLIP, "--space-hold-ms", bad)
+
+
+@unittest.skipUnless(not _MISSING_S2, SKIP_REASON_S2)
+class TestGestureSpaceFlagsS3(unittest.TestCase):
+    """AC-9c / AC-9d with the flags on real clips (training clips: code path, not accuracy). --no-gesture-space: the
+    report (keys, tokens, labels, segments, events, counts) and the HUD lines are those of the app at 03d17b8, also on
+    the clip with an open palm. With the gesture on, the JSON has `gesture_space` (§2 S3) when an open-palm frame was
+    seen or --space-hold-ms is not the default; otherwise (no open palm, default hold) the report keeps its keys."""
+
+    @classmethod
+    def setUpClass(cls):
+        from src.inference.level1_core import is_open_palm_space
+        from src.inference.level1_segmenter import aspect_points
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            cls.ref = app_module_at(BEFORE_REV9_COMMIT)
+            cls.runs = {}
+            for mode, extra in (("motion_pose", []), ("classifier", ["--config", REV7_CONFIG])):
+                base = ["--source", PALM_CLIP, "--headless", *extra]
+                ref_app = cls.ref.Level1App(cls.ref.build_parser().parse_args(base))
+                off_app = app_mod.Level1App(args_for(*base, "--no-gesture-space"))
+                cls.runs[mode] = {"ref": ref_app.run(), "off": off_app.run(), "ref_app": ref_app, "off_app": off_app}
+                for hold in ("400", "500"):
+                    cls.runs[mode][hold] = app_mod.Level1App(args_for(*base, "--space-hold-ms", hold)).run()
+                _LandmarkRecordingSession.instances = []
+                cls.runs[mode]["on"] = app_mod.Level1App(args_for(*base),
+                                                         session_factory=_LandmarkRecordingSession).run()
+                seen = _LandmarkRecordingSession.instances[1].seen
+                fps = cls.runs[mode]["on"]["source"]["fps_file"]
+                cls.runs[mode]["ts"] = [i * 1000.0 / fps for i in range(len(seen))]
+                cls.runs[mode]["flags"] = [lm is not None and is_open_palm_space(aspect_points(lm, w, h))
+                                           for lm, w, h in seen]
+            plain = ["--source", CLIP, "--headless"]
+            cls.clip_hold = app_mod.Level1App(args_for(*plain, "--space-hold-ms", "400")).run()
+            cls.clip_ref = cls.ref.Level1App(cls.ref.build_parser().parse_args(plain)).run()
+        finally:
+            os.chdir(cwd)
+
+    def _same_as_ref(self, new, ref, label):
+        self.assertEqual(list(new), list(ref), label)
+        self.assertEqual(_key_tree(new), _key_tree(ref), label)
+        for k in ("tokens", "text", "labels", "segments", "events", "warnings"):
+            self.assertEqual(new[k], ref[k], (label, k))
+        self.assertEqual(_without_rates(new["counts"]), _without_rates(ref["counts"]), label)
+
+    def test_9d_no_gesture_space_same_as_before(self):
+        for mode in ("motion_pose", "classifier"):
+            with self.subTest(mode=mode):
+                r = self.runs[mode]
+                self._same_as_ref(r["off"], r["ref"], mode)
+                self.assertNotIn("gesture_space", r["off"])
+                self.assertEqual(r["off_app"]._hud_lines()[1], r["ref_app"]._hud_lines()[1])
+                self.assertEqual(r["off_app"].space_tracker.n_emits, 0)
+
+    def test_9c_json_block_with_gesture_on(self):
+        for mode in ("motion_pose", "classifier"):
+            with self.subTest(mode=mode):
+                r = self.runs[mode]
+                on = r["on"]
+                self.assertEqual(list(on), list(r["ref"]) + ["gesture_space"])
+                g = on["gesture_space"]
+                self.assertEqual(tuple(g), GESTURE_JSON_KEYS)
+                self.assertEqual((g["enabled"], g["hold_ms"], g["rearm_ms"], g["flash_ms"]),
+                                 (True, 250.0, 150.0, app_mod.GESTURE_SPACE_FLASH))
+                self.assertEqual(g["palm_frames"], sum(r["flags"]))
+                self.assertEqual((g["emits"], g["spaces_added"]), (1, 0))             # no token before the palm
+                events = [e for e in on["events"] if e.get("event") == "gesture_space"]
+                self.assertEqual([e["t_ms"] for e in events], _expected_gesture_spaces(r["flags"], r["ts"]))
+
+    def test_9c_space_hold_ms(self):
+        for mode in ("motion_pose", "classifier"):
+            with self.subTest(mode=mode):
+                r = self.runs[mode]
+                for hold in ("400", "500"):
+                    g = r[hold]["gesture_space"]
+                    expected = _expected_gesture_spaces(r["flags"], r["ts"], hold_ms=float(hold))
+                    events = [e["t_ms"] for e in r[hold]["events"] if e.get("event") == "gesture_space"]
+                    self.assertEqual(events, expected, hold)
+                    self.assertEqual((g["hold_ms"], g["emits"]), (float(hold), len(expected)))
+                self.assertEqual(len(_expected_gesture_spaces(r["flags"], r["ts"], hold_ms=400.0)), 1)
+                self.assertEqual(_expected_gesture_spaces(r["flags"], r["ts"], hold_ms=500.0), [])  # palm < 500
+
+    def test_9c_hold_recorded_without_open_palm(self):
+        r, ref = self.clip_hold, self.clip_ref
+        self.assertEqual(r["gesture_space"], {"enabled": True, "hold_ms": 400.0, "rearm_ms": 150.0,
+                                              "flash_ms": app_mod.GESTURE_SPACE_FLASH, "palm_frames": 0, "emits": 0,
+                                              "spaces_added": 0})
+        for k in ("tokens", "labels", "segments", "events"):
+            self.assertEqual(r[k], ref[k], k)
+
+
+@unittest.skipUnless(not _MISSING_S2, SKIP_REASON_S2)
+class TestRev9CommandS3(unittest.TestCase):
+    """The suggested command of §2 S3 (gesture space + --no-auto-space) through main() on PALM_CLIP in place of the
+    webcam, headless: exit 0, classifier mode, no automatic space, the JSON has gesture_space. Training clip: code path."""
+
+    def test_s3_plan_command_headless(self):
+        os.makedirs(TMP_PARENT, exist_ok=True)
+        tmp = tempfile.mkdtemp(prefix="vslt_p15_s3_", dir=TMP_PARENT)
+        try:
+            out = os.path.join(tmp, "rev9.json")
+            argv = REV9_COMMAND.split()[2:]
+            self.assertEqual(argv[:2], ["--source", "0"])
+            argv = ["--source", PALM_CLIP, "--headless"] + [a for a in argv[2:] if a != "--display-mirror"]
+            proc = subprocess.run([PY, "level1_demo.py", *argv, "--out-json", out], cwd=PROJECT_ROOT,
+                                  capture_output=True, text=True, env=ENV, timeout=900)
+            self.assertEqual(proc.returncode, 0, proc.stderr[-2000:])
+            with open(out, encoding="utf-8") as f:
+                r = json.load(f)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+        self.assertEqual(r["rearm_mode"], "classifier")
+        self.assertIs(r["auto_space"], False)
+        self.assertEqual((r["gesture_space"]["enabled"], r["gesture_space"]["emits"]), (True, 1))
+        self.assertGreater(r["gesture_space"]["palm_frames"], 0)
+
+
+class TestDesktopDocS3(unittest.TestCase):
+    def test_s3_doc_gesture_and_command(self):
+        import re
+        with open(os.path.join(PROJECT_ROOT, "docs", "level1_desktop.md"), encoding="utf-8") as f:
+            doc = f.read()
+        for text in (REV9_COMMAND, "--gesture-space", "--no-gesture-space", "--space-hold-ms", "Xòe 5 ngón",
+                     "[Cử chỉ: Dấu cách", GESTURE_FLASH_LINE, "gesture_space", "palm_frames", "spaces_added"):
+            self.assertIn(text, doc, text)
+        self.assertIsNone(re.search(r"\d+(\.\d+)?\s*(ms|%|fps)", doc))   # no measured number (as AC-R'4 / C1)
+
+
 if __name__ == "__main__":
     unittest.main()
 

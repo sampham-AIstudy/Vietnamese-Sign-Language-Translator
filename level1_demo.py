@@ -17,9 +17,16 @@ Run (from the project root, inside .venv):
                                     MediaPipe hand detection threshold 0.35 for this run (edge-on hands); dark frames
                                     (mean gray level below the threshold) get CLAHE before MediaPipe, the window still
                                     shows the camera frame (plan 15 lần sửa 8; HUD line [MP: conf=... | CLAHE: ...])
+  python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json \
+                        --min-detection-conf 0.35 --auto-enhance --no-auto-space
+                                    spaces only from the open palm gesture (or the Space key), plan 15 lần sửa 9
 Keys (window): Backspace delete last token | Space add a space | a accept the last rejected candidate |
   r repeat the last letter | n next letter (re-arm: the letter held now is emitted again) | c clear |
   p pause / resume segmentation | q or Esc quit.
+Gesture (plan 15 lần sửa 9, on unless --no-gesture-space): open palm (5 fingers spread, thumb out) held --space-hold-ms
+  (default 250) = Space, once per gesture (change the hand shape or withdraw the hand before the next one); HUD line
+  [Cử chỉ: Dấu cách <held>/<hold>] while held, [Ký hiệu: Dấu cách (Space)] right after. In rearm_mode classifier an
+  open-palm frame reaches the window as a frame without hand (it is never classified as a letter).
 
 Re-arm (config rearm_mode, written to the JSON as rearm_mode; plan 15 lần sửa 4 §3.4):
   motion_pose  every SignSegment of the segmenter is classified and gives one token (behaviour before lần sửa 4)
@@ -1227,6 +1234,14 @@ class Level1App:
             report["window_trace"] = {"max_entries": TRACE_MAX_ENTRIES, "n_windows": self.window_trace_n,
                                       "truncated": self.window_trace_n > len(self.window_trace),
                                       "fields": list(TRACE_KEYS), "entries": list(self.window_trace)}
+        # lần sửa 9 S3: gesture on and (an open-palm frame seen or --space-hold-ms not the default); a run without open
+        # palm at the default hold, or with --no-gesture-space, keeps exactly the keys of before
+        tr = self.space_tracker
+        if self.gesture_space and (self.gesture_counts["palm_frames"] > 0 or tr.hold_ms != GESTURE_SPACE_HOLD):
+            report["gesture_space"] = {"enabled": True, "hold_ms": tr.hold_ms, "rearm_ms": tr.rearm_ms,
+                                       "flash_ms": GESTURE_SPACE_FLASH,
+                                       "palm_frames": self.gesture_counts["palm_frames"], "emits": tr.n_emits,
+                                       "spaces_added": self.gesture_counts["spaces_added"]}
         return report
 
 
@@ -1281,6 +1296,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--auto-enhance", action="store_true",
                    help="Enable adaptive CLAHE enhancement for low-light frames before hand detection (mean gray "
                         f"level below {LOW_LIGHT_THRESHOLD:g}; the window still shows the camera frame; default off)")
+    p.add_argument("--gesture-space", action=argparse.BooleanOptionalAction, default=True,
+                   help="open palm (5 fingers spread, thumb out) held --space-hold-ms adds one space; change the hand "
+                        "shape or withdraw the hand before the next one (written to the JSON as gesture_space; "
+                        "--no-gesture-space: the app as before, on by default)")
+    p.add_argument("--space-hold-ms", type=positive_ms, default=GESTURE_SPACE_HOLD,
+                   help="hold time in milliseconds of the open palm before its space (default %(default)s)")
     return p
 
 

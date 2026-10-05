@@ -20,6 +20,8 @@ python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_c
 - Chạy trên file video, không cửa sổ: `python level1_demo.py --source <video.mp4> --headless --out-json <file>.json`
   (`--pace realtime` để đọc theo nhịp của file và bỏ khung như webcam).
 - Tay để ngang (`â`, `ă`) hoặc phòng thiếu sáng: thêm `--min-detection-conf 0.35 --auto-enhance` (mục 8).
+- Cách từ bằng cử chỉ Xòe 5 ngón (mặc định bật, mục 9); lệnh gợi ý khi chỉ muốn cách từ chủ động (tắt dấu cách tự động khi hạ tay):
+  `python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json --min-detection-conf 0.35 --auto-enhance --no-auto-space`
 - Các cờ khác: `python level1_demo.py --help`.
 
 ## 2. Phím
@@ -30,6 +32,7 @@ python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_c
 | `n` | Chữ kế: nhận lại ký hiệu đang giữ như một chữ mới (chữ lặp như "oo", "ee") |
 | Backspace | Xóa token cuối (chữ hoặc dấu) |
 | Space | Thêm dấu cách (kết thúc từ); hạ tay đủ lâu cũng thêm dấu cách (tắt phần tự động bằng `--no-auto-space`, mục 7) |
+| Cử chỉ Xòe 5 ngón | Thêm dấu cách không cần chạm bàn phím: giữ bàn tay xòe cả 5 ngón trước camera trong `--space-hold-ms` (mục 9) |
 | `r` | Lặp lại chữ cuối |
 | `a` | Nhận ứng viên bị từ chối gần nhất (chữ mờ) |
 | `c` | Xóa hết |
@@ -152,3 +155,34 @@ python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_c
 - Giới hạn: hai cờ chỉ là ngưỡng / tiền xử lý của app demo — KHÔNG train lại, checkpoint không đổi. Model Cấp 1 học từ landmark trích ở
   ngưỡng 0.5 trên ảnh không tăng sáng, nên khung CLAHE và landmark ở ngưỡng thấp có thể lệch phân phối train. Tác dụng lên tỉ lệ thấy tay
   và độ chính xác CHƯA được đo: cần phiên webcam của người dùng (checklist §5 của kế hoạch); mục này không chép số đo nào.
+
+## 9. Cử chỉ Xòe 5 ngón = dấu cách (kế hoạch 15 lần sửa 9)
+
+```bash
+python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json --min-detection-conf 0.35 --auto-enhance --no-auto-space
+```
+
+- Cách làm: kết thúc một từ bằng cách xòe cả bàn tay về phía camera — 4 ngón dài duỗi thẳng và tách nhau, ngón cái dang ra ngoài (khác
+  chữ `b`: 4 ngón khép, ngón cái gập ngang lòng bàn tay) — rồi giữ yên trong `--space-hold-ms` (mặc định 250). App thêm đúng một dấu
+  cách (như phím Space: không thêm khi text rỗng hoặc ký tự cuối đã là dấu cách). Giữ tiếp không thêm dấu cách thứ hai; muốn cách tiếp thì
+  đổi sang tư thế khác (giữ hơn 150 mili giây) hoặc rút tay khỏi khung hình rồi xòe lại.
+- Nhận diện bằng hình học 21 landmark của MediaPipe, không qua model (`is_open_palm_space` trong `src/inference/level1_core.py`):
+  4 ngón dài duỗi (đầu ngón xa cổ tay và xa MCP hơn khớp PIP), ngón cái dang (khoảng đầu ngón cái tới MCP ngón út lớn hơn
+  `THUMB_SPREAD_RATIO` = 1.1 lần khoảng cổ tay tới MCP ngón giữa) và duỗi, các đầu ngón kề nhau cách xa hơn `FINGER_SPREAD_MIN` = 1.2 lần
+  khoảng MCP tương ứng. Landmark được nhân x, z với rộng / cao khung (như bộ tách) trước khi so khoảng cách.
+- Chế độ `classifier` (config demo): khung xòe tay được đưa vào cửa sổ phân loại như khung không có tay, nên không bao giờ thành một chữ;
+  dấu cách đi qua cùng hàng đợi thời gian với nhãn và word gap (đứng sau chữ của các khung trước nó). Chế độ `motion_pose` (config mặc
+  định): bộ tách vẫn nhận khung xòe như cũ, nên bàn tay xòe giữ yên đủ lâu vẫn có thể bị tách thành một ký hiệu chữ.
+- HUD: khi đang giữ xòe tay hiện `[Cử chỉ: Dấu cách <đã giữ>/<cần giữ>]` ngay dưới dòng trạng thái / `[classifier]` (dưới dòng `[MP: ...]`
+  nếu có); ngay sau khi thêm dấu cách hiện `[Ký hiệu: Dấu cách (Space)]` trong `GESTURE_SPACE_FLASH` của `level1_demo.py` (thời gian của
+  luồng khung). Không có cử chỉ ⇒ HUD như lần sửa 8.
+- JSON: mỗi lần cử chỉ kích hoạt có sự kiện `{"event": "gesture_space", "t_ms", "added"}` (`added` = text có đổi), dấu cách tương ứng
+  ghi như phím Space (`source: "key"`, `key: "space"`) cùng `t_ms`. Khóa gốc `gesture_space` = `enabled`, `hold_ms`, `rearm_ms`,
+  `flash_ms`, `palm_frames` (số khung xòe tay), `emits` (số lần cử chỉ kích hoạt), `spaces_added` — chỉ có khi đã thấy ít nhất một khung xòe
+  tay hoặc `--space-hold-ms` khác mặc định; lần chạy không có khung xòe tay với mặc định giữ đúng các khóa như lần sửa 8.
+- Bật / tắt: `--gesture-space` (mặc định) / `--no-gesture-space` ⇒ app như lần sửa 8 (không kiểm hình tay, JSON và HUD như cũ). Thời
+  gian kiểm hình tay tính trong stage `segmenter`.
+- Giới hạn: giá trị giữ / re-arm là giá trị thiết kế của kế hoạch, ngưỡng 1.1 của kế hoạch, ngưỡng tách ngón 1.2 do coder đặt — chưa chỉnh
+  theo phiên webcam. Trên clip train (chỉ kiểm logic) bàn tay xòe thật ở đầu một số clip của người ký `khoi` được nhận; chữ giữ yên không
+  kích hoạt. Tỉ lệ nhận / bỏ sót trên webcam CHƯA được đo: cần phiên webcam của người dùng (checklist §5 của kế hoạch); mục này không chép
+  số đo nào.
