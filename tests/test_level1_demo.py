@@ -1630,6 +1630,138 @@ class TestRev7DesktopDoc(unittest.TestCase):
             self.assertIn(text, doc, text)
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 8 (Tầng 1, demo app only)
+class _SpyHandsM1:
+    """Wraps mp.solutions.hands.Hands: records the keywords of every graph and counts its close() (graphs stay real)."""
+
+    def __init__(self, real):
+        self.real = real
+        self.graphs = []   # [{"kwargs", "closes"}]
+
+    def __call__(self, **kwargs):
+        graph = self.real(**kwargs)
+        record = {"kwargs": dict(kwargs), "closes": 0}
+        orig_close = graph.close
+
+        def close():
+            record["closes"] += 1
+            return orig_close()
+        graph.close = close
+        self.graphs.append(record)
+        return graph
+
+
+def _spy_hands():
+    """(patcher, spy): mp.solutions.hands.Hands replaced by a recording wrapper of the real class while patched."""
+    from unittest import mock
+    import mediapipe as mp
+    spy = _SpyHandsM1(mp.solutions.hands.Hands)
+    return mock.patch.object(mp.solutions.hands, "Hands", side_effect=spy), spy
+
+
+class TestHandSessionKwargsM1(unittest.TestCase):
+    """AC-8b / AC-8c at the session level (plan 15 lần sửa 8 §2 M1): HandLandmarkSession() builds MediaPipe Hands with
+    exactly LEVEL1_HANDS_KWARGS (min_detection_confidence 0.5, the keywords of training); a keyword of
+    LEVEL1_HANDS_KWARGS given to the session replaces that value for its graphs only (reset() included); the module
+    constant and the extractor description of /ws/hand-landmarks are unchanged."""
+
+    def test_m1_default_is_level1_hands_kwargs(self):
+        from src.inference import hand_live
+        before = dict(hand_live.LEVEL1_HANDS_KWARGS)
+        patcher, spy = _spy_hands()
+        with patcher:
+            s = hand_live.HandLandmarkSession()
+            s.close()
+        self.assertEqual(len(spy.graphs), 1)
+        self.assertEqual(spy.graphs[0]["kwargs"], hand_live.LEVEL1_HANDS_KWARGS)
+        self.assertEqual(spy.graphs[0]["kwargs"]["min_detection_confidence"], 0.5)
+        self.assertEqual(s.kwargs, hand_live.LEVEL1_HANDS_KWARGS)
+        self.assertIsNot(s.kwargs, hand_live.LEVEL1_HANDS_KWARGS)   # a copy: the session never edits the constant
+        self.assertEqual(hand_live.LEVEL1_HANDS_KWARGS, before)
+
+    def test_m1_override_min_detection_confidence(self):
+        from src.inference import hand_live
+        before = dict(hand_live.LEVEL1_HANDS_KWARGS)
+        expected = {**before, "min_detection_confidence": 0.35}
+        patcher, spy = _spy_hands()
+        with patcher:
+            s = hand_live.HandLandmarkSession(min_detection_confidence=0.35)
+            self.assertEqual(s.kwargs, expected)
+            s.reset()                                   # a new tracker keeps the session's keywords
+            s.close()
+        self.assertEqual([g["kwargs"] for g in spy.graphs], [expected, expected])
+        self.assertEqual([g["closes"] for g in spy.graphs], [1, 1])
+        self.assertEqual(hand_live.LEVEL1_HANDS_KWARGS, before)
+        self.assertEqual(hand_live.LEVEL1_HANDS_KWARGS["min_detection_confidence"], 0.5)
+        self.assertEqual(hand_live.extractor_info()["min_detection_confidence"], 0.5)
+
+    def test_m1_none_means_default(self):
+        from src.inference import hand_live
+        patcher, spy = _spy_hands()
+        with patcher:
+            hand_live.HandLandmarkSession(min_detection_confidence=None).close()
+        self.assertEqual(spy.graphs[0]["kwargs"], hand_live.LEVEL1_HANDS_KWARGS)
+
+    def test_m1_unknown_keyword_rejected(self):
+        from src.inference import hand_live
+        patcher, spy = _spy_hands()
+        with patcher:
+            with self.assertRaises(TypeError):
+                hand_live.HandLandmarkSession(min_detect_confidence=0.35)
+        self.assertEqual(spy.graphs, [])            # no graph is built for a wrong keyword
+
+    def test_m1_subclass_without_arguments(self):
+        # the sessions of the tests (RecordingSession of AC-E, _HandAwaySession) call super().__init__() bare
+        from src.inference import hand_live
+        s = _HandAwaySession()
+        try:
+            self.assertEqual(s.kwargs, hand_live.LEVEL1_HANDS_KWARGS)
+        finally:
+            s.close()
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestHandSessionClipM1(unittest.TestCase):
+    """AC-8b on the D2 clip (a training clip: this checks the code path, not accuracy): a session given
+    min_detection_confidence=0.5 explicitly returns, frame by frame, exactly what HandLandmarkSession() returns
+    (landmarks bit-identical, same handedness and score); a session at 0.35 runs over the same frames."""
+
+    @staticmethod
+    def _run(session):
+        reader = app_mod.VideoFileReader(os.path.join(PROJECT_ROOT, CLIP))
+        out = []
+        try:
+            while True:
+                frame = reader.read()
+                if frame is None:
+                    break
+                out.append(session.process(frame))
+        finally:
+            session.close()
+            reader.release()
+        return out
+
+    def test_m1_explicit_default_is_bit_identical(self):
+        from src.inference.hand_live import HandLandmarkSession
+        ref = self._run(HandLandmarkSession())
+        same = self._run(HandLandmarkSession(min_detection_confidence=0.5))
+        low = self._run(HandLandmarkSession(min_detection_confidence=0.35))
+        self.assertGreater(len(ref), 0)
+        self.assertEqual(len(same), len(ref))
+        self.assertEqual(len(low), len(ref))
+        self.assertGreater(sum(o[0] is not None for o in ref), 0)
+        for (l_ref, h_ref, s_ref), (l_same, h_same, s_same) in zip(ref, same):
+            self.assertEqual(l_ref is None, l_same is None)
+            if l_ref is not None:
+                self.assertTrue(np.array_equal(l_ref, l_same))
+            self.assertEqual((h_ref, s_ref), (h_same, s_same))
+        for lms, hand, score in low:
+            if lms is not None:
+                self.assertEqual((lms.shape, lms.dtype), ((21, 3), np.float32))
+                self.assertIn(hand, ("Left", "Right"))
+                self.assertIsInstance(score, float)
+
+
 if __name__ == "__main__":
     unittest.main()
 

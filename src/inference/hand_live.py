@@ -7,6 +7,9 @@ mp.solutions.hands.Hands with the keywords below (mediapipe 0.10.14), a NEW trac
 HandLandmarkSession reproduces exactly that per recorded sign: reset() = new tracker (like a new clip),
 process(frame_bgr) = one frame of the clip. The equivalence with _extract_one is tested bit-for-bit
 (tests/test_hand_landmarks_ws.py AC4-a, tests/test_hand_live_equivalence.py AC5).
+A keyword of LEVEL1_HANDS_KWARGS given to HandLandmarkSession (plan 15 lần sửa 8 M1: the desktop demo's
+--min-detection-conf) replaces that value for the graphs of that session only; without one the session uses exactly
+LEVEL1_HANDS_KWARGS (the WebSocket path never passes one).
 
 Pure module: imports cv2 / mediapipe / numpy only (no torch, no fastapi).
 """
@@ -36,15 +39,24 @@ class HandLandmarkSession:
     """One MediaPipe Hands graph in video mode; reset() starts a new tracker (one per recorded sign).
     Not thread-safe: a session must be used by one caller at a time."""
 
-    def __init__(self):
+    def __init__(self, **overrides: Any):
+        """overrides: keywords of LEVEL1_HANDS_KWARGS (e.g. min_detection_confidence=0.35) replacing those values for
+        this session; a value None keeps the default. Another keyword -> TypeError (no graph is built)."""
+        unknown = sorted(set(overrides) - set(LEVEL1_HANDS_KWARGS))
+        if unknown:
+            raise TypeError(f"HandLandmarkSession: unknown MediaPipe Hands keyword(s) {unknown}; "
+                            f"allowed: {sorted(LEVEL1_HANDS_KWARGS)}")
+        # keywords of every graph of this session (a copy: LEVEL1_HANDS_KWARGS itself is never changed)
+        self.kwargs: Dict[str, Any] = {**LEVEL1_HANDS_KWARGS,
+                                       **{k: v for k, v in overrides.items() if v is not None}}
         self._hands = None
         self.reset()
 
     def reset(self) -> None:
-        """Closes the current graph (if any) and creates a new one (fresh tracker)."""
+        """Closes the current graph (if any) and creates a new one (fresh tracker) with the session's keywords."""
         self.close()
         # attribute looked up at call time (tests spy on mp.solutions.hands.Hands)
-        self._hands = mp.solutions.hands.Hands(**LEVEL1_HANDS_KWARGS)
+        self._hands = mp.solutions.hands.Hands(**self.kwargs)
 
     def process(self, frame_bgr: np.ndarray) -> Tuple[Optional[np.ndarray], str, Optional[float]]:
         """(landmarks float32[21, 3] | None, handedness label ("Left"/"Right", "" without hand), score | None).
