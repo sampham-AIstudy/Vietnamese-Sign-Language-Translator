@@ -863,7 +863,7 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   Lựa chọn của coder (plan không nói rõ): `window_trace` là dict chứa `entries` để `truncated` nằm cùng chỗ; `motion_pose` + cờ ⇒ `entries` rỗng.
 - Impact (text search, không có GitNexus): symbol sửa `Level1App.__init__`, `Level1App._drain_timeline`, `Level1App.report`, `build_parser`;
   gọi từ `level1_demo.py` (nội bộ), `tests/test_level1_demo.py`, `tests/test_level1_equivalence.py` (`SpyApp`, `build_parser`) — chạy lại cả hai: 
-  `Ran 51 — OK` (`_work/_plan15/W1_green_demo_eq.log`). detect-changes (`git diff --stat`): `level1_demo.py` 38 + / 1 −, test 150 + / 0 −.
+  `Ran 51 — OK` (`_work/_plan15/W1_green_demo_eq.log`). detect-changes (`git diff --numstat`): `level1_demo.py` 37 + / 1 −, test 150 + / 0 −.
 - Test viết TRƯỚC `TestTraceWindowsW1` (7 test, AC-6b/AC-6c): tắt cờ ⇒ tập khóa (2 tầng) + `tokens/text/labels/segments/counts` bằng hệt
   `level1_demo.py` tại `4f913a2` (nạp bằng `git show`) ở CẢ HAI chế độ; bật cờ (CLI, trong tiến trình, `--pace realtime`) ⇒ số mục ==
   `counts.window_results`, đủ 10 khóa đúng thứ tự, `emitted` khớp `labels` (`seq`, `ts_ms`, nhãn, `run_ms` = `ts_ms − run_since_ms`), token không
@@ -908,9 +908,24 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   Giới hạn đã biết: ký hiệu cũ giữ lâu hơn `--hold-ms` bị tính là M2 (script in dòng lưu ý). Ví dụ: trace một clip train dấu nặng
   (`tone_j_khoi_A_001`, không có chuyển ký hiệu) cho M2 100% chỉ vì clip dài hơn 2 s sau đầu chuỗi.
 - `docs/level1_desktop.md` thêm mục 6 (dòng HUD, `--trace-windows`, lệnh U3, lệnh đọc trace; không có số đo — `TestSummaryC1` vẫn OK).
-- Impact: chỉ thêm file mới (script, test) và một mục tài liệu; không sửa symbol có sẵn. detect-changes (`git diff --stat`): xem commit.
+- Impact: chỉ thêm file mới (script, test) và một mục tài liệu; không sửa symbol có sẵn. detect-changes (`git diff --numstat`): script 250 +, test 211 +, `docs/level1_desktop.md` 15 +.
 - Test viết TRƯỚC `tests/test_level1_trace_report.py` (9 test, AC-6e): trace tổng hợp dựng như app (kết quả cửa sổ tổng hợp → `Level1LabelDecoder`
   thật → `Level1App._window_entry` của app) cho từng M1/M2/M3/M4 ⇒ đúng mã chính và đúng số cửa sổ từng lớp; M4 không cần `--expected`
   (lấy nhãn phát), cặp khác ⇒ không M4; M0; reset (rút tay) + onset; căn `--expected` khi phát lại sau reset; `--hold-ms`; chặn thời gian;
   cờ `truncated`, thiếu `window_trace` ⇒ mã thoát 2; CLI chạy 2 lần ra cùng byte (stdout và `--out-json`). ĐỎ: `ImportError` (script chưa có,
   `_work/_plan15/W3_red.log`); XANH: `Ran 9 — OK` (`_work/_plan15/W3_green.log`).
+
+### Kết thúc vòng 1 (lần sửa 6) — hồi quy AC-6a/AC-6f
+- Commit: `c3be3b1` W0, `c6df559` W1, `b027ac8` W2, `e848d57` W3 (+ commit tiến độ này).
+- AC-6a: `git diff 4f913a2..HEAD --numstat -- tests/` → `test_level1_demo.py 285/0`, `test_level1_gitattributes.py 105/0`,
+  `test_level1_trace_report.py 211/0` (cột xóa = 0); `git diff 4f913a2..HEAD -- configs src` rỗng; `backend/main.py`, `realtime_demo.py`,
+  `README.md`, `src/data/alphabet_preprocessing.py` không đổi. File đổi đều trong §6 (+ `docs/plans/15-lan-sua-6.md` của planner).
+- Nền trước khi sửa (tại `c3be3b1`): 12 module Level 1 + gitattributes `Ran 231 — OK (skipped=1)` (`_work/_plan15/rev6_baseline_l1.log`).
+- AC-6f (cuối, cùng code với HEAD): 12 module Level 1 (gồm AC-E1 `tests.test_level1_equivalence`) `Ran 239 — OK (skipped=1)`, skip duy nhất
+  `test_u1_summary` (thiếu file U1, `_work/_plan15/rev6_final_l1.log`); 2 module mới `tests.test_level1_gitattributes tests.test_level1_trace_report`
+  `Ran 13 — OK` (`_work/_plan15/rev6_final_new.log`); guard `known=9 allowed=36`, `Ran 28 — OK` (`_work/_plan15/rev6_guard.log`); AC1-ngắn phần
+  còn lại 11 module `Ran 167 — OK`, 0 skip (`_work/_plan15/rev6_ac1.log`); sha256 checkpoint `a6311820…5b708a2` không đổi.
+  AC1-đủ (31 module) không chạy trên cloud (thiếu dữ liệu/checkpoint ngoài Level 1) — còn cho reviewer.
+- Không có điểm dừng nào của §3 xảy ra. Việc tiếp theo: người dùng chạy U3 (§4) với `--trace-windows`, reviewer đọc 2 JSON bằng
+  `scripts/level1_trace_report.py` và tự tính lại, rồi chọn hướng vòng 2 theo §5. Cần reviewer/planner xác nhận các định nghĩa M1–M4 của W3
+  (đặc biệt `hold` theo `--hold-ms` và M4 = xác suất chia giữa cặp cũ/mới khi dưới `cls_conf`).
