@@ -874,3 +874,22 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   demo; `_work/_plan15/W1_measure_summary.py` đọc p50 `frame_total` từ JSON (và kiểm token/nhãn bật = tắt): trung vị p50 mọi lần chạy
   tắt 16.31 / bật 16.16 (tỉ lệ 0.9909), trung vị tỉ lệ theo clip 0.9953 ⇒ KHÔNG tăng > 5%, không dừng. Theo clip tỉ lệ 0.970–1.083
   (`o_vy_A_001` 1.083, `b_hau_A_001` 0.970): nhiễu đo một clip trên cloud cỡ ±8%, ghi để reviewer đo lại trên Windows.
+
+### W2 — HUD chế độ `classifier`
+- Mã (`level1_demo.py`): `Level1App.last_window` (mục cửa sổ mới nhất, tính bằng `_window_entry` ở MỌI cửa sổ, kể cả khi tắt trace — chỉ đọc
+  bộ giải mã); `_decoder_line()` = `[classifier] cửa sổ: <top1> <conf> | giữ <run_ms>/<cls_stable_ms> | cuối: <last>` (`—` khi chưa có cửa sổ /
+  chưa phát; `giữ 0` khi cửa sổ dưới `cls_conf`; khi tạm dừng thêm ` | tạm dừng (p)` — lựa chọn của coder để không mất báo tạm dừng mà
+  dòng "Trạng thái" cũ có). `_hud_lines`: ở `classifier` dòng này thay dòng "Trạng thái" (cùng vị trí, cùng số dòng panel) và `hold_progress`
+  trả 0 (không vẽ thanh tiến độ bộ tách); `motion_pose` đi đúng nhánh cũ. Nhãn chế độ: `[classifier]` là nhãn chế độ ở `classifier`; KHÔNG
+  thêm nhãn cho `motion_pose` vì mọi chữ thêm vào đều đổi ảnh HUD, trái AC-6d (ảnh `motion_pose` bằng hệt) — số dòng panel không đổi nên
+  không phải điểm dừng.
+- Impact (text search): sửa `Level1App._hud_lines` (gọi từ `_process`; test `TestNextKeyK3.test_k3_hud_help_line_lists_n`), `_drain_timeline`,
+  `_trace_window` (chỉ nội bộ). Chạy lại `tests.test_level1_demo`: `Ran 47 — OK` (`_work/_plan15/W2_green_demo.log`).
+  detect-changes (`git diff --stat`): `level1_demo.py` 23 + / 6 −, test 135 + / 0 −.
+- Test viết TRƯỚC `TestHudClassifierW2` (5 test, AC-6d): dòng giải mã sau một lần chạy thật (khớp mục trace cuối và nhãn phát cuối); dòng
+  theo từng cửa sổ tổng hợp đẩy qua `_drain_timeline` (264 ms chưa phát → 330 ms phát `b` → `dấu hỏi` 0.60 dưới ngưỡng ⇒ `giữ 0`); không có
+  thanh xanh (vá `segmenter.status` hold 0.7 ⇒ classifier 0.0, motion_pose vẫn 0.7), cùng số dòng panel với motion_pose; tạm dừng; ảnh HUD
+  `motion_pose` (4 trạng thái: mới, sau chạy, tạm dừng, đang giữ) bằng hệt `Hud`/`_hud_lines` của `4f913a2`. ĐỎ: `Ran 5 — FAILED (failures=4)`
+  (test ảnh motion_pose xanh từ đầu, đúng mong đợi; `_work/_plan15/W2_red.log`); XANH: W1+W2 `Ran 12 — OK` (`_work/_plan15/W2_green.log`).
+- Chi phí: dòng giải mã đổi theo từng cửa sổ ⇒ panel PIL dựng lại mỗi khung. Đo vi mô `Hud.compose` 640×480 (không phải JSON của app):
+  p50 0.04 ms khi chữ không đổi, 2.91 ms khi chữ đổi mỗi khung (`_work/_plan15/W2_hud_bench.py`). Ảnh kiểm mắt: `_work/_plan15/W2_hud_classifier.png`.

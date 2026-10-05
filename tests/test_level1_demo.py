@@ -1084,6 +1084,141 @@ class TestTraceWindowsW1(unittest.TestCase):
                 self.assertTrue(v is None or isinstance(v, (str, int, float)), e)
 
 
+
+# ------------------------------------------------------------------ plan 15 lần sửa 6 W2 / §7: AC-6d (HUD in rearm_mode classifier)
+HUD_DECODER_RE = r"^\[classifier\] cửa sổ: (.+) (\d\.\d\d|—) \| giữ (\d+)/(\d+) \| cuối: (.+)$"
+
+
+def _ok_result(label, conf, second="y", conf2=0.01):
+    return {"status": "ok", "prediction": label, "confidence": conf,
+            "candidates": [{"class": label, "confidence": conf}, {"class": second, "confidence": conf2}]}
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestHudClassifierW2(unittest.TestCase):
+    """AC-6d: rearm_mode classifier shows the decoder line `[classifier] cửa sổ: <top1> <conf> | giữ <ms>/<cls_stable_ms> |
+    cuối: <last>` in place of the "Trạng thái" line, and no hold bar of the old segmenter; rearm_mode motion_pose draws a
+    HUD image identical to the one of 4f913a2 (same synthetic state, same view)."""
+
+    @classmethod
+    def setUpClass(cls):
+        import re
+        cls.re = re.compile(HUD_DECODER_RE)
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            from src.inference.level1_core import load_level1_config
+            values = load_level1_config(os.path.join(PROJECT_ROOT, DEMO_CONFIG))["values"]
+            cls.font, cls.size, cls.stable = app_mod.find_font(None, values["font_paths"]), values["hud_font_size"], \
+                values["cls_stable_ms"]
+            cls.ref_mod = app_module_at(BEFORE_REV6_COMMIT)
+            cls.run_app = app_mod.Level1App(args_for("--source", CLIP, "--headless", "--config", DEMO_CONFIG,
+                                                     "--trace-windows"))
+            cls.run_report = cls.run_app.run()
+            cls.mp_new = app_mod.Level1App(args_for("--source", CLIP, "--headless"))
+            cls.mp_new_fresh = app_mod.Level1App(args_for("--source", CLIP, "--headless"))
+            cls.mp_new.run()
+            ref_args = cls.ref_mod.build_parser().parse_args(["--source", CLIP, "--headless"])
+            cls.mp_ref = cls.ref_mod.Level1App(ref_args)
+            cls.mp_ref_fresh = cls.ref_mod.Level1App(ref_args)
+            cls.mp_ref.run()
+        finally:
+            os.chdir(cwd)
+
+    def _fresh_classifier_app(self):
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            return app_mod.Level1App(args_for("--source", CLIP, "--headless", "--config", DEMO_CONFIG))
+        finally:
+            os.chdir(cwd)
+
+    def _decoder_line(self, small):
+        self.assertFalse(any(line.startswith("Trạng thái") for line in small), small)
+        self.assertTrue(small[1].startswith("[classifier] "), small)   # in place of the "Trạng thái" line
+        self.assertEqual(sum(1 for line in small if line.startswith("[classifier]")), 1)
+        m = self.re.match(small[1])
+        self.assertIsNotNone(m, small[1])
+        return m.groups()
+
+    def test_6d_line_after_real_run(self):
+        app = self.run_app
+        _view, small, progress, _stats = app._hud_lines()
+        self.assertEqual(progress, 0.0)
+        top1, conf, held, stable, last = self._decoder_line(small)
+        w = self.run_report["window_trace"]["entries"][-1]
+        self.assertEqual((top1, conf), (w["top1"], f"{w['conf']:.2f}"))
+        self.assertEqual(int(held), round(w["run_ms"]) if w["run_label"] is not None else 0)
+        self.assertEqual(int(stable), self.stable)
+        self.assertEqual(last, app.decoder.last_label or "—")
+        self.assertEqual(last, self.run_report["labels"][-1]["prediction"])
+
+    def test_6d_line_follows_decoder_on_synthetic_windows(self):
+        app = self._fresh_classifier_app()
+        self.assertEqual(app._hud_lines()[1][1], f"[classifier] cửa sổ: — — | giữ 0/{self.stable} | cuối: —")
+        lines = []
+        for i, (label, conf) in enumerate([("b", 0.95)] * 12 + [("dấu hỏi", 0.6)] + [("c", 0.97)] * 3):
+            app.timeline.append(["frame", 1000.0 + 33.0 * i, True, True, _ok_result(label, conf)])
+            app._drain_timeline()
+            lines.append(self._decoder_line(app._hud_lines()[1]))
+        self.assertEqual(lines[0], ("b", "0.95", "0", str(self.stable), "—"))
+        self.assertEqual(lines[8], ("b", "0.95", "264", str(self.stable), "—"))      # 8 x 33 ms < 300: not yet
+        self.assertEqual(lines[10], ("b", "0.95", "330", str(self.stable), "b"))     # emitted at >= 300 ms
+        self.assertEqual(lines[12], ("dấu hỏi", "0.60", "0", str(self.stable), "b"))  # below cls_conf: no run
+        self.assertEqual(lines[15], ("c", "0.97", "66", str(self.stable), "b"))
+        self.assertEqual([lab["prediction"] for lab in app.labels], ["b"])
+
+    def test_6d_no_hold_bar_in_classifier_mode(self):
+        from unittest import mock
+        app = self._fresh_classifier_app()
+        with mock.patch.object(app.segmenter, "status", return_value={"state": "holding", "hold_progress": 0.7}):
+            view_c, small_c, progress_c, stats_c = app._hud_lines()
+            mp_view, mp_small, mp_progress, _ = self.mp_new_fresh._hud_lines()
+        self.assertEqual(progress_c, 0.0)
+        self.assertEqual(len(small_c), len(mp_small))                  # same number of panel lines as motion_pose
+        hud = app_mod.Hud(self.font, self.size)
+        view = np.full((60, 640, 3), 90, dtype=np.uint8)
+        out = hud.compose(view.copy(), view_c, small_c, progress_c, stats_c)
+        green = np.all(out[60:63] == np.array([0, 200, 0], dtype=np.uint8), axis=-1)
+        self.assertFalse(green.any())
+        with mock.patch.object(self.mp_new_fresh.segmenter, "status",
+                               return_value={"state": "holding", "hold_progress": 0.7}):
+            self.assertEqual(self.mp_new_fresh._hud_lines()[2], 0.7)      # motion_pose keeps its bar
+
+    def test_6d_paused_marked(self):
+        app = self._fresh_classifier_app()
+        app.paused = True
+        line = app._hud_lines()[1][1]
+        self.assertEqual(line, f"[classifier] cửa sổ: — — | giữ 0/{self.stable} | cuối: — | tạm dừng (p)")
+
+    def test_6d_motion_pose_hud_image_identical_to_before(self):
+        from unittest import mock
+        view = np.full((120, 640, 3), 90, dtype=np.uint8)
+        hold = {"state": "holding", "hold_progress": 0.6}
+        states = [("fresh", self.mp_new_fresh, self.mp_ref_fresh, None, False),
+                  ("after run", self.mp_new, self.mp_ref, None, False),
+                  ("paused", self.mp_new, self.mp_ref, None, True),
+                  ("holding", self.mp_new_fresh, self.mp_ref_fresh, hold, False)]
+        for name, new, ref, status, paused in states:
+            new.paused = ref.paused = paused
+            try:
+                with mock.patch.object(new.segmenter, "status", return_value=status) if status else _nullctx(), \
+                        mock.patch.object(ref.segmenter, "status", return_value=status) if status else _nullctx():
+                    nv, ns, np_, stats = new._hud_lines()
+                    rv, rs, rp, _ = ref._hud_lines()
+            finally:
+                new.paused = ref.paused = False
+            self.assertEqual((nv, ns, np_), (rv, rs, rp), name)
+            img_new = app_mod.Hud(self.font, self.size).compose(view.copy(), nv, ns, np_, stats)
+            img_ref = self.ref_mod.Hud(self.font, self.size).compose(view.copy(), rv, rs, rp, stats)
+            self.assertTrue(np.array_equal(img_new, img_ref), name)
+
+
+def _nullctx():
+    import contextlib
+    return contextlib.nullcontext()
+
+
 if __name__ == "__main__":
     unittest.main()
 

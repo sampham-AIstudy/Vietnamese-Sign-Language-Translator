@@ -635,6 +635,7 @@ class Level1App:
         self.trace_windows = bool(getattr(args, "trace_windows", False))
         self.window_trace: List[Dict[str, Any]] = []
         self.window_trace_n = 0
+        self.last_window: Optional[Dict[str, Any]] = None  # newest window entry (HUD decoder line, lần sửa 6 W2)
         self.segments: Dict[int, Dict[str, Any]] = {}
         self.events: List[Dict[str, Any]] = []
         self.t_emit_perf: Dict[int, float] = {}
@@ -755,8 +756,10 @@ class Level1App:
                 self.decoder.reset()
             else:
                 emit = self.decoder.push(ts_ms, has_hand, payload)
-                if payload is not None and self.trace_windows:
-                    self._trace_window(ts_ms, payload, emit)
+                if payload is not None:
+                    self.last_window = self._window_entry(ts_ms, payload, emit)
+                    if self.trace_windows:
+                        self._trace_window(self.last_window)
                 if emit is not None:
                     self._apply_label(emit)
 
@@ -775,10 +778,10 @@ class Level1App:
                 "run_ms": float(ts_ms) - run_since if run_since is not None else 0.0,
                 "last": self.decoder.last_label, "emitted": emit.seq if emit is not None else None}
 
-    def _trace_window(self, ts_ms: float, result: Dict[str, Any], emit) -> None:
+    def _trace_window(self, entry: Dict[str, Any]) -> None:
         self.window_trace_n += 1
         if len(self.window_trace) < TRACE_MAX_ENTRIES:
-            self.window_trace.append(self._window_entry(ts_ms, result, emit))
+            self.window_trace.append(entry)
 
     def _apply_label(self, emit) -> None:
         d = self.speller.on_label(emit.seq, emit)
@@ -823,6 +826,18 @@ class Level1App:
         self._log("key", key=KEY_NEXT, source="key", t_ms=self.last_ts)
 
     # -------------------------------------------------------------- one frame
+    def _decoder_line(self) -> str:
+        """rearm_mode classifier (plan 15 lần sửa 6 §3.W2): newest window (top-1 and its confidence, whatever cls_conf),
+        how long its label has held against cls_stable_ms (0 when the window is below cls_conf), last emitted label."""
+        w = self.last_window
+        top1 = w["top1"] if w is not None and w["top1"] is not None else "—"
+        conf = f"{w['conf']:.2f}" if w is not None and w["conf"] is not None else "—"
+        held = w["run_ms"] if w is not None and w["run_label"] is not None else 0.0
+        last = self.decoder.last_label if self.decoder.last_label is not None else "—"
+        line = (f"[classifier] cửa sổ: {top1} {conf} | giữ {held:.0f}/{self.values['cls_stable_ms']:.0f} | "
+                f"cuối: {last}")
+        return line + " | tạm dừng (p)" if self.paused else line
+
     def _hud_lines(self):
         tb_view = self.speller.view
         st = self.segmenter.status()
@@ -835,7 +850,8 @@ class Level1App:
         else:
             mark = "nhận" if r.get("accepted") else "chưa nhận (a: nhận)"
             last = f"Ký hiệu #{r['seq']}: {r['prediction']}  {r['confidence']:.2f}  {mark}"
-        small = [last, "Trạng thái: " + state]
+        # classifier: the decoder line replaces the segmenter state (the segmenter does not decide the letters there)
+        small = [last, self._decoder_line() if self.classifier_mode else "Trạng thái: " + state]
         tc_list = tb_view.get("tone_changes", [])
         if tc_list:
             last_tc = tc_list[-1]
@@ -847,7 +863,8 @@ class Level1App:
         small.append("1-5 dấu | Backspace xóa | Space cách | a nhận | r lặp chữ | n chữ kế | c xóa hết | p dừng | q thoát")
         dropped = self.slot.dropped if self.slot is not None else 0
         stats = hud_stats_lines(self.times, self.process_starts, self.values["hud_rolling_frames"], dropped)
-        return tb_view, small, st["hold_progress"], stats
+        progress = 0.0 if self.classifier_mode else st["hold_progress"]  # no hold bar of the segmenter in classifier
+        return tb_view, small, progress, stats
 
     def _process(self, session, frame: np.ndarray, t_cap: float, ts_ms: float) -> None:
         t0 = time.perf_counter()
