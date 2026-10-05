@@ -91,6 +91,9 @@ KEY_NEXT = "next"  # app action (segmenter / decoder re-arm), not a Level1Spelle
 KEY_QUIT = (ord("q"), 27)
 KEY_PAUSE = ord("p")
 STATE_LABELS = {"no_hand": "không thấy tay", "moving": "đang chuyển động", "holding": "đang giữ yên"}
+# --trace-windows (plan 15 lần sửa 6 §3.W1): one entry per classified window, in the order the decoder applies them
+TRACE_KEYS = ("ts_ms", "status", "top1", "conf", "top2", "conf2", "run_label", "run_ms", "last", "emitted")
+TRACE_MAX_ENTRIES = 20000  # later windows are counted (n_windows) but not kept; truncated = true
 
 
 class SourceError(Exception):
@@ -629,6 +632,9 @@ class Level1App:
         self.labels: List[Dict[str, Any]] = []
         self.window_counts = {"window_jobs": 0, "window_results": 0, "window_dropped": 0, "label_emits": 0,
                               "label_replace": 0, "segments_not_classified": 0}
+        self.trace_windows = bool(getattr(args, "trace_windows", False))
+        self.window_trace: List[Dict[str, Any]] = []
+        self.window_trace_n = 0
         self.segments: Dict[int, Dict[str, Any]] = {}
         self.events: List[Dict[str, Any]] = []
         self.t_emit_perf: Dict[int, float] = {}
@@ -749,8 +755,30 @@ class Level1App:
                 self.decoder.reset()
             else:
                 emit = self.decoder.push(ts_ms, has_hand, payload)
+                if payload is not None and self.trace_windows:
+                    self._trace_window(ts_ms, payload, emit)
                 if emit is not None:
                     self._apply_label(emit)
+
+    def _window_entry(self, ts_ms: float, result: Dict[str, Any], emit) -> Dict[str, Any]:
+        """Window result + decoder state right after the decoder applied it (plan 15 lần sửa 6 §3.W1): top1/conf and
+        top2/conf2 of the window (whatever cls_conf), run_label / run_ms = the label run after this window (run_ms =
+        ts - start of the run; the run restarts at a window below cls_conf or with another label), last = last emitted
+        label after this window, emitted = seq of the label emitted at this window (None otherwise). Reads the decoder,
+        never changes it."""
+        cands = result.get("candidates") or []
+        second = cands[1] if len(cands) > 1 else {}
+        run_since = self.decoder._run_since
+        return {"ts_ms": float(ts_ms), "status": result.get("status"), "top1": result.get("prediction"),
+                "conf": result.get("confidence"), "top2": second.get("class"), "conf2": second.get("confidence"),
+                "run_label": self.decoder._run_label,
+                "run_ms": float(ts_ms) - run_since if run_since is not None else 0.0,
+                "last": self.decoder.last_label, "emitted": emit.seq if emit is not None else None}
+
+    def _trace_window(self, ts_ms: float, result: Dict[str, Any], emit) -> None:
+        self.window_trace_n += 1
+        if len(self.window_trace) < TRACE_MAX_ENTRIES:
+            self.window_trace.append(self._window_entry(ts_ms, result, emit))
 
     def _apply_label(self, emit) -> None:
         d = self.speller.on_label(emit.seq, emit)
@@ -980,7 +1008,7 @@ class Level1App:
         counts["results_not_displayed"] = len(self.pending_display)
         if self.classifier_mode:
             counts.update(self.window_counts)
-        return {
+        report = {
             "generated_by": generated_by(self.argv),
             "rearm_mode": self.rearm_mode,
             "config": {"path": report_path(self.config_path), "sha256": self.cfg["sha256"],
@@ -1001,6 +1029,11 @@ class Level1App:
             "expected": expected,
             "note": NOTE,
         }
+        if self.trace_windows:  # without the flag the report keeps exactly its keys of before (lần sửa 6 AC-6b)
+            report["window_trace"] = {"max_entries": TRACE_MAX_ENTRIES, "n_windows": self.window_trace_n,
+                                      "truncated": self.window_trace_n > len(self.window_trace),
+                                      "fields": list(TRACE_KEYS), "entries": list(self.window_trace)}
+        return report
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -1016,6 +1049,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--expected", default=None, help="text the signer intends to spell (written to the JSON)")
     p.add_argument("--display-mirror", action="store_true", help="show the image mirrored (display only)")
     p.add_argument("--font", default=None, help="TrueType font with Vietnamese glyphs for the HUD")
+    p.add_argument("--trace-windows", action="store_true",
+                   help="rearm_mode classifier: write every window result and the decoder state (window_trace) to "
+                        f"the JSON, at most {TRACE_MAX_ENTRIES} entries; no landmark or frame (default off)")
     return p
 
 

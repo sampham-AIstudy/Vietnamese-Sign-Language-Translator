@@ -934,6 +934,156 @@ class TestDemoConfigW4(unittest.TestCase):
         self.assertEqual(r["counts"]["label_emits"], len(r["labels"]))
 
 
+
+# ------------------------------------------------------------------ plan 15 lần sửa 6 W1 / §7: AC-6b, AC-6c (--trace-windows)
+BEFORE_REV6_COMMIT = "4f913a2"  # level1_demo.py before lần sửa 6 (AC-6a base)
+TRACE_KEYS = ("ts_ms", "status", "top1", "conf", "top2", "conf2", "run_label", "run_ms", "last", "emitted")
+
+
+def app_module_at(commit):
+    """level1_demo.py at `commit` loaded from `git show` into a temporary in-memory module (nothing written)."""
+    import types
+    r = subprocess.run(["git", "show", f"{commit}:level1_demo.py"], cwd=PROJECT_ROOT, capture_output=True,
+                       text=True, encoding="utf-8")
+    if r.returncode != 0:
+        raise AssertionError(f"git show {commit}:level1_demo.py failed: {r.stderr.strip()}")
+    name = f"_level1_demo_ref_{commit}"
+    mod = types.ModuleType(name)
+    mod.__file__ = os.path.join(PROJECT_ROOT, "level1_demo.py")
+    sys.modules[name] = mod
+    try:
+        exec(compile(r.stdout, f"<git show {commit}:level1_demo.py>", "exec"), mod.__dict__)
+    finally:
+        sys.modules.pop(name, None)
+    return mod
+
+
+def _key_tree(obj, depth=2):
+    """Key set of a JSON report down to `depth` dict levels (the shape compared by AC-6b, not the values)."""
+    if not isinstance(obj, dict) or depth == 0:
+        return None
+    return {k: _key_tree(v, depth - 1) for k, v in obj.items()}
+
+
+def _without_rates(counts):
+    return {k: v for k, v in counts.items() if k not in ("processing_fps", "capture_fps")}
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestTraceWindowsW1(unittest.TestCase):
+    """AC-6b (trace off = the JSON of 4f913a2: same keys, same tokens/labels/segments in both re-arm modes) and AC-6c
+    (trace on: one entry per window result with the §3.W1 keys, `emitted` = the labels, tokens unchanged; size limit).
+    The D2 clip is a training clip: this checks the code path, not accuracy."""
+
+    @classmethod
+    def setUpClass(cls):
+        os.makedirs(TMP_PARENT, exist_ok=True)
+        cls.tmp = tempfile.mkdtemp(prefix="vslt_p15_w1_", dir=TMP_PARENT)
+        cls.out = os.path.join(cls.tmp, "trace.json")
+        cls.proc = subprocess.run([PY, "level1_demo.py", "--source", CLIP, "--headless", "--config", DEMO_CONFIG,
+                                   "--trace-windows", "--out-json", cls.out], cwd=PROJECT_ROOT, capture_output=True,
+                                  text=True, env=ENV, timeout=900)
+        cls.cli = None
+        if cls.proc.returncode == 0:
+            with open(cls.out, encoding="utf-8") as f:
+                cls.cli = json.load(f)
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            ref = app_module_at(BEFORE_REV6_COMMIT)
+            cls.runs = {}
+            for mode, extra in (("classifier", ["--config", DEMO_CONFIG]), ("motion_pose", [])):
+                argv = ["--source", CLIP, "--headless", *extra]
+                cls.runs[mode] = {
+                    "ref": ref.Level1App(ref.build_parser().parse_args(argv)).run(),
+                    "off": app_mod.Level1App(args_for(*argv)).run(),
+                    "on": app_mod.Level1App(args_for(*argv, "--trace-windows")).run(),
+                }
+            from unittest import mock
+            with mock.patch.object(app_mod, "TRACE_MAX_ENTRIES", 5):
+                cls.small = app_mod.Level1App(args_for("--source", CLIP, "--headless", "--config", DEMO_CONFIG,
+                                                       "--trace-windows")).run()
+            cls.paced = app_mod.Level1App(args_for("--source", CLIP, "--headless", "--pace", "realtime", "--config",
+                                                   DEMO_CONFIG, "--trace-windows")).run()
+        finally:
+            os.chdir(cwd)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def test_w1_help_lists_flag_default_off(self):
+        self.assertIn("--trace-windows", app_mod.build_parser().format_help())
+        self.assertFalse(args_for("--source", CLIP).trace_windows)
+        self.assertTrue(args_for("--source", CLIP, "--trace-windows").trace_windows)
+
+    def test_6b_trace_off_same_keys_and_tokens_as_before(self):
+        for mode, r in self.runs.items():
+            off, ref = r["off"], r["ref"]
+            self.assertEqual(off["rearm_mode"], mode)
+            self.assertNotIn("window_trace", off)
+            self.assertEqual(list(off), list(ref), mode)                 # same top-level keys, same order
+            self.assertEqual(_key_tree(off), _key_tree(ref), mode)       # and the same keys one level down
+            for k in ("tokens", "text", "labels", "segments"):
+                self.assertEqual(off[k], ref[k], (mode, k))
+            self.assertEqual(_without_rates(off["counts"]), _without_rates(ref["counts"]), mode)
+
+    def test_6c_trace_on_one_entry_per_window_result(self):
+        self.assertEqual(self.proc.returncode, 0, self.proc.stderr[-2000:])
+        for r in (self.cli, self.runs["classifier"]["on"], self.paced):
+            wt = r["window_trace"]
+            self.assertEqual(set(wt), {"max_entries", "n_windows", "truncated", "fields", "entries"})
+            self.assertEqual(wt["max_entries"], 20000)
+            self.assertFalse(wt["truncated"])
+            self.assertEqual(tuple(wt["fields"]), TRACE_KEYS)
+            self.assertGreater(r["counts"]["window_results"], 0)
+            self.assertEqual(len(wt["entries"]), r["counts"]["window_results"])
+            self.assertEqual(wt["n_windows"], r["counts"]["window_results"])
+            ts = [e["ts_ms"] for e in wt["entries"]]
+            self.assertEqual(ts, sorted(set(ts)))                        # timestamp order, one entry per window
+            for e in wt["entries"]:
+                self.assertEqual(tuple(e), TRACE_KEYS)
+                self.assertEqual(e["status"], "ok")
+                self.assertGreaterEqual(e["conf"], e["conf2"])
+                self.assertGreaterEqual(e["run_ms"], 0.0)
+
+    def test_6c_emitted_matches_labels(self):
+        for r in (self.cli, self.runs["classifier"]["on"], self.paced):
+            emitted = [e for e in r["window_trace"]["entries"] if e["emitted"] is not None]
+            self.assertGreaterEqual(len(emitted), 1)
+            self.assertEqual([e["emitted"] for e in emitted], [lab["seq"] for lab in r["labels"]])
+            for e, lab in zip(emitted, r["labels"]):
+                self.assertEqual((e["ts_ms"], e["top1"], e["conf"]),
+                                 (lab["ts_ms"], lab["prediction"], lab["confidence"]))
+                self.assertEqual(e["last"], lab["prediction"])
+                self.assertEqual(e["run_label"], lab["prediction"])
+                self.assertEqual(e["run_ms"], lab["ts_ms"] - lab["run_since_ms"])
+                self.assertGreaterEqual(e["run_ms"], 300.0)              # cls_stable_ms of the demo config
+
+    def test_6c_tokens_unchanged_by_trace(self):
+        for mode, r in self.runs.items():
+            for k in ("tokens", "text", "labels", "segments"):
+                self.assertEqual(r["on"][k], r["off"][k], (mode, k))
+            self.assertEqual(_without_rates(r["on"]["counts"]), _without_rates(r["off"]["counts"]), mode)
+        self.assertEqual(self.cli["tokens"], self.runs["classifier"]["off"]["tokens"])
+        mp = self.runs["motion_pose"]["on"]["window_trace"]            # motion_pose classifies no window
+        self.assertEqual((mp["entries"], mp["n_windows"], mp["truncated"]), ([], 0, False))
+
+    def test_6c_size_limit_truncated(self):
+        wt, full = self.small["window_trace"], self.runs["classifier"]["on"]["window_trace"]
+        self.assertGreater(full["n_windows"], 5)
+        self.assertEqual(wt["max_entries"], 5)
+        self.assertTrue(wt["truncated"])
+        self.assertEqual(wt["n_windows"], self.small["counts"]["window_results"])
+        self.assertEqual(wt["entries"], full["entries"][:5])             # the first entries are kept
+        self.assertEqual(self.small["tokens"], self.runs["classifier"]["off"]["tokens"])
+
+    def test_6c_no_landmarks_or_frames_in_trace(self):
+        for e in self.runs["classifier"]["on"]["window_trace"]["entries"]:
+            for v in e.values():
+                self.assertTrue(v is None or isinstance(v, (str, int, float)), e)
+
+
 if __name__ == "__main__":
     unittest.main()
 

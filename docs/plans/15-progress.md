@@ -852,3 +852,25 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   mô phỏng Windows: checkout `HEAD` với `core.autocrlf=true` vào work tree + index TẠM (không đụng index/work tree của repo) ⇒ 5 file chỉ có LF,
   bằng hệt blob. ĐỎ trước khi sửa: `Ran 4 — FAILED (failures=4)` — mô phỏng tái hiện đúng E9 (`configs/level1_realtime.json` bị ghi CRLF)
   (`_work/_plan15/W0_red.log`); XANH: `Ran 4 — OK` (`_work/_plan15/W0_green.log`).
+
+### W1 — cờ `--trace-windows` (mặc định TẮT)
+- Mã (`level1_demo.py`): hằng `TRACE_KEYS`, `TRACE_MAX_ENTRIES = 20000`; `Level1App._window_entry` (kết quả cửa sổ + trạng thái bộ giải mã
+  NGAY SAU khi bộ giải mã áp kết quả đó: `top1/conf/top2/conf2` lấy từ `candidates` bất kể `cls_conf`; `run_label`, `run_ms` = ts − đầu chuỗi;
+  `last` = nhãn đã phát gần nhất sau cửa sổ này; `emitted` = `seq` của nhãn phát tại cửa sổ này hoặc `null`); `_trace_window` gọi trong
+  `_drain_timeline` sau `decoder.push`, chỉ khi cờ bật. Bộ giải mã chỉ được ĐỌC (`_run_label`, `_run_since`, `last_label`), không sửa
+  `src/inference/level1_segmenter.py`. Khi bật, JSON thêm khóa `window_trace = {max_entries, n_windows, truncated, fields, entries}`
+  (`n_windows` đếm mọi cửa sổ; quá `max_entries` thì giữ các mục đầu, `truncated: true`). Không ghi landmark/khung hình.
+  Lựa chọn của coder (plan không nói rõ): `window_trace` là dict chứa `entries` để `truncated` nằm cùng chỗ; `motion_pose` + cờ ⇒ `entries` rỗng.
+- Impact (text search, không có GitNexus): symbol sửa `Level1App.__init__`, `Level1App._drain_timeline`, `Level1App.report`, `build_parser`;
+  gọi từ `level1_demo.py` (nội bộ), `tests/test_level1_demo.py`, `tests/test_level1_equivalence.py` (`SpyApp`, `build_parser`) — chạy lại cả hai: 
+  `Ran 51 — OK` (`_work/_plan15/W1_green_demo_eq.log`). detect-changes (`git diff --stat`): `level1_demo.py` 38 + / 1 −, test 150 + / 0 −.
+- Test viết TRƯỚC `TestTraceWindowsW1` (7 test, AC-6b/AC-6c): tắt cờ ⇒ tập khóa (2 tầng) + `tokens/text/labels/segments/counts` bằng hệt
+  `level1_demo.py` tại `4f913a2` (nạp bằng `git show`) ở CẢ HAI chế độ; bật cờ (CLI, trong tiến trình, `--pace realtime`) ⇒ số mục ==
+  `counts.window_results`, đủ 10 khóa đúng thứ tự, `emitted` khớp `labels` (`seq`, `ts_ms`, nhãn, `run_ms` = `ts_ms − run_since_ms`), token không
+  đổi; giới hạn kích thước (vá `TRACE_MAX_ENTRIES = 5` ⇒ 5 mục đầu, `truncated`). ĐỎ: argparse từ chối `--trace-windows` (SystemExit 2 trong
+  setUpClass, `_work/_plan15/W1_red.log`); XANH `Ran 7 — OK` (`_work/_plan15/W1_green.log`).
+- Ví dụ (clip D2 `a_hau_A_001`, config demo): 73 cửa sổ, 73 mục, nhãn phát `a` tại mục có `run_ms` 339.
+- Điểm dừng `frame_total` (§3): `_work/_plan15/W1_measure.sh` — 6 clip hauuto (2 chữ, 2 dấu, `a`, `o`) × tắt/bật × 3 lần, headless, config
+  demo; `_work/_plan15/W1_measure_summary.py` đọc p50 `frame_total` từ JSON (và kiểm token/nhãn bật = tắt): trung vị p50 mọi lần chạy
+  tắt 16.31 / bật 16.16 (tỉ lệ 0.9909), trung vị tỉ lệ theo clip 0.9953 ⇒ KHÔNG tăng > 5%, không dừng. Theo clip tỉ lệ 0.970–1.083
+  (`o_vy_A_001` 1.083, `b_hau_A_001` 0.970): nhiễu đo một clip trên cloud cỡ ±8%, ghi để reviewer đo lại trên Windows.
