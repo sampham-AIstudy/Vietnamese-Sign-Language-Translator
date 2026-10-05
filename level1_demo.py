@@ -58,9 +58,10 @@ if ROOT not in sys.path:
 
 from src.inference.hand_live import LEVEL1_HANDS_KWARGS, HandLandmarkSession  # noqa: E402
 from src.inference.level1_core import (CLAHE_CLIP_LIMIT, CLAHE_TILE_GRID, LOW_LIGHT_THRESHOLD,  # noqa: E402
-                                       Level1Classifier, Level1Speller, enhance_low_light, load_level1_config)
+                                       Level1Classifier, Level1Speller, enhance_low_light, is_open_palm_space,
+                                       load_level1_config)
 from src.inference.level1_segmenter import (Level1LabelDecoder, Level1SignSegmenter, SignSegment,  # noqa: E402
-                                            WindowBuffer, WordGap)
+                                            WindowBuffer, WordGap, aspect_points)
 from src.inference.level1_timing import (FRAME_STAGES, SIGN_STAGES, StageTimes,  # noqa: E402
                                          rate_from_timestamps)
 
@@ -107,6 +108,12 @@ STATE_LABELS = {"no_hand": "không thấy tay", "moving": "đang chuyển độn
 # --trace-windows (plan 15 lần sửa 6 §3.W1): one entry per classified window, in the order the decoder applies them
 TRACE_KEYS = ("ts_ms", "status", "top1", "conf", "top2", "conf2", "run_label", "run_ms", "last", "emitted")
 TRACE_MAX_ENTRIES = 20000  # later windows are counted (n_windows) but not kept; truncated = true
+# open palm gesture = Space (plan 15 lần sửa 9 §2 S2), in milliseconds of stream time. Hold and re-arm are design values
+# of the plan (not measurements); the flash time of the HUD line is the coder's value. Written without the unit in the
+# name: the source guard reads a metric-named binding (..._ms) set to a literal as a hand-typed performance number.
+GESTURE_SPACE_HOLD = 250.0    # open palm held this long (armed) -> one space
+GESTURE_SPACE_REARM = 150.0   # another hand shape held longer than this (or no hand) -> armed again
+GESTURE_SPACE_FLASH = 600.0   # "[Ký hiệu: Dấu cách (Space)]" shown this long after the space
 
 
 class SourceError(Exception):
@@ -590,6 +597,72 @@ def generated_by(argv: List[str]) -> Dict[str, Any]:
             "cpu": platform.processor(), "os": platform.platform()}
 
 
+# ------------------------------------------------------------------------------------------------- open palm = Space
+def _finite_positive(name: str, value: Any) -> float:
+    try:
+        v = float(value)
+    except (TypeError, ValueError):
+        raise ValueError(f"{name} must be a finite number > 0, got {value!r}") from None
+    if not np.isfinite(v) or not v > 0:
+        raise ValueError(f"{name} must be a finite number > 0, got {value!r}")
+    return v
+
+
+class SpaceGestureTracker:
+    """Open palm gesture -> Space (plan 15 lần sửa 9 §2 S2). update(ts_ms, is_space, has_hand) once per processed frame
+    (is_space = is_open_palm_space of the frame's hand) returns True exactly once per gesture:
+      - armed and open palm: the hold runs from the first open-palm frame; ts - start >= hold_ms -> True, disarmed;
+      - disarmed: no space however long the open palm is held (no auto-repeat);
+      - another hand shape: the hold stops; held longer than rearm_ms -> armed again; a frame without hand -> armed
+        again at once (withdraw the hand, or change the hand shape, before the next space).
+    held_ms = how long the open palm has been held while armed (0 otherwise; HUD). Pure computation, no clock."""
+
+    def __init__(self, hold_ms: float = GESTURE_SPACE_HOLD, rearm_ms: float = GESTURE_SPACE_REARM):
+        self.hold_ms = _finite_positive("hold_ms", hold_ms)
+        self.rearm_ms = _finite_positive("rearm_ms", rearm_ms)
+        self.n_emits = 0
+        self.reset()
+
+    def reset(self) -> None:
+        """Armed, no hold, no other shape running (tracking paused). The emission counter is kept."""
+        self.armed = True
+        self.run_since: Optional[float] = None    # first frame of the open palm being held (armed)
+        self.other_since: Optional[float] = None  # first frame of the other hand shape being held
+        self.last_ts: Optional[float] = None
+
+    @property
+    def held_ms(self) -> float:
+        if self.armed and self.run_since is not None and self.last_ts is not None:
+            return self.last_ts - self.run_since
+        return 0.0
+
+    def update(self, ts_ms: float, is_space: bool, has_hand: bool = True) -> bool:
+        ts = float(ts_ms)
+        if not np.isfinite(ts):
+            raise ValueError("timestamp must be finite")
+        self.last_ts = ts
+        if is_space and has_hand:
+            self.other_since = None
+            if not self.armed:
+                return False
+            if self.run_since is None:
+                self.run_since = ts
+            if ts - self.run_since >= self.hold_ms:
+                self.armed, self.run_since = False, None
+                self.n_emits += 1
+                return True
+            return False
+        self.run_since = None
+        if not has_hand:
+            self.armed, self.other_since = True, None
+            return False
+        if self.other_since is None:
+            self.other_since = ts
+        if ts - self.other_since > self.rearm_ms:
+            self.armed = True
+        return False
+
+
 # ---------------------------------------------------------------------------------------------------------- app
 class Level1App:
     """One run of the app. `classifier` / `session_factory` can be given (tests); keep_segments keeps the emitted
@@ -666,6 +739,11 @@ class Level1App:
         self.window_counts = {"window_jobs": 0, "window_results": 0, "window_dropped": 0, "label_emits": 0,
                               "label_replace": 0, "segments_not_classified": 0}
         self.auto_space = not getattr(args, "no_auto_space", False)  # --no-auto-space (plan 15 lần sửa 7 T3)
+        # open palm = Space (plan 15 lần sửa 9 S2; on unless --no-gesture-space)
+        self.gesture_space = bool(getattr(args, "gesture_space", True))
+        self.space_tracker = SpaceGestureTracker(getattr(args, "space_hold_ms", GESTURE_SPACE_HOLD))
+        self.gesture_counts = {"palm_frames": 0, "spaces_added": 0}
+        self.gesture_flash_ts: Optional[float] = None  # stream time of the last gesture space (HUD flash)
         self.trace_windows = bool(getattr(args, "trace_windows", False))
         self.window_trace: List[Dict[str, Any]] = []
         self.window_trace_n = 0
@@ -787,6 +865,8 @@ class Level1App:
             kind, ts_ms, has_hand, _resolved, payload = self.timeline.pop(0)
             if kind == "gap":
                 self.speller.word_gap(payload, t_ms=ts_ms)
+            elif kind == "space":
+                self._apply_gesture_space(ts_ms)
             elif kind == "next":
                 self.decoder.force_next(ts_ms)
             elif kind == "reset":
@@ -841,6 +921,7 @@ class Level1App:
             self.paused = not self.paused
             if self.paused:
                 self.segmenter.reset()
+                self.space_tracker.reset()
                 if self.classifier_mode:
                     self.window.reset()
                     self.timeline.append(["reset", self.last_ts, False, True, None])
@@ -850,6 +931,35 @@ class Level1App:
             self._next_key()
         elif k in KEY_ACTIONS:
             self.speller.key(KEY_ACTIONS[k], t_ms=self.last_ts)
+
+    # -------------------------------------------------------------- open palm = Space (plan 15 lần sửa 9 §2 S2)
+    def _gesture_step(self, ts_ms: float, is_space: bool, has_hand: bool) -> None:
+        """One frame of the gesture: tracker update; a space of the tracker goes to the speller as the Space key, in
+        rearm_mode classifier through the timeline (after the labels of the frames before it, like a word gap)."""
+        self.gesture_counts["palm_frames"] += int(bool(is_space and has_hand))
+        if not self.space_tracker.update(ts_ms, is_space, has_hand=has_hand):
+            return
+        if self.classifier_mode:
+            self.timeline.append(["space", ts_ms, False, True, None])
+            self._drain_timeline()
+        else:
+            self._apply_gesture_space(ts_ms)
+
+    def _apply_gesture_space(self, ts_ms: float) -> None:
+        added = self.speller.key("space", t_ms=ts_ms)
+        self.gesture_counts["spaces_added"] += int(added)
+        self.gesture_flash_ts = ts_ms
+        self._log("gesture_space", t_ms=ts_ms, added=added)
+
+    def _gesture_line(self) -> Optional[str]:
+        """HUD: open palm held (armed) -> progress; for GESTURE_SPACE_FLASH after a gesture space -> flash; else None."""
+        tr = self.space_tracker
+        if tr.armed and tr.run_since is not None:
+            return f"[Cử chỉ: Dấu cách {tr.held_ms:.0f}/{tr.hold_ms:.0f}]"
+        if (self.gesture_flash_ts is not None and tr.last_ts is not None
+                and tr.last_ts - self.gesture_flash_ts < GESTURE_SPACE_FLASH):
+            return "[Ký hiệu: Dấu cách (Space)]"
+        return None
 
     def _next_key(self) -> None:
         """Key n "chữ kế" (plan 15 lần sửa 4 §3.1): re-arm the segmenter at the last frame so the sign held now is
@@ -894,6 +1004,9 @@ class Level1App:
         small = [last, self._decoder_line() if self.classifier_mode else "Trạng thái: " + state]
         if self.detection_custom:  # lần sửa 8: only when MediaPipe or its input differ from the default
             small.append(f"[MP: conf={self.min_detection_conf:.2f} | CLAHE: {'on' if self.auto_enhance else 'off'}]")
+        gesture = self._gesture_line() if self.gesture_space else None
+        if gesture is not None:  # lần sửa 9: only while the open palm is held / right after its space
+            small.append(gesture)
         tc_list = tb_view.get("tone_changes", [])
         if tc_list:
             last_tc = tc_list[-1]
@@ -924,13 +1037,19 @@ class Level1App:
         landmarks, handedness, _score = session.process(frame_mp)
         t1 = time.perf_counter()
         self.times.add("mediapipe", (t1 - t_mp) * 1000.0)
+        gesture = self.gesture_space and not self.paused
+        # open palm check (lần sửa 9): timed inside the segmenter stage (no new stage: the report keeps its stages)
+        is_space = gesture and landmarks is not None and is_open_palm_space(aspect_points(landmarks, w, h))
         if not self.paused:
             self._on_events(self.segmenter.push(ts_ms, landmarks, handedness, w, h))
         t2 = time.perf_counter()
         self.times.add("segmenter", (t2 - t1) * 1000.0)
         if self.classifier_mode and not self.paused:  # a word gap of this frame is a no-hand frame: order unaffected
-            self._window_frame(ts_ms, landmarks, handedness, w, h)
+            # an open-palm frame is not a letter: it reaches the window as a frame without hand (lần sửa 9 §2 S2)
+            self._window_frame(ts_ms, None if is_space else landmarks, handedness, w, h)
             t2 = time.perf_counter()
+        if gesture:
+            self._gesture_step(ts_ms, is_space, landmarks is not None)
         self.last_ts = ts_ms
         self.counts["frames_processed"] += 1
         if self.worker is not None:

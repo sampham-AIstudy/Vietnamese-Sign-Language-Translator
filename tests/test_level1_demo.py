@@ -2136,6 +2136,301 @@ class TestDesktopDocM3(unittest.TestCase):
         self.assertIsNone(re.search(r"\d+(\.\d+)?\s*(ms|%|fps)", doc))   # no measured number (as AC-R'4 / C1)
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 9 S2 (open palm gesture = Space)
+BEFORE_REV9_COMMIT = "03d17b8"   # docs/plans/15-lan-sua-9.md committed; level1_demo.py as lần sửa 8 left it
+# a hauuto training clip whose signer raises an OPEN PALM (5 fingers spread, thumb out) before forming the letter b
+# (frames looked at by eye; is_open_palm_space is True on the first hand frames and False on the held b)
+PALM_CLIP = os.path.join("data", "external", "hauuto_raw", "raw", "raw", "khoi", "b_khoi_A_001.mp4")
+_MISSING_S2 = [p for p in (CLIP, CKPT, PALM_CLIP) if not os.path.exists(os.path.join(PROJECT_ROOT, p))]
+SKIP_REASON_S2 = "missing (gitignored data / checkpoint): " + ", ".join(_MISSING_S2)
+GESTURE_LINE_RE = r"^\[Cử chỉ: Dấu cách (\d+)/(\d+)\]$"
+GESTURE_FLASH_LINE = "[Ký hiệu: Dấu cách (Space)]"
+
+
+def _palm_steps(tracker, start, stop, step, is_space=True, has_hand=True):
+    """tracker.update at start, start + step, ... < stop; returns the timestamps at which it returned True."""
+    out = []
+    t = start
+    while t < stop:
+        if tracker.update(t, is_space, has_hand=has_hand):
+            out.append(t)
+        t += step
+    return out
+
+
+class TestSpaceGestureTrackerS2(unittest.TestCase):
+    """§2 S2: SpaceGestureTracker(hold_ms) -> update(ts_ms, is_space[, has_hand]) is True exactly once when the open
+    palm has been held hold_ms (armed); then disarmed: no second space while the palm is held; re-armed by another
+    hand shape held more than rearm_ms (150) or by a frame without hand. Timestamps / flags are driven here."""
+
+    def test_s2_hold_200_no_space(self):
+        tr = app_mod.SpaceGestureTracker()
+        self.assertEqual(tr.hold_ms, 250.0)
+        self.assertEqual(_palm_steps(tr, 0.0, 201.0, 20.0), [])                      # 0 .. 200 ms
+
+    def test_s2_hold_260_one_space(self):
+        tr = app_mod.SpaceGestureTracker()
+        self.assertEqual(_palm_steps(tr, 0.0, 261.0, 20.0), [260.0])                 # 260 - 0 >= 250
+        tr2 = app_mod.SpaceGestureTracker()
+        self.assertEqual(_palm_steps(tr2, 0.0, 261.0, 10.0), [250.0])                # exactly 250 counts
+        self.assertEqual(tr.n_emits, 1)
+
+    def test_s2_hold_on_to_1000_no_second_space(self):
+        tr = app_mod.SpaceGestureTracker()
+        self.assertEqual(_palm_steps(tr, 0.0, 1001.0, 20.0), [260.0])
+        self.assertFalse(tr.armed)
+
+    def test_s2_other_pose_then_palm_again(self):
+        tr = app_mod.SpaceGestureTracker()
+        self.assertEqual(_palm_steps(tr, 0.0, 1001.0, 20.0), [260.0])
+        self.assertEqual(_palm_steps(tr, 1020.0, 1221.0, 20.0, is_space=False), [])  # other shape for 200 ms
+        self.assertTrue(tr.armed)
+        self.assertEqual(_palm_steps(tr, 1240.0, 1601.0, 20.0), [1500.0])            # second space
+        self.assertEqual(tr.n_emits, 2)
+
+    def test_s2_short_other_pose_does_not_rearm(self):
+        tr = app_mod.SpaceGestureTracker()
+        _palm_steps(tr, 0.0, 301.0, 20.0)
+        self.assertEqual(_palm_steps(tr, 320.0, 461.0, 20.0, is_space=False), [])    # 140 ms: not > 150
+        self.assertFalse(tr.armed)
+        self.assertEqual(_palm_steps(tr, 480.0, 1201.0, 20.0), [])                   # flicker: no second space
+        _palm_steps(tr, 1220.0, 1381.0, 20.0, is_space=False)                        # 160 ms: > 150
+        self.assertTrue(tr.armed)
+
+    def test_s2_hand_lost_rearms(self):
+        tr = app_mod.SpaceGestureTracker()
+        _palm_steps(tr, 0.0, 301.0, 20.0)
+        self.assertFalse(tr.armed)
+        self.assertFalse(tr.update(320.0, False, has_hand=False))                    # one frame without hand
+        self.assertTrue(tr.armed)
+        self.assertEqual(_palm_steps(tr, 340.0, 701.0, 20.0), [600.0])
+
+    def test_s2_interrupted_hold_restarts(self):
+        tr = app_mod.SpaceGestureTracker()
+        self.assertEqual(_palm_steps(tr, 0.0, 201.0, 20.0), [])
+        self.assertFalse(tr.update(220.0, False))                                   # one other frame
+        self.assertEqual(_palm_steps(tr, 240.0, 481.0, 20.0), [])                    # 240 .. 480: 240 < 250
+        self.assertEqual(_palm_steps(tr, 500.0, 521.0, 20.0), [500.0])
+
+    def test_s2_held_ms_and_hold_parameter(self):
+        tr = app_mod.SpaceGestureTracker(hold_ms=400.0)
+        self.assertEqual(tr.held_ms, 0.0)
+        self.assertEqual(_palm_steps(tr, 0.0, 381.0, 20.0), [])
+        self.assertEqual(tr.held_ms, 380.0)
+        self.assertEqual(_palm_steps(tr, 400.0, 401.0, 20.0), [400.0])
+        self.assertEqual(tr.held_ms, 0.0)                                            # disarmed: no hold shown
+        for bad in (0.0, -5.0, float("nan"), float("inf")):
+            with self.assertRaises(ValueError):
+                app_mod.SpaceGestureTracker(hold_ms=bad)
+        with self.assertRaises(ValueError):
+            tr.update(float("nan"), True)
+
+    def test_s2_reset(self):
+        tr = app_mod.SpaceGestureTracker()
+        _palm_steps(tr, 0.0, 301.0, 20.0)
+        tr.reset()
+        self.assertTrue(tr.armed)
+        self.assertEqual(tr.held_ms, 0.0)
+        self.assertEqual(tr.n_emits, 1)                                              # emissions are kept
+
+
+class _LandmarkRecordingSession(HandLandmarkSession):
+    """The real HandLandmarkSession (default keywords); keeps (landmarks, width, height) of every frame processed."""
+    instances = []
+
+    def __init__(self):
+        self.seen = []
+        super().__init__()
+        _LandmarkRecordingSession.instances.append(self)
+
+    def process(self, frame_bgr):
+        out = super().process(frame_bgr)
+        h, w = frame_bgr.shape[:2]
+        self.seen.append((out[0], w, h))
+        return out
+
+
+def _expected_gesture_spaces(flags, ts, hold_ms=250.0):
+    """Timestamps of the spaces of the §2 S2 rule, written out here for an open palm that is held only once per clip:
+    first frame of a run of open-palm frames whose distance to the run start is >= hold_ms (one per run)."""
+    out, start = [], None
+    for f, t in zip(flags, ts):
+        if not f:
+            start = None
+            continue
+        if start is None:
+            start = t
+        if start != "done" and t - start >= hold_ms:
+            out.append(t)
+            start = "done"
+    return out
+
+
+@unittest.skipUnless(not _MISSING_S2, SKIP_REASON_S2)
+class TestGestureSpaceAppS2(unittest.TestCase):
+    """§2 S2 in Level1App on real clips (training clips: this checks the code path, not accuracy). PALM_CLIP starts
+    with an open palm held longer than 250 ms, then the letter b: one gesture space, at the frame the rule gives, and
+    the held b gives none. In rearm_mode classifier the open-palm frames reach the window as frames without hand (no
+    window classified at them). CLIP has no open-palm frame: the report is that of the app at 03d17b8."""
+
+    @classmethod
+    def setUpClass(cls):
+        from src.inference.level1_core import is_open_palm_space
+        from src.inference.level1_segmenter import aspect_points
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            cls.ref = app_module_at(BEFORE_REV9_COMMIT)
+            cls.runs = {}
+            for mode, extra in (("motion_pose", []), ("classifier", ["--config", REV7_CONFIG])):
+                argv = ["--source", PALM_CLIP, "--headless", *extra, "--trace-windows"]
+                _LandmarkRecordingSession.instances = []
+                app = app_mod.Level1App(args_for(*argv), session_factory=_LandmarkRecordingSession)
+                report = app.run()
+                seen = _LandmarkRecordingSession.instances[1].seen                   # [0] = warm-up graph
+                seeded = app_mod.Level1App(args_for(*argv))
+                seeded.speller.key("tone_1", t_ms=0.0)                               # a token typed before the clip
+                cls.runs[mode] = {"app": app, "report": report, "seen": seen, "seeded": seeded.run()}
+                a = ["--source", CLIP, "--headless", *extra]                            # no open palm in CLIP
+                cls.runs["clip_" + mode] = {"new": app_mod.Level1App(args_for(*a)).run(),
+                                            "ref": cls.ref.Level1App(cls.ref.build_parser().parse_args(a)).run()}
+            for mode in ("motion_pose", "classifier"):
+                r = cls.runs[mode]
+                fps = r["report"]["source"]["fps_file"]
+                r["ts"] = [i * 1000.0 / fps for i in range(len(r["seen"]))]
+                r["flags"] = [lm is not None and is_open_palm_space(aspect_points(lm, w, h)) for lm, w, h in r["seen"]]
+        finally:
+            os.chdir(cwd)
+
+    def test_s2_clip_has_open_palm_then_letter(self):
+        for mode in ("motion_pose", "classifier"):
+            flags = self.runs[mode]["flags"]
+            self.assertGreaterEqual(sum(flags), 8)                                    # > 250 ms at the clip rate
+            self.assertFalse(any(flags[len(flags) // 2:]), mode)                      # the held b: never
+
+    def test_s2_one_gesture_space_at_the_rule_frame(self):
+        for mode in ("motion_pose", "classifier"):
+            with self.subTest(mode=mode):
+                r = self.runs[mode]
+                events = [e for e in r["report"]["events"] if e.get("event") == "gesture_space"]
+                expected = _expected_gesture_spaces(r["flags"], r["ts"])
+                self.assertEqual(len(expected), 1)
+                self.assertEqual([e["t_ms"] for e in events], expected)
+                self.assertIs(events[0]["added"], False)                              # no token before: nothing to cut
+                self.assertEqual(r["app"].space_tracker.n_emits, 1)
+
+    def test_s2_space_added_after_a_token(self):
+        for mode in ("motion_pose", "classifier"):
+            with self.subTest(mode=mode):
+                r = self.runs[mode]
+                s = r["seeded"]
+                t_gesture = _expected_gesture_spaces(r["flags"], r["ts"])[0]
+                self.assertEqual(s["tokens"][:2], ["dấu sắc", " "])
+                spaces = [e for e in s["events"] if e.get("event") == "token" and e.get("token") == " "]
+                self.assertEqual(spaces[0]["t_ms"], t_gesture)
+                self.assertEqual((spaces[0]["source"], spaces[0]["key"]), ("key", "space"))
+                g = [e for e in s["events"] if e.get("event") == "gesture_space"]
+                self.assertEqual([(e["t_ms"], e["added"]) for e in g], [(t_gesture, True)])
+
+    def test_s2_classifier_no_window_at_open_palm_frames(self):
+        r = self.runs["classifier"]
+        palm_ts = {t for f, t in zip(r["flags"], r["ts"]) if f}
+        entries = r["report"]["window_trace"]["entries"]
+        self.assertGreater(len(entries), 0)
+        self.assertFalse(palm_ts & {e["ts_ms"] for e in entries})
+        hand_frames = sum(1 for lm, _w, _h in r["seen"] if lm is not None)
+        self.assertLessEqual(r["report"]["counts"]["window_jobs"], hand_frames - len(palm_ts))
+
+    def test_s2_motion_pose_segmenter_unchanged(self):
+        """motion_pose: the segmenter still gets every hand frame (the plan changes only the window path)."""
+        new, ref = self.runs["motion_pose"]["report"], None
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            ref = self.ref.Level1App(self.ref.build_parser().parse_args(["--source", PALM_CLIP, "--headless"])).run()
+        finally:
+            os.chdir(cwd)
+        self.assertEqual(new["segments"], ref["segments"])
+        self.assertEqual(new["tokens"], ref["tokens"])                               # the space found no token
+
+    def test_s2_no_open_palm_same_report_as_before(self):
+        for mode in ("clip_motion_pose", "clip_classifier"):
+            with self.subTest(mode=mode):
+                new, ref = self.runs[mode]["new"], self.runs[mode]["ref"]
+                self.assertEqual(list(new), list(ref))
+                self.assertEqual(_key_tree(new), _key_tree(ref))
+                for k in ("tokens", "text", "labels", "segments", "events"):
+                    self.assertEqual(new[k], ref[k], (mode, k))
+                self.assertEqual(_without_rates(new["counts"]), _without_rates(ref["counts"]), mode)
+                self.assertFalse([e for e in new["events"] if e.get("event") == "gesture_space"])
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestGestureSpaceHudS2(unittest.TestCase):
+    """HUD of §2 S2: while the open palm is held (armed) the line "[Cử chỉ: Dấu cách <held ms>/<hold ms>]" comes right
+    after the state / decoder line; once the space is emitted "[Ký hiệu: Dấu cách (Space)]" is shown for
+    GESTURE_SPACE_FLASH ms of stream time; otherwise no gesture line (HUD as before). Gesture steps driven here."""
+
+    def _app(self, *extra):
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            return app_mod.Level1App(args_for("--source", CLIP, "--headless", *extra))
+        finally:
+            os.chdir(cwd)
+
+    def test_s2_hud_progress_then_flash(self):
+        import re
+        for extra in ([], ["--config", REV7_CONFIG]):
+            with self.subTest(extra=extra):
+                app = self._app(*extra)
+                app.speller.key("tone_1", t_ms=0.0)
+                plain = app._hud_lines()[1]
+                for t in (100.0, 160.0, 220.0):
+                    app._gesture_step(t, True, True)
+                small = app._hud_lines()[1]
+                m = re.match(GESTURE_LINE_RE, small[2])
+                self.assertIsNotNone(m, small)
+                self.assertEqual((int(m.group(1)), int(m.group(2))), (120, 250))
+                self.assertEqual(small[:2] + small[3:], plain)
+                app._gesture_step(350.0, True, True)                                 # 250 ms held: space
+                self.assertEqual(app.speller.tokens, ["dấu sắc", " "])
+                small = app._hud_lines()[1]
+                self.assertEqual(small[2], GESTURE_FLASH_LINE)
+                end = 350.0 + app_mod.GESTURE_SPACE_FLASH
+                app._gesture_step(end - 1.0, True, True)                             # still held, disarmed
+                self.assertEqual(app._hud_lines()[1][2], GESTURE_FLASH_LINE)
+                app._gesture_step(end, True, True)
+                after = app._hud_lines()[1]
+                self.assertFalse(any(GESTURE_FLASH_LINE == s or re.match(GESTURE_LINE_RE, s) for s in after))
+
+    def test_s2_events_and_gesture_space_through_timeline(self):
+        """classifier: the space waits behind a frame whose window result is not in yet (timestamp order)."""
+        app = self._app("--config", REV7_CONFIG)
+        app.speller.key("tone_1", t_ms=0.0)
+        app.timeline.append(["frame", 50.0, True, False, None])                       # result not in yet
+        for t in (100.0, 200.0, 350.0):
+            app._gesture_step(t, True, True)
+        self.assertEqual(app.speller.tokens, ["dấu sắc"])
+        self.assertEqual([e[0] for e in app.timeline], ["frame", "space"])
+        app.timeline[0][3] = True                                                     # the result comes in
+        app._drain_timeline()
+        self.assertEqual(app.speller.tokens, ["dấu sắc", " "])
+        self.assertEqual([e for e in app.events if e["event"] == "gesture_space"],
+                         [{"event": "gesture_space", "t_ms": 350.0, "added": True}])
+
+    def test_s2_pause_resets_tracker(self):
+        app = self._app()
+        for t in (0.0, 100.0, 200.0):
+            app._gesture_step(t, True, True)
+        app._key(app_mod.KEY_PAUSE)
+        self.assertEqual(app.space_tracker.held_ms, 0.0)
+        app._key(app_mod.KEY_PAUSE)
+        app._gesture_step(240.0, True, True)                                          # hold starts again
+        self.assertEqual(app.speller.tokens, [])
+        self.assertEqual(app.space_tracker.n_emits, 0)
+
+
 if __name__ == "__main__":
     unittest.main()
 
