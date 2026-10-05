@@ -893,3 +893,24 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   (test ảnh motion_pose xanh từ đầu, đúng mong đợi; `_work/_plan15/W2_red.log`); XANH: W1+W2 `Ran 12 — OK` (`_work/_plan15/W2_green.log`).
 - Chi phí: dòng giải mã đổi theo từng cửa sổ ⇒ panel PIL dựng lại mỗi khung. Đo vi mô `Hud.compose` 640×480 (không phải JSON của app):
   p50 0.04 ms khi chữ không đổi, 2.91 ms khi chữ đổi mỗi khung (`_work/_plan15/W2_hud_bench.py`). Ảnh kiểm mắt: `_work/_plan15/W2_hud_classifier.png`.
+
+### W3 — `scripts/level1_trace_report.py`
+- Script mới (chỉ đọc JSON của app: `rearm_mode`, `config.values`, `labels`, `window_trace`; không model, không video, không giờ ⇒ tất định):
+  `--trace <json> [--expected "<ký hiệu1>,<ký hiệu2>,…"] [--hold-ms 2000] [--out-json <file>]`. In bảng theo từng đoạn chuyển ký hiệu
+  (cũ, mới, kết thúc, số cửa sổ/ms theo lớp) và bảng tổng (số cửa sổ, ms, tỉ lệ thời gian M1–M4/stable), dòng "Nguyên nhân chính" theo
+  quy tắc §5 (một mã > 50% thời gian chuyển). Định nghĩa ghi ở docstring đầu file, đặt TRƯỚC khi có trace U3 — đây là các lựa chọn của coder
+  vì plan chỉ cho dấu hiệu (§2), cần reviewer/planner xác nhận:
+  M0 = `rearm_mode` ≠ classifier (không phân tích cửa sổ); đoạn chuyển = các cửa sổ sau một lần phát `old` tới lần phát kế (hoặc tới reset
+  `last = null` = rút tay/`n`/`p`, hoặc hết trace); `new` = mục kế sau `old` trong `--expected` (căn trái→phải), không có thì nhãn phát kết thúc
+  đoạn; thời gian cửa sổ = tới mục kế, chặn ở `hand_lost_ms`; lớp (khớp đầu tiên): `hold` (ts < đầu chuỗi của `old` + `--hold-ms`, ngoài tỉ lệ —
+  giao thức U3 giữ khoảng 2 s), M4 (`new` đã biết, {top1, top2} = {old, new}, conf < cls_conf), M1 (conf < cls_conf), M2 (top1 = old),
+  `stable` (thuộc chuỗi mà lần phát kết thúc đoạn hoàn tất = chờ `cls_stable_ms` bình thường), M3 (chuỗi tự tin bị đứt trước `cls_stable_ms`).
+  Giới hạn đã biết: ký hiệu cũ giữ lâu hơn `--hold-ms` bị tính là M2 (script in dòng lưu ý). Ví dụ: trace một clip train dấu nặng
+  (`tone_j_khoi_A_001`, không có chuyển ký hiệu) cho M2 100% chỉ vì clip dài hơn 2 s sau đầu chuỗi.
+- `docs/level1_desktop.md` thêm mục 6 (dòng HUD, `--trace-windows`, lệnh U3, lệnh đọc trace; không có số đo — `TestSummaryC1` vẫn OK).
+- Impact: chỉ thêm file mới (script, test) và một mục tài liệu; không sửa symbol có sẵn. detect-changes (`git diff --stat`): xem commit.
+- Test viết TRƯỚC `tests/test_level1_trace_report.py` (9 test, AC-6e): trace tổng hợp dựng như app (kết quả cửa sổ tổng hợp → `Level1LabelDecoder`
+  thật → `Level1App._window_entry` của app) cho từng M1/M2/M3/M4 ⇒ đúng mã chính và đúng số cửa sổ từng lớp; M4 không cần `--expected`
+  (lấy nhãn phát), cặp khác ⇒ không M4; M0; reset (rút tay) + onset; căn `--expected` khi phát lại sau reset; `--hold-ms`; chặn thời gian;
+  cờ `truncated`, thiếu `window_trace` ⇒ mã thoát 2; CLI chạy 2 lần ra cùng byte (stdout và `--out-json`). ĐỎ: `ImportError` (script chưa có,
+  `_work/_plan15/W3_red.log`); XANH: `Ran 9 — OK` (`_work/_plan15/W3_green.log`).

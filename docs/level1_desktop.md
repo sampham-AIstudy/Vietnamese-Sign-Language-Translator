@@ -82,3 +82,18 @@ không che vùng tay của ảnh camera.
 - `reports/level1_realtime_2026-10-05/rearm_check_d4.json` — gate G1–G7 của chế độ `classifier`.
 - `reports/level1_realtime_2026-10-05/pose_evidence.json` — luật tư thế (đã bác).
 - Tiến độ và lệnh đã chạy: `docs/plans/15-progress.md`.
+
+## 6. Chẩn đoán đổi ký hiệu liên tiếp (kế hoạch 15 lần sửa 6)
+
+- HUD ở chế độ `classifier`: dòng `[classifier] cửa sổ: <top1> <conf> | giữ <ms>/<cls_stable_ms> | cuối: <last>` thay dòng "Trạng thái".
+  `cửa sổ` = nhãn top-1 và độ tin cậy của cửa sổ trượt mới nhất (kể cả khi dưới `cls_conf`); `giữ` = nhãn đó đã đứng liền bao lâu so với
+  `cls_stable_ms` (về 0 khi cửa sổ dưới `cls_conf` hoặc đổi nhãn); `cuối` = nhãn đã phát gần nhất (nhãn trùng nó không được phát lại cho tới
+  khi rút tay hoặc nhấn `n`). Chế độ `classifier` không có thanh tiến độ của bộ tách. Chế độ `motion_pose` giữ nguyên HUD cũ.
+- Ghi trace (mặc định tắt): thêm `--trace-windows` ⇒ JSON có khóa `window_trace` (mỗi cửa sổ: `ts_ms, status, top1, conf, top2, conf2,
+  run_label, run_ms, last, emitted`; tối đa 20000 mục, quá thì `truncated: true`). Không có landmark hay khung hình.
+- Phiên U3 (§4 của lần sửa 6, không rút tay giữa các ký hiệu, mỗi ký hiệu giữ khoảng 2 s):
+  `python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier.json --trace-windows --out-json _work/u3_tones.json`
+- Đọc trace: `python scripts/level1_trace_report.py --trace _work/u3_tones.json --expected "dấu nặng,dấu hỏi,dấu ngã,dấu sắc,dấu huyền"`
+  in bảng theo đoạn chuyển ký hiệu và tỉ lệ thời gian M1 (dưới ngưỡng tin cậy), M2 (vẫn đoán ký hiệu cũ), M3 (nhãn chập chờn), M4 (xác suất
+  chia giữa hai ký hiệu của cặp); chạy `motion_pose` ⇒ M0. Định nghĩa đầy đủ ở đầu file script. Ký hiệu cũ giữ lâu hơn `--hold-ms`
+  (mặc định theo giao thức U3) được tính là M2.
