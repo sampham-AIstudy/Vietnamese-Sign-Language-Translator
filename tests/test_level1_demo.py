@@ -1424,6 +1424,87 @@ class TestNoAutoSpaceT3(unittest.TestCase):
             os.chdir(cwd)
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 7 T4: HUD line for a held tone mark
+HUD_TONE_RE = r"^\[classifier\] cửa sổ: (.+) (\d\.\d\d|—) \| giữ (\d+)/(\d+) \(tone\) \| cuối: (.+)$"
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestHudToneT4(unittest.TestCase):
+    """T4: while the decoder holds a run of a tone mark the line shows the stable time used for tone marks and
+    `(tone)`: `[classifier] cửa sổ: <top1> <conf> | giữ <ms>/<stable_tone> (tone) | cuối: <last>`; a letter run or no
+    run keeps the line of lần sửa 6 (HUD_DECODER_RE)."""
+
+    @classmethod
+    def setUpClass(cls):
+        import re
+        cls.re_tone, cls.re_letter = re.compile(HUD_TONE_RE), re.compile(HUD_DECODER_RE)
+        os.makedirs(TMP_PARENT, exist_ok=True)
+        cls.tmp = tempfile.mkdtemp(prefix="vslt_p15_t4_", dir=TMP_PARENT)
+        cls.cfg_tone = _config_plus(cls.tmp, DEMO_CONFIG, "tone.json", cls_conf_tone=0.78, cls_stable_ms_tone=200.0)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def _app(self, config):
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            return app_mod.Level1App(args_for("--source", CLIP, "--headless", "--config", config))
+        finally:
+            os.chdir(cwd)
+
+    def _feed(self, app, windows, t0=1000.0, dt=33.0):
+        lines = []
+        for i, (label, conf) in enumerate(windows):
+            app.timeline.append(["frame", t0 + dt * i, True, True, _ok_result(label, conf)])
+            app._drain_timeline()
+            lines.append(app._hud_lines()[1][1])
+        return lines
+
+    def test_t4_tone_line_with_tone_keys(self):
+        app = self._app(self.cfg_tone)
+        lines = self._feed(app, [("dấu huyền", 0.80)] * 9 + [("b", 0.95)] * 12)
+        m = [self.re_tone.match(x) for x in lines[:9]]
+        self.assertTrue(all(m), lines[:9])
+        self.assertEqual(m[0].groups(), ("dấu huyền", "0.80", "0", "200", "—"))
+        self.assertEqual(m[6].groups(), ("dấu huyền", "0.80", "198", "200", "—"))     # 6 x 33 ms < 200: not yet
+        self.assertEqual(m[7].groups(), ("dấu huyền", "0.80", "231", "200", "dấu huyền"))
+        for x in lines[9:]:                                                           # a letter run: line of lần sửa 6
+            self.assertIsNone(self.re_tone.match(x), x)
+            self.assertIsNotNone(self.re_letter.match(x), x)
+        self.assertEqual(self.re_letter.match(lines[19]).groups(), ("b", "0.95", "330", "300", "b"))
+        self.assertEqual([lab["prediction"] for lab in app.labels], ["dấu huyền", "b"])
+
+    def test_t4_tone_below_its_threshold_no_tone_mark(self):
+        app = self._app(self.cfg_tone)
+        line = self._feed(app, [("dấu hỏi", 0.70)])[0]
+        self.assertEqual(line, "[classifier] cửa sổ: dấu hỏi 0.70 | giữ 0/300 | cuối: —")
+
+    def test_t4_tone_line_without_tone_keys(self):
+        app = self._app(DEMO_CONFIG)                                  # stable time of a tone = cls_stable_ms
+        lines = self._feed(app, [("dấu ngã", 0.95)] * 3)
+        self.assertEqual(lines[2], "[classifier] cửa sổ: dấu ngã 0.95 | giữ 66/300 (tone) | cuối: —")
+
+    def test_t4_tone_line_paused(self):
+        app = self._app(self.cfg_tone)
+        self._feed(app, [("dấu sắc", 0.80)] * 3)
+        app.paused = True
+        self.assertEqual(app._hud_lines()[1][1],
+                         "[classifier] cửa sổ: dấu sắc 0.80 | giữ 66/200 (tone) | cuối: — | tạm dừng (p)")
+
+
+class TestDesktopDocT4(unittest.TestCase):
+    def test_t4_doc_lists_new_flags_and_keys(self):
+        import re
+        with open(os.path.join(PROJECT_ROOT, "docs", "level1_desktop.md"), encoding="utf-8") as f:
+            doc = f.read()
+        for text in ("--cls-window-ms", "--no-auto-space", "(tone)", "cls_conf_tone", "cls_stable_ms_tone",
+                     "dropout_tolerance_ms", "config.overrides"):
+            self.assertIn(text, doc, text)
+        self.assertIsNone(re.search(r"\d+(\.\d+)?\s*(ms|%|fps)", doc))   # no measured number (as AC-R'4 / C1)
+
+
 if __name__ == "__main__":
     unittest.main()
 

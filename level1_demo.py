@@ -844,14 +844,17 @@ class Level1App:
     # -------------------------------------------------------------- one frame
     def _decoder_line(self) -> str:
         """rearm_mode classifier (plan 15 lần sửa 6 §3.W2): newest window (top-1 and its confidence, whatever cls_conf),
-        how long its label has held against cls_stable_ms (0 when the window is below cls_conf), last emitted label."""
+        how long its label has held against cls_stable_ms (0 when the window is below cls_conf), last emitted label.
+        While the run is a tone mark the stable time of tone marks is shown, followed by "(tone)" (lần sửa 7 T4)."""
         w = self.last_window
         top1 = w["top1"] if w is not None and w["top1"] is not None else "—"
         conf = f"{w['conf']:.2f}" if w is not None and w["conf"] is not None else "—"
         held = w["run_ms"] if w is not None and w["run_label"] is not None else 0.0
         last = self.decoder.last_label if self.decoder.last_label is not None else "—"
-        line = (f"[classifier] cửa sổ: {top1} {conf} | giữ {held:.0f}/{self.values['cls_stable_ms']:.0f} | "
-                f"cuối: {last}")
+        run = w["run_label"] if w is not None else None
+        tone = self.decoder.is_tone(run)
+        stable = f"{self.decoder.thresholds(run)[1]:.0f} (tone)" if tone else f"{self.values['cls_stable_ms']:.0f}"
+        line = f"[classifier] cửa sổ: {top1} {conf} | giữ {held:.0f}/{stable} | cuối: {last}"
         return line + " | tạm dừng (p)" if self.paused else line
 
     def _hud_lines(self):

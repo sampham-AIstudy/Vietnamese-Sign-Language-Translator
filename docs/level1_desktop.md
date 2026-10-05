@@ -27,7 +27,7 @@ python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_c
 | `1` … `5` | Gõ dấu cho âm tiết đang gõ: `1` sắc, `2` huyền, `3` hỏi, `4` ngã, `5` nặng (đổi dấu ngay nếu đã có dấu) |
 | `n` | Chữ kế: nhận lại ký hiệu đang giữ như một chữ mới (chữ lặp như "oo", "ee") |
 | Backspace | Xóa token cuối (chữ hoặc dấu) |
-| Space | Thêm dấu cách (kết thúc từ); hạ tay đủ lâu cũng thêm dấu cách |
+| Space | Thêm dấu cách (kết thúc từ); hạ tay đủ lâu cũng thêm dấu cách (tắt phần tự động bằng `--no-auto-space`, mục 7) |
 | `r` | Lặp lại chữ cuối |
 | `a` | Nhận ứng viên bị từ chối gần nhất (chữ mờ) |
 | `c` | Xóa hết |
@@ -97,3 +97,28 @@ không che vùng tay của ảnh camera.
   in bảng theo đoạn chuyển ký hiệu và tỉ lệ thời gian M1 (dưới ngưỡng tin cậy), M2 (vẫn đoán ký hiệu cũ), M3 (nhãn chập chờn), M4 (xác suất
   chia giữa hai ký hiệu của cặp); chạy `motion_pose` ⇒ M0. Định nghĩa đầy đủ ở đầu file script. Ký hiệu cũ giữ lâu hơn `--hold-ms`
   (mặc định theo giao thức U3) được tính là M2.
+
+## 7. Tinh chỉnh chế độ `classifier` (kế hoạch 15 lần sửa 7)
+
+- `--cls-window-ms <N>`: độ dài cửa sổ trượt (mili giây) cho lần chạy này, thay `cls_window_ms` của config — để thử vài độ dài khác nhau
+  mà không sửa file. Chỉ dùng với config `rearm_mode` = `classifier` (config `motion_pose` ⇒ app dừng và báo lỗi). File config không đổi;
+  JSON ghi giá trị đã thay ở `config.overrides` (không có cờ ⇒ không có khóa này).
+- `--no-auto-space`: hạ tay lâu hơn `word_gap_ms` không tự thêm dấu cách; khoảng nghỉ vẫn được phát hiện và đếm (sự kiện `word_gap` có
+  `auto_space: false`, gốc JSON có `auto_space: false`). Dấu cách chỉ đến từ phím Space.
+- Khóa TÙY CHỌN của config (thiếu khóa ⇒ hành vi như trước lần sửa 7; không khóa nào ⇒ bộ giải mã bằng hệt bộ giải mã đã đo ở D4):
+  - `cls_conf_tone`, `cls_stable_ms_tone`: ngưỡng tin cậy và thời gian ổn định riêng cho 5 dấu thanh; chữ cái vẫn dùng `cls_conf`,
+    `cls_stable_ms`. Thiếu một khóa ⇒ dấu thanh dùng giá trị của chữ cái cho khóa đó.
+  - `dropout_tolerance_ms`: một cửa sổ đơn lẻ rớt dưới ngưỡng (hoặc không hợp lệ) giữa một chuỗi không làm chuỗi bắt đầu lại nếu cửa sổ
+    kế tiếp có kết quả quay lại đúng nhãn đó trong khoảng thời gian này tính từ cửa sổ rớt; ngược lại chuỗi bắt đầu lại tại cửa sổ rớt như
+    cũ. Thiếu khóa ⇒ tắt.
+  Mỗi khóa viết như các khóa khác: `{"value": …, "source": "design", "reason": "…"}`.
+- HUD: khi chuỗi đang giữ là một dấu thanh, dòng `[classifier]` hiện thời gian ổn định của dấu thanh kèm `(tone)`:
+  `[classifier] cửa sổ: <top1> <conf> | giữ <ms>/<cls_stable_ms_tone> (tone) | cuối: <last>` (chuỗi chữ cái hoặc không có chuỗi ⇒ dòng như
+  mục 6).
+- **Giá trị của lần sửa 7 CHƯA được ghi vào `configs/level1_demo_classifier.json`** (`cls_conf_tone`, `cls_stable_ms_tone`, `cls_window_ms`,
+  `word_gap_ms` theo §2 của kế hoạch): file này sinh bằng `scripts/level1_rearm_check.py --write-demo-config`, và test AC-W3 của lần sửa 5
+  (`tests/test_level1_rearm_check.py`) ghim nó bằng config mặc định + `rearm_mode`; sửa file làm đỏ test cũ ⇒ chờ planner. Lệnh ở mục 1
+  vẫn chạy giá trị cũ. Muốn thử trên webcam trong lúc chờ: chép file ra `_work/`, thêm / đổi các khóa trên, chạy `--config _work/<file>.json`
+  (JSON ghi `config.path` và `config.sha256` của file đã dùng; không commit file đó).
+- `scripts/level1_trace_report.py` vẫn so `conf` với `cls_conf` cho mọi nhãn (chưa biết ngưỡng riêng của dấu thanh và debounce) ⇒ phân
+  loại M1/M3 của dấu thanh trên trace chạy với các khóa mới chỉ gần đúng.
