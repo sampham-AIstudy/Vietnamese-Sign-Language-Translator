@@ -1073,3 +1073,89 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   không train. AC-7b giờ đạt cả ở app với lệnh demo (`TestRev7DemoConfig`).
 - Còn cho reviewer / người dùng: phiên webcam với lệnh mục 1 (kỳ vọng "độ trễ đổi tay dưới 1 s" của §2 T2 chưa đo); AC1-đủ (31 module)
   không chạy trên cloud.
+
+## Lần sửa 8 — coder (phiên cloud 2026-10-05, `docs/plans/15-lan-sua-8.md` @ `1af1926`; Tầng 1, chỉ app demo) — **M1–M3 XONG**
+- Quyết định của người dùng (thread dự án): "Chỉ Tầng 1 trên app demo (cờ --min-detection-conf, CLAHE khi thiếu sáng, giữ dshow, không
+  train lại)". Nhánh: commit trên `claude/level1-rearm-rev8-0h67t5` (tạo từ `origin/cloud/2026-10-04-level1-rearm` @ `1af1926`), push lên
+  cả nhánh đó và `cloud/2026-10-04-level1-rearm` sau mỗi mục.
+- Đầu phiên (container mới): `.venv` → `/opt/vslt-venv`, cài `seaborn`; khôi phục (không commit): kernel `phmvnsm33/vsl-extract-alphabet`
+  → 686 npz `alphabet_hands` + manifest; `archive_private_kaggle.py restore` 2 manifest (provenance 13 file, step4 18 file; thư mục tải
+  phải nằm ngoài repo) — sha256 `checkpoints/alphabet_best.pt` = `a6311820…5b708a2` khớp; 640 mp4 hauuto; 46 video QIPEDC chữ cái theo
+  manifest (`-f Dataset/Videos/<id>.mp4`). GitNexus không dùng ⇒ impact = text search, detect-changes = `git diff --numstat`.
+- Mốc tại `1af1926` (`_work/_plan15/rev8_baseline_*.log`): 12 module Level 1 `Ran 294 — OK (skipped=1)` (skip duy nhất `test_u1_summary`,
+  thiếu file U1 của người dùng); 2 module mới `Ran 13 — OK`; AC1-ngắn 11 module `Ran 167 — OK`, 0 skip; guard `known=9 allowed=36`,
+  `Ran 28 — OK`.
+
+### M1 — `HandLandmarkSession(**overrides)` (`0f0af4f`)
+- Mã (`src/inference/hand_live.py`): từ khóa của `LEVEL1_HANDS_KWARGS` truyền cho phiên thay giá trị đó cho mọi graph của phiên (cả
+  `reset()`); `self.kwargs` = bản sao `{**LEVEL1_HANDS_KWARGS, **overrides}`; giá trị `None` ⇒ giữ mặc định; từ khóa lạ ⇒ `TypeError`, không
+  dựng graph (lựa chọn của coder: plan cho phép `Optional[float] = None` hoặc `**kwargs`). `LEVEL1_HANDS_KWARGS`, `extractor_info()` không đổi.
+- Impact (text search): `HandLandmarkSession` gọi bởi `backend/main.py` (WS, không đối số), `level1_demo.py` (`session_factory` mặc định),
+  test (`RecordingSession` của AC-E và `_HandAwaySession` gọi `super().__init__()` không đối số; `tests/test_cors_origin_bind.py` thay bằng
+  đối tượng của test). detect-changes: `hand_live.py 15+/3−`, `tests/test_level1_demo.py 132+/0−`.
+- Test viết TRƯỚC (`tests/test_level1_demo.py`): `TestHandSessionKwargsM1` (5: mặc định = `LEVEL1_HANDS_KWARGS` với spy `Hands`, 0.35 cho
+  cả graph sau `reset()` và hằng số không đổi, `None` = mặc định, từ khóa lạ, lớp con không đối số) + `TestHandSessionClipM1` (1, clip D2:
+  phiên `min_detection_confidence=0.5` tường minh trả đúng từng khung như phiên mặc định — landmark `array_equal`, handedness, score; phiên 0.35
+  chạy hết clip). ĐỎ: `Ran 6 — FAILED (errors=4, skipped=1)` (`_work/_plan15/M1_red.log`; test từ khóa lạ xanh từ đầu vì hàm cũ không nhận
+  đối số nào; skip = clip chưa khôi phục lúc đó). XANH: `Ran 6 — OK` có clip (`M1_green.log`); 12 module L1 `Ran 300 — OK (skipped=1)`,
+  2 module mới `Ran 13 — OK`, AC1-ngắn `Ran 167 — OK` 0 skip (gồm AC5 `test_hand_live_equivalence`, AC4-a `test_hand_landmarks_ws`), guard
+  `known=9 allowed=36`, `tests.test_cors_origin_bind` `Ran 21 — OK` (`_work/_plan15/M1_full_*.log`, mã M2 cất bằng `git stash` lúc chạy).
+
+### M2 — `enhance_low_light` (`24cfc5f`)
+- Mã (`src/inference/level1_core.py`, thêm `import cv2`): `enhance_low_light(frame_bgr, threshold=LOW_LIGHT_THRESHOLD, clip_limit=
+  CLAHE_CLIP_LIMIT) -> (frame, enhanced)` đúng §2 M2 (trung bình ảnh xám < ngưỡng ⇒ LAB, CLAHE trên L với `CLAHE_TILE_GRID` 8x8, về BGR,
+  mảng mới, `True`; ngược lại chính đối tượng khung, `False`); khung vào không bị sửa; chỉ nhận uint8 HxWx3 (`ValueError`, lựa chọn của coder).
+  Giá trị 80 / 2.0 / 8x8 là giá trị thiết kế của plan, đặt thành hằng.
+- Impact (text search): hàm và hằng mới; `level1_core` được import bởi `level1_demo.py`, `scripts/level1_rearm_check.py`,
+  `scripts/level1_segment_report.py` (không gọi hàm mới) — thêm `cv2` (đã có trong `.venv`). detect-changes: `level1_core.py 27+/1−`,
+  `tests/test_level1_core.py 85+/0−`.
+- Test viết TRƯỚC `TestEnhanceLowLightM2` (5: khung toàn 30 ⇒ `True`, mảng mới, sáng hơn, bằng bộ tham chiếu viết trong test; ramp tối ⇒
+  độ lệch chuẩn ảnh xám tăng, `clip_limit` được dùng; khung toàn 150 ⇒ đúng đối tượng, `False`; ranh giới 79/80 và tham số `threshold`;
+  khung sai kiểu). ĐỎ: `Ran 5 — FAILED (errors=5)` (ImportError; `_work/_plan15/M2_red.log`). Lần xanh đầu (`M2_green.log`) đỏ 1 test do
+  CHÍNH TEST: ramp 48x64 quá nhỏ cho lưới 8x8 nên `clip_limit` 2 và 4 cho cùng ảnh; sửa test (chưa commit) sang ramp 640x480 và so "khác
+  nhau" thay vì "độ lệch chuẩn lớn hơn"; không đổi mã ⇒ `Ran 5 — OK` (`M2_green2.log`). Hồi quy: 12 module L1 `Ran 305 — OK (skipped=1)`,
+  2 module mới `Ran 13 — OK`, AC1-ngắn `Ran 167 — OK`, guard `known=9 allowed=36` (`_work/_plan15/M2_full_*.log`).
+
+### M3 — cờ CLI, HUD, JSON, tài liệu (`7d32aea`)
+- Mã (`level1_demo.py`): `--min-detection-conf` (`detection_conf`: số hữu hạn trong (0, 1]; mặc định `DEFAULT_MIN_DETECTION_CONF` =
+  `LEVEL1_HANDS_KWARGS["min_detection_confidence"]`), `--auto-enhance`. `session_factory` mặc định thành
+  `functools.partial(HandLandmarkSession, min_detection_confidence=…)` (graph warm-up và graph luồng); factory do test truyền vào dùng
+  nguyên (lựa chọn của coder). `_process`: với `--auto-enhance`, `enhance_low_light(frame)` đưa vào `session.process`, `frame` gốc vẫn được
+  vẽ landmark và hiển thị; thời gian CLAHE ở stage mới `low_light_enhance` (chỉ có khi bật cờ; không cộng vào `mediapipe`). HUD: dòng
+  `[MP: conf=<x.xx> | CLAHE: on|off]` ngay dưới dòng trạng thái / `[classifier]`, chỉ khi khác mặc định. JSON: khóa gốc `hand_detection`
+  (`min_detection_confidence`, `auto_enhance`; với `--auto-enhance` thêm `frames_enhanced`, `low_light_threshold`, `clahe_clip_limit`,
+  `clahe_tile_grid`) chỉ khi khác mặc định — plan không nêu JSON, coder thêm để biết một lần chạy đã dùng ngưỡng / tăng sáng nào.
+  `docs/level1_desktop.md`: mục 1 trỏ tới mục 8; mục 8 (lệnh của plan, hai cờ, HUD, JSON, dshow, giới hạn; không số đo). Config không đổi.
+- Impact (text search): `Level1App.__init__`, `_hud_lines`, `_process`, `report`, `build_parser` (gọi bởi `main`, `tests/test_level1_demo.py`,
+  `tests/test_level1_equivalence.py`); `Level1App` chỉ được tạo trong `main` và test. detect-changes: `level1_demo.py 58+/6−`,
+  `docs/level1_desktop.md 26+/0−`, `tests/test_level1_demo.py 374+/0−`.
+- Test viết TRƯỚC (`tests/test_level1_demo.py`, 17): `TestDetectionArgsM3` (4), `TestMinDetectionConfM3` (3: spy `Hands` — 0.35 ở cả 2
+  graph, JSON `hand_detection`, config không đổi; không cờ và `--min-detection-conf 0.5` ⇒ mọi graph = `LEVEL1_HANDS_KWARGS`, JSON cùng cây
+  khóa, tokens/labels/segments/counts bằng app tại `1af1926`), `TestAutoEnhanceM3` (5: clip D2 tối ở mọi khung ⇒ mỗi khung vào MediaPipe
+  = `enhance_low_light(khung đọc)` và không phải đối tượng đọc, `frames_enhanced` = số khung xử lý; clip `khoi/a_khoi_A_001.mp4` sáng ở mọi
+  khung ⇒ đúng đối tượng đọc, `frames_enhanced` 0; không cờ ⇒ như cũ; chế độ cửa sổ (lệnh cửa sổ ghi lại) ⇒ landmark vẽ lên khung đọc),
+  `TestRev8CommandM3` (1: lệnh của plan qua `main`, `--source` clip D2 headless), `TestDetectionHudM3` (1: dòng HUD đúng định dạng ở 2
+  config, không cờ ⇒ các dòng HUD bằng app `1af1926`), `TestCameraDshowM3` (2: 3 config giữ `dshow`; `CameraReader` mở bằng
+  `cv2.CAP_DSHOW` với kích thước / buffer của config — `VideoCapture` thay bằng lớp ghi lại trong test, không mở camera), `TestDesktopDocM3`
+  (1). ĐỎ (`_work/_plan15/M3_red_by_class.log`, chạy từng lớp vì argparse thoát trong setUpClass): Args `FAILED (failures=1, errors=2)`,
+  MinDetectionConf / AutoEnhance thoát 2 (argparse từ chối cờ), Rev8Command `FAILED (failures=1)`, Hud `FAILED (errors=2)`, Doc
+  `FAILED (failures=1)`; xanh từ đầu đúng mong đợi: `TestCameraDshowM3` (giữ hành vi có sẵn) và test từ chối giá trị ngoài (0, 1] (cờ chưa
+  có cũng bị từ chối). XANH: `Ran 17 — OK` (`M3_green.log`).
+
+### Kết thúc lần sửa 8 — AC-8a…AC-8e
+- Commit: `0f0af4f` M1, `24cfc5f` M2, `7d32aea` M3 (+ commit tiến độ này).
+- Hồi quy tại `7d32aea` (`_work/_plan15/M3_full_*.log`): 12 module Level 1 `Ran 322 — OK (skipped=1)` (= 294 cũ + 28 mới; skip duy nhất
+  `test_u1_summary`); 2 module mới `Ran 13 — OK`; AC1-ngắn 11 module `Ran 167 — OK`, 0 skip; guard `[DoD7-guard] known=9 allowed=36`,
+  `Ran 28 — OK`; `tests.test_cors_origin_bind` `Ran 21 — OK`.
+- AC-8a: `git diff 1af1926..HEAD --numstat -- tests/` → `test_level1_core.py 85/0`, `test_level1_demo.py 506/0` (cột xóa = 0).
+  `git diff 1af1926..HEAD` chỉ gồm file trong §3 của plan; `configs/` (sha256 `level1_realtime.json` `cc178955…eb54b`,
+  `level1_demo_classifier.json` `568f97d8…c397e2`, `level1_demo_classifier_rev7.json` `a2aea62e…ce4a7d`), `backend/main.py`,
+  `realtime_demo.py`, `src/data/alphabet_preprocessing.py`, `README.md` không đổi; sha256 checkpoint không đổi; không train.
+- AC-8b: đạt (không cờ ⇒ graph = `LEVEL1_HANDS_KWARGS`, JSON/HUD như `1af1926`, AC5 + AC4-a + 12 module L1 xanh). AC-8c: đạt
+  (`TestMinDetectionConfM3`). AC-8d: đạt trên clip (`TestAutoEnhanceM3`, `TestRev8CommandM3`). AC-8e: phần kiểm được trên cloud đạt
+  (`TestCameraDshowM3`); "ổn định trên webcam laptop" cần phiên webcam của người dùng trên Windows.
+- Ghi chú: clip D2 (người ký hau) tối dưới ngưỡng ở mọi khung (`test_m3_clips_are_dark_and_bright`) ⇒ dữ liệu train có khung tối không tăng
+  sáng; `--auto-enhance` làm khung vào MediaPipe khác lúc trích landmark train (ghi ở giới hạn mục 8 của `docs/level1_desktop.md`).
+- Còn cho reviewer / người dùng: hồi quy trên Windows và phiên webcam theo checklist §5 của plan
+  (`python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json --min-detection-conf 0.35 --auto-enhance`);
+  tác dụng lên tỉ lệ thấy tay / độ chính xác chưa đo. AC1-đủ (31 module) không chạy trên cloud.
