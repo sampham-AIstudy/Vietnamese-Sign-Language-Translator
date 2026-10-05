@@ -48,3 +48,7 @@ Lệch kế hoạch / giả định (chi tiết ở `docs/plans/15-progress.md` 
 - Diễn giải luật 1 decoder: khung có tay mà chưa có kết quả cửa sổ (thiếu khung / bị worker bỏ) không cắt chuỗi chạy (giống analyze5.py).
 - Chặng `window_classify` chỉ có trong JSON ở chế độ classifier (test AC-L cũ khóa danh sách chặng ở motion_pose); `emit_to_token` chưa đo cho nhãn.
 - Chưa làm: `--write-mode-config` (chờ người dùng chọn), U1c, A3, C1 (cần webcam / người dùng, làm ở local).
+
+**Cập nhật sau quyết định:** người dùng chọn (a) Classifier. Bật thử trên config mặc định làm 5 test CŨ đỏ (AC-D2 ×2, AC-L ×3 khóa hành vi
+motion_pose của config mặc định) ⇒ điểm dừng §7 mục 3, CẦN PLANNER chốt cách bật (a). Config giữ "motion_pose"; demo tạm dùng `--config` với bản
+sao đặt `rearm_mode` = "classifier". Chi tiết: 15-progress mục D4.

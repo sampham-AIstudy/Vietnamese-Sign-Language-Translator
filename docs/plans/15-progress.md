@@ -722,3 +722,12 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - Theo §7 mục 2: DỪNG. `rearm_mode` giữ "motion_pose", KHÔNG chạy `--write-mode-config`, KHÔNG thử tham số khác, KHÔNG nới gate. Người dùng chọn
   (a) bật classifier cho buổi báo cáo, Giới hạn ghi "dấu thanh liên tiếp kém hơn chế độ cũ; dùng phím 1–5" (G6 dấu vẫn ghi là trượt), hoặc
   (b) giữ motion_pose + phím n. Khuyến nghị của planner (§7): (a).
+- **Người dùng chọn (a) "Classifier"** trên thẻ quyết định (2026-10-05 04:30 UTC). Thử bật bằng cách đổi TẠM `rearm_mode` = "classifier" trong
+  `configs/level1_realtime.json` (không commit, đã khôi phục từng byte) rồi chạy 12 module Level 1: `FAILED (failures=9, skipped=1)`
+  (`_work/_plan15/A_flip_try.log`). Trong đó 5 test CŨ đỏ vì chúng chạy app với config mặc định và khóa hành vi motion_pose:
+  `TestHeadlessD2.test_d2_exit_and_keys`, `test_d2_prediction_equals_classify_again` (classify n == số segment), `TestLatencyAcL.test_l1_headless_d2_json`,
+  `test_l1_l2_paced_json`, `test_l1_window_mode_measures_every_stage` (`tuple(stages) == STAGES`, classify n == số segment); 4 test mới của lượt
+  này (D8, C4, A2, K3 motion_pose) cũng giả định config mặc định là motion_pose. Ngoài ra `--write-mode-config` từ chối vì `gates.all_pass` false.
+  ⇒ **Điểm dừng §7 mục 3 (test cũ đỏ) — CẦN PLANNER**: cách bật (a) mà không sửa test cũ (ví dụ test cũ ghim config motion_pose, hoặc chế độ
+  chọn bằng cờ/config riêng cho demo) và cách ghi config khi G6 dấu trượt có chủ ý của người dùng. Config giữ "motion_pose".
+  Tạm thời cho demo (không đổi repo): chạy app với bản sao config đặt `rearm_mode` = "classifier" qua `--config` (đường này đã kiểm ở AC-A1).
