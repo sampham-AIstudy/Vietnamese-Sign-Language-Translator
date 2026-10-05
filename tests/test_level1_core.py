@@ -374,5 +374,76 @@ class TestTimingAcT(unittest.TestCase):
             st.add("zzz", 1.0)
 
 
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Plan 15 lần sửa 7 T1: optional decoder keys cls_conf_tone / cls_stable_ms_tone (absent = the decoder falls back to
+# cls_conf / cls_stable_ms; configs/level1_realtime.json does not get them and still loads exactly as before).
+# ----------------------------------------------------------------------------------------------------------------------
+T1_KEYS = {"cls_conf_tone": 0.78, "cls_stable_ms_tone": 200.0}
+
+
+class TestOptionalToneKeysT1(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.mkdtemp(prefix="vslt_p15_t1_")
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def _with(self, **values):
+        raw = _real_raw()
+        for k, v in values.items():
+            raw[k] = {"value": v, "source": "design", "reason": "test value (plan 15 lần sửa 7 T1)"}
+        return raw
+
+    def test_t1_optional_spec(self):
+        from src.inference.level1_core import OPTIONAL_CONFIG_SPEC
+        for k in T1_KEYS:
+            self.assertIn(k, OPTIONAL_CONFIG_SPEC)
+            self.assertNotIn(k, CONFIG_SPEC)                           # never a required key
+        self.assertFalse(set(OPTIONAL_CONFIG_SPEC) & set(CONFIG_SPEC))
+
+    def test_t1_default_config_unchanged(self):
+        cfg = load_level1_config(CONFIG_PATH)
+        self.assertEqual(set(cfg["values"]), set(CONFIG_SPEC))
+        for k in T1_KEYS:
+            self.assertNotIn(k, cfg["raw"])
+
+    def test_t1_keys_accepted_and_returned(self):
+        values = validate_level1_config(self._with(**T1_KEYS))
+        for k, v in T1_KEYS.items():
+            self.assertEqual(values[k], v)
+        self.assertEqual(list(values)[:len(CONFIG_SPEC)], list(CONFIG_SPEC))
+        values = validate_level1_config(self._with(cls_conf_tone=1.0))
+        self.assertEqual(values["cls_conf_tone"], 1.0)
+        self.assertNotIn("cls_stable_ms_tone", values)
+        p = os.path.join(self.tmp, "t1.json")
+        with open(p, "w", encoding="utf-8") as f:
+            json.dump(self._with(**T1_KEYS), f, ensure_ascii=False)
+        self.assertEqual(load_level1_config(p)["values"]["cls_stable_ms_tone"], 200.0)
+
+    def test_t1_bad_values_rejected(self):
+        for key, bad in (("cls_conf_tone", 0), ("cls_conf_tone", 1.01), ("cls_conf_tone", -0.2), ("cls_conf_tone", True),
+                         ("cls_conf_tone", "0.78"), ("cls_conf_tone", float("nan")), ("cls_stable_ms_tone", 0),
+                         ("cls_stable_ms_tone", -200), ("cls_stable_ms_tone", False),
+                         ("cls_stable_ms_tone", float("inf"))):
+            with self.subTest(key=key, bad=bad):
+                with self.assertRaises(ValueError):
+                    validate_level1_config(self._with(**{key: bad}))
+        for field in ("source", "reason"):
+            raw = self._with(**T1_KEYS)
+            del raw["cls_conf_tone"][field]
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                validate_level1_config(raw)
+        raw = self._with(**T1_KEYS)
+        raw["cls_stable_ms_tone"] = 200.0                                # a bare number, not {value, source, reason}
+        with self.assertRaises(ValueError):
+            validate_level1_config(raw)
+        raw = self._with(cls_conf_tones=0.78)                            # misspelt key: still an unknown key
+        with self.assertRaises(ValueError):
+            validate_level1_config(raw)
+
+
 if __name__ == "__main__":
     unittest.main()

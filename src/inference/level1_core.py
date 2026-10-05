@@ -54,6 +54,12 @@ CONFIG_SPEC = {
     "hud_rolling_frames": ("int", "positive"),
     "font_paths": ("str_list", "non_empty"),
 }
+# keys a config may leave out (plan 15 lần sửa 7): checked like CONFIG_SPEC when present; an absent key means the
+# behaviour without it (Level1LabelDecoder falls back to cls_conf / cls_stable_ms)
+OPTIONAL_CONFIG_SPEC = {
+    "cls_conf_tone": ("number", "unit_interval"),
+    "cls_stable_ms_tone": ("number", "positive"),
+}
 CAMERA_APIS = ("dshow", "msmf", "any")
 REARM_MODES = ("motion_pose", "classifier")  # plan 15 lần sửa 4 §3.3: segmenter re-arm (motion / pose) or label decoder
 ENUMS = {"rearm_mode": REARM_MODES}
@@ -61,7 +67,7 @@ CALIBRATED_PREFIX = "calibrated: "
 
 
 def _check_value(key: str, value: Any) -> None:
-    kind, check = CONFIG_SPEC[key]
+    kind, check = CONFIG_SPEC[key] if key in CONFIG_SPEC else OPTIONAL_CONFIG_SPEC[key]
     if kind in ("number", "int"):
         if isinstance(value, bool) or not isinstance(value, numbers.Real):
             raise ValueError(f"config {key}: value must be a number, got {value!r}")
@@ -91,29 +97,37 @@ def _check_value(key: str, value: Any) -> None:
             raise ValueError(f"config {key}: value must be a non-empty list of strings")
 
 
+def _entry_value(key: str, entry: Any) -> Any:
+    if not isinstance(entry, dict) or "value" not in entry:
+        raise ValueError(f"config {key}: must be an object with value, source, reason")
+    source, reason = entry.get("source"), entry.get("reason")
+    if not isinstance(source, str) or not (source == "design" or (source.startswith(CALIBRATED_PREFIX)
+                                                                   and len(source) > len(CALIBRATED_PREFIX))):
+        raise ValueError(f"config {key}: source must be 'design' or '{CALIBRATED_PREFIX}<json>@<commit>'")
+    if not isinstance(reason, str) or not reason.strip():
+        raise ValueError(f"config {key}: reason must be a non-empty string")
+    _check_value(key, entry["value"])
+    return entry["value"]
+
+
 def validate_level1_config(raw: Dict[str, Any]) -> Dict[str, Any]:
     """Raw config dict -> {key: value}. Raises ValueError on a missing key, a missing / empty source or reason,
-    a wrong type, move_speed <= still_speed or word_gap_ms < hand_lost_ms. Keys starting with '_' are comments."""
+    a wrong type, move_speed <= still_speed or word_gap_ms < hand_lost_ms. Keys starting with '_' are comments.
+    The keys of OPTIONAL_CONFIG_SPEC are checked the same way when present and returned after the others."""
     if not isinstance(raw, dict):
         raise ValueError("config must be a JSON object")
-    unknown = sorted(k for k in raw if not k.startswith("_") and k not in CONFIG_SPEC)
+    unknown = sorted(k for k in raw if not k.startswith("_") and k not in CONFIG_SPEC
+                     and k not in OPTIONAL_CONFIG_SPEC)
     if unknown:
         raise ValueError(f"config: unknown keys {unknown}")
     values = {}
     for key in CONFIG_SPEC:
         if key not in raw:
             raise ValueError(f"config: missing key {key!r}")
-        entry = raw[key]
-        if not isinstance(entry, dict) or "value" not in entry:
-            raise ValueError(f"config {key}: must be an object with value, source, reason")
-        source, reason = entry.get("source"), entry.get("reason")
-        if not isinstance(source, str) or not (source == "design" or (source.startswith(CALIBRATED_PREFIX)
-                                                                       and len(source) > len(CALIBRATED_PREFIX))):
-            raise ValueError(f"config {key}: source must be 'design' or '{CALIBRATED_PREFIX}<json>@<commit>'")
-        if not isinstance(reason, str) or not reason.strip():
-            raise ValueError(f"config {key}: reason must be a non-empty string")
-        _check_value(key, entry["value"])
-        values[key] = entry["value"]
+        values[key] = _entry_value(key, raw[key])
+    for key in OPTIONAL_CONFIG_SPEC:
+        if key in raw:
+            values[key] = _entry_value(key, raw[key])
     if not values["move_speed"] > values["still_speed"]:
         raise ValueError("config: move_speed must be > still_speed")
     if values["word_gap_ms"] < values["hand_lost_ms"]:

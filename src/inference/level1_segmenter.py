@@ -48,6 +48,7 @@ from typing import Any, Deque, Dict, List, Optional, Sequence, Tuple, Union
 import numpy as np
 
 from src.data.alphabet_preprocessing import EPS, MIDDLE_MCP_IDX, WRIST_IDX, normalize_hand_landmarks
+from src.inference.fingerspelling_compose import TONE_MARKS
 
 SEGMENTER_KEYS = ("motion_window_ms", "still_speed", "move_speed", "hold_ms", "rearm_move_ms", "hand_lost_ms",
                   "word_gap_ms", "max_segment_ms", "min_sign_frames", "tail_still_keep_ms", "pose_change_rules",
@@ -408,6 +409,9 @@ class Level1SignSegmenter:
 # signed as the hand shape of the base letter plus a motion, so a window sees the base letter first
 VARIANT_BASE = {"ă": "a", "â": "a", "ê": "e", "ô": "o", "ơ": "o", "ư": "u", "đ": "d"}
 DECODER_KEYS = ("cls_window_ms", "cls_conf", "cls_stable_ms", "hand_lost_ms")
+# optional (plan 15 lần sửa 7 T1): threshold / stable time of the 5 tone marks; an absent key = cls_conf / cls_stable_ms
+DECODER_TONE_KEYS = {"cls_conf_tone": "cls_conf", "cls_stable_ms_tone": "cls_stable_ms"}
+TONE_LABELS = tuple(TONE_MARKS)
 LABEL_ACTIONS = ("append", "replace")
 WINDOW_CLOSE_REASON = "window"
 
@@ -503,6 +507,9 @@ class Level1LabelDecoder:
        result None (window too short, or its job dropped by the worker) has no result and leaves the run as it is.
     2. emit when the label is not None, ts - run_since >= cls_stable_ms and label != last emitted label; then
        last = label.
+       Tone marks (plan 15 lần sửa 7 T1): a prediction among the 5 tone marks uses cls_conf_tone in rule 1 and
+       cls_stable_ms_tone in rule 2 (thresholds(label)); each key is optional and falls back to cls_conf /
+       cls_stable_ms, so without them the decoder is the decoder of D4 exactly.
     3. replace: when VARIANT_BASE[label] == last (and a label was emitted before), action 'replace', else 'append'.
     4. no hand for >= hand_lost_ms: last = None and the run is cleared (withdraw the hand and sign again = the same
        letter may come again); force_next(ts) (key n): last = None.
@@ -520,6 +527,13 @@ class Level1LabelDecoder:
         _positive_number("cls_conf", conf)
         if not conf <= 1:
             raise ValueError(f"cls_conf must be in (0, 1], got {conf!r}")
+        self.p_tone = {}  # the letter key each optional tone key replaces -> value used for tone marks
+        for key, base in DECODER_TONE_KEYS.items():
+            value = params[key] if key in params else self.p[base]
+            _positive_number(key, value)
+            self.p_tone[base] = value
+        if not self.p_tone["cls_conf"] <= 1:
+            raise ValueError(f"cls_conf_tone must be in (0, 1], got {self.p_tone['cls_conf']!r}")
         self._seq = 0
         self._n_emitted = 0
         self._last_ts: Optional[float] = None
@@ -535,6 +549,15 @@ class Level1LabelDecoder:
     @property
     def last_label(self) -> Optional[str]:
         return self._last
+
+    @staticmethod
+    def is_tone(label: Optional[str]) -> bool:
+        return label in TONE_LABELS
+
+    def thresholds(self, label: Optional[str]) -> Tuple[float, float]:
+        """(minimum confidence, stable time in ms) applied to a window predicting `label` (rules 1 and 2)."""
+        p = self.p_tone if self.is_tone(label) else self.p
+        return p["cls_conf"], p["cls_stable_ms"]
 
     def force_next(self, ts_ms: float) -> None:
         """Key n "chữ kế": the label held now may be emitted again."""
@@ -558,11 +581,12 @@ class Level1LabelDecoder:
         if result is None:
             return None
         conf = result.get("confidence")
+        min_conf, stable_ms = self.thresholds(result.get("prediction"))
         label = result.get("prediction") if (result.get("status") == "ok" and conf is not None
-                                             and conf >= self.p["cls_conf"]) else None
+                                             and conf >= min_conf) else None
         if label is None or label != self._run_label:
             self._run_label, self._run_since = label, ts
-        if label is None or ts - self._run_since < self.p["cls_stable_ms"] or label == self._last:
+        if label is None or ts - self._run_since < stable_ms or label == self._last:
             return None
         replace = self._n_emitted > 0 and self._last is not None and VARIANT_BASE.get(label) == self._last
         self._last = label

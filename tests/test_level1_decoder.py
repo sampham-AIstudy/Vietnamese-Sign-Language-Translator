@@ -350,5 +350,157 @@ class TestSpellerOnLabelD9(unittest.TestCase):
         self.assertEqual(sp.events[-1]["action"], "reject")
 
 
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Plan 15 lần sửa 7 T1: AC-7b (own threshold and stable time for the 5 tone marks) and AC-7d (without the new keys the
+# decoder is the decoder of D4 exactly). Streams are controlled synthetic data to check the logic, not accuracy.
+# ----------------------------------------------------------------------------------------------------------------------
+import subprocess  # noqa: E402
+import types  # noqa: E402
+
+TONE_LABELS = ("dấu sắc", "dấu huyền", "dấu hỏi", "dấu ngã", "dấu nặng")
+PARAMS_T1 = {**PARAMS, "cls_conf_tone": 0.78, "cls_stable_ms_tone": 200}
+BEFORE_REV7_COMMIT = "5e08fbd"  # src/inference/level1_segmenter.py of D4 / lần sửa 6 (before lần sửa 7)
+
+
+def segmenter_module_at(commit):
+    """src/inference/level1_segmenter.py at `commit`, loaded from `git show` into an in-memory module (nothing written)."""
+    r = subprocess.run(["git", "show", f"{commit}:src/inference/level1_segmenter.py"], cwd=PROJECT_ROOT,
+                       capture_output=True, text=True, encoding="utf-8")
+    if r.returncode != 0:
+        raise AssertionError(f"git show {commit}:src/inference/level1_segmenter.py failed: {r.stderr.strip()}")
+    mod = types.ModuleType(f"_level1_segmenter_ref_{commit}")
+    exec(compile(r.stdout, f"<git show {commit}:level1_segmenter.py>", "exec"), mod.__dict__)
+    return mod
+
+
+def random_stream(rng, n=400):
+    """Hand frames every 20-60 ms with letters, tone marks, low confidences, other statuses, missing results and
+    no-hand runs (some longer than hand_lost_ms)."""
+    labels = ["a", "â", "b", "o", "ơ", *TONE_LABELS]
+    frames, t, k = [], 0.0, 0
+    while k < n:
+        run = int(rng.integers(1, 26))
+        kind = rng.random()
+        label = labels[int(rng.integers(len(labels)))]
+        conf = float(rng.choice([0.5, 0.77, 0.78, 0.8, 0.85, 0.89, 0.9, 0.95, 1.0]))  # one level per run
+        for _ in range(run):
+            t += float(rng.integers(20, 61))
+            if kind < 0.1:
+                frames.append((t, False, None))
+            elif kind < 0.15:
+                frames.append((t, True, None))
+            elif kind < 0.2:
+                frames.append((t, True, {"status": "too_few_frames"}))
+            else:
+                dip = rng.random() < 0.08                                # a single frame below every threshold
+                frames.append((t, True, ok(label, 0.5 if dip else conf)))
+            k += 1
+    return frames
+
+
+def emits(em):
+    return [(e.seq, e.ts_ms, e.prediction, e.confidence, e.action, e.run_since_ms) for e in em]
+
+
+class TestToneThresholdsT1(unittest.TestCase):
+    def test_7b_tone_at_080_emitted_after_200_ms(self):
+        for tone in TONE_LABELS:
+            with self.subTest(tone=tone):
+                em = decode(stream([(tone, 1000, 0.80)])[0], params=PARAMS_T1)
+                self.assertEqual([(e.prediction, e.action) for e in em], [(tone, "append")])
+                self.assertEqual(em[0].run_since_ms, 0.0)
+                self.assertEqual(em[0].ts_ms - em[0].run_since_ms, 200.0)  # frames every 40 ms: exactly 200 ms
+                self.assertEqual(em[0].confidence, 0.80)
+
+    def test_7b_letter_at_080_rejected_letter_at_092_after_300_ms(self):
+        self.assertEqual(decode(stream([("b", 2000, 0.80)])[0], params=PARAMS_T1), [])
+        em = decode(stream([("b", 1000, 0.92)])[0], params=PARAMS_T1)
+        self.assertEqual([e.prediction for e in em], ["b"])
+        self.assertGreaterEqual(em[0].ts_ms - em[0].run_since_ms, 300.0)
+        self.assertLessEqual(em[0].ts_ms - em[0].run_since_ms, 300.0 + DT)
+        # a letter held 280 ms (>= the tone stable time, < cls_stable_ms) is not emitted
+        self.assertEqual(decode(stream([("b", 280, 0.95), (None, 40)])[0], params=PARAMS_T1), [])
+
+    def test_7b_tone_below_its_threshold_or_too_short(self):
+        self.assertEqual(decode(stream([("dấu huyền", 2000, 0.77)])[0], params=PARAMS_T1), [])
+        self.assertEqual(decode(stream([("dấu huyền", 160, 0.80), ("b", 200, 0.95)])[0], params=PARAMS_T1), [])
+
+    def test_7b_letters_and_tones_in_one_stream(self):
+        frames, _ = stream([("a", 500), ("dấu sắc", 400, 0.80), ("b", 500, 0.92), ("dấu nặng", 400, 0.79)])
+        em = decode(frames, params=PARAMS_T1)
+        self.assertEqual([e.prediction for e in em], ["a", "dấu sắc", "b", "dấu nặng"])
+        stable = [e.ts_ms - e.run_since_ms for e in em]
+        self.assertEqual(stable, [320.0, 200.0, 320.0, 200.0])
+
+    def test_7b_thresholds_per_label(self):
+        dec = Level1LabelDecoder(PARAMS_T1)
+        for tone in TONE_LABELS:
+            self.assertEqual(dec.thresholds(tone), (0.78, 200))
+            self.assertTrue(dec.is_tone(tone))
+        for letter in ("a", "â", "đ", "y"):
+            self.assertEqual(dec.thresholds(letter), (0.9, 300))
+            self.assertFalse(dec.is_tone(letter))
+        old = Level1LabelDecoder(PARAMS)
+        self.assertEqual(old.thresholds("dấu sắc"), (0.9, 300))       # fallback to cls_conf / cls_stable_ms
+        self.assertEqual(old.p, PARAMS)                                  # no new key added to the parameters
+
+    def test_7b_one_key_without_the_other(self):
+        em = decode(stream([("dấu ngã", 1000, 0.80)])[0], params={**PARAMS, "cls_conf_tone": 0.78})
+        self.assertEqual([e.ts_ms - e.run_since_ms for e in em], [320.0])    # stable time falls back to 300
+        em = decode(stream([("dấu ngã", 1000, 0.95)])[0], params={**PARAMS, "cls_stable_ms_tone": 200})
+        self.assertEqual([e.ts_ms - e.run_since_ms for e in em], [200.0])    # threshold falls back to 0.9
+        self.assertEqual(decode(stream([("dấu ngã", 1000, 0.80)])[0], params={**PARAMS, "cls_stable_ms_tone": 200}),
+                         [])
+
+    def test_7b_new_parameters_checked(self):
+        for key, bad in (("cls_conf_tone", 0.0), ("cls_conf_tone", 1.5), ("cls_conf_tone", True),
+                         ("cls_conf_tone", float("nan")), ("cls_conf_tone", "0.8"), ("cls_stable_ms_tone", 0),
+                         ("cls_stable_ms_tone", -1), ("cls_stable_ms_tone", None)):
+            with self.subTest(key=key, bad=bad):
+                with self.assertRaises(ValueError):
+                    Level1LabelDecoder({**PARAMS, key: bad})
+        self.assertEqual(Level1LabelDecoder({**PARAMS, "cls_conf_tone": 1.0}).thresholds("dấu hỏi"), (1.0, 300))
+
+    def test_7d_without_new_keys_same_as_d4_decoder(self):
+        ref = segmenter_module_at(BEFORE_REV7_COMMIT)
+        rng = np.random.default_rng(7)
+        n_emits = 0
+        for i in range(30):
+            frames = random_stream(rng)
+            new, old = Level1LabelDecoder(PARAMS), ref.Level1LabelDecoder(PARAMS)
+            em_new, em_old = [], []
+            for j, (ts, has_hand, result) in enumerate(frames):
+                if j % 97 == 96:                                         # key n now and then, on both
+                    new.force_next(ts - 1.0)
+                    old.force_next(ts - 1.0)
+                e = new.push(ts, has_hand, result)
+                if e is not None:
+                    em_new.append(e)
+                e = old.push(ts, has_hand, result)
+                if e is not None:
+                    em_old.append(e)
+                self.assertEqual((new._run_label, new._run_since, new.last_label),
+                                 (old._run_label, old._run_since, old.last_label), (i, j))
+            self.assertEqual(emits(em_new), emits(em_old), i)
+            self.assertEqual([e.result for e in em_new], [e.result for e in em_old], i)
+            n_emits += len(em_new)
+        self.assertGreater(n_emits, 50)
+        # same keys given explicitly with the letter values = the D4 decoder as well
+        frames = random_stream(np.random.default_rng(8))
+        same = {**PARAMS, "cls_conf_tone": PARAMS["cls_conf"], "cls_stable_ms_tone": PARAMS["cls_stable_ms"]}
+        self.assertEqual(emits(decode(frames, params=same)), emits(decode(frames, dec=ref.Level1LabelDecoder(PARAMS))))
+
+    def test_7d_tone_keys_change_only_tone_runs(self):
+        """With the T1 keys, a stream without tone marks gives the emissions of the D4 decoder."""
+        ref = segmenter_module_at(BEFORE_REV7_COMMIT)
+        rng = np.random.default_rng(9)
+        for i in range(10):
+            frames = [(ts, h, r) for ts, h, r in random_stream(rng)
+                      if not (r is not None and r.get("prediction") in TONE_LABELS)]
+            self.assertEqual(emits(decode(frames, params=PARAMS_T1)),
+                             emits(decode(frames, dec=ref.Level1LabelDecoder(PARAMS))), i)
+
+
 if __name__ == "__main__":
     unittest.main()
