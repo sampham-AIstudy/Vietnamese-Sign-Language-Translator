@@ -1214,7 +1214,8 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   khung mà luật cho (tính lại trong test từ landmark ghi được), chữ b giữ yên không kích hoạt, có token trước ⇒ thêm `' '`, không cửa sổ nào ở
   khung xòe, segment/token `motion_pose` bằng app `03d17b8`; clip D2 không xòe ⇒ báo cáo bằng app `03d17b8` ở 2 chế độ),
   `TestGestureSpaceHudS2` (3: dòng tiến độ / flash, thứ tự timeline, tạm dừng). ĐỎ (`_work/_plan15/S2_red.log`): tracker `FAILED (errors=9)`,
-  app `FAILED (failures=5)`, HUD `FAILED (errors=4)`; 1 test app xanh từ đầu đúng mong đợi (khóa "không đổi" / sự kiện của clip). XANH: 18 OK
+  app `FAILED (failures=5)` (5 subtest trong 3 test), HUD `FAILED (errors=4)`; 3 test app xanh từ đầu đúng mong đợi (dữ kiện của clip, segment
+  `motion_pose` và báo cáo clip D2 "không đổi"). XANH: 18 OK
   (`S2_green.log`); `tests.test_level1_demo` + `core` + `guard` `Ran 152 — OK`.
 - Kiểm tay (không phải số liệu, `_work/_plan15/S2_palm_clips_explore.log`): 8 clip khoi `A_001` ở cả 2 chế độ ⇒ 1 cử chỉ mỗi clip, token bằng
   app `03d17b8` (lúc xòe text còn rỗng nên không thêm gì).
