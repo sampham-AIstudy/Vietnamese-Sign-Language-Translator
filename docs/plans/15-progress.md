@@ -755,3 +755,23 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   commit `12bd961` = config `on` của `rearm_check_d4.json@a58df71`.
 - XANH: 12 module Level 1 `Ran 215 — OK (skipped=1)` (skip = `test_u1_summary`, thiếu file U1 của người dùng; `_work/_plan15/S1_green_l1.log`);
   AC1-ngắn phần còn lại 11 module `Ran 167 — OK`, guard `known=9 allowed=36` (`_work/_plan15/S1_ac1.log`); sha256 checkpoint không đổi.
+
+### S2 — sinh `configs/level1_demo_classifier.json` (15-lan-sua-5 §4 #2, AC-W3…W5)
+- Test viết TRƯỚC: `TestDemoConfigFileW3` (`tests/test_level1_rearm_check.py`: file được git theo dõi, qua `load_level1_config`, `rearm_mode`
+  classifier, config mặc định vẫn motion_pose, mọi khóa khác bằng config mặc định, `_user_decision.evidence` = JSON đã commit có
+  `failed == ["G6"]`, `only_g6_tone_failed`, `configs.on.sha256` == sha256 config mặc định, số G6 khớp JSON) và `TestDemoConfigW4`
+  (`tests/test_level1_demo.py`: lệnh demo headless với `--config configs/level1_demo_classifier.json` trên clip D2, thoát 0, `rearm_mode`
+  classifier, `config.path`/`sha256` đúng file demo, có chặng `window_classify`). ĐỎ: `Ran 2 — FAILED (failures=2)` (file chưa có;
+  `_work/_plan15/S2_red.log`).
+- Lệnh tại `6fed928` (`git status --porcelain -- scripts src configs level1_demo.py` rỗng):
+  `PYTHONIOENCODING=utf-8 .venv/bin/python scripts/level1_rearm_check.py --write-demo-config configs/level1_demo_classifier.json --rearm-json reports/level1_realtime_2026-10-05/rearm_check_d4.json`
+  → thoát 0 (`_work/_plan15/S2_run.log`). sha256 `configs/level1_demo_classifier.json` =
+  `568f97d8b26a72a075067b2f7fdec7772409d8e3e0a3487c2b4824b206c397e2`; config mặc định giữ sha256 `cc178955…eb54b`, không đổi.
+  Script không từ chối ⇒ không kích hoạt điểm dừng §7 mục 1.
+- XANH: W3, W4 `Ran 2 — OK`; 12 module Level 1 `Ran 217 — OK (skipped=1)` (skip `test_u1_summary`; `_work/_plan15/S2_green_l1.log`).
+- AC-W5: `git diff 281ece1 --numstat -- tests/` → `tests/test_level1_demo.py 38 +/0 -`, `tests/test_level1_rearm_check.py 221 +/0 -`
+  (0 dòng test cũ đổi/xóa); `git diff 281ece1 -- configs/level1_realtime.json level1_demo.py src/` rỗng.
+- Impact: không sửa symbol có sẵn (chỉ thêm lớp test + file config). detect-changes (`git diff --stat`): `configs/level1_demo_classifier.json`
+  (mới, 166 dòng), 2 file test (chỉ thêm), `docs/plans/15-progress.md`.
+- Giới hạn (cho C1): `generated_by.code_dirty` của app không phủ file demo (`CODE_PATHS` bị test L3 ghim); báo cáo app ghi `config.path` +
+  `config.sha256` để đối chiếu.

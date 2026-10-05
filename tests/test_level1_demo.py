@@ -896,6 +896,44 @@ class TestNextKeyClassifierK3(unittest.TestCase):
         self.assertEqual(app.events[-1], {"event": "key", "key": "next", "source": "key", "t_ms": 500.0})
 
 
+DEMO_CONFIG = os.path.join("configs", "level1_demo_classifier.json")
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestDemoConfigW4(unittest.TestCase):
+    """Plan 15 lần sửa 5 AC-W4: the demo command with the committed demo config (user decision (a)) runs in rearm_mode
+    'classifier' on the D2 clip (a training clip: this checks the code path, not accuracy)."""
+
+    @classmethod
+    def setUpClass(cls):
+        os.makedirs(TMP_PARENT, exist_ok=True)
+        cls.tmp = tempfile.mkdtemp(prefix="vslt_p15_w4_", dir=TMP_PARENT)
+        cls.out = os.path.join(cls.tmp, "w4.json")
+        cls.proc = subprocess.run([PY, "level1_demo.py", "--source", CLIP, "--headless", "--config", DEMO_CONFIG,
+                                   "--out-json", cls.out], cwd=PROJECT_ROOT, capture_output=True, text=True, env=ENV,
+                                  timeout=900)
+        cls.report = None
+        if cls.proc.returncode == 0:
+            with open(cls.out, encoding="utf-8") as f:
+                cls.report = json.load(f)
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp, ignore_errors=True)
+
+    def test_w4_demo_config_runs_classifier_mode(self):
+        self.assertEqual(self.proc.returncode, 0, self.proc.stderr[-2000:])
+        r = self.report
+        self.assertEqual(r["rearm_mode"], "classifier")
+        self.assertEqual(r["config"]["path"], "configs/level1_demo_classifier.json")
+        self.assertEqual(r["config"]["sha256"], app_mod.sha256_file(os.path.join(PROJECT_ROOT, DEMO_CONFIG)))
+        self.assertEqual(r["checkpoint"]["sha256"], app_mod.sha256_file(os.path.join(PROJECT_ROOT, CKPT)))
+        self.assertIn("window_classify", r["stages"])
+        self.assertGreater(r["stages"]["window_classify"]["n"], 0)
+        self.assertEqual(r["stages"]["classify"]["n"], 0)
+        self.assertEqual(r["counts"]["label_emits"], len(r["labels"]))
+
+
 if __name__ == "__main__":
     unittest.main()
 
