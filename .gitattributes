@@ -1,3 +1,8 @@
 # Script chạy bằng bash (Git Bash/Linux) phải luôn là LF, kể cả khi core.autocrlf=true
 *.sh text eol=lf
 scripts/githooks/* text eol=lf
+# File có sha256 được test kiểm (kế hoạch 15 lần sửa 6 W0): luôn LF, kể cả trên Windows với core.autocrlf=true
+configs/*.json text eol=lf
+reports/**/*.json text eol=lf
+reports/**/*.md text eol=lf
+docs/**/*.md text eol=lf

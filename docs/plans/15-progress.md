@@ -836,3 +836,19 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   `Ran 167 — OK`, guard `known=9 allowed=36` (`_work/_plan15/C1_final_ac1.log`); sha256 checkpoint không đổi. `git diff 5e9bd42 --numstat -- tests/`
   → `tests/test_level1_segment_report.py 269 +/0 -` (0 dòng test cũ đổi); `configs/level1_realtime.json`, `backend/main.py`, `realtime_demo.py`,
   `src/data/alphabet_preprocessing.py` không đổi. AC1-đủ (31 module) KHÔNG chạy trên cloud (thiếu dữ liệu/checkpoint ngoài Level 1) — còn cho local.
+
+## Lần sửa 6 — vòng 1 (coder cloud, W0–W3, `docs/plans/15-lan-sua-6.md` @ `92b256b`)
+- Đầu phiên: `git pull` nhánh `cloud/2026-10-04-level1-rearm` (HEAD `92b256b`); `.venv` → `/opt/vslt-venv`; cài `seaborn` vào `.venv`;
+  khôi phục `checkpoints/alphabet_best.pt` bằng `scripts/archive_private_kaggle.py restore` (sha256 `a6311820…5b708a2` khớp manifest),
+  landmark `alphabet_hands` (output kernel `phmvnsm33/vsl-extract-alphabet`) và video hauuto (dataset `hauuto/vietnamese-sign-language-alphabet`)
+  — chỉ dùng nội bộ, không commit. GitNexus: không dùng (npx bị chặn trên cloud như các phiên trước) ⇒ impact = text search + `git diff`.
+
+### W0 — `.gitattributes` ép LF
+- Thêm 4 luật `text eol=lf`: `configs/*.json`, `reports/**/*.json`, `reports/**/*.md`, `docs/**/*.md`. Không file nào phải chuẩn hóa lại:
+  `git ls-files --eol` của 227 file tracked khớp đều `i/lf w/lf` (chỉ cột `attr/` đổi thành `text eol=lf`) ⇒ không đổi nội dung file nào.
+- Impact: không sửa symbol mã nào (chỉ file thuộc tính git). detect-changes (`git diff --stat`): `.gitattributes` 5 +, test mới.
+- Test viết TRƯỚC `tests/test_level1_gitattributes.py` (4 test): luật có mặt; `git check-attr text eol` = set/lf cho MỌI file tracked khớp 4 mẫu
+  (gồm 5 file bị kiểm sha256: 2 config, `SUMMARY.md`, `segment_check_{before,after}.json`); `git ls-files --eol` không có `w/crlf`/`i/crlf`;
+  mô phỏng Windows: checkout `HEAD` với `core.autocrlf=true` vào work tree + index TẠM (không đụng index/work tree của repo) ⇒ 5 file chỉ có LF,
+  bằng hệt blob. ĐỎ trước khi sửa: `Ran 4 — FAILED (failures=4)` — mô phỏng tái hiện đúng E9 (`configs/level1_realtime.json` bị ghi CRLF)
+  (`_work/_plan15/W0_red.log`); XANH: `Ran 4 — OK` (`_work/_plan15/W0_green.log`).
