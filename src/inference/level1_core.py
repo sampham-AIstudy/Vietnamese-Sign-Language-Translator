@@ -10,6 +10,8 @@ Level 1 ("Đánh vần") core shared by the desktop app (level1_demo.py) and, la
   diacritic variant when the label decoder says so, on_label).
 - enhance_low_light(frame_bgr): adaptive CLAHE on the L channel of a dark frame before hand detection (plan 15 lần sửa
   8 M2; the desktop demo's --auto-enhance only, never on the training / offline path).
+- LandmarkSmoother: adaptive moving average of the hand points (plan 15 lần sửa 10 P2; the desktop demo's
+  --smooth-landmarks only, never on the training / offline path).
 
 No GUI, no thread, no camera.
 """
@@ -479,3 +481,55 @@ def is_open_palm_space(landmarks: Optional[np.ndarray]) -> bool:
         if not dist(tip_a, tip_b) > FINGER_SPREAD_MIN * dist(mcp_a, mcp_b):
             return False
     return True
+
+
+# ---------------------------------------------------------------------------- landmark smoothing (lần sửa 10)
+class LandmarkSmoother:
+    """Adaptive exponential moving average of the 21 MediaPipe hand points (plan 15 lần sửa 10 §2 P2), to damp the jitter
+    of a hand held still (mostly z: a 2D camera has no depth sensor) without lagging behind a hand that moves.
+    filter(ts_ms, landmarks) once per processed frame: out = alpha * landmarks + (1 - alpha) * previous output, with
+      alpha = alpha_static  (strong smoothing) when the hand moves slower than speed_threshold,
+      alpha = alpha_dynamic (close to 1, follows the hand) otherwise, or when the time step is not > 0.
+    Speed = distance in x, y between the palm centre (mean of the 21 points) of the new frame and that of the previous
+    output, divided by the time step, in MediaPipe image units per second (coder's reading of the plan: x, y only, since z
+    is the noisy axis; the centre averages the 21 points' jitter). The first frame, and the first frame after
+    landmarks None or reset(), is returned unchanged. n_static / n_dynamic count the frames smoothed with each weight.
+    Pure computation, no clock; the input array is never modified."""
+
+    def __init__(self, alpha_static: float = 0.6, alpha_dynamic: float = 0.9, speed_threshold: float = 0.15):
+        for name, value in (("alpha_static", alpha_static), ("alpha_dynamic", alpha_dynamic)):
+            if not (isinstance(value, numbers.Real) and np.isfinite(value) and 0.0 < value <= 1.0):
+                raise ValueError(f"{name} must be a number in (0, 1], got {value!r}")
+        if not (isinstance(speed_threshold, numbers.Real) and np.isfinite(speed_threshold) and speed_threshold > 0):
+            raise ValueError(f"speed_threshold must be a finite number > 0, got {speed_threshold!r}")
+        self.alpha_static = float(alpha_static)
+        self.alpha_dynamic = float(alpha_dynamic)
+        self.speed_threshold = float(speed_threshold)
+        self.n_static = 0
+        self.n_dynamic = 0
+        self.reset()
+
+    def reset(self) -> None:
+        self._prev: Optional[np.ndarray] = None
+        self._prev_ts: Optional[float] = None
+
+    def filter(self, ts_ms: float, landmarks: Optional[np.ndarray]) -> Optional[np.ndarray]:
+        """landmarks [21, 3] (or None) at stream time ts_ms -> smoothed float32[21, 3] (None resets, returns None)."""
+        if landmarks is None:
+            self.reset()
+            return None
+        p = np.asarray(landmarks, dtype=np.float64)
+        if p.shape != (21, 3) or not np.all(np.isfinite(p)):
+            raise ValueError(f"landmarks must be a finite array of shape (21, 3), got shape {p.shape}")
+        if self._prev is None:
+            out = p.copy()
+        else:
+            dt = (float(ts_ms) - self._prev_ts) / 1000.0
+            static = dt > 0 and float(np.linalg.norm(p[:, :2].mean(axis=0) - self._prev[:, :2].mean(axis=0))) / dt \
+                < self.speed_threshold
+            self.n_static += int(static)
+            self.n_dynamic += int(not static)
+            alpha = self.alpha_static if static else self.alpha_dynamic
+            out = alpha * p + (1.0 - alpha) * self._prev
+        self._prev, self._prev_ts = out, float(ts_ms)
+        return out.astype(np.float32)

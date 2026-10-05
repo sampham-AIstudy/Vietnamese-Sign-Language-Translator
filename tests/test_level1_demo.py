@@ -2588,6 +2588,160 @@ class TestDesktopDocS3(unittest.TestCase):
         self.assertIsNone(re.search(r"\d+(\.\d+)?\s*(ms|%|fps)", doc))   # no measured number (as AC-R'4 / C1)
 
 
+
+# ------------------------------------------------------------------ plan 15 lần sửa 10 P2 (landmark smoothing in the app)
+BEFORE_REV10_COMMIT = "8e6d6fb"  # docs/plans/15-lan-sua-10.md committed; level1_demo.py as lần sửa 9 left it
+SMOOTH_JSON_KEYS = ("enabled", "alpha_static", "alpha_dynamic", "speed_threshold", "frames_static", "frames_dynamic")
+
+
+def _spy_inputs(app):
+    """Records (ts, landmarks copy | None, handedness) of every segmenter.push and window.push call of `app`."""
+    rec = {"segmenter": [], "window": []}
+
+    def wrap(obj, name):
+        orig = obj.push
+
+        def push(ts_ms, landmarks, handedness, w, h):
+            rec[name].append((ts_ms, None if landmarks is None else np.array(landmarks, copy=True), handedness))
+            return orig(ts_ms, landmarks, handedness, w, h)
+        obj.push = push
+    wrap(app.segmenter, "segmenter")
+    if app.window is not None:
+        wrap(app.window, "window")
+    return rec
+
+
+def _run_spied(argv):
+    """(report, app, raw [(landmarks, w, h, handedness)] of the stream session, spied inputs) of one headless run."""
+    _LandmarkHandRecordingSession.instances = []
+    app = app_mod.Level1App(args_for(*argv), session_factory=_LandmarkHandRecordingSession)
+    rec = _spy_inputs(app)
+    report = app.run()
+    return report, app, _LandmarkHandRecordingSession.instances[1].seen, rec        # [0] = warm-up graph
+
+
+class _LandmarkHandRecordingSession(HandLandmarkSession):
+    """The real HandLandmarkSession (default keywords); keeps (landmarks, width, height, handedness) of every frame."""
+    instances = []
+
+    def __init__(self):
+        self.seen = []
+        super().__init__()
+        _LandmarkHandRecordingSession.instances.append(self)
+
+    def process(self, frame_bgr):
+        out = super().process(frame_bgr)
+        h, w = frame_bgr.shape[:2]
+        self.seen.append((out[0], w, h, out[1]))
+        return out
+
+
+class TestSmoothLandmarksArgsP2(unittest.TestCase):
+    """§2 P2: --smooth-landmarks / --no-smooth-landmarks (BooleanOptionalAction). Default OFF: the plan writes
+    default=True, but AC-10d and §1 require the run without the new flags to be the app of before (old tests compare the
+    default run with the app at earlier commits segment by segment); see 15-progress lần sửa 10."""
+
+    def test_p2_flags_and_default(self):
+        text = app_mod.build_parser().format_help()
+        for flag in ("--smooth-landmarks", "--no-smooth-landmarks"):
+            self.assertIn(flag, text)
+        self.assertIs(args_for("--source", CLIP).smooth_landmarks, False)
+        self.assertIs(args_for("--source", CLIP, "--smooth-landmarks").smooth_landmarks, True)
+        self.assertIs(args_for("--source", CLIP, "--smooth-landmarks", "--no-smooth-landmarks").smooth_landmarks, False)
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestSmoothLandmarksAppP2(unittest.TestCase):
+    """§2 P2 / AC-10c / AC-10d in Level1App on the D2 clip (training clip: code path, not accuracy). With
+    --smooth-landmarks the segmenter (and in rearm_mode classifier the window) gets LandmarkSmoother.filter of the
+    session's landmarks, recomputed here from the recorded raw landmarks; the frame-to-frame z jitter is lower than raw;
+    the JSON has landmark_smoothing. Without the flag the inputs are the raw landmarks and the report is that of the app
+    at 8e6d6fb."""
+
+    @classmethod
+    def setUpClass(cls):
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            ref = app_module_at(BEFORE_REV10_COMMIT)
+            cls.runs = {}
+            for mode, extra in (("motion_pose", []), ("classifier", ["--config", REV7_CONFIG])):
+                base = ["--source", CLIP, "--headless", *extra]
+                on = _run_spied(base + ["--smooth-landmarks"])
+                off = _run_spied(base)
+                cls.runs[mode] = {"on": on, "off": off,
+                                  "ref": ref.Level1App(ref.build_parser().parse_args(base)).run()}
+        finally:
+            os.chdir(cwd)
+
+    @staticmethod
+    def _expected(report, raw):
+        from src.inference.level1_core import LandmarkSmoother
+        sm = LandmarkSmoother()
+        fps = report["source"]["fps_file"]
+        return [sm.filter(i * 1000.0 / fps, lm) for i, (lm, _w, _h, _hd) in enumerate(raw)]
+
+    def _assert_same_landmarks(self, got, expected, label):
+        self.assertEqual(len(got), len(expected), label)
+        for (_ts, lm, _hd), exp in zip(got, expected):
+            if exp is None:
+                self.assertIsNone(lm, label)
+            else:
+                np.testing.assert_array_equal(lm, exp, err_msg=label)
+
+    def test_p2_segmenter_and_window_get_smoothed_landmarks(self):
+        for mode in ("motion_pose", "classifier"):
+            with self.subTest(mode=mode):
+                report, _app, raw, rec = self.runs[mode]["on"]
+                expected = self._expected(report, raw)
+                self.assertGreater(sum(e is not None for e in expected), 0)
+                self._assert_same_landmarks(rec["segmenter"], expected, "segmenter")
+                if mode == "classifier":
+                    self._assert_same_landmarks(rec["window"], expected, "window")    # no open palm in this clip
+                moved = [not np.allclose(e, lm) for e, (lm, _w, _h, _hd) in zip(expected, raw) if e is not None]
+                self.assertTrue(any(moved))                                   # the smoother did change landmarks
+
+    def test_p2_z_jitter_lower_than_raw(self):
+        report, _app, raw, rec = self.runs["motion_pose"]["on"]
+        pairs_raw, pairs_sm = [], []
+        for (a, *_r1), (b, *_r2), (_t1, sa, _h1), (_t2, sb, _h2) in zip(raw, raw[1:], rec["segmenter"],
+                                                                          rec["segmenter"][1:]):
+            if a is not None and b is not None:
+                pairs_raw.append(b[:, 2] - a[:, 2])
+                pairs_sm.append(sb[:, 2] - sa[:, 2])
+        self.assertGreater(len(pairs_raw), 10)
+        self.assertLess(float(np.std(pairs_sm)), float(np.std(pairs_raw)))
+
+    def test_p2_json_block_and_stage(self):
+        for mode in ("motion_pose", "classifier"):
+            with self.subTest(mode=mode):
+                report, app, raw, _rec = self.runs[mode]["on"]
+                b = report["landmark_smoothing"]
+                self.assertEqual(tuple(b), SMOOTH_JSON_KEYS)
+                self.assertEqual((b["enabled"], b["alpha_static"], b["alpha_dynamic"], b["speed_threshold"]),
+                                 (True, 0.6, 0.9, 0.15))
+                hands = [lm is not None for lm, _w, _h, _hd in raw]
+                runs = sum(1 for i, h in enumerate(hands) if h and (i == 0 or not hands[i - 1]))
+                self.assertEqual(b["frames_static"] + b["frames_dynamic"], sum(hands) - runs)
+                self.assertIn("landmark_smooth", report["stages"])
+                self.assertEqual(report["stages"]["landmark_smooth"]["n"], len(raw))
+                self.assertEqual(list(report)[-1], "landmark_smoothing")
+
+    def test_p2_default_raw_landmarks_and_report_as_before(self):
+        for mode in ("motion_pose", "classifier"):
+            with self.subTest(mode=mode):
+                report, _app, raw, rec = self.runs[mode]["off"]
+                ref = self.runs[mode]["ref"]
+                self._assert_same_landmarks(rec["segmenter"], [lm for lm, _w, _h, _hd in raw], "segmenter")
+                self.assertNotIn("landmark_smoothing", report)
+                self.assertEqual(list(report), list(ref))
+                self.assertEqual(_key_tree(report), _key_tree(ref))
+                self.assertEqual(tuple(report["stages"]), tuple(ref["stages"]))
+                for k in ("tokens", "text", "labels", "segments", "events", "warnings"):
+                    self.assertEqual(report[k], ref[k], (mode, k))
+                self.assertEqual(_without_rates(report["counts"]), _without_rates(ref["counts"]))
+
+
 if __name__ == "__main__":
     unittest.main()
 

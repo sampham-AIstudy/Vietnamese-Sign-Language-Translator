@@ -700,5 +700,115 @@ class TestOpenPalmSpaceS1(unittest.TestCase):
         self.assertIs(is_open_palm_space(hand[:, :2]), True)             # x, y only: same rule in 2D
 
 
+
+# ------------------------------------------------------------------ plan 15 lần sửa 10 P2
+def _image_hand():
+    """SchematicHand open palm placed in MediaPipe image coordinates (x, y in [0, 1], z on the x scale)."""
+    import numpy as np
+    return SchematicHand.open_palm() / 480.0 + np.array([0.5, 0.75, 0.0])
+
+
+class TestLandmarkSmootherP2(unittest.TestCase):
+    """Plan 15 lần sửa 10 §2 P2 / AC-10c: LandmarkSmoother(alpha_static=0.6, alpha_dynamic=0.9, speed_threshold=0.15) is
+    an exponential moving average of the 21 points whose weight of the new frame is alpha_static while the hand moves
+    slower than speed_threshold and alpha_dynamic otherwise. Speed = distance in x, y between the palm centre (mean of the
+    21 points) of the new frame and that of the last output, in image units per second of stream time. The inputs are
+    SchematicHand shapes with Gaussian noise drawn here (seeded): they drive the filter, they are not data."""
+
+    def _smoother(self, **kw):
+        from src.inference.level1_core import LandmarkSmoother
+        return LandmarkSmoother(**kw)
+
+    def test_p2_defaults_of_the_plan(self):
+        s = self._smoother()
+        self.assertEqual((s.alpha_static, s.alpha_dynamic, s.speed_threshold), (0.6, 0.9, 0.15))
+
+    def test_p2_still_hand_z_noise_variance_halved_mean_kept(self):
+        import numpy as np
+        rng = np.random.default_rng(10)
+        hand = _image_hand()
+        n, sigma = 600, 0.02
+        noisy = np.repeat(hand[None], n, axis=0)
+        noisy[:, :, 2] += rng.normal(0.0, sigma, size=(n, 21))
+        s = self._smoother()
+        out = np.stack([s.filter(i * 1000.0 / 30.0, f) for i, f in enumerate(noisy)])
+        self.assertEqual(s.n_static, n - 1)                          # x, y still: every frame after the first static
+        var_in = np.var(noisy[50:, :, 2], axis=0)
+        var_out = np.var(out[50:, :, 2], axis=0)
+        self.assertTrue(np.all(var_out <= 0.5 * var_in), float(np.max(var_out / var_in)))
+        np.testing.assert_allclose(out[50:, :, 2].mean(axis=0), hand[:, 2], atol=0.2 * sigma)
+        np.testing.assert_allclose(out[:, :, :2], np.repeat(hand[None, :, :2], n, axis=0), atol=1e-6)
+
+    def test_p2_sudden_move_followed_at_once(self):
+        import numpy as np
+        hand = _image_hand()
+        moved = hand + np.array([0.25, -0.10, 0.0])
+        s = self._smoother()
+        dt = 1000.0 / 30.0
+        for i in range(5):
+            s.filter(i * dt, hand)
+        outs = [s.filter((5 + k) * dt, moved) for k in range(4)]
+        step = np.linalg.norm(moved[0, :2] - hand[0, :2])
+        err = [float(np.max(np.linalg.norm(o[:, :2] - moved[:, :2], axis=-1))) for o in outs]
+        self.assertLessEqual(err[0], 0.1 * step + 1e-6)              # first frame: alpha_dynamic (0.9) of the jump
+        self.assertLess(err[2], 0.01 * step)                         # three frames later: within 1 % (not stuck)
+        self.assertGreaterEqual(s.n_dynamic, 1)
+
+    def test_p2_weights_exact(self):
+        import numpy as np
+        hand = _image_hand()
+        s = self._smoother()
+        s.filter(0.0, hand)
+        slow = hand + np.array([0.001, 0.0, 0.01])                    # 0.001 in 100 ms = 0.01 / s < 0.15
+        np.testing.assert_allclose(s.filter(100.0, slow), 0.6 * slow + 0.4 * hand, atol=1e-6)
+        s = self._smoother()
+        s.filter(0.0, hand)
+        fast = hand + np.array([0.05, 0.0, 0.01])                     # 0.05 in 100 ms = 0.5 / s >= 0.15
+        np.testing.assert_allclose(s.filter(100.0, fast), 0.9 * fast + 0.1 * hand, atol=1e-6)
+        s = self._smoother(alpha_static=0.5, alpha_dynamic=1.0, speed_threshold=0.6)
+        s.filter(0.0, hand)
+        np.testing.assert_allclose(s.filter(100.0, fast), 0.5 * fast + 0.5 * hand, atol=1e-6)   # 0.5 / s < 0.6
+
+    def test_p2_none_resets_and_first_frame_unchanged(self):
+        import numpy as np
+        hand = _image_hand()
+        other = hand + np.array([0.0, 0.0, 0.05])
+        s = self._smoother()
+        first = s.filter(0.0, hand)
+        self.assertEqual((first.dtype, first.shape), (np.float32, (21, 3)))
+        np.testing.assert_allclose(first, hand, atol=1e-6)
+        s.filter(33.0, other)
+        self.assertIsNone(s.filter(66.0, None))
+        np.testing.assert_allclose(s.filter(99.0, other), other, atol=1e-6)    # no memory of the frames before
+        s.reset()
+        np.testing.assert_allclose(s.filter(132.0, hand), hand, atol=1e-6)
+
+    def test_p2_input_not_modified_and_no_time_step(self):
+        import numpy as np
+        hand = _image_hand().astype(np.float32)
+        keep = hand.copy()
+        s = self._smoother()
+        s.filter(0.0, hand)
+        nxt = hand + np.float32(0.001)
+        out = s.filter(0.0, nxt)                                      # same timestamp: speed unknown -> alpha_dynamic
+        np.testing.assert_array_equal(hand, keep)
+        np.testing.assert_allclose(out, 0.9 * nxt + 0.1 * hand, atol=1e-6)
+
+    def test_p2_bad_parameters_rejected(self):
+        for kw in ({"alpha_static": 0.0}, {"alpha_static": 1.5}, {"alpha_dynamic": -0.1}, {"alpha_dynamic": float("nan")},
+                   {"speed_threshold": 0.0}, {"speed_threshold": float("inf")}):
+            with self.subTest(kw=kw):
+                with self.assertRaises(ValueError):
+                    self._smoother(**kw)
+
+    def test_p2_bad_landmarks_rejected(self):
+        import numpy as np
+        s = self._smoother()
+        for bad in (np.zeros((20, 3)), np.zeros(63), np.full((21, 3), np.nan)):
+            with self.subTest(shape=bad.shape):
+                with self.assertRaises(ValueError):
+                    s.filter(0.0, bad)
+
+
 if __name__ == "__main__":
     unittest.main()

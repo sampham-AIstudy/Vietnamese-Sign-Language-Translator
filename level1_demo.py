@@ -20,6 +20,10 @@ Run (from the project root, inside .venv):
   python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json \
                         --min-detection-conf 0.35 --auto-enhance --no-auto-space
                                     spaces only from the open palm gesture (or the Space key), plan 15 lần sửa 9
+  python level1_demo.py --source 0 --smooth-landmarks
+                                    hand points smoothed by LandmarkSmoother (adaptive moving average: strong while
+                                    the hand is still, light while it moves) before the segmenter, the window, the
+                                    gesture and the drawing (plan 15 lần sửa 10 P2; default off)
 Keys (window): Backspace delete last token | Space add a space | a accept the last rejected candidate |
   r repeat the last letter | n next letter (re-arm: the letter held now is emitted again) | c clear |
   p pause / resume segmentation | q or Esc quit.
@@ -65,8 +69,8 @@ if ROOT not in sys.path:
 
 from src.inference.hand_live import LEVEL1_HANDS_KWARGS, HandLandmarkSession  # noqa: E402
 from src.inference.level1_core import (CLAHE_CLIP_LIMIT, CLAHE_TILE_GRID, LOW_LIGHT_THRESHOLD,  # noqa: E402
-                                       Level1Classifier, Level1Speller, enhance_low_light, is_open_palm_space,
-                                       load_level1_config)
+                                       LandmarkSmoother, Level1Classifier, Level1Speller, enhance_low_light,
+                                       is_open_palm_space, load_level1_config)
 from src.inference.level1_segmenter import (Level1LabelDecoder, Level1SignSegmenter, SignSegment,  # noqa: E402
                                             WindowBuffer, WordGap, aspect_points)
 from src.inference.level1_timing import (FRAME_STAGES, SIGN_STAGES, StageTimes,  # noqa: E402
@@ -106,6 +110,8 @@ KEY_ACTIONS = {
 WINDOW_STAGES = ("window_classify",)  # rearm_mode 'classifier' only: one window classification per hand frame
 # --auto-enhance only (plan 15 lần sửa 8 M3): enhance_low_light of every processed frame, before (not in) mediapipe
 ENHANCE_STAGES = ("low_light_enhance",)
+# --smooth-landmarks only (plan 15 lần sửa 10 P2): LandmarkSmoother.filter of every processed frame, after mediapipe
+SMOOTH_STAGES = ("landmark_smooth",)
 # --min-detection-conf default: the value of training and of the WebSocket path (LEVEL1_HANDS_KWARGS, not changed)
 DEFAULT_MIN_DETECTION_CONF = LEVEL1_HANDS_KWARGS["min_detection_confidence"]
 KEY_NEXT = "next"  # app action (segmenter / decoder re-arm), not a Level1Speller key
@@ -121,6 +127,10 @@ TRACE_MAX_ENTRIES = 20000  # later windows are counted (n_windows) but not kept;
 GESTURE_SPACE_HOLD = 250.0    # open palm held this long (armed) -> one space
 GESTURE_SPACE_REARM = 150.0   # another hand shape held longer than this (or no hand) -> armed again
 GESTURE_SPACE_FLASH = 600.0   # "[Ký hiệu: Dấu cách (Space)]" shown this long after the space
+# --smooth-landmarks default (plan 15 lần sửa 10 P2): OFF. The plan writes default=True, but its AC-10d / §1 require the
+# run without the new flags to be the app of before; smoothing changes the landmarks of every frame, so the segments and
+# windows of the default run (pinned by the older tests against earlier commits) would change.
+SMOOTH_LANDMARKS_DEFAULT = False
 
 
 class SourceError(Exception):
@@ -730,8 +740,12 @@ class Level1App:
         self.speller = Level1Speller(self.values["accept_confidence"])
         self.rearm_mode = self.values["rearm_mode"]
         self.classifier_mode = self.rearm_mode == "classifier"
+        # plan 15 lần sửa 10 P2: --smooth-landmarks -> the landmarks of every frame go through the smoother before the
+        # segmenter, the window, the gesture and the drawing
+        self.smooth_landmarks = bool(getattr(args, "smooth_landmarks", False))
+        self.landmark_smoother = LandmarkSmoother()
         stages = (FRAME_STAGES + SIGN_STAGES + (WINDOW_STAGES if self.classifier_mode else ())
-                  + (ENHANCE_STAGES if self.auto_enhance else ()))
+                  + (ENHANCE_STAGES if self.auto_enhance else ()) + (SMOOTH_STAGES if self.smooth_landmarks else ()))
         self.times = StageTimes(stages, self.values["hud_rolling_frames"])
         self.window: Optional[WindowBuffer] = None
         self.decoder: Optional[Level1LabelDecoder] = None
@@ -1044,6 +1058,11 @@ class Level1App:
         landmarks, handedness, _score = session.process(frame_mp)
         t1 = time.perf_counter()
         self.times.add("mediapipe", (t1 - t_mp) * 1000.0)
+        if self.smooth_landmarks:  # lần sửa 10 P2: a frame without hand resets the smoother
+            landmarks = self.landmark_smoother.filter(ts_ms, landmarks)
+            t_smooth = time.perf_counter()
+            self.times.add("landmark_smooth", (t_smooth - t1) * 1000.0)
+            t1 = t_smooth
         gesture = self.gesture_space and not self.paused
         # open palm check (lần sửa 9): timed inside the segmenter stage (no new stage: the report keeps its stages)
         is_space = gesture and landmarks is not None and is_open_palm_space(aspect_points(landmarks, w, h))
@@ -1234,6 +1253,11 @@ class Level1App:
             report["window_trace"] = {"max_entries": TRACE_MAX_ENTRIES, "n_windows": self.window_trace_n,
                                       "truncated": self.window_trace_n > len(self.window_trace),
                                       "fields": list(TRACE_KEYS), "entries": list(self.window_trace)}
+        if self.smooth_landmarks:  # lần sửa 10 P2: only with --smooth-landmarks
+            sm = self.landmark_smoother
+            report["landmark_smoothing"] = {"enabled": True, "alpha_static": sm.alpha_static,
+                                            "alpha_dynamic": sm.alpha_dynamic, "speed_threshold": sm.speed_threshold,
+                                            "frames_static": sm.n_static, "frames_dynamic": sm.n_dynamic}
         # lần sửa 9 S3: gesture on and (an open-palm frame seen or --space-hold-ms not the default); a run without open
         # palm at the default hold, or with --no-gesture-space, keeps exactly the keys of before
         tr = self.space_tracker
@@ -1302,6 +1326,10 @@ def build_parser() -> argparse.ArgumentParser:
                         "--no-gesture-space: the app as before, on by default)")
     p.add_argument("--space-hold-ms", type=positive_ms, default=GESTURE_SPACE_HOLD,
                    help="hold time in milliseconds of the open palm before its space (default %(default)s)")
+    p.add_argument("--smooth-landmarks", action=argparse.BooleanOptionalAction, default=SMOOTH_LANDMARKS_DEFAULT,
+                   help="Enable adaptive landmark smoothing to suppress depth jitter: the landmarks of every frame go "
+                        "through LandmarkSmoother before the segmenter, the window, the gesture and the drawing "
+                        "(written to the JSON as landmark_smoothing; default off: the app as before)")
     return p
 
 
