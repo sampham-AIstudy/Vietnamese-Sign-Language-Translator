@@ -2742,6 +2742,158 @@ class TestSmoothLandmarksAppP2(unittest.TestCase):
                 self.assertEqual(_without_rates(report["counts"]), _without_rates(ref["counts"]))
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 10 P3 (angle hint on the HUD)
+ANGLE_CLIP = os.path.join("data", "external", "hauuto_raw", "raw", "raw", "hau", "aa_hau_A_001.mp4")
+_MISSING_P3 = [p for p in (CLIP, CKPT, ANGLE_CLIP) if not os.path.exists(os.path.join(PROJECT_ROOT, p))]
+SKIP_REASON_P3 = "missing (gitignored data / checkpoint): " + ", ".join(_MISSING_P3)
+ANGLE_HINT_LINE = "[Góc tay: Hơi nghiêng tay 20°]"
+
+
+def _tilted_image_hand(degrees):
+    """SchematicHand open palm with the index finger straight up (tests/test_level1_core.py) leaning toward the camera
+    by `degrees` (foreshortening_ratio = cos of the tilt), in MediaPipe image coordinates of a 640 x 480 frame (x / 640,
+    y / 480, z on the x scale). Drives the rule, not data."""
+    import math
+    from tests.test_level1_core import SchematicHand
+    b = math.radians(degrees)
+    rot = np.array([[1.0, 0.0, 0.0], [0.0, math.cos(b), -math.sin(b)], [0.0, math.sin(b), math.cos(b)]])
+    hand = SchematicHand.build({**SchematicHand.SPREAD, "index": 0.0}, SchematicHand.THUMB_OPEN) @ rot.T
+    return (hand / np.array([640.0, 480.0, 640.0]) + np.array([0.5, 0.6, 0.0])).astype(np.float32)
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestAngleHintP3(unittest.TestCase):
+    """§2 P3: the HUD line "[Góc tay: Hơi nghiêng tay 20°]" while the hand has had foreshortening_ratio < 0.3 (index
+    pointing at the camera) for more than 3 consecutive hand frames; another frame (ratio >= 0.3, or no hand) ends it.
+    Frames driven through Level1App._angle_step with SchematicHand shapes (rule check, not data)."""
+
+    def _app(self, *extra):
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            return app_mod.Level1App(args_for("--source", CLIP, "--headless", *extra))
+        finally:
+            os.chdir(cwd)
+
+    def test_p3_constants_of_the_plan(self):
+        self.assertEqual((app_mod.FORESHORTEN_RATIO_MIN, app_mod.FORESHORTEN_FRAMES), (0.3, 3))
+
+    def test_p3_hint_after_more_than_three_frames(self):
+        from src.inference.level1_core import foreshortening_ratio
+        from src.inference.level1_segmenter import aspect_points
+        steep, flat = _tilted_image_hand(80.0), _tilted_image_hand(0.0)
+        self.assertLess(foreshortening_ratio(aspect_points(steep, 640, 480)), 0.3)
+        self.assertGreater(foreshortening_ratio(aspect_points(flat, 640, 480)), 0.3)
+        for extra in ([], ["--config", REV7_CONFIG]):
+            with self.subTest(extra=extra):
+                app = self._app(*extra)
+                plain = app._hud_lines()[1]
+                for _ in range(3):
+                    app._angle_step(steep, 640, 480)
+                    self.assertEqual(app._hud_lines()[1], plain)               # 3 frames: not yet
+                app._angle_step(steep, 640, 480)                               # 4th frame: hint
+                small = app._hud_lines()[1]
+                self.assertEqual(small.count(ANGLE_HINT_LINE), 1)
+                self.assertEqual(small[:2], plain[:2])
+                self.assertEqual([s for s in small if s != ANGLE_HINT_LINE], plain)
+                app._angle_step(flat, 640, 480)                                # finger tilted: gone
+                self.assertEqual(app._hud_lines()[1], plain)
+                for _ in range(4):
+                    app._angle_step(steep, 640, 480)
+                app._angle_step(None, 640, 480)                                # hand lost: gone
+                self.assertEqual(app._hud_lines()[1], plain)
+
+    def test_p3_hint_line_drawn_in_yellow(self):
+        values = self._app().values
+        hud = app_mod.Hud(app_mod.find_font(None, values["font_paths"]), values["hud_font_size"])
+        view = np.zeros((120, 640, 3), dtype=np.uint8)
+        yellow = np.array(app_mod.Hud.HINT_BGR)
+
+        def n_yellow(small):
+            out = hud.compose(view, ["Văn bản:"], small, 0.0)
+            return int(np.sum(np.all(out[view.shape[0]:] == yellow, axis=-1)))
+        self.assertEqual(n_yellow(["Trạng thái: đang giữ yên"]), 0)
+        self.assertGreater(n_yellow(["Trạng thái: đang giữ yên", ANGLE_HINT_LINE]), 0)
+        self.assertEqual(tuple(app_mod.Hud.HINT_BGR), tuple(reversed(app_mod.Hud.HINT_RGB)))
+
+
+@unittest.skipUnless(not _MISSING_P3, SKIP_REASON_P3)
+class TestAngleHintClipP3(unittest.TestCase):
+    """§2 P3 on real clips (training clips: code path, not accuracy). ANGLE_CLIP (â, the thumb and fingertips toward the
+    camera) has runs of frames with foreshortening_ratio < 0.3: the hint state after each frame equals the rule
+    recomputed here from the recorded landmarks, and is on for some frames; the D2 clip (a) never shows it. The hint
+    is on the HUD only: the report of the D2 clip is that of the app at 8e6d6fb."""
+
+    @classmethod
+    def setUpClass(cls):
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            ref = app_module_at(BEFORE_REV10_COMMIT)
+            cls.runs = {}
+            for name, clip in (("angle", ANGLE_CLIP), ("plain", CLIP)):
+                argv = ["--source", clip, "--headless"]
+                _LandmarkHandRecordingSession.instances = []
+                app = app_mod.Level1App(args_for(*argv), session_factory=_LandmarkHandRecordingSession)
+                states = []
+                orig = app._process
+
+                def process(session, frame, t_cap, ts_ms, _orig=orig, _app=app, _states=states):
+                    _orig(session, frame, t_cap, ts_ms)
+                    _states.append(ANGLE_HINT_LINE in _app._hud_lines()[1])
+                app._process = process
+                report = app.run()
+                cls.runs[name] = {"report": report, "states": states,
+                                  "seen": _LandmarkHandRecordingSession.instances[1].seen,
+                                  "ref": ref.Level1App(ref.build_parser().parse_args(argv)).run()}
+        finally:
+            os.chdir(cwd)
+
+    @staticmethod
+    def _rule(seen):
+        from src.inference.level1_core import foreshortening_ratio
+        from src.inference.level1_segmenter import aspect_points
+        out, run = [], 0
+        for lm, w, h, _hd in seen:
+            run = run + 1 if lm is not None and foreshortening_ratio(aspect_points(lm, w, h)) < 0.3 else 0
+            out.append(run > 3)
+        return out
+
+    def test_p3_hint_follows_rule_on_real_clips(self):
+        for name in ("angle", "plain"):
+            with self.subTest(name=name):
+                r = self.runs[name]
+                self.assertEqual(r["states"], self._rule(r["seen"]))
+        self.assertGreater(sum(self.runs["angle"]["states"]), 0)
+        self.assertEqual(sum(self.runs["plain"]["states"]), 0)
+
+    def test_p3_report_unchanged(self):
+        r, ref = self.runs["plain"]["report"], self.runs["plain"]["ref"]
+        self.assertEqual(list(r), list(ref))
+        self.assertEqual(_key_tree(r), _key_tree(ref))
+        for k in ("tokens", "text", "labels", "segments", "events", "warnings"):
+            self.assertEqual(r[k], ref[k], k)
+        self.assertEqual(_without_rates(r["counts"]), _without_rates(ref["counts"]))
+
+
+
+REV10_SMOOTH_COMMAND = ("python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json "
+                        "--min-detection-conf 0.35 --auto-enhance --smooth-landmarks")
+
+
+class TestDesktopDocP3(unittest.TestCase):
+    def test_p3_doc_section_10(self):
+        import re
+        with open(os.path.join(PROJECT_ROOT, "docs", "level1_desktop.md"), encoding="utf-8") as f:
+            doc = f.read()
+        self.assertIn("## 10.", doc)
+        for text in (REV10_SMOOTH_COMMAND, "collinear", "--smooth-landmarks", "LandmarkSmoother", "landmark_smoothing",
+                     "landmark_smooth", "foreshortening_ratio", ANGLE_HINT_LINE, "--min-detection-conf 0.35",
+                     "--auto-enhance"):
+            self.assertIn(text, doc, text)
+        self.assertIsNone(re.search(r"\d+(\.\d+)?\s*(ms|%|fps)", doc))   # no measured number (as AC-R'4 / C1)
+
+
 if __name__ == "__main__":
     unittest.main()
 

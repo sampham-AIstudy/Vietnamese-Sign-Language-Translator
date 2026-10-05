@@ -12,6 +12,7 @@ Level 1 ("Đánh vần") core shared by the desktop app (level1_demo.py) and, la
   8 M2; the desktop demo's --auto-enhance only, never on the training / offline path).
 - LandmarkSmoother: adaptive moving average of the hand points (plan 15 lần sửa 10 P2; the desktop demo's
   --smooth-landmarks only, never on the training / offline path).
+- foreshortening_ratio(landmarks): projected / 3D length of the index finger (plan 15 lần sửa 10 P3; HUD angle hint).
 
 No GUI, no thread, no camera.
 """
@@ -533,3 +534,22 @@ class LandmarkSmoother:
             out = alpha * p + (1.0 - alpha) * self._prev
         self._prev, self._prev_ts = out, float(ts_ms)
         return out.astype(np.float32)
+
+
+# ------------------------------------------------------------------------------ foreshortening (lần sửa 10 P3)
+def foreshortening_ratio(landmarks: Optional[np.ndarray]) -> float:
+    """dist_2d(8, 5) / dist_3d(8, 5): projected length of the index finger (tip 8 to MCP 5, x and y) over its 3D length
+    (x, y, z), in [0, 1] (plan 15 lần sửa 10 §2 P3). 1 = index finger in the image plane; near 0 = index finger pointing
+    straight at the camera, where a 2D camera sees its joints on one line of sight and the depth estimate jitters.
+    landmarks: [21, 3] with the same scale on every axis (MediaPipe output through level1_segmenter.aspect_points).
+    None, a shape other than [21, 3], a non-finite value or a tip on its MCP -> 1.0 (nothing measured, no hint)."""
+    if landmarks is None:
+        return 1.0
+    p = np.asarray(landmarks, dtype=np.float64)
+    if p.shape != (21, 3) or not np.all(np.isfinite(p)):
+        return 1.0
+    v = p[8] - p[5]
+    d3 = float(np.linalg.norm(v))
+    if not d3 > 0:
+        return 1.0
+    return min(1.0, float(np.linalg.norm(v[:2])) / d3)

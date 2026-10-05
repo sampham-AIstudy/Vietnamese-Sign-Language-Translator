@@ -24,6 +24,8 @@ Run (from the project root, inside .venv):
                                     hand points smoothed by LandmarkSmoother (adaptive moving average: strong while
                                     the hand is still, light while it moves) before the segmenter, the window, the
                                     gesture and the drawing (plan 15 lần sửa 10 P2; default off)
+HUD angle hint (plan 15 lần sửa 10 P3, always on): index finger pointing at the camera (foreshortening_ratio < 0.3) on
+  more than 3 consecutive hand frames -> yellow line [Góc tay: Hơi nghiêng tay 20°]; HUD only (JSON unchanged).
 Keys (window): Backspace delete last token | Space add a space | a accept the last rejected candidate |
   r repeat the last letter | n next letter (re-arm: the letter held now is emitted again) | c clear |
   p pause / resume segmentation | q or Esc quit.
@@ -70,7 +72,7 @@ if ROOT not in sys.path:
 from src.inference.hand_live import LEVEL1_HANDS_KWARGS, HandLandmarkSession  # noqa: E402
 from src.inference.level1_core import (CLAHE_CLIP_LIMIT, CLAHE_TILE_GRID, LOW_LIGHT_THRESHOLD,  # noqa: E402
                                        LandmarkSmoother, Level1Classifier, Level1Speller, enhance_low_light,
-                                       is_open_palm_space, load_level1_config)
+                                       foreshortening_ratio, is_open_palm_space, load_level1_config)
 from src.inference.level1_segmenter import (Level1LabelDecoder, Level1SignSegmenter, SignSegment,  # noqa: E402
                                             WindowBuffer, WordGap, aspect_points)
 from src.inference.level1_timing import (FRAME_STAGES, SIGN_STAGES, StageTimes,  # noqa: E402
@@ -131,6 +133,11 @@ GESTURE_SPACE_FLASH = 600.0   # "[Ký hiệu: Dấu cách (Space)]" shown this l
 # run without the new flags to be the app of before; smoothing changes the landmarks of every frame, so the segments and
 # windows of the default run (pinned by the older tests against earlier commits) would change.
 SMOOTH_LANDMARKS_DEFAULT = False
+# angle hint (plan 15 lần sửa 10 P3, design values of the plan): foreshortening_ratio below FORESHORTEN_RATIO_MIN (index
+# finger pointing at the camera) on more than FORESHORTEN_FRAMES consecutive hand frames -> HUD line ANGLE_HINT_LINE
+FORESHORTEN_RATIO_MIN = 0.3
+FORESHORTEN_FRAMES = 3
+ANGLE_HINT_LINE = "[Góc tay: Hơi nghiêng tay 20°]"
 
 
 class SourceError(Exception):
@@ -425,6 +432,10 @@ class Hud:
     CURSOR_BGR = (0, 215, 255)
     PREVIEW_RGB = (130, 140, 150)
     PREVIEW_BGR = (150, 140, 130)
+    HINT_RGB = (255, 215, 0)  # small lines starting with HINT_PREFIX (angle hint, lần sửa 10 P3): yellow
+    HINT_BGR = (0, 215, 255)
+    HINT_PREFIX = "[Góc tay:"
+    SMALL_RGB = (200, 220, 255)
 
     def __init__(self, font_path: str, font_size: int):
         from PIL import ImageFont
@@ -507,7 +518,8 @@ class Hud:
             y += self.line_h
 
         for text in small:
-            d.text((8, y), text, font=self.small, fill=(200, 220, 255))
+            d.text((8, y), text, font=self.small,
+                   fill=self.HINT_RGB if text.startswith(self.HINT_PREFIX) else self.SMALL_RGB)
             y += self.small_h
         return cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
 
@@ -765,6 +777,7 @@ class Level1App:
         self.space_tracker = SpaceGestureTracker(getattr(args, "space_hold_ms", GESTURE_SPACE_HOLD))
         self.gesture_counts = {"palm_frames": 0, "spaces_added": 0}
         self.gesture_flash_ts: Optional[float] = None  # stream time of the last gesture space (HUD flash)
+        self.foreshortened_run = 0  # consecutive hand frames with foreshortening_ratio < FORESHORTEN_RATIO_MIN (P3)
         self.trace_windows = bool(getattr(args, "trace_windows", False))
         self.window_trace: List[Dict[str, Any]] = []
         self.window_trace_n = 0
@@ -982,6 +995,15 @@ class Level1App:
             return "[Ký hiệu: Dấu cách (Space)]"
         return None
 
+    # -------------------------------------------------------------- angle hint (plan 15 lần sửa 10 §2 P3)
+    def _angle_step(self, landmarks, w: int, h: int) -> None:
+        """One frame: a hand whose index finger points at the camera (foreshortening_ratio < FORESHORTEN_RATIO_MIN)
+        lengthens the run; any other frame (ratio at or above it, or no hand) ends it. HUD only."""
+        if landmarks is not None and foreshortening_ratio(aspect_points(landmarks, w, h)) < FORESHORTEN_RATIO_MIN:
+            self.foreshortened_run += 1
+        else:
+            self.foreshortened_run = 0
+
     def _next_key(self) -> None:
         """Key n "chữ kế" (plan 15 lần sửa 4 §3.1): re-arm the segmenter at the last frame so the sign held now is
         emitted again; no token is created here (tokens still come only from the model or the token keys)."""
@@ -1028,6 +1050,8 @@ class Level1App:
         gesture = self._gesture_line() if self.gesture_space else None
         if gesture is not None:  # lần sửa 9: only while the open palm is held / right after its space
             small.append(gesture)
+        if self.foreshortened_run > FORESHORTEN_FRAMES:  # lần sửa 10 P3: index pointing at the camera
+            small.append(ANGLE_HINT_LINE)
         tc_list = tb_view.get("tone_changes", [])
         if tc_list:
             last_tc = tc_list[-1]
@@ -1066,6 +1090,8 @@ class Level1App:
         gesture = self.gesture_space and not self.paused
         # open palm check (lần sửa 9): timed inside the segmenter stage (no new stage: the report keeps its stages)
         is_space = gesture and landmarks is not None and is_open_palm_space(aspect_points(landmarks, w, h))
+        # angle hint (lần sửa 10 P3): timed inside the segmenter stage like the open palm check
+        self._angle_step(landmarks, w, h)
         if not self.paused:
             self._on_events(self.segmenter.push(ts_ms, landmarks, handedness, w, h))
         t2 = time.perf_counter()

@@ -186,3 +186,31 @@ python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_c
   theo phiên webcam. Trên clip train (chỉ kiểm logic) bàn tay xòe thật ở đầu một số clip của người ký `khoi` được nhận; chữ giữ yên không
   kích hoạt. Tỉ lệ nhận / bỏ sót trên webcam CHƯA được đo: cần phiên webcam của người dùng (checklist §5 của kế hoạch); mục này không chép
   số đo nào.
+
+## 10. Ngón tay chĩa vào camera: làm mượt landmark và nhắc góc tay (kế hoạch 15 lần sửa 10)
+
+```bash
+python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json --min-detection-conf 0.35 --auto-enhance --smooth-landmarks
+```
+
+- Hiện tượng (collinear projection): webcam thường chỉ cho ảnh 2D, không có cảm biến độ sâu. Khi ngón tay chĩa thẳng vào ống kính, các
+  khớp MCP, PIP, DIP, TIP nằm gần trên cùng một tia nhìn: khoảng cách 2D giữa chúng co về gần 0, MediaPipe phải đoán độ sâu `z` từ rất ít
+  thông tin nên `z` rung theo nhiễu ảnh và bàn tay dễ bị đọc sai (hay gặp ở `â`, `ă`, `ô`, `ê`, `p` — ngón cái và đầu ngón hướng về camera).
+- `--smooth-landmarks` (mặc định TẮT): 21 điểm của mỗi khung đi qua `LandmarkSmoother` (`src/inference/level1_core.py`) trước bộ tách,
+  cửa sổ phân loại, cử chỉ Xòe 5 ngón và hình vẽ khung xương. Đây là trung bình trượt mũ thích ứng: khi tâm bàn tay (trung bình 21 điểm,
+  trục x, y) di chuyển chậm hơn `speed_threshold` = 0.15 đơn vị ảnh mỗi giây thì khung mới chỉ chiếm `alpha_static` = 0.6 (làm mượt mạnh,
+  dập rung `z`); nhanh hơn thì chiếm `alpha_dynamic` = 0.9 (bám tay, gần như không trễ). Mất tay ⇒ bộ lọc xóa trạng thái, khung có tay
+  đầu tiên sau đó giữ nguyên. Ba giá trị là giá trị thiết kế của kế hoạch; cách đo tốc độ (tâm bàn tay, chỉ x, y) do coder chọn.
+  JSON có khóa gốc `landmark_smoothing` = `enabled`, `alpha_static`, `alpha_dynamic`, `speed_threshold`, `frames_static`,
+  `frames_dynamic` (số khung lọc với mỗi trọng số) và stage `landmark_smooth`; không cờ ⇒ JSON, stage và kết quả như lần sửa 9.
+  Kế hoạch ghi mặc định BẬT, nhưng tiêu chí AC-10d yêu cầu chạy không cờ mới giữ nguyên hành vi cũ: bật mặc định làm đổi landmark của
+  mọi khung, nên các test cũ so từng segment với app ở commit trước bị đỏ. Vì vậy cờ mặc định tắt; bật bằng `--smooth-landmarks`.
+- Nhắc góc tay (luôn bật, chỉ trên HUD): `foreshortening_ratio` = độ dài 2D / độ dài 3D của ngón trỏ (đầu ngón 8 tới MCP 5, landmark đã
+  nhân x, z với rộng / cao khung), bằng 1 khi ngón trỏ nằm trong mặt phẳng ảnh và gần 0 khi chĩa thẳng vào camera. Khi tỉ lệ dưới
+  `FORESHORTEN_RATIO_MIN` = 0.3 trên hơn `FORESHORTEN_FRAMES` = 3 khung có tay liên tiếp, HUD hiện dòng màu vàng
+  `[Góc tay: Hơi nghiêng tay 20°]`: nghiêng bàn tay một chút để camera thấy ngón tay từ bên cạnh. Khung có tỉ lệ từ 0.3 trở lên hoặc mất
+  tay ⇒ dòng biến mất. Không đổi JSON, token hay segment.
+- Lệnh gợi ý ở trên kết hợp cấu hình classifier lần sửa 7, ngưỡng phát hiện tay 0.35 và CLAHE (mục 8) với làm mượt landmark.
+- Giới hạn: tác dụng của làm mượt và của lời nhắc lên độ chính xác / tỉ lệ thấy tay CHƯA được đo; trên clip train (chỉ kiểm logic) dòng
+  nhắc xuất hiện ở một số clip (nhiều nhất là `â`) và không xuất hiện ở clip `a` của bộ test D2. Cần phiên webcam của người
+  dùng (checklist §5 của kế hoạch); mục này không chép số đo nào.

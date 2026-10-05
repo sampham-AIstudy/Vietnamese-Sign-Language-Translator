@@ -810,5 +810,59 @@ class TestLandmarkSmootherP2(unittest.TestCase):
                     s.filter(0.0, bad)
 
 
+
+# ------------------------------------------------------------------ plan 15 lần sửa 10 P3
+class TestForeshorteningRatioP3(unittest.TestCase):
+    """Plan 15 lần sửa 10 §2 P3: foreshortening_ratio(landmarks) = dist_2d(8, 5) / dist_3d(8, 5) (index fingertip to
+    index MCP; x, y against x, y, z), in [0, 1]: 1 for an index finger in the image plane, 0 for one pointing straight at
+    the camera. SchematicHand shapes (index finger straight up) rotated here about the image x axis: ratio = cos of the
+    tilt (not data)."""
+
+    @staticmethod
+    def _tilt(hand, degrees):
+        """Rotation about the image x axis: the hand leans toward (+) the camera by `degrees`."""
+        import math
+        import numpy as np
+        b = math.radians(degrees)
+        rot = np.array([[1.0, 0.0, 0.0], [0.0, math.cos(b), -math.sin(b)], [0.0, math.sin(b), math.cos(b)]])
+        return hand @ rot.T
+
+    def test_p3_in_plane_and_toward_camera(self):
+        import math
+        from src.inference.level1_core import foreshortening_ratio
+        S = SchematicHand
+        hand = S.build({**S.SPREAD, "index": 0.0}, S.THUMB_OPEN)      # index straight up, in the image plane
+        self.assertAlmostEqual(foreshortening_ratio(hand), 1.0, places=9)
+        for deg in (30.0, 60.0, 80.0, 90.0):
+            with self.subTest(deg=deg):
+                self.assertAlmostEqual(foreshortening_ratio(self._tilt(hand, deg)), abs(math.cos(math.radians(deg))),
+                                       places=9)
+        self.assertLess(foreshortening_ratio(self._tilt(hand, 80.0)), 0.3)
+        self.assertGreater(foreshortening_ratio(self._tilt(hand, 70.0)), 0.3)
+
+    def test_p3_only_index_tip_and_mcp_used(self):
+        import numpy as np
+        from src.inference.level1_core import foreshortening_ratio
+        p = np.zeros((21, 3))
+        p[5] = (0.5, 0.5, 0.0)
+        p[8] = (0.5, 0.5, -0.1)                                       # straight at the camera
+        self.assertEqual(foreshortening_ratio(p), 0.0)
+        p[8] = (0.53, 0.54, 0.0)                                      # in the image plane
+        self.assertAlmostEqual(foreshortening_ratio(p), 1.0, places=12)
+        p[8] = (0.53, 0.54, -0.05)                                    # 2D 0.05, 3D 0.05 * sqrt(2)
+        self.assertAlmostEqual(foreshortening_ratio(p), 1.0 / np.sqrt(2.0), places=12)
+        p[0] = (9.0, 9.0, 9.0)                                        # other points do not matter
+        self.assertAlmostEqual(foreshortening_ratio(p), 1.0 / np.sqrt(2.0), places=12)
+        self.assertIsInstance(foreshortening_ratio(p.astype("float32")), float)
+
+    def test_p3_degenerate_or_malformed(self):
+        import numpy as np
+        from src.inference.level1_core import foreshortening_ratio
+        self.assertEqual(foreshortening_ratio(np.zeros((21, 3))), 1.0)   # tip on the MCP: nothing to measure
+        for bad in (None, np.zeros((20, 3)), np.zeros((21, 2)), np.full((21, 3), np.nan)):
+            with self.subTest(bad=None if bad is None else bad.shape):
+                self.assertEqual(foreshortening_ratio(bad), 1.0)
+
+
 if __name__ == "__main__":
     unittest.main()
