@@ -24,6 +24,11 @@ Step R2 (plan 15 lần sửa 3 §3.4), separate JSON: --pose-evidence --out repo
 computes rules P1 (rearm_pose_dist = pose_over_jitter_ratio x p95 over letter clips of the hand-shape jitter in the
 longest still run) and P2 (coverage of the letter pairs per signer / session, pre-registered stop below 0.80);
 --write-pose-config <config> --pose-evidence-json <json> writes only rearm_pose_dist (commit of the JSON read with git).
+
+Step A3 (lần sửa 1 §3.A.4, lần sửa 2 §5): --segment-check --config <PATH | git:REV:PATH> --label <name> --out
+reports/level1_realtime_<D>/segment_check_<name>.json runs the segmenter (rearm_mode 'motion_pose', pose rules off) on
+every hauuto train clip and classifies with Level1Classifier (single_segment, window_agrees per letter / tone group);
+--keep-rule BEFORE AFTER applies the pre-registered keep rule + AC-R1 to two such JSON files (exit 5 = stop).
 """
 import argparse
 import csv
@@ -596,6 +601,162 @@ def u1_summary(path: str) -> Dict[str, Any]:
     }
 
 
+# ------------------------------------------------------------------------------------- segment check (step A3)
+SEGMENT_CHECK_NOTE = "train data of the deployed checkpoint; window agreement is not accuracy"
+SEGMENT_CHECK_CODE_PATHS = ("scripts/level1_segment_report.py", "scripts/level1_rearm_check.py", "src",
+                            "configs/level1_realtime.json")
+SEGMENT_CHECK_DEFINITIONS = {
+    "clips": "every hauuto row of the manifest (training data of the deployed checkpoint), none excluded; clips with "
+             "fewer hand frames than the checkpoint min_detected_frames are kept and flagged (the segmenter cannot "
+             "emit for them)",
+    "run": "one fresh Level1SignSegmenter per clip, every frame pushed with ts = i * 1000 / fps of the manifest, "
+           "flush 1 ms after the last frame (as AC-S18 and G6 of scripts/level1_rearm_check.py); headless, "
+           "deterministic",
+    "n_segments": "number of SignSegment events of the clip",
+    "single_segment": "exactly one SignSegment",
+    "window_agrees": "exactly one SignSegment AND its Level1Classifier.classify prediction == the prediction for the "
+                     "whole clip (the input of the model at training time); no prediction is never an agreement",
+    "rates": "single_segment / n and window_agrees / n per group; None when n == 0",
+}
+KEEP_LETTER_TOLERANCE = 0.02  # plan 15 lần sửa 1 §3.A.4 (pre-registered): letters may lose at most 2 points
+AC_R1_MIN_SINGLE = 0.9  # plan 15 §5 AC-R1 (kept by lần sửa 1 §3.A.4): single-segment rate with the config SAU
+KEEP_RULE_TEXT = ("plan 15 lần sửa 1 §3.A.4: keep the config SAU when, for the TONE group, single_segment_rate and "
+                  "window_agreement_rate of SAU >= TRUOC, AND for the LETTER group both rates of SAU >= TRUOC - 0.02; "
+                  "otherwise STOP (no other value is tried). AC-R1: single_segment_rate of SAU < 0.9 for letters or "
+                  "tones -> STOP")
+KEEP_METRICS = ("single_segment_rate", "window_agreement_rate")
+
+
+def segment_check_config(spec: str, label: str) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    """PATH or git:REV:PATH -> (values, meta) with the keys an older commit lacks filled so that the config reproduces
+    its own behaviour (scripts/level1_rearm_check.py FILL_RULES: tail_still_keep_ms = hold_ms, pose rules off,
+    rearm_mode 'motion_pose'). ValueError unless rearm_mode is 'motion_pose' and pose_change_rules is false: the
+    check measures the segmenter path of plan 15 A2 (lần sửa 4 §4 row 6+)."""
+    from scripts.level1_rearm_check import resolve_config_spec  # lazy: level1_rearm_check imports this module
+    _, values, meta = resolve_config_spec(f"{label}={spec}")
+    if values["rearm_mode"] != "motion_pose":
+        raise ValueError(f"segment check needs rearm_mode 'motion_pose', config {spec} has {values['rearm_mode']!r}")
+    if values["pose_change_rules"]:
+        raise ValueError(f"segment check compares the A2 calibration with the pose rules off; {spec} turns them on")
+    meta.setdefault("filled", {})
+    return values, meta
+
+
+def clip_segment_check(clip: Dict[str, Any], params: Dict[str, Any], min_detected_frames: int,
+                       classify) -> Dict[str, Any]:
+    """One train clip: segmenter run (SEGMENT_CHECK_DEFINITIONS.run) + labels. classify(segment) -> classify dict
+    (prediction read only when status == 'ok')."""
+    from scripts.level1_rearm_check import whole_clip_segment
+    from src.inference.level1_segmenter import SignSegment
+
+    def label(segment) -> Optional[str]:
+        r = classify(segment)
+        return r.get("prediction") if r.get("status") == "ok" else None
+
+    ts = clip_timestamps(len(clip["detected"]), clip["fps"])
+    seg = Level1SignSegmenter(params, min_detected_frames)
+    events: List[Any] = []
+    for i, t in enumerate(ts):
+        det = bool(clip["detected"][i])
+        events += seg.push(float(t), clip["raw"][i] if det else None, clip["handedness"][i] if det else "",
+                           clip["width"], clip["height"])
+    events += seg.flush(float(ts[-1]) + 1.0)
+    segments = [e for e in events if isinstance(e, SignSegment)]
+    whole = label(whole_clip_segment(clip))
+    preds = [label(s) for s in segments]
+    single = len(segments) == 1
+    return {"sample_id": clip["sample_id"], "symbol": clip["symbol"], "kind": clip["kind"],
+            "signer_id": clip.get("signer_id"), "frames": int(len(clip["detected"])),
+            "detected_frames": int(np.asarray(clip["detected"], dtype=bool).sum()),
+            "below_min_detected_frames": bool(int(np.asarray(clip["detected"], dtype=bool).sum()) < min_detected_frames),
+            "n_segments": len(segments), "close_reasons": [s.close_reason for s in segments],
+            "segment_frames": [int(s.n_frames) for s in segments], "segment_predictions": preds,
+            "whole_clip_prediction": whole, "single_segment": single,
+            "window_agrees": bool(single and whole is not None and preds[0] == whole)}
+
+
+def segment_check_groups(rows: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
+    """Counts and rates per group: letters, tones, each tone."""
+    groups = {"letters": [r for r in rows if r["kind"] == "letter"], "tones": [r for r in rows if r["kind"] == "tone"]}
+    for t in TONES:
+        groups[t] = [r for r in rows if r["symbol"] == t]
+    out = {}
+    for name, rs in groups.items():
+        n = len(rs)
+        single = sum(1 for r in rs if r["single_segment"])
+        agree = sum(1 for r in rs if r["window_agrees"])
+        nseg = Counter("2+" if r["n_segments"] >= 2 else str(r["n_segments"]) for r in rs)
+        reasons = Counter(c for r in rs for c in r["close_reasons"])
+        out[name] = {"n": n, "single_segment": single, "single_segment_rate": (single / n) if n else None,
+                     "window_agrees": agree, "window_agreement_rate": (agree / n) if n else None,
+                     "n_segments": {k: nseg[k] for k in ("0", "1", "2+") if nseg[k]},
+                     "close_reason": dict(sorted(reasons.items())),
+                     "n_below_min_detected_frames": sum(1 for r in rs if r["below_min_detected_frames"])}
+    return out
+
+
+def segment_check_report(argv: Sequence[str], spec: str, label: str, manifest_path: str) -> Dict[str, Any]:
+    from src.inference.level1_core import Level1Classifier
+    values, meta = segment_check_config(spec, label)
+    clf = Level1Classifier.from_checkpoint(DEPLOYED_CKPT)
+    min_det = clf.min_detected_frames
+    loaded = load_train_clips(manifest_path, 0)  # every hauuto clip (none excluded), flagged below min_det
+    top_k = int(values["top_k"])
+    rows = [clip_segment_check(c, values, min_det, lambda s: clf.classify(s, top_k)) for c in loaded["clips"]]
+    gb = generated_by(argv)
+    status = _git("status", "--porcelain", "--", *SEGMENT_CHECK_CODE_PATHS)
+    gb.update({"code_dirty": None if status is None else bool(status), "code_paths": list(SEGMENT_CHECK_CODE_PATHS)})
+    return {
+        "generated_by": gb,
+        "mode": "segment_check",
+        "label": label,
+        "note": SEGMENT_CHECK_NOTE,
+        "plan": "docs/plans/15-lan-sua-1.md §3.A.4 + docs/plans/15-lan-sua-2.md §5 (step A3)",
+        "config": {"spec": spec, **meta},
+        "rearm_mode": values["rearm_mode"],
+        "pose_change_rules": values["pose_change_rules"],
+        "segmenter_values": {k: values[k] for k in ("motion_window_ms", "still_speed", "move_speed", "hold_ms",
+                                                    "tail_still_keep_ms", "rearm_move_ms", "hand_lost_ms",
+                                                    "word_gap_ms", "max_segment_ms", "min_sign_frames")},
+        "inputs": {"manifest": {"path": rel(manifest_path), "sha256": sha256_file(manifest_path)},
+                   "checkpoint": {"path": rel(DEPLOYED_CKPT), "sha256": sha256_file(DEPLOYED_CKPT),
+                                  "min_detected_frames": min_det}},
+        "clip_counts": {"n_manifest_hauuto": loaded["n_manifest_hauuto"], "n_clips": len(rows),
+                        "n_letter_clips": sum(1 for r in rows if r["kind"] == "letter"),
+                        "n_tone_clips": sum(1 for r in rows if r["kind"] == "tone"),
+                        "n_below_min_detected_frames": sum(1 for r in rows if r["below_min_detected_frames"])},
+        "definitions": SEGMENT_CHECK_DEFINITIONS,
+        "groups": segment_check_groups(rows),
+        "clips": rows,
+    }
+
+
+def keep_rule(before: Dict[str, Any], after: Dict[str, Any]) -> Dict[str, Any]:
+    """Pre-registered keep rule of plan 15 lần sửa 1 §3.A.4 + AC-R1 on two segment_check reports (numbers read from
+    the JSON). ValueError when the clip sets differ (AC-R'3) or a rate is missing."""
+    ids_b = [c["sample_id"] for c in before.get("clips", [])]
+    ids_a = [c["sample_id"] for c in after.get("clips", [])]
+    if ids_b != ids_a:
+        raise ValueError("segment_check reports cover different clips (plan 15 AC-R'3 needs the same set)")
+    vals: Dict[str, Dict[str, Any]] = {}
+    keep = True
+    for group, tol in (("tones", 0.0), ("letters", KEEP_LETTER_TOLERANCE)):
+        vals[group] = {}
+        for m in KEEP_METRICS:
+            b = before["groups"][group].get(m)
+            a = after["groups"][group].get(m)
+            if b is None or a is None:
+                raise ValueError(f"segment_check {group}.{m} missing")
+            ok = bool(a >= b - tol)
+            vals[group][m] = {"before": b, "after": a, "pass": ok}
+            keep = keep and ok
+    r1 = {g: after["groups"][g]["single_segment_rate"] for g in ("letters", "tones")}
+    r1_pass = all(v >= AC_R1_MIN_SINGLE for v in r1.values())
+    return {"rule": KEEP_RULE_TEXT, "values": vals, "keep": keep,
+            "ac_r1": {"min": AC_R1_MIN_SINGLE, "after_single_segment_rate": r1, "pass": r1_pass},
+            "stop": not (keep and r1_pass)}
+
+
 # ------------------------------------------------------------------------------------------------------- main
 def build_report(argv: Sequence[str], config_path: str, u1_json: Optional[str]) -> Dict[str, Any]:
     from src.inference.level1_core import Level1Classifier
@@ -758,7 +919,40 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                     help="step R2: write rearm_pose_dist of --pose-evidence-json into this config")
     ap.add_argument("--pose-evidence-json", default=None,
                     help="committed pose_evidence.json read by --write-pose-config (required with it)")
+    ap.add_argument("--segment-check", action="store_true",
+                    help="step A3: run the segmenter on every train clip with --config (PATH or git:REV:PATH) and "
+                         "write segment_check JSON to --out")
+    ap.add_argument("--label", default=None, help="name of the config in the segment check (e.g. before, after)")
+    ap.add_argument("--manifest", default=MANIFEST, help="manifest of the train clips (default %(default)s)")
+    ap.add_argument("--keep-rule", nargs=2, metavar=("BEFORE", "AFTER"), default=None,
+                    help="step A3: apply the pre-registered keep rule to two segment_check JSON files")
     args = ap.parse_args(argv)
+
+    if args.keep_rule:
+        reports = []
+        for path in args.keep_rule:
+            with open(path, encoding="utf-8") as f:
+                reports.append(json.load(f))
+        res = keep_rule(*reports)
+        print(json.dumps(res, ensure_ascii=False, indent=2))
+        print("keep rule:", "KEEP" if res["keep"] else "FAIL", "| AC-R1:", "pass" if res["ac_r1"]["pass"] else "FAIL",
+              "| STOP" if res["stop"] else "")
+        return 5 if res["stop"] else 0
+    if args.segment_check:
+        if not args.out or not args.label:
+            ap.error("--out and --label are required with --segment-check")
+        report = segment_check_report(argv, args.config, args.label, args.manifest)
+        os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
+        with open(args.out, "w", encoding="utf-8", newline="\n") as f:
+            json.dump(report, f, ensure_ascii=False, indent=2)
+            f.write("\n")
+        g = report["groups"]
+        print(f"wrote {rel(args.out)}: clips={report['clip_counts']['n_clips']} "
+              f"code_dirty={report['generated_by']['code_dirty']}")
+        for name in ("letters", "tones"):
+            print(f"  {name}: n={g[name]['n']} single_segment_rate={g[name]['single_segment_rate']} "
+                  f"window_agreement_rate={g[name]['window_agreement_rate']}")
+        return 0
 
     if args.write_pose_config:
         if not args.pose_evidence_json:

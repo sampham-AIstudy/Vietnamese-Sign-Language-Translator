@@ -404,5 +404,198 @@ class TestWriteConfigA2b(unittest.TestCase):
             self.assertEqual(after[k]["source"], a2[k]["source"], k)
 
 
+
+# ------------------------------------------------------------------------------ plan 15 step A3 (--segment-check)
+BEFORE_CONFIG_COMMIT = "3ebc7b9"  # configs/level1_realtime.json before the A2 calibration (plan 15 lần sửa 2 §5)
+A3_CLIP_IDS = ("hauuto_a_hau_A_001", "hauuto_tone_s_hau_A_001", "hauuto_b_khoi_A_001")
+A3_REPORT_DIR = "reports/level1_realtime_2026-10-05"
+
+
+def _temp_manifest(tmp_dir, sample_ids):
+    """Manifest with only the given hauuto rows (landmark_path made absolute, the npz files are not copied)."""
+    with open(MANIFEST, encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        fields = reader.fieldnames
+        rows = {r["sample_id"]: r for r in reader}
+    base = os.path.dirname(MANIFEST)
+    out = os.path.join(tmp_dir, "manifest.csv")
+    with open(out, "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=fields)
+        w.writeheader()
+        for sid in sample_ids:
+            r = dict(rows[sid])
+            r["landmark_path"] = os.path.join(base, r["landmark_path"])
+            w.writerow(r)
+    return out
+
+
+def _check_row(sample_id, kind, symbol, n_segments, agrees, close_reasons=None, below=False):
+    return {"sample_id": sample_id, "kind": kind, "symbol": symbol, "n_segments": n_segments,
+            "close_reasons": close_reasons if close_reasons is not None else ["hold"] * n_segments,
+            "single_segment": n_segments == 1, "window_agrees": agrees, "below_min_detected_frames": below}
+
+
+class TestSegmentCheckA3(unittest.TestCase):
+    """plan 15 lần sửa 1 §3.A.4 + lần sửa 2 §5 (step A3): segment_check on the train clips, config TRƯỚC (3ebc7b9,
+    tail_still_keep_ms filled = hold_ms) / SAU (b0620a9), keep rule. Real hauuto npz for the segmenter; the
+    classifier is a stub defined in the test except in the CLI test (deployed checkpoint, 3 clips)."""
+
+    def setUp(self):
+        import tempfile
+        self.tmp = tempfile.mkdtemp(dir=PROJECT_ROOT, prefix="_tmp_a3_")  # inside the repo, untracked
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def test_a3_config_before_is_3ebc7b9_with_tail_filled(self):
+        import hashlib
+        from scripts.level1_segment_report import segment_check_config
+        values, meta = segment_check_config(f"git:{BEFORE_CONFIG_COMMIT}:configs/level1_realtime.json", "before")
+        data = _git_text("show", f"{BEFORE_CONFIG_COMMIT}:configs/level1_realtime.json")
+        raw = json.loads(data)
+        self.assertNotIn("tail_still_keep_ms", raw)
+        self.assertEqual(values["tail_still_keep_ms"], raw["hold_ms"]["value"])
+        self.assertEqual(meta["filled"]["tail_still_keep_ms"], "= hold_ms of this config")
+        self.assertTrue(meta["git_commit"].startswith(BEFORE_CONFIG_COMMIT))
+        self.assertEqual(meta["sha256"], hashlib.sha256(data.encode("utf-8")).hexdigest())
+        self.assertEqual(values["rearm_mode"], "motion_pose")
+        self.assertIs(values["pose_change_rules"], False)
+        for k in ("still_speed", "move_speed", "hold_ms", "max_segment_ms", "rearm_move_ms", "hand_lost_ms"):
+            self.assertEqual(values[k], raw[k]["value"], k)
+
+    def test_a3_config_after_is_b0620a9(self):
+        from scripts.level1_segment_report import segment_check_config
+        values, meta = segment_check_config(f"git:{A2_CONFIG_COMMIT}:configs/level1_realtime.json", "after")
+        raw = json.loads(_git_text("show", f"{A2_CONFIG_COMMIT}:configs/level1_realtime.json"))
+        for k in CAL_KEYS:
+            self.assertEqual(json.dumps(values[k]), json.dumps(raw[k]["value"]), k)
+        self.assertNotIn("tail_still_keep_ms", meta["filled"])  # the key exists at b0620a9
+        self.assertTrue(meta["git_commit"].startswith(A2_CONFIG_COMMIT))
+        self.assertEqual(values["rearm_mode"], "motion_pose")
+        self.assertIs(values["pose_change_rules"], False)
+
+    def test_a3_classifier_config_refused(self):
+        from scripts.level1_segment_report import segment_check_config
+        with self.assertRaises(ValueError):
+            segment_check_config("configs/level1_demo_classifier.json", "demo")
+
+    def test_a3_clip_check_matches_segmenter_and_agreement_rule(self):
+        from scripts.level1_segment_report import clip_segment_check, load_train_clips, segment_check_config
+        from src.inference.level1_segmenter import SignSegment
+        values, _ = segment_check_config(f"git:{A2_CONFIG_COMMIT}:configs/level1_realtime.json", "after")
+        clips = load_train_clips(_temp_manifest(self.tmp, A3_CLIP_IDS), 0)["clips"]
+        self.assertEqual([c["sample_id"] for c in clips], sorted(A3_CLIP_IDS))
+        min_det = 10
+
+        def by_frames(segment):  # label = frame count: agrees only when the segment has the frames of the clip
+            return {"status": "ok", "prediction": str(segment.n_frames)}
+
+        for clip in clips:
+            ts = clip_timestamps(len(clip["detected"]), clip["fps"])
+            seg = Level1SignSegmenter(values, min_det)
+            evs = []
+            for i, t in enumerate(ts):
+                det = bool(clip["detected"][i])
+                evs += seg.push(float(t), clip["raw"][i] if det else None, clip["handedness"][i] if det else "",
+                                clip["width"], clip["height"])
+            evs += seg.flush(float(ts[-1]) + 1.0)
+            segs = [e for e in evs if isinstance(e, SignSegment)]
+
+            row = clip_segment_check(clip, values, min_det, lambda s: {"status": "ok", "prediction": "a"})
+            self.assertEqual(row["n_segments"], len(segs), clip["sample_id"])
+            self.assertEqual(row["close_reasons"], [s.close_reason for s in segs])
+            self.assertEqual(row["single_segment"], len(segs) == 1)
+            self.assertEqual(row["window_agrees"], len(segs) == 1)  # constant label: agreement == single
+            self.assertEqual(row["whole_clip_prediction"], "a")
+
+            row2 = clip_segment_check(clip, values, min_det, by_frames)
+            self.assertEqual(row2["whole_clip_prediction"], str(len(clip["detected"])))
+            self.assertEqual(row2["window_agrees"],
+                             len(segs) == 1 and segs[0].n_frames == len(clip["detected"]), clip["sample_id"])
+
+            row3 = clip_segment_check(clip, values, min_det, lambda s: {"status": "too_few_frames"})
+            self.assertIsNone(row3["whole_clip_prediction"])
+            self.assertFalse(row3["window_agrees"])  # no label is never an agreement
+
+    def test_a3_groups_and_rates(self):
+        from scripts.level1_segment_report import segment_check_groups
+        rows = [_check_row("l1", "letter", "a", 1, True), _check_row("l2", "letter", "b", 1, False),
+                _check_row("l3", "letter", "c", 2, False), _check_row("l4", "letter", "d", 0, False, below=True),
+                _check_row("t1", "tone", "dấu sắc", 1, True), _check_row("t2", "tone", "dấu sắc", 2, False,
+                                                                          ["hold", "end_of_stream"])]
+        g = segment_check_groups(rows)
+        self.assertEqual(g["letters"]["n"], 4)
+        self.assertEqual(g["letters"]["single_segment"], 2)
+        self.assertAlmostEqual(g["letters"]["single_segment_rate"], 0.5)
+        self.assertEqual(g["letters"]["window_agrees"], 1)
+        self.assertAlmostEqual(g["letters"]["window_agreement_rate"], 0.25)
+        self.assertEqual(g["letters"]["n_segments"], {"0": 1, "1": 2, "2+": 1})
+        self.assertEqual(g["letters"]["n_below_min_detected_frames"], 1)
+        self.assertEqual(g["tones"]["n"], 2)
+        self.assertAlmostEqual(g["tones"]["single_segment_rate"], 0.5)
+        self.assertEqual(g["tones"]["close_reason"], {"end_of_stream": 1, "hold": 2})
+        self.assertEqual(g["dấu sắc"]["n"], 2)
+        self.assertEqual(g["dấu huyền"]["n"], 0)
+        self.assertIsNone(g["dấu huyền"]["single_segment_rate"])
+        self.assertIsNone(g["dấu huyền"]["window_agreement_rate"])
+
+    def _report(self, letters, tones, ids=("l", "t")):
+        def group(rates):
+            return {"single_segment_rate": rates[0], "window_agreement_rate": rates[1]}
+        return {"mode": "segment_check", "groups": {"letters": group(letters), "tones": group(tones)},
+                "clips": [{"sample_id": i} for i in ids]}
+
+    def test_a3_keep_rule(self):
+        from scripts.level1_segment_report import keep_rule
+        before = self._report((0.90, 0.80), (0.95, 0.40))
+        ok = keep_rule(before, self._report((0.95, 0.79), (0.95, 0.45)))
+        self.assertTrue(ok["keep"])
+        self.assertTrue(ok["ac_r1"]["pass"])
+        self.assertFalse(ok["stop"])
+        self.assertEqual(ok["values"]["tones"]["single_segment_rate"], {"before": 0.95, "after": 0.95, "pass": True})
+        tone_drop = keep_rule(before, self._report((0.95, 0.80), (0.94, 0.45)))
+        self.assertFalse(tone_drop["keep"])
+        self.assertTrue(tone_drop["stop"])
+        letter_drop = keep_rule(before, self._report((0.95, 0.76), (0.95, 0.45)))
+        self.assertFalse(letter_drop["keep"])
+        self.assertFalse(letter_drop["values"]["letters"]["window_agreement_rate"]["pass"])
+        r1 = keep_rule(self._report((0.85, 0.80), (0.95, 0.40)), self._report((0.89, 0.80), (0.95, 0.45)))
+        self.assertTrue(r1["keep"])
+        self.assertFalse(r1["ac_r1"]["pass"])  # AC-R1: single-segment rate below 0.9 with the config SAU
+        self.assertTrue(r1["stop"])
+        with self.assertRaises(ValueError):  # R'3: same clip set
+            keep_rule(before, self._report((0.95, 0.80), (0.95, 0.45), ids=("l",)))
+        missing = self._report((0.95, 0.80), (0.95, 0.45))
+        missing["groups"]["tones"]["window_agreement_rate"] = None
+        with self.assertRaises(ValueError):
+            keep_rule(before, missing)
+
+    def test_a3_cli_writes_report(self):
+        out = os.path.join(self.tmp, "segment_check_after.json")
+        manifest = _temp_manifest(self.tmp, A3_CLIP_IDS)
+        ret = main(["--segment-check", "--config", f"git:{A2_CONFIG_COMMIT}:configs/level1_realtime.json",
+                    "--label", "after", "--manifest", manifest, "--out", out])
+        self.assertEqual(ret, 0)
+        with open(out, encoding="utf-8") as f:
+            rep = json.load(f)
+        self.assertEqual(rep["mode"], "segment_check")
+        self.assertEqual(rep["label"], "after")
+        self.assertIn("window agreement is not accuracy", rep["note"])
+        self.assertEqual(len(rep["config"]["sha256"]), 64)
+        self.assertTrue(rep["config"]["git_commit"].startswith(A2_CONFIG_COMMIT))
+        self.assertEqual(rep["rearm_mode"], "motion_pose")
+        self.assertIn(rep["generated_by"]["code_dirty"], (True, False))
+        self.assertIn("scripts/level1_rearm_check.py", rep["generated_by"]["code_paths"])
+        self.assertEqual([c["sample_id"] for c in rep["clips"]], sorted(A3_CLIP_IDS))
+        self.assertEqual(rep["clip_counts"]["n_manifest_hauuto"], 3)
+        self.assertEqual(rep["groups"]["letters"]["n"], 2)
+        self.assertEqual(rep["groups"]["tones"]["n"], 1)
+        for c in rep["clips"]:
+            self.assertIsNotNone(c["whole_clip_prediction"])
+            self.assertEqual(len(c["segment_predictions"]), c["n_segments"])
+        # keep rule CLI on the same report twice: identical -> keep
+        self.assertEqual(main(["--keep-rule", out, out]), 0)
+
+
 if __name__ == "__main__":
     unittest.main()
