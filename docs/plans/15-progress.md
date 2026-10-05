@@ -596,3 +596,30 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   giữ chỗ 1.0, `pose_change_rules` vẫn false; KHÔNG chạy R3, không có số G1–G6. CẦN PLANNER.
 - Quan sát cho planner (không phải đề xuất đổi gate): phân bố jitter lệch đuôi dài (p95 / p50 ≈ 5.5), nên ngưỡng 2 × p95 vượt trung vị khoảng
   cách giữa hai chữ; hình dạng tay `pose_distance` (N chuẩn hóa) có thể không đủ tách các chữ chỉ khác dấu phụ/hướng.
+
+## Lần sửa 4 — coder (phiên cloud 2026-10-05, lượt 3; nhánh `cloud/2026-10-04-level1-rearm`, HEAD lúc nhận `5c62d13`)
+- Môi trường: Kaggle CLI dùng `KAGGLE_API_TOKEN`; cài `seaborn` vào `.venv`. Dữ liệu khôi phục lại (gitignored, KHÔNG commit), cùng cách phiên
+  trước: kernel `phmvnsm33/vsl-extract-alphabet` → 686 npz + manifest; `archive_private_kaggle.py restore` 2 manifest (provenance + step4,
+  18 file ghi mới ở step4); sha256 `checkpoints/alphabet_best.pt` = `a6311820ba778b6b38a33cffffd58602b2bb840b8b35326b5bf46086e5b708a2` (khớp);
+  640 mp4 hauuto; 46 video QIPEDC chữ cái (theo manifest, tải từng file `-f Dataset/Videos/<id>.mp4`).
+- **GitNexus KHÔNG dùng được ở phiên này:** `npx -y gitnexus@latest analyze` bị chặn (tải mã ngoài bị từ chối). Thay bằng text search
+  (`grep -rn <symbol>`) cho impact và `git diff --stat` cho detect-changes, ghi ở từng bước.
+- Không có pytest trong `.venv` ⇒ lệnh chung §5 chạy bằng `python -m unittest` cùng danh sách module.
+
+### K1 — phím `n` "chữ kế" (15-lan-sua-4 §3.1, AC-K1…K4)
+- Mã: `Level1SignSegmenter.force_rearm(ts)` (armed = True, bộ đệm chỉ giữ khung ts ≥ lúc bấm, đồng hồ hold đang chạy đặt lại về ts, xóa
+  neo/`_pose_since`/`hold_ref`; không có tay ⇒ không làm gì; ts không hữu hạn ⇒ ValueError; không phát sự kiện). `level1_demo.py`:
+  `KEY_ACTIONS[ord("n")] = "next"` → `Level1App._next_key()` gọi `segmenter.force_rearm(last_ts)` và ghi `{"event": "key", "key": "next",
+  "source": "key", "t_ms"}`; không tạo token; dòng hướng dẫn HUD + docstring thêm `n chữ kế`. Nhánh `rearm_mode == "classifier"`
+  (`decoder.force_next`) thêm ở D2 khi có decoder (K3 mở rộng lúc đó).
+- Impact (text search, thay GitNexus): `Level1App._key` chỉ được gọi trong `level1_demo.py` (`_process`, `run`) và test; `KEY_ACTIONS`
+  chỉ trong `level1_demo.py`; `force_rearm` mới. detect-changes thay bằng `git diff --stat`: 4 file (level1_demo.py, level1_segmenter.py,
+  2 test).
+- Test viết TRƯỚC (`tests/test_level1_segmenter.py` K1/K2/K4, `tests/test_level1_demo.py` K3): ĐỎ trên mã `5c62d13`
+  `Ran 9 — FAILED (failures=2, errors=5)` (`_work/_plan15/K1_red.log`; K4 xanh sẵn vì là khóa "không đổi").
+  K4 so bộ tách HEAD với bộ tách `git show 5c62d13` (array_equal) trên các chuỗi AC-S1…S6, S16 (2 lưới) × 3 bộ tham số (gồm luật tư thế bật)
+  + mọi clip hauuto × 2 config AC-S18.
+- XANH: 10 module Level 1 (segmenter, rearm, rearm_check, rearm_gates, segment_report, pose_evidence, core, demo, guard, textbox)
+  `Ran 161 — OK (skipped=1)` (`_work/_plan15/K1_green_l1.log`; skip = `test_u1_summary`, file U1 chỉ có ở local).
+  AC1-ngắn còn lại + `test_level1_equivalence`: `Ran 176 — FAILED (failures=1)` = `test_hand_landmarks_ws.TestReset.test_reset_segments_and_graphs`
+  (chập chờn đã biết); chạy riêng 3 lần: FAILED / OK / OK (`_work/_plan15/K1_reset_{1,2,3}.log`). Guard chính `known=9 allowed=36`.

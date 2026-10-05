@@ -11,7 +11,8 @@ Run (from the project root, inside .venv):
   python level1_demo.py --source <video.mp4> --pace realtime [--headless]        read at the file's frame rate, newest
                                                                                  frame only (like a webcam)
 Keys (window): Backspace delete last token | Space add a space | a accept the last rejected candidate |
-  r repeat the last letter | c clear | p pause / resume segmentation | q or Esc quit.
+  r repeat the last letter | n next letter (re-arm: the letter held now is emitted again) | c clear |
+  p pause / resume segmentation | q or Esc quit.
 
 Modes (written to the JSON as source.mode):
   gui      webcam (newest frame only, camera thread) or a video shown frame by frame; classification in a worker
@@ -76,7 +77,9 @@ KEY_ACTIONS = {
     ord("3"): "tone_3",
     ord("4"): "tone_4",
     ord("5"): "tone_5",
+    ord("n"): "next",
 }
+KEY_NEXT = "next"  # app action (segmenter / decoder re-arm), not a Level1Speller key
 KEY_QUIT = (ord("q"), 27)
 KEY_PAUSE = ord("p")
 STATE_LABELS = {"no_hand": "không thấy tay", "moving": "đang chuyển động", "holding": "đang giữ yên"}
@@ -620,8 +623,17 @@ class Level1App:
             if self.paused:
                 self.segmenter.reset()
             self._log("pause" if self.paused else "resume", t_ms=self.last_ts)
+        elif k in KEY_ACTIONS and KEY_ACTIONS[k] == KEY_NEXT:
+            self._next_key()
         elif k in KEY_ACTIONS:
             self.speller.key(KEY_ACTIONS[k], t_ms=self.last_ts)
+
+    def _next_key(self) -> None:
+        """Key n "chữ kế" (plan 15 lần sửa 4 §3.1): re-arm the segmenter at the last frame so the sign held now is
+        emitted again; no token is created here (tokens still come only from the model or the token keys)."""
+        if self.last_ts is not None:
+            self.segmenter.force_rearm(self.last_ts)
+        self._log("key", key=KEY_NEXT, source="key", t_ms=self.last_ts)
 
     # -------------------------------------------------------------- one frame
     def _hud_lines(self):
@@ -645,7 +657,7 @@ class Level1App:
             small.append(f"đổi dấu: {f_tone} → {t_tone}")
         for w in tb_view.get("warnings", []):
             small.append("Cảnh báo: " + w["code"])
-        small.append("1-5 dấu | Backspace xóa | Space cách | a nhận | r lặp chữ | c xóa hết | p dừng | q thoát")
+        small.append("1-5 dấu | Backspace xóa | Space cách | a nhận | r lặp chữ | n chữ kế | c xóa hết | p dừng | q thoát")
         dropped = self.slot.dropped if self.slot is not None else 0
         stats = hud_stats_lines(self.times, self.process_starts, self.values["hud_rolling_frames"], dropped)
         return tb_view, small, st["hold_progress"], stats

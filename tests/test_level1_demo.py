@@ -654,6 +654,41 @@ class TestHudTextboxAcTD(unittest.TestCase):
             self.assertEqual(ev["token"], expected_token)
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 4 §3.1 / §5: AC-K3 (key n "chữ kế")
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestNextKeyK3(unittest.TestCase):
+    """AC-K3: Level1App._key(ord("n")) calls the re-arm function of the segmenter (rearm_mode motion_pose), logs a key
+    event with source 'key' and adds no token."""
+
+    def _app(self):
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            return app_mod.Level1App(args_for("--source", CLIP, "--headless"))
+        finally:
+            os.chdir(cwd)
+
+    def test_k3_key_n_maps_to_next(self):
+        self.assertEqual(app_mod.KEY_ACTIONS[ord("n")], "next")
+
+    def test_k3_motion_pose_calls_force_rearm_no_token(self):
+        app = self._app()
+        calls = []
+        app.segmenter.force_rearm = lambda ts: calls.append(ts)
+        tokens_before, speller_events_before = list(app.speller.tokens), list(app.speller.events)
+        app.last_ts = 1234.0
+        app._key(ord("n"))
+        self.assertEqual(calls, [1234.0])
+        self.assertEqual(app.speller.tokens, tokens_before)
+        self.assertEqual(app.speller.events, speller_events_before)
+        self.assertEqual(app.events[-1], {"event": "key", "key": "next", "source": "key", "t_ms": 1234.0})
+
+    def test_k3_hud_help_line_lists_n(self):
+        app = self._app()
+        _view, small, _progress, _stats = app._hud_lines()
+        self.assertTrue(any("n chữ kế" in line for line in small), small)
+
+
 if __name__ == "__main__":
     unittest.main()
 

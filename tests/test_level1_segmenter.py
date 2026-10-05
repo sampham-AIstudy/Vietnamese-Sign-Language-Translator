@@ -577,5 +577,152 @@ class TestRealClipsS18(unittest.TestCase):
                                         f"{cfg_name}/{clip['sample_id']}")
 
 
+
+# ------------------------------------------------------------------ plan 15 lần sửa 4 §3.1 / §5: AC-K1 / AC-K2 / AC-K4 (key n "chữ kế")
+BEFORE_K1_COMMIT = "5c62d13"  # segmenter before force_rearm (AC-K4 reference)
+_BEFORE_K1_MODULE = None
+
+
+def before_k1_segmenter_module():
+    """The segmenter at BEFORE_K1_COMMIT loaded from `git show` into a temporary in-memory module (as
+    reference_segmenter_module; nothing is written to the repo)."""
+    global _BEFORE_K1_MODULE
+    if _BEFORE_K1_MODULE is None:
+        import types
+        src = _git_show(f"{BEFORE_K1_COMMIT}:src/inference/level1_segmenter.py")
+        name = f"_level1_segmenter_ref_{BEFORE_K1_COMMIT}"
+        mod = types.ModuleType(name)
+        mod.__file__ = f"<git show {BEFORE_K1_COMMIT}:src/inference/level1_segmenter.py>"
+        sys.modules[name] = mod
+        try:
+            exec(compile(src, mod.__file__, "exec"), mod.__dict__)
+        finally:
+            sys.modules.pop(name, None)
+        _BEFORE_K1_MODULE = mod
+    return _BEFORE_K1_MODULE
+
+
+class TestForceRearmK1K2(unittest.TestCase):
+    """AC-K1 / AC-K2 (plan 15 lần sửa 4 §5): Level1SignSegmenter.force_rearm on a controlled landmark sequence built
+    in this test (chuỗi landmark tạo có kiểm soát để kiểm logic, không phải dữ liệu thật)."""
+
+    def _push(self, seg, frames, start=0):
+        out = []
+        for i, (ts, lm, hd) in enumerate(frames, start=start):
+            for ev in seg.push(ts, lm, hd if lm is not None else "", W, H):
+                out.append((i, ev))
+        return out
+
+    def test_k1_hold_force_rearm_hold_two_segments(self):
+        """Hold A -> 'hold' -> force_rearm -> keep holding A >= hold_ms -> exactly 2 'hold' segments; segment 2 only
+        has frames with ts >= the key press."""
+        frames, y = move_then_still(10, 20)            # frames 0..29, first 'hold' at frame 20 (800 ms)
+        more = [((30 + k) * 40.0, hand_at(y), "Left") for k in range(30)]  # frames 30..59, still at the same place
+        seg = new_seg()
+        ev = self._push(seg, frames)
+        self.assertEqual([e.close_reason for e in segments(ev)], ["hold"])
+        self.assertFalse(seg.armed)
+        press = frames[-1][0]                           # key pressed after frame 29 (t = 1160 ms)
+        self.assertIsNone(seg.force_rearm(press))       # emits nothing itself
+        self.assertTrue(seg.armed)
+        ev2 = self._push(seg, more, start=30)
+        segs2 = segments(ev2)
+        self.assertEqual([s.close_reason for s in segs2], ["hold"])
+        s2 = segs2[0]
+        self.assertTrue(np.all(s2.timestamps_ms >= press))
+        self.assertEqual(s2.t_start_ms, press)          # the last frame before the key has ts == press and is kept
+        # the hold clock restarted at the key press: first frame with held >= hold_ms
+        self.assertEqual(s2.t_emit_ms, press + PARAMS["hold_ms"])
+        # holding on: no third segment
+        ev3 = self._push(seg, [((60 + k) * 40.0, hand_at(y), "Left") for k in range(30)], start=60)
+        self.assertEqual(segments(ev3), [])
+
+    def test_k1_moving_buffer_cut_without_still_clock(self):
+        """force_rearm while moving (hold clock not running): buffer cut to ts >= press, no hold clock invented."""
+        seg = new_seg()
+        f1, y = move_then_still(10, 0)                  # frames 0..9 moving, armed (first hand), no segment
+        self.assertEqual(segments(self._push(seg, f1)), [])
+        press = f1[5][0] + 1.0                          # between frames 5 and 6 (key pressed late)
+        seg.force_rearm(press)
+        self.assertIsNone(seg._still_since)
+        f2 = [((10 + k) * 40.0, hand_at(y), "Left") for k in range(20)]
+        s = segments(self._push(seg, f2, start=10))
+        self.assertEqual(len(s), 1)
+        self.assertGreaterEqual(float(s[0].timestamps_ms.min()), press)
+
+    def test_k2_force_rearm_while_armed_adds_no_segment(self):
+        """Already armed: force_rearm only resets the buffer / hold clock, no extra segment."""
+        frames, y = move_then_still(10, 20)
+        ref = segments(run(new_seg(), frames))
+        self.assertEqual(len(ref), 1)
+        seg = new_seg()
+        ev = self._push(seg, frames[:15])               # armed, still since 400 ms, hold not reached (600 ms)
+        self.assertTrue(seg.armed)
+        seg.force_rearm(frames[14][0])
+        self.assertTrue(seg.armed)
+        ev += self._push(seg, frames[15:] + [((30 + k) * 40.0, hand_at(y), "Left") for k in range(20)], start=15)
+        segs = segments(ev)
+        self.assertEqual(len(segs), 1)
+        self.assertEqual(segs[0].t_start_ms, frames[14][0])
+        self.assertEqual(segs[0].t_emit_ms, frames[14][0] + PARAMS["hold_ms"])
+
+    def test_k2_force_rearm_without_hand_is_a_no_op(self):
+        seg = new_seg()
+        self.assertEqual(seg.push(0.0, None, "", W, H), [])
+        seg.force_rearm(10.0)
+        self.assertFalse(seg.armed)
+        self.assertEqual(seg.state, "no_hand")
+        with self.assertRaises(ValueError):
+            new_seg().force_rearm(float("nan"))
+
+
+class TestNoKeyIdenticalK4(unittest.TestCase):
+    """AC-K4 (plan 15 lần sửa 4 §5): without the key, the segmenter after K1 gives events identical (array_equal) to
+    the segmenter at BEFORE_K1_COMMIT on the streams of AC-S1…S18 (controlled sequences of this file + every hauuto
+    clip of the manifest with both AC-S18 configs). A missing commit or missing data fails, it is never skipped."""
+
+    def _controlled_streams(self):
+        streams = {}
+        f1, y = move_then_still(10, 20)
+        f2, _ = move_then_still(10, 30, y0=y + SPEED * 0.04, start_index=30)
+        streams["s1"] = f1
+        streams["s2"] = move_then_still(10, 100)[0]
+        streams["s3"] = f1 + f2
+        streams["s4"] = f1 + move_then_still(2, 38, y0=y + SPEED * 0.04, start_index=30)[0]
+        s5, _ = move_then_still(15, 0)
+        streams["s5"] = s5 + [((15 + k) * 40.0, None, "") for k in range(10)]
+        streams["s6"] = f1 + [((30 + k) * 40.0, None, "") for k in range(30)] + \
+            [(f[0] + 2400.0, f[1], f[2]) for f in f1]
+        for name, grid in TestTailIrregularS16S17.GRIDS.items():
+            streams[f"s16_{name}"] = phase_frames(grid)
+        return streams
+
+    def test_k4_controlled_streams_identical(self):
+        ref_mod = before_k1_segmenter_module()
+        for p_name, p in (("params", PARAMS), ("params_tail_half", {**PARAMS, "tail_still_keep_ms": 200}),
+                          ("params_rules_on", {**PARAMS, "pose_change_rules": True})):
+            for name, frames in self._controlled_streams().items():
+                with self.subTest(params=p_name, stream=name):
+                    got = run(Level1SignSegmenter(p, MIN_DETECTED), frames)
+                    ref = run(ref_mod.Level1SignSegmenter(p, MIN_DETECTED), frames)
+                    assert_events_identical(self, got, ref, f"{p_name}/{name}")
+
+    def test_k4_all_hauuto_clips_identical(self):
+        import csv
+        from scripts.level1_segment_report import MANIFEST, clip_timestamps, load_train_clips
+        with open(MANIFEST, encoding="utf-8") as f:
+            n_rows = sum(1 for r in csv.DictReader(f) if r["source"] == "hauuto")
+        data = load_train_clips(MANIFEST, 0)
+        self.assertEqual(len(data["clips"]), n_rows)
+        self.assertGreater(n_rows, 0)
+        ref_mod = before_k1_segmenter_module()
+        for cfg_name, values in s18_configs().items():
+            for clip in data["clips"]:
+                ts = clip_timestamps(len(clip["detected"]), clip["fps"])
+                assert_events_identical(self, run_clip(Level1SignSegmenter, values, clip, ts),
+                                        run_clip(ref_mod.Level1SignSegmenter, values, clip, ts),
+                                        f"{cfg_name}/{clip['sample_id']}")
+
+
 if __name__ == "__main__":
     unittest.main()

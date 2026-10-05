@@ -31,7 +31,9 @@ letter to the next without pressing anything; this segmenter cuts the stream int
   3. stable hold: while the hold clock runs, hold_ref = N of the frame that started it; a frame with
      pose_distance(N_t, hold_ref) >= rearm_pose_dist restarts the hold clock there (armed or not), so a slow change of
      hand shape is not emitted half-way;
-- a WordGap after the hand is lost for >= word_gap_ms, only when a sign was emitted since the previous WordGap.
+- a WordGap after the hand is lost for >= word_gap_ms, only when a sign was emitted since the previous WordGap;
+- force_rearm(ts) (key "chữ kế", plan 15 lần sửa 4 §3.1): re-arm at once, buffer cut to ts, a running hold clock
+  restarts at ts (a held letter can be emitted again without moving the hand).
 
 All durations are in milliseconds of the pushed timestamps (not frame counts). Parameters come from the caller
 (configs/level1_realtime.json via level1_core.load_level1_config); there is no default value in this module.
@@ -244,6 +246,25 @@ class Level1SignSegmenter:
         self._clear_pose_state()
 
     # ------------------------------------------------------------------ API
+    def force_rearm(self, ts_ms: float) -> None:
+        """Key "chữ kế" (plan 15 lần sửa 4 §3.1): re-arm now, so the sign held from ts_ms on is emitted again. Armed =
+        True, the buffer keeps only the frames with ts >= ts_ms, a running hold clock restarts at ts_ms (the segment
+        then holds only frames after the key), the pose anchor / pose run are cleared. Already armed: only the buffer
+        and the hold clock are reset. No hand tracked: nothing changes. Emits nothing."""
+        ts = float(ts_ms)
+        if not np.isfinite(ts):
+            raise ValueError("timestamp must be finite")
+        if not self._tracking:
+            return
+        self._armed = True
+        self._buf = [f for f in self._buf if f[3] >= ts]
+        if self._still_since is not None:
+            self._still_since = ts
+            self._hold_ref = None  # rule 3: the hold reference is taken again from the next hand frame
+        self._anchor = None
+        self._pose_since = None
+        self._hold_progress = 0.0
+
     def push(self, ts_ms: float, landmarks: Optional[np.ndarray], handedness: str, width: int,
              height: int) -> List[Event]:
         """One frame: timestamp (ms, strictly increasing), raw landmarks float [21, 3] or None, MediaPipe
