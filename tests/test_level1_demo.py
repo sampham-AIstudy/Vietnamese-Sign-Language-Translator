@@ -1311,6 +1311,119 @@ class TestClsWindowFlagT2(unittest.TestCase):
         self.assertIn("--cls-window-ms", err.getvalue())
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 7 T3: AC-7c (--no-auto-space)
+class TestNoAutoSpaceArgT3(unittest.TestCase):
+    def test_t3_help_and_default(self):
+        self.assertIn("--no-auto-space", app_mod.build_parser().format_help())
+        self.assertFalse(args_for("--source", CLIP).no_auto_space)
+        self.assertTrue(args_for("--source", CLIP, "--no-auto-space").no_auto_space)
+
+
+from src.inference.hand_live import HandLandmarkSession  # noqa: E402
+
+
+class _HandAwaySession(HandLandmarkSession):
+    """The real MediaPipe session; after the first AWAY_FROM frames of a stream every frame is reported without a hand,
+    as when the signer lowers the hand (the frames before carry the real landmarks)."""
+    AWAY_FROM = 40
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.n = 0
+
+    def process(self, frame_bgr):
+        out = super().process(frame_bgr)
+        self.n += 1
+        return out if self.n <= self.AWAY_FROM else (None, "", None)
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestNoAutoSpaceT3(unittest.TestCase):
+    """AC-7c: with --no-auto-space a hand away for longer than word_gap_ms adds no space to the text (the word gap is
+    still detected and counted); the Space key still adds one. Without the flag the space is added as before. The D2
+    clip is a training clip: this checks the code path, not accuracy."""
+
+    @classmethod
+    def setUpClass(cls):
+        from src.inference.level1_core import load_level1_config
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            cls.word_gap_ms = {}
+            cls.runs = {}
+            for mode, extra in (("motion_pose", []), ("classifier", ["--config", DEMO_CONFIG])):
+                cfg = extra[1] if extra else app_mod.DEFAULT_CONFIG
+                cls.word_gap_ms[mode] = load_level1_config(os.path.join(PROJECT_ROOT, cfg))["values"]["word_gap_ms"]
+                for flag in (False, True):
+                    argv = ["--source", CLIP, "--headless", *extra] + (["--no-auto-space"] if flag else [])
+                    app = app_mod.Level1App(args_for(*argv), session_factory=_HandAwaySession)
+                    cls.runs[(mode, flag)] = (app, app.run())
+        finally:
+            os.chdir(cwd)
+
+    def test_7c_hand_away_longer_than_word_gap(self):
+        for mode in ("motion_pose", "classifier"):
+            with self.subTest(mode=mode):
+                _app, r = self.runs[(mode, False)]
+                gaps = [e for e in r["events"] if e.get("event") == "word_gap"]
+                self.assertEqual(len(gaps), 1)
+                self.assertEqual(r["counts"]["word_gaps"], 1)
+                last_hand = max(s["t_end_ms"] for s in r["segments"])          # hand_lost segment: last hand frame
+                self.assertGreaterEqual(gaps[0]["t_ms"] - last_hand, self.word_gap_ms[mode])
+                self.assertGreaterEqual(len([t for t in r["tokens"] if t != " "]), 1)
+
+    def test_7c_without_flag_space_added(self):
+        for mode in ("motion_pose", "classifier"):
+            with self.subTest(mode=mode):
+                r = self.runs[(mode, False)][1]
+                self.assertEqual(r["tokens"][-1], " ")
+                self.assertTrue(r["text"].endswith(" "))
+                self.assertNotIn("auto_space", r)
+
+    def test_7c_with_flag_no_space(self):
+        for mode in ("motion_pose", "classifier"):
+            with self.subTest(mode=mode):
+                off, on = self.runs[(mode, False)][1], self.runs[(mode, True)][1]
+                self.assertNotIn(" ", on["tokens"])
+                self.assertNotIn(" ", on["text"])
+                self.assertEqual(on["tokens"], [t for t in off["tokens"] if t != " "])
+                self.assertEqual(on["counts"]["word_gaps"], off["counts"]["word_gaps"])   # still detected
+                self.assertEqual(on["labels"], off["labels"])
+                self.assertEqual(on["segments"], off["segments"])
+                gaps = [e for e in on["events"] if e.get("event") == "word_gap"]
+                self.assertEqual(len(gaps), 1)
+                self.assertIs(gaps[0]["auto_space"], False)
+                self.assertIs(on["auto_space"], False)
+                spaces = [e for e in on["events"] if e.get("token") == " "]
+                self.assertEqual(spaces, [])
+
+    def test_7c_space_key_still_works(self):
+        for mode in ("motion_pose", "classifier"):
+            with self.subTest(mode=mode):
+                app, r = self.runs[(mode, True)]
+                n = len(app.speller.tokens)
+                app._key(32)                                                  # Space key
+                self.assertEqual(app.speller.tokens[n:], [" "])
+
+    def test_7c_word_gap_event_unit(self):
+        """A WordGap of the segmenter, pushed through the app in both re-arm modes."""
+        from src.inference.level1_segmenter import WordGap
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            for mode, extra in (("motion_pose", []), ("classifier", ["--config", DEMO_CONFIG])):
+                for flag in (False, True):
+                    with self.subTest(mode=mode, flag=flag):
+                        argv = ["--source", CLIP, "--headless", *extra] + (["--no-auto-space"] if flag else [])
+                        app = app_mod.Level1App(args_for(*argv))
+                        app.speller.key("tone_1", t_ms=100.0)                    # one token before the gap
+                        app._on_events([WordGap(seq=1, t_ms=2000.0)])
+                        self.assertEqual(app.speller.tokens, ["dấu sắc"] if flag else ["dấu sắc", " "])
+                        self.assertEqual(app.counts["word_gaps"], 1)
+        finally:
+            os.chdir(cwd)
+
+
 if __name__ == "__main__":
     unittest.main()
 

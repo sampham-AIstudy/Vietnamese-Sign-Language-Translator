@@ -10,6 +10,8 @@ Run (from the project root, inside .venv):
   python level1_demo.py --source <video.mp4> --headless --out-json out.json      every frame, no window
   python level1_demo.py --source <video.mp4> --pace realtime [--headless]        read at the file's frame rate, newest
                                                                                  frame only (like a webcam)
+  python level1_demo.py --source 0 --config configs/level1_demo_classifier.json --cls-window-ms <N> --no-auto-space
+                                    window of N milliseconds for this run; no automatic space (Space key only)
 Keys (window): Backspace delete last token | Space add a space | a accept the last rejected candidate |
   r repeat the last letter | n next letter (re-arm: the letter held now is emitted again) | c clear |
   p pause / resume segmentation | q or Esc quit.
@@ -642,6 +644,7 @@ class Level1App:
         self.labels: List[Dict[str, Any]] = []
         self.window_counts = {"window_jobs": 0, "window_results": 0, "window_dropped": 0, "label_emits": 0,
                               "label_replace": 0, "segments_not_classified": 0}
+        self.auto_space = not getattr(args, "no_auto_space", False)  # --no-auto-space (plan 15 lần sửa 7 T3)
         self.trace_windows = bool(getattr(args, "trace_windows", False))
         self.window_trace: List[Dict[str, Any]] = []
         self.window_trace_n = 0
@@ -706,6 +709,9 @@ class Level1App:
                     self.worker.submit(ev)
             elif isinstance(ev, WordGap):
                 self.counts["word_gaps"] += 1
+                if not self.auto_space:  # --no-auto-space: the gap is detected and logged, no space token
+                    self._log("word_gap", seq=ev.seq, t_ms=ev.t_ms, auto_space=False)
+                    continue
                 self._log("word_gap", seq=ev.seq, t_ms=ev.t_ms)
                 if self.classifier_mode:  # after the labels of the frames before it
                     self.timeline.append(["gap", ev.t_ms, False, True, ev.seq])
@@ -1056,6 +1062,8 @@ class Level1App:
             "expected": expected,
             "note": NOTE,
         }
+        if not self.auto_space:  # only with --no-auto-space (same reason)
+            report["auto_space"] = False
         if self.config_overrides:  # only with --cls-window-ms: otherwise the report keeps its keys (AC-6b)
             report["config"]["overrides"] = dict(self.config_overrides)
         if self.trace_windows:  # without the flag the report keeps exactly its keys of before (lần sửa 6 AC-6b)
@@ -1096,6 +1104,9 @@ def build_parser() -> argparse.ArgumentParser:
                    help="rearm_mode classifier: length of the sliding window in milliseconds for this run, in place "
                         "of cls_window_ms of the config (the file is not changed; written to the JSON as "
                         "config.overrides)")
+    p.add_argument("--no-auto-space", action="store_true",
+                   help="no space is added when the hand is away for word_gap_ms (the word gap is still detected and "
+                        "written to the JSON); spaces come only from the Space key (default: automatic space)")
     return p
 
 
