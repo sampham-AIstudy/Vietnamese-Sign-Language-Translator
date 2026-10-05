@@ -408,6 +408,10 @@
 
 - (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy" — ĐÃ BỊ THAY bởi quyết định 20:15 ngay dưới.
 
+- (2026-10-05) CHẾ ĐỘ TÁCH CHỮ LIÊN TIẾP cho buổi báo cáo: (a) CLASSIFIER (lần sửa 4 kế hoạch 15) — điểm dừng "chỉ G6 nhóm dấu thanh trượt" đã kích hoạt trên cloud
+  (dấu liên tiếp 0.80 vs 0.85 chế độ cũ; chữ cái G1 0.98). Bật chế độ classifier; dấu thanh trong demo gõ bằng phím 1–5 (token source "key", nêu trong Giới hạn
+  cùng số offline dấu 40.83%); phím n vẫn có. Số chuỗi ghép = kiểm logic; U1c webcam là kiểm thật. Không hỏi lại.
+
 - (2026-10-04 01:15) LUẬT TẮT MÁY MỚI (THAY quyết định 2026-10-02 20:15 ngay dưới): "đơn giản ko cần lưu luật tắt máy, khi nào tôi yêu cầu tắt thì lúc đó
   mới tắt thôi đừng tự suy diễn". ⇒ Chỉ tắt khi người dùng yêu cầu rõ trong hội thoại; không mang yêu cầu cũ sang phiên mới. Trước khi tắt vẫn: lưu STATE,
   commit, push, không "ahead", không agent/tiến trình nền; lệnh `MSYS_NO_PATHCONV=1 shutdown /s /t 300 /c "VSLT: tat may sau khi luu STATE. Huy: shutdown /a"` (không /f).
