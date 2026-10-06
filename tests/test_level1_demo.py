@@ -44,7 +44,18 @@ STAGES = ("capture_age", "mediapipe", "segmenter", "draw_landmarks", "hud", "dis
 COUNT_KEYS = ("frames_read", "frames_processed", "frames_dropped", "processing_fps")
 
 
+# plan 15 lần sửa 12 S1: automatic spaces (word gap, open palm gesture) are off by default. The tests written before
+# lần sửa 12 pin the app with both on (their default then, and the app at the earlier commits they compare with), so
+# args_for() turns both on first; a test's own --no-auto-space / --no-gesture-space comes later and wins (argparse
+# BooleanOptionalAction: the last flag counts). args_new() parses exactly the given argv (the defaults of today).
+LEGACY_DEFAULTS = ("--auto-space", "--gesture-space")
+
+
 def args_for(*argv):
+    return app_mod.build_parser().parse_args([*LEGACY_DEFAULTS, *argv])
+
+
+def args_new(*argv):
     return app_mod.build_parser().parse_args(list(argv))
 
 
@@ -1314,9 +1325,13 @@ class TestClsWindowFlagT2(unittest.TestCase):
 # ------------------------------------------------------------------ plan 15 lần sửa 7 T3: AC-7c (--no-auto-space)
 class TestNoAutoSpaceArgT3(unittest.TestCase):
     def test_t3_help_and_default(self):
-        self.assertIn("--no-auto-space", app_mod.build_parser().format_help())
-        self.assertFalse(args_for("--source", CLIP).no_auto_space)
-        self.assertTrue(args_for("--source", CLIP, "--no-auto-space").no_auto_space)
+        # lần sửa 12 S1: --auto-space / --no-auto-space (BooleanOptionalAction), default off
+        text = app_mod.build_parser().format_help()
+        self.assertIn("--no-auto-space", text)
+        self.assertIn("--auto-space", text)
+        self.assertFalse(args_new("--source", CLIP).auto_space)
+        self.assertTrue(args_new("--source", CLIP, "--auto-space").auto_space)
+        self.assertFalse(args_for("--source", CLIP, "--no-auto-space").auto_space)
 
 
 from src.inference.hand_live import HandLandmarkSession  # noqa: E402
@@ -1571,7 +1586,7 @@ class TestRev7DemoConfig(unittest.TestCase):
         self.assertEqual(r["config"]["path"], "configs/level1_demo_classifier_rev7.json")
         self.assertEqual(r["config"]["sha256"], app_mod.sha256_file(os.path.join(PROJECT_ROOT, REV7_CONFIG)))
         self.assertNotIn("overrides", r["config"])                       # the values come from the file, no flag
-        self.assertNotIn("auto_space", r)
+        self.assertIs(r["auto_space"], False)   # lần sửa 12 S1: no automatic space by default (key written when off)
         self.assertEqual(r["checkpoint"]["sha256"], app_mod.sha256_file(os.path.join(PROJECT_ROOT, CKPT)))
         self.assertGreater(r["stages"]["window_classify"]["n"], 0)
         self.assertEqual(r["stages"]["classify"]["n"], 0)
@@ -2564,6 +2579,7 @@ class TestRev9CommandS3(unittest.TestCase):
             argv = REV9_COMMAND.split()[2:]
             self.assertEqual(argv[:2], ["--source", "0"])
             argv = ["--source", PALM_CLIP, "--headless"] + [a for a in argv[2:] if a != "--display-mirror"]
+            argv.append("--gesture-space")   # lần sửa 12 S1: the gesture is off by default since
             proc = subprocess.run([PY, "level1_demo.py", *argv, "--out-json", out], cwd=PROJECT_ROOT,
                                   capture_output=True, text=True, env=ENV, timeout=900)
             self.assertEqual(proc.returncode, 0, proc.stderr[-2000:])
@@ -2895,30 +2911,30 @@ class TestDesktopDocP3(unittest.TestCase):
 
 
 
-# ------------------------------------------------------------------ plan 15 lần sửa 10 P1 (dominant hand lock)
+# ------------------------------------------------------------------ plan 15 lần sửa 10 P1 -> lần sửa 12 H1 (hand lock)
 FLIP_CLIP = os.path.join("data", "external", "hauuto_raw", "raw", "raw", "khoi", "aa_khoi_A_001.mp4")
 _MISSING_P1 = [p for p in (CLIP, CKPT, FLIP_CLIP) if not os.path.exists(os.path.join(PROJECT_ROOT, p))]
 SKIP_REASON_P1 = "missing (gitignored data / checkpoint): " + ", ".join(_MISSING_P1)
-HAND_HUD_LINES = {"Right": "[Tay: Phải]", "Left": "[Tay: Trái]"}
 
 
 class TestDominantHandArgsP1(unittest.TestCase):
-    """§2 P1: --dominant-hand {Right, Left, auto}, default auto. The value names the signer's hand; the label fed to the
-    pipeline is the MediaPipe label of that hand on an unmirrored frame (MediaPipe assumes a mirrored image: a right
-    hand is labelled 'Left', see canonicalize_hand_sequence), so the locked run has the canonical form of training."""
+    """lần sửa 12 H1: --dominant-hand {auto, lock, Right, Left}, default auto. lock = HandednessLock (majority of
+    MediaPipe's own labels on the first hand frames); Right / Left (lần sửa 10 P1) are aliases of lock: the fixed label
+    they gave (Right -> 'Left') mirrored every frame of a camera whose driver mirrors (dominant_hand_check.json)."""
 
-    def test_p1_choices_default_mapping(self):
+    def test_p1_choices_default_aliases(self):
         text = app_mod.build_parser().format_help()
         self.assertIn("--dominant-hand", text)
         self.assertEqual(args_for("--source", CLIP).dominant_hand, "auto")
-        for v in ("Right", "Left", "auto"):
+        for v in ("lock", "Right", "Left", "auto"):
             self.assertEqual(args_for("--source", CLIP, "--dominant-hand", v).dominant_hand, v)
-        self.assertEqual(app_mod.DOMINANT_HAND_LABELS, {"Right": "Left", "Left": "Right"})
+        self.assertEqual(app_mod.DOMINANT_HAND_ALIASES, ("Right", "Left"))
+        self.assertFalse(hasattr(app_mod, "DOMINANT_HAND_LABELS"))   # no assumed hand -> label mapping any more
 
     def test_p1_bad_value_rejected(self):
         import contextlib
         import io
-        for bad in ("right", "both", ""):
+        for bad in ("right", "both", "", "LOCK"):
             with self.subTest(bad=bad), contextlib.redirect_stderr(io.StringIO()):
                 with self.assertRaises(SystemExit):
                     args_for("--source", CLIP, "--dominant-hand", bad)
@@ -2926,14 +2942,16 @@ class TestDominantHandArgsP1(unittest.TestCase):
 
 @unittest.skipUnless(not _MISSING_P1, SKIP_REASON_P1)
 class TestDominantHandP1(unittest.TestCase):
-    """AC-10b / AC-10d on FLIP_CLIP (â of signer khoi; training clip: code path, not accuracy), whose MediaPipe labels
-    switch between Left and Right. --dominant-hand Right / Left: every hand frame reaching the segmenter and the window
-    has the one label of that hand (Right -> 'Left', Left -> 'Right'), so every segment canonicalizes the same way
-    (Right: always mirrored, as the training clips of right-handed signers); JSON dominant_hand, HUD line. auto (default):
-    the session's labels pass unchanged and the report is that of the app at 8e6d6fb."""
+    """On FLIP_CLIP (â of signer khoi; training clip: code path, not accuracy), whose MediaPipe labels switch between
+    Left and Right. --dominant-hand lock: the first HAND_LOCK_FRAMES hand frames keep MediaPipe's label and are counted,
+    every later hand frame reaching the segmenter and the window has the majority label; landmarks untouched; JSON
+    dominant_hand, HUD line. Right / Left: the same run as lock (requested recorded). auto (default): the session's
+    labels pass unchanged and the report is that of the app at 8e6d6fb."""
 
     @classmethod
     def setUpClass(cls):
+        import contextlib
+        import io
         cwd = os.getcwd()
         os.chdir(PROJECT_ROOT)
         try:
@@ -2941,64 +2959,108 @@ class TestDominantHandP1(unittest.TestCase):
             cls.runs = {}
             for mode, extra in (("motion_pose", []), ("classifier", ["--config", REV7_CONFIG])):
                 base = ["--source", FLIP_CLIP, "--headless", *extra]
-                for hand in ("Right", "Left", "auto"):
+                for hand in ("lock", "Right", "Left", "auto"):
                     flags = [] if hand == "auto" else ["--dominant-hand", hand]
                     _LandmarkHandRecordingSession.instances = []
-                    app = app_mod.Level1App(args_for(*base, *flags), session_factory=_LandmarkHandRecordingSession,
-                                            keep_segments=True)
+                    err = io.StringIO()
+                    with contextlib.redirect_stderr(err):
+                        app = app_mod.Level1App(args_for(*base, *flags),
+                                                session_factory=_LandmarkHandRecordingSession, keep_segments=True)
                     rec = _spy_inputs(app)
                     report = app.run()
-                    cls.runs[(mode, hand)] = {"report": report, "app": app, "rec": rec,
+                    cls.runs[(mode, hand)] = {"report": report, "app": app, "rec": rec, "stderr": err.getvalue(),
                                               "seen": _LandmarkHandRecordingSession.instances[1].seen}
                 cls.runs[(mode, "ref")] = ref.Level1App(ref.build_parser().parse_args(base)).run()
         finally:
             os.chdir(cwd)
 
+    @staticmethod
+    def _mp_labels(run):
+        return [hd for lm, _w, _h, hd in run["seen"] if lm is not None]
+
     def test_p1_clip_labels_switch(self):
-        labels = [hd for lm, _w, _h, hd in self.runs[("motion_pose", "auto")]["seen"] if lm is not None]
+        labels = self._mp_labels(self.runs[("motion_pose", "auto")])
         self.assertIn("Left", labels)
         self.assertIn("Right", labels)
         self.assertGreater(sum(a != b for a, b in zip(labels, labels[1:])), 0)
 
-    def test_p1_locked_label_on_every_hand_frame(self):
+    def test_p1_locked_label_is_mediapipe_majority(self):
+        from src.inference.level1_core import HAND_LOCK_FRAMES
         for mode in ("motion_pose", "classifier"):
-            for hand, label in (("Right", "Left"), ("Left", "Right")):
-                with self.subTest(mode=mode, hand=hand):
-                    r = self.runs[(mode, hand)]
-                    for name in ("segmenter", "window") if mode == "classifier" else ("segmenter",):
-                        got = [hd for _ts, lm, hd in r["rec"][name] if lm is not None]
-                        self.assertGreater(len(got), 0)
-                        self.assertEqual(set(got), {label}, name)
-                    raw = [lm for lm, _w, _h, _hd in r["seen"]]
-                    seg_lm = [lm for _ts, lm, _hd in r["rec"]["segmenter"]]
-                    self.assertEqual([lm is None for lm in raw], [lm is None for lm in seg_lm])  # landmarks untouched
-                    for a, b in zip(raw, seg_lm):
-                        if a is not None:
-                            np.testing.assert_array_equal(a, b)
+            with self.subTest(mode=mode):
+                r = self.runs[(mode, "lock")]
+                mp_labels = self._mp_labels(r)
+                first = mp_labels[:HAND_LOCK_FRAMES]
+                majority = max(("Left", "Right"), key=first.count)
+                self.assertEqual(r["app"].hand_lock.label, majority)
+                for name in ("segmenter", "window") if mode == "classifier" else ("segmenter",):
+                    got = [hd for _ts, lm, hd in r["rec"][name] if lm is not None]
+                    self.assertGreater(len(got), HAND_LOCK_FRAMES)
+                    self.assertEqual(got[:HAND_LOCK_FRAMES], first, name)            # counted, unchanged
+                    self.assertEqual(set(got[HAND_LOCK_FRAMES:]), {majority}, name)  # locked
+                raw = [lm for lm, _w, _h, _hd in r["seen"]]
+                seg_lm = [lm for _ts, lm, _hd in r["rec"]["segmenter"]]
+                self.assertEqual([lm is None for lm in raw], [lm is None for lm in seg_lm])  # landmarks untouched
+                for a, b in zip(raw, seg_lm):
+                    if a is not None:
+                        np.testing.assert_array_equal(a, b)
 
     def test_p1_segments_canonicalize_one_way(self):
+        """Every segment that starts after the lock carries the locked label only, so it canonicalizes one way: mirrored
+        exactly when MediaPipe's majority label is 'Left' (as the training clips recorded on the same camera)."""
         from src.data.alphabet_preprocessing import canonicalize_hand_sequence
-        for hand, mirrored in (("Right", True), ("Left", False)):
-            with self.subTest(hand=hand):
-                segs = self.runs[("motion_pose", hand)]["app"].kept_segments
-                self.assertGreater(len(segs), 0)
-                for seg in segs:
-                    self.assertEqual(set(seg.handedness[seg.detected]), {app_mod.DOMINANT_HAND_LABELS[hand]})
-                    flag = canonicalize_hand_sequence(seg.raw_landmarks, seg.detected, seg.handedness)[2]
-                    self.assertIs(flag, mirrored)
+        from src.inference.level1_core import HAND_LOCK_FRAMES
+        r = self.runs[("motion_pose", "lock")]
+        label = r["app"].hand_lock.label
+        lock_ts = [ts for ts, lm, _hd in r["rec"]["segmenter"] if lm is not None][HAND_LOCK_FRAMES - 1]
+        segs = [seg for seg in r["app"].kept_segments if seg.t_start_ms > lock_ts]
+        self.assertGreater(len(segs), 0)
+        for seg in segs:
+            self.assertEqual(set(seg.handedness[seg.detected]), {label})
+            flag = canonicalize_hand_sequence(seg.raw_landmarks, seg.detected, seg.handedness)[2]
+            self.assertIs(flag, label == "Left")
 
-    def test_p1_json_and_hud(self):
+    def test_p1_aliases_run_as_lock(self):
         for mode in ("motion_pose", "classifier"):
+            lock = self.runs[(mode, "lock")]["report"]
             for hand in ("Right", "Left"):
                 with self.subTest(mode=mode, hand=hand):
                     r = self.runs[(mode, hand)]
-                    self.assertEqual(r["report"]["dominant_hand"],
-                                     {"mode": hand, "label": app_mod.DOMINANT_HAND_LABELS[hand]})
-                    small = r["app"]._hud_lines()[1]
-                    self.assertEqual(small.count(HAND_HUD_LINES[hand]), 1)
-                    self.assertEqual(small[:2], [s for s in small if s not in HAND_HUD_LINES.values()][:2])
-            small = self.runs[(mode, "auto")]["app"]._hud_lines()[1]
-            self.assertFalse(set(small) & set(HAND_HUD_LINES.values()))
+                    self.assertIn("now means --dominant-hand lock", r["stderr"])
+                    rep = r["report"]
+                    self.assertEqual(rep["dominant_hand"], {**lock["dominant_hand"], "requested": hand})
+                    for k in ("tokens", "text", "labels", "segments", "warnings"):
+                        self.assertEqual(rep[k], lock[k], (mode, hand, k))
+            self.assertEqual(self.runs[(mode, "lock")]["stderr"], "")
+
+    def test_p1_json_and_hud(self):
+        from src.inference.level1_core import HAND_LOCK_FRAMES
+        for mode in ("motion_pose", "classifier"):
+            with self.subTest(mode=mode):
+                r = self.runs[(mode, "lock")]
+                lock = r["app"].hand_lock
+                first = self._mp_labels(r)[:HAND_LOCK_FRAMES]
+                self.assertEqual(r["report"]["dominant_hand"],
+                                 {"mode": "lock", "requested": "lock", "label": lock.label,
+                                  "lock_frames": HAND_LOCK_FRAMES,
+                                  "votes": {"Left": first.count("Left"), "Right": first.count("Right")}})
+                small = r["app"]._hud_lines()[1]
+                line = app_mod.HAND_LOCK_HUD.format(label=lock.label)
+                self.assertEqual(small.count(line), 1)
+                self.assertEqual(small[:2], [s for s in small if s != line][:2])
+                small = self.runs[(mode, "auto")]["app"]._hud_lines()[1]
+                self.assertFalse([s for s in small if s.startswith("[Tay:")])
+
+    def test_p1_hud_while_counting(self):
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            app = app_mod.Level1App(args_for("--source", CLIP, "--headless", "--dominant-hand", "lock"))
+        finally:
+            os.chdir(cwd)
+        self.assertEqual(app._hand_line(), app_mod.HAND_LOCKING_HUD.format(n=0, total=app.hand_lock.lock_frames))
+        app.hand_lock.update("Right")
+        self.assertEqual(app._hand_line(), app_mod.HAND_LOCKING_HUD.format(n=1, total=app.hand_lock.lock_frames))
 
     def test_p1_auto_is_the_app_before(self):
         for mode in ("motion_pose", "classifier"):
@@ -3015,9 +3077,10 @@ class TestDominantHandP1(unittest.TestCase):
                 self.assertEqual(_without_rates(report["counts"]), _without_rates(ref["counts"]))
 
 
-
 REV10_COMMAND = ("python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json "
                  "--min-detection-conf 0.35 --auto-enhance --dominant-hand Right")
+REV12_COMMAND = ("python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev9.json "
+                 "--min-detection-conf 0.35 --auto-enhance --dominant-hand lock")
 
 
 class TestDesktopDocP1(unittest.TestCase):
@@ -3025,11 +3088,106 @@ class TestDesktopDocP1(unittest.TestCase):
         import re
         with open(os.path.join(PROJECT_ROOT, "docs", "level1_desktop.md"), encoding="utf-8") as f:
             doc = f.read()
-        section = doc[doc.index("## 10."):]
-        for text in (REV10_COMMAND, "--dominant-hand Left", "dominant_hand", "[Tay: Phải]", "[Tay: Trái]",
-                     "canonicalize_hand_sequence"):
+        section = doc[doc.index("## 10."):doc.index("## 11.")]
+        for text in (REV10_COMMAND, "dominant_hand", "canonicalize_hand_sequence", "bí danh của", "mục 11"):
             self.assertIn(text, section, text)
+        section = doc[doc.index("## 11."):]
+        for text in (REV12_COMMAND, "--dominant-hand lock", "HandednessLock", "dominant_hand_check.json",
+                     "[Tay: khóa Right]", "--auto-space", "--gesture-space", "cls_motion_gate", "frames_gated",
+                     "chờ tay yên", "rearm_check_gate.json"):
+            self.assertIn(text, section, text)
+        self.assertIn(REV12_COMMAND, doc[:doc.index("## 2.")])                 # the command of section 1
         self.assertIsNone(re.search(r"\d+(\.\d+)?\s*(ms|%|fps)", doc))   # no measured number (as AC-R'4 / C1)
+
+
+# ------------------------------------------------------------------ plan 15 lần sửa 12 S1 / G1 (defaults, motion gate)
+REV8_DEMO_CONFIG = os.path.join("configs", "level1_demo_classifier_rev8.json")
+REV9_DEMO_CONFIG = os.path.join("configs", "level1_demo_classifier_rev9.json")
+
+
+class TestDefaultsArgsS1(unittest.TestCase):
+    def test_s1_automatic_spaces_off_by_default(self):
+        a = args_new("--source", CLIP)
+        self.assertIs(a.auto_space, False)
+        self.assertIs(a.gesture_space, False)
+        self.assertIs(app_mod.AUTO_SPACE_DEFAULT, False)
+        self.assertIs(app_mod.GESTURE_SPACE_DEFAULT, False)
+        self.assertIs(args_new("--source", CLIP, "--gesture-space").gesture_space, True)
+        self.assertIs(args_new("--source", CLIP, "--auto-space").auto_space, True)
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestDefaultsS1G1(unittest.TestCase):
+    """Runs with the defaults of today (args_new) on CLIP (training clip: code path, not accuracy) with the hand away
+    after _HandAwaySession.AWAY_FROM frames: the word gap is detected and logged (configs whose word_gap_ms fits in the
+    clip: the default one and DEMO_CONFIG, as TestNoAutoSpaceT3), no space token, JSON auto_space false, no gesture
+    block. rev9 (motion gate): counts.frames_gated > 0; rev8: no frames_gated key."""
+
+    @classmethod
+    def setUpClass(cls):
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            cls.runs = {}
+            for name, extra in (("motion_pose", []), ("classifier", ["--config", DEMO_CONFIG]),
+                                ("rev8", ["--config", REV8_DEMO_CONFIG]), ("rev9", ["--config", REV9_DEMO_CONFIG])):
+                app = app_mod.Level1App(args_new("--source", CLIP, "--headless", *extra),
+                                        session_factory=_HandAwaySession)
+                cls.runs[name] = (app, app.run())
+        finally:
+            os.chdir(cwd)
+
+    def test_s1_no_automatic_space(self):
+        for name, (app, r) in self.runs.items():
+            with self.subTest(name=name):
+                self.assertFalse(app.gesture_space)
+                gaps = [e for e in r["events"] if e.get("event") == "word_gap"]
+                if name in ("motion_pose", "classifier"):
+                    self.assertEqual(r["counts"]["word_gaps"], 1)
+                    self.assertEqual(len(gaps), 1)
+                self.assertEqual(len(gaps), r["counts"]["word_gaps"])
+                self.assertTrue(all(g["auto_space"] is False for g in gaps))
+                self.assertNotIn(" ", r["tokens"])
+                self.assertIs(r["auto_space"], False)
+                self.assertNotIn("gesture_space", r)
+
+    def test_g1_frames_gated_only_with_the_gate(self):
+        self.assertNotIn("frames_gated", self.runs["motion_pose"][1]["counts"])
+        self.assertNotIn("frames_gated", self.runs["rev8"][1]["counts"])
+        app, r = self.runs["rev9"]
+        self.assertTrue(app.decoder.motion_gate)
+        self.assertGreater(r["counts"]["frames_gated"], 0)
+        self.assertEqual(r["counts"]["frames_gated"], app.decoder.n_gated)
+
+    def test_g1_gate_never_emits_on_a_moving_frame(self):
+        """Every label of the rev9 run was emitted on a frame where the segmenter was not 'moving'."""
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            app = app_mod.Level1App(args_new("--source", CLIP, "--headless", "--config", REV9_DEMO_CONFIG))
+            states = {}
+            orig = app.segmenter.push
+
+            def push(ts_ms, *a, **k):
+                out = orig(ts_ms, *a, **k)
+                states[ts_ms] = app.segmenter.state
+                return out
+            app.segmenter.push = push
+            r = app.run()
+        finally:
+            os.chdir(cwd)
+        self.assertGreater(len(r["labels"]), 0)
+        for lab in r["labels"]:
+            self.assertNotEqual(states[lab["ts_ms"]], "moving", lab)
+
+    def test_g1_decoder_line_while_gated(self):
+        app, _r = self.runs["rev9"]
+        app.last_window = None
+        app.segmenter._last_has_hand, app.segmenter._still_since = True, None   # state 'moving'
+        self.assertTrue(app._decoder_line().endswith("| chờ tay yên"))
+        app.segmenter._still_since = 0.0                                         # state 'holding'
+        self.assertNotIn("chờ tay yên", app._decoder_line())
+        self.assertNotIn("chờ tay yên", self.runs["rev8"][0]._decoder_line())
 
 
 if __name__ == "__main__":

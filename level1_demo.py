@@ -24,17 +24,22 @@ Run (from the project root, inside .venv):
                                     hand points smoothed by LandmarkSmoother (adaptive moving average: strong while
                                     the hand is still, light while it moves) before the segmenter, the window, the
                                     gesture and the drawing (plan 15 lần sửa 10 P2; default off)
-  python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json \
-                        --min-detection-conf 0.35 --auto-enhance --dominant-hand Right --smooth-landmarks
-                                    right-handed signer: every hand frame gets the label of a right hand (MediaPipe
-                                    'Left' on the unmirrored frame) so a window never flips between mirrored and not
-                                    (plan 15 lần sửa 10 P1; HUD line [Tay: Phải]); --dominant-hand Left for a left hand
+  python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev9.json \
+                        --min-detection-conf 0.35 --auto-enhance --dominant-hand lock
+                                    multi-sign spelling (plan 15 lần sửa 12): classifier re-arm with the motion gate (a
+                                    label counts only while the hand is still), handedness locked to the majority of
+                                    MediaPipe's own labels on the first hand frames (HUD line [Tay: khóa ...]); spaces
+                                    from the Space key only
+  --dominant-hand Right / Left (lần sửa 10 P1) are aliases of lock since lần sửa 12 H1: the fixed label they gave
+  (Right -> 'Left') mirrored x on every frame of a camera whose driver mirrors the frames.
 HUD angle hint (plan 15 lần sửa 10 P3, always on): index finger pointing at the camera (foreshortening_ratio < 0.3) on
   more than 3 consecutive hand frames -> yellow line [Góc tay: Hơi nghiêng tay 20°]; HUD only (JSON unchanged).
 Keys (window): Backspace delete last token | Space add a space | a accept the last rejected candidate |
   r repeat the last letter | n next letter (re-arm: the letter held now is emitted again) | c clear |
   p pause / resume segmentation | q or Esc quit.
-Gesture (plan 15 lần sửa 9, on unless --no-gesture-space): open palm (5 fingers spread, thumb out) held --space-hold-ms
+Automatic spaces are off by default since plan 15 lần sửa 12 S1: --auto-space adds a space after the hand is away for
+  word_gap_ms, --gesture-space turns the open palm gesture on; the Space key always adds one.
+Gesture (plan 15 lần sửa 9, with --gesture-space): open palm (5 fingers spread, thumb out) held --space-hold-ms
   (default 250) = Space, once per gesture (change the hand shape or withdraw the hand before the next one); HUD line
   [Cử chỉ: Dấu cách <held>/<hold>] while held, [Ký hiệu: Dấu cách (Space)] right after. In rearm_mode classifier an
   open-palm frame reaches the window as a frame without hand (it is never classified as a letter).
@@ -76,8 +81,8 @@ if ROOT not in sys.path:
 
 from src.inference.hand_live import LEVEL1_HANDS_KWARGS, HandLandmarkSession  # noqa: E402
 from src.inference.level1_core import (CLAHE_CLIP_LIMIT, CLAHE_TILE_GRID, LOW_LIGHT_THRESHOLD,  # noqa: E402
-                                       LandmarkSmoother, Level1Classifier, Level1Speller, enhance_low_light,
-                                       foreshortening_ratio, is_open_palm_space, load_level1_config)
+                                       HandednessLock, LandmarkSmoother, Level1Classifier, Level1Speller,
+                                       enhance_low_light, foreshortening_ratio, is_open_palm_space, load_level1_config)
 from src.inference.level1_segmenter import (Level1LabelDecoder, Level1SignSegmenter, SignSegment,  # noqa: E402
                                             WindowBuffer, WordGap, aspect_points)
 from src.inference.level1_timing import (FRAME_STAGES, SIGN_STAGES, StageTimes,  # noqa: E402
@@ -143,11 +148,20 @@ SMOOTH_LANDMARKS_DEFAULT = False
 FORESHORTEN_RATIO_MIN = 0.3
 FORESHORTEN_FRAMES = 3
 ANGLE_HINT_LINE = "[Góc tay: Hơi nghiêng tay 20°]"
-# --dominant-hand (plan 15 lần sửa 10 P1): the signer's dominant hand -> the one handedness label given to every hand
-# frame of the run. MediaPipe assumes a mirrored (selfie) image and the app never mirrors the frames it processes, so a
-# right hand gets 'Left' (as in the training clips: canonicalize_hand_sequence mirrors x for a 'Left' majority)
-DOMINANT_HAND_LABELS = {"Right": "Left", "Left": "Right"}
-DOMINANT_HAND_HUD = {"Right": "[Tay: Phải]", "Left": "[Tay: Trái]"}
+# --dominant-hand (plan 15 lần sửa 12 H1, replaces the fixed labels of lần sửa 10 P1): 'auto' = MediaPipe's label of
+# each frame; 'lock' = HandednessLock, the majority of MediaPipe's own labels on the first hand frames, for the rest of
+# the run. Lần sửa 10 gave every frame a label chosen from the signer's hand (Right -> 'Left'), assuming the camera never
+# mirrors; on a camera whose driver mirrors, MediaPipe labels a right hand 'Right', so the fixed 'Left' mirrored x on
+# every frame (thumb and little finger swapped). Measured on the collected_targeted clips:
+# reports/level1_realtime_2026-10-06/dominant_hand_check.json. Right / Left are kept as aliases of 'lock'.
+DOMINANT_HAND_CHOICES = ("auto", "lock", "Right", "Left")
+DOMINANT_HAND_ALIASES = ("Right", "Left")
+HAND_LOCK_HUD = "[Tay: khóa {label}]"
+HAND_LOCKING_HUD = "[Tay: đang khóa {n}/{total}]"
+# automatic spaces (plan 15 lần sửa 12 S1): OFF by default. A short loss of the hand (word gap) and a relaxed open hand
+# (gesture) both added spaces the signer did not want in the middle of a word; --auto-space / --gesture-space turn them on
+AUTO_SPACE_DEFAULT = False
+GESTURE_SPACE_DEFAULT = False
 
 
 class SourceError(Exception):
@@ -782,16 +796,23 @@ class Level1App:
         self.labels: List[Dict[str, Any]] = []
         self.window_counts = {"window_jobs": 0, "window_results": 0, "window_dropped": 0, "label_emits": 0,
                               "label_replace": 0, "segments_not_classified": 0}
-        self.auto_space = not getattr(args, "no_auto_space", False)  # --no-auto-space (plan 15 lần sửa 7 T3)
-        # open palm = Space (plan 15 lần sửa 9 S2; on unless --no-gesture-space)
-        self.gesture_space = bool(getattr(args, "gesture_space", True))
+        # --auto-space (plan 15 lần sửa 7 T3 --no-auto-space; off by default since lần sửa 12 S1)
+        self.auto_space = bool(getattr(args, "auto_space", AUTO_SPACE_DEFAULT))
+        # open palm = Space (plan 15 lần sửa 9 S2; --gesture-space, off by default since lần sửa 12 S1)
+        self.gesture_space = bool(getattr(args, "gesture_space", GESTURE_SPACE_DEFAULT))
         self.space_tracker = SpaceGestureTracker(getattr(args, "space_hold_ms", GESTURE_SPACE_HOLD))
         self.gesture_counts = {"palm_frames": 0, "spaces_added": 0}
         self.gesture_flash_ts: Optional[float] = None  # stream time of the last gesture space (HUD flash)
         self.foreshortened_run = 0  # consecutive hand frames with foreshortening_ratio < FORESHORTEN_RATIO_MIN (P3)
-        # lần sửa 10 P1: 'auto' -> MediaPipe's label of each frame (None here); Right / Left -> one label for the run
-        self.dominant_hand = getattr(args, "dominant_hand", "auto")
-        self.hand_label: Optional[str] = DOMINANT_HAND_LABELS.get(self.dominant_hand)
+        # lần sửa 12 H1: 'auto' -> MediaPipe's label of each frame (no lock); 'lock' (or its aliases Right / Left) ->
+        # the majority of MediaPipe's own labels on the first hand frames, for the rest of the run
+        self.dominant_hand_requested = getattr(args, "dominant_hand", "auto")
+        self.dominant_hand = ("lock" if self.dominant_hand_requested in DOMINANT_HAND_ALIASES
+                              else self.dominant_hand_requested)
+        self.hand_lock: Optional[HandednessLock] = HandednessLock() if self.dominant_hand == "lock" else None
+        if self.dominant_hand_requested in DOMINANT_HAND_ALIASES:
+            print(f"level1_demo: --dominant-hand {self.dominant_hand_requested} now means --dominant-hand lock (the "
+                  "label is taken from MediaPipe on this camera, never assumed)", file=sys.stderr)
         self.trace_windows = bool(getattr(args, "trace_windows", False))
         self.window_trace: List[Dict[str, Any]] = []
         self.window_trace_n = 0
@@ -873,10 +894,11 @@ class Level1App:
             self._apply_result(seg, result, classify_ms)
 
     # -------------------------------------------------------------- classifier re-arm (plan 15 lần sửa 4 §3.4)
-    def _window_frame(self, ts_ms: float, landmarks, handedness: str, w: int, h: int) -> None:
-        """Window of this frame -> classification (headless: now; otherwise newest-job worker) -> timeline."""
+    def _window_frame(self, ts_ms: float, landmarks, handedness: str, w: int, h: int, moving: bool = False) -> None:
+        """Window of this frame -> classification (headless: now; otherwise newest-job worker) -> timeline. moving =
+        segmenter state 'moving' of this frame, read by the decoder only with cls_motion_gate (lần sửa 12 G1)."""
         self.window.push(ts_ms, landmarks, handedness, w, h)
-        entry = ["frame", ts_ms, landmarks is not None, True, None]
+        entry = ["frame", ts_ms, landmarks is not None, True, None, bool(moving)]
         self.timeline.append(entry)
         if landmarks is not None:
             seg = self.window.segment(ts_ms)
@@ -910,7 +932,9 @@ class Level1App:
     def _drain_timeline(self) -> None:
         """Applies the timeline from its start while its head is resolved (timestamp order is kept)."""
         while self.timeline and self.timeline[0][3]:
-            kind, ts_ms, has_hand, _resolved, payload = self.timeline.pop(0)
+            entry = self.timeline.pop(0)
+            kind, ts_ms, has_hand, _resolved, payload = entry[:5]
+            moving = entry[5] if len(entry) > 5 else False  # frame entries only (lần sửa 12 G1)
             if kind == "gap":
                 self.speller.word_gap(payload, t_ms=ts_ms)
             elif kind == "space":
@@ -920,7 +944,7 @@ class Level1App:
             elif kind == "reset":
                 self.decoder.reset()
             else:
-                emit = self.decoder.push(ts_ms, has_hand, payload)
+                emit = self.decoder.push(ts_ms, has_hand, payload, moving=moving)
                 if payload is not None:
                     self.last_window = self._window_entry(ts_ms, payload, emit)
                     if self.trace_windows:
@@ -1018,6 +1042,13 @@ class Level1App:
         else:
             self.foreshortened_run = 0
 
+    def _hand_line(self) -> str:
+        """HUD line of --dominant-hand lock: the locked label, or the votes counted so far."""
+        lock = self.hand_lock
+        if lock.locked:
+            return HAND_LOCK_HUD.format(label=lock.label)
+        return HAND_LOCKING_HUD.format(n=lock.n_votes, total=lock.lock_frames)
+
     def _next_key(self) -> None:
         """Key n "chữ kế" (plan 15 lần sửa 4 §3.1): re-arm the segmenter at the last frame so the sign held now is
         emitted again; no token is created here (tokens still come only from the model or the token keys)."""
@@ -1043,6 +1074,8 @@ class Level1App:
         tone = self.decoder.is_tone(run)
         stable = f"{self.decoder.thresholds(run)[1]:.0f} (tone)" if tone else f"{self.values['cls_stable_ms']:.0f}"
         line = f"[classifier] cửa sổ: {top1} {conf} | giữ {held:.0f}/{stable} | cuối: {last}"
+        if self.decoder.motion_gate and not self.paused and self.segmenter.state == "moving":  # lần sửa 12 G1
+            line += " | chờ tay yên"
         return line + " | tạm dừng (p)" if self.paused else line
 
     def _hud_lines(self):
@@ -1061,8 +1094,8 @@ class Level1App:
         small = [last, self._decoder_line() if self.classifier_mode else "Trạng thái: " + state]
         if self.detection_custom:  # lần sửa 8: only when MediaPipe or its input differ from the default
             small.append(f"[MP: conf={self.min_detection_conf:.2f} | CLAHE: {'on' if self.auto_enhance else 'off'}]")
-        if self.hand_label is not None:  # lần sửa 10 P1: only with --dominant-hand Right / Left
-            small.append(DOMINANT_HAND_HUD[self.dominant_hand])
+        if self.hand_lock is not None:  # lần sửa 12 H1: only with --dominant-hand lock (or Right / Left)
+            small.append(self._hand_line())
         gesture = self._gesture_line() if self.gesture_space else None
         if gesture is not None:  # lần sửa 9: only while the open palm is held / right after its space
             small.append(gesture)
@@ -1096,8 +1129,8 @@ class Level1App:
             t_mp = time.perf_counter()
             self.times.add("low_light_enhance", (t_mp - t0) * 1000.0)
         landmarks, handedness, _score = session.process(frame_mp)
-        if self.hand_label is not None and landmarks is not None:  # lần sửa 10 P1: --dominant-hand locks the label
-            handedness = self.hand_label
+        if self.hand_lock is not None and landmarks is not None:  # lần sửa 12 H1: --dominant-hand lock
+            handedness = self.hand_lock.update(handedness)
         t1 = time.perf_counter()
         self.times.add("mediapipe", (t1 - t_mp) * 1000.0)
         if self.smooth_landmarks:  # lần sửa 10 P2: a frame without hand resets the smoother
@@ -1116,7 +1149,8 @@ class Level1App:
         self.times.add("segmenter", (t2 - t1) * 1000.0)
         if self.classifier_mode and not self.paused:  # a word gap of this frame is a no-hand frame: order unaffected
             # an open-palm frame is not a letter: it reaches the window as a frame without hand (lần sửa 9 §2 S2)
-            self._window_frame(ts_ms, None if is_space else landmarks, handedness, w, h)
+            self._window_frame(ts_ms, None if is_space else landmarks, handedness, w, h,
+                               moving=self.segmenter.state == "moving")
             t2 = time.perf_counter()
         if gesture:
             self._gesture_step(ts_ms, is_space, landmarks is not None)
@@ -1262,6 +1296,8 @@ class Level1App:
         counts["results_not_displayed"] = len(self.pending_display)
         if self.classifier_mode:
             counts.update(self.window_counts)
+            if self.decoder.motion_gate:  # lần sửa 12 G1: only with cls_motion_gate (otherwise the counts of before)
+                counts["frames_gated"] = self.decoder.n_gated
         report = {
             "generated_by": generated_by(self.argv),
             "rearm_mode": self.rearm_mode,
@@ -1297,8 +1333,10 @@ class Level1App:
             report["window_trace"] = {"max_entries": TRACE_MAX_ENTRIES, "n_windows": self.window_trace_n,
                                       "truncated": self.window_trace_n > len(self.window_trace),
                                       "fields": list(TRACE_KEYS), "entries": list(self.window_trace)}
-        if self.hand_label is not None:  # lần sửa 10 P1: only with --dominant-hand Right / Left
-            report["dominant_hand"] = {"mode": self.dominant_hand, "label": self.hand_label}
+        if self.hand_lock is not None:  # lần sửa 12 H1: only with --dominant-hand lock (or Right / Left)
+            lock = self.hand_lock
+            report["dominant_hand"] = {"mode": self.dominant_hand, "requested": self.dominant_hand_requested,
+                                       "label": lock.label, "lock_frames": lock.lock_frames, "votes": dict(lock.votes)}
         if self.smooth_landmarks:  # lần sửa 10 P2: only with --smooth-landmarks
             sm = self.landmark_smoother
             report["landmark_smoothing"] = {"enabled": True, "alpha_static": sm.alpha_static,
@@ -1357,26 +1395,26 @@ def build_parser() -> argparse.ArgumentParser:
                    help="rearm_mode classifier: length of the sliding window in milliseconds for this run, in place "
                         "of cls_window_ms of the config (the file is not changed; written to the JSON as "
                         "config.overrides)")
-    p.add_argument("--no-auto-space", action="store_true",
-                   help="no space is added when the hand is away for word_gap_ms (the word gap is still detected and "
-                        "written to the JSON); spaces come only from the Space key (default: automatic space)")
+    p.add_argument("--auto-space", action=argparse.BooleanOptionalAction, default=AUTO_SPACE_DEFAULT,
+                   help="add a space when the hand is away for word_gap_ms; --no-auto-space (default): the word gap is "
+                        "still detected and written to the JSON, spaces come from the Space key (and --gesture-space)")
     p.add_argument("--min-detection-conf", type=detection_conf, default=DEFAULT_MIN_DETECTION_CONF,
                    help="MediaPipe min_detection_confidence (default %(default)s; try 0.35 for edge-on hands); "
                         "written to the JSON as hand_detection when not the default")
     p.add_argument("--auto-enhance", action="store_true",
                    help="Enable adaptive CLAHE enhancement for low-light frames before hand detection (mean gray "
                         f"level below {LOW_LIGHT_THRESHOLD:g}; the window still shows the camera frame; default off)")
-    p.add_argument("--gesture-space", action=argparse.BooleanOptionalAction, default=True,
+    p.add_argument("--gesture-space", action=argparse.BooleanOptionalAction, default=GESTURE_SPACE_DEFAULT,
                    help="open palm (5 fingers spread, thumb out) held --space-hold-ms adds one space; change the hand "
                         "shape or withdraw the hand before the next one (written to the JSON as gesture_space; "
-                        "--no-gesture-space: the app as before, on by default)")
+                        "default off: a relaxed open hand is easily taken for the gesture)")
     p.add_argument("--space-hold-ms", type=positive_ms, default=GESTURE_SPACE_HOLD,
                    help="hold time in milliseconds of the open palm before its space (default %(default)s)")
-    p.add_argument("--dominant-hand", choices=["Right", "Left", "auto"], default="auto",
-                   help="Signer dominant hand: 'Right' or 'Left' fixes handedness and eliminates Left/Right "
-                        "mirror-flipping jitter (every hand frame gets the MediaPipe label of that hand on the unmirrored "
-                        "frame: Right -> 'Left', Left -> 'Right'; written to the JSON as dominant_hand); 'auto' keeps "
-                        "MediaPipe per-frame classification (default: auto)")
+    p.add_argument("--dominant-hand", choices=list(DOMINANT_HAND_CHOICES), default="auto",
+                   help="'lock': the handedness label of every hand frame is the majority of MediaPipe's own labels on "
+                        f"the first {HandednessLock().lock_frames} hand frames (no Left/Right flip inside a window, no "
+                        "assumption about camera mirroring; HUD [Tay: khóa ...], JSON dominant_hand); 'Right' / 'Left' "
+                        "are aliases of 'lock'; 'auto' keeps MediaPipe's label of each frame (default: auto)")
     p.add_argument("--smooth-landmarks", action=argparse.BooleanOptionalAction, default=SMOOTH_LANDMARKS_DEFAULT,
                    help="Enable adaptive landmark smoothing to suppress depth jitter: the landmarks of every frame go "
                         "through LandmarkSmoother before the segmenter, the window, the gesture and the drawing "

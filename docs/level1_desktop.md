@@ -7,8 +7,13 @@ Mọi số đo nằm trong các JSON và `reports/level1_realtime_2026-10-05/SUM
 ## 1. Chạy demo (lệnh dùng cho buổi báo cáo)
 
 ```bash
-python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json
+python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev9.json --min-detection-conf 0.35 --auto-enhance --dominant-hand lock
 ```
+
+- Lệnh trên (kế hoạch 15 lần sửa 12, mục 11): đánh vần nhiều chữ liên tiếp không cần hạ tay, chữ chỉ được nhận khi tay đã đứng yên
+  (cổng chuyển động `cls_motion_gate`), nhãn tay khóa theo đa số nhãn của chính MediaPipe, không tự chèn dấu cách (dấu cách bằng phím
+  Space). KHÔNG dùng `--dominant-hand Right` như lần sửa 10: cờ đó từng ép nhãn `Left` và lật gương bàn tay (nay là bí danh của `lock`).
+- Lệnh của lần sửa 7: `python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json`.
 
 - Windows: `.venv\Scripts\python level1_demo.py ...`; cloud/Linux: `.venv/bin/python level1_demo.py ...`.
 - `--config configs/level1_demo_classifier_rev7.json` bật chế độ re-arm `classifier` (chữ liên tiếp không cần rút tay) với các giá trị
@@ -20,7 +25,8 @@ python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_c
 - Chạy trên file video, không cửa sổ: `python level1_demo.py --source <video.mp4> --headless --out-json <file>.json`
   (`--pace realtime` để đọc theo nhịp của file và bỏ khung như webcam).
 - Tay để ngang (`â`, `ă`) hoặc phòng thiếu sáng: thêm `--min-detection-conf 0.35 --auto-enhance` (mục 8).
-- Cách từ bằng cử chỉ Xòe 5 ngón (mặc định bật, mục 9); lệnh gợi ý khi chỉ muốn cách từ chủ động (tắt dấu cách tự động khi hạ tay):
+- Dấu cách tự động (hạ tay đủ lâu: `--auto-space`; cử chỉ Xòe 5 ngón: `--gesture-space`, mục 9) TẮT mặc định từ lần sửa 12 (mục 11);
+  `--no-auto-space` vẫn nhận (là mặc định), ví dụ:
   `python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev7.json --min-detection-conf 0.35 --auto-enhance --no-auto-space`
 - Các cờ khác: `python level1_demo.py --help`.
 
@@ -31,8 +37,8 @@ python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_c
 | `1` … `5` | Gõ dấu cho âm tiết đang gõ: `1` sắc, `2` huyền, `3` hỏi, `4` ngã, `5` nặng (đổi dấu ngay nếu đã có dấu) |
 | `n` | Chữ kế: nhận lại ký hiệu đang giữ như một chữ mới (chữ lặp như "oo", "ee") |
 | Backspace | Xóa token cuối (chữ hoặc dấu) |
-| Space | Thêm dấu cách (kết thúc từ); hạ tay đủ lâu cũng thêm dấu cách (tắt phần tự động bằng `--no-auto-space`, mục 7) |
-| Cử chỉ Xòe 5 ngón | Thêm dấu cách không cần chạm bàn phím: giữ bàn tay xòe cả 5 ngón trước camera trong `--space-hold-ms` (mục 9) |
+| Space | Thêm dấu cách (kết thúc từ); hạ tay đủ lâu chỉ thêm dấu cách khi chạy với `--auto-space` (mặc định tắt, mục 11) |
+| Cử chỉ Xòe 5 ngón | Chỉ với `--gesture-space` (mặc định tắt): giữ bàn tay xòe cả 5 ngón trước camera trong `--space-hold-ms` (mục 9) |
 | `r` | Lặp lại chữ cuối |
 | `a` | Nhận ứng viên bị từ chối gần nhất (chữ mờ) |
 | `c` | Xóa hết |
@@ -197,7 +203,8 @@ python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_c
 - Hiện tượng (collinear projection): webcam thường chỉ cho ảnh 2D, không có cảm biến độ sâu. Khi ngón tay chĩa thẳng vào ống kính, các
   khớp MCP, PIP, DIP, TIP nằm gần trên cùng một tia nhìn: khoảng cách 2D giữa chúng co về gần 0, MediaPipe phải đoán độ sâu `z` từ rất ít
   thông tin nên `z` rung theo nhiễu ảnh và bàn tay dễ bị đọc sai (hay gặp ở `â`, `ă`, `ô`, `ê`, `p` — ngón cái và đầu ngón hướng về camera).
-- `--dominant-hand Right | Left | auto` (mặc định `auto`): khi ngón tay chĩa vào camera, MediaPipe không phân biệt được lòng bàn tay
+- (ĐÃ THAY bằng mục 11 — lần sửa 12: `Right` / `Left` nay là bí danh của `--dominant-hand lock`; JSON và HUD như mục 11. Đoạn dưới
+  giữ lại để đọc lịch sử.) `--dominant-hand Right | Left | auto` (mặc định `auto`): khi ngón tay chĩa vào camera, MediaPipe không phân biệt được lòng bàn tay
   với mu bàn tay nên nhãn tay trái / phải của nó đổi qua lại giữa các khung. `canonicalize_hand_sequence` lật gương x khi đa số khung trong
   một segment / cửa sổ mang nhãn `Left`, nên nhãn đổi qua lại làm cửa sổ lúc lật lúc không. Với `Right` (người ký thuận tay phải) hoặc
   `Left`, mọi khung có tay nhận MỘT nhãn cố định, bất kể MediaPipe trả về gì. Nhãn đó là nhãn MediaPipe gán cho bàn tay ấy trên khung KHÔNG
@@ -226,3 +233,32 @@ python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_c
 - Giới hạn: tác dụng của khóa tay thuận, của làm mượt và của lời nhắc lên độ chính xác / tỉ lệ thấy tay trên webcam CHƯA được đo; trên clip train (chỉ kiểm logic) dòng
   nhắc xuất hiện ở một số clip (nhiều nhất là `â`) và không xuất hiện ở clip `a` của bộ test D2. Cần phiên webcam của người
   dùng (checklist §5 của kế hoạch); mục này không chép số đo nào.
+
+## 11. Đánh vần nhiều chữ liên tiếp, không tự cách, khóa tay đúng chiều (kế hoạch 15 lần sửa 12)
+
+```bash
+python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_classifier_rev9.json --min-detection-conf 0.35 --auto-enhance --dominant-hand lock
+```
+
+- Cổng chuyển động (`cls_motion_gate`, config `configs/level1_demo_classifier_rev9.json` = rev8 + khóa này): ở chế độ `classifier`, cửa
+  sổ trượt vẫn được phân loại ở mọi khung có tay, nhưng nhãn chỉ được tính vào thời gian giữ `cls_stable_ms` trên các khung mà bộ tách
+  thấy tay ĐỨNG YÊN (trạng thái khác `moving`: `M_t` chưa vượt `move_speed`, có trễ như mục `motion_pose`). Khung tay đang di chuyển
+  hoặc đang đổi hình dạng (chuyển giữa hai chữ) cắt ngang lượt nhãn, nên tư thế trung gian không bao giờ đủ thời gian giữ để thành chữ
+  rác. Dấu thanh: nét vẽ vẫn nằm trong cửa sổ sau khi tay dừng, nên dấu được nhận khi tay dừng lại cuối nét. Không có khóa ⇒ decoder
+  như cũ. HUD dòng `[classifier]` thêm `| chờ tay yên` khi cổng đang chặn; JSON `counts.frames_gated` (chỉ khi bật cổng).
+- Vì sao không sửa re-arm của `motion_pose`: đường re-arm theo hình dạng tay (`pose_change_rules`) đã dừng ở bước R2 theo luật P2
+  (hình dạng tay của nhiều cặp chữ khác nhau quá gần so với độ rung, `reports/level1_realtime_2026-10-05/pose_evidence.json`). Đánh vần
+  liên tục dùng chế độ `classifier` + cổng chuyển động; `configs/level1_realtime.json` (mặc định, `motion_pose`) không đổi.
+- Dấu cách tự động TẮT mặc định: hạ tay / mất tay quá `word_gap_ms` chỉ được ghi là sự kiện `word_gap` (JSON `auto_space: false`),
+  bật lại bằng `--auto-space`; cử chỉ Xòe 5 ngón bật bằng `--gesture-space` (bàn tay thả lỏng dễ bị nhận nhầm là cử chỉ). Phím Space
+  luôn thêm dấu cách.
+- `--dominant-hand lock`: `HandednessLock` (`src/inference/level1_core.py`) đếm nhãn MediaPipe của các khung có tay đầu tiên
+  (`HAND_LOCK_FRAMES`) rồi khóa nhãn đa số cho cả phiên. Không giả định tay phải mang nhãn nào: nếu driver webcam lật gương khung hình,
+  MediaPipe gán nhãn `Right` cho tay phải, và cách gán cứng `Right -> Left` của lần sửa 10 làm `canonicalize_hand_sequence` lật x của
+  mọi khung (ngón cái thành ngón út: `â` thành `ê`, `d` thành `i`). Bằng chứng trên clip `data/collected_targeted/` (clip train — kiểm
+  logic, không phải độ chính xác): `reports/level1_realtime_2026-10-06/dominant_hand_check.json`. HUD `[Tay: đang khóa n/N]` rồi
+  `[Tay: khóa Right]` (hoặc `Left`); JSON khóa gốc `dominant_hand` = `mode`, `requested`, `label`, `lock_frames`, `votes`. `Right` /
+  `Left` chạy như `lock` và in cảnh báo.
+- Bằng chứng cổng chuyển động trên chuỗi ghép clip train (kiểm logic decoder, không phải phiên webcam):
+  `reports/level1_realtime_2026-10-06/rearm_check_gate.json`; kế hoạch và số liệu: `docs/plans/15-lan-sua-12.md`.
+- Giới hạn: tác dụng trên webcam của người dùng CHƯA được đo; cần phiên webcam (`--out-json`) để xác nhận.
