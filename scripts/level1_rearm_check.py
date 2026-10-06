@@ -618,10 +618,13 @@ def decode_chain(seq_data: Dict[str, Any], params: Dict[str, Any], classify, min
     """WindowBuffer + Level1LabelDecoder over a stream, exactly as level1_demo.py headless in rearm_mode 'classifier'
     (one window classification per hand frame, decoder fed in frame order). classify(segment) -> result dict of
     Level1Classifier.classify. Returns final emissions [(frame_index, label)] (a 'replace' moves the last one), the
-    raw emissions, n_replace, n_append_after_lost, n_windows."""
+    raw emissions, n_replace, n_append_after_lost, n_windows. With cls_motion_gate true (plan 15 lần sửa 12 G1) a
+    Level1SignSegmenter runs on the same frames, as in the app, and its state 'moving' is passed to the decoder;
+    n_gated = hand frames ended by the gate (0 without the gate)."""
     from src.inference.level1_segmenter import Level1LabelDecoder, WindowBuffer
     window = WindowBuffer(params["cls_window_ms"], min_detected_frames)
     decoder = Level1LabelDecoder(params)
+    motion = Level1SignSegmenter(params, min_detected_frames) if decoder.motion_gate else None
     ts_all, det, raw, hand = seq_data["timestamps_ms"], seq_data["detected"], seq_data["raw"], seq_data["handedness"]
     final: List[Tuple[int, str]] = []
     raw_emits: List[Dict[str, Any]] = []
@@ -632,6 +635,11 @@ def decode_chain(seq_data: Dict[str, Any], params: Dict[str, Any], classify, min
         ts = float(ts_all[i])
         has = bool(det[i])
         window.push(ts, raw[i] if has else None, str(hand[i]) if has else "", seq_data["width"], seq_data["height"])
+        moving = False
+        if motion is not None:
+            motion.push(ts, raw[i] if has else None, str(hand[i]) if has else "", seq_data["width"],
+                        seq_data["height"])
+            moving = motion.state == "moving"
         result = None
         if has:
             last_hand = ts
@@ -641,7 +649,7 @@ def decode_chain(seq_data: Dict[str, Any], params: Dict[str, Any], classify, min
                 result = classify(seg)
         elif last_hand is not None and ts - last_hand >= params["hand_lost_ms"]:
             lost_since_emit = True
-        emit = decoder.push(ts, has, result)
+        emit = decoder.push(ts, has, result, moving=moving)
         if emit is None:
             continue
         raw_emits.append({"index": i, "label": emit.prediction, "action": emit.action,
@@ -654,7 +662,7 @@ def decode_chain(seq_data: Dict[str, Any], params: Dict[str, Any], classify, min
             n_lost += int(lost_since_emit)
         lost_since_emit = False
     return {"final": final, "emits": raw_emits, "n_replace": n_replace, "n_append_after_lost": n_lost,
-            "n_windows": n_windows}
+            "n_windows": n_windows, "n_gated": decoder.n_gated}
 
 
 def levenshtein(a: Sequence[Any], b: Sequence[Any]) -> int:

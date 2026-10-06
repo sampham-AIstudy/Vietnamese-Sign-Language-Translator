@@ -13,6 +13,8 @@ Level 1 ("Đánh vần") core shared by the desktop app (level1_demo.py) and, la
 - LandmarkSmoother: adaptive moving average of the hand points (plan 15 lần sửa 10 P2; the desktop demo's
   --smooth-landmarks only, never on the training / offline path).
 - foreshortening_ratio(landmarks): projected / 3D length of the index finger (plan 15 lần sửa 10 P3; HUD angle hint).
+- HandednessLock: locks the handedness label of a run to the majority of MediaPipe's own labels on the first hand frames
+  (plan 15 lần sửa 12 H1; the desktop demo's --dominant-hand lock only).
 
 No GUI, no thread, no camera.
 """
@@ -61,11 +63,12 @@ CONFIG_SPEC = {
     "font_paths": ("str_list", "non_empty"),
 }
 # keys a config may leave out (plan 15 lần sửa 7): checked like CONFIG_SPEC when present; an absent key means the
-# behaviour without it (Level1LabelDecoder falls back to cls_conf / cls_stable_ms, no dropout debounce)
+# behaviour without it (Level1LabelDecoder falls back to cls_conf / cls_stable_ms, no dropout debounce, no motion gate)
 OPTIONAL_CONFIG_SPEC = {
     "cls_conf_tone": ("number", "unit_interval"),
     "cls_stable_ms_tone": ("number", "positive"),
     "dropout_tolerance_ms": ("number", "positive"),
+    "cls_motion_gate": ("bool", "bool"),  # plan 15 lần sửa 12 G1
 }
 CAMERA_APIS = ("dshow", "msmf", "any")
 REARM_MODES = ("motion_pose", "classifier")  # plan 15 lần sửa 4 §3.3: segmenter re-arm (motion / pose) or label decoder
@@ -610,3 +613,45 @@ def foreshortening_ratio(landmarks: Optional[np.ndarray]) -> float:
     if not d3 > 0:
         return 1.0
     return min(1.0, float(np.linalg.norm(v[:2])) / d3)
+
+
+# ---------------------------------------------------------------------------- handedness lock (lần sửa 12 H1)
+HAND_LABELS = ("Left", "Right")
+HAND_LOCK_FRAMES = 15  # design value: about half a second of webcam frames; odd, so two labels never tie
+
+
+class HandednessLock:
+    """One handedness label for the whole run, taken from MediaPipe itself (plan 15 lần sửa 12 H1). update(label) once
+    per hand frame with MediaPipe's label of that frame: the first lock_frames 'Left' / 'Right' labels are counted and
+    returned unchanged; from then on the majority of them is returned for every frame (label, locked). No mapping from
+    "the signer's hand" to a label is assumed: which label a right hand gets depends on whether the camera driver
+    mirrors the frames, and the lock keeps whatever MediaPipe gives on this camera, as the training clips did (their
+    labels came from MediaPipe on the camera's frames). A label outside HAND_LABELS is returned unchanged and not
+    counted. Pure computation."""
+
+    def __init__(self, lock_frames: int = HAND_LOCK_FRAMES):
+        if isinstance(lock_frames, bool) or not isinstance(lock_frames, numbers.Integral) or lock_frames < 1:
+            raise ValueError(f"lock_frames must be an integer >= 1, got {lock_frames!r}")
+        self.lock_frames = int(lock_frames)
+        self.votes = {k: 0 for k in HAND_LABELS}
+        self.label: Optional[str] = None
+
+    @property
+    def locked(self) -> bool:
+        return self.label is not None
+
+    @property
+    def n_votes(self) -> int:
+        return sum(self.votes.values())
+
+    def update(self, label: str) -> str:
+        if self.label is not None:
+            return self.label
+        if label not in HAND_LABELS:
+            return label
+        self.votes[label] += 1
+        if self.n_votes >= self.lock_frames:
+            # strict majority; a tie (even lock_frames) keeps the label of this frame
+            left, right = self.votes["Left"], self.votes["Right"]
+            self.label = "Left" if left > right else "Right" if right > left else label
+        return label

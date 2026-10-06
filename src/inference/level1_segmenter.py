@@ -413,6 +413,7 @@ DECODER_KEYS = ("cls_window_ms", "cls_conf", "cls_stable_ms", "hand_lost_ms")
 DECODER_TONE_KEYS = {"cls_conf_tone": "cls_conf", "cls_stable_ms_tone": "cls_stable_ms"}
 TONE_LABELS = tuple(TONE_MARKS)
 DROPOUT_KEY = "dropout_tolerance_ms"  # optional (plan 15 lần sửa 7 T2): one-frame dropout debounce; absent = off
+MOTION_GATE_KEY = "cls_motion_gate"  # optional (plan 15 lần sửa 12 G1): labels only while the hand is still; absent = off
 LABEL_ACTIONS = ("append", "replace")
 WINDOW_CLOSE_REASON = "window"
 
@@ -521,6 +522,13 @@ class Level1LabelDecoder:
        dropout_tolerance_ms after the dropped frame -> the run goes on from its start (the dropped frame counts as a
        frame without result); otherwise the run restarts at the dropped frame exactly as without the debounce. No-hand
        frames and hand frames without result in between do not decide (rule 1, rule 4 still apply).
+    7. motion gate (plan 15 lần sửa 12 G1), only when cls_motion_gate is true (absent / false = off, the decoder above
+       exactly): a hand frame pushed with moving=True (the caller passes Level1SignSegmenter.state == 'moving' of the
+       same frame: the hand moves or changes shape, M_t >= move_speed with the segmenter's hysteresis, or no motion
+       measured yet) ends the run at once, whatever its result (no dropout debounce: a motion is not a dropout), and
+       emits nothing; so a label is emitted only after it held cls_stable_ms on frames where the hand was still. The
+       window itself is unchanged (a tone mark's stroke stays in the window after the hand stops). n_gated counts
+       the frames ended by the gate.
     Parameters come from the caller (config); no default value here. Pure computation, not thread-safe."""
 
     def __init__(self, params: Dict[str, Any]):
@@ -544,6 +552,11 @@ class Level1LabelDecoder:
         if DROPOUT_KEY in params:
             _positive_number(DROPOUT_KEY, params[DROPOUT_KEY])
         self.dropout_tolerance_ms = float(params[DROPOUT_KEY]) if DROPOUT_KEY in params else 0.0
+        gate = params.get(MOTION_GATE_KEY, False)
+        if not isinstance(gate, bool):
+            raise ValueError(f"{MOTION_GATE_KEY} must be true or false, got {gate!r}")
+        self.motion_gate = gate
+        self.n_gated = 0
         self._seq = 0
         self._n_emitted = 0
         self._last_ts: Optional[float] = None
@@ -576,7 +589,9 @@ class Level1LabelDecoder:
             raise ValueError("timestamp must be finite")
         self._last = None
 
-    def push(self, ts_ms: float, has_hand: bool, result: Optional[Dict[str, Any]]) -> Optional[LabelEmit]:
+    def push(self, ts_ms: float, has_hand: bool, result: Optional[Dict[str, Any]],
+             moving: bool = False) -> Optional[LabelEmit]:
+        """One frame (rules 1-7); moving is read only when cls_motion_gate is true."""
         ts = float(ts_ms)
         if not np.isfinite(ts):
             raise ValueError("timestamp must be finite")
@@ -590,6 +605,10 @@ class Level1LabelDecoder:
                 self._drop_ts = None
             return None
         self._last_hand_ts = ts
+        if self.motion_gate and moving:  # rule 7: a moving hand is a transition, never a letter
+            self._run_label, self._run_since, self._drop_ts = None, ts, None
+            self.n_gated += 1
+            return None
         if result is None:
             return None
         conf = result.get("confidence")
