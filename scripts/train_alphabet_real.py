@@ -59,12 +59,36 @@ def load(data_dir):
 
 
 def augment(x, rng):
-    """Small rotation (z axis), scale and jitter on palm-normalised coordinates."""
+    """Full 3D rotation (pitch, yaw, roll), scale and adaptive depth jitter on palm-normalised coordinates."""
     shape = x.shape
     pts = x.reshape(*shape[:-1], 21, 3) if shape[-1] == 63 else x
-    th = rng.uniform(-0.25, 0.25)
-    rot = np.array([[np.cos(th), -np.sin(th), 0], [np.sin(th), np.cos(th), 0], [0, 0, 1]], dtype=np.float32)
-    pts = pts @ rot.T * rng.uniform(0.9, 1.1) + rng.normal(0, 0.02, size=pts.shape).astype(np.float32)
+
+    # 3D Euler angles:
+    # rx (pitch): tilting fingers towards/away from camera (critical for collinear signs like â, ă, p)
+    # ry (yaw): rotating hand left/right
+    # rz (roll): in-plane screen rotation
+    rx = rng.uniform(-0.5, 0.5)
+    ry = rng.uniform(-0.4, 0.4)
+    rz = rng.uniform(-0.35, 0.35)
+
+    cx, sx = np.cos(rx), np.sin(rx)
+    cy, sy = np.cos(ry), np.sin(ry)
+    cz, sz = np.cos(rz), np.sin(rz)
+
+    Rx = np.array([[1, 0, 0], [0, cx, -sx], [0, sx, cx]], dtype=np.float32)
+    Ry = np.array([[cy, 0, sy], [0, 1, 0], [-sy, 0, cy]], dtype=np.float32)
+    Rz = np.array([[cz, -sz, 0], [sz, cz, 0], [0, 0, 1]], dtype=np.float32)
+    rot = Rz @ Ry @ Rx
+
+    scale = rng.uniform(0.85, 1.15)
+    pts = pts @ rot.T * scale
+
+    # Base landmark jitter + extra depth jitter (z-axis) to handle monocular camera depth ambiguity
+    jitter = rng.normal(0, 0.02, size=pts.shape).astype(np.float32)
+    z_noise = rng.normal(0, 0.06, size=(*pts.shape[:-1], 1)).astype(np.float32)
+    jitter[..., 2:3] += z_noise
+    pts = pts + jitter
+
     return pts.reshape(shape).astype(np.float32)
 
 
@@ -149,6 +173,7 @@ def main():
             "hparams": {"hidden_dim": 64, "num_layers": 2} if winner == "bigru" else {"hidden_dims": [128, 64]},
             "loso_summary": summary, "trained_on": {"source": "hauuto", "signers": signers, "clips": len(hauuto)}}
     torch.save(ckpt, os.path.join(args.out_dir, "alphabet_real_best.pt"))
+    torch.save(ckpt, os.path.join(args.out_dir, "alphabet_best.pt"))
     with open(os.path.join(args.out_dir, "external_test_predictions.csv"), "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f); w.writerow(["sample_id", "true", "pred"]); w.writerows(ext_preds)
     report = {"loso_folds": loso, "loso_summary": summary, "winner_by_loso": winner,
