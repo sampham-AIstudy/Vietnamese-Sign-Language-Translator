@@ -1,0 +1,839 @@
+{
+  "generated_by": {
+    "command": "python scripts/alphabet_ckpt_compare.py --ckpt old=/tmp/claude-0/-home-user-Vietnamese-Sign-Language-Translator/e41e4b3f-e5e3-5608-89d7-190eac442c67/scratchpad/ckpt_old/alphabet_best.pt --ckpt v4=/tmp/claude-0/-home-user-Vietnamese-Sign-Language-Translator/e41e4b3f-e5e3-5608-89d7-190eac442c67/scratchpad/kout_v4/alphabet_best.pt --ckpt v5=checkpoints/alphabet_best.pt --set qipedc=data/external/alphabet_hands_kaggle/alphabet_hands/manifest.csv --set user1_new=data/collected_targeted/manifest.csv:đ,ê,ô,ơ,ư --note old = sha256 756eaf3f (before the retrain); v4 = kernel version 4 at d3a79a2 (đ, ư sliced); v5 = kernel version 5 at 36e6dc0 (đ, ư not sliced). qipedc: unseen by all three. user1_new (30 clips of d49fae2): unseen by old, TRAINING data of v4 and v5. --out reports/alphabet_retrain_2026-10-06/v5/ckpt_compare.json",
+    "git_commit": "36e6dc042b725030291483ebe28775ab09196d4d",
+    "code_dirty": false,
+    "utc": "2026-10-06T18:18:31+00:00"
+  },
+  "note": "old = sha256 756eaf3f (before the retrain); v4 = kernel version 4 at d3a79a2 (đ, ư sliced); v5 = kernel version 5 at 36e6dc0 (đ, ư not sliced). qipedc: unseen by all three. user1_new (30 clips of d49fae2): unseen by old, TRAINING data of v4 and v5.",
+  "checkpoints": {
+    "old": {
+      "path": "/tmp/claude-0/-home-user-Vietnamese-Sign-Language-Translator/e41e4b3f-e5e3-5608-89d7-190eac442c67/scratchpad/ckpt_old/alphabet_best.pt",
+      "sha256": "756eaf3fc0c3e1d14310e653a209231c2a8177f588f5e4e8dd4f282154e88187",
+      "n_classes": 34
+    },
+    "v4": {
+      "path": "/tmp/claude-0/-home-user-Vietnamese-Sign-Language-Translator/e41e4b3f-e5e3-5608-89d7-190eac442c67/scratchpad/kout_v4/alphabet_best.pt",
+      "sha256": "9e4a99c83f42dbfc6c5e396475dbaf662035482d68ec4e2926bcd16e8b177e0a",
+      "n_classes": 34
+    },
+    "v5": {
+      "path": "checkpoints/alphabet_best.pt",
+      "sha256": "9c9e89603b4ee6e20ed3e7b6b7176d4d36d572e7b057f1262b83a27dc8dc4c18",
+      "n_classes": 34
+    }
+  },
+  "sets": {
+    "qipedc": {
+      "manifest": "data/external/alphabet_hands_kaggle/alphabet_hands/manifest.csv",
+      "manifest_sha256": "7b31acba8c9b50acc3679719f7f8ba36cffbf963c3cb6b50a81d4d3e55257ca9",
+      "symbols": null
+    },
+    "user1_new": {
+      "manifest": "data/collected_targeted/manifest.csv",
+      "manifest_sha256": "a3168f5b7f705c5dac0319c594258367c5b684a6ac9aebeeb7ba0e72fb1ed1f8",
+      "symbols": [
+        "ê",
+        "ô",
+        "đ",
+        "ơ",
+        "ư"
+      ]
+    }
+  },
+  "results": {
+    "old": {
+      "qipedc": {
+        "n": 46,
+        "correct": 24,
+        "top1": 52.17391304347826,
+        "per_class": {
+          "a": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "a": 1
+            }
+          },
+          "b": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "b": 1
+            }
+          },
+          "c": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "c": 1
+            }
+          },
+          "d": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "đ": 1
+            }
+          },
+          "e": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "e": 1
+            }
+          },
+          "g": {
+            "n": 2,
+            "correct": 1,
+            "predicted": {
+              "a": 1,
+              "g": 1
+            }
+          },
+          "h": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "h": 1,
+              "r": 2
+            }
+          },
+          "i": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "dấu hỏi": 1
+            }
+          },
+          "k": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "k": 1
+            }
+          },
+          "l": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "l": 1
+            }
+          },
+          "m": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "m": 1
+            }
+          },
+          "n": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "n": 1
+            }
+          },
+          "o": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "o": 1
+            }
+          },
+          "p": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "a": 1,
+              "p": 1,
+              "d": 1
+            }
+          },
+          "q": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "â": 1
+            }
+          },
+          "r": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "v": 1
+            }
+          },
+          "s": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "a": 1
+            }
+          },
+          "t": {
+            "n": 3,
+            "correct": 2,
+            "predicted": {
+              "t": 2,
+              "h": 1
+            }
+          },
+          "u": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "v": 1
+            }
+          },
+          "v": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "v": 1
+            }
+          },
+          "x": {
+            "n": 3,
+            "correct": 2,
+            "predicted": {
+              "â": 1,
+              "x": 2
+            }
+          },
+          "y": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "y": 1
+            }
+          },
+          "â": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "â": 1,
+              "a": 2
+            }
+          },
+          "ê": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ê": 1,
+              "e": 2
+            }
+          },
+          "ô": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ô": 1,
+              "ê": 2
+            }
+          },
+          "ă": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ă": 1,
+              "dấu sắc": 2
+            }
+          },
+          "đ": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "đ": 1
+            }
+          },
+          "ơ": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "o": 1
+            }
+          },
+          "ư": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "ư": 1
+            }
+          }
+        }
+      },
+      "user1_new": {
+        "n": 30,
+        "correct": 13,
+        "top1": 43.333333333333336,
+        "per_class": {
+          "ê": {
+            "n": 6,
+            "correct": 0,
+            "predicted": {
+              "â": 5,
+              "a": 1
+            }
+          },
+          "ô": {
+            "n": 6,
+            "correct": 0,
+            "predicted": {
+              "â": 3,
+              "n": 1,
+              "a": 2
+            }
+          },
+          "đ": {
+            "n": 6,
+            "correct": 5,
+            "predicted": {
+              "đ": 5,
+              "x": 1
+            }
+          },
+          "ơ": {
+            "n": 6,
+            "correct": 2,
+            "predicted": {
+              "ư": 4,
+              "ơ": 2
+            }
+          },
+          "ư": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "ư": 6
+            }
+          }
+        }
+      }
+    },
+    "v4": {
+      "qipedc": {
+        "n": 46,
+        "correct": 25,
+        "top1": 54.34782608695652,
+        "per_class": {
+          "a": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "a": 1
+            }
+          },
+          "b": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "b": 1
+            }
+          },
+          "c": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "h": 1
+            }
+          },
+          "d": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "d": 1
+            }
+          },
+          "e": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "e": 1
+            }
+          },
+          "g": {
+            "n": 2,
+            "correct": 2,
+            "predicted": {
+              "g": 2
+            }
+          },
+          "h": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "h": 1,
+              "k": 2
+            }
+          },
+          "i": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "ư": 1
+            }
+          },
+          "k": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "k": 1
+            }
+          },
+          "l": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "l": 1
+            }
+          },
+          "m": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "m": 1
+            }
+          },
+          "n": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "n": 1
+            }
+          },
+          "o": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "o": 1
+            }
+          },
+          "p": {
+            "n": 3,
+            "correct": 0,
+            "predicted": {
+              "ô": 2,
+              "d": 1
+            }
+          },
+          "q": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "a": 1
+            }
+          },
+          "r": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "ô": 1
+            }
+          },
+          "s": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "a": 1
+            }
+          },
+          "t": {
+            "n": 3,
+            "correct": 3,
+            "predicted": {
+              "t": 3
+            }
+          },
+          "u": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "u": 1
+            }
+          },
+          "v": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "v": 1
+            }
+          },
+          "x": {
+            "n": 3,
+            "correct": 2,
+            "predicted": {
+              "â": 1,
+              "x": 2
+            }
+          },
+          "y": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "y": 1
+            }
+          },
+          "â": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "â": 1,
+              "a": 2
+            }
+          },
+          "ê": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ê": 1,
+              "e": 2
+            }
+          },
+          "ô": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ô": 1,
+              "â": 2
+            }
+          },
+          "ă": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ă": 1,
+              "dấu sắc": 2
+            }
+          },
+          "đ": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "ô": 1
+            }
+          },
+          "ơ": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "o": 1
+            }
+          },
+          "ư": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "ư": 1
+            }
+          }
+        }
+      },
+      "user1_new": {
+        "n": 30,
+        "correct": 30,
+        "top1": 100.0,
+        "per_class": {
+          "ê": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "ê": 6
+            }
+          },
+          "ô": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "ô": 6
+            }
+          },
+          "đ": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "đ": 6
+            }
+          },
+          "ơ": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "ơ": 6
+            }
+          },
+          "ư": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "ư": 6
+            }
+          }
+        }
+      }
+    },
+    "v5": {
+      "qipedc": {
+        "n": 46,
+        "correct": 25,
+        "top1": 54.34782608695652,
+        "per_class": {
+          "a": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "a": 1
+            }
+          },
+          "b": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "b": 1
+            }
+          },
+          "c": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "c": 1
+            }
+          },
+          "d": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "d": 1
+            }
+          },
+          "e": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "e": 1
+            }
+          },
+          "g": {
+            "n": 2,
+            "correct": 1,
+            "predicted": {
+              "dấu nặng": 1,
+              "g": 1
+            }
+          },
+          "h": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "h": 1,
+              "d": 2
+            }
+          },
+          "i": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "y": 1
+            }
+          },
+          "k": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "k": 1
+            }
+          },
+          "l": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "l": 1
+            }
+          },
+          "m": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "m": 1
+            }
+          },
+          "n": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "n": 1
+            }
+          },
+          "o": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "o": 1
+            }
+          },
+          "p": {
+            "n": 3,
+            "correct": 0,
+            "predicted": {
+              "ô": 2,
+              "dấu huyền": 1
+            }
+          },
+          "q": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "a": 1
+            }
+          },
+          "r": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "ô": 1
+            }
+          },
+          "s": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "a": 1
+            }
+          },
+          "t": {
+            "n": 3,
+            "correct": 2,
+            "predicted": {
+              "t": 2,
+              "h": 1
+            }
+          },
+          "u": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "u": 1
+            }
+          },
+          "v": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "v": 1
+            }
+          },
+          "x": {
+            "n": 3,
+            "correct": 2,
+            "predicted": {
+              "â": 1,
+              "x": 2
+            }
+          },
+          "y": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "y": 1
+            }
+          },
+          "â": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "â": 1,
+              "a": 2
+            }
+          },
+          "ê": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ê": 1,
+              "e": 2
+            }
+          },
+          "ô": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ô": 1,
+              "â": 2
+            }
+          },
+          "ă": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ă": 1,
+              "a": 2
+            }
+          },
+          "đ": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "đ": 1
+            }
+          },
+          "ơ": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "o": 1
+            }
+          },
+          "ư": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "ư": 1
+            }
+          }
+        }
+      },
+      "user1_new": {
+        "n": 30,
+        "correct": 30,
+        "top1": 100.0,
+        "per_class": {
+          "ê": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "ê": 6
+            }
+          },
+          "ô": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "ô": 6
+            }
+          },
+          "đ": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "đ": 6
+            }
+          },
+          "ơ": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "ơ": 6
+            }
+          },
+          "ư": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "ư": 6
+            }
+          }
+        }
+      }
+    }
+  }
+}

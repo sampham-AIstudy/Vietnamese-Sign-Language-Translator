@@ -69,3 +69,32 @@ hưởng theo cách này, chế độ realtime thì có.
 
 Test Level 1 với checkpoint mới (cloud): 15 module `tests/test_level1_*.py` Ran 425, OK, skip 7 (6 equivalence thiếu video QIPEDC,
 1 u1_summary thiếu file webcam local).
+
+## 5. Kernel version 5 — không cắt lát `đ` và `ư` (quyết định của người dùng 2026-10-06)
+
+Mã `36e6dc0` (`COMPOUND_DIACRITICS` bỏ `đ`, `ư`; `â ă ê ô ơ` vẫn cắt), cùng 66 clip user1. Checkpoint `9c9e8960…`. Số đọc từ
+`v5/retrain_summary.json`, `v5/ckpt_compare.json` (`36e6dc0`, sạch), `v5/rearm_check_gate_v5.json` (`36e6dc0`, sạch).
+
+| | cũ `756eaf3f` | v4 `9e4a99c8` (cắt `đ ư`) | v5 `9c9e8960` (không cắt `đ ư`) |
+|---|---|---|---|
+| LOSO clip nguyên BiGRU (mean ± std) | — | 71.46 ± 9.36 | 70.80 ± 9.04 |
+| LOSO `đ` (đúng / n; → `d`) | — | 20/30 (8) | **28/30 (0)** |
+| LOSO `d` | — | 21/22 | 21/22 |
+| LOSO `ư` / `ơ` | — | 25/30 / 19/30 | 22/30 / 23/30 |
+| fold user1: `đ`, `ư`, `ơ`, `ê`, `ô` | — | 1, 6, 1, 0, 0 /6 | 5, 0, 6, 0, 0 /6 |
+| QIPEDC 46 clip (top-1 / top-3) | 24/46 | 25/46 (84.8) | 25/46 (73.9) |
+| G1 one_rate L, rev9 (0 / 300) | 0.922 / 0.922 | 0.870 / 0.870 | 0.896 / 0.902 |
+| G5 rác L, rev9 (300 / 600) | 0.104 / 0.119 | 0.093 / 0.083 | 0.124 / 0.124 |
+| `đ` mất trên chuỗi L (3 join) | 0 | 18 | **0** |
+| chuỗi T one_rate / rác (300) | 0.971 / 0.229 | 0.971 / 0.286 | 0.929 / 0.286 |
+| gate trượt | G5 | G1, G5 | G1, G5 |
+
+- Bỏ cắt lát `đ` đúng như giả thuyết ở mục 3: `đ` không còn bị đọc thành `d` (LOSO và chuỗi decoder).
+- Đổi lại: `ư` của user1 không còn được nhận khi fold user1 bị bỏ ra (0/6, v4 6/6); rác dấu thanh trên chuỗi L tăng (`dấu sắc` thừa
+  14 lần); G5 xấu hơn v4. Không checkpoint nào qua G1–G6 (cả checkpoint cũ cũng trượt G5).
+- `ê`/`ô` → `â`: người dùng xác nhận đây là thiết kế (dấu mũ chung, `DIACRITIC_FUSION` ghép `e` + `â` → `ê`, `o` + `â` → `ô` khi chữ gốc
+  đã ra trước). Các số `ê`/`ô` ở trên vẫn tính `â` là sai (định nghĩa không đổi sau khi thấy kết quả).
+- Theo yêu cầu người dùng, v5 là checkpoint mới (output kernel version 5). Đây là quyết định của người dùng, không phải gate pass;
+  cần phiên webcam để xác nhận.
+
+Test Level 1 với v5 (cloud): 15 module, Ran 425, OK, skip 7 (như mục 4).
