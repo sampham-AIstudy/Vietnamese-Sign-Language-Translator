@@ -89,6 +89,14 @@ def augment(x, rng):
     jitter[..., 2:3] += z_noise
     pts = pts + jitter
 
+    # Axial collinear foreshortening simulation:
+    # When fingers point directly along the camera axis (e.g. â, ă, p), 2D perspective compresses
+    # finger length in (x, y) while monocular RGB creates high depth uncertainty and occlusion.
+    if rng.random() < 0.35:
+        compress_scale = rng.uniform(0.70, 0.95)
+        pts[..., 5:, 0:2] *= compress_scale
+        pts[..., 5:, 2:3] += rng.normal(0, 0.05, size=(*pts.shape[:-2], 16, 1)).astype(np.float32)
+
     return pts.reshape(shape).astype(np.float32)
 
 
@@ -140,12 +148,17 @@ def main():
     ap.add_argument("--out-dir", required=True)
     ap.add_argument("--epochs", type=int, default=80)
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--extra-data-dir", default=None, help="Additional data directory with manifest.csv (e.g. collected_targeted)")
     args = ap.parse_args()
     os.makedirs(args.out_dir, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     items = load(args.data_dir)
-    hauuto = [t for t in items if t["source"] == "hauuto"]
+    if args.extra_data_dir and os.path.exists(args.extra_data_dir):
+        extra = load(args.extra_data_dir)
+        print(f"Loaded {len(extra)} extra targeted samples from {args.extra_data_dir}")
+        items.extend(extra)
+    hauuto = [t for t in items if t["source"] in ("hauuto", "collected_targeted")]
     external = [t for t in items if t["source"] == "qipedc"]
     signers = sorted({t["signer"] for t in hauuto})
     print(f"hauuto {len(hauuto)} clips / signers {signers} | qipedc letters {len(external)} | "
