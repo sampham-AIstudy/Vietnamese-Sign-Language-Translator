@@ -1,0 +1,518 @@
+{
+  "generated_by": {
+    "command": "python scripts/level1_dominant_hand_check.py --out reports/level1_realtime_2026-10-06/dominant_hand_check.json",
+    "git_commit": "13759a6c85c65cce0231521bffd2801354a6ba62",
+    "code_dirty": false,
+    "utc": "2026-10-06T14:26:32+00:00",
+    "python": "3.11.17",
+    "torch": "2.6.0+cpu",
+    "mediapipe": "0.10.14",
+    "numpy": "2.4.6"
+  },
+  "note": "collected_targeted clips are training data of the deployed checkpoint: checks the handedness logic; not accuracy, not a webcam session",
+  "definitions": {
+    "auto": "MediaPipe label of each frame as recorded by scripts/collect_targeted_signs.py",
+    "fixed_Left": "every hand frame labelled 'Left' (lần sửa 10: --dominant-hand Right)",
+    "fixed_Right": "every hand frame labelled 'Right' (lần sửa 10: --dominant-hand Left)",
+    "lock": "HandednessLock (src/inference/level1_core.py) over the recorded labels",
+    "correct": "top-1 of the whole clip == manifest symbol"
+  },
+  "manifest": {
+    "path": "data/collected_targeted/manifest.csv",
+    "sha256": "d858b1e85bf6b1b4eef1308e72cd971a94e38e370b49ad4ff30c02e5a7673fc6"
+  },
+  "checkpoint": {
+    "path": "checkpoints/alphabet_best.pt",
+    "sha256": "756eaf3fc0c3e1d14310e653a209231c2a8177f588f5e4e8dd4f282154e88187"
+  },
+  "n_clips": 36,
+  "correct": {
+    "auto": 36,
+    "fixed_Left": 7,
+    "fixed_Right": 35,
+    "lock": 36
+  },
+  "rate": {
+    "auto": 1.0,
+    "fixed_Left": 0.19444444444444445,
+    "fixed_Right": 0.9722222222222222,
+    "lock": 1.0
+  },
+  "clips_by_majority_recorded_label": {
+    "Right": 35,
+    "Left": 1
+  },
+  "clips": [
+    {
+      "sample_id": "user1_aa_angled_side_rep2",
+      "symbol": "â",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "â",
+        "fixed_Left": "m",
+        "fixed_Right": "â",
+        "lock": "â"
+      }
+    },
+    {
+      "sample_id": "user1_aa_tilted_down_rep1",
+      "symbol": "â",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "â",
+        "fixed_Left": "dấu nặng",
+        "fixed_Right": "â",
+        "lock": "â"
+      }
+    },
+    {
+      "sample_id": "user1_aw_angled_side_rep1",
+      "symbol": "ă",
+      "recorded_labels": {
+        "Right": 56,
+        "Left": 2
+      },
+      "prediction": {
+        "auto": "ă",
+        "fixed_Left": "h",
+        "fixed_Right": "ă",
+        "lock": "ă"
+      }
+    },
+    {
+      "sample_id": "user1_aw_angled_side_rep2",
+      "symbol": "ă",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "ă",
+        "fixed_Left": "o",
+        "fixed_Right": "ă",
+        "lock": "ă"
+      }
+    },
+    {
+      "sample_id": "user1_aw_straight_rep1",
+      "symbol": "ă",
+      "recorded_labels": {
+        "Left": 3,
+        "Right": 36
+      },
+      "prediction": {
+        "auto": "ă",
+        "fixed_Left": "h",
+        "fixed_Right": "ă",
+        "lock": "ă"
+      }
+    },
+    {
+      "sample_id": "user1_aw_straight_rep2",
+      "symbol": "ă",
+      "recorded_labels": {
+        "Right": 59
+      },
+      "prediction": {
+        "auto": "ă",
+        "fixed_Left": "l",
+        "fixed_Right": "ă",
+        "lock": "ă"
+      }
+    },
+    {
+      "sample_id": "user1_aw_tilted_down_rep1",
+      "symbol": "ă",
+      "recorded_labels": {
+        "Right": 59
+      },
+      "prediction": {
+        "auto": "ă",
+        "fixed_Left": "h",
+        "fixed_Right": "ă",
+        "lock": "ă"
+      }
+    },
+    {
+      "sample_id": "user1_d_angled_side_rep1",
+      "symbol": "d",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "d",
+        "fixed_Left": "dấu sắc",
+        "fixed_Right": "d",
+        "lock": "d"
+      }
+    },
+    {
+      "sample_id": "user1_d_angled_side_rep2",
+      "symbol": "d",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "d",
+        "fixed_Left": "dấu sắc",
+        "fixed_Right": "d",
+        "lock": "d"
+      }
+    },
+    {
+      "sample_id": "user1_d_straight_rep1",
+      "symbol": "d",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "d",
+        "fixed_Left": "dấu sắc",
+        "fixed_Right": "d",
+        "lock": "d"
+      }
+    },
+    {
+      "sample_id": "user1_d_straight_rep2",
+      "symbol": "d",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "d",
+        "fixed_Left": "dấu sắc",
+        "fixed_Right": "d",
+        "lock": "d"
+      }
+    },
+    {
+      "sample_id": "user1_d_tilted_down_rep1",
+      "symbol": "d",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "d",
+        "fixed_Left": "dấu sắc",
+        "fixed_Right": "d",
+        "lock": "d"
+      }
+    },
+    {
+      "sample_id": "user1_d_tilted_down_rep2",
+      "symbol": "d",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "d",
+        "fixed_Left": "dấu sắc",
+        "fixed_Right": "d",
+        "lock": "d"
+      }
+    },
+    {
+      "sample_id": "user1_i_angled_side_rep1",
+      "symbol": "i",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "i",
+        "fixed_Left": "i",
+        "fixed_Right": "i",
+        "lock": "i"
+      }
+    },
+    {
+      "sample_id": "user1_i_angled_side_rep2",
+      "symbol": "i",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "i",
+        "fixed_Left": "i",
+        "fixed_Right": "i",
+        "lock": "i"
+      }
+    },
+    {
+      "sample_id": "user1_i_straight_rep2",
+      "symbol": "i",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "i",
+        "fixed_Left": "i",
+        "fixed_Right": "i",
+        "lock": "i"
+      }
+    },
+    {
+      "sample_id": "user1_i_tilted_down_rep1",
+      "symbol": "i",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "i",
+        "fixed_Left": "i",
+        "fixed_Right": "i",
+        "lock": "i"
+      }
+    },
+    {
+      "sample_id": "user1_i_tilted_down_rep2",
+      "symbol": "i",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "i",
+        "fixed_Left": "i",
+        "fixed_Right": "i",
+        "lock": "i"
+      }
+    },
+    {
+      "sample_id": "user1_o_angled_side_rep1",
+      "symbol": "o",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "o",
+        "fixed_Left": "dấu nặng",
+        "fixed_Right": "o",
+        "lock": "o"
+      }
+    },
+    {
+      "sample_id": "user1_o_angled_side_rep2",
+      "symbol": "o",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "o",
+        "fixed_Left": "dấu nặng",
+        "fixed_Right": "o",
+        "lock": "o"
+      }
+    },
+    {
+      "sample_id": "user1_o_straight_rep1",
+      "symbol": "o",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "o",
+        "fixed_Left": "dấu nặng",
+        "fixed_Right": "o",
+        "lock": "o"
+      }
+    },
+    {
+      "sample_id": "user1_o_straight_rep2",
+      "symbol": "o",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "o",
+        "fixed_Left": "dấu nặng",
+        "fixed_Right": "o",
+        "lock": "o"
+      }
+    },
+    {
+      "sample_id": "user1_o_tilted_down_rep1",
+      "symbol": "o",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "o",
+        "fixed_Left": "dấu nặng",
+        "fixed_Right": "o",
+        "lock": "o"
+      }
+    },
+    {
+      "sample_id": "user1_o_tilted_down_rep2",
+      "symbol": "o",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "o",
+        "fixed_Left": "c",
+        "fixed_Right": "o",
+        "lock": "o"
+      }
+    },
+    {
+      "sample_id": "user1_s_angled_side_rep1",
+      "symbol": "s",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "s",
+        "fixed_Left": "dấu nặng",
+        "fixed_Right": "s",
+        "lock": "s"
+      }
+    },
+    {
+      "sample_id": "user1_s_angled_side_rep2",
+      "symbol": "s",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "s",
+        "fixed_Left": "dấu nặng",
+        "fixed_Right": "s",
+        "lock": "s"
+      }
+    },
+    {
+      "sample_id": "user1_s_straight_rep1",
+      "symbol": "s",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "s",
+        "fixed_Left": "dấu nặng",
+        "fixed_Right": "s",
+        "lock": "s"
+      }
+    },
+    {
+      "sample_id": "user1_s_straight_rep2",
+      "symbol": "s",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "s",
+        "fixed_Left": "dấu nặng",
+        "fixed_Right": "s",
+        "lock": "s"
+      }
+    },
+    {
+      "sample_id": "user1_s_tilted_down_rep1",
+      "symbol": "s",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "s",
+        "fixed_Left": "dấu nặng",
+        "fixed_Right": "s",
+        "lock": "s"
+      }
+    },
+    {
+      "sample_id": "user1_s_tilted_down_rep2",
+      "symbol": "s",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "s",
+        "fixed_Left": "dấu nặng",
+        "fixed_Right": "s",
+        "lock": "s"
+      }
+    },
+    {
+      "sample_id": "user1_aa_straight_rep1",
+      "symbol": "â",
+      "recorded_labels": {
+        "Right": 51
+      },
+      "prediction": {
+        "auto": "â",
+        "fixed_Left": "ê",
+        "fixed_Right": "â",
+        "lock": "â"
+      }
+    },
+    {
+      "sample_id": "user1_aa_straight_rep2",
+      "symbol": "â",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "â",
+        "fixed_Left": "p",
+        "fixed_Right": "â",
+        "lock": "â"
+      }
+    },
+    {
+      "sample_id": "user1_aa_tilted_down_rep2",
+      "symbol": "â",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "â",
+        "fixed_Left": "p",
+        "fixed_Right": "â",
+        "lock": "â"
+      }
+    },
+    {
+      "sample_id": "user1_aa_angled_side_rep1",
+      "symbol": "â",
+      "recorded_labels": {
+        "Left": 60
+      },
+      "prediction": {
+        "auto": "â",
+        "fixed_Left": "â",
+        "fixed_Right": "p",
+        "lock": "â"
+      }
+    },
+    {
+      "sample_id": "user1_aw_tilted_down_rep2",
+      "symbol": "ă",
+      "recorded_labels": {
+        "Right": 41,
+        "Left": 5
+      },
+      "prediction": {
+        "auto": "ă",
+        "fixed_Left": "b",
+        "fixed_Right": "ă",
+        "lock": "ă"
+      }
+    },
+    {
+      "sample_id": "user1_i_straight_rep1",
+      "symbol": "i",
+      "recorded_labels": {
+        "Right": 60
+      },
+      "prediction": {
+        "auto": "i",
+        "fixed_Left": "i",
+        "fixed_Right": "i",
+        "lock": "i"
+      }
+    }
+  ]
+}
