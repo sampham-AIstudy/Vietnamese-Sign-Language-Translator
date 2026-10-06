@@ -244,8 +244,9 @@ python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_c
   sổ trượt vẫn được phân loại ở mọi khung có tay, nhưng nhãn chỉ được tính vào thời gian giữ `cls_stable_ms` trên các khung mà bộ tách
   thấy tay ĐỨNG YÊN (trạng thái khác `moving`: `M_t` chưa vượt `move_speed`, có trễ như mục `motion_pose`). Khung tay đang di chuyển
   hoặc đang đổi hình dạng (chuyển giữa hai chữ) cắt ngang lượt nhãn, nên tư thế trung gian không bao giờ đủ thời gian giữ để thành chữ
-  rác. Dấu thanh: nét vẽ vẫn nằm trong cửa sổ sau khi tay dừng, nên dấu được nhận khi tay dừng lại cuối nét. Không có khóa ⇒ decoder
-  như cũ. HUD dòng `[classifier]` thêm `| chờ tay yên` khi cổng đang chặn; JSON `counts.frames_gated` (chỉ khi bật cổng).
+  rác. Ngoại lệ: chữ có dấu (`â`, `ă`, `ê`, `ô`, `ơ`, `ư`, `đ`) ngay sau chữ gốc của nó (trường hợp thay thế `a` → `â`) không bị cổng
+  cắt, vì chuyển động đó là một phần của ký hiệu. Dấu thanh: nét vẽ vẫn nằm trong cửa sổ sau khi tay dừng, nên dấu được nhận khi tay
+  dừng lại cuối nét. Không có khóa ⇒ decoder như cũ. HUD dòng `[classifier]` thêm `| chờ tay yên` khi cổng đang chặn; JSON `counts.frames_gated` (chỉ khi bật cổng).
 - Vì sao không sửa re-arm của `motion_pose`: đường re-arm theo hình dạng tay (`pose_change_rules`) đã dừng ở bước R2 theo luật P2
   (hình dạng tay của nhiều cặp chữ khác nhau quá gần so với độ rung, `reports/level1_realtime_2026-10-05/pose_evidence.json`). Đánh vần
   liên tục dùng chế độ `classifier` + cổng chuyển động; `configs/level1_realtime.json` (mặc định, `motion_pose`) không đổi.
@@ -260,5 +261,6 @@ python level1_demo.py --source 0 --display-mirror --config configs/level1_demo_c
   `[Tay: khóa Right]` (hoặc `Left`); JSON khóa gốc `dominant_hand` = `mode`, `requested`, `label`, `lock_frames`, `votes`. `Right` /
   `Left` chạy như `lock` và in cảnh báo.
 - Bằng chứng cổng chuyển động trên chuỗi ghép clip train (kiểm logic decoder, không phải phiên webcam):
-  `reports/level1_realtime_2026-10-06/rearm_check_gate.json`; kế hoạch và số liệu: `docs/plans/15-lan-sua-12.md`.
+  `reports/level1_realtime_2026-10-06/rearm_check_gate.json` (bản đầu) và `rearm_check_gate_v2.json` (có ngoại lệ chữ biến thể; gate G5
+  vẫn trượt, như rev8); kế hoạch và số liệu: `docs/plans/15-lan-sua-12.md`.
 - Giới hạn: tác dụng trên webcam của người dùng CHƯA được đo; cần phiên webcam (`--out-json`) để xác nhận.
