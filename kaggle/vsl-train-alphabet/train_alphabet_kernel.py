@@ -10,6 +10,6 @@ data = [os.path.dirname(p) for p in glob.glob("/kaggle/input/**/alphabet_hands/m
 assert data, "attach kernel output phmvnsm33/vsl-extract-alphabet"
 sh("git clone -q --depth 1 -b cloud/2026-10-04-level1-rearm https://github.com/sampham-AIstudy/Vietnamese-Sign-Language-Translator.git /tmp/vslt")
 sh("cd /tmp/vslt && git log --oneline -1")
-sh(f"cd /tmp/vslt && {sys.executable} scripts/train_alphabet_real.py --data-dir '{data[0]}' --out-dir /kaggle/working/alphabet_run --epochs 100")
+sh(f"cd /tmp/vslt && {sys.executable} scripts/train_alphabet_real.py --data-dir '{data[0]}' --extra-data-dir data/collected_targeted --out-dir /kaggle/working/alphabet_run --epochs 100")
 sh("cp /kaggle/working/alphabet_run/alphabet_best.pt /kaggle/working/alphabet_best.pt")
 print(f"total {(time.time() - t0) / 60:.1f} min", flush=True)

@@ -246,6 +246,14 @@ class Level1Classifier:
 # Speller (plan 15 §3.4)
 # ----------------------------------------------------------------------------------------------------------------------
 KEY_NAMES = ("backspace", "space", "accept", "repeat", "clear", "tone_1", "tone_2", "tone_3", "tone_4", "tone_5")
+DIACRITIC_FUSION = {
+    # Base letter -> {trigger signs -> target accented vowel}
+    "a": {"â": "â", "ô": "â", "ê": "â", "ă": "ă"},
+    "o": {"â": "ô", "ô": "ô", "ê": "ô", "ơ": "ơ", "ư": "ơ"},
+    "e": {"â": "ê", "ô": "ê", "ê": "ê"},
+    "u": {"ơ": "ư", "ư": "ư"},
+    "d": {"đ": "đ"},
+}
 
 
 class Level1Speller:
@@ -344,6 +352,11 @@ class Level1Speller:
                 idx, old_tone = self._find_tone_in_active_syllable()
                 self.tokens[idx] = prediction
                 self._log("replace", prediction, "model", t_ms, seq=seq, confidence=conf, replaced=old_tone)
+            elif self.unikey_mode and self.tokens and self.tokens[-1] in DIACRITIC_FUSION and prediction in DIACRITIC_FUSION[self.tokens[-1]]:
+                old = self.tokens[-1]
+                target = DIACRITIC_FUSION[old][prediction]
+                self.tokens[-1] = target
+                self._log("replace", target, "model", t_ms, seq=seq, confidence=conf, replaced=old)
             else:
                 self.tokens.append(prediction)
                 self._log("add", prediction, "model", t_ms, seq=seq, confidence=conf)
@@ -368,6 +381,12 @@ class Level1Speller:
             self.tokens[-1] = prediction
             action = "replace"
             self._log("replace", prediction, "model", t_ms, seq=seq, confidence=conf, replaced=old)
+        elif self.unikey_mode and self.tokens and self.tokens[-1] in DIACRITIC_FUSION and prediction in DIACRITIC_FUSION[self.tokens[-1]]:
+            old = self.tokens[-1]
+            target = DIACRITIC_FUSION[old][prediction]
+            self.tokens[-1] = target
+            action = "replace"
+            self._log("replace", target, "model", t_ms, seq=seq, confidence=conf, replaced=old)
         elif self.unikey_mode and self._is_tone(prediction) and self._find_tone_in_active_syllable() is not None:
             idx, old_tone = self._find_tone_in_active_syllable()
             self.tokens[idx] = prediction

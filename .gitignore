@@ -40,6 +40,8 @@ data (2)/Processed/
 !data (2)/Dataset/Labels/label.csv
 !data/alphabet_landmarks_full.csv
 !data/hand_data.csv
+!data/collected_targeted/manifest.csv
+!data/collected_targeted/**/*.npz
 
 # Logs and temp files
 *.log

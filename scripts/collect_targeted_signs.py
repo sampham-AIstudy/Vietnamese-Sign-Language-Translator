@@ -66,6 +66,7 @@ def main():
     parser.add_argument("--reps-per-angle", type=int, default=2, help="Số lần lặp lại cho mỗi góc độ (mặc định 2)")
     parser.add_argument("--source", type=int, default=0, help="Webcam device index (mặc định 0)")
     parser.add_argument("--out-dir", default="data/collected_targeted", help="Thư mục lưu dữ liệu")
+    parser.add_argument("--skip-existing", action="store_true", default=True, help="Tự động bỏ qua các mẫu chuẩn đã có trong manifest")
     args = parser.parse_args()
 
     symbols_raw = [s.strip() for s in args.symbols.split(",") if s.strip()]
@@ -98,14 +99,17 @@ def main():
     print(f" Người ký  : {args.signer}")
     print(f" Ký hiệu   : {', '.join(canon for _, canon in symbols)}")
     print(f" Thư mục   : {signer_dir}")
+    print(f" Bỏ qua cũ : {'BẬT (Chỉ quay các mẫu còn thiếu)' if args.skip_existing else 'TẮT'}")
     print(" Hướng dẫn : Bấm SPACE để bắt đầu ghi, 's' để bỏ qua, 'q' để thoát")
     print("=" * 60 + "\n")
 
     manifest_rows = []
+    existing_sample_ids = set()
     # Load existing manifest if present
     if os.path.exists(manifest_path):
         with open(manifest_path, encoding="utf-8") as f:
             manifest_rows = list(csv.DictReader(f))
+            existing_sample_ids = {r["sample_id"] for r in manifest_rows}
 
     with mp_hands.Hands(
         static_image_mode=False,
@@ -121,6 +125,10 @@ def main():
                     sample_id = f"{args.signer}_{sym_code}_{angle_tag}_rep{rep}"
                     npz_file = os.path.join(signer_dir, f"{sample_id}.npz")
                     mp4_file = os.path.join(signer_dir, f"{sample_id}.mp4")
+
+                    if args.skip_existing and sample_id in existing_sample_ids and os.path.exists(npz_file):
+                        print(f" -> [BỎ QUA] Đã có mẫu chuẩn: {sample_id}")
+                        continue
 
                     # Wait for user trigger
                     triggered = False
@@ -265,8 +273,9 @@ def main():
                         metadata=json.dumps(meta),
                     )
 
-                    # Update manifest
+                    # Update manifest (deduplicate by sample_id)
                     rel_npz = os.path.relpath(npz_file, out_dir).replace("\\", "/")
+                    manifest_rows = [r for r in manifest_rows if r.get("sample_id") != sample_id]
                     manifest_rows.append({
                         "sample_id": sample_id,
                         "symbol": sym_name,
@@ -281,6 +290,7 @@ def main():
                         "mediapipe_version": mp.__version__,
                         "extractor": "mp.solutions.hands",
                     })
+                    existing_sample_ids.add(sample_id)
 
                     # Write manifest
                     with open(manifest_path, "w", newline="", encoding="utf-8") as f:

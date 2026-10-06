@@ -40,7 +40,17 @@ PREPROCESSING = {"aspect_correct": True, "mirror_left_hand": True, "target_frame
                  "mediapipe_version": "0.10.14", "max_num_hands": 1, "model_complexity": 1}
 
 
-def load(data_dir):
+COMPOUND_DIACRITICS = {
+    "â": "a",
+    "ă": "a",
+    "ê": "e",
+    "ô": "o",
+    "ơ": "o",
+    "ư": "u",
+}
+
+
+def load(data_dir, slice_compound=True):
     items = []
     with open(os.path.join(data_dir, "manifest.csv"), encoding="utf-8") as f:
         for m in csv.DictReader(f):
@@ -55,6 +65,28 @@ def load(data_dir):
             items.append({"sample_id": m["sample_id"], "signer": m["signer_id"], "source": m["source"],
                           "label": ALPHABET_CLASSES.index(m["symbol"]), "symbol": m["symbol"],
                           "seq": seq, "static": static, "mirrored": mirrored, "det_rate": float(det.mean())})
+
+            # Temporal slicing for compound diacritic clips in long videos (T >= 40)
+            T = len(lms)
+            if slice_compound and m["symbol"] in COMPOUND_DIACRITICS and T >= 40:
+                # 1. Base letter slice (first 40% of frames)
+                det_head = det[:int(0.40 * T)]
+                if det_head.sum() >= 3:
+                    base_sym = COMPOUND_DIACRITICS[m["symbol"]]
+                    seq_head = sequence_features_from_clip(lms[:int(0.40 * T)], det_head, SEQ_LEN)
+                    static_head = normalize_hand_landmarks(np.median(lms[:int(0.40 * T)][det_head], axis=0)).reshape(-1).astype(np.float32)
+                    items.append({"sample_id": f"{m['sample_id']}_head_{base_sym}", "signer": m["signer_id"],
+                                  "source": m["source"], "label": ALPHABET_CLASSES.index(base_sym), "symbol": base_sym,
+                                  "seq": seq_head, "static": static_head, "mirrored": mirrored, "det_rate": float(det_head.mean())})
+
+                # 2. Pure diacritic slice (last 45% of frames)
+                det_tail = det[int(0.55 * T):]
+                if det_tail.sum() >= 3:
+                    seq_tail = sequence_features_from_clip(lms[int(0.55 * T):], det_tail, SEQ_LEN)
+                    static_tail = normalize_hand_landmarks(np.median(lms[int(0.55 * T):][det_tail], axis=0)).reshape(-1).astype(np.float32)
+                    items.append({"sample_id": f"{m['sample_id']}_tail_{m['symbol']}", "signer": m["signer_id"],
+                                  "source": m["source"], "label": ALPHABET_CLASSES.index(m["symbol"]), "symbol": m["symbol"],
+                                  "seq": seq_tail, "static": static_tail, "mirrored": mirrored, "det_rate": float(det_tail.mean())})
     return items
 
 

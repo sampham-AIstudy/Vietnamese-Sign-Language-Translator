@@ -914,6 +914,45 @@ class TestSpellerUnikeyMode(unittest.TestCase):
         self.assertEqual(sp.tokens, ["c", "a", "dấu sắc"])
         self.assertEqual(sp.text, "cá")
 
+    def test_unikey_diacritic_fusion(self):
+        from src.inference.level1_segmenter import LabelEmit
+        sp = Level1Speller(0.5, unikey_mode=True)
+        # 1. 'a' followed by circumflex gesture (model predicts 'ô' due to identical circumflex) -> smartly resolves to 'â'!
+        sp.tokens = ["a"]
+        emit = LabelEmit(seq=1, ts_ms=100.0, prediction="ô", confidence=0.9, action="append", run_since_ms=0.0,
+                         result={"status": "ok", "prediction": "ô", "confidence": 0.9})
+        d = sp.on_label(1, emit)
+        self.assertEqual(d["action"], "replace")
+        self.assertEqual(sp.tokens, ["â"])
+        self.assertEqual(sp.text, "â")
+
+        # 2. 'o' followed by circumflex gesture (model predicts 'â') -> smartly resolves to 'ô'!
+        sp.tokens = ["b", "o"]
+        emit = LabelEmit(seq=2, ts_ms=200.0, prediction="â", confidence=0.9, action="append", run_since_ms=0.0,
+                         result={"status": "ok", "prediction": "â", "confidence": 0.9})
+        d = sp.on_label(2, emit)
+        self.assertEqual(d["action"], "replace")
+        self.assertEqual(sp.tokens, ["b", "ô"])
+        self.assertEqual(sp.text, "bô")
+
+        # 3. 'a' followed by crescent gesture ('ă') -> replaces to 'ă'!
+        sp.tokens = ["b", "a"]
+        emit = LabelEmit(seq=3, ts_ms=300.0, prediction="ă", confidence=0.9, action="append", run_since_ms=0.0,
+                         result={"status": "ok", "prediction": "ă", "confidence": 0.9})
+        d = sp.on_label(3, emit)
+        self.assertEqual(d["action"], "replace")
+        self.assertEqual(sp.tokens, ["b", "ă"])
+        self.assertEqual(sp.text, "bă")
+
+        # 4. 'u' followed by horn gesture ('ơ') -> resolves to 'ư'!
+        sp.tokens = ["u"]
+        emit = LabelEmit(seq=4, ts_ms=400.0, prediction="ơ", confidence=0.9, action="append", run_since_ms=0.0,
+                         result={"status": "ok", "prediction": "ơ", "confidence": 0.9})
+        d = sp.on_label(4, emit)
+        self.assertEqual(d["action"], "replace")
+        self.assertEqual(sp.tokens, ["ư"])
+        self.assertEqual(sp.text, "ư")
+
 
 if __name__ == "__main__":
     unittest.main()
