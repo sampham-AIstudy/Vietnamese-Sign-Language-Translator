@@ -47,6 +47,7 @@ COMPOUND_DIACRITICS = {
     "ô": "o",
     "ơ": "o",
     "ư": "u",
+    "đ": "d",
 }
 
 
