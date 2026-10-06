@@ -75,6 +75,20 @@ class TestMotionGateDecoderG1(unittest.TestCase):
         got = run_decoder(d, [("a", False)] * 2 + [("a", True)] + [("a", False)] * 3)
         self.assertEqual(got, [])
 
+    def test_variant_of_the_last_label_is_not_gated(self):
+        # a then the motion of â (diacritic variant of a): the motion is part of the sign, the variant replaces a
+        d = Level1LabelDecoder({**DEC, MOTION_GATE_KEY: True})
+        frames = [("a", False)] * 5 + [("â", True)] * 5
+        out = []
+        for i, (label, moving) in enumerate(frames):
+            e = d.push(i * DT, True, ok(label), moving=moving)
+            if e is not None:
+                out.append((i, e.prediction, e.action))
+        self.assertEqual(out, [(3, "a", "append"), (8, "â", "replace")])
+        # without the base letter emitted just before, a moving variant is gated like any label
+        d = Level1LabelDecoder({**DEC, MOTION_GATE_KEY: True})
+        self.assertEqual(run_decoder(d, [("b", False)] * 5 + [("â", True)] * 10), [(3, "b")])
+
     def test_gate_must_be_bool(self):
         for bad in (1, 0, "true", None):
             with self.subTest(bad=bad), self.assertRaises(ValueError):

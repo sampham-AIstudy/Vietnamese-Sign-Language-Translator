@@ -527,8 +527,10 @@ class Level1LabelDecoder:
        same frame: the hand moves or changes shape, M_t >= move_speed with the segmenter's hysteresis, or no motion
        measured yet) ends the run at once, whatever its result (no dropout debounce: a motion is not a dropout), and
        emits nothing; so a label is emitted only after it held cls_stable_ms on frames where the hand was still. The
-       window itself is unchanged (a tone mark's stroke stays in the window after the hand stops). n_gated counts
-       the frames ended by the gate.
+       window itself is unchanged (a tone mark's stroke stays in the window after the hand stops). Exception: a frame
+       whose prediction is the diacritic variant of the label emitted last (VARIANT_BASE[prediction] == last, the
+       'replace' case of rule 3) is not gated: the motion of â, ă, ê, ô, ơ, ư, đ right after their base letter is part
+       of the sign, not a transition. n_gated counts the frames ended by the gate.
     Parameters come from the caller (config); no default value here. Pure computation, not thread-safe."""
 
     def __init__(self, params: Dict[str, Any]):
@@ -605,7 +607,9 @@ class Level1LabelDecoder:
                 self._drop_ts = None
             return None
         self._last_hand_ts = ts
-        if self.motion_gate and moving:  # rule 7: a moving hand is a transition, never a letter
+        variant_of_last = (result is not None and self._last is not None
+                           and VARIANT_BASE.get(result.get("prediction")) == self._last)
+        if self.motion_gate and moving and not variant_of_last:  # rule 7: a moving hand is a transition, not a letter
             self._run_label, self._run_since, self._drop_ts = None, ts, None
             self.n_gated += 1
             return None
