@@ -10,6 +10,11 @@ Eval  : leave-one-signer-out over the 4 hauuto signers (unseen person each fold)
         overall / letters / tone marks; the model type is chosen on the LOSO mean only.
         The final model (all 4 signers) is then tested ONCE on QIPEDC letters (unseen signers,
         unseen camera). Checkpoint stores classes + preprocessing for the backend.
+        Compound slices (head = base letter, tail = diacritic, COMPOUND_DIACRITICS) are TRAINING items only: every
+        LOSO fold is also scored on its whole clips alone (whole_clips; per-clip predictions in loso_predictions.csv,
+        per-class accuracy and the confusion of the diacritic groups in alphabet_report.json "whole_clip_eval"), so a
+        slice never counts as a test clip. The older "overall / letters / tones" keys keep their definition (every
+        test item, slices included) for comparison with earlier reports.
 Usage : python scripts/train_alphabet_real.py --data-dir <alphabet_hands> --out-dir <dir> [--epochs 80]
 """
 import argparse
@@ -65,7 +70,8 @@ def load(data_dir, slice_compound=True):
             static = normalize_hand_landmarks(np.median(lms[det], axis=0)).reshape(-1).astype(np.float32)
             items.append({"sample_id": m["sample_id"], "signer": m["signer_id"], "source": m["source"],
                           "label": ALPHABET_CLASSES.index(m["symbol"]), "symbol": m["symbol"],
-                          "seq": seq, "static": static, "mirrored": mirrored, "det_rate": float(det.mean())})
+                          "seq": seq, "static": static, "mirrored": mirrored, "det_rate": float(det.mean()),
+                          "slice": None})
 
             # Temporal slicing for compound diacritic clips in long videos (T >= 40)
             T = len(lms)
@@ -78,7 +84,8 @@ def load(data_dir, slice_compound=True):
                     static_head = normalize_hand_landmarks(np.median(lms[:int(0.40 * T)][det_head], axis=0)).reshape(-1).astype(np.float32)
                     items.append({"sample_id": f"{m['sample_id']}_head_{base_sym}", "signer": m["signer_id"],
                                   "source": m["source"], "label": ALPHABET_CLASSES.index(base_sym), "symbol": base_sym,
-                                  "seq": seq_head, "static": static_head, "mirrored": mirrored, "det_rate": float(det_head.mean())})
+                                  "seq": seq_head, "static": static_head, "mirrored": mirrored, "det_rate": float(det_head.mean()),
+                                  "slice": "head"})
 
                 # 2. Pure diacritic slice (last 45% of frames)
                 det_tail = det[int(0.55 * T):]
@@ -87,7 +94,8 @@ def load(data_dir, slice_compound=True):
                     static_tail = normalize_hand_landmarks(np.median(lms[int(0.55 * T):][det_tail], axis=0)).reshape(-1).astype(np.float32)
                     items.append({"sample_id": f"{m['sample_id']}_tail_{m['symbol']}", "signer": m["signer_id"],
                                   "source": m["source"], "label": ALPHABET_CLASSES.index(m["symbol"]), "symbol": m["symbol"],
-                                  "seq": seq_tail, "static": static_tail, "mirrored": mirrored, "det_rate": float(det_tail.mean())})
+                                  "seq": seq_tail, "static": static_tail, "mirrored": mirrored, "det_rate": float(det_tail.mean()),
+                                  "slice": "tail"})
     return items
 
 
@@ -175,6 +183,30 @@ def evaluate(model, kind, items, device):
             [(t["sample_id"], ALPHABET_CLASSES[a], ALPHABET_CLASSES[b]) for t, a, b in zip(items, y, p)])
 
 
+# diacritic groups whose confusion is reported on whole clips (base letter first)
+DIACRITIC_GROUPS = (("d", "đ"), ("a", "â", "ă"), ("e", "ê"), ("o", "ô", "ơ"), ("u", "ư"))
+
+
+def whole_clip_eval(rows):
+    """rows: [(test_signer, sample_id, true, pred)] of whole clips over the LOSO folds of one model kind ->
+    {n, top1, per_class {symbol: {n, correct, top1}}, groups [{symbols, confusion {true: {pred: count}}}]}; a
+    prediction outside the group is counted under 'other'."""
+    per = defaultdict(lambda: [0, 0])
+    for _s, _sid, y, p in rows:
+        per[y][0] += 1
+        per[y][1] += int(y == p)
+    groups = []
+    for g in DIACRITIC_GROUPS:
+        conf = {y: Counter(p if p in g else "other" for _s, _sid, t, p in rows if t == y) for y in g}
+        groups.append({"symbols": list(g), "confusion": {y: {k: conf[y].get(k, 0) for k in (*g, "other")}
+                                                         for y in g}})
+    n = len(rows)
+    return {"n": n, "top1": (100.0 * sum(int(y == p) for _s, _sid, y, p in rows) / n) if n else None,
+            "per_class": {c: {"n": per[c][0], "correct": per[c][1], "top1": 100.0 * per[c][1] / per[c][0]}
+                          for c in ALPHABET_CLASSES if per[c][0]},
+            "groups": groups}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--data-dir", required=True)
@@ -198,10 +230,15 @@ def main():
           f"mirrored clips {sum(t['mirrored'] for t in items)} | classes {len(ALPHABET_CLASSES)}", flush=True)
 
     loso = defaultdict(list)
+    loso_rows = defaultdict(list)  # kind -> [(test_signer, sample_id, true, pred)] of whole clips
     for kind in ("bigru", "mlp"):
         for s in signers:
             model = fit(kind, [t for t in hauuto if t["signer"] != s], args.epochs, device, args.seed)
-            m, _ = evaluate(model, kind, [t for t in hauuto if t["signer"] == s], device)
+            test = [t for t in hauuto if t["signer"] == s]
+            m, _ = evaluate(model, kind, test, device)
+            whole = [t for t in test if t["slice"] is None]
+            m["whole_clips"], preds = evaluate(model, kind, whole, device)
+            loso_rows[kind].extend((s, sid, y, p) for sid, y, p in preds)
             loso[kind].append({"test_signer": s, **m})
             fmt = lambda part: f"{m[part]['top1']:.1f}" if m[part] else "n/a"
             print(f"[LOSO {kind}] test={s} top1={fmt('overall')} letters={fmt('letters')} tones={fmt('tones')}", flush=True)
@@ -214,6 +251,8 @@ def main():
 
     final = fit(winner, hauuto, args.epochs, device, args.seed)
     ext, ext_preds = evaluate(final, winner, external, device) if external else (None, [])
+    external_whole = [t for t in external if t["slice"] is None]
+    ext_whole, _ = evaluate(final, winner, external_whole, device) if external_whole else (None, [])
     ckpt = {"model_type": winner, "state_dict": final.state_dict(), "classes": ALPHABET_CLASSES,
             "num_classes": len(ALPHABET_CLASSES), "input_dim": 63, "preprocessing": PREPROCESSING,
             "hparams": {"hidden_dim": 64, "num_layers": 2} if winner == "bigru" else {"hidden_dims": [128, 64]},
@@ -222,8 +261,17 @@ def main():
     torch.save(ckpt, os.path.join(args.out_dir, "alphabet_best.pt"))
     with open(os.path.join(args.out_dir, "external_test_predictions.csv"), "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f); w.writerow(["sample_id", "true", "pred"]); w.writerows(ext_preds)
+    with open(os.path.join(args.out_dir, "loso_predictions.csv"), "w", encoding="utf-8", newline="") as f:
+        w = csv.writer(f); w.writerow(["kind", "test_signer", "sample_id", "true", "pred"])
+        w.writerows((k, *r) for k in loso_rows for r in loso_rows[k])
+    whole_summary = {k: {"mean": float(np.mean([f["whole_clips"]["overall"]["top1"] for f in loso[k]])),
+                         "std": float(np.std([f["whole_clips"]["overall"]["top1"] for f in loso[k]]))} for k in loso}
     report = {"loso_folds": loso, "loso_summary": summary, "winner_by_loso": winner,
-              "external_qipedc_letters": ext, "clips": {"hauuto": len(hauuto), "qipedc": len(external)},
+              "whole_clip_loso_summary": whole_summary,
+              "whole_clip_eval": {k: whole_clip_eval(loso_rows[k]) for k in loso_rows},
+              "n_slices": dict(Counter(t["slice"] for t in hauuto if t["slice"] is not None)),
+              "external_qipedc_letters": ext, "external_qipedc_letters_whole_clips": ext_whole,
+              "clips": {"hauuto": len(hauuto), "qipedc": len(external), "qipedc_whole": len(external_whole)},
               "per_signer_clip_counts": dict(Counter(t["signer"] for t in items))}
     json.dump(report, open(os.path.join(args.out_dir, "alphabet_report.json"), "w", encoding="utf-8"), indent=2, ensure_ascii=False)
     print(json.dumps({"loso_summary": summary, "winner": winner, "external": ext}, indent=2, ensure_ascii=False))
