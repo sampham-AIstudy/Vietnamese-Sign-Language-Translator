@@ -418,11 +418,13 @@ class Level1Speller:
             self._log("remove", tok, "key", t_ms, key=name)
             return True
         if name == "space":
+            if not self.tokens:
+                return False
             if self.unikey_mode:
                 self.tokens.append(SPACE)
                 self._log("add", SPACE, "key", t_ms, key=name)
                 return True
-            if self.tokens and self.tokens[-1] != SPACE:
+            if self.tokens[-1] != SPACE:
                 self.tokens.append(SPACE)
                 self._log("add", SPACE, "key", t_ms, key=name)
                 return True
