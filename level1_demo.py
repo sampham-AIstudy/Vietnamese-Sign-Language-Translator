@@ -759,7 +759,8 @@ class Level1App:
         if self.display:
             self.hud = Hud(find_font(args.font, self.values["font_paths"]), self.values["hud_font_size"])
         self.segmenter = Level1SignSegmenter(self.values, self.classifier.min_detected_frames)
-        self.speller = Level1Speller(self.values["accept_confidence"])
+        self.unikey_mode = bool(getattr(args, "unikey_mode", True))
+        self.speller = Level1Speller(self.values["accept_confidence"], unikey_mode=self.unikey_mode)
         self.rearm_mode = self.values["rearm_mode"]
         self.classifier_mode = self.rearm_mode == "classifier"
         # plan 15 lần sửa 10 P2: --smooth-landmarks -> the landmarks of every frame go through the smoother before the
@@ -1380,6 +1381,9 @@ def build_parser() -> argparse.ArgumentParser:
                    help="Enable adaptive landmark smoothing to suppress depth jitter: the landmarks of every frame go "
                         "through LandmarkSmoother before the segmenter, the window, the gesture and the drawing "
                         "(written to the JSON as landmark_smoothing; default off: the app as before)")
+    p.add_argument("--unikey-mode", action=argparse.BooleanOptionalAction, default=True,
+                   help="Unikey-style text editing: in-place tone replacement, consecutive spaces allowed, "
+                        "clean backspace (default on)")
     return p
 
 

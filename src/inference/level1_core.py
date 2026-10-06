@@ -26,7 +26,7 @@ import cv2
 import numpy as np
 
 from src.data.alphabet_preprocessing import DEFAULT_ALPHABET_PREPROCESSING, alphabet_clip_features
-from src.inference.fingerspelling_compose import SPACE, compose, token_kind
+from src.inference.fingerspelling_compose import SPACE, TONE_MARKS, compose, token_kind
 from src.inference.level1_segmenter import VARIANT_BASE
 
 # key -> (kind, check); kind: "number" | "int" | "bool" | "str" | "str_list" | "enum" (check = name in ENUMS)
@@ -259,14 +259,31 @@ class Level1Speller:
       rule as a word gap; accept = add the latest rejected candidate that has a prediction; repeat = add the last
       token again when it is a letter; clear = remove every token."""
 
-    def __init__(self, accept_confidence: float):
+    def __init__(self, accept_confidence: float, unikey_mode: bool = False):
         self.accept_confidence = float(accept_confidence)
+        self.unikey_mode = bool(unikey_mode)
         self.tokens: List[str] = []
         self.events: List[Dict[str, Any]] = []
         self.rejected: Optional[Dict[str, Any]] = None
         self._queue: List[tuple] = []          # ("segment", seq) | ("gap", seq), emission order
         self._results: Dict[int, Dict[str, Any]] = {}
         self._result_t: Dict[int, Optional[float]] = {}
+
+    @staticmethod
+    def _is_tone(tok: str) -> bool:
+        return tok in TONE_MARKS
+
+    def _find_tone_in_active_syllable(self) -> Optional[Tuple[int, str]]:
+        """Returns (index, tone_token) of the tone mark in the active syllable (after last SPACE), or None."""
+        k = 0
+        for i in range(len(self.tokens) - 1, -1, -1):
+            if self.tokens[i] == SPACE:
+                k = i + 1
+                break
+        for i in range(len(self.tokens) - 1, k - 1, -1):
+            if self._is_tone(self.tokens[i]):
+                return i, self.tokens[i]
+        return None
 
     # ---------------------------------------------------------------- text
     @property
@@ -323,8 +340,13 @@ class Level1Speller:
         conf = r.get("confidence") if status == "ok" else None
         accepted = status == "ok" and conf is not None and conf >= self.accept_confidence
         if accepted:
-            self.tokens.append(prediction)
-            self._log("add", prediction, "model", t_ms, seq=seq, confidence=conf)
+            if self.unikey_mode and self._is_tone(prediction) and self._find_tone_in_active_syllable() is not None:
+                idx, old_tone = self._find_tone_in_active_syllable()
+                self.tokens[idx] = prediction
+                self._log("replace", prediction, "model", t_ms, seq=seq, confidence=conf, replaced=old_tone)
+            else:
+                self.tokens.append(prediction)
+                self._log("add", prediction, "model", t_ms, seq=seq, confidence=conf)
         else:
             self.rejected = {"seq": seq, "status": status, "prediction": prediction, "confidence": conf}
             self._log("reject", prediction, "model", t_ms, seq=seq, confidence=conf, status=status)
@@ -346,6 +368,11 @@ class Level1Speller:
             self.tokens[-1] = prediction
             action = "replace"
             self._log("replace", prediction, "model", t_ms, seq=seq, confidence=conf, replaced=old)
+        elif self.unikey_mode and self._is_tone(prediction) and self._find_tone_in_active_syllable() is not None:
+            idx, old_tone = self._find_tone_in_active_syllable()
+            self.tokens[idx] = prediction
+            action = "replace"
+            self._log("replace", prediction, "model", t_ms, seq=seq, confidence=conf, replaced=old_tone)
         else:
             self.tokens.append(prediction)
             action = "add"
@@ -372,6 +399,10 @@ class Level1Speller:
             self._log("remove", tok, "key", t_ms, key=name)
             return True
         if name == "space":
+            if self.unikey_mode:
+                self.tokens.append(SPACE)
+                self._log("add", SPACE, "key", t_ms, key=name)
+                return True
             if self.tokens and self.tokens[-1] != SPACE:
                 self.tokens.append(SPACE)
                 self._log("add", SPACE, "key", t_ms, key=name)
@@ -400,8 +431,13 @@ class Level1Speller:
                 "tone_5": "dấu nặng"
             }
             tone = tone_map[name]
-            self.tokens.append(tone)
-            self._log("add", tone, "key", t_ms, key=name)
+            if self.unikey_mode and self._find_tone_in_active_syllable() is not None:
+                idx, old_tone = self._find_tone_in_active_syllable()
+                self.tokens[idx] = tone
+                self._log("replace", tone, "key", t_ms, key=name, replaced=old_tone)
+            else:
+                self.tokens.append(tone)
+                self._log("add", tone, "key", t_ms, key=name)
             return True
         # clear
         if not self.tokens and self.rejected is None:

@@ -864,5 +864,56 @@ class TestForeshorteningRatioP3(unittest.TestCase):
                 self.assertEqual(foreshortening_ratio(bad), 1.0)
 
 
+class TestSpellerUnikeyMode(unittest.TestCase):
+    """Unikey-style editing: in-place tone replacement, consecutive spaces allowed, clean backspace."""
+
+    def test_unikey_defaults_to_false(self):
+        sp = Level1Speller(0.5)
+        self.assertFalse(sp.unikey_mode)
+
+    def test_unikey_tone_replacement_in_place(self):
+        sp = Level1Speller(0.5, unikey_mode=True)
+        sp.tokens = ["b", "a"]
+        self.assertEqual(sp.text, "ba")
+        # Add dấu hỏi
+        self.assertTrue(sp.key("tone_3"))
+        self.assertEqual(sp.tokens, ["b", "a", "dấu hỏi"])
+        self.assertEqual(sp.text, "bả")
+        # Add dấu huyền -> replaces dấu hỏi in-place
+        self.assertTrue(sp.key("tone_2"))
+        self.assertEqual(sp.tokens, ["b", "a", "dấu huyền"])
+        self.assertEqual(sp.text, "bà")
+        # Backspace -> removes dấu huyền; dấu hỏi never resurfaces!
+        self.assertTrue(sp.key("backspace"))
+        self.assertEqual(sp.tokens, ["b", "a"])
+        self.assertEqual(sp.text, "ba")
+
+    def test_unikey_space_spam(self):
+        sp = Level1Speller(0.5, unikey_mode=True)
+        sp.tokens = ["b", "a"]
+        self.assertTrue(sp.key("space"))
+        self.assertTrue(sp.key("space"))
+        self.assertTrue(sp.key("space"))
+        self.assertEqual(sp.tokens, ["b", "a", " ", " ", " "])
+
+    def test_unikey_on_label_tone_replacement(self):
+        from src.inference.level1_segmenter import LabelEmit
+        sp = Level1Speller(0.5, unikey_mode=True)
+        sp.tokens = ["c", "a"]
+        emit1 = LabelEmit(seq=1, ts_ms=100.0, prediction="dấu hỏi", confidence=0.9, action="append", run_since_ms=0.0,
+                          result={"status": "ok", "prediction": "dấu hỏi", "confidence": 0.9})
+        d1 = sp.on_label(1, emit1)
+        self.assertEqual(d1["action"], "add")
+        self.assertEqual(sp.tokens, ["c", "a", "dấu hỏi"])
+        self.assertEqual(sp.text, "cả")
+
+        emit2 = LabelEmit(seq=2, ts_ms=500.0, prediction="dấu sắc", confidence=0.9, action="append", run_since_ms=400.0,
+                          result={"status": "ok", "prediction": "dấu sắc", "confidence": 0.9})
+        d2 = sp.on_label(2, emit2)
+        self.assertEqual(d2["action"], "replace")
+        self.assertEqual(sp.tokens, ["c", "a", "dấu sắc"])
+        self.assertEqual(sp.text, "cá")
+
+
 if __name__ == "__main__":
     unittest.main()

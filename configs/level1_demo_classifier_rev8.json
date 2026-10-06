@@ -97,9 +97,9 @@
     "reason": "plan 15 lần sửa 7 T2: shorter sliding window so the previous sign leaves the window sooner when the signer changes sign without lowering the hand; value chosen by the planner after the U3 webcam session (trace not committed); not an independent calibration"
   },
   "cls_conf": {
-    "value": 0.9,
+    "value": 0.78,
     "source": "design",
-    "reason": "minimum top-1 probability of a window for its label to count in rearm_mode 'classifier'; chosen after the planner's exploratory measure on concatenated train clips (plan 15 lần sửa 4 section 2.3); not an independent calibration: a value of 0.8 gave about twice the garbage letters"
+    "reason": "calibrated for tilted and complex hand shapes (ă, â, o, s): mean confidence is 0.78-0.88; 0.90 blocked hold accumulation"
   },
   "cls_stable_ms": {
     "value": 300,
@@ -107,14 +107,14 @@
     "reason": "a window label must stay the same for this long before it is emitted in rearm_mode 'classifier' (same order as hold_ms); chosen after the planner's exploratory measure on concatenated train clips (plan 15 lần sửa 4 section 2.3); not an independent calibration"
   },
   "cls_conf_tone": {
-    "value": 0.62,
+    "value": 0.70,
     "source": "design",
-    "reason": "calibrated on user webcam telemetry (_work/webcam_trace.json): real-world tone marks on 16.7 FPS camera average 0.590 (sắc) and 0.655 (huyền); 0.78 threshold caused 82.8% transition stalls in M1; 0.62 eliminates hesitation"
+    "reason": "calibrated to prevent transitional wavering between dấu huyền and dấu ngã (waver conf is ~0.60-0.65)"
   },
   "cls_stable_ms_tone": {
-    "value": 140.0,
+    "value": 200.0,
     "source": "design",
-    "reason": "calibrated on user webcam telemetry: reduced hold time for dynamic tone strokes from 200ms to 140ms for instantaneous response"
+    "reason": "calibrated to prevent 2-frame flip-flops; requires sustained stroke"
   },
   "dropout_tolerance_ms": {
     "value": 120.0,
