@@ -29,7 +29,7 @@ import numpy as np
 
 from src.data.alphabet_preprocessing import DEFAULT_ALPHABET_PREPROCESSING, alphabet_clip_features
 from src.inference.fingerspelling_compose import SPACE, TONE_MARKS, compose, token_kind
-from src.inference.level1_segmenter import VARIANT_BASE
+from src.inference.level1_segmenter import DIACRITIC_FUSION, VARIANT_BASE, is_variant_of
 
 # key -> (kind, check); kind: "number" | "int" | "bool" | "str" | "str_list" | "enum" (check = name in ENUMS)
 CONFIG_SPEC = {

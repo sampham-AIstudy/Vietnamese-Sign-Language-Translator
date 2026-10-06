@@ -408,6 +408,28 @@ class Level1SignSegmenter:
 # diacritic letter -> its base letter (a fact of the Vietnamese alphabet, locked by a test): a letter with a diacritic is
 # signed as the hand shape of the base letter plus a motion, so a window sees the base letter first
 VARIANT_BASE = {"ă": "a", "â": "a", "ê": "e", "ô": "o", "ơ": "o", "ư": "u", "đ": "d"}
+
+DIACRITIC_FUSION = {
+    # Base letter -> {trigger signs -> target accented vowel}
+    "a": {"â": "â", "ô": "â", "ê": "â", "ă": "ă"},
+    "o": {"â": "ô", "ô": "ô", "ê": "ô", "ơ": "ơ", "ư": "ơ"},
+    "e": {"â": "ê", "ô": "ê", "ê": "ê"},
+    "u": {"ơ": "ư", "ư": "ư"},
+    "d": {"đ": "đ"},
+}
+
+
+def is_variant_of(prediction: Optional[str], last: Optional[str]) -> bool:
+    """True when prediction is a diacritic variant of last (direct base letter or via diacritic fusion)."""
+    if not prediction or not last:
+        return False
+    if VARIANT_BASE.get(prediction) == last:
+        return True
+    if last in DIACRITIC_FUSION and prediction in DIACRITIC_FUSION[last]:
+        return True
+    return False
+
+
 DECODER_KEYS = ("cls_window_ms", "cls_conf", "cls_stable_ms", "hand_lost_ms")
 # optional (plan 15 lần sửa 7 T1): threshold / stable time of the 5 tone marks; an absent key = cls_conf / cls_stable_ms
 DECODER_TONE_KEYS = {"cls_conf_tone": "cls_conf", "cls_stable_ms_tone": "cls_stable_ms"}
@@ -607,8 +629,8 @@ class Level1LabelDecoder:
                 self._drop_ts = None
             return None
         self._last_hand_ts = ts
-        variant_of_last = (result is not None and self._last is not None
-                           and VARIANT_BASE.get(result.get("prediction")) == self._last)
+        pred = result.get("prediction") if result is not None else None
+        variant_of_last = is_variant_of(pred, self._last)
         if self.motion_gate and moving and not variant_of_last:  # rule 7: a moving hand is a transition, not a letter
             self._run_label, self._run_since, self._drop_ts = None, ts, None
             self.n_gated += 1

@@ -89,6 +89,47 @@ class TestMotionGateDecoderG1(unittest.TestCase):
         d = Level1LabelDecoder({**DEC, MOTION_GATE_KEY: True})
         self.assertEqual(run_decoder(d, [("b", False)] * 5 + [("â", True)] * 10), [(3, "b")])
 
+    def test_diacritic_fusion_variants_not_gated(self):
+        from src.inference.level1_core import Level1Speller
+        # e followed by circumflex motion predicted as â: not gated because â is in DIACRITIC_FUSION["e"]
+        d = Level1LabelDecoder({**DEC, MOTION_GATE_KEY: True})
+        sp = Level1Speller(0.5, unikey_mode=True)
+        frames = [("e", False)] * 5 + [("â", True)] * 5
+        out = []
+        for i, (label, moving) in enumerate(frames):
+            e = d.push(i * DT, True, ok(label), moving=moving)
+            if e is not None:
+                out.append((i, e.prediction, e.action))
+                sp.on_label(i, e)
+        self.assertEqual(out, [(3, "e", "append"), (8, "â", "append")])
+        self.assertEqual(sp.text, "ê")
+
+        # o followed by circumflex motion predicted as â: not gated
+        d = Level1LabelDecoder({**DEC, MOTION_GATE_KEY: True})
+        sp = Level1Speller(0.5, unikey_mode=True)
+        frames = [("o", False)] * 5 + [("â", True)] * 5
+        out = []
+        for i, (label, moving) in enumerate(frames):
+            e = d.push(i * DT, True, ok(label), moving=moving)
+            if e is not None:
+                out.append((i, e.prediction, e.action))
+                sp.on_label(i, e)
+        self.assertEqual(out, [(3, "o", "append"), (8, "â", "append")])
+        self.assertEqual(sp.text, "ô")
+
+        # u followed by hook motion predicted as ơ: not gated
+        d = Level1LabelDecoder({**DEC, MOTION_GATE_KEY: True})
+        sp = Level1Speller(0.5, unikey_mode=True)
+        frames = [("u", False)] * 5 + [("ơ", True)] * 5
+        out = []
+        for i, (label, moving) in enumerate(frames):
+            e = d.push(i * DT, True, ok(label), moving=moving)
+            if e is not None:
+                out.append((i, e.prediction, e.action))
+                sp.on_label(i, e)
+        self.assertEqual(out, [(3, "u", "append"), (8, "ơ", "append")])
+        self.assertEqual(sp.text, "ư")
+
     def test_gate_must_be_bool(self):
         for bad in (1, 0, "true", None):
             with self.subTest(bad=bad), self.assertRaises(ValueError):
