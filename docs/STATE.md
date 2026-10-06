@@ -4,6 +4,7 @@
 > ghi 1 dòng vào "Nhật ký khôi phục", rồi mới làm tiếp.
 
 - Cập nhật lần cuối: 2026-10-06 (phiên cloud, nhánh `cloud/2026-10-04-level1-rearm`)
+- TRAIN LẠI CẤP 1 (cloud, 2026-10-06): kernel vsl-train-alphabet v4 (clone d3a79a2, 66 clip user1) → checkpoint 9e4a99c8 (chỉ trong output Kaggle v4 + checkpoints/ của container cloud; local vẫn checkpoint cũ 756eaf3f). Báo cáo `reports/alphabet_retrain_2026-10-06/REPORT.md`: KHÔNG thay mặc định (G1 trượt, decoder mất đ). Việc kế: người dùng quyết thí nghiệm không cắt lát đ / phiên webcam so 2 checkpoint.
 - LẦN SỬA 12 (cloud, 2026-10-06, theo phản hồi webcam của người dùng): `docs/plans/15-lan-sua-12.md`. Mã: ddd7904 (G1 cổng chuyển động decoder, H1 HandednessLock, config rev9), 13759a6 (script dominant_hand_check), 85a6a91 (app: tắt tự cách mặc định, --dominant-hand lock, nối cổng), 551e1b2 (G1b: không cắt chữ biến thể của chữ vừa phát). Bằng chứng: reports/level1_realtime_2026-10-06/{dominant_hand_check,rearm_check_gate,rearm_check_gate_v2}.json. CHƯA review (vslt-reviewer local). Còn: phiên webcam người dùng so rev8 và rev9.
 - HEAD: a78f7ba (+ commit state này) | Nhánh: feat/vslt-complete
 - Tắt máy: CHỈ khi người dùng yêu cầu rõ trong hội thoại (quyết định 2026-10-04 01:15; bỏ dòng công tắc cũ). Yêu cầu hiện hành: 4/10 ~01:15 "xong thì nhớ lưu và tắt máy".
