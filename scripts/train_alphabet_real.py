@@ -45,14 +45,15 @@ PREPROCESSING = {"aspect_correct": True, "mirror_left_hand": True, "target_frame
                  "mediapipe_version": "0.10.14", "max_num_hands": 1, "model_complexity": 1}
 
 
+# đ and ư are not sliced (2026-10-06, reports/alphabet_retrain_2026-10-06/REPORT.md): with the head of every đ clip
+# labelled d (the hand shape of đ ~ d in hauuto) the realtime decoder read đ as d on the train-clip chains (đ lost 18
+# times, ư 9); they are learnt from whole clips only
 COMPOUND_DIACRITICS = {
     "â": "a",
     "ă": "a",
     "ê": "e",
     "ô": "o",
     "ơ": "o",
-    "ư": "u",
-    "đ": "d",
 }
 
 
