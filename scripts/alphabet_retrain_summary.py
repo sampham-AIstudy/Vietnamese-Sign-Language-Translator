@@ -29,9 +29,9 @@ from collections import Counter, defaultdict
 from typing import Any, Dict, List, Optional, Sequence
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-# confusion groups: the diacritic groups, then p / q (user1 clips added in 8c53795)
-DIACRITIC_GROUPS = (("d", "đ"), ("a", "â", "ă"), ("e", "ê"), ("o", "ô", "ơ"), ("u", "ư"), ("p", "q"))
-FOCUS = ("d", "đ", "a", "â", "ă", "e", "ê", "o", "ô", "ơ", "u", "ư", "p", "q")
+# confusion groups: the diacritic groups, then p / q, and r / n (cleaned label noise)
+DIACRITIC_GROUPS = (("d", "đ"), ("a", "â", "ă"), ("e", "ê"), ("o", "ô", "ơ"), ("u", "ư"), ("p", "q"), ("r", "n"))
+FOCUS = ("d", "đ", "a", "â", "ă", "e", "ê", "o", "ô", "ơ", "u", "ư", "p", "q", "r", "n", "b")
 
 
 def sha256_file(path: str) -> str:
