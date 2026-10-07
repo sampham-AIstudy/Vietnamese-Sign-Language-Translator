@@ -544,6 +544,128 @@ def is_open_palm_space(landmarks: Optional[np.ndarray]) -> bool:
     return True
 
 
+# ---------------------------------------------------------------------------- flat hand flick -> Backspace
+GESTURE_BACKSPACE_COOLDOWN = 400.0   # ms cooldown after backspace before another flick can trigger
+GESTURE_BACKSPACE_WINDOW_MS = 250.0  # sliding history window for measuring the flick
+GESTURE_BACKSPACE_MIN_DX = 0.05      # minimum horizontal displacement across the window
+GESTURE_BACKSPACE_MIN_SPEED = 0.30   # minimum horizontal speed in screen units/s
+GESTURE_BACKSPACE_FLASH = 600.0      # ms to flash HUD banner
+GESTURE_BACKSPACE_DEFAULT = False    # off by default in parser (on in default webcam preset)
+
+
+def is_flat_hand_backspace(landmarks: Optional[np.ndarray]) -> bool:
+    """True when the hand is the flat hand pose for the backspace gesture: all 5 fingers straight,
+    held together (not spread wide like the space gesture).
+    landmarks: the 21 MediaPipe hand points [21, 3] (or [21, 2]) in aspect-corrected coordinates.
+      1. the 4 long fingers are straight: for (tip, pip, mcp) dist(tip, wrist) > dist(pip, wrist)
+         and dist(tip, mcp) > dist(pip, mcp);
+      2. the thumb is straight: dist(4, wrist) > dist(3, wrist) and extended (dist(4, wrist) > 0.5 * palm);
+      3. thumb is not spread wide away as in open palm (dist(4, 17) <= 1.05 * palm);
+      4. not the open-palm space gesture: not is_open_palm_space(landmarks).
+    None, non-finite values or degenerate hands return False. Pure computation."""
+    if landmarks is None:
+        return False
+    p = np.asarray(landmarks, dtype=np.float64)
+    if p.ndim != 2 or p.shape[0] != 21 or p.shape[1] not in (2, 3) or not np.all(np.isfinite(p)):
+        return False
+
+    def dist(i: int, j: int) -> float:
+        return float(np.linalg.norm(p[i] - p[j]))
+
+    palm = dist(9, 0)
+    if not palm > 0:
+        return False
+    for tip, pip, mcp in LONG_FINGERS:
+        if not (dist(tip, 0) > dist(pip, 0) and dist(tip, mcp) > dist(pip, mcp)):
+            return False
+    if not (dist(4, 0) > dist(3, 0) and dist(4, 0) > 0.5 * palm):
+        return False
+    if dist(4, 17) > 1.05 * palm:
+        return False
+    if is_open_palm_space(landmarks):
+        return False
+    return True
+
+
+class BackspaceGestureTracker:
+    """Flat hand + horizontal flick/swipe -> Backspace.
+    update(ts_ms, landmarks, is_flat, has_hand) returns True exactly once per deliberate flick:
+      - keeps a sliding history of (ts_ms, x, y, is_flat, palm) over window_ms (250 ms);
+      - triggers Backspace when:
+        1. flat hand was present in the recent window;
+        2. hand underwent a rapid horizontal movement (dx >= min_dx, vx >= min_speed, dx > 1.1 * dy);
+        3. tracker is not in cooldown (cooldown_ms = 400 ms).
+    Pure computation, no clock."""
+
+    def __init__(self, cooldown_ms: float = GESTURE_BACKSPACE_COOLDOWN,
+                 window_ms: float = GESTURE_BACKSPACE_WINDOW_MS,
+                 min_dx: float = GESTURE_BACKSPACE_MIN_DX,
+                 min_speed: float = GESTURE_BACKSPACE_MIN_SPEED):
+        self.cooldown_ms = float(cooldown_ms)
+        self.window_ms = float(window_ms)
+        self.min_dx = float(min_dx)
+        self.min_speed = float(min_speed)
+        self.n_emits = 0
+        self.last_emit_ts: Optional[float] = None
+        self.last_ts: Optional[float] = None
+        self.history: List[Tuple[float, float, float, bool, float]] = []
+
+    def reset(self) -> None:
+        self.history.clear()
+        self.last_emit_ts = None
+        self.last_ts = None
+
+    def is_ready(self, ts_ms: Optional[float]) -> bool:
+        """True when the flat hand pose is held and ready to flick (not in cooldown)."""
+        if ts_ms is None:
+            return False
+        if self.last_emit_ts is not None and (ts_ms - self.last_emit_ts) < self.cooldown_ms:
+            return False
+        return any(h[3] for h in self.history)
+
+    def update(self, ts_ms: float, landmarks: Optional[np.ndarray], is_flat: bool,
+               has_hand: bool = True) -> bool:
+        ts = float(ts_ms)
+        if not np.isfinite(ts):
+            raise ValueError("timestamp must be finite")
+        self.last_ts = ts
+        if not has_hand or landmarks is None:
+            self.history.clear()
+            return False
+        p = np.asarray(landmarks, dtype=np.float64)
+        ref_pt = (p[0, :2] + p[9, :2] + p[12, :2]) / 3.0
+        palm = float(np.linalg.norm(p[9, :2] - p[0, :2]))
+        self.history.append((ts, float(ref_pt[0]), float(ref_pt[1]), bool(is_flat), palm))
+        cutoff = ts - self.window_ms
+        self.history = [h for h in self.history if h[0] >= cutoff]
+
+        if self.last_emit_ts is not None and (ts - self.last_emit_ts) < self.cooldown_ms:
+            return False
+        if not any(h[3] for h in self.history):
+            return False
+        if len(self.history) < 2:
+            return False
+        dt = (self.history[-1][0] - self.history[0][0]) / 1000.0
+        if dt < 0.04:
+            return False
+        xs = [h[1] for h in self.history]
+        ys = [h[2] for h in self.history]
+        dx = max(xs) - min(xs)
+        dy = max(ys) - min(ys)
+        vx = dx / dt
+        avg_palm = np.mean([h[4] for h in self.history])
+        is_flick = ((dx >= self.min_dx or (avg_palm > 0 and dx / avg_palm >= 0.35))
+                    and vx >= self.min_speed
+                    and dx > 1.1 * dy)
+        if is_flick:
+            self.last_emit_ts = ts
+            self.n_emits += 1
+            self.history.clear()
+            return True
+        return False
+
+
+
 # ---------------------------------------------------------------------------- landmark smoothing (lần sửa 10)
 class LandmarkSmoother:
     """Adaptive exponential moving average of the 21 MediaPipe hand points (plan 15 lần sửa 10 §2 P2), to damp the jitter

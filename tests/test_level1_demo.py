@@ -2249,6 +2249,74 @@ class TestSpaceGestureTrackerS2(unittest.TestCase):
         self.assertEqual(tr.n_emits, 1)                                              # emissions are kept
 
 
+class TestBackspaceGestureTracker(unittest.TestCase):
+    """BackspaceGestureTracker: flat hand + flick -> update(ts_ms, landmarks, is_flat, has_hand) -> Backspace."""
+
+    def test_backspace_flick_detection(self):
+        tr = app_mod.BackspaceGestureTracker()
+        self.assertEqual(tr.n_emits, 0)
+        p = np.zeros((21, 3))
+        p[0] = [0.5, 0.8, 0]; p[9] = [0.5, 0.5, 0]; p[12] = [0.5, 0.2, 0]
+
+        # Hold still: no backspace
+        for t in range(0, 300, 30):
+            self.assertFalse(tr.update(t, p, is_flat=True))
+        self.assertEqual(tr.n_emits, 0)
+        self.assertTrue(tr.is_ready(300.0))
+
+        # Flick sideways (dx moves from 0.5 to 0.38 over 120ms)
+        emits = []
+        for i, t in enumerate(range(330, 460, 30)):
+            p_flick = p.copy()
+            p_flick[:, 0] -= i * 0.035
+            if tr.update(t, p_flick, is_flat=True):
+                emits.append(t)
+        self.assertEqual(len(emits), 1)
+        self.assertEqual(tr.n_emits, 1)
+
+        # Return movement in cooldown: blocked
+        for i, t in enumerate(range(500, 650, 30)):
+            p_ret = p.copy()
+            p_ret[:, 0] += i * 0.035
+            self.assertFalse(tr.update(t, p_ret, is_flat=True))
+        self.assertEqual(tr.n_emits, 1)
+
+        # Second flick after cooldown
+        emits_2 = []
+        for i, t in enumerate(range(900, 1050, 30)):
+            p_flick2 = p.copy()
+            p_flick2[:, 0] -= i * 0.035
+            if tr.update(t, p_flick2, is_flat=True):
+                emits_2.append(t)
+        self.assertEqual(len(emits_2), 1)
+        self.assertEqual(tr.n_emits, 2)
+
+    def test_backspace_non_flat_hand_never_emits(self):
+        tr = app_mod.BackspaceGestureTracker()
+        p = np.zeros((21, 3))
+        # Move fast but is_flat=False
+        for i, t in enumerate(range(0, 300, 30)):
+            p[:, 0] -= i * 0.04
+            self.assertFalse(tr.update(t, p, is_flat=False))
+        self.assertEqual(tr.n_emits, 0)
+
+    def test_default_webcam_preset(self):
+        self.assertIn("--source", app_mod.DEFAULT_DEMO_ARGV)
+        self.assertIn("--display-mirror", app_mod.DEFAULT_DEMO_ARGV)
+        self.assertIn("configs/level1_demo_classifier_rev9.json", app_mod.DEFAULT_DEMO_ARGV)
+        self.assertIn("--gesture-backspace", app_mod.DEFAULT_DEMO_ARGV)
+        self.assertIn("--gesture-space", app_mod.DEFAULT_DEMO_ARGV)
+        parsed = app_mod.build_parser().parse_args(app_mod.DEFAULT_DEMO_ARGV)
+        self.assertEqual(parsed.source, "0")
+        self.assertTrue(parsed.display_mirror)
+        self.assertEqual(parsed.min_detection_conf, 0.55)
+        self.assertEqual(parsed.dominant_hand, "lock")
+        self.assertTrue(parsed.smooth_landmarks)
+        self.assertTrue(parsed.unikey_mode)
+        self.assertTrue(parsed.gesture_space)
+        self.assertTrue(parsed.gesture_backspace)
+
+
 class _LandmarkRecordingSession(HandLandmarkSession):
     """The real HandLandmarkSession (default keywords); keeps (landmarks, width, height) of every frame processed."""
     instances = []

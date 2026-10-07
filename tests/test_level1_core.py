@@ -954,5 +954,63 @@ class TestSpellerUnikeyMode(unittest.TestCase):
         self.assertEqual(sp.text, "ư")
 
 
+class TestBackspaceGesture(unittest.TestCase):
+    def test_is_flat_hand_backspace_basic(self):
+        from src.inference.level1_core import is_flat_hand_backspace, is_open_palm_space
+        self.assertFalse(is_flat_hand_backspace(None))
+        self.assertFalse(is_flat_hand_backspace(np.zeros((10, 3))))
+        self.assertFalse(is_flat_hand_backspace(np.zeros((21, 3))))
+
+        # Synthetic flat hand (5 straight fingers, thumb extended alongside index)
+        p = np.zeros((21, 3))
+        p[0] = [0.5, 0.8, 0]
+        p[5] = [0.46, 0.5, 0]; p[9] = [0.49, 0.48, 0]; p[13] = [0.52, 0.49, 0]; p[17] = [0.55, 0.52, 0]
+        p[6] = [0.46, 0.35, 0]; p[10] = [0.49, 0.32, 0]; p[14] = [0.52, 0.34, 0]; p[18] = [0.55, 0.38, 0]
+        p[8] = [0.46, 0.2, 0]; p[12] = [0.49, 0.16, 0]; p[16] = [0.52, 0.19, 0]; p[20] = [0.55, 0.24, 0]
+        p[1] = [0.47, 0.7, 0]; p[2] = [0.44, 0.6, 0]; p[3] = [0.43, 0.52, 0]; p[4] = [0.42, 0.44, 0]
+
+        self.assertTrue(is_flat_hand_backspace(p))
+        self.assertFalse(is_open_palm_space(p))
+
+    def test_backspace_gesture_tracker_flick(self):
+        from src.inference.level1_core import BackspaceGestureTracker
+        tr = BackspaceGestureTracker(cooldown_ms=400.0, min_dx=0.05, min_speed=0.30)
+        p = np.zeros((21, 3))
+        p[0] = [0.5, 0.8, 0]; p[9] = [0.5, 0.5, 0]; p[12] = [0.5, 0.2, 0]
+
+        # Still hand: no emit
+        for t in range(0, 300, 33):
+            self.assertFalse(tr.update(t, p, is_flat=True))
+        self.assertEqual(tr.n_emits, 0)
+        self.assertTrue(tr.is_ready(297.0))
+
+        # Fast flick to the left
+        emitted = []
+        for i, t in enumerate(range(330, 480, 33)):
+            p_flick = p.copy()
+            p_flick[:, 0] -= i * 0.03
+            if tr.update(t, p_flick, is_flat=True):
+                emitted.append(t)
+        self.assertEqual(len(emitted), 1)
+        self.assertEqual(tr.n_emits, 1)
+
+        # Return stroke in cooldown: no emit
+        for i, t in enumerate(range(500, 650, 33)):
+            p_ret = p.copy()
+            p_ret[:, 0] += i * 0.03
+            self.assertFalse(tr.update(t, p_ret, is_flat=True))
+        self.assertEqual(tr.n_emits, 1)
+
+        # Second flick after cooldown
+        emitted_2 = []
+        for i, t in enumerate(range(900, 1050, 33)):
+            p_flick2 = p.copy()
+            p_flick2[:, 0] -= i * 0.03
+            if tr.update(t, p_flick2, is_flat=True):
+                emitted_2.append(t)
+        self.assertEqual(len(emitted_2), 1)
+        self.assertEqual(tr.n_emits, 2)
+
+
 if __name__ == "__main__":
     unittest.main()

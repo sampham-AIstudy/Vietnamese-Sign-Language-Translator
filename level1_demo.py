@@ -86,9 +86,11 @@ if sys.platform == "win32":
         sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 from src.inference.hand_live import LEVEL1_HANDS_KWARGS, HandLandmarkSession  # noqa: E402
-from src.inference.level1_core import (CLAHE_CLIP_LIMIT, CLAHE_TILE_GRID, LOW_LIGHT_THRESHOLD,  # noqa: E402
+from src.inference.level1_core import (CLAHE_CLIP_LIMIT, CLAHE_TILE_GRID, GESTURE_BACKSPACE_DEFAULT,  # noqa: E402
+                                       GESTURE_BACKSPACE_FLASH, LOW_LIGHT_THRESHOLD, BackspaceGestureTracker,
                                        HandednessLock, LandmarkSmoother, Level1Classifier, Level1Speller,
-                                       enhance_low_light, foreshortening_ratio, is_open_palm_space, load_level1_config)
+                                       enhance_low_light, foreshortening_ratio, is_flat_hand_backspace,
+                                       is_open_palm_space, load_level1_config)
 from src.inference.level1_segmenter import (Level1LabelDecoder, Level1SignSegmenter, SignSegment,  # noqa: E402
                                             WindowBuffer, WordGap, aspect_points)
 from src.inference.level1_timing import (FRAME_STAGES, SIGN_STAGES, StageTimes,  # noqa: E402
@@ -807,8 +809,12 @@ class Level1App:
         # open palm = Space (plan 15 lần sửa 9 S2; --gesture-space, off by default since lần sửa 12 S1)
         self.gesture_space = bool(getattr(args, "gesture_space", GESTURE_SPACE_DEFAULT))
         self.space_tracker = SpaceGestureTracker(getattr(args, "space_hold_ms", GESTURE_SPACE_HOLD))
-        self.gesture_counts = {"palm_frames": 0, "spaces_added": 0}
         self.gesture_flash_ts: Optional[float] = None  # stream time of the last gesture space (HUD flash)
+        # flat hand flick = Backspace (--gesture-backspace, on by default)
+        self.gesture_backspace = bool(getattr(args, "gesture_backspace", GESTURE_BACKSPACE_DEFAULT))
+        self.backspace_tracker = BackspaceGestureTracker()
+        self.gesture_backspace_flash_ts: Optional[float] = None  # stream time of the last gesture backspace (HUD flash)
+        self.gesture_counts = {"palm_frames": 0, "spaces_added": 0, "flat_frames": 0, "backspaces_added": 0}
         self.foreshortened_run = 0  # consecutive hand frames with foreshortening_ratio < FORESHORTEN_RATIO_MIN (P3)
         # lần sửa 12 H1: 'auto' -> MediaPipe's label of each frame (no lock); 'lock' (or its aliases Right / Left) ->
         # the majority of MediaPipe's own labels on the first hand frames, for the rest of the run
@@ -945,6 +951,8 @@ class Level1App:
                 self.speller.word_gap(payload, t_ms=ts_ms)
             elif kind == "space":
                 self._apply_gesture_space(ts_ms)
+            elif kind == "backspace":
+                self._apply_gesture_backspace(ts_ms)
             elif kind == "next":
                 self.decoder.force_next(ts_ms)
             elif kind == "reset":
@@ -1000,6 +1008,7 @@ class Level1App:
             if self.paused:
                 self.segmenter.reset()
                 self.space_tracker.reset()
+                self.backspace_tracker.reset()
                 if self.classifier_mode:
                     self.window.reset()
                     self.timeline.append(["reset", self.last_ts, False, True, None])
@@ -1029,14 +1038,40 @@ class Level1App:
         self.gesture_flash_ts = ts_ms
         self._log("gesture_space", t_ms=ts_ms, added=added)
 
+    # -------------------------------------------------------------- flat hand flick = Backspace
+    def _gesture_backspace_step(self, ts_ms: float, landmarks, is_flat: bool, has_hand: bool) -> None:
+        """One frame of the backspace gesture: tracker update; a flick of the flat hand goes to the speller
+        as the Backspace key, in rearm_mode classifier through the timeline (after the labels before it)."""
+        self.gesture_counts["flat_frames"] += int(bool(is_flat and has_hand))
+        if not self.backspace_tracker.update(ts_ms, landmarks, is_flat, has_hand=has_hand):
+            return
+        if self.classifier_mode:
+            self.timeline.append(["backspace", ts_ms, False, True, None])
+            self._drain_timeline()
+        else:
+            self._apply_gesture_backspace(ts_ms)
+
+    def _apply_gesture_backspace(self, ts_ms: float) -> None:
+        changed = self.speller.key("backspace", t_ms=ts_ms)
+        if self.classifier_mode and self.decoder is not None:
+            self.decoder.reset()
+        self.gesture_counts["backspaces_added"] += int(changed)
+        self.gesture_backspace_flash_ts = ts_ms
+        self._log("gesture_backspace", t_ms=ts_ms, changed=changed)
+
     def _gesture_line(self) -> Optional[str]:
-        """HUD: open palm held (armed) -> progress; for GESTURE_SPACE_FLASH after a gesture space -> flash; else None."""
+        """HUD: backspace flash / space flash / open palm progress / flat hand ready hint; else None."""
+        if (self.gesture_backspace_flash_ts is not None and self.last_ts is not None
+                and self.last_ts - self.gesture_backspace_flash_ts < GESTURE_BACKSPACE_FLASH):
+            return "[Ký hiệu: Xóa (Backspace)]"
+        if (self.gesture_flash_ts is not None and self.space_tracker.last_ts is not None
+                and self.space_tracker.last_ts - self.gesture_flash_ts < GESTURE_SPACE_FLASH):
+            return "[Ký hiệu: Dấu cách (Space)]"
         tr = self.space_tracker
         if tr.armed and tr.run_since is not None:
             return f"[Cử chỉ: Dấu cách {tr.held_ms:.0f}/{tr.hold_ms:.0f}]"
-        if (self.gesture_flash_ts is not None and tr.last_ts is not None
-                and tr.last_ts - self.gesture_flash_ts < GESTURE_SPACE_FLASH):
-            return "[Ký hiệu: Dấu cách (Space)]"
+        if self.gesture_backspace and self.backspace_tracker.is_ready(self.last_ts):
+            return "[Cử chỉ: Phẩy tay để xóa]"
         return None
 
     # -------------------------------------------------------------- angle hint (plan 15 lần sửa 10 §2 P3)
@@ -1144,9 +1179,12 @@ class Level1App:
             t_smooth = time.perf_counter()
             self.times.add("landmark_smooth", (t_smooth - t1) * 1000.0)
             t1 = t_smooth
-        gesture = self.gesture_space and not self.paused
+        gesture_sp = self.gesture_space and not self.paused
+        gesture_bs = self.gesture_backspace and not self.paused
         # open palm check (lần sửa 9): timed inside the segmenter stage (no new stage: the report keeps its stages)
-        is_space = gesture and landmarks is not None and is_open_palm_space(aspect_points(landmarks, w, h))
+        is_space = gesture_sp and landmarks is not None and is_open_palm_space(aspect_points(landmarks, w, h))
+        # flat hand check: 5 straight fingers held together (not spread like space)
+        is_flat = gesture_bs and landmarks is not None and is_flat_hand_backspace(aspect_points(landmarks, w, h))
         # angle hint (lần sửa 10 P3): timed inside the segmenter stage like the open palm check
         self._angle_step(landmarks, w, h)
         if not self.paused:
@@ -1154,12 +1192,15 @@ class Level1App:
         t2 = time.perf_counter()
         self.times.add("segmenter", (t2 - t1) * 1000.0)
         if self.classifier_mode and not self.paused:  # a word gap of this frame is a no-hand frame: order unaffected
-            # an open-palm frame is not a letter: it reaches the window as a frame without hand (lần sửa 9 §2 S2)
+            # open palm gesture frames are not letters: they reach the window as frames without hand
             self._window_frame(ts_ms, None if is_space else landmarks, handedness, w, h,
                                moving=self.segmenter.state == "moving")
             t2 = time.perf_counter()
-        if gesture:
+        if gesture_sp:
             self._gesture_step(ts_ms, is_space, landmarks is not None)
+        if gesture_bs:
+            self._gesture_backspace_step(ts_ms, aspect_points(landmarks, w, h) if landmarks is not None else None,
+                                        is_flat, landmarks is not None)
         self.last_ts = ts_ms
         self.counts["frames_processed"] += 1
         if self.worker is not None:
@@ -1356,6 +1397,14 @@ class Level1App:
                                        "flash_ms": GESTURE_SPACE_FLASH,
                                        "palm_frames": self.gesture_counts["palm_frames"], "emits": tr.n_emits,
                                        "spaces_added": self.gesture_counts["spaces_added"]}
+        if self.gesture_backspace and (self.gesture_counts["flat_frames"] > 0 or self.backspace_tracker.n_emits > 0):
+            report["gesture_backspace"] = {"enabled": True,
+                                           "cooldown_ms": self.backspace_tracker.cooldown_ms,
+                                           "window_ms": self.backspace_tracker.window_ms,
+                                           "flash_ms": GESTURE_BACKSPACE_FLASH,
+                                           "flat_frames": self.gesture_counts["flat_frames"],
+                                           "emits": self.backspace_tracker.n_emits,
+                                           "backspaces_added": self.gesture_counts["backspaces_added"]}
         return report
 
 
@@ -1416,6 +1465,8 @@ def build_parser() -> argparse.ArgumentParser:
                         "default off: a relaxed open hand is easily taken for the gesture)")
     p.add_argument("--space-hold-ms", type=positive_ms, default=GESTURE_SPACE_HOLD,
                    help="hold time in milliseconds of the open palm before its space (default %(default)s)")
+    p.add_argument("--gesture-backspace", action=argparse.BooleanOptionalAction, default=GESTURE_BACKSPACE_DEFAULT,
+                   help="flat hand (5 fingers straight together) flick/swipe triggers Backspace (default on)")
     p.add_argument("--dominant-hand", choices=list(DOMINANT_HAND_CHOICES), default="auto",
                    help="'lock': the handedness label of every hand frame is the majority of MediaPipe's own labels on "
                         f"the first {HandednessLock().lock_frames} hand frames (no Left/Right flip inside a window, no "
@@ -1431,8 +1482,23 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 
+DEFAULT_DEMO_ARGV = [
+    "--source", "0",
+    "--display-mirror",
+    "--config", "configs/level1_demo_classifier_rev9.json",
+    "--min-detection-conf", "0.55",
+    "--dominant-hand", "lock",
+    "--smooth-landmarks",
+    "--unikey-mode",
+    "--gesture-space",
+    "--gesture-backspace",
+]
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
+    if not argv:
+        argv = list(DEFAULT_DEMO_ARGV)
     args = build_parser().parse_args(argv)
     try:
         report = Level1App(args, argv=argv).run()
