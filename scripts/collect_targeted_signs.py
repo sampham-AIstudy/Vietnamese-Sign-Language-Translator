@@ -67,6 +67,7 @@ def main():
     parser.add_argument("--source", type=int, default=0, help="Webcam device index (mặc định 0)")
     parser.add_argument("--out-dir", default="data/collected_targeted", help="Thư mục lưu dữ liệu")
     parser.add_argument("--skip-existing", action="store_true", default=True, help="Tự động bỏ qua các mẫu chuẩn đã có trong manifest")
+    parser.add_argument("--overwrite", action="store_true", default=False, help="Ghi đè/quay lại các mẫu đã có trong manifest")
     args = parser.parse_args()
 
     symbols_raw = [s.strip() for s in args.symbols.split(",") if s.strip()]
@@ -126,7 +127,7 @@ def main():
                     npz_file = os.path.join(signer_dir, f"{sample_id}.npz")
                     mp4_file = os.path.join(signer_dir, f"{sample_id}.mp4")
 
-                    if args.skip_existing and sample_id in existing_sample_ids and os.path.exists(npz_file):
+                    if not args.overwrite and args.skip_existing and sample_id in existing_sample_ids and os.path.exists(npz_file):
                         print(f" -> [BỎ QUA] Đã có mẫu chuẩn: {sample_id}")
                         continue
 

@@ -57,10 +57,20 @@ COMPOUND_DIACRITICS = {
 }
 
 
-def load(data_dir, slice_compound=True):
+# Verified label corrections for erroneous samples in original recordings:
+# - hauuto_r_hau_A_002: Signer Hau performed 'n' (two fingers pointing down), mislabeled as 'r' in hauuto_raw
+# - hauuto_a_khoi_A_002: Signer Khoi performed 'b' (open hand with four fingers up), mislabeled as 'a' in hauuto_raw
+LABEL_OVERRIDES = {
+    "hauuto_r_hau_A_002": "n",
+    "hauuto_a_khoi_A_002": "b",
+}
+
+
+def load(data_dir, slice_compound=True, apply_overrides=True):
     items = []
     with open(os.path.join(data_dir, "manifest.csv"), encoding="utf-8") as f:
         for m in csv.DictReader(f):
+            symbol = LABEL_OVERRIDES.get(m["sample_id"], m["symbol"]) if apply_overrides else m["symbol"]
             d = np.load(os.path.join(data_dir, m["landmark_path"]))
             lms, det, mirrored = canonicalize_hand_sequence(
                 d["raw_landmarks"], d["detected_mask"], d["handedness_label"],
@@ -70,17 +80,17 @@ def load(data_dir, slice_compound=True):
             seq = sequence_features_from_clip(lms, det, SEQ_LEN)
             static = normalize_hand_landmarks(np.median(lms[det], axis=0)).reshape(-1).astype(np.float32)
             items.append({"sample_id": m["sample_id"], "signer": m["signer_id"], "source": m["source"],
-                          "label": ALPHABET_CLASSES.index(m["symbol"]), "symbol": m["symbol"],
+                          "label": ALPHABET_CLASSES.index(symbol), "symbol": symbol,
                           "seq": seq, "static": static, "mirrored": mirrored, "det_rate": float(det.mean()),
                           "slice": None})
 
             # Temporal slicing for compound diacritic clips in long videos (T >= 40)
             T = len(lms)
-            if slice_compound and m["symbol"] in COMPOUND_DIACRITICS and T >= 40:
+            if slice_compound and symbol in COMPOUND_DIACRITICS and T >= 40:
                 # 1. Base letter slice (first 40% of frames)
                 det_head = det[:int(0.40 * T)]
                 if det_head.sum() >= 3:
-                    base_sym = COMPOUND_DIACRITICS[m["symbol"]]
+                    base_sym = COMPOUND_DIACRITICS[symbol]
                     seq_head = sequence_features_from_clip(lms[:int(0.40 * T)], det_head, SEQ_LEN)
                     static_head = normalize_hand_landmarks(np.median(lms[:int(0.40 * T)][det_head], axis=0)).reshape(-1).astype(np.float32)
                     items.append({"sample_id": f"{m['sample_id']}_head_{base_sym}", "signer": m["signer_id"],
@@ -93,8 +103,8 @@ def load(data_dir, slice_compound=True):
                 if det_tail.sum() >= 3:
                     seq_tail = sequence_features_from_clip(lms[int(0.55 * T):], det_tail, SEQ_LEN)
                     static_tail = normalize_hand_landmarks(np.median(lms[int(0.55 * T):][det_tail], axis=0)).reshape(-1).astype(np.float32)
-                    items.append({"sample_id": f"{m['sample_id']}_tail_{m['symbol']}", "signer": m["signer_id"],
-                                  "source": m["source"], "label": ALPHABET_CLASSES.index(m["symbol"]), "symbol": m["symbol"],
+                    items.append({"sample_id": f"{m['sample_id']}_tail_{symbol}", "signer": m["signer_id"],
+                                  "source": m["source"], "label": ALPHABET_CLASSES.index(symbol), "symbol": symbol,
                                   "seq": seq_tail, "static": static_tail, "mirrored": mirrored, "det_rate": float(det_tail.mean()),
                                   "slice": "tail"})
     return items
