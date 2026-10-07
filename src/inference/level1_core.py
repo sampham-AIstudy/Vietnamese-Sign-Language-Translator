@@ -546,7 +546,7 @@ def is_open_palm_space(landmarks: Optional[np.ndarray]) -> bool:
 
 # ---------------------------------------------------------------------------- flat hand flick -> Backspace
 GESTURE_BACKSPACE_COOLDOWN = 400.0   # ms cooldown after backspace before another flick can trigger
-GESTURE_BACKSPACE_WINDOW_MS = 250.0  # sliding history window for measuring the flick
+GESTURE_BACKSPACE_WINDOW = 250.0     # sliding history window for measuring the flick
 GESTURE_BACKSPACE_MIN_DX = 0.05      # minimum horizontal displacement across the window
 GESTURE_BACKSPACE_MIN_SPEED = 0.30   # minimum horizontal speed in screen units/s
 GESTURE_BACKSPACE_FLASH = 600.0      # ms to flash HUD banner
@@ -598,7 +598,7 @@ class BackspaceGestureTracker:
     Pure computation, no clock."""
 
     def __init__(self, cooldown_ms: float = GESTURE_BACKSPACE_COOLDOWN,
-                 window_ms: float = GESTURE_BACKSPACE_WINDOW_MS,
+                 window_ms: float = GESTURE_BACKSPACE_WINDOW,
                  min_dx: float = GESTURE_BACKSPACE_MIN_DX,
                  min_speed: float = GESTURE_BACKSPACE_MIN_SPEED):
         self.cooldown_ms = float(cooldown_ms)
