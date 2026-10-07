@@ -1,0 +1,871 @@
+{
+  "generated_by": {
+    "command": "python scripts/alphabet_ckpt_compare.py --ckpt old=/tmp/claude-0/-home-user-Vietnamese-Sign-Language-Translator/e41e4b3f-e5e3-5608-89d7-190eac442c67/scratchpad/ckpt_old/alphabet_best.pt --ckpt v5=/tmp/claude-0/-home-user-Vietnamese-Sign-Language-Translator/e41e4b3f-e5e3-5608-89d7-190eac442c67/scratchpad/kout_v5/alphabet_best.pt --ckpt v6=/tmp/claude-0/-home-user-Vietnamese-Sign-Language-Translator/e41e4b3f-e5e3-5608-89d7-190eac442c67/scratchpad/kout_v6/alphabet_best.pt --set qipedc=data/external/alphabet_hands_kaggle/alphabet_hands/manifest.csv --set user1_pq=data/collected_targeted/manifest.csv:p,q --set user1_dd_ow_uw=data/collected_targeted/manifest.csv:đ,ơ,ư --note old = sha256 756eaf3f (before the retrains); v5 = kernel version 5 at 36e6dc0; v6 = kernel version 6 at 8c53795 (+12 user1 clips p, q). qipedc: unseen by all three. user1_pq (12 clips of 8c53795): unseen by old and v5, TRAINING data of v6. user1_dd_ow_uw: unseen by old, training data of v5 and v6. --out reports/alphabet_retrain_2026-10-07/ckpt_compare.json",
+    "git_commit": "3d3518293fbdcede745de94adbea1c0c10d18c4d",
+    "code_dirty": false,
+    "utc": "2026-10-07T08:55:49+00:00"
+  },
+  "note": "old = sha256 756eaf3f (before the retrains); v5 = kernel version 5 at 36e6dc0; v6 = kernel version 6 at 8c53795 (+12 user1 clips p, q). qipedc: unseen by all three. user1_pq (12 clips of 8c53795): unseen by old and v5, TRAINING data of v6. user1_dd_ow_uw: unseen by old, training data of v5 and v6.",
+  "checkpoints": {
+    "old": {
+      "path": "/tmp/claude-0/-home-user-Vietnamese-Sign-Language-Translator/e41e4b3f-e5e3-5608-89d7-190eac442c67/scratchpad/ckpt_old/alphabet_best.pt",
+      "sha256": "756eaf3fc0c3e1d14310e653a209231c2a8177f588f5e4e8dd4f282154e88187",
+      "n_classes": 34
+    },
+    "v5": {
+      "path": "/tmp/claude-0/-home-user-Vietnamese-Sign-Language-Translator/e41e4b3f-e5e3-5608-89d7-190eac442c67/scratchpad/kout_v5/alphabet_best.pt",
+      "sha256": "9c9e89603b4ee6e20ed3e7b6b7176d4d36d572e7b057f1262b83a27dc8dc4c18",
+      "n_classes": 34
+    },
+    "v6": {
+      "path": "/tmp/claude-0/-home-user-Vietnamese-Sign-Language-Translator/e41e4b3f-e5e3-5608-89d7-190eac442c67/scratchpad/kout_v6/alphabet_best.pt",
+      "sha256": "160e0c6825e365ba3d5481e2fd4d18423cf501c655aec618a453c524d8a17899",
+      "n_classes": 34
+    }
+  },
+  "sets": {
+    "qipedc": {
+      "manifest": "data/external/alphabet_hands_kaggle/alphabet_hands/manifest.csv",
+      "manifest_sha256": "7b31acba8c9b50acc3679719f7f8ba36cffbf963c3cb6b50a81d4d3e55257ca9",
+      "symbols": null
+    },
+    "user1_pq": {
+      "manifest": "data/collected_targeted/manifest.csv",
+      "manifest_sha256": "f009d05478ece3d3a062da252c26ec2a464e24eb36565d79d213f9b8c214ab80",
+      "symbols": [
+        "p",
+        "q"
+      ]
+    },
+    "user1_dd_ow_uw": {
+      "manifest": "data/collected_targeted/manifest.csv",
+      "manifest_sha256": "f009d05478ece3d3a062da252c26ec2a464e24eb36565d79d213f9b8c214ab80",
+      "symbols": [
+        "đ",
+        "ơ",
+        "ư"
+      ]
+    }
+  },
+  "results": {
+    "old": {
+      "qipedc": {
+        "n": 46,
+        "correct": 24,
+        "top1": 52.17391304347826,
+        "per_class": {
+          "a": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "a": 1
+            }
+          },
+          "b": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "b": 1
+            }
+          },
+          "c": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "c": 1
+            }
+          },
+          "d": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "đ": 1
+            }
+          },
+          "e": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "e": 1
+            }
+          },
+          "g": {
+            "n": 2,
+            "correct": 1,
+            "predicted": {
+              "a": 1,
+              "g": 1
+            }
+          },
+          "h": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "h": 1,
+              "r": 2
+            }
+          },
+          "i": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "dấu hỏi": 1
+            }
+          },
+          "k": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "k": 1
+            }
+          },
+          "l": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "l": 1
+            }
+          },
+          "m": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "m": 1
+            }
+          },
+          "n": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "n": 1
+            }
+          },
+          "o": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "o": 1
+            }
+          },
+          "p": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "a": 1,
+              "p": 1,
+              "d": 1
+            }
+          },
+          "q": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "â": 1
+            }
+          },
+          "r": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "v": 1
+            }
+          },
+          "s": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "a": 1
+            }
+          },
+          "t": {
+            "n": 3,
+            "correct": 2,
+            "predicted": {
+              "t": 2,
+              "h": 1
+            }
+          },
+          "u": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "v": 1
+            }
+          },
+          "v": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "v": 1
+            }
+          },
+          "x": {
+            "n": 3,
+            "correct": 2,
+            "predicted": {
+              "â": 1,
+              "x": 2
+            }
+          },
+          "y": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "y": 1
+            }
+          },
+          "â": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "â": 1,
+              "a": 2
+            }
+          },
+          "ê": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ê": 1,
+              "e": 2
+            }
+          },
+          "ô": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ô": 1,
+              "ê": 2
+            }
+          },
+          "ă": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ă": 1,
+              "dấu sắc": 2
+            }
+          },
+          "đ": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "đ": 1
+            }
+          },
+          "ơ": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "o": 1
+            }
+          },
+          "ư": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "ư": 1
+            }
+          }
+        }
+      },
+      "user1_pq": {
+        "n": 12,
+        "correct": 10,
+        "top1": 83.33333333333333,
+        "per_class": {
+          "p": {
+            "n": 6,
+            "correct": 5,
+            "predicted": {
+              "p": 5,
+              "â": 1
+            }
+          },
+          "q": {
+            "n": 6,
+            "correct": 5,
+            "predicted": {
+              "â": 1,
+              "q": 5
+            }
+          }
+        }
+      },
+      "user1_dd_ow_uw": {
+        "n": 18,
+        "correct": 13,
+        "top1": 72.22222222222223,
+        "per_class": {
+          "đ": {
+            "n": 6,
+            "correct": 5,
+            "predicted": {
+              "đ": 5,
+              "x": 1
+            }
+          },
+          "ơ": {
+            "n": 6,
+            "correct": 2,
+            "predicted": {
+              "ư": 4,
+              "ơ": 2
+            }
+          },
+          "ư": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "ư": 6
+            }
+          }
+        }
+      }
+    },
+    "v5": {
+      "qipedc": {
+        "n": 46,
+        "correct": 25,
+        "top1": 54.34782608695652,
+        "per_class": {
+          "a": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "a": 1
+            }
+          },
+          "b": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "b": 1
+            }
+          },
+          "c": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "c": 1
+            }
+          },
+          "d": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "d": 1
+            }
+          },
+          "e": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "e": 1
+            }
+          },
+          "g": {
+            "n": 2,
+            "correct": 1,
+            "predicted": {
+              "dấu nặng": 1,
+              "g": 1
+            }
+          },
+          "h": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "h": 1,
+              "d": 2
+            }
+          },
+          "i": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "y": 1
+            }
+          },
+          "k": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "k": 1
+            }
+          },
+          "l": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "l": 1
+            }
+          },
+          "m": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "m": 1
+            }
+          },
+          "n": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "n": 1
+            }
+          },
+          "o": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "o": 1
+            }
+          },
+          "p": {
+            "n": 3,
+            "correct": 0,
+            "predicted": {
+              "ô": 2,
+              "dấu huyền": 1
+            }
+          },
+          "q": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "a": 1
+            }
+          },
+          "r": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "ô": 1
+            }
+          },
+          "s": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "a": 1
+            }
+          },
+          "t": {
+            "n": 3,
+            "correct": 2,
+            "predicted": {
+              "t": 2,
+              "h": 1
+            }
+          },
+          "u": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "u": 1
+            }
+          },
+          "v": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "v": 1
+            }
+          },
+          "x": {
+            "n": 3,
+            "correct": 2,
+            "predicted": {
+              "â": 1,
+              "x": 2
+            }
+          },
+          "y": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "y": 1
+            }
+          },
+          "â": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "â": 1,
+              "a": 2
+            }
+          },
+          "ê": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ê": 1,
+              "e": 2
+            }
+          },
+          "ô": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ô": 1,
+              "â": 2
+            }
+          },
+          "ă": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ă": 1,
+              "a": 2
+            }
+          },
+          "đ": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "đ": 1
+            }
+          },
+          "ơ": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "o": 1
+            }
+          },
+          "ư": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "ư": 1
+            }
+          }
+        }
+      },
+      "user1_pq": {
+        "n": 12,
+        "correct": 11,
+        "top1": 91.66666666666667,
+        "per_class": {
+          "p": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "p": 6
+            }
+          },
+          "q": {
+            "n": 6,
+            "correct": 5,
+            "predicted": {
+              "p": 1,
+              "q": 5
+            }
+          }
+        }
+      },
+      "user1_dd_ow_uw": {
+        "n": 18,
+        "correct": 18,
+        "top1": 100.0,
+        "per_class": {
+          "đ": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "đ": 6
+            }
+          },
+          "ơ": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "ơ": 6
+            }
+          },
+          "ư": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "ư": 6
+            }
+          }
+        }
+      }
+    },
+    "v6": {
+      "qipedc": {
+        "n": 46,
+        "correct": 23,
+        "top1": 50.0,
+        "per_class": {
+          "a": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "a": 1
+            }
+          },
+          "b": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "b": 1
+            }
+          },
+          "c": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "c": 1
+            }
+          },
+          "d": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "d": 1
+            }
+          },
+          "e": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "e": 1
+            }
+          },
+          "g": {
+            "n": 2,
+            "correct": 1,
+            "predicted": {
+              "a": 1,
+              "g": 1
+            }
+          },
+          "h": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "h": 1,
+              "r": 1,
+              "k": 1
+            }
+          },
+          "i": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "dấu hỏi": 1
+            }
+          },
+          "k": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "k": 1
+            }
+          },
+          "l": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "l": 1
+            }
+          },
+          "m": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "m": 1
+            }
+          },
+          "n": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "n": 1
+            }
+          },
+          "o": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "â": 1
+            }
+          },
+          "p": {
+            "n": 3,
+            "correct": 0,
+            "predicted": {
+              "o": 2,
+              "d": 1
+            }
+          },
+          "q": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "ô": 1
+            }
+          },
+          "r": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "v": 1
+            }
+          },
+          "s": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "a": 1
+            }
+          },
+          "t": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "m": 1,
+              "e": 1,
+              "t": 1
+            }
+          },
+          "u": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "u": 1
+            }
+          },
+          "v": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "v": 1
+            }
+          },
+          "x": {
+            "n": 3,
+            "correct": 2,
+            "predicted": {
+              "â": 1,
+              "x": 2
+            }
+          },
+          "y": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "y": 1
+            }
+          },
+          "â": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "â": 1,
+              "a": 2
+            }
+          },
+          "ê": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ê": 1,
+              "e": 2
+            }
+          },
+          "ô": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ô": 1,
+              "a": 2
+            }
+          },
+          "ă": {
+            "n": 3,
+            "correct": 1,
+            "predicted": {
+              "ă": 1,
+              "x": 2
+            }
+          },
+          "đ": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "đ": 1
+            }
+          },
+          "ơ": {
+            "n": 1,
+            "correct": 0,
+            "predicted": {
+              "o": 1
+            }
+          },
+          "ư": {
+            "n": 1,
+            "correct": 1,
+            "predicted": {
+              "ư": 1
+            }
+          }
+        }
+      },
+      "user1_pq": {
+        "n": 12,
+        "correct": 12,
+        "top1": 100.0,
+        "per_class": {
+          "p": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "p": 6
+            }
+          },
+          "q": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "q": 6
+            }
+          }
+        }
+      },
+      "user1_dd_ow_uw": {
+        "n": 18,
+        "correct": 17,
+        "top1": 94.44444444444444,
+        "per_class": {
+          "đ": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "đ": 6
+            }
+          },
+          "ơ": {
+            "n": 6,
+            "correct": 5,
+            "predicted": {
+              "ơ": 5,
+              "o": 1
+            }
+          },
+          "ư": {
+            "n": 6,
+            "correct": 6,
+            "predicted": {
+              "ư": 6
+            }
+          }
+        }
+      }
+    }
+  }
+}
