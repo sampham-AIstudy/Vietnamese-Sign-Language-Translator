@@ -65,3 +65,15 @@ user1_oo_tilted_down_rep1,ô,user1,collected_targeted,user1/user1_oo_tilted_down
 user1_oo_tilted_down_rep2,ô,user1,collected_targeted,user1/user1_oo_tilted_down_rep2.npz,60,30.0,640,480,1.0,0.10.14,mp.solutions.hands
 user1_oo_angled_side_rep1,ô,user1,collected_targeted,user1/user1_oo_angled_side_rep1.npz,60,30.0,640,480,1.0,0.10.14,mp.solutions.hands
 user1_oo_angled_side_rep2,ô,user1,collected_targeted,user1/user1_oo_angled_side_rep2.npz,60,30.0,640,480,1.0,0.10.14,mp.solutions.hands
+user1_p_straight_rep1,p,user1,collected_targeted,user1/user1_p_straight_rep1.npz,60,30.0,640,480,1.0,0.10.14,mp.solutions.hands
+user1_p_straight_rep2,p,user1,collected_targeted,user1/user1_p_straight_rep2.npz,60,30.0,640,480,0.9666666666666667,0.10.14,mp.solutions.hands
+user1_p_tilted_down_rep1,p,user1,collected_targeted,user1/user1_p_tilted_down_rep1.npz,60,30.0,640,480,0.9833333333333333,0.10.14,mp.solutions.hands
+user1_p_tilted_down_rep2,p,user1,collected_targeted,user1/user1_p_tilted_down_rep2.npz,60,30.0,640,480,1.0,0.10.14,mp.solutions.hands
+user1_p_angled_side_rep1,p,user1,collected_targeted,user1/user1_p_angled_side_rep1.npz,60,30.0,640,480,1.0,0.10.14,mp.solutions.hands
+user1_p_angled_side_rep2,p,user1,collected_targeted,user1/user1_p_angled_side_rep2.npz,60,30.0,640,480,1.0,0.10.14,mp.solutions.hands
+user1_q_straight_rep1,q,user1,collected_targeted,user1/user1_q_straight_rep1.npz,60,30.0,640,480,1.0,0.10.14,mp.solutions.hands
+user1_q_straight_rep2,q,user1,collected_targeted,user1/user1_q_straight_rep2.npz,60,30.0,640,480,1.0,0.10.14,mp.solutions.hands
+user1_q_tilted_down_rep1,q,user1,collected_targeted,user1/user1_q_tilted_down_rep1.npz,60,30.0,640,480,1.0,0.10.14,mp.solutions.hands
+user1_q_tilted_down_rep2,q,user1,collected_targeted,user1/user1_q_tilted_down_rep2.npz,60,30.0,640,480,1.0,0.10.14,mp.solutions.hands
+user1_q_angled_side_rep1,q,user1,collected_targeted,user1/user1_q_angled_side_rep1.npz,60,30.0,640,480,1.0,0.10.14,mp.solutions.hands
+user1_q_angled_side_rep2,q,user1,collected_targeted,user1/user1_q_angled_side_rep2.npz,60,30.0,640,480,1.0,0.10.14,mp.solutions.hands
