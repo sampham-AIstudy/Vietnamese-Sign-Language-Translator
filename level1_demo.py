@@ -1432,7 +1432,7 @@ def detection_conf(text: str) -> float:
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="VSLT Level 1 (fingerspelling) realtime desktop app (plan 15).")
-    p.add_argument("--source", required=True, help="webcam index (e.g. 0) or a video file")
+    p.add_argument("--source", default="0", help="webcam index (e.g. 0) or a video file (default %(default)s)")
     p.add_argument("--headless", action="store_true", help="no window (video sources only)")
     p.add_argument("--out-json", default=None, help="write the run report (JSON) to this path")
     p.add_argument("--config", default=DEFAULT_CONFIG, help="parameter file (default %(default)s)")
@@ -1497,8 +1497,8 @@ DEFAULT_DEMO_ARGV = [
 
 def main(argv: Optional[List[str]] = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
-    if not argv:
-        argv = list(DEFAULT_DEMO_ARGV)
+    if "--headless" not in argv and "-h" not in argv and "--help" not in argv:
+        argv = [*DEFAULT_DEMO_ARGV, *argv]
     args = build_parser().parse_args(argv)
     try:
         report = Level1App(args, argv=argv).run()
