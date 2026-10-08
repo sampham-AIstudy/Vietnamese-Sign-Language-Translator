@@ -4,9 +4,9 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM: phiên cloud 2026-10-04 (nhánh `cloud/2026-10-04-level1-rearm`) DỪNG sau R3 — mã A2a/R1/A2b/R2/R3 xong; CHẠY R2/R3 + kiểm S18/E1 BỊ CHẶN vì cloud thiếu dữ liệu (KAGGLE_KEY giữ chỗ). Báo cáo + thứ tự việc cho local: `docs/cloud_reports/level1-rearm-2026-10-04.md` §8.
-- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a). R1 (commit `15: R1` trên nhánh cloud; CHỜ LOCAL: AC-S18 + S18b trên clip thật). A2b (`71fc664` mã + `4b5d736` config; AC-W3 đạt).
-- Còn lại: R2 (chạy + commit JSON + commit config), R3 (chạy + commit JSON + commit config), U1c, A3, C1, (R4, A4, C2).
+- ĐANG LÀM: Lần sửa 13 (`docs/plans/15-lan-sua-13.md`) — bước U1 (`src/inference/level1_display.py` + `tests/test_level1_display.py`).
+- Xong: M0 (mốc cad8cdc, sha v6 160e0c68…, m0_status.txt, AC-1 đo 28 module 670 tests: 5 FAIL, 2 ERROR, 1 skip, flaky test 3 lần).
+- Còn lại: U1 (đang làm trong phiên này); U2, G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5 (các bước sau).
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -1337,3 +1337,22 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   nhờ `--smooth-landmarks` mặc định tắt (lệch plan, ghi ở P2).
 - Còn cho reviewer / người dùng: xác nhận cách hiểu `--dominant-hand` (thẻ quyết định) và mặc định tắt của `--smooth-landmarks`; hồi quy trên
   Windows và phiên webcam theo checklist §5 (lệnh ở mục 10 của `docs/level1_desktop.md`); tác dụng lên độ chính xác chưa đo.
+
+## Lần sửa 13 — M0 (2026-10-08, mốc cad8cdc)
+- Kế hoạch: `docs/plans/15-lan-sua-13.md`. Nhánh `cloud/2026-10-04-level1-rearm`, mốc HEAD `cad8cdc`.
+- `sha256(checkpoints/alphabet_best.pt)` = `160e0c6825e365ba3d5481e2fd4d18423cf501c655aec618a453c524d8a17899` (v6 theo Q3 STATE 10:05).
+- `git status` lưu tại `_work/_plan15_l13/m0_status.txt` (`modified: README.md`, 3 deleted CSV của người dùng, untracked files). Không sửa mã ở M0.
+- AC-1 đo trên 28 module hiện có (lệnh 16 module gốc + 10 module test_level1_* hiện có + test_private_artifacts + test_frontend_contract) → log `_work/_plan15_l13/m0_ac1.log`:
+  `Ran 670 tests in 853.938s` — `FAILED (failures=5, errors=2, skipped=1)`.
+  - ERROR (2):
+    1. `test_real_clips_match_training_evaluation (tests.test_fingerspelling_api.TestFingerspellingApi)`: `KeyError: 'hauuto_aa_tai_B_001_tail_â'` do `train_alphabet_real.py:69` `load(..., slice_compound=True)` thêm mẫu cắt lát (review A1 #3).
+    2. `setUpClass (tests.test_fingerspelling_deployed.TestDeployedCheckpointEquivalence)`: `KeyError: 'selected'` do checkpoint v6 sinh bởi `train_alphabet_real.py`, không phải run nested (review A1 #4).
+  - FAIL (5):
+    1. `test_b_bodies_and_responses_identical (tests.test_hand_live_equivalence.TestLiveEquivalence)`: `AssertionError: '160e0c68...' != 'a6311820...'` so sha checkpoint triển khai với `PROVENANCE_JSON` 2026-09-27 (review A1 #1).
+    2. `test_deployed_checkpoint (tests.test_status_privacy.TestStatusDeployed)`: `AssertionError: '160e0c68...' != 'a6311820...'` so sha checkpoint triển khai với hằng PROVENANCE 2026-09-27 (review A1 #2).
+    3. `test_js_body_equals_python_offline_body (tests.test_frontend_contract.TestCrossLanguageBody)`: `AssertionError: '160e0c68...' != 'a6311820...'` so sha checkpoint triển khai với `H.deployed_sha256()`.
+    4. `test_g_gitignore (tests.test_private_artifacts.TestPrivateArtifacts)`: `AssertionError: 82 != 1` khóa .gitignore diff b337aee HEAD có 82 dòng thêm (do commit fd5ceea viết lại CRLF và thêm 2 dòng phủ định).
+    5. `test_reset_segments_and_graphs (tests.test_hand_landmarks_ws.TestReset)`: `AssertionError: [1, 1, 1, 0] != [1, 1, 1, 1]` — test chập chờn đã biết (STATE). Chạy riêng 3 lần (`_work/_plan15_l13/m0_flaky_reset_{1,2,3}.log`): FAIL (0.832s), FAIL (0.813s), OK (0.803s). Không sửa/skip.
+  - Skip (1):
+    1. `test_u1_summary (tests.test_level1_segment_report.TestVariantsAndU1)`: skipped 'U1 file ... not found' (có sẵn).
+  - Khớp 100% với kỳ vọng của kế hoạch 15 lần sửa 13 §8/§9.
