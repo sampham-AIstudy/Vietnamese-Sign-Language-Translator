@@ -425,6 +425,11 @@
   (5) CỬ CHỈ: người dùng KHÔNG muốn space/backspace tự kích hoạt; chỉ khi cố ý: XÒE 5 NGÓN = space, VẪY TAY SANG TRÁI/PHẢI = backspace (đã có trong code) ⇒ phải
   giảm kích hoạt nhầm (review: 24/640 backspace, 8/640 space trên clip train một chữ) — cần gate tỉ lệ nhầm đặt trước + kiểm trên clip cử chỉ thật của người dùng.
 
+- (2026-10-08 ~11:00) HẠ TẦNG agy: CHO SỬA scripts/agy_guard.py để nhận nhánh làm việc (không ghim cứng feat/vslt-complete; qua biến môi trường/danh sách nhánh,
+  commit trước khi chạy) — tiếp tục trên nhánh cloud/2026-10-04-level1-rearm, merge vào feat sau review APPROVE; CHO SỬA scripts/agy_usage.py bỏ qua bucket
+  {"disabled": true}. CHỌN CODER LINH HOẠT (không ghim cứng): bước phức tạp ⇒ vslt-coder-claude (Claude tự viết); bước đơn giản ⇒ vslt-coder (agy Gemini) +
+  review từng bước. Đây là sự đồng ý dùng vslt-coder-claude theo luật dự phòng.
+
 - (2026-10-08) CODE DO agy + GEMINI VIẾT: sau MỖI bước, (1) cầu nối vslt-coder xác minh độc lập (đọc diff, đối chiếu số với JSON, chạy lại test AC, scope, tests/ chỉ thêm),
   (2) vslt-reviewer kiểm riêng bước đó TRƯỚC khi giao bước kế; sửa ngay trong bước. Logic phức tạp (segmenter, decoder, hiệu chỉnh) ưu tiên Opus/Claude trong agy khi
   nhóm đó còn hạn mức. Lý do: "sửa chỗ này lỗi chỗ khác rất mất thời gian".
