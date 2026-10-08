@@ -1,5 +1,7 @@
 # 15 — LẦN SỬA 12: Đánh vần nhiều chữ liên tiếp, chặn chữ rác lúc chuyển tay, bỏ tự cách, sửa lật gương tay thuận
 
+> LẦN SỬA 13 (2026-10-08): xem docs/plans/15-lan-sua-13.md — giao diện co giãn/toàn màn hình, cử chỉ cố ý (gate kích hoạt nhầm), Unikey đúng chính tả + nguồn "fusion", model v6 + ngoại lệ test E1–E3, gỡ dữ liệu user1 khỏi git, đo đồng thuận preset; có hiệu lực thay phần mâu thuẫn của lần sửa này.
+
 Người lập + coder: Claude Code (cloud, nhánh `cloud/2026-10-04-level1-rearm`). Reviewer: vslt-reviewer (local, khi kéo nhánh về).
 Yêu cầu gốc: phản hồi webcam của người dùng ngày 2026-10-06 (5 vấn đề, 4 tiêu chí nghiệm thu).
 
