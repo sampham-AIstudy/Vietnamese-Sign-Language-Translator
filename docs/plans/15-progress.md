@@ -4,6 +4,7 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
+- 2026-10-08 planner: CẦN PLANNER (E3 resize) đã xử lý — docs/plans/15-lan-sua-13a.md: ngoại lệ E4 (đúng 1 cv2.resize ảnh hiển thị trong render_to_window) + siết bí danh/động; kế tiếp U1a (vslt-coder-claude) → review gộp U1+U1a → U2 (+AC-U6b).
 - ĐANG LÀM: Lần sửa 13 (`docs/plans/15-lan-sua-13.md`) — U1 xong (commit `15: L13-U1`, chờ review); CẦN PLANNER: test E3 tĩnh
   (`tests.test_level1_equivalence` cấm mọi lời gọi `resize` trong `src/inference/level1_*.py`) mâu thuẫn §2.2 (render_to_window dùng
   `cv2.resize`) + AC-U6 (E3 xanh không sửa) — xem mục U1. Kế tiếp: U2.
@@ -1422,3 +1423,4 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - Giả định: (a) cao camera làm tròn xuống, panel nhận phần dư (kế hoạch không chốt cách chia); (b) bước dòng scaled = bước tự nhiên × scale làm
   tròn xuống (không `int(round(font×scale)×1.35)`) để panel vừa ô; font = round(font_size × scale) đúng AC-U3; (c) độ dày nét dòng thống kê
   = max(1, round(scale)) (kế hoạch chỉ nói cỡ 0.45 × scale); (d) builder sai kích thước ⇒ ValueError (lỗi lập trình, không cắt/đệm âm thầm).
+- 2026-10-08 planner: CẦN PLANNER (E3 resize) đã xử lý — docs/plans/15-lan-sua-13a.md: ngoại lệ E4 (đúng 1 cv2.resize ảnh hiển thị trong render_to_window) + siết bí danh/động; kế tiếp U1a (vslt-coder-claude) → review gộp U1+U1a → U2 (+AC-U6b).

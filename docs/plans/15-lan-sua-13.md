@@ -1,5 +1,7 @@
 # Kế hoạch 15 — LẦN SỬA 13: hoàn thiện Cấp 1 cho buổi DEMO, sửa review phần A theo quyết định người dùng 2026-10-08
 
+> LẦN SỬA 13a (2026-10-08): xem docs/plans/15-lan-sua-13a.md — ngoại lệ E4 (đúng 1 cv2.resize ảnh hiển thị trong render_to_window), sửa AC-U6/AC-0/AC-V4, thêm AC-U6b.
+
 > CẦN NGƯỜI DÙNG (KHÔNG chặn các bước khác): (1) quay 24 clip cử chỉ thật sau bước G2 (§3.4, ~10 phút) — chỉ bước G5 chờ việc này;
 > (2) THÔNG BÁO: gỡ khỏi git KHÔNG xóa 84 npz user1 khỏi lịch sử đã push lên GitHub công khai — xóa hẳn cần viết lại lịch sử + force
 > push (không hoàn tác), kế hoạch này KHÔNG làm, người dùng quyết riêng nếu muốn; (3) THÔNG BÁO: `README.md` đang có thay đổi CHƯA commit
@@ -276,6 +278,8 @@ Chỉ được đổi đúng các dòng sau; mọi file test có sẵn khác: 0 
 KHÔNG được: đổi loại assertion, dung sai, cỡ mẫu, thêm skip, xóa test, sửa `test_hand_live_equivalence`, `test_frontend_contract`,
 `test_fingerspelling_api`, `test_alphabet_ckpt_provenance`, `test_private_artifacts`, `test_backend_source_guard`, hay bất kỳ test Level 1 nào khác.
 Nếu sau V1 còn test cũ đỏ vì ghim nhãn/số của checkpoint cũ ⇒ DỪNG, báo planner (không tự thêm ngoại lệ).
+
+> LẦN SỬA 13a (2026-10-08): xem docs/plans/15-lan-sua-13a.md — ngoại lệ E4 (đúng 1 cv2.resize ảnh hiển thị trong render_to_window), sửa AC-U6/AC-0/AC-V4, thêm AC-U6b.
 
 ## 6. Hạng mục 4 — GỠ dữ liệu user1 khỏi git (ưu tiên 5)
 
