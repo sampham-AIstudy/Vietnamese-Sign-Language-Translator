@@ -342,6 +342,28 @@ class TestUsageGate(unittest.TestCase):
         self.assertEqual(before["group"], "gemini")
         self.assertTrue(before["usage"]["claude"]["disabled"])
 
+    def test_choose_never_lowers_effort_below_high(self):
+        # 8/10 người dùng: "chạy code nhớ để high vì gemini code hay lỗi" ⇒ thiếu hạn mức thì CHỜ, không hạ xuống medium/low
+        rc, out = self._choose(_usage_json(gemini_5h=0.15))  # dùng 85%: high (12) không vừa, medium (5) thì vừa
+        self.assertEqual(rc, 20, out)
+        self.assertIn("WAIT", out)
+        self.assertNotIn("EFFORT=medium", out)
+
+    def test_choose_min_effort_env_override(self):
+        with mock.patch.dict(os.environ, {"AGY_MIN_EFFORT": "medium"}):
+            rc, out = self._choose(_usage_json(gemini_5h=0.15))
+        self.assertEqual(rc, 0, out)
+        self.assertIn("EFFORT=medium", out)
+
+    def test_choose_unknown_usage_runs_at_min_effort_not_low(self):
+        out = io.StringIO()
+        with mock.patch.object(usage.subprocess, "run", side_effect=OSError("agy hỏng")), mock.patch.object(usage.time, "sleep"), \
+                contextlib.redirect_stdout(out), contextlib.redirect_stderr(io.StringIO()):
+            rc = usage.cmd_choose("gemini", "high", 1, "docs/plans/x.md")
+        self.assertEqual(rc, 21)
+        self.assertIn("EFFORT=high", out.getvalue())
+        self.assertIn("MODEL=gemini-model-high", out.getvalue())
+
     def test_choose_wait_without_crash_when_nothing_fits(self):
         rc, out = self._choose(_usage_json(gemini_5h=0.05))
         self.assertEqual(rc, 20, out)

@@ -33,13 +33,14 @@ Xem danh sách hiện có: `.venv/Scripts/python.exe scripts/agy_pick_model.py -
 
 | Loại việc trong kế hoạch | Họ | Effort |
 |---|---|---|
-| Cơ học: đổi tên, config, tài liệu, thêm test theo mẫu có sẵn | gemini | low–medium |
+| Cơ học: đổi tên, config, tài liệu, thêm test theo mẫu có sẵn | gemini | high (sàn — không dưới high) |
 | Thông thường: module/endpoint/UI mới theo kế hoạch rõ ràng | gemini | high |
 | Vùng NHẠY CẢM: backend/main.py, tiền xử lý chung train–realtime, trích landmark, chia split/dữ liệu, đo lường/đánh giá | opus | high |
 | Sửa lại lần 2+ sau CHANGES_REQUESTED, lỗi khó tái hiện, thiết kế phức tạp | opus | xhigh (max chỉ ở lần sửa 3) |
 | Sửa nhỏ đúng danh sách review | model lần trước | giữ effort lần trước |
 Dấu hiệu: dòng "Độ khó / vùng nhạy cảm" trong kế hoạch của planner; không có thì tự đánh giá từ danh sách file trong khối ```scope.
-Cổng hạn mức có quyền hạ effort hoặc đổi họ khi hạn mức không đủ — dòng "cổng hạn mức: MODEL=… EFFORT=…" trong output cho biết đã chọn gì;
+SÀN EFFORT = high (quyết định người dùng 2026-10-08: Gemini dưới high hay lỗi): cổng KHÔNG hạ dưới high, thiếu hạn mức thì trả WAIT (mã 20);
+chỉ hạ khi người dùng cho phép rõ (env AGY_MIN_EFFORT). Cổng hạn mức có quyền nâng/giữ effort hoặc đổi họ khi hạn mức không đủ — dòng "cổng hạn mức: MODEL=… EFFORT=…" trong output cho biết đã chọn gì;
 nếu khác ý định của bạn thì nêu rõ trong báo cáo. Nhóm nào đã dùng tuần > 80% sẽ bị đẩy xuống cuối (dồn sang nhóm còn dư).
 
 Quy tắc:

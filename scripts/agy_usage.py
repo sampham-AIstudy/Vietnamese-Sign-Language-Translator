@@ -107,10 +107,17 @@ def estimate(group, effort, steps):
     return per * steps, per * ratio * steps, "unmeasured"
 
 
+def min_effort():
+    """Sàn effort khi giao CODE (mặc định high — người dùng 8/10: Gemini dưới high hay lỗi). Ghi đè bằng AGY_MIN_EFFORT."""
+    e = os.environ.get("AGY_MIN_EFFORT", "high")
+    return e if e in LADDER else "high"
+
+
 def candidates(pref, effort):
-    """Danh sách (họ, effort) theo thứ tự ưu tiên: hạ effort trước, rồi đổi họ."""
+    """Danh sách (họ, effort) theo thứ tự ưu tiên: hạ effort trước (không dưới sàn min_effort), rồi đổi họ."""
+    floor = LADDER.index(min_effort())
     start = LADDER.index(effort) if effort in LADDER else LADDER.index("high")
-    ladder = LADDER[start:]
+    ladder = LADDER[min(start, floor):floor + 1]
     chain = {"gemini": ["gemini", "sonnet", "opus"], "opus": ["opus", "sonnet", "gemini"],
              "sonnet": ["sonnet", "gemini", "opus"], "claude": ["opus", "sonnet", "gemini"], "auto": ["gemini", "sonnet", "opus"]}
     fams = chain.get(pref) or [pref, "sonnet", "gemini"]
@@ -141,11 +148,11 @@ def cmd_choose(pref, effort, steps, plan):
     if pref not in ("gemini", "opus", "sonnet", "claude", "auto"):  # id cụ thể: thử đúng id trước
         fam = pm.parse(pref)["fam"]
         cands = [(pref, effort)] + candidates(fam if fam in ("gemini", "opus", "sonnet") else "auto", effort)
-    if u is None:  # không biết hạn mức: chỉ phương án rẻ nhất, như quy tắc "KHÔNG BIẾT" bên Claude
+    if u is None:  # không biết hạn mức: phương án rẻ nhất CÒN ĐẠT sàn effort (không chạy code dưới sàn)
         fam = cands[0][0] if cands[0][0] in ("gemini", "opus", "sonnet") else "gemini"
-        mid, eff = pm.pick("sonnet" if fam == "opus" else fam, "low")
+        mid, eff = pm.pick("sonnet" if fam == "opus" else fam, min_effort())
         print(f"MODEL={mid} EFFORT={eff} GROUP={group_of(fam)} NOTE=hạn-mức-không-biết:chỉ-chạy-nhỏ-nhất")
-        json.dump({"usage": None, "group": group_of(fam), "model": mid, "effort": "low", "plan": plan}, open(BEFORE, "w"))
+        json.dump({"usage": None, "group": group_of(fam), "model": mid, "effort": min_effort(), "plan": plan}, open(BEFORE, "w"))
         return 21
     # nhóm đã dùng tuần > 80% bị đẩy xuống cuối để dồn sang nhóm còn dư (cân bằng nhẹ)
     cands.sort(key=lambda c: u.get(group_of(c[0]), {}).get("week_used", 0) > 80)

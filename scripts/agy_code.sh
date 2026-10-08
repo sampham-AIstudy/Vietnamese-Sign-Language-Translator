@@ -5,7 +5,7 @@
 #                            [--model gemini|opus|sonnet|auto|<id>] [--effort low|medium|high|xhigh|max]
 #                            [--units N] [--timeout GIÂY] [--dry-run]
 #   --model: họ model (tự lấy BẢN MỚI NHẤT trong `agy models`) hoặc id đầy đủ. Mặc định gemini (env AGY_MODEL).
-#   --effort: mặc định high (env AGY_EFFORT). Cổng hạn mức có thể HẠ effort / đổi họ nếu hạn mức không đủ.
+#   --effort: mặc định high (env AGY_EFFORT). Sàn high (env AGY_MIN_EFFORT): cổng KHÔNG hạ dưới sàn, chỉ đổi họ hoặc trả WAIT.
 #   --units: số bước kế hoạch giao lần này (mặc định suy ra từ --steps; không có --steps thì coi là 3).
 #   --timeout: giây cho agy (mặc định 1800×số bước, tối thiểu 2400, tối đa 7200; env AGY_TIMEOUT). agy tự dừng đúng hạn (--print-timeout)
 #              và trả phần dở; `timeout` ngoài chỉ là lưới an toàn (+240s).
