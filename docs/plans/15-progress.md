@@ -4,9 +4,12 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- ĐANG LÀM: Lần sửa 13 (`docs/plans/15-lan-sua-13.md`) — bước U1 (`src/inference/level1_display.py` + `tests/test_level1_display.py`).
-- Xong: M0 (mốc cad8cdc, sha v6 160e0c68…, m0_status.txt, AC-1 đo 28 module 670 tests: 5 FAIL, 2 ERROR, 1 skip, flaky test 3 lần).
-- Còn lại: U1 (đang làm trong phiên này); U2, G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5 (các bước sau).
+- ĐANG LÀM: Lần sửa 13 (`docs/plans/15-lan-sua-13.md`) — U1 xong (commit `15: L13-U1`, chờ review); CẦN PLANNER: test E3 tĩnh
+  (`tests.test_level1_equivalence` cấm mọi lời gọi `resize` trong `src/inference/level1_*.py`) mâu thuẫn §2.2 (render_to_window dùng
+  `cv2.resize`) + AC-U6 (E3 xanh không sửa) — xem mục U1. Kế tiếp: U2.
+- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a). R1 (commit `15: R1` trên nhánh cloud; CHỜ LOCAL: AC-S18 + S18b trên clip thật). A2b (`71fc664` mã + `4b5d736` config; AC-W3 đạt).
+  Lần sửa 13: M0 (5a32cff; ghi chép sửa ở commit U1), U1 (commit `15: L13-U1`).
+- Còn lại (lần sửa 13): U2, G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5.
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -1345,14 +1348,77 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - AC-1 đo trên 28 module hiện có (lệnh 16 module gốc + 10 module test_level1_* hiện có + test_private_artifacts + test_frontend_contract) → log `_work/_plan15_l13/m0_ac1.log`:
   `Ran 670 tests in 853.938s` — `FAILED (failures=5, errors=2, skipped=1)`.
   - ERROR (2):
-    1. `test_real_clips_match_training_evaluation (tests.test_fingerspelling_api.TestFingerspellingApi)`: `KeyError: 'hauuto_aa_tai_B_001_tail_â'` do `train_alphabet_real.py:69` `load(..., slice_compound=True)` thêm mẫu cắt lát (review A1 #3).
+    1. `test_real_clips_match_training_evaluation (tests.test_fingerspelling_api.TestRealClipEquivalence)`: `KeyError: 'hauuto_aa_tai_B_001_tail_â'` do `train_alphabet_real.py:69` `load(..., slice_compound=True)` thêm mẫu cắt lát (review A1 #3).
     2. `setUpClass (tests.test_fingerspelling_deployed.TestDeployedCheckpointEquivalence)`: `KeyError: 'selected'` do checkpoint v6 sinh bởi `train_alphabet_real.py`, không phải run nested (review A1 #4).
   - FAIL (5):
-    1. `test_b_bodies_and_responses_identical (tests.test_hand_live_equivalence.TestLiveEquivalence)`: `AssertionError: '160e0c68...' != 'a6311820...'` so sha checkpoint triển khai với `PROVENANCE_JSON` 2026-09-27 (review A1 #1).
+    1. `test_b_bodies_and_responses_identical (tests.test_hand_live_equivalence.TestHandLiveEquivalence)`: `AssertionError: '160e0c68...' != 'a6311820...'` so sha checkpoint triển khai với `PROVENANCE_JSON` 2026-09-27 (review A1 #1).
     2. `test_deployed_checkpoint (tests.test_status_privacy.TestStatusDeployed)`: `AssertionError: '160e0c68...' != 'a6311820...'` so sha checkpoint triển khai với hằng PROVENANCE 2026-09-27 (review A1 #2).
     3. `test_js_body_equals_python_offline_body (tests.test_frontend_contract.TestCrossLanguageBody)`: `AssertionError: '160e0c68...' != 'a6311820...'` so sha checkpoint triển khai với `H.deployed_sha256()`.
     4. `test_g_gitignore (tests.test_private_artifacts.TestPrivateArtifacts)`: `AssertionError: 82 != 1` khóa .gitignore diff b337aee HEAD có 82 dòng thêm (do commit fd5ceea viết lại CRLF và thêm 2 dòng phủ định).
     5. `test_reset_segments_and_graphs (tests.test_hand_landmarks_ws.TestReset)`: `AssertionError: [1, 1, 1, 0] != [1, 1, 1, 1]` — test chập chờn đã biết (STATE). Chạy riêng 3 lần (`_work/_plan15_l13/m0_flaky_reset_{1,2,3}.log`): FAIL (0.832s), FAIL (0.813s), OK (0.803s). Không sửa/skip.
   - Skip (1):
     1. `test_u1_summary (tests.test_level1_segment_report.TestVariantsAndU1)`: skipped 'U1 file ... not found' (có sẵn).
-  - Khớp 100% với kỳ vọng của kế hoạch 15 lần sửa 13 §8/§9.
+  - [Sửa ghi chép ở U1] KHÔNG khớp hoàn toàn mốc của cầu nối: cầu nối đo tại `9bec0ad` (`_work/_bridge_verify/l13_m0/ac1_9bec0ad.log`,
+    28 module) `Ran 670` — `FAILED (failures=4, errors=2, skipped=1)`; lần đo M0 này (agy, cad8cdc) failures=5. Chênh lệch = đúng 1 test:
+    `test_reset_segments_and_graphs` (chập chờn đã biết) đỏ 3/4 lần chạy ở M0 (lần AC-1 + 2/3 lần chạy riêng), xanh ở lần đo của cầu nối.
+    6 test đỏ còn lại (2 ERROR + 4 FAIL) trùng tên với mốc 9bec0ad. Tên lớp ở mục ERROR 1 và FAIL 1 đã sửa (bản 5a32cff ghi
+    `TestFingerspellingApi`, `TestLiveEquivalence` — không tồn tại). Khối "Trạng thái → Xong:" bị bản 5a32cff thay hẳn (mất B0…A2b) —
+    đã khôi phục từ `git show cad8cdc:docs/plans/15-progress.md`.
+
+## Lần sửa 13 — U1 (2026-10-08, vslt-coder-claude; hoàn thiện WIP agy 7ae0040)
+- Phạm vi: `src/inference/level1_display.py` (viết lại), `level1_demo.py` (CHỈ lớp `Hud` + 2 dòng import), `tests/test_level1_display.py`
+  (viết lại theo hợp đồng AC-U1–U3), `tests/test_level1_guard.py` (+1 dòng, ngoại lệ E3: thêm `src/inference/level1_display.py` vào
+  `PLAN15_FILES`), file này. Không đổi: khung đưa vào MediaPipe, `draw_landmarks`, `display_view`, thứ tự xử lý, logic nhận dạng, app chưa
+  gọi `render_to_window` (nối app = U2). `checkpoints/alphabet_best.pt` sha `160e0c68…a8d17899` không đổi.
+- Thiết kế (một nguồn): `level1_display.py` = `DisplayLayout` (dataclass frozen, `==` so đủ 9 trường gồm win_w/win_h; lặp ra 7 trường của chữ
+  ký trong kế hoạch), `fit_layout`, giao thức DUY NHẤT `PanelBuilder(width, height, scale, n_stats) -> (panel BGR đúng height×width, bước dòng
+  thống kê)`, `draw_panel_overlays` (thanh hold + dòng thống kê, hằng có tên = giá trị Hud.compose luôn dùng), `render_to_window`. Panel do
+  `level1_demo.Hud` dựng: `Hud` nhận `scale` (mặc định 1.0), font cache theo số px (`_fonts_at`), hằng hình học có tên (`PAD_X`, `PAD_TOP`, …),
+  `panel_height(...)`, `panel_builder(text, small)` (cache theo width, height, scale, font px, nội dung, n_stats); `Hud.compose` gọi
+  `draw_panel_overlays` (scale 1.0). Không còn `ScalableHud`/`PanelBuilder` lớp chép.
+- Sửa lỗi review `docs/reviews/15-l13-u1-bridge.md`:
+  1. (CAO) `fit_layout`: tỉ lệ giữ dạng phân số nguyên (w/cam_w hoặc h/(cam_h+panel_h), chọn bằng so sánh số nguyên); làm tròn MỘT lần cho
+     content_w và cho TỔNG content_h; cao camera = làm tròn xuống, panel = phần còn lại ⇒ camera + panel == content_h ≤ cửa sổ, x0, y0 ≥ 0.
+     Ca `fit_layout(640,480,96,394,333)` nay y0 = 0; `render_to_window` không còn ValueError broadcast (ValueError chỉ khi builder sai giao thức).
+  2. (TB) Panel dựng ĐÚNG kích thước ô layout (`height` = `panel_rect[3]`), bước dòng = bước tự nhiên × scale làm tròn xuống ⇒ các dòng chữ
+     nằm trong ô (test lưới 200..4000); thanh hold + dòng thống kê vẽ trên ảnh con vùng nội dung ⇒ không pixel nào ra dải đen; dòng thống kê
+     đặt theo đáy ô.
+  3. (TB) AC-U3 dùng đúng "±2 px mỗi dòng" (`abs(h2 − 2·h1) ≤ 2·số dòng`), không còn `2*n+8`.
+  4. (TB) AC-U2 kiểm MỌI pixel ngoài nội dung == 0 (mặt nạ + 4 phía riêng), panel đúng ô và không cắt dòng; AC-U1 lưới kiểm x0,y0 ≥ 0,
+     x0+cw ≤ w, y0+ch ≤ h, camera+panel xếp đúng; lưới rộng của probe (3 cỡ camera × panel 40..400 bước 7 × cửa sổ 150..4000 bước 61);
+     "cửa sổ = tự nhiên" == `Hud.compose` trên 5 view (list, dict, preview, preview rỗng active_if, rỗng) × 3 small (0, gợi ý góc tay, 4 dòng)
+     × 0–3 dòng thống kê × hold 0/0.3/1 × 4 cách cho cửa sổ (None, rect tự nhiên (0,0,…), rect lệch (37,52,…), (w,h)) = 720 so sánh; Hud mới
+     == Hud của cad8cdc (git show) trên 180 tổ hợp compose + `_build` 15 ca.
+  5. (TB) Không chép Hud: xem "Thiết kế".
+  6. (THẤP–TB) Một giao thức `PanelBuilder` (bỏ `inspect.signature`, bỏ nhận ndarray); bỏ font dự phòng 18 và `fit_layout(..., 200, None)`
+     (`layout` bắt buộc; cao panel tự nhiên lấy từ `Hud.panel_height`).
+  7. (THẤP) `DisplayLayout ==` so đủ trường; test tuple 4 phần tử (x,y,w,h) và 2 phần tử; bỏ import thừa (`Union`, `List`, `inspect`, `re`).
+  8. Quy trình: log đỏ, mục này, impact/detect-changes (dưới), level1_display.py vào `PLAN15_FILES`.
+- ĐỎ (test cuối của bước chạy trên worktree tạm tại 7ae0040, code agy không sửa) → `_work/_plan15_l13/u1_red.log`:
+  `Ran 25 tests` — `FAILED (failures=3, errors=104)` (đếm cả subTest): `test_u1_wide_grid_inside_window` (y0 = −1), `test_u1_layout_equality_
+  compares_every_field`, `test_g2_closure_contains_plan15_files_and_shared_modules` (level1_display chưa nằm trong closure); 40 subTest
+  `ValueError: could not broadcast ... into shape (0,370,3)` ở `test_u2_never_raises_on_rounding_edge_windows`; còn lại AttributeError
+  (`Hud.panel_height` chưa có).
+- XANH (code này): `python -m unittest tests.test_level1_display tests.test_level1_demo tests.test_level1_guard tests.test_backend_source_guard`
+  → `_work/_plan15_l13/u1_green_main.log`: `Ran 199 tests` — `OK`; `[DoD7-guard] known=9 allowed=36`.
+  Toàn bộ 16 module `tests.test_level1_*` + `tests.test_backend_source_guard` → `_work/_plan15_l13/u1_green_level1_all.log`: `Ran 480 tests` —
+  `FAILED (failures=1, skipped=1)`; skip = `test_u1_summary` (có sẵn); FAIL = `tests.test_level1_equivalence.TestEquivalenceE3Static.
+  test_e3_no_hands_resize_flip_outside_display [src/inference/level1_display.py]`: `[('cv2.resize', 'resize', 'render_to_window')] != []`.
+- CẦN PLANNER (không tự sửa): test E3 tĩnh cấm MỌI lời gọi tên `resize` trong `level1_demo.py` + `src/inference/level1_*.py`, nên
+  `level1_display.py` (tên do kế hoạch đặt, §10) với `cv2.resize` (bắt buộc ở §2.2 và AC-U2 "vùng camera == cv2.resize(view, …)") làm đỏ E3,
+  trong khi AC-U6 đòi E3 xanh KHÔNG sửa và §5.4 không có ngoại lệ cho file này. Đã đỏ từ WIP 7ae0040 (kiểm worktree: E3 tĩnh đỏ ở db5eb0c, xanh
+  ở cad8cdc) — U1 không làm tệ hơn. Không lách (alias/đổi tên file/warpAffine). Gợi ý cho planner: ngoại lệ E4 cho phép đúng 1 lời gọi
+  `cv2.resize` trong hàm `render_to_window` của `src/inference/level1_display.py` (như `cv2.flip` chỉ trong `display_view`), giữ cấm mọi nơi
+  khác; khung MediaPipe vẫn được E3 động (spy) khóa.
+- Impact (GitNexus CLI, chỉ mục chậm 2 commit) → `_work/_plan15_l13/u1_impact.log`, `u1_impact_file.log`: `Hud` risk UNKNOWN (0 caller giải
+  được, 1 call site bị bỏ); `Hud.compose`, `Hud._build`, `Hud._view_cache_key` (file level1_demo.py) risk CRITICAL, 62 direct; `_fit_committed`
+  CRITICAL 136 — CẢNH BÁO: phần lớn là trùng tên (scripts/*, `fingerspelling_compose.compose`, …). Xác nhận bằng grep: caller thật của `Hud` =
+  `Level1App.__init__` (`Hud(...)`) và `Level1App._process` (`self.hud.compose`) + test (`tests/test_level1_demo.py` dùng `compose`, `_build(640, v,
+  [], 0)`, `_fit_committed(c, a, w)`, `font`, `line_h`, `small_h`, `_panel`, `HINT_*`). Giảm rủi ro: chữ ký cũ giữ nguyên (tham số mới có mặc
+  định), test so Hud mới == Hud cad8cdc bit-exact, `tests.test_level1_demo` xanh.
+- detect-changes (`node .gitnexus/run.cjs detect-changes --scope all --repo .`) → `_work/_plan15_l13/u1_detect_changes*.log`: risk critical, chủ
+  yếu do `README.md` (thay đổi CHƯA commit của người dùng, không thuộc commit này); symbol của U1: `Hud` (level1_demo.py), `DisplayLayout`,
+  lớp test của `tests/test_level1_display.py`; `SpaceGestureTracker` chỉ dời dòng.
+- Giả định: (a) cao camera làm tròn xuống, panel nhận phần dư (kế hoạch không chốt cách chia); (b) bước dòng scaled = bước tự nhiên × scale làm
+  tròn xuống (không `int(round(font×scale)×1.35)`) để panel vừa ô; font = round(font_size × scale) đúng AC-U3; (c) độ dày nét dòng thống kê
+  = max(1, round(scale)) (kế hoạch chỉ nói cỡ 0.45 × scale); (d) builder sai kích thước ⇒ ValueError (lỗi lập trình, không cắt/đệm âm thầm).

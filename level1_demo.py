@@ -70,7 +70,7 @@ import sys
 import threading
 import time
 import unicodedata
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import cv2
 import numpy as np
@@ -86,6 +86,7 @@ if sys.platform == "win32":
         sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 from src.inference.hand_live import LEVEL1_HANDS_KWARGS, HandLandmarkSession  # noqa: E402
+from src.inference.level1_display import PanelBuilder, draw_panel_overlays, scaled_px  # noqa: E402
 from src.inference.level1_core import (CLAHE_CLIP_LIMIT, CLAHE_TILE_GRID, GESTURE_BACKSPACE_DEFAULT,  # noqa: E402
                                        GESTURE_BACKSPACE_FLASH, LOW_LIGHT_THRESHOLD, BackspaceGestureTracker,
                                        HandednessLock, LandmarkSmoother, Level1Classifier, Level1Speller,
@@ -452,7 +453,12 @@ def find_font(explicit: Optional[str], candidates: List[str]) -> str:
 
 class Hud:
     """Text panel drawn with PIL (Vietnamese glyphs), shown below the camera image. The panel image is rebuilt only
-    when its text changes (cache)."""
+    when its text changes (cache).
+
+    Display scale (plan 15 lần sửa 13 U1): the panel can also be built at a scale (`panel_builder`, used by
+    src.inference.level1_display.render_to_window for a resized / fullscreen window): the font is the font size x
+    scale in pixels (fonts cached per pixel size, never rebuilt per frame), every distance below is its natural value
+    x scale, rounded down. Scale 1.0 draws exactly the natural panel."""
 
     BG_RGB = (20, 20, 20)
     BG_BGR = (20, 20, 20)
@@ -468,21 +474,69 @@ class Hud:
     HINT_BGR = (0, 215, 255)
     HINT_PREFIX = "[Góc tay:"
     SMALL_RGB = (200, 220, 255)
+    # Panel geometry at natural size (scale 1.0), the values the HUD has always used (B3, text box lần sửa 6):
+    LINE_RATIO = 1.35        # main line step = font px x 1.35
+    SMALL_LINE_RATIO = 0.95  # small line step = font px x 0.95 (small font = 2/3 of the font, _small_px)
+    PAD_X = 8                # text inset from the left edge
+    PAD_TOP = 4              # padding above the first line
+    PAD_BOTTOM = 4           # padding below the last line
+    CURSOR_MARGIN = 24       # room kept free right of the cursor when old words are dropped (_fit_committed)
+    MIN_CURSOR_W = 100       # the committed text keeps at least this width
+    HIGHLIGHT_INSET = 2      # active-syllable highlight stops this far above the next line
+    CURSOR_INSET_TOP = 2     # cursor line: inset from the top of the line
+    CURSOR_INSET_BOTTOM = 4  # cursor line: inset from the bottom of the line
+    CURSOR_WIDTH = 2
+    PREVIEW_GAP = 4          # gap between the cursor and the preview label
 
     def __init__(self, font_path: str, font_size: int):
         from PIL import ImageFont
+        self.font_path = font_path
+        self.font_size = font_size
         self.font = ImageFont.truetype(font_path, font_size)
-        self.small = ImageFont.truetype(font_path, max(1, int(font_size * 2 / 3)))
-        self.line_h = int(font_size * 1.35)
-        self.small_h = int(font_size * 0.95)
+        self.small = ImageFont.truetype(font_path, self._small_px(font_size))
+        self.line_h = int(font_size * self.LINE_RATIO)
+        self.small_h = int(font_size * self.SMALL_LINE_RATIO)
         self._key = None
         self._panel = None
+        self._fonts = {font_size: (self.font, self.small)}  # font px -> (font, small font)
+        self._scaled_key = None
+        self._scaled_panel = None
 
-    def _fit_committed(self, committed: str, active: str, max_w: float) -> str:
+    @staticmethod
+    def _small_px(font_px: int) -> int:
+        return max(1, int(font_px * 2 / 3))
+
+    def font_px(self, scale: float = 1.0) -> int:
+        """Main font size in pixels at `scale` (round(font size x scale); the font size itself at scale 1.0)."""
+        return max(1, int(round(self.font_size * scale)))
+
+    def _fonts_at(self, scale: float) -> Tuple[Any, Any]:
+        """(main font, small font) at `scale`; created once per pixel size."""
+        px = self.font_px(scale)
+        if px not in self._fonts:
+            from PIL import ImageFont
+            self._fonts[px] = (ImageFont.truetype(self.font_path, px),
+                               ImageFont.truetype(self.font_path, self._small_px(px)))
+        return self._fonts[px]
+
+    def line_steps(self, scale: float = 1.0) -> Tuple[int, int]:
+        """(main line step, small line step) in px at `scale`: the natural steps x scale, rounded down."""
+        return scaled_px(self.line_h, scale), scaled_px(self.small_h, scale)
+
+    def panel_height(self, text_or_view: Any, small: Sequence[str], n_stats: int, scale: float = 1.0) -> int:
+        """Height of the panel built by _build for this text (rows of the live stats lines included), without
+        building it; at scale 1.0 = the height of the panel under the camera image in compose."""
+        line_h, small_h = self.line_steps(scale)
+        num_big = 1 if isinstance(text_or_view, dict) else len(text_or_view)
+        return (line_h * num_big + small_h * (len(small) + n_stats)
+                + scaled_px(self.PAD_TOP, scale) + scaled_px(self.PAD_BOTTOM, scale))
+
+    def _fit_committed(self, committed: str, active: str, max_w: float, font: Any = None) -> str:
         """Drops committed syllables from the start (prepending '…') until cursor fits in max_w."""
+        font = self.font if font is None else font
         if not committed:
             return ""
-        if self.font.getlength(committed + active) <= max_w:
+        if font.getlength(committed + active) <= max_w:
             return committed
         import re
         words = re.findall(r"\S+\s*", committed)
@@ -491,49 +545,59 @@ class Hud:
         for i in range(1, len(words) + 1):
             rem = "".join(words[i:])
             cand = "… " + rem if rem else "… "
-            if self.font.getlength(cand + active) <= max_w:
+            if font.getlength(cand + active) <= max_w:
                 return cand
         return "… "
 
-    def _build(self, width: int, view: Any, small: List[str], n_stats: int) -> np.ndarray:
+    def _build(self, width: int, view: Any, small: List[str], n_stats: int, scale: float = 1.0,
+               height: Optional[int] = None) -> np.ndarray:
+        """Panel image (BGR) of `width` px; `height` defaults to panel_height (the rows of the live stats lines are
+        kept free at the bottom). `scale` != 1.0: scaled font and distances (window layout slot as `height`)."""
         from PIL import Image, ImageDraw
+        font, small_font = self._fonts_at(scale)
+        line_h, small_h = self.line_steps(scale)
+
+        def px(value):
+            return scaled_px(value, scale)
+
         is_view_dict = isinstance(view, dict)
-        num_big = 1 if is_view_dict else len(view)
-        height = self.line_h * num_big + self.small_h * (len(small) + n_stats) + 8  # + lines for the live stats
+        if height is None:
+            height = self.panel_height(view, small, n_stats, scale)
         img = Image.new("RGB", (width, height), self.BG_RGB)
         d = ImageDraw.Draw(img)
-        y = 4
+        y = px(self.PAD_TOP)
 
         if not is_view_dict:
             for text in view:
-                d.text((8, y), text, font=self.font, fill=self.TEXT_RGB)
-                y += self.line_h
+                d.text((px(self.PAD_X), y), text, font=font, fill=self.TEXT_RGB)
+                y += line_h
         else:
             committed = view.get("committed", "")
             active = view.get("active", "")
             preview = view.get("preview")
 
-            x0 = 8
-            max_cursor_w = max(width - 24 - x0, 100)
-            disp_committed = self._fit_committed(committed, active, max_cursor_w)
+            x0 = px(self.PAD_X)
+            max_cursor_w = max(width - px(self.CURSOR_MARGIN) - x0, px(self.MIN_CURSOR_W))
+            disp_committed = self._fit_committed(committed, active, max_cursor_w, font)
 
             # 1. Committed text
-            w_comm = self.font.getlength(disp_committed) if disp_committed else 0.0
+            w_comm = font.getlength(disp_committed) if disp_committed else 0.0
             if disp_committed:
-                d.text((x0, y), disp_committed, font=self.font, fill=self.TEXT_RGB)
+                d.text((x0, y), disp_committed, font=font, fill=self.TEXT_RGB)
 
             # 2. Active text with highlight background
             x_active = x0 + w_comm
-            w_act = self.font.getlength(active) if active else 0.0
+            w_act = font.getlength(active) if active else 0.0
             if active and w_act > 0:
                 rect_x0 = int(round(x_active))
                 rect_x1 = int(round(x_active + w_act))
-                d.rectangle([(rect_x0, y), (rect_x1, y + self.line_h - 2)], fill=self.HIGHLIGHT_RGB)
-                d.text((rect_x0, y), active, font=self.font, fill=self.TEXT_RGB)
+                d.rectangle([(rect_x0, y), (rect_x1, y + line_h - px(self.HIGHLIGHT_INSET))], fill=self.HIGHLIGHT_RGB)
+                d.text((rect_x0, y), active, font=font, fill=self.TEXT_RGB)
 
             # 3. Cursor
             x_cursor = int(round(x_active + w_act))
-            d.line([(x_cursor, y + 2), (x_cursor, y + self.line_h - 4)], fill=self.CURSOR_RGB, width=2)
+            d.line([(x_cursor, y + px(self.CURSOR_INSET_TOP)), (x_cursor, y + line_h - px(self.CURSOR_INSET_BOTTOM))],
+                   fill=self.CURSOR_RGB, width=max(1, px(self.CURSOR_WIDTH)))
 
             # 4. Preview
             if preview is not None and (preview.get("token") is not None or preview.get("prediction") is not None):
@@ -544,15 +608,15 @@ class Hud:
                     prev_label = f" {active_if} (a: nhận, {conf_str})"
                 else:
                     prev_label = f" (a: nhận, {conf_str})"
-                x_prev = x_cursor + 4
-                d.text((x_prev, y), prev_label, font=self.font, fill=self.PREVIEW_RGB)
+                x_prev = x_cursor + px(self.PREVIEW_GAP)
+                d.text((x_prev, y), prev_label, font=font, fill=self.PREVIEW_RGB)
 
-            y += self.line_h
+            y += line_h
 
         for text in small:
-            d.text((8, y), text, font=self.small,
+            d.text((px(self.PAD_X), y), text, font=small_font,
                    fill=self.HINT_RGB if text.startswith(self.HINT_PREFIX) else self.SMALL_RGB)
-            y += self.small_h
+            y += small_h
         return cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
 
     @staticmethod
@@ -587,13 +651,24 @@ class Hud:
         if key != self._key:
             self._panel, self._key = self._build(w, text_or_view, small, len(stats_lines)), key
         out = np.vstack([view, self._panel])
-        y = view.shape[0]
-        if hold_progress > 0:
-            cv2.rectangle(out, (0, y), (int(w * hold_progress), y + 3), (0, 200, 0), -1)
-        for i, line in enumerate(stats_lines):
-            base = out.shape[0] - 10 - (len(stats_lines) - 1 - i) * self.small_h
-            cv2.putText(out, line, (8, base), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (160, 255, 160), 1, cv2.LINE_AA)
+        draw_panel_overlays(out, view.shape[0], hold_progress, stats_lines, self.small_h)
         return out
+
+    def panel_builder(self, text_or_view: Any, small: Sequence[str]) -> PanelBuilder:
+        """PanelBuilder of render_to_window for this text: builder(width, height, scale, n_stats) -> (panel of exactly
+        height x width, stats line step). The panel is cached by (width, height, scale, font px, text, small lines,
+        n_stats): changing only the stats lines (drawn later by render_to_window) does not rebuild it."""
+        small = list(small)
+        view_key = self._view_cache_key(text_or_view)
+
+        def build(width: int, height: int, scale: float, n_stats: int) -> Tuple[np.ndarray, int]:
+            key = (width, height, scale, self.font_px(scale), view_key, tuple(small), n_stats)
+            if key != self._scaled_key:
+                self._scaled_panel = self._build(width, text_or_view, small, n_stats, scale, height)
+                self._scaled_key = key
+            return self._scaled_panel, self.line_steps(scale)[1]
+
+        return build
 
 
 def hud_stats_lines(times: StageTimes, process_starts: Sequence[float], rolling: int, dropped: int) -> List[str]:
