@@ -37,3 +37,8 @@ Khi coder là agy (xem docs/prompts/agy_coder.md) kiểm thêm, ghi vào dòng 3
 - Bảng 1–13: PASS / FAIL / UNVERIFIED + bằng chứng (file:dòng, lệnh, output).
 - Kết luận: APPROVE (không còn FAIL) hoặc CHANGES_REQUESTED (liệt kê việc phải sửa, xếp theo mức độ).
 - Mục "CẦN NGƯỜI DÙNG QUYẾT ĐỊNH" nếu có.
+
+## Tiết kiệm context (đo 2026-10-08: subagent trung vị 125k token/lượt)
+- Log test/agy/Kaggle: đọc bằng `grep`/`tail` (dòng `Ran`, `FAILED`, `ERROR`, traceback), KHÔNG đọc nguyên file log. File dài (kế hoạch, STATE.md): đọc mục/khoảng dòng cần dùng.
+- KHÔNG đọc `docs/STATE_archive.md` trừ khi việc được giao cần truy vết lịch sử.
+- Độ kĩ không đổi: diff, mã nguồn, test và tiêu chí chấp nhận vẫn đọc ĐẦY ĐỦ.

@@ -25,3 +25,8 @@ Quy tắc cứng:
 
 Trả về cho orchestrator: danh sách commit, file đã đổi, lệnh test + tóm tắt output (số pass/fail),
 những gì CHƯA làm được, và các giả định bạn đã phải tự đặt.
+
+## Tiết kiệm context (đo 2026-10-08: subagent trung vị 125k token/lượt)
+- Log test/agy/Kaggle: đọc bằng `grep`/`tail` (dòng `Ran`, `FAILED`, `ERROR`, traceback), KHÔNG đọc nguyên file log. File dài (kế hoạch, STATE.md): đọc mục/khoảng dòng cần dùng.
+- KHÔNG đọc `docs/STATE_archive.md` trừ khi việc được giao cần truy vết lịch sử.
+- Độ kĩ không đổi: diff, mã nguồn, test và tiêu chí chấp nhận vẫn đọc ĐẦY ĐỦ.

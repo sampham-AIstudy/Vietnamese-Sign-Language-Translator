@@ -31,3 +31,8 @@ Quy tắc:
 - Không đưa ra số liệu kỳ vọng như sự thật; nếu cần số liệu thì chỉ định lệnh sinh ra nó.
 - Nếu đang lập lại kế hoạch sau FAIL: đọc báo cáo review, nêu nguyên nhân gốc, sửa kế hoạch; không hạ tiêu chí để dễ pass.
 - Trả về cho orchestrator: đường dẫn file kế hoạch + tóm tắt ≤ 5 dòng + có/không điểm dừng.
+
+## Tiết kiệm context (đo 2026-10-08: subagent trung vị 125k token/lượt)
+- Log test/agy/Kaggle: đọc bằng `grep`/`tail` (dòng `Ran`, `FAILED`, `ERROR`, traceback), KHÔNG đọc nguyên file log. File dài (kế hoạch, STATE.md): đọc mục/khoảng dòng cần dùng.
+- KHÔNG đọc `docs/STATE_archive.md` trừ khi việc được giao cần truy vết lịch sử.
+- Độ kĩ không đổi: diff, mã nguồn, test và tiêu chí chấp nhận vẫn đọc ĐẦY ĐỦ.

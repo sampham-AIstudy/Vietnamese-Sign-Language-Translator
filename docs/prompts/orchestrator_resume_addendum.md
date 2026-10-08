@@ -38,3 +38,21 @@ Thêm câu này vào MỌI prompt giao cho subagent:
 
 ## 5. Cuối mỗi lượt làm việc dài
 Trước khi dừng hoặc khi ước lượng đã làm > 45 phút: cập nhật STATE.md (trạng thái, HEAD, việc kế tiếp) và commit.
+
+## 6. Tiết kiệm hạn mức Claude (đo 2026-10-08 trên 6.357 lượt gọi 24/9–8/10; script `_work/_quota/*.py`)
+Đo được: 97% lượt gọi là Opus; phiên chính context trung vị 251k token/lượt (p90 565k) = 46% chi phí; cầu nối `vslt-coder` = 29%
+(62 lượt/lần giao, chỉ chạy script + kiểm); ghi lại cache = 31% chi phí, ở phiên chính TOÀN BỘ do chờ > 60 phút (30 lần) hoặc đổi model (9 lần);
+STATE.md từng 104 KB do lồng "[Trước: …]". Quy tắc:
+1. STATE.md: dòng "Trạng thái phiên" được THAY THẾ, không lồng "[Trước: …]". Phần cũ (nếu còn giá trị truy vết) → THÊM nguyên văn vào cuối
+   `docs/STATE_archive.md`. Nhật ký khôi phục giữ ~5 dòng mới nhất, dòng cũ chuyển archive. Giữ STATE.md < 40 KB.
+   Khôi phục thường KHÔNG đọc STATE_archive.md.
+2. Chờ việc nền dài (agy, Kaggle, chờ reset hạn mức) > 45 phút: ghi STATE.md + commit TRƯỚC, rồi kết thúc lượt và báo người dùng
+   "mở phiên mới (/clear) và nhắn tiếp tục khi xong" — KHÔNG giữ phiên context lớn qua quãng chờ (cache hết hạn ⇒ ghi lại toàn bộ context).
+3. Context phiên chính: đọc log/kết quả test bằng `grep`/`tail`/`sed -n` (chỉ dòng `Ran`/`FAILED`/lỗi), đọc file lớn theo khoảng dòng;
+   không dán nguyên báo cáo của subagent vào câu trả lời. Khi context ước > ~200k token hoặc xong một việc lớn: ghi STATE.md, commit,
+   đề nghị người dùng mở phiên mới.
+4. Không đổi model giữa phiên (/model): mỗi lần đổi là ghi lại toàn bộ cache. Muốn đổi thì đổi ở đầu phiên mới.
+5. Cầu nối `vslt-coder` chạy Sonnet (`model: sonnet` trong frontmatter): việc của nó là cơ học (chạy agy_code.sh, git diff, chạy lại test).
+   Planner, reviewer, vslt-coder-claude giữ Opus — người dùng yêu cầu lập kế hoạch và review KĨ (2026-10-08).
+6. Prompt giao subagent: trỏ đúng file + khoảng dòng/mục cần đọc, lệnh test cụ thể; nhắc "đọc log bằng grep/tail, không đọc nguyên file".
+   Gộp việc nhỏ cùng loại vào một lần giao (mỗi lần spawn tốn ~12k token khởi động + đọc lại kế hoạch).
