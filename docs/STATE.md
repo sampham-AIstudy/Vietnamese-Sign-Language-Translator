@@ -419,7 +419,11 @@
   phmvnsm33/vsl-train-alphabet v6) — quyết định người dùng thay GATE; orchestrator đã chép checkpoints/alphabet_best_v6.pt → checkpoints/alphabet_best.pt lúc 10:05
   (bản trước = v5 9c9e8960, còn ở alphabet_best_v5.pt; gốc a6311820 ở alphabet_best_2026-09-27.pt). Ghi rõ trong báo cáo: v6 đã train trên user1 (kết quả người dùng
   tự thử không phải "chưa thấy"); QIPEDC 46 clip v6 top-1 23 vs v5 25, top-3 65.2 vs 73.9. (4) 84 npz landmark user1 (1.28 MB, đã commit; repo GitHub PUBLIC; 84 mp4
-  KHÔNG commit): chờ người dùng quyết sau khi giải thích.
+  KHÔNG commit): (09:50) người dùng: GỠ KHỎI GIT, lưu Drive hoặc Kaggle. Orchestrator đã chép data/collected_targeted (84 npz + 84 mp4 + manifest.csv, 169 file, 63 MB)
+  vào `G:\My Drive\VSLT\collected_targeted_user1_2026-10-08\` + SHA256SUMS.txt, `sha256sum -c` OK (bản sổ: _work/user1_sha256.txt). CHƯA git rm --cached
+  (kernel phmvnsm33/vsl-train-alphabet clone repo và đọc data/collected_targeted ⇒ cần dataset Kaggle PRIVATE làm đầu vào kernel + .gitignore bị test khóa ⇒ planner).
+  (5) CỬ CHỈ: người dùng KHÔNG muốn space/backspace tự kích hoạt; chỉ khi cố ý: XÒE 5 NGÓN = space, VẪY TAY SANG TRÁI/PHẢI = backspace (đã có trong code) ⇒ phải
+  giảm kích hoạt nhầm (review: 24/640 backspace, 8/640 space trên clip train một chữ) — cần gate tỉ lệ nhầm đặt trước + kiểm trên clip cử chỉ thật của người dùng.
 
 - (2026-10-08) CODE DO agy + GEMINI VIẾT: sau MỖI bước, (1) cầu nối vslt-coder xác minh độc lập (đọc diff, đối chiếu số với JSON, chạy lại test AC, scope, tests/ chỉ thêm),
   (2) vslt-reviewer kiểm riêng bước đó TRƯỚC khi giao bước kế; sửa ngay trong bước. Logic phức tạp (segmenter, decoder, hiệu chỉnh) ưu tiên Opus/Claude trong agy khi
