@@ -10,7 +10,7 @@
 - LẦN SỬA 12 (cloud, 2026-10-06, theo phản hồi webcam của người dùng): `docs/plans/15-lan-sua-12.md`. Mã: ddd7904 (G1 cổng chuyển động decoder, H1 HandednessLock, config rev9), 13759a6 (script dominant_hand_check), 85a6a91 (app: tắt tự cách mặc định, --dominant-hand lock, nối cổng), 551e1b2 (G1b: không cắt chữ biến thể của chữ vừa phát). Bằng chứng: reports/level1_realtime_2026-10-06/{dominant_hand_check,rearm_check_gate,rearm_check_gate_v2}.json. CHƯA review (vslt-reviewer local). Còn: phiên webcam người dùng so rev8 và rev9.
 - HEAD: ba9e107 (+ commit state này) | Nhánh: cloud/2026-10-04-level1-rearm
 - Tắt máy: CHỈ khi người dùng yêu cầu rõ trong hội thoại (quyết định 2026-10-04 01:15; bỏ dòng công tắc cũ). Yêu cầu hiện hành: 4/10 ~01:15 "xong thì nhớ lưu và tắt máy".
-- Trạng thái phiên: 01:10 9/10 (5h dùng 62%, reset ~03:50 VN). U1 (ea9c645) + U1a (acdcf63) APPROVE (docs/reviews/15-l13-u1-review.md: 0 CAO, 1 TB, 5 THẤP). ĐANG GIAO vslt-planner: lần sửa 13b nhỏ — đưa TB-1 (test thanh hold + dòng thống kê khi scale≠1) vào hợp đồng U2, xử lý THẤP (2)(6), chọn coder cho U2. VIỆC KẾ: U2 (nối app, phím f, --fullscreen, AC-U6b) — chỉ giao khi hạn mức đủ (used + est ≤ 90). Commit agy 7f08e0e không nằm trên nhánh nào (reviewer ghi nhận, không cần làm gì).
+- Trạng thái phiên: 01:15 9/10 (5h dùng 67%, reset ~03:50 VN). Planner 13b xong (docs/plans/15-lan-sua-13b.md): U2 = U2a (agy, test TB-1/AC-U7) → U2b (Claude, nối cửa sổ + AC-U6b) → U2c (agy, phím f/cờ/LRU) → U2d (agy, đo DC1); X1 trước V1. ĐANG GIAO vslt-coder (cầu nối agy) bước U2a. VIỆC KẾ: cầu nối kiểm → vslt-reviewer U2a (sau reset hạn mức nếu thiếu) → U2b.
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;

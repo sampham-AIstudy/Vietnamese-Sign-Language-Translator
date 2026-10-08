@@ -1,6 +1,7 @@
 # Kế hoạch 15 — LẦN SỬA 13: hoàn thiện Cấp 1 cho buổi DEMO, sửa review phần A theo quyết định người dùng 2026-10-08
 
 > LẦN SỬA 13a (2026-10-08): xem docs/plans/15-lan-sua-13a.md — ngoại lệ E4 (đúng 1 cv2.resize ảnh hiển thị trong render_to_window), sửa AC-U6/AC-0/AC-V4, thêm AC-U6b.
+> LẦN SỬA 13b (2026-10-09): xem docs/plans/15-lan-sua-13b.md — thay hàng U2 bằng U2a–U2d, thêm AC-U4b/U7/U8/U9 + script đo AC-U5, THẤP-2 ghi Giới hạn R2, bước X1 trước V1.
 
 > CẦN NGƯỜI DÙNG (KHÔNG chặn các bước khác): (1) quay 24 clip cử chỉ thật sau bước G2 (§3.4, ~10 phút) — chỉ bước G5 chờ việc này;
 > (2) THÔNG BÁO: gỡ khỏi git KHÔNG xóa 84 npz user1 khỏi lịch sử đã push lên GitHub công khai — xóa hẳn cần viết lại lịch sử + force
@@ -374,6 +375,7 @@ sau mỗi bước: cầu nối xác minh độc lập + vslt-reviewer kiểm ri�
 | 14 | R1 | `scripts/level1_preset_agreement.py` + test; chạy → `preset_agreement.json` (commit riêng); AC-R1. | V1 | 2 + chạy | L / **Opus** (đánh giá, tiền xử lý) |
 | 15 | R2 | Docstring luật 7; `effective_argv` + test AC2; test `filled == {}`; rev8 trace summary (nếu có); `docs/level1_desktop.md` cập nhật toàn bộ Giới hạn (§9 AC-R3); 15-progress; AC-1 cuối. | mọi bước trên | 1,5 | M / gemini-high |
 | 16 | G5 | (sau khi NGƯỜI DÙNG quay §3.4) `level1_gesture_check.py --positives` → `gesture_sensitivity.json`; GT1/GT2 (AC-G8). | G3 + clip người dùng | 0,5 | S / gemini-high |
+> LẦN SỬA 13b (2026-10-09): xem docs/plans/15-lan-sua-13b.md — thay hàng U2 bằng U2a–U2d, thêm AC-U4b/U7/U8/U9 + script đo AC-U5, THẤP-2 ghi Giới hạn R2, bước X1 trước V1.
 
 Tổng ≈ 22 giờ coder. Đường tới DEMO (thứ tự ưu tiên của orchestrator): M0 → U1 → U2 → G1 → G2 → G3 → K1 → K2 (≈ 11,5 h) — sau K2 có thể demo;
 V1 nên xong trước demo (test xanh, hồ sơ model). Cắt khi thiếu thời gian (cắt từ cuối): R1 → D3 → V2 → R2 (giữ phần docs Giới hạn tối thiểu) → D2/D1.

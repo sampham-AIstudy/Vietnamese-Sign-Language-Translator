@@ -1503,3 +1503,5 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   mức module ở file KHÁC không bị cấm (kế hoạch chỉ cấm lồng) — resize ở đó vẫn bị cấm.
 - Sau khi ghi mục này: 2 module test đọc file này `python -m unittest tests.test_level1_demo tests.test_level1_rearm_check` →
   `_work/_plan15_l13/u1a_progress_check.log`: `Ran 186 tests in 660.087s` — `OK`; `tests.test_level1_gitattributes` → `OK`.
+
+> LẦN SỬA 13b (2026-10-09): xem docs/plans/15-lan-sua-13b.md — U2 chia U2a (agy, test TB-1) → U2b (Claude, nối cửa sổ + AC-U6b) → U2c (agy, phím f/cờ/LRU) → U2d (agy, đo DC1); X1 chẩn đoán test_reset trước V1.
