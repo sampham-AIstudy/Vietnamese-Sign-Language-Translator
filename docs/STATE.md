@@ -412,6 +412,10 @@
 
 - (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy" — ĐÃ BỊ THAY bởi quyết định 20:15 ngay dưới.
 
+- (2026-10-08) CODE DO agy + GEMINI VIẾT: sau MỖI bước, (1) cầu nối vslt-coder xác minh độc lập (đọc diff, đối chiếu số với JSON, chạy lại test AC, scope, tests/ chỉ thêm),
+  (2) vslt-reviewer kiểm riêng bước đó TRƯỚC khi giao bước kế; sửa ngay trong bước. Logic phức tạp (segmenter, decoder, hiệu chỉnh) ưu tiên Opus/Claude trong agy khi
+  nhóm đó còn hạn mức. Lý do: "sửa chỗ này lỗi chỗ khác rất mất thời gian".
+
 - (2026-10-05) CHẾ ĐỘ TÁCH CHỮ LIÊN TIẾP cho buổi báo cáo: (a) CLASSIFIER (lần sửa 4 kế hoạch 15) — điểm dừng "chỉ G6 nhóm dấu thanh trượt" đã kích hoạt trên cloud
   (dấu liên tiếp 0.80 vs 0.85 chế độ cũ; chữ cái G1 0.98). Bật chế độ classifier; dấu thanh trong demo gõ bằng phím 1–5 (token source "key", nêu trong Giới hạn
   cùng số offline dấu 40.83%); phím n vẫn có. Số chuỗi ghép = kiểm logic; U1c webcam là kiểm thật. Không hỏi lại.
