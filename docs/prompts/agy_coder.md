@@ -17,6 +17,15 @@ mọi thứ cần biết nằm trong file mà prompt trỏ tới.
    `git stash`, `git checkout -- <file>`, `git reset --hard`, `git clean`.
    Trước khi commit chạy `node .gitnexus/run.cjs detect-changes --scope all --repo .`; `partial`/`truncated` = chưa sạch, chạy lại.
 
+## Chạy test hiệu quả (bạn có ngân sách thời gian cố định — xem dòng "Ngân sách thời gian" trong prompt)
+Ngày 8/10 một lượt M0+U1 hết 40 phút: 14 phút cho MỘT lần AC-1 tuần tự (670 test), thêm 3 lần chạy test chập chờn + phân tích GitNexus.
+- Khi đang làm: chỉ chạy module test liên quan đến file đang sửa (vài giây).
+- 3 module chậm chiếm ~95% AC-1: `tests.test_level1_segmenter` (~350s), `tests.test_hand_live_equivalence` (~270s), `tests.test_level1_equivalence` (~195s).
+  Chỉ chạy chúng khi bước của bạn đụng tới (hoặc khi kế hoạch bắt AC-1 đầy đủ), mỗi bước tối đa MỘT lần.
+- AC-1 đầy đủ: dùng `scripts/ac1_parallel.sh <module…>` (song song, ~6 phút thay vì ~14), chạy nền rồi làm việc khác, đừng ngồi chờ.
+- Mốc đường cơ sở đã có người đo (ghi trong `docs/STATE.md`/kế hoạch, log ở `_work/_bridge_verify/`): đọc lại, đừng đo lại trừ khi kế hoạch bắt buộc.
+- Commit WIP sau mỗi bước nhỏ: hết giờ là bị dừng ngay, chỉ phần đã commit được giữ.
+
 ## Quy tắc cứng
 - KHÔNG đổi tiêu chí chấp nhận; KHÔNG sửa/skip/xóa/nới test có sẵn để pass. Tiêu chí sai hoặc không khả thi →
   dừng, trả `STATUS: CẦN PLANNER` kèm lý do.

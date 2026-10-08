@@ -14,7 +14,7 @@ Cổng (cùng quy tắc bên Claude): dùng_5h + 1.0 × est ≤ 90 và dùng_tu�
 est lấy từ sổ đo thật (lớn nhất trong 3 dòng `ok` gần nhất cùng nhóm + effort). Chưa có số đo thì dùng GIÁ TRỊ KHỞI ĐẦU
 CHƯA ĐO bên dưới (cố ý thận trọng) và đánh dấu "unmeasured".
 """
-import csv, datetime as dt, json, os, subprocess, sys
+import csv, datetime as dt, json, os, subprocess, sys, time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import agy_pick_model as pm  # noqa: E402
@@ -28,6 +28,7 @@ LEDGER = os.path.join(ROOT, "docs", "agy_usage_ledger.csv")
 BEFORE = os.path.join(ROOT, "_work", "agy_usage_before.json")
 HEAD = ["time_utc", "group", "model", "effort", "plan", "steps", "five_before", "five_after", "five_delta", "week_delta", "quality"]
 FIVE_LIMIT, WEEK_LIMIT = 90.0, 95.0
+FETCH_ATTEMPTS, FETCH_RETRY_WAIT = 3, 15  # /usage ngay sau khi agy vừa thoát có thể rỗng ⇒ thử lại
 LADDER = ["max", "xhigh", "high", "medium", "low"]
 # GIÁ TRỊ KHỞI ĐẦU CHƯA ĐO: điểm % của cửa sổ 5h cho MỘT bước kế hoạch. Thay bằng số đo thật khi sổ có dữ liệu.
 # Nhóm claude (Opus/Sonnet): ĐO 3/10 — Opus/high, 1 bước A1 = +77 điểm 5h (+41 tuần) trong ~8 phút rồi chạm 100% (CẬN DƯỚI). Các mức khác suy theo tỉ lệ, chưa đo.
@@ -59,20 +60,26 @@ def _group(g):
 
 
 def fetch():
-    try:
-        r = subprocess.run(["agy", "-p", "/usage", "--output-format", "json"], capture_output=True, text=True,
-                           encoding="utf-8", errors="replace", timeout=90)
-        data = json.loads(r.stdout)
-        out = {}
-        for g in data["command"]["data"]["groups"]:
-            name = "gemini" if "gemini" in g["name"].lower() else "claude"
-            out[name] = _group(g)
-            if out[name]["disabled"]:
-                print(f"[agy-usage] nhóm {name}: bucket disabled/thiếu số — coi là KHÔNG DÙNG ĐƯỢC", file=sys.stderr)
-        return out if out else None
-    except Exception as e:  # noqa: BLE001
-        print(f"[agy-usage] không đọc được /usage: {e}", file=sys.stderr)
-        return None
+    # Gọi ngay sau khi agy vừa thoát, /usage có thể trả stdout rỗng (agy cũ còn đang tắt) ⇒ thử lại vài lần trước khi bỏ cuộc.
+    for attempt in range(1, FETCH_ATTEMPTS + 1):
+        r = None
+        try:
+            r = subprocess.run(["agy", "-p", "/usage", "--output-format", "json"], capture_output=True, text=True,
+                               encoding="utf-8", errors="replace", timeout=90)
+            data = json.loads(r.stdout)
+            out = {}
+            for g in data["command"]["data"]["groups"]:
+                name = "gemini" if "gemini" in g["name"].lower() else "claude"
+                out[name] = _group(g)
+                if out[name]["disabled"]:
+                    print(f"[agy-usage] nhóm {name}: bucket disabled/thiếu số — coi là KHÔNG DÙNG ĐƯỢC", file=sys.stderr)
+            return out if out else None
+        except Exception as e:  # noqa: BLE001
+            err = (r.stderr or "").strip()[-200:] if r is not None else ""
+            print(f"[agy-usage] không đọc được /usage (lần {attempt}/{FETCH_ATTEMPTS}): {e}{' | ' + err if err else ''}", file=sys.stderr)
+            if attempt < FETCH_ATTEMPTS:
+                time.sleep(FETCH_RETRY_WAIT)
+    return None
 
 
 def vn(ts):
@@ -185,7 +192,9 @@ def cmd_record(steps, note):
         f0, f1 = b["usage"][g]["five_used"], after[g]["five_used"]
         w0, w1 = b["usage"][g]["week_used"], after[g]["week_used"]
         d5, dw = round(f1 - f0, 1), round(w1 - w0, 1)
-        q = "ok" if d5 >= 0 and dw >= 0 and b["usage"][g]["five_reset"] == after[g]["five_reset"] else "stale (cửa sổ 5h đã reset giữa chừng)"
+        # Cửa sổ 5h chưa mở (dùng 0%) thì reset_time trước chạy chỉ là giá trị giữ chỗ và đổi khi chạy mở cửa sổ ⇒ vẫn là số đo thật.
+        same_window = f0 == 0 or b["usage"][g]["five_reset"] == after[g]["five_reset"]
+        q = "ok" if d5 >= 0 and dw >= 0 and same_window else "stale (cửa sổ 5h đã reset giữa chừng)"
         if note:
             q += f" {note}"
     new = not os.path.exists(LEDGER)

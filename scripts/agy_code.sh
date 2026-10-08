@@ -7,6 +7,8 @@
 #   --model: họ model (tự lấy BẢN MỚI NHẤT trong `agy models`) hoặc id đầy đủ. Mặc định gemini (env AGY_MODEL).
 #   --effort: mặc định high (env AGY_EFFORT). Cổng hạn mức có thể HẠ effort / đổi họ nếu hạn mức không đủ.
 #   --units: số bước kế hoạch giao lần này (mặc định suy ra từ --steps; không có --steps thì coi là 3).
+#   --timeout: giây cho agy (mặc định 1800×số bước, tối thiểu 2400, tối đa 7200; env AGY_TIMEOUT). agy tự dừng đúng hạn (--print-timeout)
+#              và trả phần dở; `timeout` ngoài chỉ là lưới an toàn (+240s).
 #   --dry-run: chỉ chụp snapshot + chọn model + in kết quả cổng, KHÔNG chạy agy.
 # Trình tự: snapshot guard -> cổng hạn mức (chọn model/effort) -> agy (git hook chặn commit sai) -> ghi sổ usage -> (bị ngắt: lưu WIP) -> kiểm tra guard.
 # Mã thoát: 0=DONE, 10=CẦN PLANNER, 11=BỊ CHẶN, 12=agy không in STATUS, 13=hết giờ, 14=agy chạm giới hạn hạn mức giữa chừng,
@@ -20,7 +22,7 @@ PY=".venv/Scripts/python.exe"; [ -x "$PY" ] || PY="python"
 PLAN="" ; STEPS="" ; REVIEW="" ; UNITS="" ; DRY=0
 MODEL="${AGY_MODEL:-gemini}"
 EFFORT="${AGY_EFFORT:-high}"
-TMO="${AGY_TIMEOUT:-2400}"
+TMO="${AGY_TIMEOUT:-}"
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -60,6 +62,10 @@ EOF
 )"
 fi
 
+if [ -z "$TMO" ]; then   # suy theo số bước: 1 lần AC-1 đầy đủ đã ~14 phút nên cố định 40 phút cho nhiều bước là quá ngắn
+  TMO=$((UNITS * 1800)); [ "$TMO" -lt 2400 ] && TMO=2400; [ "$TMO" -gt 7200 ] && TMO=7200
+fi
+
 mkdir -p _work/agy_logs
 LOG="_work/agy_logs/$(date +%Y%m%d-%H%M%S)-$(basename "$PLAN" .md).log"
 GDIR="_work/agy_guard"
@@ -79,6 +85,7 @@ SEL_EFFORT="$(echo "$CHOICE" | sed -n 's/.*EFFORT=\([^ ]*\).*/\1/p')"
 PROMPT="Bạn là CODER của dự án VSLT. Đọc và tuân thủ docs/prompts/agy_coder.md và AGENTS.md trước khi làm gì khác. Kế hoạch được giao: ${PLAN}."
 [ -z "$STEPS" ]  || PROMPT="${PROMPT} CHỈ làm các bước: ${STEPS} (không làm bước khác)."
 [ -z "$REVIEW" ] || PROMPT="${PROMPT} Đây là lần SỬA LẠI: đọc ${REVIEW} và sửa đúng các mục CHANGES_REQUESTED."
+PROMPT="${PROMPT} Ngân sách thời gian: $((TMO / 60)) phút, hết giờ bạn bị dừng đột ngột (chỉ phần ĐÃ COMMIT được giữ): commit WIP sau mỗi bước nhỏ, đọc mục 'Chạy test hiệu quả' trong agy_coder.md."
 PROMPT="${PROMPT} Một git hook sẽ CHẶN commit sai phạm vi/đụng file của người dùng/làm yếu test; nếu bị chặn hãy dừng và báo, đừng lách (--no-verify bị phát hiện). Kết thúc bằng báo cáo đúng định dạng trong agy_coder.md, dòng cuối là STATUS: DONE | CẦN PLANNER | BỊ CHẶN."
 
 echo "[agy_code] plan=${PLAN} steps=${STEPS:-all} units=${UNITS} model=${SEL_MODEL} effort=${SEL_EFFORT:-(theo hậu tố)} timeout=${TMO}s" | tee -a "$LOG"
@@ -89,11 +96,16 @@ HOOKS="$(pwd -W 2>/dev/null || pwd)/scripts/githooks"
 (
   export AGY_GUARD=1 AGY_GUARD_DIR="$GDIR" AGY_PY="$PWD/$PY"
   export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.hooksPath GIT_CONFIG_VALUE_0="$HOOKS"
-  timeout "$TMO" agy -p "$PROMPT" --mode accept-edits --model "$SEL_MODEL" "${EFF_ARGS[@]}" >>"$LOG" 2>&1
+  timeout $((TMO + 240)) agy -p "$PROMPT" --mode accept-edits --model "$SEL_MODEL" "${EFF_ARGS[@]}" \
+    --print-timeout "${TMO}s" --log-file "${LOG%.log}.agy.log" >>"$LOG" 2>&1
 )
 RC=$?
 
 # 4) Phát hiện chạm hạn mức giữa chừng + ghi sổ đo usage thật
+# agy tự dừng đúng hạn và thoát 0 (khác `timeout` ngoài trả 124) ⇒ gộp về cùng một nhánh HẾT GIỜ. Hai dạng thông báo (thử 8/10):
+#   lượt đang chạy:            "print timeout after Ns with turn in progress"
+#   lượt xong, việc nền còn:   "terminating N background task(s) on exit" (agy đẩy lệnh dài xuống nền rồi bị cắt)
+grep -qE "print timeout after|terminating [0-9]+ background task" "$LOG" && RC=124
 QUOTA=0
 grep -qiE "credits balance is too low|quota (is )?(exhausted|exceeded)|RESOURCE_EXHAUSTED|rate.?limit exceeded|daily (quota|limit)" "$LOG" && QUOTA=1
 NOTE=""; [ "$QUOTA" -eq 1 ] && NOTE="limit_hit"; [ "$RC" -eq 124 ] && NOTE="${NOTE:+$NOTE,}timeout"

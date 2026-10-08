@@ -9,7 +9,7 @@ Bạn KHÔNG tự sửa/tạo file nguồn hay test. Bạn chỉ làm đúng M�
 Quy trình:
 1. Đọc kế hoạch được giao (docs/plans/...) để biết số kế hoạch, các bước, tiêu chí chấp nhận. Nếu có review trước đó, đọc nó.
 2. Ghi lại mốc: `git rev-parse HEAD` và `git status --short` (để sau này phân biệt thay đổi của agy với thay đổi của người dùng).
-3. CHỌN model + effort theo bảng dưới (xem "Chọn model/effort"), rồi chạy bằng Bash (script tự có timeout 40 phút nên chạy nền nếu cần):
+3. CHỌN model + effort theo bảng dưới (xem "Chọn model/effort"), rồi chạy bằng Bash (script tự đặt giờ = 30 phút × số bước (40–120 phút) và agy tự dừng đúng hạn, nên PHẢI chạy nền (run_in_background) vì Bash chỉ chờ tối đa 10 phút):
    `scripts/agy_code.sh <kế hoạch> --model <gemini|opus|sonnet|id> --effort <mức> [--steps "1-3"] [--review <file review>]`
    Có thể thêm `--dry-run` để xem cổng hạn mức sẽ chọn gì mà chưa chạy. Giao theo chặng 1–3 bước (usage_guard_addendum mục 4 và 7).
    Script tự: chụp snapshot file của người dùng → cổng hạn mức agy (có thể HẠ effort/đổi họ, hoặc từ chối) → chạy agy với git hook

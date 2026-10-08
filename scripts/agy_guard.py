@@ -25,6 +25,8 @@ for _s in (sys.stdout, sys.stderr):
 DEFAULT_ALLOWED_BRANCHES = ("feat/vslt-complete", "cloud/2026-10-04-level1-rearm")
 FORBIDDEN_BRANCHES = ("main", "master")
 ALWAYS_OK = ["docs/plans/*-progress.md", "docs/agy_usage_ledger.csv"]
+# File do chính cầu nối ghi (agy_usage.py record): lượt trước để lại chưa commit KHÔNG phải thay đổi của người dùng.
+BRIDGE_OWNED = ("docs/agy_usage_ledger.csv",)
 SECRET_FILES = re.compile(r"(^|/)(kaggle\.json|\.env[^/]*|id_rsa[^/]*|[^/]*\.pem)$")
 BIG_BINARY = re.compile(r"\.(pt|pth|ckpt|mp4|avi|mov|webm|mkv)$", re.I)
 NEVER_DELETE = ("data/", "reports/", "checkpoints/", "results/")
@@ -214,7 +216,7 @@ def main():
     if mode == "snapshot":
         plan, d = sys.argv[2], sys.argv[3]
         os.makedirs(d, exist_ok=True)
-        ents = {p: s for p, s in porcelain().items() if not p.startswith("_work/")}
+        ents = {p: s for p, s in porcelain().items() if not p.startswith("_work/") and p not in BRIDGE_OWNED}
         w = lambda n, s: open(os.path.join(d, n), "w", encoding="utf-8", newline="\n").write(s)
         w("protected.txt", "\n".join(ents) + "\n")
         w("scope.txt", "\n".join(read_scope(plan)) + "\n")
@@ -234,7 +236,7 @@ def main():
         now = {p: st for p, st in porcelain().items() if not p.startswith("_work/")}
         files = [p for p in now if p not in snap["porcelain"] and not in_protected(p, snap["protected"])
                  and not SECRET_FILES.search(p) and not BIG_BINARY.search(p) and match(p, snap["scope"] + ALWAYS_OK)]
-        if not files:
+        if not [p for p in files if p not in BRIDGE_OWNED]:  # chỉ có sổ đo ⇒ agy chưa làm gì, WIP chỉ là nhiễu
             print("[agy-guard] savewip: không có gì trong phạm vi để lưu")
             return 0
         git("add", "--", *files)

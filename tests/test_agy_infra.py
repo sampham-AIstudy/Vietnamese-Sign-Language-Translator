@@ -185,6 +185,76 @@ class TestGuardEndToEnd(unittest.TestCase):
         self.assertEqual(self._run("fix/z", env_allowed="fix/z").returncode, 0)
         self.assertEqual(self._run("fix/z").returncode, 1)
 
+    def _worktree_after_append(self, path):
+        """Repo tạm có `path` đã commit rồi bị sửa chưa commit TRƯỚC snapshot; sau snapshot ghi thêm 1 dòng; trả kết quả `worktree`."""
+        repo = tempfile.mkdtemp(dir=_work_dir())
+        self._git(repo, "init", "-q", "-b", CLOUD)
+        full = os.path.join(repo, *path.split("/"))
+        os.makedirs(os.path.dirname(full), exist_ok=True)
+        with open(os.path.join(repo, "plan.md"), "w", encoding="utf-8") as f:
+            f.write("```scope\nsrc/\n```\n")
+        with open(full, "w", encoding="utf-8") as f:
+            f.write("a\n")
+        self._git(repo, "add", "plan.md", path)
+        self._git(repo, "commit", "-q", "-m", "init")
+        with open(full, "a", encoding="utf-8") as f:
+            f.write("b\n")  # lượt trước để lại, chưa commit
+        script = os.path.join(ROOT, "scripts", "agy_guard.py")
+        snap = os.path.join(_work_dir(), os.path.basename(repo) + ".snap")
+        subprocess.run([sys.executable, script, "snapshot", "plan.md", snap], cwd=repo, check=True, capture_output=True)
+        with open(full, "a", encoding="utf-8") as f:
+            f.write("c\n")  # lượt này ghi thêm
+        return subprocess.run([sys.executable, script, "worktree", snap], cwd=repo, capture_output=True,
+                              text=True, encoding="utf-8", errors="replace")
+
+    def test_worktree_ledger_left_uncommitted_is_not_user_file(self):
+        # 8/10: sổ đo do chính cầu nối ghi; lượt DONE trước để lại chưa commit ⇒ lượt sau bị BLOCK nhầm (mã 21)
+        r = self._worktree_after_append("docs/agy_usage_ledger.csv")
+        self.assertEqual(r.returncode, 0, r.stderr + r.stdout)
+
+    def _savewip(self, extra_files):
+        repo = tempfile.mkdtemp(dir=_work_dir())
+        self._git(repo, "init", "-q", "-b", CLOUD)
+        os.makedirs(os.path.join(repo, "docs"))
+        with open(os.path.join(repo, "plan.md"), "w", encoding="utf-8") as f:
+            f.write("```scope\nsrc/\n```\n")
+        with open(os.path.join(repo, "docs", "agy_usage_ledger.csv"), "w", encoding="utf-8") as f:
+            f.write("h\n")
+        self._git(repo, "add", "plan.md", "docs/agy_usage_ledger.csv")  # sổ đo là file đã track, như repo thật
+        self._git(repo, "commit", "-q", "-m", "init")
+        script = os.path.join(ROOT, "scripts", "agy_guard.py")
+        snap = os.path.join(_work_dir(), os.path.basename(repo) + ".snap")
+        subprocess.run([sys.executable, script, "snapshot", "plan.md", snap], cwd=repo, check=True, capture_output=True)
+        with open(os.path.join(repo, "docs", "agy_usage_ledger.csv"), "a", encoding="utf-8") as f:
+            f.write("row\n")  # agy_usage.py record ghi thêm
+        for p in extra_files:
+            os.makedirs(os.path.dirname(os.path.join(repo, p)), exist_ok=True)
+            with open(os.path.join(repo, p), "w", encoding="utf-8") as f:
+                f.write("x\n")
+        env = dict(os.environ, GIT_AUTHOR_NAME="t", GIT_AUTHOR_EMAIL="t@t", GIT_COMMITTER_NAME="t", GIT_COMMITTER_EMAIL="t@t")
+        r = subprocess.run([sys.executable, script, "savewip", snap, "WIP 1: x"], cwd=repo, capture_output=True,
+                           text=True, encoding="utf-8", errors="replace", env=env)
+        n = subprocess.run(["git", "rev-list", "--count", "HEAD"], cwd=repo, capture_output=True, text=True).stdout.strip()
+        return r, int(n)
+
+    def test_savewip_skips_commit_when_only_ledger_changed(self):
+        # 8/10: agy bị ngắt trước khi sửa gì ⇒ commit WIP chỉ chứa sổ đo là nhiễu
+        r, n = self._savewip([])
+        self.assertEqual(r.returncode, 0, r.stderr + r.stdout)
+        self.assertEqual(n, 1, r.stdout)
+
+    def test_savewip_commits_work_together_with_ledger(self):
+        r, n = self._savewip(["src/a.py"])
+        self.assertEqual(r.returncode, 0, r.stderr + r.stdout)
+        self.assertEqual(n, 2, r.stdout)
+        self.assertIn("src/", r.stdout)  # porcelain gộp thư mục chưa track thành "src/"
+        self.assertIn("docs/agy_usage_ledger.csv", r.stdout)
+
+    def test_worktree_user_file_still_blocked(self):
+        r = self._worktree_after_append("README.md")
+        self.assertEqual(r.returncode, 1, r.stdout)
+        self.assertIn("README.md", r.stderr)
+
 
 # ----------------------------------------------------------------------------- usage: bucket disabled
 
@@ -306,6 +376,44 @@ class TestUsageGate(unittest.TestCase):
                 contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
             self.assertEqual(usage.cmd_record(1, ""), 0)
         self.assertIn(",10.0,1.0,ok", open(usage.LEDGER, encoding="utf-8").read())
+
+    def _record_with_before(self, before_five_used, before_reset, note=""):
+        old = {"gemini": {"five_used": before_five_used, "five_reset": before_reset, "week_used": 0.0,
+                          "week_reset": "2026-10-15T07:07:31Z", "disabled": False}}
+        with open(usage.BEFORE, "w", encoding="utf-8") as f:
+            json.dump({"usage": old, "group": "gemini", "model": "m", "effort": "high", "plan": "p"}, f)
+        with mock.patch.object(usage.subprocess, "run", return_value=_run_ok(_usage_json(gemini_5h=0.9, gemini_week=0.99))),                 contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(usage.cmd_record(1, note), 0)
+        return open(usage.LEDGER, encoding="utf-8").read()
+
+    def test_record_idle_window_reset_shift_is_still_measured(self):
+        # cửa sổ 5h chưa mở (dùng 0%) thì reset_time trước chạy chỉ là giá trị giữ chỗ; mở cửa sổ khi chạy làm nó đổi ⇒ vẫn là số đo thật
+        out = self._record_with_before(0.0, "2026-10-08T11:00:00Z")
+        self.assertIn(",0.0,10.0,10.0,1.0,ok", out)
+        self.assertNotIn("stale", out)
+
+    def test_fetch_retries_when_agy_still_shutting_down(self):
+        # 8/10: /usage gọi ngay sau khi agy vừa thoát trả stdout rỗng ⇒ phải thử lại thay vì ghi "stale"
+        empty = subprocess.CompletedProcess(args=["agy"], returncode=1, stdout="", stderr="busy")
+        with mock.patch.object(usage.subprocess, "run", side_effect=[empty, _run_ok(_usage_json(gemini_5h=0.9))]) as run, \
+                mock.patch.object(usage.time, "sleep") as sleep, contextlib.redirect_stderr(io.StringIO()):
+            u = usage.fetch()
+        self.assertEqual(run.call_count, 2)
+        sleep.assert_called_once()
+        self.assertEqual(u["gemini"]["five_used"], 10.0)
+
+    def test_fetch_gives_up_after_attempts(self):
+        empty = subprocess.CompletedProcess(args=["agy"], returncode=1, stdout="", stderr="busy")
+        err = io.StringIO()
+        with mock.patch.object(usage.subprocess, "run", return_value=empty) as run, \
+                mock.patch.object(usage.time, "sleep"), contextlib.redirect_stderr(err):
+            self.assertIsNone(usage.fetch())
+        self.assertEqual(run.call_count, usage.FETCH_ATTEMPTS)
+        self.assertIn("busy", err.getvalue())
+
+    def test_record_window_reset_midrun_with_usage_before_is_stale(self):
+        out = self._record_with_before(38.0, "2026-10-08T11:00:00Z")
+        self.assertIn("stale", out)
 
 
 if __name__ == "__main__":
