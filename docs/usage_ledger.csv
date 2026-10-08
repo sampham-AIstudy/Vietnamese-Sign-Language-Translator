@@ -67,3 +67,5 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-08T15:58Z,vslt-planner,15,L13a E4 decision,1,5,4,0,ok
 2026-10-08T17:20Z,vslt-coder-claude,15,L13-U1a (E4 tests + mutations),5,49,44,0,ok
 2026-10-08T18:05Z,vslt-reviewer,15,L13 U1+U1a merged review,49,62,13,0,ok
+2026-10-08T18:15Z,vslt-planner,15,L13b U2 split,62,67,5,0,ok
+2026-10-08T18:55Z,vslt-coder(agy bridge),15,L13-U2a (test TB-1),67,70,3,0,ok

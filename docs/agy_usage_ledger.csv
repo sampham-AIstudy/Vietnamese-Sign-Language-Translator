@@ -7,3 +7,4 @@ time_utc,group,model,effort,plan,steps,five_before,five_after,five_delta,week_de
 2026-10-04T08:44Z,gemini,gemini-3.8-flash-high,high,docs/plans/15-lan-sua-3.md,1,0,10.9,10.9,2.7,stale (cửa sổ 5h đã reset giữa chừng)
 2026-10-04T08:56Z,claude,claude-opus-5-5-high,high,docs/plans/15-lan-sua-3.md,1,,,0,0,stale (không đọc được usage trước/sau)
 2026-10-08T07:57Z,gemini,gemini-3.8-flash-high,high,docs/plans/15-lan-sua-13.md,2,0.0,8.0,8.0,1.3,stale (cửa sổ 5h đã reset giữa chừng) timeout
+2026-10-08T18:40Z,gemini,gemini-3.8-flash-high,high,docs/plans/15-lan-sua-13b.md,1,0.0,11.2,11.2,2.3,ok
