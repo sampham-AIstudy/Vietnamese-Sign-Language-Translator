@@ -64,3 +64,5 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-03T19:46Z,vslt-planner,15,revision 2 (tail_still spec),0,4,4,1,ok
 2026-10-04T08:20Z,vslt-planner,15,revision 3 (multi-letter rearm),0,10,10,1,ok
 2026-10-04T09:14Z,vslt-coder(agy bridge),15,R0 + A2a (A2a interrupted: agy claude weekly 429; guard 21 false positive),10,30,20,3,ok
+2026-10-08T15:58Z,vslt-planner,15,L13a E4 decision,1,5,4,0,ok
+2026-10-08T17:20Z,vslt-coder-claude,15,L13-U1a (E4 tests + mutations),5,49,44,0,ok

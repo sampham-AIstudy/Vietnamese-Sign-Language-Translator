@@ -10,7 +10,7 @@
 - LẦN SỬA 12 (cloud, 2026-10-06, theo phản hồi webcam của người dùng): `docs/plans/15-lan-sua-12.md`. Mã: ddd7904 (G1 cổng chuyển động decoder, H1 HandednessLock, config rev9), 13759a6 (script dominant_hand_check), 85a6a91 (app: tắt tự cách mặc định, --dominant-hand lock, nối cổng), 551e1b2 (G1b: không cắt chữ biến thể của chữ vừa phát). Bằng chứng: reports/level1_realtime_2026-10-06/{dominant_hand_check,rearm_check_gate,rearm_check_gate_v2}.json. CHƯA review (vslt-reviewer local). Còn: phiên webcam người dùng so rev8 và rev9.
 - HEAD: ba9e107 (+ commit state này) | Nhánh: cloud/2026-10-04-level1-rearm
 - Tắt máy: CHỈ khi người dùng yêu cầu rõ trong hội thoại (quyết định 2026-10-04 01:15; bỏ dòng công tắc cũ). Yêu cầu hiện hành: 4/10 ~01:15 "xong thì nhớ lưu và tắt máy".
-- Trạng thái phiên: 23:10 8/10 (5h dùng 5%). Planner xong lần sửa 13a (docs/plans/15-lan-sua-13a.md, commit 232c17d): ngoại lệ E4 siết chặt. ĐANG GIAO vslt-coder-claude bước U1a (chỉ sửa tests/test_level1_equivalence.py, tests/test_level1_display.py, docs/plans/15-progress.md; không sửa src/). VIỆC KẾ: cầu nối/orchestrator xác minh git+test → vslt-reviewer review gộp U1 (ea9c645) + U1a → U2 (+AC-U6b).
+- Trạng thái phiên: 00:30 9/10 (5h dùng 49%). U1a XONG acdcf63 (vslt-coder-claude; orchestrator chạy lại tests.test_level1_equivalence+display Ran 35 OK; level1 all Ran 485 OK skip 1; đột biến m1–m4 đỏ). ĐANG GIAO vslt-reviewer: review gộp U1 (ea9c645) + U1a (acdcf63) theo 15-lan-sua-13.md + 15-lan-sua-13a.md. VIỆC KẾ: APPROVE → U2 (nối app, phím f, --fullscreen, AC-U6b). LƯU Ý: ghi docs/**/*.md bằng LF (test_w0_ls_files_eol_no_crlf).
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
