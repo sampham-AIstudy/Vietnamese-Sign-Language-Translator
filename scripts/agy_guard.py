@@ -10,6 +10,8 @@ Chế độ:
 
 Phạm vi cho phép = khối ```scope trong kế hoạch (mỗi dòng 1 glob; `*` khớp cả '/'; kết thúc bằng '/' = cả thư mục).
 Không có khối scope → chỉ áp luật cứng (file của người dùng, test, bí mật, dữ liệu) và cảnh báo "ngoài phạm vi: không xác định".
+Nhánh: chỉ commit trên nhánh trong DEFAULT_ALLOWED_BRANCHES (hoặc AGY_ALLOWED_BRANCHES="a,b"; không bao giờ main/master)
+và đúng nhánh lúc snapshot (file `branch` trong <dir>; snapshot cũ không có file này thì bỏ qua điều kiện sau).
 Mã thoát: 0 sạch, 1 vi phạm (BLOCK), 0 + in WARN nếu chỉ cảnh báo.
 """
 import fnmatch, hashlib, json, os, re, subprocess, sys
@@ -18,7 +20,10 @@ for _s in (sys.stdout, sys.stderr):
     if hasattr(_s, "reconfigure"):
         _s.reconfigure(encoding="utf-8")
 
-BRANCH = "feat/vslt-complete"
+# Nhánh agy được commit lên. Ghi đè (THAY danh sách) bằng AGY_ALLOWED_BRANCHES="a,b" — đặt ở tiến trình gọi agy_code.sh.
+# main/master và mẫu glob (* ? [) không bao giờ được chấp nhận, kể cả qua biến môi trường.
+DEFAULT_ALLOWED_BRANCHES = ("feat/vslt-complete", "cloud/2026-10-04-level1-rearm")
+FORBIDDEN_BRANCHES = ("main", "master")
 ALWAYS_OK = ["docs/plans/*-progress.md", "docs/agy_usage_ledger.csv"]
 SECRET_FILES = re.compile(r"(^|/)(kaggle\.json|\.env[^/]*|id_rsa[^/]*|[^/]*\.pem)$")
 BIG_BINARY = re.compile(r"\.(pt|pth|ckpt|mp4|avi|mov|webm|mkv)$", re.I)
@@ -114,9 +119,30 @@ def integrity_hashes():
     return h
 
 
+def allowed_branches(env=None):
+    """Danh sách nhánh cho phép: AGY_ALLOWED_BRANCHES (phân tách dấu phẩy) nếu có giá trị, ngược lại mặc định."""
+    env = os.environ if env is None else env
+    raw = (env.get("AGY_ALLOWED_BRANCHES") or "").strip()
+    names = [b.strip() for b in raw.split(",")] if raw else list(DEFAULT_ALLOWED_BRANCHES)
+    return [b for b in names if b and b not in FORBIDDEN_BRANCHES and not re.search(r"[*?\[\]\s]", b)]
+
+
+def branch_problem(br, allowed, snap_branch=None):
+    """None nếu nhánh hiện tại hợp lệ; ngược lại là lý do BLOCK (nêu danh sách cho phép)."""
+    ok = [b for b in allowed if b not in FORBIDDEN_BRANCHES]
+    if not br or br not in ok:
+        return (f"sai nhánh: '{br or '(HEAD rời)'}' — chỉ cho phép: {', '.join(ok) or '(không có)'}"
+                f" (đổi bằng AGY_ALLOWED_BRANCHES; main/master luôn bị cấm)")
+    if snap_branch and br != snap_branch:
+        return f"đổi nhánh giữa chừng: snapshot chụp trên '{snap_branch}', giờ là '{br}'"
+    return None
+
+
 def load(d):
     L = lambda n: [l for l in open(os.path.join(d, n), encoding="utf-8").read().split("\n") if l]
+    bp = os.path.join(d, "branch")
     return {
+        "branch": (open(bp, encoding="utf-8").read().strip() or None) if os.path.exists(bp) else None,
         "protected": L("protected.txt"), "scope": L("scope.txt"),
         "base": open(os.path.join(d, "base"), encoding="utf-8").read().strip(),
         "hashes": json.load(open(os.path.join(d, "hashes.json"), encoding="utf-8")),
@@ -134,8 +160,9 @@ def check_diff(diff_args, snap):
     block, warn = [], []
     scope = snap["scope"]
     br = git("branch", "--show-current").strip()
-    if br != BRANCH:
-        block.append(f"sai nhánh: '{br}' (phải là {BRANCH})")
+    bad = branch_problem(br, allowed_branches(), snap.get("branch"))
+    if bad:
+        block.append(bad)
     for st, f in diff_files(diff_args):
         if in_protected(f, snap["protected"]):
             block.append(f"{f}: là thay đổi chưa commit của NGƯỜI DÙNG — không được commit")
@@ -195,7 +222,12 @@ def main():
         w("hashes.json", json.dumps({p: hash_path(p) for p in ents}))
         w("integrity.json", json.dumps(integrity_hashes()))
         w("porcelain.json", json.dumps(ents))
-        print(f"[agy-guard] snapshot: {len(ents)} đường dẫn của người dùng được bảo vệ, scope={len(read_scope(plan))} mẫu")
+        br = git("branch", "--show-current").strip()
+        w("branch", br + "\n")
+        bad = branch_problem(br, allowed_branches())
+        if bad:
+            print(f"[agy-guard] WARN  {bad} — mọi commit của agy trên nhánh này sẽ bị BLOCK")
+        print(f"[agy-guard] snapshot: {len(ents)} đường dẫn của người dùng được bảo vệ, scope={len(read_scope(plan))} mẫu, nhánh '{br}'")
         return 0
     snap = load(sys.argv[2])
     if mode == "savewip":

@@ -19,8 +19,9 @@ import csv, datetime as dt, json, os, subprocess, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import agy_pick_model as pm  # noqa: E402
 
-if hasattr(sys.stdout, "reconfigure"):
-    sys.stdout.reconfigure(encoding="utf-8")
+for _s in (sys.stdout, sys.stderr):
+    if hasattr(_s, "reconfigure"):
+        _s.reconfigure(encoding="utf-8")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LEDGER = os.path.join(ROOT, "docs", "agy_usage_ledger.csv")
@@ -38,6 +39,25 @@ DEFAULT_WEEK_RATIO = 1.0  # chưa đo: coi 1 điểm 5h = 1 điểm tuần (th�
 VN = dt.timezone(dt.timedelta(hours=7))
 
 
+def _bucket(b):
+    """(đã dùng %, reset) của một bucket; None nếu bucket {"disabled": true}, thiếu, hoặc thiếu trường (không dùng được)."""
+    if not isinstance(b, dict) or b.get("disabled") or "remaining_fraction" not in b or not b.get("reset_time"):
+        return None
+    return round(100 * (1 - float(b["remaining_fraction"])), 1), b["reset_time"]
+
+
+def _group(g):
+    """Một nhóm model. Bucket disabled/thiếu ⇒ cả nhóm KHÔNG DÙNG ĐƯỢC: dùng = 100, cờ disabled; reset nào đọc được thì giữ."""
+    b = {x.get("window"): x for x in g.get("buckets", []) if isinstance(x, dict)}
+    five, week = _bucket(b.get("5h")), _bucket(b.get("weekly"))
+    disabled = five is None or week is None
+    return {
+        "five_used": 100.0 if disabled else five[0], "five_reset": five[1] if five else None,
+        "week_used": 100.0 if disabled else week[0], "week_reset": week[1] if week else None,
+        "disabled": disabled,
+    }
+
+
 def fetch():
     try:
         r = subprocess.run(["agy", "-p", "/usage", "--output-format", "json"], capture_output=True, text=True,
@@ -46,11 +66,9 @@ def fetch():
         out = {}
         for g in data["command"]["data"]["groups"]:
             name = "gemini" if "gemini" in g["name"].lower() else "claude"
-            b = {x["window"]: x for x in g["buckets"]}
-            out[name] = {
-                "five_used": round(100 * (1 - b["5h"]["remaining_fraction"]), 1), "five_reset": b["5h"]["reset_time"],
-                "week_used": round(100 * (1 - b["weekly"]["remaining_fraction"]), 1), "week_reset": b["weekly"]["reset_time"],
-            }
+            out[name] = _group(g)
+            if out[name]["disabled"]:
+                print(f"[agy-usage] nhóm {name}: bucket disabled/thiếu số — coi là KHÔNG DÙNG ĐƯỢC", file=sys.stderr)
         return out if out else None
     except Exception as e:  # noqa: BLE001
         print(f"[agy-usage] không đọc được /usage: {e}", file=sys.stderr)
@@ -58,6 +76,8 @@ def fetch():
 
 
 def vn(ts):
+    if not ts:
+        return "?"
     return dt.datetime.fromisoformat(ts.replace("Z", "+00:00")).astimezone(VN).strftime("%H:%M %d/%m")
 
 
@@ -100,6 +120,9 @@ def cmd_status():
         print("hạn mức agy: KHÔNG BIẾT")
         return 21
     for g, v in u.items():
+        if v.get("disabled"):
+            print(f"{g:7s} disabled — KHÔNG DÙNG ĐƯỢC (bucket bị tắt/thiếu số; reset 5h {vn(v['five_reset'])}, tuần {vn(v['week_reset'])})")
+            continue
         print(f"{g:7s} 5h dùng {v['five_used']:5.1f}% (reset {vn(v['five_reset'])}) | tuần dùng {v['week_used']:5.1f}% (reset {vn(v['week_reset'])})")
     return 0
 
@@ -123,6 +146,12 @@ def cmd_choose(pref, effort, steps, plan):
     for fam, eff in cands:
         g = group_of(fam)
         if g not in u:
+            continue
+        if u[g].get("disabled"):  # nhóm bị tắt: bỏ qua, chỉ nhớ mốc reset (nếu có) cho thông báo WAIT
+            why.append((g, eff, "disabled"))
+            r = u[g].get("week_reset") or u[g].get("five_reset")
+            if r:
+                waits.append(r)
             continue
         mid, flag = pm.pick(fam, eff) if fam in ("gemini", "opus", "sonnet") else (fam, "")
         e5, ew, src = estimate(g, eff if eff in LADDER else "high", steps)
@@ -150,6 +179,8 @@ def cmd_record(steps, note):
     g = b["group"]
     if not b.get("usage") or not after or g not in after:
         q, f0, f1, d5, dw = "stale (không đọc được usage trước/sau)", "", "", 0, 0
+    elif not b["usage"].get(g) or b["usage"][g].get("disabled") or after[g].get("disabled"):
+        q, f0, f1, d5, dw = "stale (nhóm disabled trước/sau — không có số đo)", "", "", 0, 0
     else:
         f0, f1 = b["usage"][g]["five_used"], after[g]["five_used"]
         w0, w1 = b["usage"][g]["week_used"], after[g]["week_used"]
