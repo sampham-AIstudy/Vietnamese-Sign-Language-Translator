@@ -4,13 +4,11 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- 2026-10-08 planner: CẦN PLANNER (E3 resize) đã xử lý — docs/plans/15-lan-sua-13a.md: ngoại lệ E4 (đúng 1 cv2.resize ảnh hiển thị trong render_to_window) + siết bí danh/động; kế tiếp U1a (vslt-coder-claude) → review gộp U1+U1a → U2 (+AC-U6b).
-- ĐANG LÀM: Lần sửa 13 (`docs/plans/15-lan-sua-13.md`) — U1 xong (commit `15: L13-U1`, chờ review); CẦN PLANNER: test E3 tĩnh
-  (`tests.test_level1_equivalence` cấm mọi lời gọi `resize` trong `src/inference/level1_*.py`) mâu thuẫn §2.2 (render_to_window dùng
-  `cv2.resize`) + AC-U6 (E3 xanh không sửa) — xem mục U1. Kế tiếp: U2.
+- 2026-10-09 U2a xong (commit `15: L13-U2a test TB-1 overlay co giãn (AC-U7/U7m)`), TB-1 test AC-U7 đạt, đột biến m9–m12 đỏ (AC-U7m). Chờ reviewer U2a. Kế tiếp: U2b (vslt-coder-claude).
+- ĐANG LÀM: U2a — hoàn tất commit và báo cáo U2a.
 - Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a). R1 (commit `15: R1` trên nhánh cloud; CHỜ LOCAL: AC-S18 + S18b trên clip thật). A2b (`71fc664` mã + `4b5d736` config; AC-W3 đạt).
-  Lần sửa 13: M0 (5a32cff; ghi chép sửa ở commit U1), U1 (commit `15: L13-U1`).
-- Còn lại (lần sửa 13): U2, G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5.
+  Lần sửa 13: M0 (5a32cff; ghi chép sửa ở commit U1), U1 (commit `15: L13-U1`), U1a (commit `acdcf63`), U2a.
+- Còn lại (lần sửa 13): U2b, U2c, U2d, X1, G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5.
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -1503,5 +1501,34 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   mức module ở file KHÁC không bị cấm (kế hoạch chỉ cấm lồng) — resize ở đó vẫn bị cấm.
 - Sau khi ghi mục này: 2 module test đọc file này `python -m unittest tests.test_level1_demo tests.test_level1_rearm_check` →
   `_work/_plan15_l13/u1a_progress_check.log`: `Ran 186 tests in 660.087s` — `OK`; `tests.test_level1_gitattributes` → `OK`.
+
+## U2a — test TB-1 (AC-U7) + đột biến m9–m12 (AC-U7m) (2026-10-09)
+- Mục tiêu: Khóa lỗ hổng TB-1 bằng test thanh hold và dòng thống kê ở scale ≠ 1 (AC-U7), xác minh bằng 4 đột biến m9–m12 phải đỏ trong worktree tạm (AC-U7m). Không sửa `src/`, không sửa `level1_demo.py`.
+- File sửa: `tests/test_level1_display.py` (thêm lớp `TestU2OverlaysScaled` gồm 8 test H1–H4, S1–S4; numstat `117 0`, 0 xóa), `docs/plans/15-progress.md`.
+- AC-U7:
+  - Lệnh: `python -m unittest tests.test_level1_display -v` → `_work/_plan15_l13/u2a_green_display.log`: `Ran 30 tests in 21.533s` — `OK` (22 test có sẵn + 8 test mới).
+  - Chi tiết 8 test của `TestU2OverlaysScaled` (cam 640×480, panel 200, view (90,90,90), panel builder trả nền BG (40,40,40), cửa sổ (1920, 1080) s ≈ 1.588 và (1280, 1360) s = 2.0):
+    - H1 (`test_u7_h1_hold_full_scaled`): hold 1.0, stats=[]: mọi pixel `canvas[py : py + scaled_px(3, s), px : px + cw] == HOLD_BAR_BGR`.
+    - H2 (`test_u7_h2_hold_half_scaled`): hold 0.5: mọi pixel `canvas[py : py + scaled_px(3, s), px : px + int(cw * 0.5)] == HOLD_BAR_BGR`; hàng `py`, cột `[px + int(cw * 0.5) + 2, px + cw)` không có pixel `HOLD_BAR_BGR`.
+    - H3 (`test_u7_h3_hold_height_exact_scaled`): hold 1.0: hàng `py + scaled_px(3, s) + 1` không có pixel `HOLD_BAR_BGR` (chiều cao thanh co giãn đúng, không dày hơn).
+    - H4 (`test_u7_h4_hold_zero_no_bar`): hold 0: không pixel nào của `canvas == HOLD_BAR_BGR`.
+    - S1 (`test_u7_s1_stats_bottom_half_and_color`): hold 0, stats=["fps 30.0 | hud 1.2ms"]: tập D khác BG có |D| > 0 (1680 pixel ở 1080p, 2542 ở 1280×1360); mọi hàng của D ≥ `py + ph // 2`; có pixel của D với khoảng cách kênh tới `STATS_BGR` ≤ 8.
+    - S2 (`test_u7_s2_stats_empty_no_diff`): hold 0, stats=[]: |D| == 0.
+    - S3 (`test_u7_s3_stats_font_height_scaled`): chiều cao chữ: span(1280×1360, s = 2) = 29, span(tự nhiên, s = 1) = 15; ratio = 1.9333 ∈ [1.6, 2.4].
+    - S4 (`test_u7_s4_outside_pixels_zero`): hold 1.0 + stats S1: mọi pixel ngoài vùng nội dung == 0.
+- AC-U7m (đột biến trên worktree tạm `_work/_plan15_l13/wt_u2a` tại commit 95598eb + chép `tests/test_level1_display.py` sha256 `a7f9922f912dc737d9c211c5979fa94e1a10af748d043b0620bfaaeb902d1144`; chạy qua `_work/_plan15_l13/u2a_mutate.py`; đã xóa worktree bằng `git worktree remove` + `prune`):
+  - base (`u2a_mut_base.log`): `Ran 30 tests in 21.454s` — `OK`.
+  - m9 (`:163` chỉ gọi `draw_panel_overlays` khi `layout.scale == 1.0`) `u2a_mut_m9.log`: `Ran 30 tests in 21.666s` — `FAILED (failures=6, errors=1)`.
+  - m10 (chiều cao thanh hold dùng `HOLD_BAR_HEIGHT` thay `scaled_px(HOLD_BAR_HEIGHT, scale)`) `u2a_mut_m10.log`: `Ran 30 tests in 21.653s` — `FAILED (failures=2)`.
+  - m11 (cỡ chữ thống kê `STATS_FONT_SCALE` thay `STATS_FONT_SCALE * scale`) `u2a_mut_m11.log`: `Ran 30 tests in 21.599s` — `FAILED (failures=1)`.
+  - m12 (`:163` truyền `1.0` thay `layout.scale`) `u2a_mut_m12.log`: `Ran 30 tests in 21.600s` — `FAILED (failures=3)`.
+  - Toàn bộ 4 đột biến đều ĐỎ đúng yêu cầu, base XANH. Bằng chứng bắt lỗi hoàn tất.
+- AC-U2P (toàn bộ suite Level 1):
+  - Lệnh: `python -m unittest $(ls tests/test_level1_*.py | sed 's#/#.#; s#\.py$##') tests.test_backend_source_guard` → `_work/_plan15_l13/u2a_green_level1_all.log`: `Ran 493 tests in 493.358s` — `OK (skipped=1)` (493 = 485 của U1a + 8 test mới của AC-U7); `[DoD7-guard] known=9 allowed=36`; `[scope] serving=45 main=61`.
+- AC-U9:
+  - `git diff d1a8308..HEAD -- level1_demo.py scripts/level1_display_cost.py src/` = rỗng.
+  - `git diff --stat d1a8308..HEAD -- src/` = rỗng.
+  - `sha256(checkpoints/alphabet_best.pt)` = `160e0c6825e365ba3d5481e2fd4d18423cf501c655aec618a453c524d8a17899`.
+- numstat: `git diff --numstat d1a8308..HEAD` đối với `tests/test_level1_display.py` là `117 0` (0 dòng xóa).
 
 > LẦN SỬA 13b (2026-10-09): xem docs/plans/15-lan-sua-13b.md — U2 chia U2a (agy, test TB-1) → U2b (Claude, nối cửa sổ + AC-U6b) → U2c (agy, phím f/cờ/LRU) → U2d (agy, đo DC1); X1 chẩn đoán test_reset trước V1.

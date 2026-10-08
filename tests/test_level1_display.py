@@ -448,5 +448,122 @@ class TestRenderToWindowInputUnchanged(unittest.TestCase):
                         self._check(layout, resized, builder, stats, hold, 900 + len(stats))
 
 
+
+# ------------------------------------------------------------------------------------------------------------ AC-U7
+class TestU2OverlaysScaled(unittest.TestCase):
+    """AC-U7 (U2a, TB-1): scaled hold bar and live stats lines in render_to_window."""
+
+    CAM_W, CAM_H = 640, 480
+    PANEL_H = 200
+    BG = (40, 40, 40)
+    WINDOWS = ((1920, 1080), (1280, 1360))
+
+    def setUp(self):
+        self.view = np.full((self.CAM_H, self.CAM_W, 3), 90, dtype=np.uint8)
+
+    def _panel_builder(self, w: int, h: int, scale: float, n_stats: int):
+        panel = np.full((h, w, 3), self.BG, dtype=np.uint8)
+        return panel, disp.scaled_px(18, scale)
+
+    def test_u7_h1_hold_full_scaled(self):
+        for W, H in self.WINDOWS:
+            with self.subTest(win=(W, H)):
+                L = disp.fit_layout(self.CAM_W, self.CAM_H, self.PANEL_H, W, H)
+                s = L.scale
+                px, py, cw, _ = L.panel_rect[0], L.panel_rect[1], L.content_w, L.panel_rect[3]
+                canvas = disp.render_to_window(self.view, self._panel_builder, [], 1.0, L)
+                bar = canvas[py : py + disp.scaled_px(3, s), px : px + cw]
+                self.assertTrue(np.all(bar == disp.HOLD_BAR_BGR))
+
+    def test_u7_h2_hold_half_scaled(self):
+        for W, H in self.WINDOWS:
+            with self.subTest(win=(W, H)):
+                L = disp.fit_layout(self.CAM_W, self.CAM_H, self.PANEL_H, W, H)
+                s = L.scale
+                px, py, cw, _ = L.panel_rect[0], L.panel_rect[1], L.content_w, L.panel_rect[3]
+                canvas = disp.render_to_window(self.view, self._panel_builder, [], 0.5, L)
+                bar = canvas[py : py + disp.scaled_px(3, s), px : px + int(cw * 0.5)]
+                self.assertTrue(np.all(bar == disp.HOLD_BAR_BGR))
+                rest = canvas[py, px + int(cw * 0.5) + 2 : px + cw]
+                has_bar = np.any(np.all(rest == disp.HOLD_BAR_BGR, axis=-1))
+                self.assertFalse(has_bar)
+
+    def test_u7_h3_hold_height_exact_scaled(self):
+        for W, H in self.WINDOWS:
+            with self.subTest(win=(W, H)):
+                L = disp.fit_layout(self.CAM_W, self.CAM_H, self.PANEL_H, W, H)
+                s = L.scale
+                px, py, cw, _ = L.panel_rect[0], L.panel_rect[1], L.content_w, L.panel_rect[3]
+                canvas = disp.render_to_window(self.view, self._panel_builder, [], 1.0, L)
+                row = canvas[py + disp.scaled_px(3, s) + 1, px : px + cw]
+                has_bar = np.any(np.all(row == disp.HOLD_BAR_BGR, axis=-1))
+                self.assertFalse(has_bar)
+
+    def test_u7_h4_hold_zero_no_bar(self):
+        for W, H in self.WINDOWS:
+            with self.subTest(win=(W, H)):
+                L = disp.fit_layout(self.CAM_W, self.CAM_H, self.PANEL_H, W, H)
+                canvas = disp.render_to_window(self.view, self._panel_builder, [], 0.0, L)
+                has_bar = np.any(np.all(canvas == disp.HOLD_BAR_BGR, axis=-1))
+                self.assertFalse(has_bar)
+
+    def test_u7_s1_stats_bottom_half_and_color(self):
+        for W, H in self.WINDOWS:
+            with self.subTest(win=(W, H)):
+                L = disp.fit_layout(self.CAM_W, self.CAM_H, self.PANEL_H, W, H)
+                px, py, cw, ph = L.panel_rect[0], L.panel_rect[1], L.content_w, L.panel_rect[3]
+                canvas = disp.render_to_window(self.view, self._panel_builder, ["fps 30.0 | hud 1.2ms"], 0.0, L)
+                panel_region = canvas[py : py + ph, px : px + cw]
+                diff = np.any(panel_region != self.BG, axis=-1)
+                d_rows, _ = np.where(diff)
+                self.assertGreater(len(d_rows), 0)
+                self.assertTrue(np.all(d_rows + py >= py + ph // 2))
+                d_pixels = panel_region[diff]
+                channel_diff = np.abs(d_pixels.astype(np.int32) - np.array(disp.STATS_BGR, dtype=np.int32))
+                max_channel_diff = np.max(channel_diff, axis=1)
+                self.assertTrue(np.any(max_channel_diff <= 8))
+
+    def test_u7_s2_stats_empty_no_diff(self):
+        for W, H in self.WINDOWS:
+            with self.subTest(win=(W, H)):
+                L = disp.fit_layout(self.CAM_W, self.CAM_H, self.PANEL_H, W, H)
+                px, py, cw, ph = L.panel_rect[0], L.panel_rect[1], L.content_w, L.panel_rect[3]
+                canvas = disp.render_to_window(self.view, self._panel_builder, [], 0.0, L)
+                panel_region = canvas[py : py + ph, px : px + cw]
+                diff = np.any(panel_region != self.BG, axis=-1)
+                self.assertEqual(int(np.count_nonzero(diff)), 0)
+
+    def test_u7_s3_stats_font_height_scaled(self):
+        stats = ["fps 30.0 | hud 1.2ms"]
+
+        L_nat = disp.fit_layout(self.CAM_W, self.CAM_H, self.PANEL_H)
+        px_nat, py_nat, cw_nat, ph_nat = L_nat.panel_rect[0], L_nat.panel_rect[1], L_nat.content_w, L_nat.panel_rect[3]
+        out_nat = disp.render_to_window(self.view, self._panel_builder, stats, 0.0, L_nat)
+        panel_nat = out_nat[py_nat : py_nat + ph_nat, px_nat : px_nat + cw_nat]
+        diff_nat = np.any(panel_nat != self.BG, axis=-1)
+        rows_nat = np.where(diff_nat)[0]
+        span_nat = int(rows_nat.max() - rows_nat.min() + 1)
+
+        L_2 = disp.fit_layout(self.CAM_W, self.CAM_H, self.PANEL_H, 1280, 1360)
+        px_2, py_2, cw_2, ph_2 = L_2.panel_rect[0], L_2.panel_rect[1], L_2.content_w, L_2.panel_rect[3]
+        out_2 = disp.render_to_window(self.view, self._panel_builder, stats, 0.0, L_2)
+        panel_2 = out_2[py_2 : py_2 + ph_2, px_2 : px_2 + cw_2]
+        diff_2 = np.any(panel_2 != self.BG, axis=-1)
+        rows_2 = np.where(diff_2)[0]
+        span_2 = int(rows_2.max() - rows_2.min() + 1)
+
+        ratio = span_2 / span_nat
+        self.assertGreaterEqual(ratio, 1.6)
+        self.assertLessEqual(ratio, 2.4)
+
+    def test_u7_s4_outside_pixels_zero(self):
+        for W, H in self.WINDOWS:
+            with self.subTest(win=(W, H)):
+                L = disp.fit_layout(self.CAM_W, self.CAM_H, self.PANEL_H, W, H)
+                canvas = disp.render_to_window(self.view, self._panel_builder, ["fps 30.0 | hud 1.2ms"], 1.0, L)
+                self.assertEqual(int(np.count_nonzero(canvas[_outside_mask(L)])), 0)
+
+
 if __name__ == "__main__":
     unittest.main()
+
