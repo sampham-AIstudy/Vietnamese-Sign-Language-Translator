@@ -412,6 +412,15 @@
 
 - (2026-10-02 20:10) "triển khai xong đến mức thì lưu lại và tắt máy" — ĐÃ BỊ THAY bởi quyết định 20:15 ngay dưới.
 
+- (2026-10-08 ~10:00) SAU REVIEW 15 PHẦN A (docs/reviews/15-review.md): người dùng thử `level1_demo.py` (preset mặc định) và `--checkpoint checkpoints/alphabet_best_v6.pt`
+  thấy "khá ổn" ⇒ (1) GIỮ preset mặc định hiện tại (rev9, làm mượt, conf 0.55, cử chỉ space/backspace) — vẫn phải ghi Giới hạn: lệch tiền xử lý train/realtime chưa
+  đo đồng thuận, cử chỉ kích hoạt nhầm (thăm dò 24/640 backspace, 8/640 space trên clip train), rev9 trượt G5; (2) GÕ KIỂU UNIKEY: giữ DIACRITIC_FUSION (cần sửa cho đúng
+  Unikey thật — "thuở"→"thử", "quơ"→"qư" là lỗi — và ghi nguồn/dự đoán gốc của model cho truy vết DoD 6); (3) MODEL CHỮ CÁI MẶC ĐỊNH = v6 (sha 160e0c68…, output kernel
+  phmvnsm33/vsl-train-alphabet v6) — quyết định người dùng thay GATE; orchestrator đã chép checkpoints/alphabet_best_v6.pt → checkpoints/alphabet_best.pt lúc 10:05
+  (bản trước = v5 9c9e8960, còn ở alphabet_best_v5.pt; gốc a6311820 ở alphabet_best_2026-09-27.pt). Ghi rõ trong báo cáo: v6 đã train trên user1 (kết quả người dùng
+  tự thử không phải "chưa thấy"); QIPEDC 46 clip v6 top-1 23 vs v5 25, top-3 65.2 vs 73.9. (4) 84 npz landmark user1 (1.28 MB, đã commit; repo GitHub PUBLIC; 84 mp4
+  KHÔNG commit): chờ người dùng quyết sau khi giải thích.
+
 - (2026-10-08) CODE DO agy + GEMINI VIẾT: sau MỖI bước, (1) cầu nối vslt-coder xác minh độc lập (đọc diff, đối chiếu số với JSON, chạy lại test AC, scope, tests/ chỉ thêm),
   (2) vslt-reviewer kiểm riêng bước đó TRƯỚC khi giao bước kế; sửa ngay trong bước. Logic phức tạp (segmenter, decoder, hiệu chỉnh) ưu tiên Opus/Claude trong agy khi
   nhóm đó còn hạn mức. Lý do: "sửa chỗ này lỗi chỗ khác rất mất thời gian".
