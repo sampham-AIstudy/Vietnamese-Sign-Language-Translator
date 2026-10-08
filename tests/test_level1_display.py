@@ -404,5 +404,49 @@ class TestScaledPanelAcU3(unittest.TestCase):
             self.assertEqual(tt.call_count, first)  # scale 1.0 uses the fonts made by __init__
 
 
+# ------------------------------------------------------------------------------------------------------- E4 item 5
+class TestRenderToWindowInputUnchanged(unittest.TestCase):
+    """Plan 15-lan-sua-13a §3.2 item 5 (exception E4, dynamic part): render_to_window never modifies the display image
+    it is given and returns a new image (no shared memory), on the copy branch (natural layout) and on the resize
+    branch (1920x1080 window)."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font_path, cls.font_size = _font()
+
+    def _check(self, layout, resized, builder, stats, hold, seed):
+        view = _view(seed)
+        before = view.copy()
+        out = disp.render_to_window(view, builder, stats, hold, layout)
+        self.assertTrue(np.array_equal(view, before))
+        self.assertFalse(np.shares_memory(out, view))
+        self.assertEqual(out.shape, (layout.win_h, layout.win_w, 3))
+        x, y, w, h = layout.cam_rect
+        self.assertEqual((w, h) != (view.shape[1], view.shape[0]), resized)  # the branch under test is taken
+        expected = cv2.resize(before, (w, h), interpolation=cv2.INTER_LINEAR) if resized else before
+        self.assertTrue(np.array_equal(out[y:y + h, x:x + w], expected))
+        # a read-only view: any write into the input would raise
+        ro = before.copy()
+        ro.flags.writeable = False
+        out_ro = disp.render_to_window(ro, builder, stats, hold, layout)
+        self.assertTrue(np.array_equal(out_ro, out))
+        self.assertTrue(np.array_equal(ro, before))
+
+    def test_e4_input_unchanged_copy_and_resize_branch(self):
+        hud = app_mod.Hud(self.font_path, self.font_size)
+
+        def solid_panel(width, height, scale, n_stats):
+            return np.full((height, width, 3), 200, np.uint8), max(1, int(14 * scale))
+
+        for tv, small, stats, hold in [(VIEWS[1], [HINT, "gợi ý"], ["p50 1", "p50 2"], 0.3), (VIEWS[0], [], [], 1.0),
+                                       (VIEWS[2], SMALLS[2], ["p50 1"], 0.0)]:
+            ph = hud.panel_height(tv, small, len(stats))
+            for win, resized in [((None,), False), ((CAM_W, CAM_H + ph), False), ((1920, 1080), True)]:
+                layout = disp.fit_layout(CAM_W, CAM_H, ph, *win)
+                for bname, builder in [("hud", hud.panel_builder(tv, small)), ("solid", solid_panel)]:
+                    with self.subTest(view=type(tv).__name__, win=win, builder=bname):
+                        self._check(layout, resized, builder, stats, hold, 900 + len(stats))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1424,3 +1424,82 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   tròn xuống (không `int(round(font×scale)×1.35)`) để panel vừa ô; font = round(font_size × scale) đúng AC-U3; (c) độ dày nét dòng thống kê
   = max(1, round(scale)) (kế hoạch chỉ nói cỡ 0.45 × scale); (d) builder sai kích thước ⇒ ValueError (lỗi lập trình, không cắt/đệm âm thầm).
 - 2026-10-08 planner: CẦN PLANNER (E3 resize) đã xử lý — docs/plans/15-lan-sua-13a.md: ngoại lệ E4 (đúng 1 cv2.resize ảnh hiển thị trong render_to_window) + siết bí danh/động; kế tiếp U1a (vslt-coder-claude) → review gộp U1+U1a → U2 (+AC-U6b).
+
+## Lần sửa 13a — U1a (2026-10-09, vslt-coder-claude; `docs/plans/15-lan-sua-13a.md`, ngoại lệ E4)
+- Phạm vi: `tests/test_level1_equivalence.py` (xóa đúng 2 dòng: docstring `:16` và `:273` của `ea9c645`; còn lại THÊM), `tests/test_level1_display.py`
+  (chỉ thêm), file này. KHÔNG sửa `src/`, `level1_demo.py`, `backend/`, `configs/`. `_calls` không đổi.
+- Nội dung: hằng mức module `E4_FILE`, `E4_FUNC`, `E4_RESIZE_CALLS = [("cv2.resize", "resize", "render_to_window")]` (chú thích "ngoại lệ E4 —
+  15-lan-sua-13a"); `:273` thành nhánh `resizes == (E4_RESIZE_CALLS if rel == E4_FILE else [])`; hàm thuần `_e4_violations(rel, source)`
+  (§3.2 mục 1–4: resize theo `_calls`; `render_to_window` đúng 1 lần ở mức module, không lồng ở mọi file; lời gọi E4 trong khoảng dòng của hàm,
+  đúng 2 đối số vị trí, đối số 1 = `Name` tham số thứ nhất, keyword ⊆ {interpolation}; cấm `from cv2 import`, `import cv2 as`, `getattr(cv2, …)`,
+  tham chiếu trần `cv2.{resize,flip,warpAffine,warpPerspective,remap,pyrDown,pyrUp}`, gọi `cv2.{warpAffine,warpPerspective,remap,pyrDown,pyrUp}`;
+  `level1_display.py`: import gốc ⊆ {__future__, dataclasses, typing, math, cv2, numpy}, không `.process(...)`, không Name/Attribute
+  `HandLandmarkSession`/`mediapipe`/`Hands`); lớp mới `TestEquivalenceE4Display` (4 test); lớp mới
+  `tests/test_level1_display.py::TestRenderToWindowInputUnchanged` (§3.2 mục 5: nhánh chép — layout tự nhiên `None` và `(640, 480+panel)` —
+  và nhánh resize 1920×1080, builder Hud thật + panel đặc; `array_equal(view, bản chép)`, `not np.shares_memory(out, view)`, vùng camera ==
+  view / `cv2.resize(view)`, thêm lần chạy với view chỉ-đọc `writeable=False`).
+- Impact (GitNexus CLI, chỉ mục làm mới `analyze --index-only` lúc bắt đầu; FTS lỗi, đồ thị OK) → `_work/_plan15_l13/u1a_impact.log`:
+  `test_e3_no_hands_resize_flip_outside_display` CRITICAL (70 direct), `render_to_window` CRITICAL (197 direct), `_calls` CRITICAL (1 direct =
+  `test_e3_no_hands_resize_flip_outside_display`), `TestEquivalenceE3Static` UNKNOWN. Hai CRITICAL đầu: đích không giải được (type rỗng) ⇒ ghép
+  trùng tên với `scripts/*`, `clone/*` (dương tính giả). Xác nhận bằng grep: test do unittest gọi, không mã nào gọi; `_calls` chỉ 2 test E3 dùng
+  (không đổi); `render_to_window` không sửa (U1a không đụng `src/`).
+- ĐỎ (AC-E4f; lớp test mới viết TRƯỚC, chưa có `_e4_violations`, `:273` chưa sửa) → `_work/_plan15_l13/u1a_red.log`:
+  `python -m unittest tests.test_level1_equivalence.TestEquivalenceE3Static tests.test_level1_equivalence.TestEquivalenceE4Display
+  tests.test_level1_display.TestRenderToWindowInputUnchanged -v` → `Ran 8 tests` — `FAILED (failures=1, errors=28)`: 27 × `NameError: name
+  '_e4_violations' is not defined` (20 ca xấu + 6 file thật + 1 nguồn hợp lệ, đếm subTest), 1 × `NameError: name 'E4_FILE' is not defined`,
+  FAIL `test_e3_no_hands_resize_flip_outside_display [src/inference/level1_display.py]` (`[('cv2.resize', 'resize', 'render_to_window')] != []`).
+  `TestRenderToWindowInputUnchanged` đã `ok` ở log đỏ (mã U1 vốn không sửa đầu vào — test khóa tính chất, không phải sửa lỗi). Mốc đỏ trước:
+  `_work/_plan15_l13/u1_green_level1_all.log` (`Ran 480`, `FAILED (failures=1, skipped=1)`).
+- AC-E4c: `test_e4_bad_sources_flagged` — 20 subTest, mỗi ca KHÁC rỗng: 13 ca của hợp đồng (1 resize trong `fit_layout`; 2 hai resize trong
+  `render_to_window`; 3 nguồn hợp lệ nhưng `rel = level1_core.py`; 4 `from cv2 import resize as r`; 5 `import cv2 as c`; 6 `f = cv2.resize`;
+  7 `getattr(cv2, "resize")`; 8 `render_to_window` lồng trong hàm khác; 9 đối số 1 = `frame`; 10 `dst=`; 11 `cv2.warpAffine`; 12 `import
+  mediapipe`; 13 `session.process(x)`) + 7 ca thêm (8b method `render_to_window` trong lớp, cạnh hàm mức module; 9b gán lại `view_bgr` trước
+  resize; 10b `**{...}`; 10c 3 đối số vị trí; 11b `warpAffine` ở `level1_core.py`; 11c `pyrDown` ở `level1_demo.py`; 12b `from
+  src.inference.hand_live import HandLandmarkSession`). `test_e4_valid_source_passes`: nguồn mô phỏng `render_to_window` hiện tại ⇒ `[]`.
+  `test_e4_real_files`: 6 file của `E3_FILES` ⇒ `[]`.
+- AC-E4a → `_work/_plan15_l13/u1a_green_equiv_display.log`: `python -m unittest tests.test_level1_equivalence tests.test_level1_display -v` →
+  `Ran 35 tests in 180.063s` — `OK` (0 skip); `TestEquivalenceE3Static` 3/3 ok, `TestEquivalenceE4Display` 4/4 ok, `TestEquivalenceE3Spy`
+  2/2 ok, E1 chạy đủ.
+- AC-E4b → `_work/_plan15_l13/u1a_green_level1_all.log`: `python -m unittest $(ls tests/test_level1_*.py | sed 's#/#.#; s#\.py$##')
+  tests.test_backend_source_guard` → `Ran 485 tests in 1105.600s` — `OK (skipped=1)` (485 = 480 + 5 test mới); `[DoD7-guard] known=9
+  allowed=36`; skip = `test_u1_summary` (tên lấy từ log -v của AC-1 dưới; lệnh AC-E4b không -v).
+  Lần chạy 1 (giữ log: `_work/_plan15_l13/u1a_green_level1_all_run1_crlf.log`): `Ran 485 tests in 1130.608s` — `FAILED (failures=1,
+  skipped=1)`, FAIL `tests.test_level1_gitattributes.TestGitattributesW0.test_w0_ls_files_eol_no_crlf`: bản làm việc của `docs/STATE.md`,
+  `docs/plans/15-lan-sua-13.md`, `docs/plans/15-progress.md` là CRLF (`i/lf w/crlf`; ghi lúc 23:01 ngày 08/10 cùng commit planner/orchestrator
+  `232c17d`/`99fd058`), nội dung git sạch. Xử lý: đổi CRLF→LF ở cây làm việc rồi `git checkout -- <3 file>` (byte trùng `HEAD`, `git diff`
+  rỗng trước và sau; không đổi nội dung theo dõi). Không do U1a. Lưu ý orchestrator: công cụ ghi file trên Windows có thể ghi CRLF cho
+  `docs/**/*.md` ⇒ test W0 đỏ; cần ghi LF.
+- AC-1 (29 module = 28 module M0 + `tests.test_level1_display`; danh sách `_work/_plan15_l13/u1a_ac1_modules.txt`) →
+  `_work/_plan15_l13/u1a_ac1.log`: `Ran 696 tests in 1298.156s` — `FAILED (failures=5, errors=2, skipped=1)`; tập đỏ TRÙNG M0, không đỏ mới:
+  ERROR `test_fingerspelling_api.TestRealClipEquivalence.test_real_clips_match_training_evaluation` (`KeyError: 'hauuto_aa_tai_B_001_tail_â'`),
+  ERROR `setUpClass (test_fingerspelling_deployed.TestDeployedCheckpointEquivalence)` (`KeyError: 'selected'`), FAIL
+  `test_hand_live_equivalence…test_b_bodies_and_responses_identical`, `test_status_privacy…test_deployed_checkpoint`,
+  `test_frontend_contract…test_js_body_equals_python_offline_body` (3 × sha `160e0c68…` != `a6311820…`), `test_private_artifacts…test_g_gitignore`
+  (`82 != 1`), `test_hand_landmarks_ws.TestReset.test_reset_segments_and_graphs` (`[1, 1, 1, 0] != [1, 1, 1, 1]`, chập chờn đã biết). Skip =
+  `test_u1_summary`. Luật 3 lần (`_work/_plan15_l13/u1a_flaky_reset_{1,2,3}.log`): FAIL (0.820s), FAIL (0.836s), FAIL (0.875s) — module này không
+  import file U1a sửa; không sửa/skip.
+- AC-E4d (worktree tạm `_work/_plan15_l13/wt_u1a`: `git worktree add --detach` tại `99fd058` + chép 2 file test của U1a (sha bên dưới), đã xóa
+  bằng `git worktree remove` + `prune`; script `_work/_plan15_l13/u1a_mutate.py`; lệnh mỗi đột biến `python -m unittest
+  tests.test_level1_equivalence.TestEquivalenceE3Static tests.test_level1_equivalence.TestEquivalenceE4Display -v`; mỗi log mở đầu bằng
+  `git diff -- src/` của đột biến):
+  - base `u1a_mut_base.log`: `Ran 7 tests` — `OK`.
+  - m1 (`cv2.resize` trong `fit_layout`) `u1a_mut_m1.log`: `Ran 7` — `FAILED (failures=2)`: E3 static + `test_e4_real_files` [level1_display.py].
+  - m2 (hàm có `cv2.resize` cuối `level1_core.py`) `u1a_mut_m2.log`: `Ran 7` — `FAILED (failures=2)`: E3 static + `test_e4_real_files` [level1_core.py].
+  - m3 (resize thứ hai trong `render_to_window`) `u1a_mut_m3.log`: `Ran 7` — `FAILED (failures=2)`: E3 static + `test_e4_real_files` [level1_display.py].
+  - m4 (`import mediapipe` trong `level1_display.py`) `u1a_mut_m4.log`: `Ran 7` — `FAILED (failures=1)`: `test_e4_real_files` [level1_display.py].
+  - sha256 file test dùng trong worktree (= file của commit U1a): `tests/test_level1_equivalence.py`
+    `d398fc95a5bb8714c6459e7361877e84b375b948f2fe5a1c577242eec25d8b61`, `tests/test_level1_display.py`
+    `3e28b1528ffebc706efa029ec8a1ea9d6eb11329852754ad87568b4b2eb0504a`.
+- AC-E4e: `git diff --stat ea9c645..HEAD -- src/ level1_demo.py backend/ configs/` rỗng (và rỗng ở cây làm việc); `sha256(checkpoints/alphabet_best.pt)`
+  = `160e0c6825e365ba3d5481e2fd4d18423cf501c655aec618a453c524d8a17899`.
+- AC-0 (bản sửa 13a): `git diff --numstat ea9c645 -- tests/test_level1_equivalence.py` (trước commit) = `211 2`; dòng `-` chỉ ở `:16` (docstring)
+  và `:273`. `tests/test_level1_display.py` `44 0`.
+- detect-changes (`node .gitnexus/run.cjs detect-changes --scope all --repo .`) → `_work/_plan15_l13/u1a_detect_changes.log`: risk critical, do
+  `README.md` (thay đổi CHƯA commit của người dùng, không thuộc commit này); symbol của U1a: `TestEquivalenceE3Static`, `TestEquivalenceE3Spy`
+  (chỉ dời dòng) trong `tests/test_level1_equivalence.py`; không symbol `src/`.
+- Giả định: (a) "worktree tại commit U1a" làm bằng worktree tại `99fd058` + chép 2 file test (sha trùng file commit), vì kế hoạch đòi 1 commit
+  gồm cả mục này; (b) siết thêm ngoài danh sách tối thiểu (không nới): tham số thứ nhất của `render_to_window` không được gán lại; cấm
+  `__import__(...)` trong `level1_display.py`; import tương đối trong `level1_display.py` bị coi là ngoài danh sách; (c) `render_to_window`
+  mức module ở file KHÁC không bị cấm (kế hoạch chỉ cấm lồng) — resize ở đó vẫn bị cấm.
+- Sau khi ghi mục này: 2 module test đọc file này `python -m unittest tests.test_level1_demo tests.test_level1_rearm_check` →
+  `_work/_plan15_l13/u1a_progress_check.log`: `Ran 186 tests in 660.087s` — `OK`; `tests.test_level1_gitattributes` → `OK`.

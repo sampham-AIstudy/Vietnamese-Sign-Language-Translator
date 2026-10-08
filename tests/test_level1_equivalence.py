@@ -13,9 +13,15 @@ Offline = scripts/extract_hands_batch.py::_extract_one (imported, unchanged) int
     (prediction, confidence, candidates).
 hauuto clips are training data of the deployed Level 1 model: this checks identical inputs, not accuracy.
 
-E3: level1_demo.py and src/inference/level1_*.py never call Hands(...) or cv2.resize, and cv2.flip only inside
+E3: level1_demo.py and src/inference/level1_*.py never call Hands(...) or cv2.resize (see E4), and cv2.flip only inside
 display_view (AST); the frame given to HandLandmarkSession.process is the very object returned by the reader
 (spy; headless replay and --pace realtime).
+
+E4 (plan 15-lan-sua-13a): the single exception is one cv2.resize(view_bgr, size, interpolation=...) of the DISPLAY
+image in src/inference/level1_display.py::render_to_window (module level, after MediaPipe); _e4_violations also
+forbids cv2 aliases / bare references / getattr(cv2, ...), cv2.warpAffine/warpPerspective/remap/pyrDown/pyrUp in every
+E3 file, and any MediaPipe / landmark path in level1_display.py; render_to_window never modifies its input
+(tests/test_level1_display.py).
 """
 import ast
 import glob
@@ -256,6 +262,106 @@ E3_FILES = ["level1_demo.py"] + sorted(
     os.path.relpath(p, PROJECT_ROOT).replace(os.sep, "/")
     for p in glob.glob(os.path.join(PROJECT_ROOT, "src", "inference", "level1_*.py")))
 
+# ngoại lệ E4 — 15-lan-sua-13a: the ONLY resize allowed in E3_FILES is this one call on the DISPLAY image
+# (after MediaPipe, never the frame given to HandLandmarkSession.process); closed list, no other file / function / call.
+E4_FILE = "src/inference/level1_display.py"
+E4_FUNC = "render_to_window"
+E4_RESIZE_CALLS = [("cv2.resize", "resize", E4_FUNC)]
+E4_CV2_GEOMETRY = frozenset({"resize", "flip", "warpAffine", "warpPerspective", "remap", "pyrDown", "pyrUp"})
+E4_CV2_FORBIDDEN_CALLS = frozenset({"warpAffine", "warpPerspective", "remap", "pyrDown", "pyrUp"})
+E4_DISPLAY_IMPORT_ROOTS = frozenset({"__future__", "dataclasses", "typing", "math", "cv2", "numpy"})
+E4_DISPLAY_FORBIDDEN_NAMES = frozenset({"HandLandmarkSession", "mediapipe", "Hands"})
+
+
+def _is_cv2(node):
+    return isinstance(node, ast.Name) and node.id == "cv2"
+
+
+def _e4_violations(rel, source):
+    """Plan 15-lan-sua-13a §3.2 items 1-4 for one file of E3_FILES (`rel`: project-relative, '/'): the E4 exception and
+    the checks that compensate it. Pure (AST of `source` only); returns the violations, [] = valid."""
+    tree = ast.parse(source, filename=rel)
+    bad = []
+    is_display = rel == E4_FILE
+
+    # E3 + E4: the resize calls seen by _calls
+    resizes = [c for c in _calls(tree) if c[1] == "resize"]
+    expected = E4_RESIZE_CALLS if is_display else []
+    if resizes != expected:
+        bad.append(f"resize calls {resizes} != {expected}")
+
+    # 1. render_to_window: never nested (any file); in the display file defined exactly once, at module level
+    module_level = {id(n) for n in tree.body}
+    defs = [n for n in ast.walk(tree) if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == E4_FUNC]
+    nested = [n.lineno for n in defs if id(n) not in module_level]
+    if nested:
+        bad.append(f"{E4_FUNC} defined inside a function/class at line(s) {nested}")
+    if is_display:
+        resize_nodes = [n for n in ast.walk(tree) if isinstance(n, ast.Call) and (
+            (isinstance(n.func, ast.Attribute) and n.func.attr == "resize")
+            or (isinstance(n.func, ast.Name) and n.func.id == "resize"))]
+        if len(defs) != 1 or nested:
+            bad.append(f"{E4_FUNC} must be defined exactly once at module level, found {len(defs)} definition(s)")
+        else:
+            fn = defs[0]
+            params = fn.args.posonlyargs + fn.args.args
+            first = params[0].arg if params else None
+            rebound = sorted(n.lineno for n in ast.walk(fn)
+                             if isinstance(n, ast.Name) and n.id == first and isinstance(n.ctx, (ast.Store, ast.Del)))
+            if rebound:
+                bad.append(f"first parameter {first!r} of {E4_FUNC} rebound at line(s) {rebound}")
+            for call in resize_nodes:
+                where = f"resize at line {call.lineno}"
+                if not (fn.lineno <= call.lineno and call.end_lineno <= fn.end_lineno):
+                    bad.append(f"{where} outside {E4_FUNC} (lines {fn.lineno}-{fn.end_lineno})")
+                # 2. resize(<first parameter>, <size>, interpolation=...) only
+                if len(call.args) != 2:
+                    bad.append(f"{where}: {len(call.args)} positional arguments, expected 2")
+                if not (call.args and isinstance(call.args[0], ast.Name) and call.args[0].id == first):
+                    bad.append(f"{where}: first argument is not the parameter {first!r}")
+                keywords = [k.arg for k in call.keywords]
+                if not set(keywords) <= {"interpolation"}:
+                    bad.append(f"{where}: keywords {keywords} not within ['interpolation']")
+
+    # 3. no alias / indirect use of cv2 geometry functions
+    called = {id(n.func) for n in ast.walk(tree) if isinstance(n, ast.Call)}
+    for n in ast.walk(tree):
+        if isinstance(n, ast.ImportFrom) and n.module and (n.module == "cv2" or n.module.startswith("cv2.")):
+            bad.append(f"line {n.lineno}: from {n.module} import ...")
+        elif isinstance(n, ast.Import):
+            for a in n.names:
+                if (a.name == "cv2" or a.name.startswith("cv2.")) and a.asname is not None:
+                    bad.append(f"line {n.lineno}: import {a.name} as {a.asname}")
+        elif isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id == "getattr" and n.args \
+                and _is_cv2(n.args[0]):
+            bad.append(f"line {n.lineno}: getattr(cv2, ...)")
+        elif isinstance(n, ast.Attribute) and _is_cv2(n.value) and n.attr in E4_CV2_GEOMETRY:
+            if id(n) not in called:
+                bad.append(f"line {n.lineno}: bare reference cv2.{n.attr} (not called)")
+            elif n.attr in E4_CV2_FORBIDDEN_CALLS:
+                bad.append(f"line {n.lineno}: call cv2.{n.attr}")
+
+    # 4. the display module only displays: no MediaPipe / landmark path
+    if is_display:
+        roots = set()
+        for n in ast.walk(tree):
+            if isinstance(n, ast.Import):
+                roots.update(a.name.split(".")[0] for a in n.names)
+            elif isinstance(n, ast.ImportFrom):
+                roots.add("." * n.level + (n.module or "").split(".")[0])
+        if roots - E4_DISPLAY_IMPORT_ROOTS:
+            extra = sorted(roots - E4_DISPLAY_IMPORT_ROOTS)
+            bad.append(f"imports {extra} not within {sorted(E4_DISPLAY_IMPORT_ROOTS)}")
+        for n in ast.walk(tree):
+            if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) and n.func.attr == "process":
+                bad.append(f"line {n.lineno}: call .process(...)")
+            if isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id == "__import__":
+                bad.append(f"line {n.lineno}: __import__(...)")
+            name = n.id if isinstance(n, ast.Name) else n.attr if isinstance(n, ast.Attribute) else None
+            if name in E4_DISPLAY_FORBIDDEN_NAMES:
+                bad.append(f"line {n.lineno}: name {name}")
+    return bad
+
 
 class TestEquivalenceE3Static(unittest.TestCase):
     def test_files(self):
@@ -270,7 +376,8 @@ class TestEquivalenceE3Static(unittest.TestCase):
             calls = _calls(tree)
             with self.subTest(rel):
                 self.assertEqual([c for c in calls if c[1] == "Hands"], [])
-                self.assertEqual([c for c in calls if c[1] == "resize"], [])
+                resizes = [c for c in calls if c[1] == "resize"]
+                self.assertEqual(resizes, E4_RESIZE_CALLS if rel == E4_FILE else [])  # ngoại lệ E4 — 15-lan-sua-13a
                 flips = [c for c in calls if c[1] == "flip"]
                 self.assertTrue(all(c[0] == "cv2.flip" and c[2] == "display_view" for c in flips), flips)
                 if rel == "level1_demo.py":
@@ -284,6 +391,108 @@ class TestEquivalenceE3Static(unittest.TestCase):
         self.assertIn(("Hands", "f"), [(c[1], c[2]) for c in calls])
         self.assertIn(("cv2.resize", "resize", "f"), calls)
         self.assertIn(("cv2.flip", "flip", "display_view"), calls)
+
+
+# Source mimicking the current render_to_window of level1_display.py (the one valid E4 case) and the closed list of
+# invalid sources of AC-E4c (plan 15-lan-sua-13a §5): (case, rel, source); every one must give violations.
+_E4_HEAD = ("import dataclasses\nfrom typing import Any, Callable, Optional, Sequence, Tuple\n\nimport cv2\n"
+            "import numpy as np\n\n\n")
+_E4_FIT = ("def fit_layout(cam_w, cam_h, panel_h, win_w=None, win_h=None):\n"
+           "    natural_h = cam_h + panel_h\n"
+           "    return (cam_w, natural_h)\n\n\n")
+_E4_RENDER = ("def render_to_window(view_bgr, panel_builder, stats_lines, hold_progress, layout):\n"
+              "    canvas = np.zeros((layout.win_h, layout.win_w, 3), dtype=np.uint8)\n"
+              "    content = canvas[layout.y0:layout.y0 + layout.content_h, layout.x0:layout.x0 + layout.content_w]\n"
+              "    cam_h = layout.cam_rect[3]\n"
+              "    width = layout.content_w\n"
+              "    if view_bgr.shape[:2] == (cam_h, width):\n"
+              "        content[:cam_h] = view_bgr\n"
+              "    else:\n"
+              "        content[:cam_h] = cv2.resize(view_bgr, (width, cam_h), interpolation=cv2.INTER_LINEAR)\n"
+              "    return canvas\n")
+_E4_VALID = _E4_HEAD + _E4_FIT + _E4_RENDER
+_E4_RESIZE_LINE = "content[:cam_h] = cv2.resize(view_bgr, (width, cam_h), interpolation=cv2.INTER_LINEAR)"
+
+
+def _e4_replace(old, new, source=_E4_VALID):
+    assert source.count(old) == 1, old
+    return source.replace(old, new)
+
+
+_E4_BAD_CASES = [
+    ("1 resize in fit_layout", "src/inference/level1_display.py",
+     _e4_replace("    natural_h = cam_h + panel_h\n",
+                 "    natural_h = cam_h + panel_h\n    _ = cv2.resize(np.zeros((2, 2, 3), np.uint8), (1, 1))\n")),
+    ("2 two resizes in render_to_window", "src/inference/level1_display.py",
+     _e4_replace("    return canvas\n", "    small = cv2.resize(view_bgr, (2, 2))\n    return canvas\n")),
+    ("3 valid render_to_window in another file", "src/inference/level1_core.py", _E4_VALID),
+    ("4 from cv2 import resize as r", "src/inference/level1_display.py",
+     _e4_replace("import cv2\n", "import cv2\nfrom cv2 import resize as r\n")),
+    ("5 import cv2 as c", "src/inference/level1_display.py",
+     _e4_replace("import cv2\n", "import cv2\nimport cv2 as c\n")),
+    ("6 f = cv2.resize", "src/inference/level1_display.py",
+     _e4_replace("    return canvas\n", "    f = cv2.resize\n    return canvas\n")),
+    ("7 getattr(cv2, 'resize')", "src/inference/level1_display.py",
+     _e4_replace("    return canvas\n", "    g = getattr(cv2, \"resize\")\n    return canvas\n")),
+    ("8 render_to_window nested in another function", "src/inference/level1_display.py",
+     _E4_HEAD + _E4_FIT + "def outer():\n" + "".join("    " + ln + "\n" for ln in _E4_RENDER.splitlines())
+     + "    return render_to_window\n"),
+    ("8b nested render_to_window next to the module-level one", "src/inference/level1_display.py",
+     _E4_VALID + "\n\nclass Window:\n    def render_to_window(self, frame):\n        return frame\n"),
+    ("9 first argument is not the first parameter", "src/inference/level1_display.py",
+     _e4_replace(_E4_RESIZE_LINE, "frame = view_bgr[::1]\n        content[:cam_h] = cv2.resize(frame, (width, cam_h), "
+                                  "interpolation=cv2.INTER_LINEAR)")),
+    ("9b first parameter rebound before the resize", "src/inference/level1_display.py",
+     _e4_replace(_E4_RESIZE_LINE, "view_bgr = view_bgr[::2, ::2]\n        " + _E4_RESIZE_LINE)),
+    ("10 keyword dst=", "src/inference/level1_display.py",
+     _e4_replace(_E4_RESIZE_LINE, "cv2.resize(view_bgr, (width, cam_h), dst=content[:cam_h], "
+                                  "interpolation=cv2.INTER_LINEAR)")),
+    ("10b **kwargs", "src/inference/level1_display.py",
+     _e4_replace("interpolation=cv2.INTER_LINEAR)", "**{\"interpolation\": cv2.INTER_LINEAR})")),
+    ("10c three positional arguments", "src/inference/level1_display.py",
+     _e4_replace("(width, cam_h), interpolation", "(width, cam_h), None, interpolation")),
+    ("11 cv2.warpAffine in level1_display.py", "src/inference/level1_display.py",
+     _e4_replace("    return canvas\n", "    w = cv2.warpAffine(view_bgr, np.eye(2, 3), (2, 2))\n    return canvas\n")),
+    ("11b cv2.warpAffine in another file", "src/inference/level1_core.py",
+     "import cv2\nimport numpy as np\n\n\ndef f(frame):\n    return cv2.warpAffine(frame, np.eye(2, 3), (2, 2))\n"),
+    ("11c cv2.pyrDown in level1_demo.py", "level1_demo.py",
+     "import cv2\n\n\ndef f(frame):\n    return cv2.pyrDown(frame)\n"),
+    ("12 import mediapipe", "src/inference/level1_display.py",
+     _e4_replace("import numpy as np\n", "import numpy as np\nimport mediapipe\n")),
+    ("12b from src.inference.hand_live import HandLandmarkSession", "src/inference/level1_display.py",
+     _e4_replace("import numpy as np\n",
+                 "import numpy as np\nfrom src.inference.hand_live import HandLandmarkSession\n")),
+    ("13 session.process(x)", "src/inference/level1_display.py",
+     _e4_replace("    return canvas\n", "    session.process(view_bgr)\n    return canvas\n")),
+]
+
+
+class TestEquivalenceE4Display(unittest.TestCase):
+    """Exception E4 (plan 15-lan-sua-13a §3.2): one cv2.resize of the DISPLAY image in render_to_window, plus the
+    static checks that compensate it (items 1-4), on synthetic sources (AC-E4c) and on every file of E3_FILES."""
+
+    def test_e4_file_is_scanned(self):
+        self.assertIn(E4_FILE, E3_FILES)
+        self.assertEqual(E4_RESIZE_CALLS, [("cv2.resize", "resize", "render_to_window")])
+
+    def test_e4_valid_source_passes(self):
+        self.assertEqual(_e4_violations(E4_FILE, _E4_VALID), [])
+        # the valid source is what E3 sees in the real file: exactly the E4 resize
+        self.assertEqual([c for c in _calls(ast.parse(_E4_VALID)) if c[1] == "resize"], E4_RESIZE_CALLS)
+
+    def test_e4_bad_sources_flagged(self):
+        self.assertEqual(len({name for name, _, _ in _E4_BAD_CASES}), len(_E4_BAD_CASES))
+        for name, rel, source in _E4_BAD_CASES:
+            with self.subTest(name):
+                ast.parse(source)  # the case is valid Python: it is the check that must refuse it
+                self.assertNotEqual(_e4_violations(rel, source), [])
+
+    def test_e4_real_files(self):
+        for rel in E3_FILES:
+            with open(os.path.join(PROJECT_ROOT, rel), encoding="utf-8") as fh:
+                source = fh.read()
+            with self.subTest(rel):
+                self.assertEqual(_e4_violations(rel, source), [])
 
 
 @unittest.skipUnless(not _MISSING, SKIP_REASON)
