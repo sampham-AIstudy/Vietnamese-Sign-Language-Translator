@@ -75,3 +75,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-09T06:50Z,vslt-coder(agy bridge x2 + orchestrator),15,L13-U2c (net drop + agy timeout; orchestrator verify/commit),36,52,16,0,ok
 2026-10-09T07:20Z,vslt-reviewer,15,L13-U2c review,52,64,12,0,ok
 2026-10-09T07:20Z,vslt-coder-claude,15,L13-U2c fix TB-1 (window title ASCII),64,~70,~6,0,ok (crossed 5h reset)
+2026-10-09T08:05Z,vslt-coder(agy bridge),15,L13-U2d (display cost script + JSON),2,6,4,0,ok
