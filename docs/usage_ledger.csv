@@ -79,3 +79,5 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-09T08:40Z,vslt-reviewer,15,L13-U2d review (with reruns),6,13,7,0,ok
 2026-10-09T09:20Z,vslt-planner,15,L13c plan,13,21,8,0,ok
 2026-10-09T09:25Z,vslt-coder-claude,15,L13-C1 (DC1 fail-closed; 1 net drop + resume),21,~36,~15,0,ok
+2026-10-09T09:35Z,vslt-reviewer,15,L13-U2d review round 2,39,46,7,0,ok
+2026-10-09T09:40Z,vslt-coder-claude,15,L13-XW (X1 + W1 probe),46,49,3,0,ok
