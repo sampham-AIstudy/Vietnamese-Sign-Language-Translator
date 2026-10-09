@@ -3258,6 +3258,191 @@ class TestDefaultsS1G1(unittest.TestCase):
         self.assertNotIn("chờ tay yên", self.runs["rev8"][0]._decoder_line())
 
 
+class _ScaledWindowRecorder(_WindowRecorder):
+    """_WindowRecorder (unchanged) plus the calls of the resizable window of plan 15 lần sửa 13b U2b (no window
+    opens): the namedWindow / resizeWindow arguments are recorded, getWindowImageRect gives `rect`, and `check`
+    (optional) is called with every image given to imshow."""
+
+    def __init__(self, rect=None, check=None):
+        super().__init__()
+        self.rect = rect
+        self.check = check
+        self.named = []
+        self.resized = []
+
+    def imshow(self, name, image):
+        super().imshow(name, image)
+        if self.check is not None:
+            self.check(image)
+
+    def namedWindow(self, *a, **k):
+        self.named.append((a, k))
+
+    def resizeWindow(self, *a, **k):
+        self.resized.append(a)
+
+    def getWindowImageRect(self, name):
+        return self.rect
+
+    def patches(self, with_rect=True):
+        out = dict(imshow=self.imshow, waitKey=self.waitKey, getWindowProperty=self.getWindowProperty,
+                   namedWindow=self.namedWindow, destroyAllWindows=self.destroyAllWindows,
+                   resizeWindow=self.resizeWindow)
+        if with_rect:
+            out["getWindowImageRect"] = self.getWindowImageRect
+        return out
+
+
+def _window_rect_raises(name):
+    raise app_mod.cv2.error("no window (test: getWindowImageRect raises cv2.error)")
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestScaledWindowU2b(unittest.TestCase):
+    """Plan 15 lần sửa 13b U2b on real runs of the app over the D2 clip in window mode, the OpenCV window calls
+    recorded (_ScaledWindowRecorder; no window opens).
+
+    AC-U4: getWindowImageRect -> (0, 0, 1920, 1080) => every image given to imshow is (1080, 1920, 3) (--pace realtime,
+    the window run of TestLatencyAcL). AC-U4b: the window is created resizable (namedWindow flags: cv2.WINDOW_NORMAL;
+    WINDOW_NORMAL is 0, so "contains WINDOW_NORMAL" = the WINDOW_AUTOSIZE bit is clear); getWindowImageRect (a) raising
+    cv2.error, (b) missing (AttributeError), (c) giving (-1, -1, -1, -1) => the whole clip runs without exception and
+    every image shown has the natural shape (camera height + panel height, camera width) and is array_equal to the
+    image of Hud.compose for the same frame: a separate Hud (same font file and size) composes it again from copies
+    of the inputs the app passed to Hud.compose for that frame (recorded by a wrapper); render_to_window is never
+    called on that path. The first image shown resizes the window once to the natural size (window start size)."""
+
+    RECT_1080 = (0, 0, 1920, 1080)
+
+    @classmethod
+    def setUpClass(cls):
+        cls.runs = {"1080": cls.run_window(cls.RECT_1080, "--pace", "realtime")}
+        cls.runs["a_cv2_error"] = cls.run_window(_window_rect_raises)
+        cls.runs["b_missing"] = cls.run_window(None, missing_rect=True)
+        cls.runs["c_invalid"] = cls.run_window((-1, -1, -1, -1))
+
+    @classmethod
+    def run_window(cls, rect, *argv, missing_rect=False):
+        """One app run on the D2 clip; returns a dict: report (None if the run raised), error (traceback or None),
+        rec, checks (per image shown: (shape, natural shape or None, equal to the reference compose or None)),
+        render_calls (number of render_to_window calls)."""
+        import copy
+        import traceback
+        from unittest import mock
+        out = {"report": None, "error": None, "checks": [], "pending": []}
+        if callable(rect):
+            rec = _ScaledWindowRecorder()
+            rec.getWindowImageRect = rect
+        else:
+            rec = _ScaledWindowRecorder(rect)
+        out["rec"] = rec
+        render_calls = []
+        real_render = app_mod.render_to_window if hasattr(app_mod, "render_to_window") else None
+
+        def render(*a, **k):
+            render_calls.append(1)
+            return real_render(*a, **k)
+
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        saved_rect = app_mod.cv2.getWindowImageRect
+        try:
+            with mock.patch.multiple(app_mod.cv2, **rec.patches(with_rect=not missing_rect)), \
+                    mock.patch.object(app_mod, "render_to_window", side_effect=render, create=real_render is None):
+                if missing_rect:
+                    del app_mod.cv2.getWindowImageRect
+                app = app_mod.Level1App(args_for("--source", CLIP, *argv))
+                ref_hud = app_mod.Hud(app.hud.font_path, app.hud.font_size)
+                real_compose = app.hud.compose
+                pending = out["pending"]
+
+                def compose(view, text_or_view, small, hold_progress, stats_lines=()):
+                    pending.append((view.copy(), copy.deepcopy(text_or_view), list(small), hold_progress,
+                                    list(stats_lines)))
+                    return real_compose(view, text_or_view, small, hold_progress, stats_lines)
+
+                def check(image):
+                    if not pending:  # this image did not come from Hud.compose
+                        out["checks"].append((image.shape, None, None))
+                        return
+                    view, tb, small, hold, stats = pending.pop()
+                    natural = (view.shape[0] + ref_hud.panel_height(tb, small, len(stats)), view.shape[1], 3)
+                    ref = ref_hud.compose(view, tb, small, hold, stats)
+                    out["checks"].append((image.shape, natural, bool(np.array_equal(image, ref))))
+                    pending.clear()
+
+                app.hud.compose = compose
+                rec.check = check
+                try:
+                    out["report"] = app.run()
+                except Exception:
+                    out["error"] = traceback.format_exc()
+        finally:
+            if missing_rect and not hasattr(app_mod.cv2, "getWindowImageRect"):
+                app_mod.cv2.getWindowImageRect = saved_rect
+            os.chdir(cwd)
+        out["render_calls"] = len(render_calls)
+        return out
+
+    def run_ok(self, name):
+        run = self.runs[name]
+        self.assertIsNone(run["error"], run["error"])
+        r = run["report"]
+        self.assertGreater(r["counts"]["frames_processed"], 0)
+        self.assertEqual(len(run["rec"].shown), r["counts"]["frames_processed"])
+        return run, r
+
+    def test_u4_window_1920x1080_every_image_scaled(self):
+        run, r = self.run_ok("1080")
+        self.assertEqual(r["source"]["mode"], "paced")
+        for shape in run["rec"].shown:
+            self.assertEqual(shape, (1080, 1920, 3))
+        self.assertEqual(run["render_calls"], r["counts"]["frames_processed"])
+        for s in FRAME_STAGES:  # the scaled window keeps every frame stage measured
+            self.assertEqual(r["stages"][s]["n"], r["counts"]["frames_processed"], s)
+        self.assertEqual(r["counts"]["frames_processed"] + r["counts"]["dropped"], r["counts"]["frames_read"])
+
+    def test_u4b_window_created_resizable(self):
+        normal, autosize = app_mod.cv2.WINDOW_NORMAL, app_mod.cv2.WINDOW_AUTOSIZE
+        for name, run in self.runs.items():
+            with self.subTest(name):
+                named = run["rec"].named
+                self.assertEqual(len(named), 1, named)
+                args, kwargs = named[0]
+                self.assertEqual(args[0], app_mod.WINDOW_NAME)
+                flags = args[1] if len(args) > 1 else kwargs.get("flags")
+                self.assertIsNotNone(flags)
+                self.assertEqual(flags & normal, normal)
+                self.assertEqual(flags & autosize, 0)  # WINDOW_NORMAL == 0: resizable = the AUTOSIZE bit is clear
+
+    def test_u4b_fallback_is_natural_hud_compose(self):
+        for name in ("a_cv2_error", "b_missing", "c_invalid"):
+            with self.subTest(name):
+                run, r = self.run_ok(name)
+                self.assertEqual(r["source"]["mode"], "gui")
+                self.assertEqual(r["counts"]["frames_processed"], r["counts"]["frames_read"])
+                self.assertEqual(len(run["checks"]), r["counts"]["frames_processed"])
+                h, w = r["frame_size"]["height"], r["frame_size"]["width"]
+                for shape, natural, equal in run["checks"]:
+                    self.assertIsNotNone(natural, "image shown without Hud.compose")
+                    self.assertEqual(shape, natural)
+                    self.assertEqual(shape[1], w)
+                    self.assertGreater(shape[0], h)
+                    self.assertTrue(equal, "image shown != Hud.compose of the same frame")
+                self.assertEqual(run["render_calls"], 0)
+
+    def test_u2b_window_starts_at_natural_size(self):
+        for name in ("a_cv2_error", "b_missing", "c_invalid"):
+            with self.subTest(name):
+                run, r = self.run_ok(name)
+                first = run["checks"][0][1]
+                self.assertEqual(run["rec"].resized, [(app_mod.WINDOW_NAME, first[1], first[0])])
+        run, r = self.run_ok("1080")
+        resized = run["rec"].resized
+        self.assertEqual(len(resized), 1, resized)
+        self.assertEqual(resized[0][:2], (app_mod.WINDOW_NAME, r["frame_size"]["width"]))
+        self.assertGreater(resized[0][2], r["frame_size"]["height"])
+
+
 if __name__ == "__main__":
     unittest.main()
 

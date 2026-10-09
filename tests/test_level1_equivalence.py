@@ -522,5 +522,94 @@ class TestEquivalenceE3Spy(unittest.TestCase):
         self.assertEqual(pos, sorted(set(pos)))
 
 
+class _WindowCallsU6b:
+    """The OpenCV window calls of the window mode, recorded (no window opens). The window image rect is
+    (0, 0, 1920, 1080), so every frame shown goes through render_to_window (the E4 display resize)."""
+
+    def __init__(self):
+        self.shown = []
+
+    def imshow(self, name, image):
+        self.shown.append(image.shape)
+
+    @staticmethod
+    def waitKey(delay):
+        return -1
+
+    @staticmethod
+    def getWindowProperty(name, prop):
+        return 1.0
+
+    @staticmethod
+    def getWindowImageRect(name):
+        return (0, 0, 1920, 1080)
+
+    @staticmethod
+    def namedWindow(*a, **k):
+        return None
+
+    @staticmethod
+    def resizeWindow(*a, **k):
+        return None
+
+    @staticmethod
+    def destroyAllWindows():
+        return None
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestEquivalenceU6bWindow(unittest.TestCase):
+    """AC-U6b (plan 15-lan-sua-13a §3.2 item 6, step U2 / 13b U2b): the app in WINDOW mode with a 1920x1080 window
+    (recorded window calls, _WindowCallsU6b), on the clip of TestEquivalenceE3Spy with RecordingSession + SpyReader:
+    every frame given to HandLandmarkSession.process IS the object returned by the reader (all of them in order in
+    the replay window mode; in reading order, never a copy, with --pace realtime), and the images shown are
+    (1080, 1920, 3), i.e. the display resize path ran in the same run."""
+
+    @classmethod
+    def setUpClass(cls):
+        from src.inference.level1_core import Level1Classifier
+        cls.clf = Level1Classifier.from_checkpoint(H.DEPLOYED_CKPT)
+        cls.video = H.video_path_for(H.select_clips(H.read_manifest(), N_HAUUTO, SEED)[0])
+
+    def run_window(self, extra):
+        from unittest import mock
+        rec = _WindowCallsU6b()
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            with mock.patch.multiple(app_mod.cv2, imshow=rec.imshow, waitKey=rec.waitKey,
+                                     getWindowProperty=rec.getWindowProperty,
+                                     getWindowImageRect=rec.getWindowImageRect, namedWindow=rec.namedWindow,
+                                     resizeWindow=rec.resizeWindow, destroyAllWindows=rec.destroyAllWindows):
+                app, report, session = run_app(self.video, self.clf, extra)
+        finally:
+            os.chdir(cwd)
+        return rec, app, report, session
+
+    def assert_scaled_display(self, rec, report):
+        self.assertEqual(len(rec.shown), report["counts"]["frames_processed"])
+        self.assertIn((1080, 1920, 3), rec.shown)
+        self.assertTrue(all(shape == (1080, 1920, 3) for shape in rec.shown), set(rec.shown))
+
+    def test_u6b_window_frame_is_object_read(self):
+        rec, app, report, session = self.run_window(())
+        read = app.spy_reader.frames_out
+        self.assertEqual(report["source"]["mode"], "gui")
+        self.assertGreater(len(read), 0)
+        self.assertEqual(len(session.frames_in), len(read))
+        self.assertTrue(all(a is b for a, b in zip(session.frames_in, read)))
+        self.assert_scaled_display(rec, report)
+
+    def test_u6b_window_paced_frame_is_object_read(self):
+        rec, app, report, session = self.run_window(("--pace", "realtime"))
+        read = app.spy_reader.frames_out
+        self.assertEqual(report["source"]["mode"], "paced")
+        self.assertGreater(len(session.frames_in), 0)
+        pos = [next((i for i, r in enumerate(read) if r is f), -1) for f in session.frames_in]
+        self.assertNotIn(-1, pos)
+        self.assertEqual(pos, sorted(set(pos)))
+        self.assert_scaled_display(rec, report)
+
+
 if __name__ == "__main__":
     unittest.main()

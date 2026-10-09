@@ -86,7 +86,8 @@ if sys.platform == "win32":
         sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 from src.inference.hand_live import LEVEL1_HANDS_KWARGS, HandLandmarkSession  # noqa: E402
-from src.inference.level1_display import PanelBuilder, draw_panel_overlays, scaled_px  # noqa: E402
+from src.inference.level1_display import (PanelBuilder, draw_panel_overlays, fit_layout,  # noqa: E402
+                                          render_to_window, scaled_px)
 from src.inference.level1_core import (CLAHE_CLIP_LIMIT, CLAHE_TILE_GRID, GESTURE_BACKSPACE_DEFAULT,  # noqa: E402
                                        GESTURE_BACKSPACE_FLASH, LOW_LIGHT_THRESHOLD, BackspaceGestureTracker,
                                        HandednessLock, LandmarkSmoother, Level1Classifier, Level1Speller,
@@ -920,6 +921,7 @@ class Level1App:
         self.window_worker: Optional[LatestWindowWorker] = None
         self.slot: Optional[LatestFrameSlot] = None
         self.warmup = {}
+        self.window_sized = False  # the resizable window was set to the natural size (first image shown)
 
     # -------------------------------------------------------------- events
     def _log(self, kind: str, **fields) -> None:
@@ -1290,7 +1292,7 @@ class Level1App:
         self.times.add("draw_landmarks", (t3 - t2) * 1000.0)
         view = display_view(frame, self.args.display_mirror)
         tb_view, small, progress, stats = self._hud_lines()
-        view = self.hud.compose(view, tb_view, small, progress, stats)
+        view = self._window_image(view, tb_view, small, progress, stats)
         t4 = time.perf_counter()
         self.times.add("hud", (t4 - t3) * 1000.0)
         cv2.imshow(WINDOW_NAME, view)
@@ -1304,6 +1306,30 @@ class Level1App:
         self._key(code)
         if cv2.getWindowProperty(WINDOW_NAME, cv2.WND_PROP_VISIBLE) < 1:
             self.quit = True
+
+    def _window_image(self, view: np.ndarray, text_or_view: Any, small: List[str], hold_progress: float,
+                      stats_lines: List[str]) -> np.ndarray:
+        """Image shown in the resizable window (plan 15 lần sửa 13 §2.2, 13b U2b), from the DISPLAY image only
+        (landmarks drawn, mirrored; never the frame given to MediaPipe). The first image shown resizes the window once
+        to the natural size (camera image + panel). The window image rect is read every frame: no usable size
+        (cv2.error, no getWindowImageRect, invalid rect) or the natural size => Hud.compose (the image of the old
+        fixed window); any other size => the content scaled into it (render_to_window, same text and overlays)."""
+        h, w = view.shape[:2]
+        panel_h = self.hud.panel_height(text_or_view, small, len(stats_lines))
+        if not self.window_sized:
+            self.window_sized = True
+            try:
+                cv2.resizeWindow(WINDOW_NAME, w, h + panel_h)
+            except (cv2.error, AttributeError):
+                pass
+        try:
+            rect = cv2.getWindowImageRect(WINDOW_NAME)
+        except (cv2.error, AttributeError):
+            rect = None
+        layout = fit_layout(w, h, panel_h, rect)
+        if layout == fit_layout(w, h, panel_h):
+            return self.hud.compose(view, text_or_view, small, hold_progress, stats_lines)
+        return render_to_window(view, self.hud.panel_builder(text_or_view, small), stats_lines, hold_progress, layout)
 
     # -------------------------------------------------------------- run
     def _open_reader(self):
@@ -1342,7 +1368,7 @@ class Level1App:
                     self.window_worker = LatestWindowWorker(self.classifier, self.values["top_k"])
                     self.window_worker.start()
             if self.display:
-                cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_AUTOSIZE)
+                cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)  # resizable: content scaled to the window (U2b)
             origin = time.perf_counter()
             if self.latest_only:
                 slot = self.slot = LatestFrameSlot()

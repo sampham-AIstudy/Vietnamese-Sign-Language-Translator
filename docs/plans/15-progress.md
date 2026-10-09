@@ -4,11 +4,12 @@ Kế hoạch: `docs/plans/15-level1-realtime-desktop.md`. Chặng giao: MVP B0�
 Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_work/_plan15/` (không commit).
 
 ## Trạng thái
-- 2026-10-09 U2a xong (commit `15: L13-U2a test TB-1 overlay co giãn (AC-U7/U7m)`), TB-1 test AC-U7 đạt, đột biến m9–m12 đỏ (AC-U7m). Chờ reviewer U2a. Kế tiếp: U2b (vslt-coder-claude).
-- ĐANG LÀM: U2a — hoàn tất commit và báo cáo U2a.
+- 2026-10-09 U2a xong (commit `15: L13-U2a test TB-1 overlay co giãn (AC-U7/U7m)`), TB-1 test AC-U7 đạt, đột biến m9–m12 đỏ (AC-U7m). Reviewer U2a: APPROVE (`docs/reviews/15-l13-u2a-review.md`).
+- 2026-10-09 U2b xong (commit `15: L13-U2b nối cửa sổ co giãn (AC-U4/U4b/U6b)`, vslt-coder-claude). Chờ cầu nối + reviewer U2b. Kế tiếp: U2c (vslt-coder, agy).
+- ĐANG LÀM: không (U2a, U2b đã commit; dòng "ĐANG LÀM: U2a" lỗi thời đã sửa ở U2b — THẤP-4 review U2a).
 - Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a). R1 (commit `15: R1` trên nhánh cloud; CHỜ LOCAL: AC-S18 + S18b trên clip thật). A2b (`71fc664` mã + `4b5d736` config; AC-W3 đạt).
-  Lần sửa 13: M0 (5a32cff; ghi chép sửa ở commit U1), U1 (commit `15: L13-U1`), U1a (commit `acdcf63`), U2a.
-- Còn lại (lần sửa 13): U2b, U2c, U2d, X1, G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5.
+  Lần sửa 13: M0 (5a32cff; ghi chép sửa ở commit U1), U1 (commit `15: L13-U1`), U1a (commit `acdcf63`), U2a (`cf5e2cc`), U2b.
+- Còn lại (lần sửa 13): U2c, U2d, X1, G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5.
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -1532,3 +1533,63 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - numstat: `git diff --numstat d1a8308..HEAD` đối với `tests/test_level1_display.py` là `117 0` (0 dòng xóa).
 
 > LẦN SỬA 13b (2026-10-09): xem docs/plans/15-lan-sua-13b.md — U2 chia U2a (agy, test TB-1) → U2b (Claude, nối cửa sổ + AC-U6b) → U2c (agy, phím f/cờ/LRU) → U2d (agy, đo DC1); X1 chẩn đoán test_reset trước V1.
+
+## U2b — nối cửa sổ co giãn vào app (AC-U4, AC-U4b, AC-U6b) (2026-10-09, vslt-coder-claude)
+- Kế hoạch: `docs/plans/15-lan-sua-13b.md` §4 hàng U2b, §5. Mốc HEAD `db402c1`. Không sửa `src/` (AC-U9).
+- File sửa: `level1_demo.py` (numstat `29 3`), `tests/test_level1_demo.py` (`185 0`), `tests/test_level1_equivalence.py` (`89 0` từ
+  `db402c1`; `300 2` từ `ea9c645` — 2 dòng `-` vẫn là `:16`/`:273` của U1a), `docs/plans/15-progress.md`.
+- Mã (`level1_demo.py`, chỉ phần hiển thị): `namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)` (thay `WINDOW_AUTOSIZE`); hàm mới
+  `Level1App._window_image` thay lời gọi `self.hud.compose(...)` trong `_process` (cùng chặng `hud`): khung hiển thị đầu tiên gọi
+  `cv2.resizeWindow(WINDOW_NAME, w, h + panel_h)` một lần (bọc `try/except (cv2.error, AttributeError)`; kích thước khởi đầu = tự nhiên theo §2.2
+  gốc — cửa sổ WINDOW_NORMAL thật mở ở 304×281, đo bằng probe cv2 5.0.0 local); mỗi khung `cv2.getWindowImageRect` bọc `try/except (cv2.error,
+  AttributeError)` → `fit_layout(w, h, panel_h, rect)`; layout == `fit_layout(w, h, panel_h)` (rect lỗi/không hợp lệ HOẶC đúng kích thước tự nhiên)
+  ⇒ `Hud.compose` (ảnh cũ); ngược lại ⇒ `render_to_window(view, hud.panel_builder(...), stats, progress, layout)`. `panel_h =
+  Hud.panel_height(text, small, len(stats))` (= chiều cao panel của `Hud.compose`). Thuộc tính mới `self.window_sized` trong `__init__`. Không đổi
+  `frame`/`frame_mp`/`process`/`draw_landmarks`/`display_view`/thứ tự xử lý/tập chặng.
+- Test mới (THÊM, không sửa test cũ):
+  - `tests/test_level1_demo.py::TestScaledWindowU2b` (4 test, clip D2, recorder `_ScaledWindowRecorder` kế thừa `_WindowRecorder` + ghi
+    `namedWindow`/`resizeWindow`, `getWindowImageRect` vá): `test_u4_window_1920x1080_every_image_scaled` (AC-U4: `--pace realtime`, rect
+    `(0, 0, 1920, 1080)` ⇒ mọi ảnh `imshow` (1080, 1920, 3), số ảnh = số khung xử lý, `render_to_window` gọi mỗi khung, mọi chặng khung đủ n);
+    `test_u4b_window_created_resizable` (AC-U4b: cờ `namedWindow` chứa `WINDOW_NORMAL` — vì `cv2.WINDOW_NORMAL == 0`, kiểm `flags & WINDOW_NORMAL ==
+    WINDOW_NORMAL` VÀ bit `WINDOW_AUTOSIZE` (=1) tắt; cả 4 lần chạy); `test_u4b_fallback_is_natural_hud_compose` (AC-U4b (a) rect ném `cv2.error`,
+    (b) `del cv2.getWindowImageRect` rồi khôi phục trong `finally` (AttributeError), (c) `(-1, -1, -1, -1)`: chạy hết clip không ngoại lệ, mỗi ảnh
+    `imshow` shape tự nhiên và `array_equal` ảnh Hud.compose CÙNG khung, `render_to_window` 0 lần); `test_u2b_window_starts_at_natural_size`
+    (`resizeWindow` đúng 1 lần với kích thước tự nhiên của khung đầu).
+  - Cách so AC-U4b: recorder TÁCH được đầu vào — bọc `app.hud.compose` để chép (view.copy(), deepcopy text, small, hold, stats) của từng khung; ở
+    `imshow`, một `Hud` riêng (cùng font_path/font_size) compose lại từ bản chép và so `array_equal` với ảnh hiển thị (không so với lần chạy (a)).
+  - `tests/test_level1_equivalence.py::TestEquivalenceU6bWindow` (AC-U6b, 2 test, cùng clip/`_MISSING`/`SKIP_REASON` của E3 spy, `RecordingSession` +
+    `SpyReader` qua `run_app`, recorder `_WindowCallsU6b` rect `(0, 0, 1920, 1080)`): `test_u6b_window_frame_is_object_read` (chế độ cửa sổ replay
+    `gui`: số khung vào `process` == số khung đọc, mọi khung `is` đối tượng reader) và `test_u6b_window_paced_frame_is_object_read` (`--pace realtime`:
+    luật thứ tự như `test_e3_paced_frame_is_object_read`); cả hai: số ảnh `imshow` = số khung xử lý, có và chỉ có ảnh (1080, 1920, 3).
+- Log đỏ trước (AC-U2P, cây làm việc chính, test mới trên mã chưa sửa): `_work/_plan15_l13/u2b_red.log` (mtime 09:35:54) `python -m unittest
+  tests.test_level1_demo.TestScaledWindowU2b tests.test_level1_equivalence.TestEquivalenceU6bWindow -v` → `Ran 6 tests in 31.267s` — `FAILED
+  (failures=11)` (u4: shape (643, 640, 3) != (1080, 1920, 3); u4b cờ: `1 != 0` ×4; resizeWindow: `[]` ×4; u6b: không có ảnh (1080, 1920, 3) ×2;
+  `test_u4b_fallback_is_natural_hud_compose` xanh ngay vì mã cũ chính là Hud.compose).
+- Log xanh (mtime đều sau log đỏ):
+  - `u2b_green_new.log` (09:37:44) cùng lệnh → `Ran 6 tests in 31.004s` — `OK`.
+  - `u2b_green_equiv_display.log` (09:41:21) `python -m unittest tests.test_level1_display tests.test_level1_equivalence -v` → `Ran 45 tests in
+    192.175s` — `OK`; `TestEquivalenceE3Static` 3, `TestEquivalenceE4Display` 4, `TestEquivalenceE3Spy` 2, `TestEquivalenceU6bWindow` 2, E1 4 —
+    không skip.
+  - `u2b_green_level1_all.log` `python -m unittest $(ls tests/test_level1_*.py | sed 's#/#.#; s#\.py$##') tests.test_backend_source_guard` →
+    `Ran 499 tests in 898.734s` — `OK (skipped=1)` (499 = 493 của U2a + 6 mới); `[DoD7-guard] known=9 allowed=36`. `TestLatencyAcL` và
+    `test_m3_window_shows_camera_frame` (recorder cũ, không vá `getWindowImageRect`/`resizeWindow` ⇒ cv2 thật ném `cv2.error` "NULL window" ⇒ dự phòng
+    Hud.compose) xanh không sửa (AC-U4).
+  - AC-1 (29 module, `_work/_plan15_l13/u1a_ac1_modules.txt`) → `u2b_ac1.log`: `Ran 710 tests in 1357.230s` — `FAILED (failures=5, errors=2,
+    skipped=1)`; tập đỏ TRÙNG M0/U1a: 2 ERROR (`test_fingerspelling_api…test_real_clips_match_training_evaluation`, `setUpClass
+    (test_fingerspelling_deployed.TestDeployedCheckpointEquivalence)`), 4 FAIL review A1/gitignore (`test_hand_live_equivalence…test_b_…`,
+    `test_status_privacy…test_deployed_checkpoint`, `test_frontend_contract…test_js_body_equals_python_offline_body`, `test_private_artifacts…test_g_gitignore`)
+    + `test_hand_landmarks_ws.TestReset.test_reset_segments_and_graphs` (chập chờn đã biết, X1 xử lý trước V1). Skip = `test_u1_summary`.
+- AC-U9: `git diff d1a8308 -- level1_demo.py scripts/level1_display_cost.py src/ | grep -E '^\+' | grep -cE 'vars\(|__dict__|cv2\.dnn|getRectSubPix|__import__|importlib|warp|remap|pyr(Up|Down)'`
+  → `0`; `git diff --stat d1a8308 -- src/` rỗng. `sha256(checkpoints/alphabet_best.pt)` = `160e0c6825e365ba3d5481e2fd4d18423cf501c655aec618a453c524d8a17899`.
+- GitNexus: `analyze --index-only` (log `u2b_gitnexus_analyze.log`). `impact _process` → CRITICAL 120 symbol nhưng là DƯƠNG TÍNH GIẢ do trùng tên
+  (`_process` của `scripts/level1_segment_report.py`, `simulate_cslr_streaming.py`, …); `impact run` → ambiguous 17 ứng viên (UNKNOWN); lọc
+  `--file level1_demo.py`/`--uid` không tìm thấy method. Xác nhận bằng text: `Level1App._process` chỉ được gọi ở `Level1App.run` (2 chỗ);
+  `Level1App(` chỉ ở `level1_demo.py` (`main`) và `tests/test_level1_demo.py` (+ lớp con `SpyApp` của `tests/test_level1_equivalence.py`).
+  `_window_image` mới (UNKNOWN). Log `u2b_impact_*.log`. detect-changes (`u2b_detect_changes.log`): risk critical do `README.md` (thay đổi CHƯA
+  commit của người dùng, không thuộc commit này); symbol của U2b: `Level1App` (`level1_demo.py`), không flow nào bị đánh dấu do `Level1App`.
+- Giả định: (a) `resizeWindow` lần đầu là phần "kích thước khởi đầu = tự nhiên" của §2.2 gốc (không AC riêng; có test riêng). Ghi cho U2c: nếu
+  `--fullscreen` đặt `setWindowProperty` lúc mở, `resizeWindow` ở khung đầu có thể tác động cửa sổ toàn màn hình — U2c cần kiểm thứ tự (sửa trong
+  `_window_image`, không chạm dòng khung; AC-U9b). (b) Rect đúng bằng kích thước tự nhiên cũng đi `Hud.compose` (ảnh bằng hệt `render_to_window` ở
+  layout tự nhiên theo AC-U2, rẻ hơn). (c) Panel đổi chiều cao (số dòng nhỏ thay đổi) khi cửa sổ giữ nguyên ⇒ `fit_layout` co nội dung (dải đen
+  một cặp cạnh), không tự đổi kích thước cửa sổ như WINDOW_AUTOSIZE cũ. (d) Chế độ cửa sổ của AC-U6b: chạy cả `gui` (đếm khung bằng nhau) lẫn
+  `--pace realtime` (luật thứ tự).
