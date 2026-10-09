@@ -3649,6 +3649,126 @@ class TestParserU2c(unittest.TestCase):
         self.assertTrue(app_mod.WINDOW_NAME.isascii())
 
 
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestWindowAndFullscreenU2t2(unittest.TestCase):
+    """AC-T2 tests under plan 15 lần sửa 13c T2: W1a, W1b, F1, L1."""
+
+    def test_w1a_window_image_compose_fallback(self):
+        """W1a (U2b m5): app._window_image with cv2.error on getWindowImageRect falls back to Hud.compose."""
+        from unittest import mock
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            app = app_mod.Level1App(args_for("--source", CLIP))
+            view = np.zeros((480, 640, 3), dtype=np.uint8)
+            view[:, :, 0] = np.tile(np.linspace(0, 255, 640, dtype=np.uint8), (480, 1))
+            view[:, :, 1] = np.tile(np.linspace(255, 0, 640, dtype=np.uint8), (480, 1))
+            view[:100, :100] = (255, 128, 64)
+            tov, small = app._hud_lines()[:2]
+            hold = 0.6
+            stats = ["fps 30.0 | hud 1.2ms"]
+
+            rec = _ScaledWindowRecorder()
+            rec.getWindowImageRect = _window_rect_raises
+            with mock.patch.multiple(app_mod.cv2, **rec.patches()):
+                out = app._window_image(view.copy(), tov, small, hold, stats)
+                expected = app.hud.compose(view.copy(), tov, small, hold, stats)
+                self.assertTrue(np.array_equal(out, expected))
+                self.assertTrue(np.any(np.all(out == (0, 200, 0), axis=-1)))
+        finally:
+            os.chdir(cwd)
+
+    def test_w1b_window_image_scaled_layout(self):
+        """W1b (U2b m6): app._window_image at 1080p rect renders camera view resized into content slot."""
+        from unittest import mock
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            app = app_mod.Level1App(args_for("--source", CLIP))
+            view = np.zeros((480, 640, 3), dtype=np.uint8)
+            view[:, :, 0] = np.tile(np.linspace(0, 255, 640, dtype=np.uint8), (480, 1))
+            view[:, :, 1] = np.tile(np.linspace(255, 0, 640, dtype=np.uint8), (480, 1))
+            view[:100, :100] = (255, 128, 64)
+            tov, small = app._hud_lines()[:2]
+            hold = 0.6
+            stats = ["fps 30.0 | hud 1.2ms"]
+
+            rec_b = _ScaledWindowRecorder(rect=(0, 0, 1920, 1080))
+            with mock.patch.multiple(app_mod.cv2, **rec_b.patches()):
+                out_b = app._window_image(view.copy(), tov, small, hold, stats)
+                ph = app.hud.panel_height(tov, small, 1)
+                L = app_mod.fit_layout(640, 480, ph, (0, 0, 1920, 1080))
+                cam_h = L.cam_rect[3]
+                cam_region = out_b[L.y0 : L.y0 + cam_h, L.x0 : L.x0 + L.content_w]
+                expected_cam = app_mod.cv2.resize(view, (L.content_w, cam_h), interpolation=app_mod.cv2.INTER_LINEAR)
+                self.assertTrue(np.array_equal(cam_region, expected_cam))
+                self.assertTrue(np.any(np.all(out_b == (0, 200, 0), axis=-1)))
+        finally:
+            os.chdir(cwd)
+
+    def test_f1_fullscreen_toggle_properties_and_resizes(self):
+        """F1 (U2c m5, m6): run without --fullscreen toggling f twice tracks window properties and resize count."""
+        from unittest import mock
+        rec = _FullscreenRecorder(keys=[ord("f"), ord("f")])
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            with mock.patch.multiple(app_mod.cv2, **rec.patches()):
+                app = app_mod.Level1App(args_for("--source", CLIP))
+                report = app.run()
+                self.assertGreater(report["counts"]["frames_processed"], 2)
+                self.assertEqual([p[2] for p in rec.set_props],
+                                 [app_mod.cv2.WINDOW_FULLSCREEN, app_mod.cv2.WINDOW_NORMAL])
+                self.assertEqual([p[1] for p in rec.set_props],
+                                 [app_mod.cv2.WND_PROP_FULLSCREEN] * 2)
+                self.assertEqual(len(rec.resized), 2)
+                fs_events = [e["on"] for e in app.events if e.get("event") == "fullscreen"]
+                self.assertEqual(fs_events, [True, False])
+        finally:
+            os.chdir(cwd)
+
+    def test_l1_font_lru_mru_retention_and_eviction(self):
+        """L1 (U2c m4): font LRU cache retains MRU font A1 and evicts LRU font A2 upon A9 insertion."""
+        from unittest import mock
+        from PIL import ImageFont
+        cfg = app_mod.load_level1_config(app_mod.resolve_path(app_mod.DEFAULT_CONFIG))
+        font_path = app_mod.find_font(None, cfg["values"]["font_paths"])
+        hud = app_mod.Hud(font_path, 20)
+        self.assertLessEqual(len(hud._fonts), 8)
+
+        created = []
+        orig_truetype = ImageFont.truetype
+
+        def tracked_truetype(*a, **k):
+            created.append(a)
+            return orig_truetype(*a, **k)
+
+        scales = [px / 20.0 for px in range(30, 39)]
+        a1, a2, a3, a4, a5, a6, a7, a8, a9 = scales
+        with mock.patch.object(ImageFont, "truetype", side_effect=tracked_truetype):
+            for s in [a1, a2, a3, a4, a5, a6, a7, a8]:
+                hud._fonts_at(s)
+                self.assertLessEqual(len(hud._fonts), 8)
+            # Gọi A1 (không dựng mới, chuyển thành MRU)
+            calls_before_a1_hit = len(created)
+            hud._fonts_at(a1)
+            self.assertEqual(len(created), calls_before_a1_hit)
+            self.assertLessEqual(len(hud._fonts), 8)
+            # Gọi A9 (đẩy phần tử LRU A2 ra khỏi cache)
+            hud._fonts_at(a9)
+            self.assertLessEqual(len(hud._fonts), 8)
+            # Gọi A1 => KHÔNG dựng mới (vẫn trong cache vì đã là MRU)
+            calls_before_a1 = len(created)
+            hud._fonts_at(a1)
+            self.assertEqual(len(created), calls_before_a1)
+            self.assertLessEqual(len(hud._fonts), 8)
+            # Gọi A2 => dựng mới (đã bị evict)
+            calls_before_a2 = len(created)
+            hud._fonts_at(a2)
+            self.assertGreater(len(created), calls_before_a2)
+            self.assertLessEqual(len(hud._fonts), 8)
+
+
 if __name__ == "__main__":
     unittest.main()
 

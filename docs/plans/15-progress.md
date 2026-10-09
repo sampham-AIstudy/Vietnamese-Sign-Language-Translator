@@ -8,10 +8,10 @@ Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_wo
 - 2026-10-09 U2b xong (commit `15: L13-U2b nối cửa sổ co giãn (AC-U4/U4b/U6b)`, vslt-coder-claude). Reviewer U2b: APPROVE (`e165990`).
 - 2026-10-09 U2c xong (commit `15: L13-U2c phím f, --fullscreen, --[no-]display-mirror, LRU font (AC-U6/U8)`).
 - 2026-10-09 U2d xong (commit `15: L13-U2d script đo chi phí hiển thị (AC-U5, DC1)`). Script `scripts/level1_display_cost.py` + test `tests/test_level1_display_cost.py` đạt (AC-U5, gate DC1).
-- ĐANG LÀM: không.
+- ĐANG LÀM: T2 (13c).
 - Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a). R1 (commit `15: R1` trên nhánh cloud; CHỜ LOCAL: AC-S18 + S18b trên clip thật). A2b (`71fc664` mã + `4b5d736` config; AC-W3 đạt).
   Lần sửa 13/13c: M0 (5a32cff; ghi chép sửa ở commit U1), U1 (commit `15: L13-U1`), U1a (commit `acdcf63`), U2a (`cf5e2cc`), U2b (`b0cbcf1`), U2c (`00d320c` + `6144970`), U2d (`ea93fa1` C1 + `44a9d69` C2), XW (`6be8815`), T1 (`235be2b`).
-- Còn lại (lần sửa 13/13c): T2, G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5.
+- Còn lại (lần sửa 13/13c): T2 (hoàn tất test W1a, W1b, F1, L1; chờ reviewer), G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5.
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -1756,3 +1756,24 @@ Cửa sổ THẬT (không vá `imshow`/`namedWindow`/`resizeWindow`/`waitKey`); 
   - `git diff --stat 93abb08..HEAD -- level1_demo.py src/` rỗng; `level1_demo.py` và `src/` hoàn toàn không bị chạm.
   - `sha256sum checkpoints/alphabet_best.pt` = `160e0c6825e365ba3d5481e2fd4d18423cf501c655aec618a453c524d8a17899`.
   - Không có skip mới, không có mẫu cấm AC-U9.
+
+## Lần sửa 13c — T2 (2026-10-09, vslt-coder; `docs/plans/15-lan-sua-13c.md` §4 hàng T2, AC-T2, AC-P)
+- Mục tiêu: Chỉ thêm lớp test mới `TestWindowAndFullscreenU2t2` vào `tests/test_level1_demo.py` (`@unittest.skipUnless(not _MISSING, SKIP_REASON)`), bao phủ 4 ca kiểm thử W1a, W1b, F1, L1 theo AC-T2.
+- Tái sử dụng: Dùng lại `_ScaledWindowRecorder`, `_FullscreenRecorder`, `_window_rect_raises` và mẫu LRU của `TestHudFontLruU2c` không sửa đổi.
+- Bất biến sửa đổi: `git diff --numstat tests/test_level1_demo.py` = `120 0` (0 dòng xóa, không sửa dòng có sẵn).
+- Cách lấy cặp `(text_or_view, small)` cho W1a và W1b: lấy trực tiếp từ `app._hud_lines()[:2]` sau khi khởi tạo `app = app_mod.Level1App(args_for("--source", CLIP))` trong `chdir(PROJECT_ROOT)` (chưa `run`); trong đó `tov` là `app.speller.view` (dict biểu diễn trạng thái khung soạn thảo văn bản) và `small` là danh sách các chuỗi chú thích dưới panel (kết quả ký hiệu, trạng thái/hướng dẫn phím,...).
+- Chi tiết 4 ca kiểm thử:
+  - W1a (`test_w1a_window_image_compose_fallback`): `app._window_image` khi `getWindowImageRect` ném `cv2.error` (`_window_rect_raises`) rơi về đường `Hud.compose(view.copy(), tov, small, 0.6, stats)`, `array_equal` với kết quả gọi trực tiếp `Hud.compose`, và có ≥ 1 pixel `== (0, 200, 0)` từ thanh hold bar.
+  - W1b (`test_w1b_window_image_scaled_layout`): `app._window_image` với rect 1080p `(0, 0, 1920, 1080)` định tuyến qua `render_to_window`; vùng camera `out[L.y0 : L.y0 + cam_h, L.x0 : L.x0 + L.content_w]` khớp chính xác với `cv2.resize(view, (L.content_w, cam_h), interpolation=cv2.INTER_LINEAR)` với `cam_h = L.cam_rect[3]` của `fit_layout(640, 480, ph, (0, 0, 1920, 1080))` (với `ph = app.hud.panel_height(tov, small, 1)`), và `out` có ≥ 1 pixel `== (0, 200, 0)`.
+  - F1 (`test_f1_fullscreen_toggle_properties_and_resizes`): Chạy `app.run()` không bật `--fullscreen`, dùng `_FullscreenRecorder(keys=[ord("f"), ord("f")])`; ghi nhận `[p[2] for p in rec.set_props] == [cv2.WINDOW_FULLSCREEN, cv2.WINDOW_NORMAL]`, `[p[1] for p in rec.set_props] == [cv2.WND_PROP_FULLSCREEN] * 2`; `len(rec.resized) == 2` (lần đầu khi khởi tạo và lần sau khi thoát toàn màn hình về cỡ tự nhiên); chuỗi sự kiện fullscreen `[True, False]`.
+  - L1 (`test_l1_font_lru_mru_retention_and_eviction`): Mẫu đếm `ImageFont.truetype` như `TestHudFontLruU2c` với 9 scale mới khác nhau A1..A9 (px/20 với px 30..38, không gồm 1.0). Gọi A1..A8 lấp đầy cache, gọi A1 không dựng mới (chuyển thành MRU), gọi A9 (đẩy A2 là phần tử LRU ra khỏi cache); gọi lại A1 không dựng mới (cache hit); gọi A2 dựng mới (cache miss); `len(hud._fonts) <= 8` tại mọi bước.
+- Kiểm thử thực tế:
+  - Lệnh test mới: `cmd.exe /c ".\.venv\Scripts\python.exe -m unittest tests.test_level1_demo.TestWindowAndFullscreenU2t2 -v > _work\_plan15_l13\l13c_t2_green.log 2>&1"` → `_work/_plan15_l13/l13c_t2_green.log`: `Ran 4 tests in 2.898s` — `OK`, 0 fail, 0 errors, 0 skip.
+  - Lệnh test hiển thị: `.\.venv\Scripts\python.exe -m unittest tests.test_level1_display -v`: `Ran 32 tests in 22.160s` — `OK`, 0 fail, 0 errors, 0 skip.
+- GitNexus & kiểm tra an toàn:
+  - Impact: `Level1App` (HIGH/UNKNOWN), `Hud` (MEDIUM/UNKNOWN).
+  - Detect changes: Kiểm tra trước commit bằng `node .gitnexus/run.cjs detect-changes --scope all --repo .`.
+  - `git diff --stat 93abb08..HEAD -- level1_demo.py src/` rỗng; `level1_demo.py` và `src/` hoàn toàn không bị chạm.
+  - `sha256sum checkpoints/alphabet_best.pt` = `160e0c6825e365ba3d5481e2fd4d18423cf501c655aec618a453c524d8a17899`.
+  - Không có skip mới, không có mẫu cấm AC-U9.
+
