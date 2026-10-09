@@ -1,0 +1,27 @@
+{
+  "command": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\.venv\\Scripts\\python.exe scripts/level1_display_cost.py --out reports/level1_realtime_2026-10-08/display_cost.json",
+  "commit": "57395ff2f78f818fcee640ca95b1dee9247dc70f",
+  "code_dirty": false,
+  "clip": "data/external/hauuto_raw/raw/raw/hau/a_hau_A_001.mp4",
+  "natural": {
+    "n_frames": 35,
+    "p50_ms": 110.72680000143009,
+    "p90_ms": 131.37918000065838,
+    "path": "Hud.compose (đường cũ, không qua render_to_window)"
+  },
+  "window_1080p": {
+    "n_frames": 34,
+    "p50_ms": 111.49240000122518,
+    "p90_ms": 134.73305000115943,
+    "path": "render_to_window"
+  },
+  "ratio_p50": 1.0069143152315898,
+  "gate": {
+    "name": "DC1",
+    "threshold": 1.25,
+    "pass": true
+  },
+  "note": "imshow vá, không cửa sổ thật; lần \"natural\" đo đường Hud.compose cũ vì rect bằng kích thước tự nhiên; không đo chi phí vẽ cửa sổ HĐH",
+  "python": "3.11.9",
+  "cv2": "5.0.0"
+}
