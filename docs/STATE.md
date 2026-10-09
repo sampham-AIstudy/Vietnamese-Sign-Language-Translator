@@ -10,7 +10,7 @@
 - LẦN SỬA 12 (cloud, 2026-10-06, theo phản hồi webcam của người dùng): `docs/plans/15-lan-sua-12.md`. Mã: ddd7904 (G1 cổng chuyển động decoder, H1 HandednessLock, config rev9), 13759a6 (script dominant_hand_check), 85a6a91 (app: tắt tự cách mặc định, --dominant-hand lock, nối cổng), 551e1b2 (G1b: không cắt chữ biến thể của chữ vừa phát). Bằng chứng: reports/level1_realtime_2026-10-06/{dominant_hand_check,rearm_check_gate,rearm_check_gate_v2}.json. CHƯA review (vslt-reviewer local). Còn: phiên webcam người dùng so rev8 và rev9.
 - HEAD: ba9e107 (+ commit state này) | Nhánh: cloud/2026-10-04-level1-rearm
 - Tắt máy: CHỈ khi người dùng yêu cầu rõ trong hội thoại (quyết định 2026-10-04 01:15). Lần gần nhất: 9/10 02:12 tắt theo yêu cầu "khi nào xong thì tắt máy giúp tôi lần này" (hết hiệu lực sau phiên đó).
-- Trạng thái phiên: 13:55 9/10 (5h dùng 52%, reset ~14:20). U2c 00d320c (agy 2 lần: lần 1 đứt mạng DNS, lần 2 hết giờ 40'; orchestrator chạy lại level1 all Ran 507 OK skip 1 rồi commit hộ; agy-guard BLOCK 15-progress.md = báo nhầm vì file là WIP U2c lần 1 — đã báo người dùng). ĐANG GIAO vslt-reviewer U2c. VIỆC KẾ: U2d (agy) → X1 trước V1. GOM CHO PLANNER TRƯỚC V1: THẤP-2 U2a (điểm mù rA/rB), THẤP-1/2 U2b (m5, m6), THẤP-3/4 U2b (ảnh camera đổi cỡ khi dòng gợi ý hiện/ẩn; chưa kiểm cửa sổ thật); DC1 ở U2d ghi note "tự nhiên" = đường Hud.compose. agy trên Windows: shell chập chờn ("process heap"), cân nhắc chia nhỏ --steps.
+- Trạng thái phiên: 14:08 9/10 (5h dùng 64%, reset ~14:20). U2c 00d320c CHANGES_REQUESTED (docs/reviews/15-l13-u2c-review.md: 0 CAO, 1 TB, 6 THẤP; TB-1 tiêu đề cửa sổ có dấu hiện sai mã ACP 1252). ĐANG GIAO vslt-coder-claude sửa TB-1: WINDOW_NAME = "VSLT Level 1 (f: toan man hinh)" (quyết định người dùng 14:07) + test. VIỆC KẾ: reviewer vòng 2 U2c → U2d (agy) → X1 trước V1. Phiên song song project-be (orchestrator cũ) đã dừng 13:58 theo thỏa thuận — phiên này là orchestrator duy nhất. GOM CHO PLANNER TRƯỚC V1: THẤP-2 U2a (rA/rB), THẤP-1/2 U2b (m5, m6), THẤP-3/4 U2b (camera đổi cỡ khi gợi ý hiện/ẩn; chưa kiểm cửa sổ thật), THẤP U2c (đột biến sống FIFO/tắt fullscreen gửi WINDOW_FULLSCREEN/window_sized; setWindowProperty lỗi vẫn ghi on:true); DC1 ở U2d ghi note "tự nhiên" = đường Hud.compose.
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -222,6 +222,7 @@
 - 2026-10-08 18:25 (người dùng): đồng ý cả 4 cách giảm hạn mức Claude + cách khác nếu tối ưu ⇒ vslt-coder (cầu nối) chạy Sonnet; STATE gọn
   (lịch sử → docs/STATE_archive.md); chờ việc nền > 45 phút thì lưu STATE + mở phiên mới; giữ context phiên chính nhỏ; không đổi model giữa phiên.
   Chi tiết + số đo: docs/prompts/orchestrator_resume_addendum.md mục 6.
+- (2026-10-09 14:07) Tiêu đề cửa sổ demo Cấp 1: chữ KHÔNG DẤU "VSLT Level 1 (f: toan man hinh)" (OpenCV Windows hiện sai chữ có dấu trong tiêu đề).
 
 ## Câu hỏi chờ người dùng
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
