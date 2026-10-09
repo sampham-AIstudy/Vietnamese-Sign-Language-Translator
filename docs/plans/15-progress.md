@@ -1802,3 +1802,5 @@ Cửa sổ THẬT (không vá `imshow`/`namedWindow`/`resizeWindow`/`waitKey`); 
 - `sha256sum checkpoints/alphabet_best.pt` bắt đầu `160e0c6825e365ba` (v6, không đổi).
 - AC-G3 ghi khác biệt: 1 nét lớn (3 A, 200 ms) ⇒ `WaveBackspaceGesture` 0 lần, `BackspaceGestureTracker()` cũ 1 lần trên cùng chuỗi (`test_g3_single_large_stroke_no_backspace_old_tracker_one`).
 - CHƯA làm (thuộc G2/G3): hằng cũ → config trong `level1_core.py`, `--gesture-config`, preset, JSON `gestures`, HUD, thêm `level1_gestures.py` vào `PLAN15_FILES` của guard (test G1 đã tự quét file mới bằng `ALL_RULES` ⇒ 0 phát hiện); `scripts/level1_gesture_check.py`.
+
+## Lần sửa 13d — planner (2026-10-09): P1 giữ, P2 đổi, NaN = không tay; G2 = G2a → G2b → G2c, mỗi phần 1 commit + review; xem docs/plans/15-lan-sua-13d.md.
