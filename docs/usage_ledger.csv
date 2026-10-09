@@ -95,3 +95,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-09T20:40Z,vslt-coder-claude,15,L13-G2c (wire GestureEngine into app),25,45,20,0,ok
 2026-10-09T21:00Z,vslt-reviewer,15,13d G2c review,45,55,10,0,ok
 2026-10-09T21:20Z,vslt-coder-claude,15,L13-G3 (gesture false-trigger script + run),55,70,15,0,ok
+2026-10-09T21:40Z,vslt-reviewer,15,L13-G3 review (full rerun),70,78,8,0,ok
