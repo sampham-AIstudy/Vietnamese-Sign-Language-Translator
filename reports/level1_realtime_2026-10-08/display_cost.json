@@ -1,27 +1,49 @@
 {
-  "command": "C:\\Users\\Admin\\Python Advanced\\Deep Learning - CV\\Project\\.venv\\Scripts\\python.exe scripts/level1_display_cost.py --out reports/level1_realtime_2026-10-08/display_cost.json",
-  "commit": "57395ff2f78f818fcee640ca95b1dee9247dc70f",
+  "command": ".venv/Scripts/python.exe scripts/level1_display_cost.py --out reports/level1_realtime_2026-10-08/display_cost.json",
+  "commit": "ea93fa1cd29a0907408fb990b031edd1825a68bb",
   "code_dirty": false,
   "clip": "data/external/hauuto_raw/raw/raw/hau/a_hau_A_001.mp4",
+  "min_frames": 10,
   "natural": {
-    "n_frames": 35,
-    "p50_ms": 110.72680000143009,
-    "p90_ms": 131.37918000065838,
-    "path": "Hud.compose (đường cũ, không qua render_to_window)"
+    "n_frames": 72,
+    "p50_ms": 31.993450000300072,
+    "p90_ms": 44.28020999985164,
+    "n_imshow": 72,
+    "path_counts": {
+      "Hud.compose": 70,
+      "render_to_window": 2
+    },
+    "stage_p50_ms": {
+      "hud": 2.400050001597265,
+      "mediapipe": 28.184149998196517
+    }
   },
   "window_1080p": {
-    "n_frames": 34,
-    "p50_ms": 111.49240000122518,
-    "p90_ms": 134.73305000115943,
-    "path": "render_to_window"
+    "n_frames": 74,
+    "p50_ms": 35.604599997896,
+    "p90_ms": 42.11420999999973,
+    "n_imshow": 74,
+    "path_counts": {
+      "Hud.compose": 0,
+      "render_to_window": 74
+    },
+    "stage_p50_ms": {
+      "hud": 6.189599998833728,
+      "mediapipe": 27.973849999398226
+    }
   },
-  "ratio_p50": 1.0069143152315898,
+  "ratio_p50": 1.1128715408173255,
   "gate": {
     "name": "DC1",
     "threshold": 1.25,
-    "pass": true
+    "pass": true,
+    "reason": null
   },
-  "note": "imshow vá, không cửa sổ thật; lần \"natural\" đo đường Hud.compose cũ vì rect bằng kích thước tự nhiên; không đo chi phí vẽ cửa sổ HĐH",
+  "info": {
+    "hud_p50_delta_ms": 3.7895499972364632,
+    "in_gate": false
+  },
+  "note": "imshow vá, không cửa sổ thật, không đo chi phí vẽ cửa sổ HĐH; đường vẽ mỗi lần là số đếm path_counts (số khung đi Hud.compose / render_to_window, bọc hàm gốc), không suy ra từ rect; stage_p50_ms và info là số thông tin, không vào gate DC1",
   "python": "3.11.9",
   "cv2": "5.0.0"
 }
