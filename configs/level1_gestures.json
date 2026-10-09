@@ -1,0 +1,98 @@
+{
+  "_about": "Level 1 desktop gesture parameters (plan 15 lần sửa 13 §3.2: gestures only when deliberate; user decision Q5 2026-10-08: open palm = space, wave left/right = backspace). Every key = {value, source, reason}; source is always 'design' = chosen by reasoning BEFORE any measurement, never tuned after the false-trigger gate (§3.3). Read by src/inference/level1_gestures.load_gesture_config (no defaults in code).",
+  "space_hold_ms": {
+    "value": 600,
+    "source": "design",
+    "reason": "twice cls_stable_ms 300 of rev9 and more than twice the old 250 that fired by accident while signing letters; a deliberate pose is held for about half a second or more"
+  },
+  "space_dropout_frames": {
+    "value": 1,
+    "source": "design",
+    "reason": "tolerate one flickering MediaPipe frame while the open palm is held, like the one-frame dropout debounce of the label decoder (lần sửa 7 T2)"
+  },
+  "space_rearm_ms": {
+    "value": 300,
+    "source": "design",
+    "reason": "the hand must change pose or stop being still long enough before the next space (old value 150)"
+  },
+  "wave_window_ms": {
+    "value": 1500,
+    "source": "design",
+    "reason": "two wave strokes (out and back) at about 2 to 3 strokes per second fit inside 1.5 s"
+  },
+  "wave_min_amplitude": {
+    "value": 0.6,
+    "source": "design",
+    "reason": "each stroke moves the palm centre by at least 0.6 x the palm length |p9 - p0|: a deliberate wave, not jitter or drift"
+  },
+  "wave_min_strokes": {
+    "value": 2,
+    "source": "design",
+    "reason": "a wave is at least one stroke out and one back; a single flick (old gesture) is not enough"
+  },
+  "wave_max_vertical_ratio": {
+    "value": 0.5,
+    "source": "design",
+    "reason": "vertical amplitude at most 0.5 x horizontal amplitude: rules out diagonal or downward tone-mark strokes"
+  },
+  "wave_min_flat_fraction": {
+    "value": 0.9,
+    "source": "design",
+    "reason": "at least 90 percent of the hand frames of the strokes are a flat hand (old gesture: one flat frame was enough)"
+  },
+  "wave_cooldown_ms": {
+    "value": 1000,
+    "source": "design",
+    "reason": "after a backspace the hand must drop or change pose; waving on does not repeat by itself"
+  },
+  "flat_thumb_min_ratio": {
+    "value": 0.5,
+    "source": "design",
+    "reason": "the bare number 0.5 x palm of is_flat_hand_backspace (src/inference/level1_core.py) moved into the config, value unchanged"
+  },
+  "flat_thumb_max_spread": {
+    "value": 1.05,
+    "source": "design",
+    "reason": "the bare number 1.05 x palm of is_flat_hand_backspace (src/inference/level1_core.py) moved into the config, value unchanged"
+  },
+  "gesture_flash_ms": {
+    "value": 600,
+    "source": "design",
+    "reason": "how long the HUD line stays after a gesture (same as before)"
+  },
+  "legacy_flick_cooldown_ms": {
+    "value": 400,
+    "source": "design",
+    "reason": "value of commit 7a267c7 (user, outside the plan) for the old BackspaceGestureTracker cooldown; kept ONLY so the old path and its tests stay identical"
+  },
+  "legacy_flick_window_ms": {
+    "value": 250,
+    "source": "design",
+    "reason": "value of commit 7a267c7 (user, outside the plan) for the old BackspaceGestureTracker sliding window; kept ONLY so the old path and its tests stay identical"
+  },
+  "legacy_flick_min_dx": {
+    "value": 0.05,
+    "source": "design",
+    "reason": "value of commit 7a267c7 (user, outside the plan) for the old BackspaceGestureTracker minimum horizontal displacement; kept ONLY so the old path and its tests stay identical"
+  },
+  "legacy_flick_min_speed": {
+    "value": 0.30,
+    "source": "design",
+    "reason": "value of commit 7a267c7 (user, outside the plan) for the old BackspaceGestureTracker minimum horizontal speed; kept ONLY so the old path and its tests stay identical"
+  },
+  "legacy_flick_palm_ratio": {
+    "value": 0.35,
+    "source": "design",
+    "reason": "value of commit 7a267c7 (user, outside the plan) for the old BackspaceGestureTracker displacement over palm length; kept ONLY so the old path and its tests stay identical"
+  },
+  "legacy_flick_dx_over_dy": {
+    "value": 1.1,
+    "source": "design",
+    "reason": "value of commit 7a267c7 (user, outside the plan) for the old BackspaceGestureTracker horizontal over vertical displacement; kept ONLY so the old path and its tests stay identical"
+  },
+  "legacy_flick_min_dt_s": {
+    "value": 0.04,
+    "source": "design",
+    "reason": "value of commit 7a267c7 (user, outside the plan) for the old BackspaceGestureTracker minimum history span in seconds; kept ONLY so the old path and its tests stay identical"
+  }
+}

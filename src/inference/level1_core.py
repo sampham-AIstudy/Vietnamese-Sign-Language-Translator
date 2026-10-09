@@ -553,15 +553,19 @@ GESTURE_BACKSPACE_FLASH = 600.0      # ms to flash HUD banner
 GESTURE_BACKSPACE_DEFAULT = False    # off by default in parser (on in default webcam preset)
 
 
-def is_flat_hand_backspace(landmarks: Optional[np.ndarray]) -> bool:
+def is_flat_hand_backspace(landmarks: Optional[np.ndarray], thumb_min_ratio: float = 0.5,
+                           thumb_max_spread: float = 1.05) -> bool:
     """True when the hand is the flat hand pose for the backspace gesture: all 5 fingers straight,
     held together (not spread wide like the space gesture).
     landmarks: the 21 MediaPipe hand points [21, 3] (or [21, 2]) in aspect-corrected coordinates.
       1. the 4 long fingers are straight: for (tip, pip, mcp) dist(tip, wrist) > dist(pip, wrist)
          and dist(tip, mcp) > dist(pip, mcp);
-      2. the thumb is straight: dist(4, wrist) > dist(3, wrist) and extended (dist(4, wrist) > 0.5 * palm);
-      3. thumb is not spread wide away as in open palm (dist(4, 17) <= 1.05 * palm);
+      2. the thumb is straight: dist(4, wrist) > dist(3, wrist) and extended (dist(4, wrist) > thumb_min_ratio * palm);
+      3. thumb is not spread wide away as in open palm (dist(4, 17) <= thumb_max_spread * palm);
       4. not the open-palm space gesture: not is_open_palm_space(landmarks).
+    thumb_min_ratio / thumb_max_spread: flat_thumb_min_ratio / flat_thumb_max_spread of configs/level1_gestures.json
+    (plan 15 lần sửa 13 §3.2, passed by level1_gestures.GestureEngine); the defaults are the values of commit 7a267c7,
+    so a call with the landmarks only behaves as before.
     None, non-finite values or degenerate hands return False. Pure computation."""
     if landmarks is None:
         return False
@@ -578,9 +582,9 @@ def is_flat_hand_backspace(landmarks: Optional[np.ndarray]) -> bool:
     for tip, pip, mcp in LONG_FINGERS:
         if not (dist(tip, 0) > dist(pip, 0) and dist(tip, mcp) > dist(pip, mcp)):
             return False
-    if not (dist(4, 0) > dist(3, 0) and dist(4, 0) > 0.5 * palm):
+    if not (dist(4, 0) > dist(3, 0) and dist(4, 0) > thumb_min_ratio * palm):
         return False
-    if dist(4, 17) > 1.05 * palm:
+    if dist(4, 17) > thumb_max_spread * palm:
         return False
     if is_open_palm_space(landmarks):
         return False
