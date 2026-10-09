@@ -12,6 +12,14 @@ AC-G3 WaveBackspaceGesture: 1 large stroke -> 0 (the same frames through the old
       after a backspace does not fire again until the flat hand ends + cooldown; losing the hand in the middle -> counts
       again; the same frames scaled by 0.5 or mirrored in x -> same result.
 
+Lần sửa 13d (docs/plans/15-lan-sua-13d.md §5, part G2a):
+AC-D1 the flat fraction and the vertical / horizontal ratio are taken from the start of the first stroke, not on the whole
+      buffer (non-flat or vertically offset still frames just before the strokes do not block; inside the strokes they do).
+AC-D2 the space re-arm needs another pose for MORE than space_rearm_ms (exactly space_rearm_ms is not enough).
+AC-D3 wave_min_strokes and space_dropout_frames are read from the values (changed values change the behaviour).
+AC-D4 (P2) hand frames inside the wave cooldown are not buffered: strokes done inside the cooldown never fire.
+AC-D5 (THẤP-2) a landmark frame with NaN / inf is "no hand" for both trackers; width / height must be finite and > 0.
+
 Every hand and every frame sequence below is a chuỗi tạo có kiểm soát để kiểm logic (controlled sequence built to check the
 logic): hand shapes are hand-placed 21-point templates checked against the real pose predicates of level1_core
 (is_flat_hand_backspace / is_open_palm_space); they are not data and no number here is a measurement.
@@ -611,6 +619,265 @@ class TestGestureEngine(unittest.TestCase):
         del v["wave_window_ms"]
         with self.assertRaises(ValueError):
             GestureEngine(v)
+
+
+# ================================================================================================ lần sửa 13d, G2a
+VARIANTS = ((1.0, False), (0.5, False), (1.0, True), (0.5, True))  # scale, mirror in x (as both_ways)
+
+
+def first_emission(tracker, frames):
+    """Feed the frames until the tracker fires -> index of that frame, or None."""
+    for i, (ts, p, f) in enumerate(frames):
+        if tracker.update(ts, p, f):
+            return i
+    return None
+
+
+class TestWaveSpanAcD1(unittest.TestCase):
+    """AC-D1 (TB-1 of the G1 review): the flat fraction and the vertical / horizontal ratio are computed on the frames from
+    the start of the first stroke to now. Every sequence is a chuỗi tạo có kiểm soát để kiểm logic."""
+
+    N_PRE = 10  # still frames just before the strokes (AC-D1: at least 10)
+
+    def setUp(self):
+        self.v = load_values()
+        self.A = self.v["wave_min_amplitude"] * PALM
+        self.window = self.v["wave_window_ms"]
+        self.fast = 12
+
+    def wave(self):
+        return WaveBackspaceGesture.from_values(self.v)
+
+    def _strokes(self, t0, still_before):
+        return frames_from(stroke_path(0.5, (1.2 * self.A, -1.2 * self.A), self.fast, still_before=still_before), t0=t0)
+
+    def _buffer_at_emission(self, frames, i):
+        """Frames the tracker holds when it fires at frame i (all of them must still be inside the window)."""
+        ts_e = frames[i][0]
+        buf = [f for f in frames[:i + 1] if f[0] >= ts_e - self.window]
+        self.assertEqual(len(buf), i + 1, "all frames inside wave_window_ms")
+        return buf
+
+    def test_d1a_non_flat_still_frames_before_the_strokes_do_not_block(self):
+        pre = frames_from([0.5] * self.N_PRE, flat=[False] * self.N_PRE, template=CURLED)
+        frames = pre + self._strokes(self.N_PRE * DT, still_before=0)
+        for scale, flip in VARIANTS:
+            fr = transform(frames, scale, flip)
+            tr = self.wave()
+            i = first_emission(tr, fr)
+            self.assertIsNotNone(i, f"scale={scale} flip={flip}")
+            buf = self._buffer_at_emission(fr, i)
+            # precondition: on the WHOLE buffer the flat fraction is below the threshold
+            self.assertLess(sum(f for _, _, f in buf) / len(buf), self.v["wave_min_flat_fraction"])
+            self.assertEqual(len(run_wave(self.wave(), fr)), 1, f"scale={scale} flip={flip}")
+
+    def test_d1b_vertically_offset_still_frames_before_the_strokes_do_not_block(self):
+        pre = frames_from([0.5] * self.N_PRE, ys=[0.5 + 2 * self.A] * self.N_PRE)
+        frames = pre + self._strokes(self.N_PRE * DT, still_before=1)
+        for scale, flip in VARIANTS:
+            fr = transform(frames, scale, flip)
+            tr = self.wave()
+            i = first_emission(tr, fr)
+            self.assertIsNotNone(i, f"scale={scale} flip={flip}")
+            buf = self._buffer_at_emission(fr, i)
+            c = np.array([palm_centre(p) for _, p, _ in buf])
+            dx = c[:, 0].max() - c[:, 0].min()
+            dy = c[:, 1].max() - c[:, 1].min()
+            # precondition: on the WHOLE buffer vertical / horizontal is above the threshold
+            self.assertGreater(dy, self.v["wave_max_vertical_ratio"] * dx)
+            self.assertEqual(len(run_wave(self.wave(), fr)), 1, f"scale={scale} flip={flip}")
+
+    def test_d1c_the_same_non_flat_frames_inside_the_strokes_block(self):
+        pre = frames_from([0.5] * self.N_PRE)
+        strokes = self._strokes(self.N_PRE * DT, still_before=0)
+        inside = set(range(1, 2 * self.N_PRE, 2))  # every other frame of the strokes
+        self.assertLess(max(inside), 2 * self.fast)
+        strokes = [(ts, p, f and k not in inside) for k, (ts, p, f) in enumerate(strokes)]
+        frames = pre + strokes
+        self.assertEqual(sum(not f for _, _, f in frames), self.N_PRE)
+        for scale, flip in VARIANTS:
+            self.assertEqual(run_wave(self.wave(), transform(frames, scale, flip)), [], f"scale={scale} flip={flip}")
+
+
+class TestSpaceRearmBoundaryAcD2(unittest.TestCase):
+    """AC-D2 (THẤP-3): after a space, another pose for exactly space_rearm_ms does not re-arm; for space_rearm_ms + DT it
+    does. Timestamps are set exactly (not accumulated)."""
+
+    def setUp(self):
+        self.v = load_values()
+        self.hold = self.v["space_hold_ms"]
+        self.rearm = self.v["space_rearm_ms"]
+        self.k_hold = int(math.ceil(self.hold / DT))
+
+    def _run(self, last_other_offset):
+        tr = DeliberateSpaceGesture.from_values(self.v)
+        fired = [k for k in range(self.k_hold + 1) if tr.update(k * DT, True, True, True)]
+        self.assertEqual(fired, [self.k_hold])
+        t1 = (self.k_hold + 1) * DT  # first frame of the other pose (other_since)
+        other = [t1 + k * DT for k in range(int(math.ceil(self.rearm / DT))) if k * DT < self.rearm]
+        other.append(t1 + last_other_offset)
+        for ts in other:
+            self.assertFalse(tr.update(ts, False, True, True))
+        t2 = other[-1] + DT
+        second = [k for k in range(self.k_hold * 3) if tr.update(t2 + k * DT, True, True, True)]
+        return tr, second
+
+    def test_d2_other_pose_for_exactly_rearm_does_not_rearm(self):
+        tr, second = self._run(self.rearm)
+        self.assertEqual(second, [])
+        self.assertEqual(tr.n_emits, 1)
+
+    def test_d2_other_pose_for_rearm_plus_one_frame_rearms(self):
+        tr, second = self._run(self.rearm + DT)
+        self.assertEqual(second, [self.k_hold])
+        self.assertEqual(tr.n_emits, 2)
+
+
+class TestParametersAreReadAcD3(unittest.TestCase):
+    """AC-D3 (THẤP-4): wave_min_strokes and space_dropout_frames come from the values, not from the code."""
+
+    def setUp(self):
+        self.v = load_values()
+        self.A = self.v["wave_min_amplitude"] * PALM
+        self.k_hold = int(math.ceil(self.v["space_hold_ms"] / DT))
+
+    def _waves(self, n_strokes):
+        amps = tuple((1.2 * self.A) * (1 if k % 2 == 0 else -1) for k in range(n_strokes))
+        return frames_from(stroke_path(0.5, amps, 12))
+
+    def test_d3_wave_min_strokes_from_values(self):
+        n = self.v["wave_min_strokes"] + 1  # = 3 with the design table
+        v = dict(self.v, wave_min_strokes=n)
+        self.assertEqual(len(run_wave(WaveBackspaceGesture.from_values(self.v), self._waves(n - 1))), 1)
+        self.assertEqual(run_wave(WaveBackspaceGesture.from_values(v), self._waves(n - 1)), [])
+        self.assertEqual(len(run_wave(WaveBackspaceGesture.from_values(v), self._waves(n))), 1)
+
+    def test_d3_space_dropout_frames_from_values(self):
+        d = self.v["space_dropout_frames"] + 1  # = 2 with the design table
+        v = dict(self.v, space_dropout_frames=d)
+        mid = self.k_hold // 2
+
+        def feed(values, n_bad):
+            tr = DeliberateSpaceGesture.from_values(values)
+            seq = [True] * mid + [False] * n_bad + [True] * (self.k_hold * 2)
+            return [k for k, palm in enumerate(seq) if tr.update(k * DT, palm, True, True)]
+
+        self.assertEqual(feed(v, d), [self.k_hold])               # d bad frames in a row: the hold goes on
+        self.assertEqual(feed(v, d + 1), [mid + d + 1 + self.k_hold])  # one more: the hold starts again
+        self.assertEqual(feed(self.v, d), [mid + d + self.k_hold])     # with the design value d frames already restart
+
+
+class TestCooldownNotBufferedAcD4(unittest.TestCase):
+    """AC-D4 (P2): hand frames inside the wave cooldown are not buffered (strokes == 0), so two strokes done entirely inside
+    the cooldown do not fire when it ends; two strokes started after the cooldown fire once."""
+
+    MARGIN_MS = 300.0  # AC-D4: the flat hand stays still until t_emit + wave_cooldown_ms + 300 ms
+
+    def setUp(self):
+        self.v = load_values()
+        self.A = self.v["wave_min_amplitude"] * PALM
+        self.cooldown = self.v["wave_cooldown_ms"]
+        self.fast = 12
+
+    def test_d4_strokes_inside_the_cooldown_never_fire(self):
+        two = (1.2 * self.A, -1.2 * self.A)
+        for scale, flip in VARIANTS:
+            msg = f"scale={scale} flip={flip}"
+            tr = WaveBackspaceGesture.from_values(self.v)
+            first = transform(frames_from(stroke_path(0.5, two, self.fast)), scale, flip)
+            i = first_emission(tr, first)
+            self.assertIsNotNone(i, msg)
+            t_emit = first[i][0]
+            self.assertFalse(tr.update(t_emit + DT, None, False))  # the hand leaves at once (releases the flat hand)
+            inside = transform(frames_from(stroke_path(0.5, two, self.fast, still_before=1, still_after=0),
+                                           t0=t_emit + 2 * DT), scale, flip)
+            self.assertLess(inside[-1][0] - t_emit, self.cooldown, "both strokes entirely inside the cooldown")
+            for ts, p, f in inside:
+                self.assertFalse(tr.update(ts, p, f), msg)
+                self.assertEqual(tr.strokes, 0, msg)
+            still_p = inside[-1][1]
+            ts = inside[-1][0] + DT
+            while ts <= t_emit + self.cooldown + self.MARGIN_MS:
+                self.assertFalse(tr.update(ts, still_p, True), msg)
+                if ts - t_emit < self.cooldown:
+                    self.assertEqual(tr.strokes, 0, msg)
+                ts += DT
+            self.assertEqual(tr.n_emits, 1, msg)
+            # control: two strokes started after the cooldown fire exactly once
+            after = transform(frames_from(stroke_path(0.5, two, self.fast), t0=ts), scale, flip)
+            self.assertEqual(len(run_wave(tr, after)), 1, msg)
+            self.assertEqual(tr.n_emits, 2, msg)
+
+
+class TestNonFiniteFrameAcD5(unittest.TestCase):
+    """AC-D5 (THẤP-2): GestureEngine.step treats a landmark frame with NaN / inf as no hand for both trackers; width and
+    height must be finite and > 0; a wrong shape is still a ValueError."""
+
+    W, H = 640, 480
+
+    def setUp(self):
+        self.v = load_values()
+        self.k_hold = int(math.ceil(self.v["space_hold_ms"] / DT))
+
+    def raw(self, template, cx, cy):
+        return to_mediapipe(hand(template, cx, cy), self.W, self.H)
+
+    def bad_frames(self, template, cx, cy):
+        out = []
+        for idx, col, val in ((8, 0, float("nan")), (0, 1, float("inf")), (12, 2, float("nan")), (4, 2, -float("inf"))):
+            r = self.raw(template, cx, cy)
+            r[idx, col] = val
+            out.append(r)
+        return out
+
+    def test_d5_non_finite_frame_is_neither_pose(self):
+        for template in (OPEN_PALM, FLAT):
+            for r in self.bad_frames(template, 0.6, 0.5):
+                out = GestureEngine(self.v).step(0.0, r, self.W, self.H, True)
+                self.assertEqual(out, {"space": False, "backspace": False, "is_palm": False, "is_flat": False})
+
+    def _space_run(self, mid_frame):
+        eng = GestureEngine(self.v)
+        seq = [self.raw(OPEN_PALM, 0.6, 0.5)] * (self.k_hold * 3)
+        seq = seq[:self.k_hold // 2] + [mid_frame] + seq[self.k_hold // 2 + 1:]
+        return [k for k, r in enumerate(seq) if eng.step(k * DT, r, self.W, self.H, True)["space"]]
+
+    def test_d5_non_finite_frame_while_holding_the_open_palm_is_a_lost_hand(self):
+        lost = self._space_run(None)
+        # sanity: a lost hand and a bad frame with the hand give different emissions, so equality below means something
+        self.assertNotEqual(lost, self._space_run(self.raw(CURLED, 0.6, 0.5)))
+        for r in self.bad_frames(OPEN_PALM, 0.6, 0.5):
+            self.assertEqual(self._space_run(r), lost)
+
+    def test_d5_non_finite_frame_during_a_wave_clears_the_strokes(self):
+        a = self.v["wave_min_amplitude"] * PALM
+        xs = stroke_path(0.6, (1.2 * a, -1.2 * a), 12)
+        k_mid = 4 + 12 + 6  # in the middle of the second stroke
+        for bad in self.bad_frames(FLAT, xs[k_mid], 0.5):
+            eng = GestureEngine(self.v)
+            for k in range(k_mid):
+                self.assertFalse(eng.step(k * DT, self.raw(FLAT, xs[k], 0.5), self.W, self.H, False)["backspace"])
+            self.assertGreaterEqual(eng.wave.strokes, 1)
+            out = eng.step(k_mid * DT, bad, self.W, self.H, False)
+            self.assertFalse(out["backspace"])
+            self.assertEqual(eng.wave.strokes, 0)
+
+    def test_d5_width_and_height_must_be_finite_and_positive(self):
+        r = self.raw(OPEN_PALM, 0.6, 0.5)
+        for bad in (0, -1, float("nan"), float("inf")):
+            for frame in (r, None):
+                with self.assertRaises(ValueError):
+                    GestureEngine(self.v).step(0.0, frame, bad, self.H, True)
+                with self.assertRaises(ValueError):
+                    GestureEngine(self.v).step(0.0, frame, self.W, bad, True)
+
+    def test_d5_wrong_shape_is_still_a_value_error(self):
+        r = self.raw(OPEN_PALM, 0.6, 0.5)
+        nan_r = r.copy()
+        nan_r[0, 0] = float("nan")
+        for bad in (r[:, :2], r[:20], nan_r[:, :2], r.reshape(-1)):
+            with self.assertRaises(ValueError):
+                GestureEngine(self.v).step(0.0, bad, self.W, self.H, True)
 
 
 if __name__ == "__main__":

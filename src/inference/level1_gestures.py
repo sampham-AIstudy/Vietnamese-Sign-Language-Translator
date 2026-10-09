@@ -7,11 +7,11 @@ Space, a left / right wave of the flat hand is Backspace, and both fire only whe
   "design" or a value out of its domain -> ValueError).
 - palm_centre(points) / palm_len(points): mean of points 0, 5, 9, 13, 17 / |p9 - p0| in the image plane (x, y).
 - DeliberateSpaceGesture: fires once when the open palm is held STILL (segmenter not "moving") for space_hold_ms,
-  tolerating space_dropout_frames bad frames in a row; losing the hand cancels the hold.
+  tolerating space_dropout_frames bad frames WITH the hand in a row; losing the hand cancels the hold at once.
 - WaveBackspaceGesture: fires once when the palm centre makes wave_min_strokes horizontal strokes, each at least
   wave_min_amplitude x the median palm length, inside wave_window_ms, with a flat hand on wave_min_flat_fraction of the
-  frames and a vertical amplitude at most wave_max_vertical_ratio x the horizontal one; then cooldown and re-arm only
-  when the flat hand ends.
+  frames and a vertical amplitude at most wave_max_vertical_ratio x the horizontal one; then cooldown (no frame of it
+  is buffered) and re-arm only when the flat hand ends.
 - GestureEngine(values): both trackers on one frame; step() is the ONE path the desktop app and the measuring script
   call (level1_core.is_open_palm_space and level1_core.is_flat_hand_backspace with the config's thumb thresholds).
 
@@ -164,7 +164,8 @@ class DeliberateSpaceGesture:
     segmenter of the same frame is not "moving"); returns True exactly once per gesture:
       - armed: the hold starts at the first frame with the open palm AND still; a frame with the hand but not (open palm
         and still) is a bad frame: up to dropout_frames bad frames in a row keep the hold (its time keeps running),
-        one more ends it; a frame without hand ends it at once. A good frame with ts - start >= hold_ms -> True, disarmed;
+        one more ends it; a frame without hand ends it at once (dropout_frames does not cover frames without hand,
+        lần sửa 13d P1). A good frame with ts - start >= hold_ms -> True, disarmed;
       - disarmed: no space however long the open palm is held (no auto-repeat); re-armed by a frame without hand, or by
         another pose / a hand that is not still held for more than rearm_ms.
     held_ms = how long the open palm has been held while armed (0 otherwise; HUD)."""
@@ -237,7 +238,10 @@ class WaveBackspaceGesture:
         fraction >= min_flat_fraction AND the vertical amplitude <= max_vertical_ratio x the horizontal one AND
         cooldown_ms has passed since the last backspace;
       - after firing: buffer cleared, cooldown, and nothing is buffered until the flat hand ends (a frame without hand,
-        or a hand frame that is not flat after the cooldown).
+        or a hand frame that is not flat after the cooldown);
+      - no hand frame with ts - last backspace < cooldown_ms is ever buffered (lần sửa 13d P2): the buffer stays empty
+        and strokes = 0 during the cooldown, so strokes are counted only from the first frame after it (a wave done
+        inside the cooldown does not fire when it ends). A frame without hand still ends the flat hand at once.
     strokes = strokes counted on the current buffer (HUD)."""
 
     def __init__(self, window_ms: float, min_amplitude: float, min_strokes: int, max_vertical_ratio: float,
@@ -307,12 +311,16 @@ class WaveBackspaceGesture:
             if flat or in_cooldown:
                 return False
             self.need_release = False
+        if in_cooldown:  # plan 15 lần sửa 13d P2: a hand frame inside the cooldown is never buffered
+            self.buffer.clear()
+            self.strokes = 0
+            return False
         c = palm_centre(p)
         self.buffer.append(WaveFrame(ts, float(c[0]), float(c[1]), flat, palm_len(p)))
         cutoff = ts - self.window_ms
         self.buffer = [b for b in self.buffer if b.ts >= cutoff]
         self.strokes, start = self._count_strokes()
-        if self.strokes < self.min_strokes or in_cooldown:
+        if self.strokes < self.min_strokes:
             return False
         span = self.buffer[start:]
         if sum(b.flat for b in span) < self.min_flat_fraction * len(span):
@@ -334,7 +342,9 @@ class GestureEngine:
     MediaPipe hand landmarks [21, 3] of the frame (None = no hand) and still = the segmenter of the same frame is not
     "moving" -> {"space", "backspace", "is_palm", "is_flat"}. The points go through level1_segmenter.aspect_points
     (the correction shared with training); the poses are level1_core.is_open_palm_space and
-    level1_core.is_flat_hand_backspace(points, flat_thumb_min_ratio, flat_thumb_max_spread)."""
+    level1_core.is_flat_hand_backspace(points, flat_thumb_min_ratio, flat_thumb_max_spread). A [21, 3] frame with a NaN /
+    inf value is no hand for both trackers (as None; lần sửa 13d THẤP-2); another shape, or a width / height that is not
+    a finite number > 0 -> ValueError."""
 
     def __init__(self, values: Dict[str, Any]):
         thumb_min, thumb_spread = _need(values, ("flat_thumb_min_ratio", "flat_thumb_max_spread"))
@@ -349,13 +359,21 @@ class GestureEngine:
 
     def step(self, ts_ms: float, landmarks: Optional[np.ndarray], width: int, height: int,
              still: bool) -> Dict[str, bool]:
-        if landmarks is None:
+        for name, size in (("width", width), ("height", height)):
+            if isinstance(size, bool) or not isinstance(size, numbers.Real) or not np.isfinite(float(size)) \
+                    or not size > 0:
+                raise ValueError(f"{name} must be a finite number > 0, got {size!r}")
+        raw = None
+        if landmarks is not None:
+            raw = np.asarray(landmarks, dtype=np.float64)
+            if raw.shape != (21, 3):
+                raise ValueError(f"landmarks must be [21, 3], got {raw.shape}")
+            if not np.all(np.isfinite(raw)):
+                raw = None  # lần sửa 13d (THẤP-2): a frame with NaN / inf is no hand for both trackers
+        if raw is None:
             space = self.space.update(ts_ms, False, False, still)
             backspace = self.wave.update(ts_ms, None, False)
             return {"space": space, "backspace": backspace, "is_palm": False, "is_flat": False}
-        raw = np.asarray(landmarks, dtype=np.float64)
-        if raw.shape != (21, 3):
-            raise ValueError(f"landmarks must be [21, 3], got {raw.shape}")
         points = aspect_points(raw, width, height)
         is_palm = bool(is_open_palm_space(points))
         is_flat = bool(is_flat_hand_backspace(points, self.thumb_min, self.thumb_spread))

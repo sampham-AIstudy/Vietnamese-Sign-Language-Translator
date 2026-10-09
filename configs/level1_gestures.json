@@ -8,7 +8,7 @@
   "space_dropout_frames": {
     "value": 1,
     "source": "design",
-    "reason": "tolerate one flickering MediaPipe frame while the open palm is held, like the one-frame dropout debounce of the label decoder (lần sửa 7 T2)"
+    "reason": "tolerate one frame WITH the hand that is not the open palm or not still (one flickering pose frame) while the open palm is held, like the one-frame dropout debounce of the label decoder (lần sửa 7 T2); a frame without hand is not tolerated: it cancels the hold at once (lần sửa 13d P1)"
   },
   "space_rearm_ms": {
     "value": 300,
