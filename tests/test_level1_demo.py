@@ -3644,7 +3644,9 @@ class TestParserU2c(unittest.TestCase):
     def test_key_hint_and_docstring(self):
         self.assertIn("f fullscreen", app_mod.__doc__)
         # Plan 15 §2.2: hint placed in window title when tests pin small lines against reference commits
-        self.assertIn("f: toàn màn hình", app_mod.WINDOW_NAME)
+        # Review U2c TB-1: OpenCV's Win32 backend shows non-ASCII titles garbled -> title must be ASCII (user decision 2026-10-09)
+        self.assertIn("f: toan man hinh", app_mod.WINDOW_NAME)
+        self.assertTrue(app_mod.WINDOW_NAME.isascii())
 
 
 if __name__ == "__main__":

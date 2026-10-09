@@ -101,7 +101,7 @@ from src.inference.level1_timing import (FRAME_STAGES, SIGN_STAGES, StageTimes, 
 
 DEFAULT_CONFIG = os.path.join("configs", "level1_realtime.json")      # relative to the repository root
 DEFAULT_CHECKPOINT = os.path.join("checkpoints", "alphabet_best.pt")  # relative to the repository root
-WINDOW_NAME = "VSLT Level 1 (f: toàn màn hình)"
+WINDOW_NAME = "VSLT Level 1 (f: toan man hinh)"  # ASCII: OpenCV's Win32 backend garbles non-ASCII titles (review U2c TB-1)
 EXIT_INPUT_ERROR = 2
 CODE_PATHS = ("level1_demo.py", "src", "configs/level1_realtime.json")
 NOTE = ("Durations are measured inside the app with time.perf_counter, from the moment a frame is received from "
