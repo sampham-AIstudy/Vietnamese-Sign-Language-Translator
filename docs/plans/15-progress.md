@@ -1777,3 +1777,15 @@ Cửa sổ THẬT (không vá `imshow`/`namedWindow`/`resizeWindow`/`waitKey`); 
   - `sha256sum checkpoints/alphabet_best.pt` = `160e0c6825e365ba3d5481e2fd4d18423cf501c655aec618a453c524d8a17899`.
   - Không có skip mới, không có mẫu cấm AC-U9.
 
+
+### Kết quả đột biến AC-T2m & kiểm toàn bộ (cầu nối, tại T2 = b5762ec)
+- Worktree tạm `_work/_plan15_l13/wt_13c_t2` tạo từ commit b5762ec (không chép file), `data/external` và `checkpoints` nối bằng junction; đã xóa sau khi chạy (`git worktree list` chỉ còn cây chính). Script: `_work/_plan15_l13/t2_mutate.py` (không commit). Lệnh: `PY -m unittest tests.test_level1_demo.TestWindowAndFullscreenU2t2`.
+  - base `l13c_t2_mut_base.log`: `Ran 4 tests in 2.940s` — `OK`.
+  - b5 (`compose(..., 0.0, ...)`): `Ran 4 tests in 2.860s` — `FAILED (failures=1)`; bắt bởi `test_w1a_window_image_compose_fallback`.
+  - b6 (`render_to_window(view[:, ::-1], ...)`): `Ran 4 tests in 2.870s` — `FAILED (failures=1)`; bắt bởi `test_w1b_window_image_scaled_layout`.
+  - c4 (bỏ `move_to_end` trong `_fonts_at`): `Ran 4 tests in 2.869s` — `FAILED (failures=1)`; bắt bởi `test_l1_font_lru_mru_retention_and_eviction`.
+  - c5 (`prop = cv2.WINDOW_FULLSCREEN` luôn): `Ran 4 tests in 2.883s` — `FAILED (failures=1)`; bắt bởi `test_f1_fullscreen_toggle_properties_and_resizes`.
+  - c6 (bỏ đặt lại `window_sized = False`): `Ran 4 tests in 2.864s` — `FAILED (failures=1)`; bắt bởi `test_f1_fullscreen_toggle_properties_and_resizes`.
+  - Cả 5 đột biến ĐỎ, base XANH.
+- `PY -m unittest tests.test_level1_display` (`l13c_t2_display.log`): `Ran 32 tests in 21.342s` — `OK`.
+- Toàn bộ `tests/test_level1_*.py` + `tests.test_backend_source_guard` (`l13c_t2_level1_all.log`): `Ran 543 tests in 514.787s` — `OK (skipped=1)`; DoD7 `known=9 allowed=36`.
