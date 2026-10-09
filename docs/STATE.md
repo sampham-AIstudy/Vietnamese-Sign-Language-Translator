@@ -10,7 +10,7 @@
 - LẦN SỬA 12 (cloud, 2026-10-06, theo phản hồi webcam của người dùng): `docs/plans/15-lan-sua-12.md`. Mã: ddd7904 (G1 cổng chuyển động decoder, H1 HandednessLock, config rev9), 13759a6 (script dominant_hand_check), 85a6a91 (app: tắt tự cách mặc định, --dominant-hand lock, nối cổng), 551e1b2 (G1b: không cắt chữ biến thể của chữ vừa phát). Bằng chứng: reports/level1_realtime_2026-10-06/{dominant_hand_check,rearm_check_gate,rearm_check_gate_v2}.json. CHƯA review (vslt-reviewer local). Còn: phiên webcam người dùng so rev8 và rev9.
 - HEAD: ba9e107 (+ commit state này) | Nhánh: cloud/2026-10-04-level1-rearm
 - Tắt máy: CHỈ khi người dùng yêu cầu rõ trong hội thoại (quyết định 2026-10-04 01:15). Yêu cầu hiện hành: 9/10 19:44 "tiep tuc cong viec, xong thi tat may cho toi" (chỉ phiên này; làm tới hết việc được hoặc cổng hạn mức, lưu+push rồi tắt).
-- Trạng thái phiên: 19:46 9/10 khôi phục (5h 0%, 7d 53%). U2 HOÀN TẤT; 13c: C1/C2/XW xong, T1 APPROVE (235be2b + d27e507). ĐANG GIAO vslt-coder (cầu nối agy) T2 theo docs/plans/15-lan-sua-13c.md. VIỆC KẾ: reviewer T2 → G1 (docs/plans/15-lan-sua-13.md §8). VU người dùng (3 câu cửa sổ thật) không chặn. Chỉ 1 phiên Claude (orchestrator duy nhất).
+- Trạng thái phiên: 19:46 9/10 khôi phục (5h 11%, 7d ~54%). U2 HOÀN TẤT; 13c: C1/C2/XW xong, T1 APPROVE (235be2b + d27e507). T2 b5762ec (agy; agy-guard chặn commit vì regex SKIP_ADDED khớp decorator skipUnless(not _MISSING) BẮT BUỘC theo AC-T2 — báo nhầm, orchestrator kiểm diff + commit hộ) + 3a07a8c (đột biến AC-T2m 5/5 đỏ, level1 all Ran 543 OK). ĐANG GIAO vslt-reviewer T2. VIỆC KẾ: G1 (docs/plans/15-lan-sua-13.md §8). VU người dùng (3 câu cửa sổ thật) không chặn. Chỉ 1 phiên Claude (orchestrator duy nhất).
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -234,6 +234,7 @@
   (3) KAGGLE_KEY trong môi trường cloud còn là chữ mẫu — người dùng tự điền (không đưa vào chat/repo).
 
 ## Backlog còn lại (thứ tự)
+0c. (2026-10-09) scripts/agy_guard.py SKIP_ADDED (dòng ~34) chặn nhầm decorator `@unittest.skipUnless(not _MISSING, SKIP_REASON)` (mẫu bỏ qua khi thiếu dữ liệu, có ở ≥10 lớp test). Cần planner: miễn trừ đúng mẫu đó (không nới chung).
 0a. (2026-10-03, người dùng) Đính chính CSLR "unseen / zero leakage" + guard — xem quyết định 2026-10-03 02:40. Cần planner (kế hoạch 14).
     Phần đính chính + guard làm được ngay (không phụ thuộc K2); dòng WER câu chưa thấy điền sau 13 B11b.
 0b. DỌN DẸP CUỐI: xóa RealtimeStream.jsx, configs/alphabet_config.yaml khi grep 0 tham chiếu + test không đổi; mỗi file 1 commit.
