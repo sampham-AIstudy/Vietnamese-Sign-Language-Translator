@@ -1,0 +1,2237 @@
+{
+  "plan": "docs/plans/15-lan-sua-13.md §3.2 mục 5, §3.3, §9 AC-G7; docs/plans/15-lan-sua-13d.md (P1, P2, NaN)",
+  "note": "clip một ký hiệu THẬT (clip train: 4 người hauuto + QIPEDC + user1) = âm tính cho cả hai cử chỉ; kiểm logic cử chỉ trên ký hiệu thật, KHÔNG phải tỉ lệ webcam; mỗi clip chạy riêng, mọi khung (không bỏ khung như webcam)",
+  "limits": [
+    "landmark trích bằng MediaPipe min_detection_confidence 0.5 (hauuto, QIPEDC) và 0.35 (user1, scripts/collect_targeted_signs.py), preset dùng 0.55",
+    "clip đã dùng để train model chữ (hauuto, user1) nhưng KHÔNG dùng để chỉnh tham số cử chỉ (giá trị thiết kế đặt trước); nếu GF trượt và tham số bị chỉnh lại thì các clip này thành dữ liệu chỉnh (15-lan-sua-13 §11)",
+    "theo nguồn / lớp và đường legacy chỉ báo cáo (QIPEDC quá ít clip cho ngưỡng riêng)"
+  ],
+  "generated_by": {
+    "command": "python scripts/level1_gesture_check.py --out reports/level1_realtime_2026-10-08/gesture_false_trigger.json",
+    "git_commit": "65122fde84d9f101c9fd37503be5aed1e90116e5",
+    "code_dirty": false,
+    "code_paths": [
+      "scripts/level1_gesture_check.py",
+      "src",
+      "level1_demo.py",
+      "configs/level1_gestures.json",
+      "configs/level1_demo_classifier_rev9.json"
+    ],
+    "utc": "2026-10-09T21:19:50+00:00",
+    "python": "3.11.9",
+    "numpy": "2.4.6",
+    "os": "Windows-10-10.0.26200-SP0"
+  },
+  "gesture_config": {
+    "path": "configs/level1_gestures.json",
+    "sha256": "442b6d6c35dbb0f2b5b1ffad03dac410a7c73a767946b015cde8923e7a4b46e5",
+    "git_commit": "70b90558610f083e35b233c6d8391ae3a29e5696",
+    "values": {
+      "space_hold_ms": 600,
+      "space_dropout_frames": 1,
+      "space_rearm_ms": 300,
+      "wave_window_ms": 1500,
+      "wave_min_amplitude": 0.6,
+      "wave_min_strokes": 2,
+      "wave_max_vertical_ratio": 0.5,
+      "wave_min_flat_fraction": 0.9,
+      "wave_cooldown_ms": 1000,
+      "flat_thumb_min_ratio": 0.5,
+      "flat_thumb_max_spread": 1.05,
+      "gesture_flash_ms": 600,
+      "legacy_flick_cooldown_ms": 400,
+      "legacy_flick_window_ms": 250,
+      "legacy_flick_min_dx": 0.05,
+      "legacy_flick_min_speed": 0.3,
+      "legacy_flick_palm_ratio": 0.35,
+      "legacy_flick_dx_over_dy": 1.1,
+      "legacy_flick_min_dt_s": 0.04
+    },
+    "overrides": {},
+    "effective": "values + overrides (as level1_demo gestures)"
+  },
+  "segmenter_config": {
+    "path": "configs/level1_demo_classifier_rev9.json",
+    "sha256": "736a9a3c0ae5d6b66d7dd0b25b9dc868a9296ee6673c69e82249104a1368088d",
+    "git_commit": "ddd790462ffee8927af1dd2f295562c0d76e3fb2",
+    "note": "config of the webcam preset (level1_demo.DEFAULT_DEMO_ARGV)"
+  },
+  "min_detected_frames": {
+    "value": 3,
+    "from": "checkpoint preprocessing (as level1_demo.Level1App)",
+    "checkpoint": "checkpoints/alphabet_best.pt",
+    "checkpoint_sha256": "160e0c6825e365ba3d5481e2fd4d18423cf501c655aec618a453c524d8a17899"
+  },
+  "landmark_smoother": {
+    "alpha_static": 0.6,
+    "alpha_dynamic": 0.9,
+    "speed_threshold": 0.15,
+    "note": "LandmarkSmoother() as the app's --smooth-landmarks (path smoothed only)"
+  },
+  "legacy": {
+    "space": {
+      "tracker": "level1_demo.SpaceGestureTracker",
+      "hold_ms": 250.0,
+      "rearm_ms": 150.0
+    },
+    "backspace": {
+      "tracker": "level1_core.BackspaceGestureTracker()"
+    },
+    "note": "the app without --gesture-config; report only (review A3.2 probe 24/640, 8/640 had no JSON)"
+  },
+  "manifests": {
+    "kaggle": {
+      "path": "data/external/alphabet_hands_kaggle/alphabet_hands/manifest.csv",
+      "sha256": "c78cedd03dbe4956cdb331dcc8c455dd01e6307910e8713e85c3c24d7912eb79"
+    },
+    "user1": {
+      "path": "data/collected_targeted/manifest.csv",
+      "sha256": "bc50983cd9514366df13290c690f2d2cb065ab7d530da92e60c07bc1eaf0389b"
+    }
+  },
+  "timestamps": "i * 1000 / fps of the manifest; every frame processed (headless, no frame dropping)",
+  "n_clips": 770,
+  "sources": {
+    "hauuto": {
+      "n_clips": 640,
+      "clips_without_hand": 3,
+      "signers": {
+        "hauuto_hau": 160,
+        "hauuto_khoi": 160,
+        "hauuto_tai": 160,
+        "hauuto_vy": 160
+      }
+    },
+    "qipedc": {
+      "n_clips": 46,
+      "clips_without_hand": 0,
+      "signers": {
+        "qipedc": 46
+      }
+    },
+    "user1": {
+      "n_clips": 84,
+      "clips_without_hand": 0,
+      "signers": {
+        "user1": 84
+      }
+    }
+  },
+  "counts": {
+    "raw": {
+      "deliberate": {
+        "n_clips": 770,
+        "space_clips": 0,
+        "backspace_clips": 0,
+        "space_multi_emit": 0,
+        "backspace_multi_emit": 0,
+        "space_emits": 0,
+        "backspace_emits": 0
+      },
+      "legacy": {
+        "n_clips": 770,
+        "space_clips": 8,
+        "backspace_clips": 28,
+        "space_multi_emit": 0,
+        "backspace_multi_emit": 4,
+        "space_emits": 8,
+        "backspace_emits": 33
+      }
+    },
+    "smoothed": {
+      "deliberate": {
+        "n_clips": 770,
+        "space_clips": 0,
+        "backspace_clips": 0,
+        "space_multi_emit": 0,
+        "backspace_multi_emit": 0,
+        "space_emits": 0,
+        "backspace_emits": 0
+      },
+      "legacy": {
+        "n_clips": 770,
+        "space_clips": 9,
+        "backspace_clips": 24,
+        "space_multi_emit": 0,
+        "backspace_multi_emit": 2,
+        "space_emits": 9,
+        "backspace_emits": 26
+      }
+    }
+  },
+  "rates": {
+    "raw": {
+      "deliberate": {
+        "space": 0.0,
+        "backspace": 0.0
+      },
+      "legacy": {
+        "space": 0.01038961038961039,
+        "backspace": 0.03636363636363636
+      }
+    },
+    "smoothed": {
+      "deliberate": {
+        "space": 0.0,
+        "backspace": 0.0
+      },
+      "legacy": {
+        "space": 0.011688311688311689,
+        "backspace": 0.03116883116883117
+      }
+    }
+  },
+  "gates": {
+    "GF1": {
+      "gesture": "backspace",
+      "kind": "deliberate",
+      "max_rate": 0.005,
+      "set_in": "đặt trước ở 15-lan-sua-13 §3.3",
+      "rule": "rate of clips with >= 1 backspace (all sources pooled) <= 0.005 on raw and smoothed",
+      "paths": {
+        "raw": {
+          "rate": 0.0,
+          "pass": true
+        },
+        "smoothed": {
+          "rate": 0.0,
+          "pass": true
+        }
+      },
+      "pass": true
+    },
+    "GF2": {
+      "gesture": "space",
+      "kind": "deliberate",
+      "max_rate": 0.01,
+      "set_in": "đặt trước ở 15-lan-sua-13 §3.3",
+      "rule": "rate of clips with >= 1 space (all sources pooled) <= 0.01 on raw and smoothed",
+      "paths": {
+        "raw": {
+          "rate": 0.0,
+          "pass": true
+        },
+        "smoothed": {
+          "rate": 0.0,
+          "pass": true
+        }
+      },
+      "pass": true
+    }
+  },
+  "pass": true,
+  "per_source": {
+    "hauuto": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 640,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 640,
+          "space_clips": 8,
+          "backspace_clips": 24,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 4,
+          "space_emits": 8,
+          "backspace_emits": 29
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 640,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 640,
+          "space_clips": 9,
+          "backspace_clips": 21,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 2,
+          "space_emits": 9,
+          "backspace_emits": 23
+        }
+      }
+    },
+    "qipedc": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 46,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 46,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 46,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 46,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "user1": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 84,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 84,
+          "space_clips": 0,
+          "backspace_clips": 4,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 4
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 84,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 84,
+          "space_clips": 0,
+          "backspace_clips": 3,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 3
+        }
+      }
+    }
+  },
+  "per_class": {
+    "a": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 16,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 16,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 16,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 16,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "â": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "ă": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 3,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 1,
+          "space_emits": 0,
+          "backspace_emits": 5
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 1,
+          "space_emits": 0,
+          "backspace_emits": 2
+        }
+      }
+    },
+    "b": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 18,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 18,
+          "space_clips": 1,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 1,
+          "backspace_emits": 1
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 18,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 18,
+          "space_clips": 1,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 1,
+          "backspace_emits": 1
+        }
+      }
+    },
+    "c": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 2,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 2
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 2,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 2
+        }
+      }
+    },
+    "d": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "đ": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 31,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 31,
+          "space_clips": 0,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 1
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 31,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 31,
+          "space_clips": 0,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 1
+        }
+      }
+    },
+    "e": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "ê": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 2,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 1,
+          "space_emits": 0,
+          "backspace_emits": 3
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 2,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 2
+        }
+      }
+    },
+    "g": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 18,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 18,
+          "space_clips": 1,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 1,
+          "backspace_emits": 1
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 18,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 18,
+          "space_clips": 1,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 1,
+          "backspace_emits": 1
+        }
+      }
+    },
+    "h": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 19,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 19,
+          "space_clips": 1,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 1,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 19,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 19,
+          "space_clips": 1,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 1,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "i": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "k": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "l": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 17,
+          "space_clips": 1,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 1,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 17,
+          "space_clips": 1,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 1,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "m": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 1
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 1
+        }
+      }
+    },
+    "n": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 18,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 18,
+          "space_clips": 0,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 1
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 18,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 18,
+          "space_clips": 0,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 1
+        }
+      }
+    },
+    "o": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 1
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 1
+        }
+      }
+    },
+    "ô": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 3,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 1,
+          "space_emits": 0,
+          "backspace_emits": 4
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 33,
+          "space_clips": 0,
+          "backspace_clips": 3,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 3
+        }
+      }
+    },
+    "ơ": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 31,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 31,
+          "space_clips": 0,
+          "backspace_clips": 2,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 2
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 31,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 31,
+          "space_clips": 0,
+          "backspace_clips": 2,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 2
+        }
+      }
+    },
+    "p": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 25,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 25,
+          "space_clips": 1,
+          "backspace_clips": 2,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 1,
+          "space_emits": 1,
+          "backspace_emits": 3
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 25,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 25,
+          "space_clips": 1,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 1,
+          "space_emits": 1,
+          "backspace_emits": 2
+        }
+      }
+    },
+    "q": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "r": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 16,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 16,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 16,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 16,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "s": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 23,
+          "space_clips": 1,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 1,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 23,
+          "space_clips": 1,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 1,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "t": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 19,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 19,
+          "space_clips": 1,
+          "backspace_clips": 3,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 1,
+          "backspace_emits": 3
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 19,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 19,
+          "space_clips": 1,
+          "backspace_clips": 2,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 1,
+          "backspace_emits": 2
+        }
+      }
+    },
+    "dấu huyền": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 3,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 3
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 3,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 3
+        }
+      }
+    },
+    "dấu nặng": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "dấu hỏi": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "dấu sắc": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "dấu ngã": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 1
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 24,
+          "space_clips": 0,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 1
+        }
+      }
+    },
+    "u": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 23,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 23,
+          "space_clips": 1,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 1,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "ư": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 31,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 31,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 31,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 31,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "v": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 17,
+          "space_clips": 1,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 1,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 17,
+          "space_clips": 1,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 1,
+          "backspace_emits": 0
+        }
+      }
+    },
+    "x": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 19,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 19,
+          "space_clips": 0,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 1
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 19,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 19,
+          "space_clips": 0,
+          "backspace_clips": 1,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 1
+        }
+      }
+    },
+    "y": {
+      "raw": {
+        "deliberate": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      },
+      "smoothed": {
+        "deliberate": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        },
+        "legacy": {
+          "n_clips": 17,
+          "space_clips": 0,
+          "backspace_clips": 0,
+          "space_multi_emit": 0,
+          "backspace_multi_emit": 0,
+          "space_emits": 0,
+          "backspace_emits": 0
+        }
+      }
+    }
+  },
+  "frames": {
+    "raw": {
+      "n_frames": 61050,
+      "hand_frames": 56962,
+      "palm_frames": 239,
+      "flat_frames": 3896,
+      "nonfinite_hand_frames": 0
+    },
+    "smoothed": {
+      "n_frames": 61050,
+      "hand_frames": 56962,
+      "palm_frames": 221,
+      "flat_frames": 3873,
+      "nonfinite_hand_frames": 0
+    }
+  },
+  "fired_clips": {
+    "raw": {
+      "deliberate": {
+        "space": [],
+        "backspace": []
+      },
+      "legacy": {
+        "space": [
+          {
+            "sample_id": "hauuto_b_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "b",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_g_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "g",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_h_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "h",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_l_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "l",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_p_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "p",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_s_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "s",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_t_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "t",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_v_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "v",
+            "emits": 1
+          }
+        ],
+        "backspace": [
+          {
+            "sample_id": "hauuto_p_hau_B_002",
+            "source": "hauuto",
+            "symbol": "p",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_b_khoi_A_002",
+            "source": "hauuto",
+            "symbol": "b",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_c_khoi_B_001",
+            "source": "hauuto",
+            "symbol": "c",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_c_khoi_B_002",
+            "source": "hauuto",
+            "symbol": "c",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_dd_khoi_B_002",
+            "source": "hauuto",
+            "symbol": "đ",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_g_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "g",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_m_khoi_B_001",
+            "source": "hauuto",
+            "symbol": "m",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_n_khoi_B_002",
+            "source": "hauuto",
+            "symbol": "n",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_oo_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "ô",
+            "emits": 2
+          },
+          {
+            "sample_id": "hauuto_p_khoi_B_002",
+            "source": "hauuto",
+            "symbol": "p",
+            "emits": 2
+          },
+          {
+            "sample_id": "hauuto_t_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "t",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_t_khoi_B_002",
+            "source": "hauuto",
+            "symbol": "t",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_tone_x_khoi_B_001",
+            "source": "hauuto",
+            "symbol": "dấu ngã",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_x_khoi_B_002",
+            "source": "hauuto",
+            "symbol": "x",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_oo_tai_A_003",
+            "source": "hauuto",
+            "symbol": "ô",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_tone_f_tai_A_001",
+            "source": "hauuto",
+            "symbol": "dấu huyền",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_tone_f_tai_A_002",
+            "source": "hauuto",
+            "symbol": "dấu huyền",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_tone_f_tai_A_003",
+            "source": "hauuto",
+            "symbol": "dấu huyền",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_aw_vy_B_001",
+            "source": "hauuto",
+            "symbol": "ă",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_aw_vy_B_002",
+            "source": "hauuto",
+            "symbol": "ă",
+            "emits": 3
+          },
+          {
+            "sample_id": "hauuto_ee_vy_B_001",
+            "source": "hauuto",
+            "symbol": "ê",
+            "emits": 2
+          },
+          {
+            "sample_id": "hauuto_ow_vy_B_002",
+            "source": "hauuto",
+            "symbol": "ơ",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_ow_vy_B_003",
+            "source": "hauuto",
+            "symbol": "ơ",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_t_vy_A_002",
+            "source": "hauuto",
+            "symbol": "t",
+            "emits": 1
+          },
+          {
+            "sample_id": "user1_o_tilted_down_rep2",
+            "source": "user1",
+            "symbol": "o",
+            "emits": 1
+          },
+          {
+            "sample_id": "user1_aw_tilted_down_rep2",
+            "source": "user1",
+            "symbol": "ă",
+            "emits": 1
+          },
+          {
+            "sample_id": "user1_ee_angled_side_rep1",
+            "source": "user1",
+            "symbol": "ê",
+            "emits": 1
+          },
+          {
+            "sample_id": "user1_oo_straight_rep2",
+            "source": "user1",
+            "symbol": "ô",
+            "emits": 1
+          }
+        ]
+      }
+    },
+    "smoothed": {
+      "deliberate": {
+        "space": [],
+        "backspace": []
+      },
+      "legacy": {
+        "space": [
+          {
+            "sample_id": "hauuto_b_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "b",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_g_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "g",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_h_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "h",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_l_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "l",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_p_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "p",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_s_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "s",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_t_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "t",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_u_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "u",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_v_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "v",
+            "emits": 1
+          }
+        ],
+        "backspace": [
+          {
+            "sample_id": "hauuto_b_khoi_A_002",
+            "source": "hauuto",
+            "symbol": "b",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_c_khoi_B_001",
+            "source": "hauuto",
+            "symbol": "c",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_c_khoi_B_002",
+            "source": "hauuto",
+            "symbol": "c",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_dd_khoi_B_002",
+            "source": "hauuto",
+            "symbol": "đ",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_g_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "g",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_m_khoi_B_001",
+            "source": "hauuto",
+            "symbol": "m",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_n_khoi_B_002",
+            "source": "hauuto",
+            "symbol": "n",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_oo_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "ô",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_p_khoi_B_002",
+            "source": "hauuto",
+            "symbol": "p",
+            "emits": 2
+          },
+          {
+            "sample_id": "hauuto_t_khoi_A_001",
+            "source": "hauuto",
+            "symbol": "t",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_tone_x_khoi_B_001",
+            "source": "hauuto",
+            "symbol": "dấu ngã",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_x_khoi_B_002",
+            "source": "hauuto",
+            "symbol": "x",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_oo_tai_A_003",
+            "source": "hauuto",
+            "symbol": "ô",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_tone_f_tai_A_001",
+            "source": "hauuto",
+            "symbol": "dấu huyền",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_tone_f_tai_A_002",
+            "source": "hauuto",
+            "symbol": "dấu huyền",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_tone_f_tai_A_003",
+            "source": "hauuto",
+            "symbol": "dấu huyền",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_aw_vy_B_002",
+            "source": "hauuto",
+            "symbol": "ă",
+            "emits": 2
+          },
+          {
+            "sample_id": "hauuto_ee_vy_B_001",
+            "source": "hauuto",
+            "symbol": "ê",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_ow_vy_B_002",
+            "source": "hauuto",
+            "symbol": "ơ",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_ow_vy_B_003",
+            "source": "hauuto",
+            "symbol": "ơ",
+            "emits": 1
+          },
+          {
+            "sample_id": "hauuto_t_vy_A_002",
+            "source": "hauuto",
+            "symbol": "t",
+            "emits": 1
+          },
+          {
+            "sample_id": "user1_o_tilted_down_rep2",
+            "source": "user1",
+            "symbol": "o",
+            "emits": 1
+          },
+          {
+            "sample_id": "user1_ee_angled_side_rep1",
+            "source": "user1",
+            "symbol": "ê",
+            "emits": 1
+          },
+          {
+            "sample_id": "user1_oo_straight_rep2",
+            "source": "user1",
+            "symbol": "ô",
+            "emits": 1
+          }
+        ]
+      }
+    }
+  }
+}
