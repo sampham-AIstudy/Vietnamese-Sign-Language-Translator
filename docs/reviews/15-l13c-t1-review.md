@@ -53,3 +53,10 @@ Mục 4 yêu cầu của orchestrator: 2 dòng `-` trong progress (`git diff cb3
 
 ## CẦN NGƯỜI DÙNG QUYẾT ĐỊNH
 Không có.
+
+## Vòng 2 (commit d27e507): APPROVE
+
+- `git show d27e507 --stat`: `docs/plans/15-progress.md` 1/1 (+1/−1), `docs/reviews/15-l13c-t1-review.md` +55/−0 (bản review vòng 1, giống hệt file trên đĩa).
+- Diff dòng 13: chỉ đổi `4f5da6b` → `00d320c` + `6144970` (U2c), `b7f7396` → `44a9d69` (C2), thêm `T1 (\`235be2b\`)`; phần còn lại của dòng giữ nguyên.
+- Mọi hash ở dòng 13 đều tồn tại (`git cat-file -t` ⇒ `commit`): 5a32cff, acdcf63, cf5e2cc, b0cbcf1, 00d320c, 6144970, ea93fa1, 44a9d69, 6be8815, 235be2b.
+- Không đụng test hay mã; README.md, 3 file ` D` và các file untracked không bị chạm. TB-1 đã đóng; THẤP-1 vẫn là ghi chú cho T2. Không còn FAIL ⇒ mục 7 PASS.
