@@ -564,6 +564,83 @@ class TestU2OverlaysScaled(unittest.TestCase):
                 self.assertEqual(int(np.count_nonzero(canvas[_outside_mask(L)])), 0)
 
 
+# ------------------------------------------------------------------------------------------------------------ AC-T1
+class TestU2OverlaysExactT1(unittest.TestCase):
+    """AC-T1 (T1): exact overlay checks (P1 premises and S5 stats line pixel oracle)."""
+
+    CAM_W, CAM_H = 640, 480
+    PANEL_H = 200
+    BG = (40, 40, 40)
+    CASES = (
+        ("win_1920_1080", 1920, 1080, False),
+        ("win_1280_1360", 1280, 1360, False),
+        ("natural", 640, 680, True),
+    )
+
+    def setUp(self):
+        self.view = np.full((self.CAM_H, self.CAM_W, 3), 90, dtype=np.uint8)
+
+    def _panel_builder(self, w: int, h: int, scale: float, n_stats: int):
+        panel = np.full((h, w, 3), self.BG, dtype=np.uint8)
+        return panel, disp.scaled_px(18, scale)
+
+    def test_t1_p1_premises(self):
+        for name, W, H, is_natural in self.CASES:
+            with self.subTest(case=name, win=(W, H)):
+                if is_natural:
+                    L = disp.fit_layout(self.CAM_W, self.CAM_H, self.PANEL_H)
+                else:
+                    L = disp.fit_layout(self.CAM_W, self.CAM_H, self.PANEL_H, W, H)
+                s = L.scale
+                px, py, cw, ph = L.panel_rect[0], L.panel_rect[1], L.content_w, L.panel_rect[3]
+
+                # |L.scale - min(W/640, H/680)| <= 0.01
+                self.assertLessEqual(abs(s - min(W / 640.0, H / 680.0)), 0.01)
+                if is_natural:
+                    # ca tu nhien L.scale == 1.0
+                    self.assertEqual(s, 1.0)
+                # scaled_px(3, s) >= 1, cw > 0, ph > 0
+                self.assertGreaterEqual(disp.scaled_px(3, s), 1)
+                self.assertGreater(cw, 0)
+                self.assertGreater(ph, 0)
+
+                # slices used in H1 / H2
+                canvas_h1 = disp.render_to_window(self.view, self._panel_builder, [], 1.0, L)
+                h1_bar = canvas_h1[py : py + disp.scaled_px(3, s), px : px + cw]
+                self.assertGreater(h1_bar.size, 0)
+
+                canvas_h2 = disp.render_to_window(self.view, self._panel_builder, [], 0.5, L)
+                h2_bar = canvas_h2[py : py + disp.scaled_px(3, s), px : px + int(cw * 0.5)]
+                h2_rest = canvas_h2[py, px + int(cw * 0.5) + 2 : px + cw]
+                self.assertGreater(h2_bar.size, 0)
+                self.assertGreater(h2_rest.size, 0)
+
+    def test_t1_s5_stats_exact_oracle(self):
+        stats = ["fps 30.0 | hud 1.2ms"]
+        line = stats[0]
+        for name, W, H, is_natural in self.CASES:
+            with self.subTest(case=name, win=(W, H)):
+                if is_natural:
+                    L = disp.fit_layout(self.CAM_W, self.CAM_H, self.PANEL_H)
+                else:
+                    L = disp.fit_layout(self.CAM_W, self.CAM_H, self.PANEL_H, W, H)
+                s = L.scale
+                px, py, cw, ph = L.panel_rect[0], L.panel_rect[1], L.content_w, L.panel_rect[3]
+                canvas = disp.render_to_window(self.view, self._panel_builder, stats, 0.0, L)
+                E = np.full((ph, cw, 3), self.BG, dtype=np.uint8)
+                cv2.putText(
+                    E,
+                    line,
+                    (int(8 * s), ph - int(10 * s)),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    0.45 * s,
+                    (160, 255, 160),
+                    max(1, int(round(s))),
+                    cv2.LINE_AA,
+                )
+                self.assertTrue(np.array_equal(canvas[py : py + ph, px : px + cw], E))
+
+
 if __name__ == "__main__":
     unittest.main()
 

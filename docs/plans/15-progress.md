@@ -10,8 +10,8 @@ Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_wo
 - 2026-10-09 U2d xong (commit `15: L13-U2d script đo chi phí hiển thị (AC-U5, DC1)`). Script `scripts/level1_display_cost.py` + test `tests/test_level1_display_cost.py` đạt (AC-U5, gate DC1).
 - ĐANG LÀM: không.
 - Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a). R1 (commit `15: R1` trên nhánh cloud; CHỜ LOCAL: AC-S18 + S18b trên clip thật). A2b (`71fc664` mã + `4b5d736` config; AC-W3 đạt).
-  Lần sửa 13: M0 (5a32cff; ghi chép sửa ở commit U1), U1 (commit `15: L13-U1`), U1a (commit `acdcf63`), U2a (`cf5e2cc`), U2b (`b0cbcf1`), U2c, U2d.
-- Còn lại (lần sửa 13): X1, G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5.
+  Lần sửa 13/13c: M0 (5a32cff; ghi chép sửa ở commit U1), U1 (commit `15: L13-U1`), U1a (commit `acdcf63`), U2a (`cf5e2cc`), U2b (`b0cbcf1`), U2c (`4f5da6b`), U2d (`ea93fa1` C1 + `b7f7396` C2), XW (`6be8815`), T1.
+- Còn lại (lần sửa 13/13c): T2, G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5.
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -1724,3 +1724,35 @@ Cửa sổ THẬT (không vá `imshow`/`namedWindow`/`resizeWindow`/`waitKey`); 
   `render_to_window`: `cam_rect` đổi từ `(0, 0, 640, 480)` sang `(11, 0, 617, 462)` (scale 0.964), tức ảnh camera CO lại và DỊCH ngang 11 px rồi
   trở lại ở khung 8. Cỡ ảnh đưa vào `imshow` giữ `(640, 643)` cả 69 khung. Tần suất trên clip D2: 2/69 khung (2 lần đổi đường). Đây là số đo một
   lượt, phụ thuộc nội dung panel; chuyển R2 §8 câu 2 + VU.
+
+## Lần sửa 13c — T1 (2026-10-09, vslt-coder; `docs/plans/15-lan-sua-13c.md` §4 hàng T1, AC-T1, AC-T1m)
+- Mục tiêu: Chỉ thêm test vào `tests/test_level1_display.py` khóa các đột biến còn sống của U2a (rA nét chữ thống kê không co giãn, rB lề đáy không co giãn) và kiểm thử tiền đề (P1).
+- Test mới: `TestU2OverlaysExactT1` trong `tests/test_level1_display.py` (numstat `77 0`, 0 dòng xóa).
+  - P1 (`test_t1_p1_premises`): Kiểm tra tiền đề trên 3 ca: `(1920, 1080)`, `(1280, 1360)` và ca tự nhiên `fit_layout(640, 480, 200)`. Khẳng định:
+    - `|L.scale - min(W/640, H/680)| <= 0.01` (1080p: scale 1.5882, 1280x1360: scale 2.0).
+    - Ca tự nhiên `L.scale == 1.0`.
+    - `scaled_px(3, s) >= 1`, `cw > 0`, `ph > 0`.
+    - Mọi lát cắt dùng trong H1/H2 có `size > 0`: `h1_bar.size > 0`, `h2_bar.size > 0`, `h2_rest.size > 0`.
+  - S5 (`test_t1_s5_stats_exact_oracle`): Oracle chính xác dòng thống kê pixel-perfect độc lập với mã nguồn:
+    - Với `hold 0`, `stats = ["fps 30.0 | hud 1.2ms"]`, `line = stats[0]`.
+    - `E = np.full((ph, cw, 3), (40, 40, 40), np.uint8)`.
+    - `cv2.putText(E, line, (int(8*s), ph - int(10*s)), cv2.FONT_HERSHEY_SIMPLEX, 0.45*s, (160, 255, 160), max(1, int(round(s))), cv2.LINE_AA)`.
+    - Các số 8, 10, 0.45, `(160, 255, 160)` và độ dày `max(1, int(round(s)))` viết literal theo hợp đồng, không import hằng module.
+    - Khẳng định `np.array_equal(canvas[py:py+ph, px:px+cw], E)` bit-identical trên cả 3 ca (1080p, 1280×1360, natural).
+- Kiểm thử thực tế:
+  - Lệnh: `PYTHONIOENCODING=utf-8 .venv/Scripts/python -m unittest tests.test_level1_display -v` → `_work/_plan15_l13/l13c_t1_green.log` (mtime 2026-10-09 16:51:09.307): `Ran 32 tests in 40.382s` — `OK` (30 test cũ + 2 test mới).
+- Đột biến AC-T1m (chạy trong worktree tạm `_work/_plan15_l13/wt_13c_t1` qua `_work/_plan15_l13/t1_mutate.py`, đã tự động dọn dẹp worktree):
+  - base (`l13c_t1_mut_base.log`): `Ran 32 tests in 42.403s` — `OK`.
+  - rA (`:133` `thickness = STATS_THICKNESS`) `l13c_t1_mut_rA.log`: `Ran 32 tests in 43.231s` — `FAILED (failures=2)` (bắt đúng ở 2 ca 1080p và 1280×1360 của `test_t1_s5_stats_exact_oracle`).
+  - rB (`:135` dùng `STATS_BOTTOM_MARGIN` thay `scaled_px(...)`) `l13c_t1_mut_rB.log`: `Ran 32 tests in 42.516s` — `FAILED (failures=2)` (bắt đúng ở 2 ca 1080p và 1280×1360 của `test_t1_s5_stats_exact_oracle`).
+  - m9 (`:163` chỉ gọi overlay khi `scale == 1.0`) `l13c_t1_mut_m9.log`: `Ran 32 tests in 43.700s` — `FAILED (failures=8, errors=1)`.
+  - m10 (chiều cao thanh hold dùng `HOLD_BAR_HEIGHT` thay `scaled_px(...)`) `l13c_t1_mut_m10.log`: `Ran 32 tests in 41.595s` — `FAILED (failures=2)`.
+  - m11 (cỡ chữ thống kê `STATS_FONT_SCALE` không co giãn) `l13c_t1_mut_m11.log`: `Ran 32 tests in 42.385s` — `FAILED (failures=3)`.
+  - m12 (`:163` truyền `1.0` thay `layout.scale`) `l13c_t1_mut_m12.log`: `Ran 32 tests in 42.131s` — `FAILED (failures=5)`.
+  - Toàn bộ 6 đột biến đều ĐỎ, base XANH. Bằng chứng bắt lỗi hoàn tất.
+- GitNexus & kiểm tra an toàn:
+  - Impact: `_work/_plan15_l13/l13c_t1_impact.log` (`draw_panel_overlays` upstream).
+  - Detect changes: `_work/_plan15_l13/l13c_t1_detect.log`.
+  - `git diff --stat 93abb08..HEAD -- level1_demo.py src/` rỗng; `level1_demo.py` và `src/` hoàn toàn không bị chạm.
+  - `sha256sum checkpoints/alphabet_best.pt` = `160e0c6825e365ba3d5481e2fd4d18423cf501c655aec618a453c524d8a17899`.
+  - Không có skip mới, không có mẫu cấm AC-U9.
