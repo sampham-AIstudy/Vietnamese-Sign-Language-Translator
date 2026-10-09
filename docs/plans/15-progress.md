@@ -7,10 +7,11 @@ Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_wo
 - 2026-10-09 U2a xong (commit `15: L13-U2a test TB-1 overlay co giãn (AC-U7/U7m)`), TB-1 test AC-U7 đạt, đột biến m9–m12 đỏ (AC-U7m). Reviewer U2a: APPROVE (`docs/reviews/15-l13-u2a-review.md`).
 - 2026-10-09 U2b xong (commit `15: L13-U2b nối cửa sổ co giãn (AC-U4/U4b/U6b)`, vslt-coder-claude). Reviewer U2b: APPROVE (`e165990`).
 - 2026-10-09 U2c xong (commit `15: L13-U2c phím f, --fullscreen, --[no-]display-mirror, LRU font (AC-U6/U8)`).
+- 2026-10-09 U2d xong (commit `15: L13-U2d script đo chi phí hiển thị (AC-U5, DC1)`). Script `scripts/level1_display_cost.py` + test `tests/test_level1_display_cost.py` đạt (AC-U5, gate DC1).
 - ĐANG LÀM: không.
 - Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a). R1 (commit `15: R1` trên nhánh cloud; CHỜ LOCAL: AC-S18 + S18b trên clip thật). A2b (`71fc664` mã + `4b5d736` config; AC-W3 đạt).
-  Lần sửa 13: M0 (5a32cff; ghi chép sửa ở commit U1), U1 (commit `15: L13-U1`), U1a (commit `acdcf63`), U2a (`cf5e2cc`), U2b (`b0cbcf1`), U2c.
-- Còn lại (lần sửa 13): U2d, X1, G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5.
+  Lần sửa 13: M0 (5a32cff; ghi chép sửa ở commit U1), U1 (commit `15: L13-U1`), U1a (commit `acdcf63`), U2a (`cf5e2cc`), U2b (`b0cbcf1`), U2c, U2d.
+- Còn lại (lần sửa 13): X1, G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5.
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -1625,3 +1626,36 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   - Đỏ (test đổi, mã chưa đổi): `_work/_plan15_l13/u2c_fix_red.log` `.venv/Scripts/python -m unittest tests.test_level1_demo.TestFullscreenU2c tests.test_level1_demo.TestHudFontLruU2c tests.test_level1_demo.TestParserU2c` → `Ran 8` — `FAILED (failures=1)`. Xanh cùng lệnh: `u2c_fix_green.log` → `Ran 8` — `OK`.
   - `u2c_fix_green_extra.log`: `tests.test_level1_display tests.test_level1_equivalence tests.test_level1_demo.TestScaledWindowU2b tests.test_level1_demo.TestLatencyAcL` → `Ran 53` — `OK`. `grep -rn "WINDOW_NAME\|VSLT Level 1" --include=*.py level1_demo.py tests/ scripts/`: mọi chỗ dùng hằng `WINDOW_NAME`, không test nào ghim chuỗi cũ.
   - Tiêu đề thật (Win32 `GetWindowTextW`, `_work/_plan15_l13/u2c_fix_title_probe.log`): `'VSLT Level 1 (f: toan man hinh)'`, khớp. AC-U9 = 0, AC-U9b = 0 (lệnh như trên).
+
+## Lần sửa 13b — U2d (2026-10-09)
+- Mục tiêu: `scripts/level1_display_cost.py` + `tests/test_level1_display_cost.py` đo chi phí hiển thị Level 1 và kiểm tra cổng DC1 (AC-U5); commit code sạch để cầu nối chạy lệnh đo độc lập và commit JSON riêng.
+- Thiết kế script `scripts/level1_display_cost.py`:
+  - Hàm thuần:
+    - `percentile(values, q)`: phân vị nội suy tuyến tính numpy.
+    - `summarize_frame_total(values)`: trả `{"n", "p50", "p90"}`.
+    - `compute_ratio(p50_natural, p50_1080)`: `p50_1080 / p50_natural`.
+    - `dc1_gate(ratio, threshold=1.25)`: trả `{"name": "DC1", "threshold": 1.25, "pass": ratio <= threshold}` (biên: 1.25 => pass, 1.2501 => fail).
+    - `build_report(command, commit, clip, natural, p1080, py_version, cv2_version, code_dirty)`: tạo dictionary báo cáo đủ 11 khóa, gồm `natural` (`n_frames`, `p50_ms`, `p90_ms`, `path`), `window_1080p`, `ratio_p50`, `gate`, `note` ("imshow vá, không cửa sổ thật; lần \"natural\" đo đường Hud.compose cũ vì rect bằng kích thước tự nhiên; không đo chi phí vẽ cửa sổ HĐH"), `python`, `cv2`.
+  - Bộ ghi `_DisplayCostRecorder` (tự định nghĩa trong script, không import từ tests/):
+    - `imshow`: ghi shape vào danh sách và cập nhật `last_shape`.
+    - `waitKey`: trả `-1`.
+    - `getWindowProperty`: trả `1.0`.
+    - `resizeWindow`: lưu `natural_size = (w, h)` khi app gọi ở khung đầu.
+    - `getWindowImageRect`:
+      - Lần 1 'natural': trả kích thước tự nhiên `(0, 0, w, h)` (lấy từ `last_shape` nếu đã có imshow, hoặc `natural_size` từ `resizeWindow` khung đầu; mặc định `(0, 0, 640, 643)` cho clip D2) để app đi đúng đường `Hud.compose` cũ (không qua `render_to_window`).
+      - Lần 2: trả `(0, 0, 1920, 1080)` để app đi đường `render_to_window`.
+  - Hàm đo `measure(rect)`: chạy app cùng tiến trình trên clip D2 `--pace realtime`, vá `imshow`, `waitKey`, `getWindowProperty`, `namedWindow`, `destroyAllWindows`, `resizeWindow`, `getWindowImageRect` bằng `mock.patch.multiple`, chdir về gốc repo, chạy `app.run()`, thu thập chuỗi thời gian `app.times.values('frame_total')`.
+  - CLI: đối số `--out PATH` (bắt buộc), tạo thư mục cha; in dòng `DC1 pass=... ratio=...`; mã thoát luôn là 0 (kết quả pass/fail lưu trong JSON).
+  - Không chạy đo thật và không tạo file `reports/level1_realtime_2026-10-08/display_cost.json` ở bước coder (cầu nối sẽ chạy lệnh đo tại commit sạch theo quy trình).
+- Test `tests/test_level1_display_cost.py`:
+  - Hoàn toàn dùng chuỗi tổng hợp có kiểm soát ("chuỗi tạo có kiểm soát để kiểm logic"), không cần video thật, chạy nhanh (< 1s).
+  - Kiểm thử đầy đủ: `percentile`, `summarize_frame_total`, `compute_ratio`, `dc1_gate` với biên 1.25 / 1.2501, `build_report` đủ khóa và đúng nội dung note, logic `_DisplayCostRecorder`, CLI tạo file JSON và in đúng stdout khi vá hàm `measure`.
+- Nhật ký kiểm thử thực tế (AC-U2P):
+  - Log đỏ viết trước (TDD): `_work/_plan15_l13/u2d_red.log` (mtime 14:39:38, khi chưa có script) `python -m unittest tests.test_level1_display_cost` → `Ran 1 test in 0.000s` — `FAILED (errors=1)` (`ImportError: cannot import name 'level1_display_cost' from 'scripts'`).
+  - Log xanh sau khi viết script (mtime lớn hơn red):
+    - `_work/_plan15_l13/u2d_green_cost.log` (mtime 14:40:42) `python -m unittest tests.test_level1_display_cost` → `Ran 8 tests in 0.236s` — `OK`.
+    - `_work/_plan15_l13/u2d_green_display.log` (mtime 14:41:34) `python -m unittest tests.test_level1_display_cost tests.test_level1_display` → `Ran 38 tests in 22.801s` — `OK`.
+- Bất biến phạm vi và an toàn (AC-U9, AC-U9b):
+  - `git diff d1a8308..HEAD -- level1_demo.py scripts/level1_display_cost.py src/ | grep -E '^\+' | grep -cE 'vars\(|__dict__|cv2\.dnn|getRectSubPix|__import__|importlib|warp|remap|pyr(Up|Down)'` = 0.
+  - `git diff --stat d1a8308..HEAD -- src/` rỗng (src/ hoàn toàn không bị sửa).
+  - `level1_demo.py`, các file test có sẵn, file người dùng (`README.md`, 3 file ` D`) hoàn toàn không bị chạm.
