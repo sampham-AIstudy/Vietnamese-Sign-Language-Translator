@@ -36,7 +36,7 @@ HUD angle hint (plan 15 lần sửa 10 P3, always on): index finger pointing at 
   more than 3 consecutive hand frames -> yellow line [Góc tay: Hơi nghiêng tay 20°]; HUD only (JSON unchanged).
 Keys (window): Backspace delete last token | Space add a space | a accept the last rejected candidate |
   r repeat the last letter | n next letter (re-arm: the letter held now is emitted again) | c clear |
-  p pause / resume segmentation | q or Esc quit.
+  p pause / resume segmentation | f fullscreen | q or Esc quit.
 Automatic spaces are off by default since plan 15 lần sửa 12 S1: --auto-space adds a space after the hand is away for
   word_gap_ms, --gesture-space turns the open palm gesture on; the Space key always adds one.
 Gesture (plan 15 lần sửa 9, with --gesture-space): open palm (5 fingers spread, thumb out) held --space-hold-ms
@@ -58,6 +58,7 @@ Modes (written to the JSON as source.mode):
 The app never writes video, frames or landmarks; the JSON holds tokens, events, timings and statistics only.
 """
 import argparse
+import collections
 import datetime
 import functools
 import hashlib
@@ -100,7 +101,7 @@ from src.inference.level1_timing import (FRAME_STAGES, SIGN_STAGES, StageTimes, 
 
 DEFAULT_CONFIG = os.path.join("configs", "level1_realtime.json")      # relative to the repository root
 DEFAULT_CHECKPOINT = os.path.join("checkpoints", "alphabet_best.pt")  # relative to the repository root
-WINDOW_NAME = "VSLT Level 1"
+WINDOW_NAME = "VSLT Level 1 (f: toàn màn hình)"
 EXIT_INPUT_ERROR = 2
 CODE_PATHS = ("level1_demo.py", "src", "configs/level1_realtime.json")
 NOTE = ("Durations are measured inside the app with time.perf_counter, from the moment a frame is received from "
@@ -139,6 +140,7 @@ DEFAULT_MIN_DETECTION_CONF = LEVEL1_HANDS_KWARGS["min_detection_confidence"]
 KEY_NEXT = "next"  # app action (segmenter / decoder re-arm), not a Level1Speller key
 KEY_QUIT = (ord("q"), 27)
 KEY_PAUSE = ord("p")
+KEY_FULLSCREEN = ord("f")
 STATE_LABELS = {"no_hand": "không thấy tay", "moving": "đang chuyển động", "holding": "đang giữ yên"}
 # --trace-windows (plan 15 lần sửa 6 §3.W1): one entry per classified window, in the order the decoder applies them
 TRACE_KEYS = ("ts_ms", "status", "top1", "conf", "top2", "conf2", "run_label", "run_ms", "last", "emitted")
@@ -499,7 +501,7 @@ class Hud:
         self.small_h = int(font_size * self.SMALL_LINE_RATIO)
         self._key = None
         self._panel = None
-        self._fonts = {font_size: (self.font, self.small)}  # font px -> (font, small font)
+        self._fonts = collections.OrderedDict([(font_size, (self.font, self.small))])  # font px -> (font, small font)
         self._scaled_key = None
         self._scaled_panel = None
 
@@ -514,11 +516,16 @@ class Hud:
     def _fonts_at(self, scale: float) -> Tuple[Any, Any]:
         """(main font, small font) at `scale`; created once per pixel size."""
         px = self.font_px(scale)
-        if px not in self._fonts:
-            from PIL import ImageFont
-            self._fonts[px] = (ImageFont.truetype(self.font_path, px),
-                               ImageFont.truetype(self.font_path, self._small_px(px)))
-        return self._fonts[px]
+        if px in self._fonts:
+            self._fonts.move_to_end(px)
+            return self._fonts[px]
+        from PIL import ImageFont
+        pair = (ImageFont.truetype(self.font_path, px),
+                ImageFont.truetype(self.font_path, self._small_px(px)))
+        self._fonts[px] = pair
+        while len(self._fonts) > 8:
+            self._fonts.popitem(last=False)
+        return pair
 
     def line_steps(self, scale: float = 1.0) -> Tuple[int, int]:
         """(main line step, small line step) in px at `scale`: the natural steps x scale, rounded down."""
@@ -922,6 +929,7 @@ class Level1App:
         self.slot: Optional[LatestFrameSlot] = None
         self.warmup = {}
         self.window_sized = False  # the resizable window was set to the natural size (first image shown)
+        self.fullscreen = bool(getattr(args, "fullscreen", False))
 
     # -------------------------------------------------------------- events
     def _log(self, kind: str, **fields) -> None:
@@ -1091,6 +1099,16 @@ class Level1App:
                     self.timeline.append(["reset", self.last_ts, False, True, None])
                     self._drain_timeline()
             self._log("pause" if self.paused else "resume", t_ms=self.last_ts)
+        elif k == KEY_FULLSCREEN:
+            self.fullscreen = not self.fullscreen
+            prop = cv2.WINDOW_FULLSCREEN if self.fullscreen else cv2.WINDOW_NORMAL
+            try:
+                cv2.setWindowProperty(WINDOW_NAME, cv2.WND_PROP_FULLSCREEN, prop)
+            except (cv2.error, AttributeError):
+                pass
+            if self.fullscreen:
+                self.window_sized = False
+            self._log("fullscreen", on=self.fullscreen)
         elif k in KEY_ACTIONS and KEY_ACTIONS[k] == KEY_NEXT:
             self._next_key()
         elif k in KEY_ACTIONS:
@@ -1316,7 +1334,7 @@ class Level1App:
         fixed window); any other size => the content scaled into it (render_to_window, same text and overlays)."""
         h, w = view.shape[:2]
         panel_h = self.hud.panel_height(text_or_view, small, len(stats_lines))
-        if not self.window_sized:
+        if not self.fullscreen and not self.window_sized:
             self.window_sized = True
             try:
                 cv2.resizeWindow(WINDOW_NAME, w, h + panel_h)
@@ -1369,6 +1387,11 @@ class Level1App:
                     self.window_worker.start()
             if self.display:
                 cv2.namedWindow(WINDOW_NAME, cv2.WINDOW_NORMAL)  # resizable: content scaled to the window (U2b)
+                if self.fullscreen:
+                    try:
+                        cv2.setWindowProperty(WINDOW_NAME, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+                    except (cv2.error, AttributeError):
+                        pass
             origin = time.perf_counter()
             if self.latest_only:
                 slot = self.slot = LatestFrameSlot()
@@ -1542,7 +1565,10 @@ def build_parser() -> argparse.ArgumentParser:
                    help="video: 'all' = every frame in order; 'realtime' = read at the file's frame rate and process "
                         "only the newest frame, like a webcam")
     p.add_argument("--expected", default=None, help="text the signer intends to spell (written to the JSON)")
-    p.add_argument("--display-mirror", action="store_true", help="show the image mirrored (display only)")
+    p.add_argument("--display-mirror", action=argparse.BooleanOptionalAction, default=False,
+                   help="show the image mirrored (display only)")
+    p.add_argument("--fullscreen", action="store_true", default=False,
+                   help="open window in fullscreen mode")
     p.add_argument("--font", default=None, help="TrueType font with Vietnamese glyphs for the HUD")
     p.add_argument("--trace-windows", action="store_true",
                    help="rearm_mode classifier: write every window result and the decoder state (window_trace) to "

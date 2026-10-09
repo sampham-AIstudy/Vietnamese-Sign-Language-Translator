@@ -3443,6 +3443,210 @@ class TestScaledWindowU2b(unittest.TestCase):
         self.assertGreater(resized[0][2], r["frame_size"]["height"])
 
 
+class _FullscreenRecorder(_ScaledWindowRecorder):
+    """Recorder for fullscreen tests (U2c); tracks setWindowProperty and window call ordering."""
+
+    def __init__(self, rect=None, check=None, raise_set_prop=False, keys=None):
+        super().__init__(rect=rect, check=check)
+        self.set_props = []
+        self.call_log = []
+        self.raise_set_prop = raise_set_prop
+        self.keys = list(keys) if keys is not None else []
+        self.key_idx = 0
+
+    def setWindowProperty(self, name, prop, val):
+        self.set_props.append((name, prop, val))
+        self.call_log.append(("setWindowProperty", name, prop, val))
+        if self.raise_set_prop:
+            raise app_mod.cv2.error("simulated cv2.error in setWindowProperty")
+
+    def namedWindow(self, *a, **k):
+        super().namedWindow(*a, **k)
+        self.call_log.append(("namedWindow", a, k))
+
+    def resizeWindow(self, *a, **k):
+        super().resizeWindow(*a, **k)
+        self.call_log.append(("resizeWindow", a, k))
+
+    def waitKey(self, delay):
+        if self.key_idx < len(self.keys):
+            k = self.keys[self.key_idx]
+            self.key_idx += 1
+            return k
+        return -1
+
+    def patches(self, with_rect=True):
+        p = super().patches(with_rect=with_rect)
+        p["setWindowProperty"] = self.setWindowProperty
+        p["waitKey"] = self.waitKey
+        return p
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestFullscreenU2c(unittest.TestCase):
+    """AC-U6 (fullscreen / f key) tests under plan 15 lần sửa 13b U2c."""
+
+    def test_f_key_toggles_fullscreen_events(self):
+        self.assertTrue(hasattr(app_mod, "KEY_FULLSCREEN"))
+        self.assertEqual(app_mod.KEY_FULLSCREEN, ord("f"))
+        rec = _FullscreenRecorder()
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            from unittest import mock
+            with mock.patch.multiple(app_mod.cv2, **rec.patches()):
+                app = app_mod.Level1App(args_for("--source", CLIP))
+                self.assertFalse(getattr(app, "fullscreen", False))
+                # First press -> on
+                app._key(app_mod.KEY_FULLSCREEN)
+                self.assertTrue(app.fullscreen)
+                self.assertEqual(len(rec.set_props), 1)
+                self.assertEqual(rec.set_props[0][0], app_mod.WINDOW_NAME)
+                self.assertEqual(rec.set_props[0][1], app_mod.cv2.WND_PROP_FULLSCREEN)
+                # Second press -> off
+                app._key(app_mod.KEY_FULLSCREEN)
+                self.assertFalse(app.fullscreen)
+                self.assertEqual(len(rec.set_props), 2)
+                self.assertEqual(rec.set_props[1][0], app_mod.WINDOW_NAME)
+                self.assertEqual(rec.set_props[1][1], app_mod.cv2.WND_PROP_FULLSCREEN)
+                fs_events = [e for e in app.events if e.get("event") == "fullscreen"]
+                self.assertEqual(fs_events, [{"event": "fullscreen", "on": True},
+                                             {"event": "fullscreen", "on": False}])
+        finally:
+            os.chdir(cwd)
+
+    def test_set_window_property_error_does_not_crash(self):
+        rec = _FullscreenRecorder(raise_set_prop=True)
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            from unittest import mock
+            with mock.patch.multiple(app_mod.cv2, **rec.patches()):
+                app = app_mod.Level1App(args_for("--source", CLIP, "--fullscreen"))
+                # Key press when error is raised
+                app._key(ord("f"))
+                # Run full clip despite setWindowProperty raising cv2.error
+                report = app.run()
+                self.assertGreater(report["counts"]["frames_processed"], 0)
+        finally:
+            os.chdir(cwd)
+
+    def test_fullscreen_flag_sets_window_property_once_at_start(self):
+        rec = _FullscreenRecorder(rect=(0, 0, 1920, 1080))
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            from unittest import mock
+            with mock.patch.multiple(app_mod.cv2, **rec.patches()):
+                app = app_mod.Level1App(args_for("--source", CLIP, "--fullscreen"))
+                report = app.run()
+                self.assertGreater(report["counts"]["frames_processed"], 0)
+                # Called exactly once at open
+                self.assertEqual(len(rec.set_props), 1)
+                self.assertEqual(rec.set_props[0][0], app_mod.WINDOW_NAME)
+                self.assertEqual(rec.set_props[0][1], app_mod.cv2.WND_PROP_FULLSCREEN)
+                # Order: namedWindow precedes setWindowProperty
+                names = [c[0] for c in rec.call_log]
+                self.assertIn("namedWindow", names)
+                self.assertIn("setWindowProperty", names)
+                self.assertLess(names.index("namedWindow"), names.index("setWindowProperty"))
+                # With --fullscreen, no resizeWindow while fullscreen is active
+                self.assertEqual(len(rec.resized), 0)
+                resize_calls = [c for c in rec.call_log if c[0] == "resizeWindow"]
+                self.assertEqual(len(resize_calls), 0)
+        finally:
+            os.chdir(cwd)
+
+    def test_exit_fullscreen_triggers_resize_to_natural_size_next_frame(self):
+        # Starts in fullscreen, exits on first waitKey, next frame resizes to natural size
+        rec = _FullscreenRecorder(rect=(0, 0, 1920, 1080), keys=[ord("f")])
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            from unittest import mock
+            with mock.patch.multiple(app_mod.cv2, **rec.patches()):
+                app = app_mod.Level1App(args_for("--source", CLIP, "--fullscreen"))
+                report = app.run()
+                self.assertGreater(report["counts"]["frames_processed"], 1)
+                self.assertEqual(len(rec.resized), 1)
+                res = rec.resized[0]
+                self.assertEqual(res[0], app_mod.WINDOW_NAME)
+                self.assertEqual(res[1], report["frame_size"]["width"])
+                self.assertGreater(res[2], report["frame_size"]["height"])
+        finally:
+            os.chdir(cwd)
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestHudFontLruU2c(unittest.TestCase):
+    """AC-U8 LRU font cache tests under plan 15 lần sửa 13b U2c."""
+
+    def test_lru_cache_eviction_and_retention(self):
+        from unittest import mock
+        from PIL import ImageFont
+        cfg = app_mod.load_level1_config(app_mod.resolve_path(app_mod.DEFAULT_CONFIG))
+        font_path = app_mod.find_font(None, cfg["values"]["font_paths"])
+        hud = app_mod.Hud(font_path, 20)
+        self.assertLessEqual(len(hud._fonts), 8)
+        created = []
+        orig_truetype = ImageFont.truetype
+
+        def tracked_truetype(*a, **k):
+            created.append(a)
+            return orig_truetype(*a, **k)
+
+        # 20 distinct scales producing 20 distinct font sizes
+        scales = [px / 20.0 for px in range(10, 30)]
+        with mock.patch.object(ImageFont, "truetype", side_effect=tracked_truetype):
+            for s in scales:
+                hud._fonts_at(s)
+                self.assertLessEqual(len(hud._fonts), 8)
+            calls_after_20 = len(created)
+            # 20th size (most recently used) should hit cache -> no new font created
+            hud._fonts_at(scales[-1])
+            self.assertEqual(len(created), calls_after_20)
+            # 1st size (oldest, evicted by LRU) -> new font created
+            hud._fonts_at(scales[0])
+            self.assertGreater(len(created), calls_after_20)
+            self.assertLessEqual(len(hud._fonts), 8)
+
+
+class TestParserU2c(unittest.TestCase):
+    """AC-U6 parser and preset tests under plan 15 lần sửa 13b U2c."""
+
+    def test_parser_display_mirror_and_fullscreen(self):
+        p = app_mod.build_parser()
+        args_empty = p.parse_args([])
+        self.assertFalse(args_empty.display_mirror)
+        self.assertFalse(args_empty.fullscreen)
+
+        args_mirror = p.parse_args(["--display-mirror"])
+        self.assertTrue(args_mirror.display_mirror)
+
+        args_no_mirror = p.parse_args(["--no-display-mirror"])
+        self.assertFalse(args_no_mirror.display_mirror)
+
+        args_fs = p.parse_args(["--fullscreen"])
+        self.assertTrue(args_fs.fullscreen)
+
+    def test_default_demo_argv_contract(self):
+        self.assertNotIn("--fullscreen", app_mod.DEFAULT_DEMO_ARGV)
+        self.assertIn("--display-mirror", app_mod.DEFAULT_DEMO_ARGV)
+        p = app_mod.build_parser()
+        args_def = p.parse_args([*app_mod.DEFAULT_DEMO_ARGV])
+        self.assertTrue(args_def.display_mirror)
+        self.assertFalse(args_def.fullscreen)
+
+        args_override = p.parse_args([*app_mod.DEFAULT_DEMO_ARGV, "--no-display-mirror"])
+        self.assertFalse(args_override.display_mirror)
+        self.assertFalse(args_override.fullscreen)
+
+    def test_key_hint_and_docstring(self):
+        self.assertIn("f fullscreen", app_mod.__doc__)
+        # Plan 15 §2.2: hint placed in window title when tests pin small lines against reference commits
+        self.assertIn("f: toàn màn hình", app_mod.WINDOW_NAME)
+
+
 if __name__ == "__main__":
     unittest.main()
 

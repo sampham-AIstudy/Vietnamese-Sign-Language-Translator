@@ -5,11 +5,12 @@ Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_wo
 
 ## Trạng thái
 - 2026-10-09 U2a xong (commit `15: L13-U2a test TB-1 overlay co giãn (AC-U7/U7m)`), TB-1 test AC-U7 đạt, đột biến m9–m12 đỏ (AC-U7m). Reviewer U2a: APPROVE (`docs/reviews/15-l13-u2a-review.md`).
-- 2026-10-09 U2b xong (commit `15: L13-U2b nối cửa sổ co giãn (AC-U4/U4b/U6b)`, vslt-coder-claude). Chờ cầu nối + reviewer U2b. Kế tiếp: U2c (vslt-coder, agy).
-- ĐANG LÀM: không (U2a, U2b đã commit; dòng "ĐANG LÀM: U2a" lỗi thời đã sửa ở U2b — THẤP-4 review U2a).
+- 2026-10-09 U2b xong (commit `15: L13-U2b nối cửa sổ co giãn (AC-U4/U4b/U6b)`, vslt-coder-claude). Reviewer U2b: APPROVE (`e165990`).
+- 2026-10-09 U2c xong (commit `15: L13-U2c phím f, --fullscreen, --[no-]display-mirror, LRU font (AC-U6/U8)`).
+- ĐANG LÀM: không.
 - Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a). R1 (commit `15: R1` trên nhánh cloud; CHỜ LOCAL: AC-S18 + S18b trên clip thật). A2b (`71fc664` mã + `4b5d736` config; AC-W3 đạt).
-  Lần sửa 13: M0 (5a32cff; ghi chép sửa ở commit U1), U1 (commit `15: L13-U1`), U1a (commit `acdcf63`), U2a (`cf5e2cc`), U2b.
-- Còn lại (lần sửa 13): U2c, U2d, X1, G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5.
+  Lần sửa 13: M0 (5a32cff; ghi chép sửa ở commit U1), U1 (commit `15: L13-U1`), U1a (commit `acdcf63`), U2a (`cf5e2cc`), U2b (`b0cbcf1`), U2c.
+- Còn lại (lần sửa 13): U2d, X1, G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5.
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -1593,3 +1594,30 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   layout tự nhiên theo AC-U2, rẻ hơn). (c) Panel đổi chiều cao (số dòng nhỏ thay đổi) khi cửa sổ giữ nguyên ⇒ `fit_layout` co nội dung (dải đen
   một cặp cạnh), không tự đổi kích thước cửa sổ như WINDOW_AUTOSIZE cũ. (d) Chế độ cửa sổ của AC-U6b: chạy cả `gui` (đếm khung bằng nhau) lẫn
   `--pace realtime` (luật thứ tự).
+
+## Lần sửa 13b — U2c (2026-10-09)
+- Mục tiêu: Phím `f` toàn màn hình (sự kiện `fullscreen`), cờ `--fullscreen`, `--display-mirror` (`BooleanOptionalAction`), cache font LRU (AC-U8), gợi ý phím (A); giữ nguyên đường khung MediaPipe và kiểm E3/E4.
+- AC-U6:
+  - Phím `f`: `KEY_FULLSCREEN = ord("f")`, bật/tắt toàn màn hình qua `cv2.setWindowProperty(WINDOW_NAME, cv2.WND_PROP_FULLSCREEN, ...)`. Bọc `try/except (cv2.error, AttributeError)` không làm app dừng; ghi sự kiện `{"event": "fullscreen", "on": bool}` vào `self.events` (như pause/resume).
+  - `--fullscreen`: cờ `store_true`, mặc định False, mở ở chế độ toàn màn hình, gọi `setWindowProperty` đúng 1 lần lúc mở cửa sổ trong `Level1App.run` (ngay sau `namedWindow`, khi `self.display`). KHÔNG đưa vào `DEFAULT_DEMO_ARGV` (preset).
+  - `--display-mirror`: chuyển sang `argparse.BooleanOptionalAction`, mặc định parser False, preset giữ `--display-mirror`. `[*DEFAULT_DEMO_ARGV]` parse ra `display_mirror=True`, `fullscreen=False`; `[*DEFAULT_DEMO_ARGV, "--no-display-mirror"]` parse ra `display_mirror=False`.
+  - Thứ tự resizeWindow (U2b) với `--fullscreen`: khi `self.fullscreen` đang bật, `_window_image` bỏ qua `resizeWindow` và giữ `window_sized = False`; khi thoát toàn màn hình, khung tiếp theo mới gọi `resizeWindow` một lần về kích thước tự nhiên.
+- AC-U8 (LRU font cache):
+  - Tên hàm dựng font mà Hud dùng: `ImageFont.truetype` (được gọi trong `Hud._fonts_at`, `level1_demo.py`).
+  - `Hud._fonts` chuyển thành `collections.OrderedDict`, khởi tạo với cỡ mặc định. Khi truy vấn trong `Hud._fonts_at`: nếu trúng cache thì gọi `move_to_end`; nếu chưa có thì dựng qua `ImageFont.truetype`, lưu vào dict và `popitem(last=False)` khi kích thước vượt quá 8.
+  - Test `TestHudFontLruU2c.test_lru_cache_eviction_and_retention`: gọi 20 cỡ font px khác nhau liên tiếp; gọi lại cỡ thứ 20 (vừa dùng) không dựng font mới; gọi lại cỡ thứ 1 (đã bị đẩy ra bởi LRU) thì dựng lại; số cỡ trong cache luôn <= 8 tại mọi thời điểm.
+- Gợi ý phím (A):
+  - Ban đầu thử nghiệm chèn `' | f toàn màn hình'` vào dòng phím trong `Level1App._hud_lines` (`small.append(...)`). Khi chạy test, 5 test hồi quy so sánh tương đương với các commit tham chiếu lịch sử (`app_module_at(...)`) bị FAIL: `TestDetectionHudM3.test_m3_hud_line_only_when_not_default` (2 subtests), `TestGestureSpaceFlagsS3.test_9d_no_gesture_space_same_as_before` (2 subtests mode motion_pose & classifier), và `TestHudClassifierW2.test_6d_motion_pose_hud_image_identical_to_before` do các test này ghim cứng dòng `small` khớp tuyệt đối với mã nguồn commit cũ.
+  - Theo luật thiết kế §2.2 gốc và hướng dẫn kế hoạch: "Nếu sau khi chạy test thật sự có test ghim dòng đó, hoàn tác (A) và ghi lý do vào progress (khi đó tiêu đề cửa sổ chấp nhận được)".
+  - Hoàn tác thêm gợi ý vào `small.append`, đặt gợi ý vào tiêu đề cửa sổ: `WINDOW_NAME = "VSLT Level 1 (f: toàn màn hình)"`. Cập nhật `test_key_hint_and_docstring` kiểm tra docstring có `'f fullscreen'` và `WINDOW_NAME` có `'f: toàn màn hình'`.
+- Kiểm thử và log thực tế (AC-U2P):
+  - Log đỏ viết trước: `_work/_plan15_l13/u2c_red.log` (mtime 11:21:04, cũ hơn các log green): `python -m unittest tests.test_level1_demo.TestFullscreenU2c tests.test_level1_demo.TestHudFontLruU2c tests.test_level1_demo.TestParserU2c -v` → `Ran 8 tests in 0.082s` — `FAILED (failures=3, errors=5)`.
+  - Log xanh ca mới: `_work/_plan15_l13/u2c_green_new.log` (mtime 12:58:56) → `Ran 8 tests in 21.356s` — `OK`.
+  - Log xanh tương đương & hiển thị: `_work/_plan15_l13/u2c_green_equiv_display.log` (mtime 13:03:04) `python -m unittest tests.test_level1_display tests.test_level1_equivalence -v` → `Ran 45 tests in 205.915s` — `OK`.
+  - Log xanh toàn bộ level 1: `_work/_plan15_l13/u2c_green_level1_all.log` (mtime 12:10) `python -m unittest $(ls tests/test_level1_*.py | sed 's#/#.#; s#\.py$##') tests.test_backend_source_guard` → `Ran 507 tests in 873.494s` — `OK (skipped=1)`, `[DoD7-guard] known=9 allowed=36`.
+- Bất biến diff (AC-U9, AC-U9b):
+  - `git diff b0cbcf1 -- level1_demo.py | grep -E '^[-+]' | grep -cE 'process\(|frame_mp|draw_landmarks|display_view|HandLandmarkSession|\.read\('` = 0.
+  - `git diff d1a8308 -- level1_demo.py scripts/level1_display_cost.py src/ | grep -E '^\+' | grep -cE 'vars\(|__dict__|cv2\.dnn|getRectSubPix|__import__|importlib|warp|remap|pyr(Up|Down)'` = 0.
+  - `git diff --stat d1a8308 -- src/` rỗng (src/ hoàn toàn không thay đổi).
+
+  - Orchestrator chạy lại toàn bộ level 1 SAU lần sửa code cuối (12:56): `_work/_plan15_l13/u2c_orch_level1_all.log` → `Ran 507` — `OK (skipped=1)`, `[DoD7-guard] known=9 allowed=36` (log 12:10 ở trên có trước lần sửa cuối). agy lần 2 hết giờ 40' (không có STATUS); agy-guard BLOCK 15-progress.md là báo nhầm (file đã là WIP U2c của agy lần 1, ghi ở STATE 5fd07ae); orchestrator commit hộ.
