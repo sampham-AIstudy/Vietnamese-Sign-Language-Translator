@@ -119,3 +119,31 @@ Không có.
 
 ## CẦN NGƯỜI DÙNG QUYẾT ĐỊNH
 Không có.
+
+## Vòng 2 (2026-10-09, commit sửa `6144970`, HEAD `288feb2`): APPROVE
+
+Phạm vi: `git show --stat 6144970` = 3 file: `level1_demo.py` (1 dòng, :104), `tests/test_level1_demo.py` (+3/-1, chỉ trong `test_key_hint_and_docstring`),
+`docs/plans/15-progress.md` (+4). Các commit còn lại trong `920cb81..288feb2` (`dc054d3` ledger, `5ea94c3`/`288feb2` state) không chạm mã/test.
+
+| Mục | Kết quả | Bằng chứng |
+|---|---|---|
+| TB-1 sửa đúng quyết định người dùng | PASS | `level1_demo.py:104` `WINDOW_NAME = "VSLT Level 1 (f: toan man hinh)"`, đúng chuỗi trong STATE (2026-10-09 14:07). Mọi chỗ dùng qua hằng (`:1106, :1316, :1325, :1340, :1344, :1389, :1392`); không còn chuỗi có dấu trong `level1_demo.py`, `tests/`, `scripts/` (grep). |
+| Test khóa TB-1 | PASS | `tests/test_level1_demo.py:3644-3649`: `assertIn("f: toan man hinh", WINDOW_NAME)` + `assertTrue(WINDOW_NAME.isascii())`. Đột biến (worktree tạm `_work/_r2_mut`, đã gỡ): đổi lại `WINDOW_NAME` có dấu → `FAIL: test_key_hint_and_docstring` `AssertionError: 'f: toan man hinh' not found in 'VSLT Level 1 (f: toàn màn hình)'`, `Ran 3` `FAILED (failures=1)`. Có `isascii()` nên chữ có dấu chen ở chỗ khác cũng đỏ. |
+| Không nới/sửa test cũ | PASS | `git diff 00d320c..6144970 --stat -- tests/` = 1 file, +3/-1; dòng bị bỏ là assert chuỗi có dấu do chính U2c thêm (TB-1 yêu cầu sửa), thay bằng assert chặt hơn. Không skip, không xóa test khác. |
+| Chạy lại | PASS | `.venv/Scripts/python -m unittest tests.test_level1_demo.TestFullscreenU2c tests.test_level1_demo.TestHudFontLruU2c tests.test_level1_demo.TestParserU2c` → `_work/_plan15_l13/review_u2c_r2.log`: `Ran 8` `OK`. Khớp `u2c_fix_green.log` (`Ran 8` `OK`); `u2c_fix_red.log` `Ran 8` `FAILED (failures=1)`; `u2c_fix_green_extra.log` `Ran 53` `OK` (không chạy lại 53 test này; thay đổi chỉ là hằng chuỗi). |
+| Tiêu đề thật | PASS | `_work/_plan15_l13/u2c_fix_title_probe.log`: `backend WIN32`, `title 'VSLT Level 1 (f: toan man hinh)' match True` (GetWindowTextW). Không tự mở cửa sổ lại. |
+| Số liệu trong progress | PASS | 4 dòng mới chỉ là đếm test, trỏ log có thật, đã đối chiếu như trên. |
+
+Các mục 2–13 của bảng vòng 1 không đổi (vòng này chỉ đổi một hằng chuỗi + một test). Mục 1 và 13 hết FAIL do TB-1 đã sửa và đã kiểm tiêu đề thật.
+
+### Còn mở (THẤP, không chặn; orchestrator chuyển planner trước V1)
+- THẤP-1: test bật/tắt chưa kiểm giá trị thuộc tính (`WINDOW_FULLSCREEN`/`WINDOW_NORMAL`) — chỉ THÊM test.
+- THẤP-2: lỗ test LRU (chưa có ca truy cập lại cỡ cũ; FIFO sống) và ca thường → f → f.
+- THẤP-3: `setWindowProperty` lỗi thì `self.fullscreen` vẫn đảo và ghi `on: true`.
+- THẤP-4: `docs/agy_usage_ledger.csv` trong commit `00d320c`, ngoài khối scope §5b (sổ sách).
+- THẤP-5: progress U2c thiếu impact/detect-changes GitNexus; câu trích "luật §2.2" thực ra là lời giao cầu nối.
+- THẤP-6: thoát toàn màn hình đặt lại cỡ tự nhiên, bỏ cỡ người dùng đã kéo — ghi R2 nếu cần.
+- Nhỏ (mới): chú thích cũ `tests/test_level1_demo.py:3646` ("hint placed in window title when tests pin small lines…") vẫn còn, đúng nhưng nên gọn khi sửa THẤP-1/2.
+
+### CẦN NGƯỜI DÙNG QUYẾT ĐỊNH
+Không có (tiêu đề đã được người dùng chốt 2026-10-09 14:07; mục "CẦN PLANNER" vòng 1 về chữ tiêu đề coi như đã đóng).
