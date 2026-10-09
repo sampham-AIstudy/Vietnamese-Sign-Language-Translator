@@ -1659,3 +1659,5 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
   - `git diff d1a8308..HEAD -- level1_demo.py scripts/level1_display_cost.py src/ | grep -E '^\+' | grep -cE 'vars\(|__dict__|cv2\.dnn|getRectSubPix|__import__|importlib|warp|remap|pyr(Up|Down)'` = 0.
   - `git diff --stat d1a8308..HEAD -- src/` rỗng (src/ hoàn toàn không bị sửa).
   - `level1_demo.py`, các file test có sẵn, file người dùng (`README.md`, 3 file ` D`) hoàn toàn không bị chạm.
+
+> LẦN SỬA 13c (2026-10-09): xem docs/plans/15-lan-sua-13c.md — C1 (Claude: DC1 fail-closed, path_counts, mã thoát, đường dẫn tương đối) → C2 (cầu nối: đo 3 lần, commit lần 1) → review U2d v2 → XW (cầu nối: X1 + thăm dò cửa sổ thật) → T1 (agy: test overlay chính xác) → T2 (agy: test _window_image/f/LRU) → G1; VU người dùng không chặn; câu Giới hạn R2 ở §8.
