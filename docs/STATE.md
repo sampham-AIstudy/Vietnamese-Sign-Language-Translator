@@ -10,7 +10,7 @@
 - LẦN SỬA 12 (cloud, 2026-10-06, theo phản hồi webcam của người dùng): `docs/plans/15-lan-sua-12.md`. Mã: ddd7904 (G1 cổng chuyển động decoder, H1 HandednessLock, config rev9), 13759a6 (script dominant_hand_check), 85a6a91 (app: tắt tự cách mặc định, --dominant-hand lock, nối cổng), 551e1b2 (G1b: không cắt chữ biến thể của chữ vừa phát). Bằng chứng: reports/level1_realtime_2026-10-06/{dominant_hand_check,rearm_check_gate,rearm_check_gate_v2}.json. CHƯA review (vslt-reviewer local). Còn: phiên webcam người dùng so rev8 và rev9.
 - HEAD: ba9e107 (+ commit state này) | Nhánh: cloud/2026-10-04-level1-rearm
 - Tắt máy: CHỈ khi người dùng yêu cầu rõ trong hội thoại (quyết định 2026-10-04 01:15). Lần gần nhất: 9/10 22:18 tắt theo yêu cầu "tiep tuc cong viec, xong thi tat may cho toi" (hết hiệu lực sau phiên đó).
-- Trạng thái phiên: 22:18 9/10 DỪNG + TẮT MÁY theo yêu cầu người dùng (19:44 "xong thì tắt máy"); 5h 73% (áp G2b ~18 không vừa cổng 90), reset ~00:20. Xong phiên: 13c T2 APPROVE (b5762ec, 3a07a8c); G1 e2ee6f8 APPROVE; planner 13d (4444500); G2a 70b9055+f64966a APPROVE; G2b CẦN PLANNER → planner 13e (docs/plans/15-lan-sua-13e.md, e58f545) chọn (a): thêm tạm GESTURE_BACKSPACE_FLASH trong _hud_module_at (tests/test_level1_display.py:57-71, chỉ thêm dòng, M0_CORE_COMPAT_NAMES 1 tên, gỡ trong finally), AC-E1…E4. Mã G2b CHƯA commit: bản vá _work/_plan15_l13/g2b_wip.patch (gitignored, chỉ trên đĩa; git apply --check sạch), script đột biến _work/_plan15_l13/g2b_mutate.py. VIỆC KẾ (khi người dùng nhắn "tiếp tục"): vslt-coder-claude làm G2b theo 13e (áp bản vá + phần tương thích, 1 commit `15: L13-G2b`, đột biến E4 trên worktree từ commit G2b) → reviewer G2b → G2c (level1_demo: --gesture-config, engine, preset, JSON, HUD; luôn truyền w/h thật) → G3 (trượt GF ⇒ DỪNG). Backlog 0c: agy-guard chặn nhầm decorator skipUnless. VU người dùng (3 câu cửa sổ thật) không chặn. Không agent/agy chạy. Chỉ 1 phiên Claude.
+- Trạng thái phiên: 02:15 10/10 khôi phục (5h 8%, 7d 64%). PHẠM VI MỚI (người dùng 02:12): chỉ đường DEMO Cấp 1 desktop = G2b → G2c → G3 → K1 → K2 (+ V1 theo khuyến nghị kế hoạch, người dùng có thể bỏ); KHÔNG làm D1/V2/D2/D3/R1/G5, Việc 5/6, Cấp 2. ĐANG GIAO vslt-coder-claude G2b theo docs/plans/15-lan-sua-13e.md (bản vá _work/_plan15_l13/g2b_wip.patch áp sạch). VIỆC KẾ: reviewer G2b → G2c → G3 (trượt GF ⇒ DỪNG) → K1 → K2 → V1. Chỉ 1 phiên Claude.
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -223,6 +223,7 @@
   (lịch sử → docs/STATE_archive.md); chờ việc nền > 45 phút thì lưu STATE + mở phiên mới; giữ context phiên chính nhỏ; không đổi model giữa phiên.
   Chi tiết + số đo: docs/prompts/orchestrator_resume_addendum.md mục 6.
 - (2026-10-09 14:07) Tiêu đề cửa sổ demo Cấp 1: chữ KHÔNG DẤU "VSLT Level 1 (f: toan man hinh)" (OpenCV Windows hiện sai chữ có dấu trong tiêu đề).
+- (2026-10-10 02:12) Ưu tiên hoàn thiện Cấp 1 để DEMO bằng app Python desktop (level1_demo.py); các phần khác (web Việc 5/6, Cấp 2, D1–D3, R1, G5) CHƯA làm. Lý do người dùng: demo web bị trễ nhiều hơn desktop.
 
 ## Câu hỏi chờ người dùng
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
