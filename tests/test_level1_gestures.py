@@ -20,6 +20,14 @@ AC-D3 wave_min_strokes and space_dropout_frames are read from the values (change
 AC-D4 (P2) hand frames inside the wave cooldown are not buffered: strokes done inside the cooldown never fire.
 AC-D5 (THẤP-2) a landmark frame with NaN / inf is "no hand" for both trackers; width / height must be finite and > 0.
 
+Lần sửa 13d part G2b (level1_core reads its gesture defaults lazily from configs/level1_gestures.json):
+AC-G4 the old path is unchanged: is_flat_hand_backspace(p) == is_flat_hand_backspace(p, 0.5, 1.05) (the design table) on
+      every hand frame (after aspect_points, as the app) of the first 10 hauuto clips of the Kaggle manifest (skip if missing).
+AC-D7 no bare gesture number left in is_flat_hand_backspace / BackspaceGestureTracker (AST); parameter defaults are None.
+AC-D8 BackspaceGestureTracker() carries the legacy_flick_* values as float; they come from the file (patched path); the
+      file is not read at import time (subprocess).
+AC-G5 (grep part) GESTURE_BACKSPACE_(COOLDOWN|WINDOW|MIN_DX|MIN_SPEED|FLASH) appear nowhere in src/ and level1_demo.py.
+
 Every hand and every frame sequence below is a chuỗi tạo có kiểm soát để kiểm logic (controlled sequence built to check the
 logic): hand shapes are hand-placed 21-point templates checked against the real pose predicates of level1_core
 (is_flat_hand_backspace / is_open_palm_space); they are not data and no number here is a measurement.
@@ -878,6 +886,202 @@ class TestNonFiniteFrameAcD5(unittest.TestCase):
         for bad in (r[:, :2], r[:20], nan_r[:, :2], r.reshape(-1)):
             with self.assertRaises(ValueError):
                 GestureEngine(self.v).step(0.0, bad, self.W, self.H, True)
+
+
+# ----------------------------------------------------------------------------------------------------------------------
+# Lần sửa 13d part G2b: level1_core gesture defaults come from configs/level1_gestures.json (read lazily, once)
+# ----------------------------------------------------------------------------------------------------------------------
+import ast  # noqa: E402
+import csv  # noqa: E402
+import re  # noqa: E402
+import subprocess  # noqa: E402
+from unittest import mock  # noqa: E402
+
+from src.inference import level1_core as core  # noqa: E402
+from src.inference.level1_segmenter import aspect_points  # noqa: E402
+
+CORE_MODULE = os.path.join(PROJECT_ROOT, "src", "inference", "level1_core.py")
+# AC-D7 ceiling (13d §5): landmark indices, the 21-point shape, the mean of 3 points, history indices / -1, ms -> s
+CORE_GESTURE_NUMBERS = {0, 1, 2, 3, 4, 9, 12, 17, 21, 1000}
+# BackspaceGestureTracker attribute -> config key (plan 15 lần sửa 13 §3.2 table, legacy_flick_*)
+LEGACY_ATTRS = {
+    "cooldown_ms": "legacy_flick_cooldown_ms", "window_ms": "legacy_flick_window_ms", "min_dx": "legacy_flick_min_dx",
+    "min_speed": "legacy_flick_min_speed", "palm_ratio": "legacy_flick_palm_ratio",
+    "dx_over_dy": "legacy_flick_dx_over_dy", "min_dt_s": "legacy_flick_min_dt_s",
+}
+REMOVED_NAMES = re.compile(r"GESTURE_BACKSPACE_(COOLDOWN|WINDOW|MIN_DX|MIN_SPEED|FLASH)")
+
+# AC-G4 data: the first 10 hauuto rows of the manifest, in manifest order (training clips; equality check, not accuracy)
+KAGGLE_DIR = os.path.join(PROJECT_ROOT, "data", "external", "alphabet_hands_kaggle", "alphabet_hands")
+HAUUTO_MANIFEST = os.path.join(KAGGLE_DIR, "manifest.csv")
+N_HAUUTO_CLIPS = 10
+
+
+def _first_hauuto_rows():
+    if not os.path.exists(HAUUTO_MANIFEST):
+        return []
+    with open(HAUUTO_MANIFEST, encoding="utf-8") as f:
+        rows = [r for r in csv.DictReader(f) if r["source"] == "hauuto"]
+    return rows[:N_HAUUTO_CLIPS]
+
+
+HAUUTO_ROWS = _first_hauuto_rows()
+_MISSING = ([HAUUTO_MANIFEST] if not os.path.exists(HAUUTO_MANIFEST) else
+            [p for p in (os.path.join(KAGGLE_DIR, r["landmark_path"]) for r in HAUUTO_ROWS) if not os.path.exists(p)])
+SKIP_REASON = "missing (gitignored data): " + ", ".join(_MISSING)
+
+
+def _numbers(node):
+    return {n.value for n in ast.walk(node)
+            if isinstance(n, ast.Constant) and isinstance(n.value, (int, float)) and not isinstance(n.value, bool)}
+
+
+def _core_nodes():
+    with open(CORE_MODULE, encoding="utf-8") as f:
+        tree = ast.parse(f.read())
+    fn = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "is_flat_hand_backspace"]
+    cls = [n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == "BackspaceGestureTracker"]
+    return fn, cls
+
+
+class TestCoreGestureNumbersAcD7(unittest.TestCase):
+    """AC-D7 (THẤP-1): no bare gesture number in the old flat-hand predicate and the old flick tracker."""
+
+    def test_d7_numbers_are_indices_shapes_or_unit_conversions(self):
+        fn, cls = _core_nodes()
+        self.assertEqual((len(fn), len(cls)), (1, 1))
+        for node in (fn[0], cls[0]):
+            nums = _numbers(node)
+            self.assertLessEqual(nums, CORE_GESTURE_NUMBERS, f"{node.name}: {sorted(nums - CORE_GESTURE_NUMBERS)}")
+
+    def test_d7_parameter_defaults_are_none(self):
+        fn, cls = _core_nodes()
+        init = [n for n in cls[0].body if isinstance(n, ast.FunctionDef) and n.name == "__init__"]
+        self.assertEqual(len(init), 1)
+        for f in (fn[0], init[0]):
+            defaults = f.args.defaults + [d for d in f.args.kw_defaults if d is not None]
+            self.assertTrue(defaults, f.name)
+            for d in defaults:
+                self.assertTrue(isinstance(d, ast.Constant) and d.value is None, f"{f.name}: {ast.dump(d)}")
+
+
+class TestCoreDefaultsFromConfigAcD8(unittest.TestCase):
+    """AC-D8: the old tracker's defaults are the legacy_flick_* values of the config file, read lazily."""
+
+    def setUp(self):
+        self.values = load_values()
+        with open(CONFIG, encoding="utf-8") as f:
+            self.raw = json.load(f)
+        self.tmp = tempfile.mkdtemp(prefix="vslt_p15_g2b_")
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+
+    def _point_core_at(self, raw=None, text=None):
+        path = os.path.join(self.tmp, "gestures.json")
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(json.dumps(raw) if text is None else text)
+        patcher = mock.patch.object(core, "GESTURE_CONFIG_PATH", path)
+        patcher.start()
+        self.addCleanup(core.gesture_defaults.cache_clear)
+        self.addCleanup(patcher.stop)
+        core.gesture_defaults.cache_clear()
+        return path
+
+    def test_d8a_tracker_defaults_are_the_legacy_values_as_float(self):
+        tr = BackspaceGestureTracker()
+        for attr, key in LEGACY_ATTRS.items():
+            self.assertIsInstance(getattr(tr, attr), float, attr)
+            self.assertEqual(getattr(tr, attr), self.values[key], attr)
+
+    def test_d8a_gesture_defaults_are_the_committed_values(self):
+        self.assertEqual(dict(core.gesture_defaults()), self.values)
+        self.assertTrue(os.path.samefile(core.GESTURE_CONFIG_PATH, CONFIG))
+
+    def test_d8a_explicit_arguments_still_win(self):
+        args = {attr: self.values[key] * 2 for attr, key in LEGACY_ATTRS.items()}
+        tr = BackspaceGestureTracker(**args)
+        for attr, v in args.items():
+            self.assertEqual(getattr(tr, attr), float(v), attr)
+
+    def test_d8b_values_come_from_the_file(self):
+        raw = copy.deepcopy(self.raw)
+        changed = self.values["legacy_flick_window_ms"] * 2
+        raw["legacy_flick_window_ms"]["value"] = changed
+        self._point_core_at(raw)
+        tr = BackspaceGestureTracker()
+        self.assertEqual(tr.window_ms, float(changed))
+        self.assertNotEqual(tr.window_ms, self.values["legacy_flick_window_ms"])
+        self.assertEqual(tr.cooldown_ms, self.values["legacy_flick_cooldown_ms"])
+
+    def test_d8b_flat_thumb_defaults_come_from_the_file(self):
+        """FLAT (controlled template) is a flat hand with the committed values; a thumb ratio in the file above this
+        hand's own thumb extension makes the 1-argument call reject it, exactly as the explicit call with that ratio."""
+        p = hand(FLAT, 0.5, 0.5)
+        self.assertTrue(is_flat_hand_backspace(p))
+        raw = copy.deepcopy(self.raw)
+        larger = 2 * float(np.linalg.norm(p[4] - p[0])) / palm_len(p)
+        raw["flat_thumb_min_ratio"]["value"] = larger
+        self._point_core_at(raw)
+        self.assertFalse(is_flat_hand_backspace(p, larger, self.values["flat_thumb_max_spread"]))
+        self.assertFalse(is_flat_hand_backspace(p))
+
+    def test_d8b_missing_or_broken_file_fails_when_used(self):
+        path = self._point_core_at(text="{not json")
+        with self.assertRaises(ValueError):
+            BackspaceGestureTracker()
+        os.remove(path)
+        core.gesture_defaults.cache_clear()
+        with self.assertRaises(OSError):
+            BackspaceGestureTracker()
+        with self.assertRaises(OSError):
+            is_flat_hand_backspace(hand(FLAT, 0.5, 0.5))
+
+    def test_d8c_import_does_not_read_the_file(self):
+        code = ("import src.inference.level1_core as c, src.inference.level1_gestures as g; "
+                "print(c.gesture_defaults.cache_info().currsize)")
+        out = subprocess.run([sys.executable, "-c", code], cwd=PROJECT_ROOT, capture_output=True, text=True,
+                             timeout=300)
+        self.assertEqual(out.returncode, 0, out.stderr)
+        self.assertEqual(out.stdout.strip(), "0")
+
+
+class TestRemovedConstantsAcG5(unittest.TestCase):
+    """AC-G5 (grep part): the 5 old constants are gone from src/ and level1_demo.py; GESTURE_BACKSPACE_DEFAULT stays."""
+
+    def test_g5_no_removed_constant_left(self):
+        files = [os.path.join(PROJECT_ROOT, "level1_demo.py")]
+        for dirpath, _dirs, names in os.walk(os.path.join(PROJECT_ROOT, "src")):
+            files += [os.path.join(dirpath, n) for n in names if n.endswith(".py")]
+        hits = []
+        for path in files:
+            with open(path, encoding="utf-8") as f:
+                hits += [f"{os.path.relpath(path, PROJECT_ROOT)}:{i}" for i, line in enumerate(f, 1)
+                         if REMOVED_NAMES.search(line)]
+        self.assertEqual(hits, [])
+        self.assertIs(core.GESTURE_BACKSPACE_DEFAULT, False)
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestLegacyFlatHandOnHauutoAcG4(unittest.TestCase):
+    """AC-G4: the 1-argument call (defaults from the config) == the explicit call with the design-table values
+    (the values of commit 7a267c7), on every hand frame of 10 fixed hauuto clips after aspect_points (as the app)."""
+
+    def test_g4_default_call_equals_the_design_values(self):
+        v = load_values()
+        legacy = (DESIGN_TABLE["flat_thumb_min_ratio"], DESIGN_TABLE["flat_thumb_max_spread"])
+        configured = (v["flat_thumb_min_ratio"], v["flat_thumb_max_spread"])
+        self.assertEqual(len(HAUUTO_ROWS), N_HAUUTO_CLIPS)
+        n_frames = 0
+        for row in HAUUTO_ROWS:
+            with np.load(os.path.join(KAGGLE_DIR, row["landmark_path"])) as z:
+                raw, det = np.asarray(z["raw_landmarks"]), np.asarray(z["detected_mask"], dtype=bool)
+            w, h = int(row["width"]), int(row["height"])
+            for i in np.flatnonzero(det):
+                p = aspect_points(raw[i], w, h)
+                got = is_flat_hand_backspace(p)
+                self.assertEqual(got, is_flat_hand_backspace(p, *legacy), f"{row['sample_id']} frame {i}")
+                self.assertEqual(got, is_flat_hand_backspace(p, *configured), f"{row['sample_id']} frame {i}")
+                n_frames += 1
+        self.assertGreater(n_frames, 0)
 
 
 if __name__ == "__main__":

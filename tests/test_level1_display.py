@@ -32,6 +32,7 @@ from src.inference.level1_core import load_level1_config  # noqa: E402
 
 CONFIG = os.path.join(PROJECT_ROOT, "configs", "level1_realtime.json")
 HUD_BASE_COMMIT = "cad8cdc"  # plan 15 lần sửa 13 M0: level1_demo.Hud before U1 (reference for scale 1.0)
+M0_CORE_COMPAT_NAMES = ("GESTURE_BACKSPACE_FLASH",)  # level1_core names removed by plan 15 L13-G2b (lần sửa 13e)
 CAM_W, CAM_H = 640, 480
 
 HINT = "[Góc tay: Hơi nghiêng tay 20°]"
@@ -64,10 +65,19 @@ def _hud_module_at(commit):
     mod = types.ModuleType(name)
     mod.__file__ = os.path.join(PROJECT_ROOT, "level1_demo.py")
     sys.modules[name] = mod
+    # compat shim for names removed by plan 15 L13-G2b; import-only, not used by Hud
+    import src.inference.level1_core as m0_core
+    m0_added = []
+    for m0_name in M0_CORE_COMPAT_NAMES:
+        if not hasattr(m0_core, m0_name):
+            setattr(m0_core, m0_name, float(m0_core.gesture_defaults()["gesture_flash_ms"]))
+            m0_added.append(m0_name)
     try:
         exec(compile(r.stdout, f"<git show {commit}:level1_demo.py>", "exec"), mod.__dict__)
     finally:
         sys.modules.pop(name, None)
+        for m0_name in m0_added:
+            delattr(m0_core, m0_name)
     return mod
 
 
@@ -342,6 +352,27 @@ class TestRenderToWindowAcU2(unittest.TestCase):
         bad = (lambda width, height, scale, n: (np.zeros((height + 3, width, 3), np.uint8), 1))
         with self.assertRaises(ValueError):
             disp.render_to_window(view, bad, [], 0.0, L)
+
+    def test_m0_ref_loader_compat_is_temporary(self):
+        """Plan 15 lần sửa 13e AC-E2: the import-only compat shim of _hud_module_at gives the M0 snapshot exactly the one
+        name removed by L13-G2b, with the config value as float, removes it afterwards, and the compared Hud never uses it."""
+        import src.inference.level1_core as core
+        self.assertEqual(M0_CORE_COMPAT_NAMES, ("GESTURE_BACKSPACE_FLASH",))  # (i)
+        self.assertFalse(hasattr(core, "GESTURE_BACKSPACE_FLASH"))  # removed by G2b, so the shim must attach it
+        ref_mod = _hud_module_at(HUD_BASE_COMMIT)  # (ii)
+        self.assertFalse(hasattr(core, "GESTURE_BACKSPACE_FLASH"))  # (iii) detached again
+        self.assertIsInstance(ref_mod.GESTURE_BACKSPACE_FLASH, float)  # (iv)
+        self.assertEqual(ref_mod.GESTURE_BACKSPACE_FLASH, float(core.gesture_defaults()["gesture_flash_ms"]))
+
+        def names(code):  # global / attribute names of a code object and of its nested code objects
+            out = set(code.co_names)
+            for c in code.co_consts:
+                if isinstance(c, types.CodeType):
+                    out |= names(c)
+            return out
+
+        for meth in (ref_mod.Hud.compose, ref_mod.Hud._build):  # (v)
+            self.assertNotIn("GESTURE_BACKSPACE_FLASH", names(meth.__code__), meth.__name__)
 
 
 # ------------------------------------------------------------------------------------------------------------ AC-U3

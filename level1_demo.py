@@ -90,7 +90,7 @@ from src.inference.hand_live import LEVEL1_HANDS_KWARGS, HandLandmarkSession  # 
 from src.inference.level1_display import (PanelBuilder, draw_panel_overlays, fit_layout,  # noqa: E402
                                           render_to_window, scaled_px)
 from src.inference.level1_core import (CLAHE_CLIP_LIMIT, CLAHE_TILE_GRID, GESTURE_BACKSPACE_DEFAULT,  # noqa: E402
-                                       GESTURE_BACKSPACE_FLASH, LOW_LIGHT_THRESHOLD, BackspaceGestureTracker,
+                                       LOW_LIGHT_THRESHOLD, BackspaceGestureTracker, gesture_defaults,
                                        HandednessLock, LandmarkSmoother, Level1Classifier, Level1Speller,
                                        enhance_low_light, foreshortening_ratio, is_flat_hand_backspace,
                                        is_open_palm_space, load_level1_config)
@@ -1157,7 +1157,7 @@ class Level1App:
     def _gesture_line(self) -> Optional[str]:
         """HUD: backspace flash / space flash / open palm progress / flat hand ready hint; else None."""
         if (self.gesture_backspace_flash_ts is not None and self.last_ts is not None
-                and self.last_ts - self.gesture_backspace_flash_ts < GESTURE_BACKSPACE_FLASH):
+                and self.last_ts - self.gesture_backspace_flash_ts < float(gesture_defaults()["gesture_flash_ms"])):
             return "[Ký hiệu: Xóa (Backspace)]"
         if (self.gesture_flash_ts is not None and self.space_tracker.last_ts is not None
                 and self.space_tracker.last_ts - self.gesture_flash_ts < GESTURE_SPACE_FLASH):
@@ -1525,7 +1525,7 @@ class Level1App:
             report["gesture_backspace"] = {"enabled": True,
                                            "cooldown_ms": self.backspace_tracker.cooldown_ms,
                                            "window_ms": self.backspace_tracker.window_ms,
-                                           "flash_ms": GESTURE_BACKSPACE_FLASH,
+                                           "flash_ms": float(gesture_defaults()["gesture_flash_ms"]),
                                            "flat_frames": self.gesture_counts["flat_frames"],
                                            "emits": self.backspace_tracker.n_emits,
                                            "backspaces_added": self.gesture_counts["backspaces_added"]}

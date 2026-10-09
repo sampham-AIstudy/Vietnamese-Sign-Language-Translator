@@ -15,14 +15,18 @@ Level 1 ("Đánh vần") core shared by the desktop app (level1_demo.py) and, la
 - foreshortening_ratio(landmarks): projected / 3D length of the index finger (plan 15 lần sửa 10 P3; HUD angle hint).
 - HandednessLock: locks the handedness label of a run to the majority of MediaPipe's own labels on the first hand frames
   (plan 15 lần sửa 12 H1; the desktop demo's --dominant-hand lock only).
+- gesture_defaults(): the values of configs/level1_gestures.json (read lazily on first use, then cached), the defaults of
+  is_flat_hand_backspace / BackspaceGestureTracker (plan 15 lần sửa 13d §4 G2b: no gesture number in the code).
 
 No GUI, no thread, no camera.
 """
+import functools
 import hashlib
 import json
 import numbers
 import os
-from typing import Any, Dict, List, Optional, Tuple
+import types
+from typing import Any, Dict, List, Mapping, Optional, Tuple
 
 import cv2
 import numpy as np
@@ -545,16 +549,29 @@ def is_open_palm_space(landmarks: Optional[np.ndarray]) -> bool:
 
 
 # ---------------------------------------------------------------------------- flat hand flick -> Backspace
-GESTURE_BACKSPACE_COOLDOWN = 400.0   # ms cooldown after backspace before another flick can trigger
-GESTURE_BACKSPACE_WINDOW = 250.0     # sliding history window for measuring the flick
-GESTURE_BACKSPACE_MIN_DX = 0.05      # minimum horizontal displacement across the window
-GESTURE_BACKSPACE_MIN_SPEED = 0.30   # minimum horizontal speed in screen units/s
-GESTURE_BACKSPACE_FLASH = 600.0      # ms to flash HUD banner
 GESTURE_BACKSPACE_DEFAULT = False    # off by default in parser (on in default webcam preset)
+# the gesture design values (plan 15 lần sửa 13 §3.2); absolute path, independent of the working directory
+GESTURE_CONFIG_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+                                   "configs", "level1_gestures.json")
 
 
-def is_flat_hand_backspace(landmarks: Optional[np.ndarray], thumb_min_ratio: float = 0.5,
-                           thumb_max_spread: float = 1.05) -> bool:
+@functools.lru_cache(maxsize=1)
+def gesture_defaults() -> Mapping[str, Any]:
+    """Read-only {key: value} of GESTURE_CONFIG_PATH, validated by level1_gestures.load_gesture_config (plan 15 lần sửa
+    13d §4 G2b). Read on the first call only (never at import time), then cached; a missing or invalid file raises on
+    that call (OSError / ValueError), so the old gesture path fails closed instead of falling back to a number in code.
+    The import is local because level1_gestures imports this module."""
+    from src.inference.level1_gestures import load_gesture_config
+    return types.MappingProxyType(dict(load_gesture_config(GESTURE_CONFIG_PATH)["values"]))
+
+
+def _gesture_default(value: Optional[float], key: str) -> float:
+    """float(value), or float of the config value `key` when value is None (the old constants were floats)."""
+    return float(gesture_defaults()[key] if value is None else value)
+
+
+def is_flat_hand_backspace(landmarks: Optional[np.ndarray], thumb_min_ratio: Optional[float] = None,
+                           thumb_max_spread: Optional[float] = None) -> bool:
     """True when the hand is the flat hand pose for the backspace gesture: all 5 fingers straight,
     held together (not spread wide like the space gesture).
     landmarks: the 21 MediaPipe hand points [21, 3] (or [21, 2]) in aspect-corrected coordinates.
@@ -564,9 +581,11 @@ def is_flat_hand_backspace(landmarks: Optional[np.ndarray], thumb_min_ratio: flo
       3. thumb is not spread wide away as in open palm (dist(4, 17) <= thumb_max_spread * palm);
       4. not the open-palm space gesture: not is_open_palm_space(landmarks).
     thumb_min_ratio / thumb_max_spread: flat_thumb_min_ratio / flat_thumb_max_spread of configs/level1_gestures.json
-    (plan 15 lần sửa 13 §3.2, passed by level1_gestures.GestureEngine); the defaults are the values of commit 7a267c7,
-    so a call with the landmarks only behaves as before.
-    None, non-finite values or degenerate hands return False. Pure computation."""
+    (plan 15 lần sửa 13 §3.2, passed by level1_gestures.GestureEngine); None (default) -> the value of that key in
+    gesture_defaults() (the values of commit 7a267c7), so a call with the landmarks only behaves as before.
+    None, non-finite values or degenerate hands return False. Pure computation (the config is read once, on first use)."""
+    thumb_min_ratio = _gesture_default(thumb_min_ratio, "flat_thumb_min_ratio")
+    thumb_max_spread = _gesture_default(thumb_max_spread, "flat_thumb_max_spread")
     if landmarks is None:
         return False
     p = np.asarray(landmarks, dtype=np.float64)
@@ -594,21 +613,28 @@ def is_flat_hand_backspace(landmarks: Optional[np.ndarray], thumb_min_ratio: flo
 class BackspaceGestureTracker:
     """Flat hand + horizontal flick/swipe -> Backspace.
     update(ts_ms, landmarks, is_flat, has_hand) returns True exactly once per deliberate flick:
-      - keeps a sliding history of (ts_ms, x, y, is_flat, palm) over window_ms (250 ms);
+      - keeps a sliding history of (ts_ms, x, y, is_flat, palm) over window_ms;
       - triggers Backspace when:
         1. flat hand was present in the recent window;
-        2. hand underwent a rapid horizontal movement (dx >= min_dx, vx >= min_speed, dx > 1.1 * dy);
-        3. tracker is not in cooldown (cooldown_ms = 400 ms).
+        2. the history spans at least min_dt_s seconds;
+        3. hand underwent a rapid horizontal movement (dx >= min_dx or dx >= palm_ratio x mean palm length,
+           vx >= min_speed, dx > dx_over_dy x dy);
+        4. tracker is not in cooldown (cooldown_ms after the last emission).
+    Every parameter left None takes the legacy_flick_* value of gesture_defaults() (configs/level1_gestures.json: the
+    values of commit 7a267c7, kept so the old path behaves as before); all are stored as float.
     Pure computation, no clock."""
 
-    def __init__(self, cooldown_ms: float = GESTURE_BACKSPACE_COOLDOWN,
-                 window_ms: float = GESTURE_BACKSPACE_WINDOW,
-                 min_dx: float = GESTURE_BACKSPACE_MIN_DX,
-                 min_speed: float = GESTURE_BACKSPACE_MIN_SPEED):
-        self.cooldown_ms = float(cooldown_ms)
-        self.window_ms = float(window_ms)
-        self.min_dx = float(min_dx)
-        self.min_speed = float(min_speed)
+    def __init__(self, cooldown_ms: Optional[float] = None, window_ms: Optional[float] = None,
+                 min_dx: Optional[float] = None, min_speed: Optional[float] = None,
+                 palm_ratio: Optional[float] = None, dx_over_dy: Optional[float] = None,
+                 min_dt_s: Optional[float] = None):
+        self.cooldown_ms = _gesture_default(cooldown_ms, "legacy_flick_cooldown_ms")
+        self.window_ms = _gesture_default(window_ms, "legacy_flick_window_ms")
+        self.min_dx = _gesture_default(min_dx, "legacy_flick_min_dx")
+        self.min_speed = _gesture_default(min_speed, "legacy_flick_min_speed")
+        self.palm_ratio = _gesture_default(palm_ratio, "legacy_flick_palm_ratio")
+        self.dx_over_dy = _gesture_default(dx_over_dy, "legacy_flick_dx_over_dy")
+        self.min_dt_s = _gesture_default(min_dt_s, "legacy_flick_min_dt_s")
         self.n_emits = 0
         self.last_emit_ts: Optional[float] = None
         self.last_ts: Optional[float] = None
@@ -650,7 +676,7 @@ class BackspaceGestureTracker:
         if len(self.history) < 2:
             return False
         dt = (self.history[-1][0] - self.history[0][0]) / 1000.0
-        if dt < 0.04:
+        if dt < self.min_dt_s:
             return False
         xs = [h[1] for h in self.history]
         ys = [h[2] for h in self.history]
@@ -658,9 +684,9 @@ class BackspaceGestureTracker:
         dy = max(ys) - min(ys)
         vx = dx / dt
         avg_palm = np.mean([h[4] for h in self.history])
-        is_flick = ((dx >= self.min_dx or (avg_palm > 0 and dx / avg_palm >= 0.35))
+        is_flick = ((dx >= self.min_dx or (avg_palm > 0 and dx / avg_palm >= self.palm_ratio))
                     and vx >= self.min_speed
-                    and dx > 1.1 * dy)
+                    and dx > self.dx_over_dy * dy)
         if is_flick:
             self.last_emit_ts = ts
             self.n_emits += 1
