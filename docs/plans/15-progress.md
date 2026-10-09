@@ -1689,3 +1689,38 @@ gian, thống kê; không có video/khung/landmark. Không dùng các phiên nà
 - lần 3: exit 0, gate.pass True, ratio_p50 1.0981; natural n_frames 72 path_counts {'Hud.compose': 70, 'render_to_window': 2} stage_p50_ms {'hud': 2.569, 'mediapipe': 28.781}; 1080p n_frames 74 path_counts {'Hud.compose': 0, 'render_to_window': 74} stage_p50_ms {'hud': 6.268, 'mediapipe': 28.275}; info.hud_p50_delta_ms 3.699; commit ea93fa1 code_dirty False.
 - AC-C2: 3/3 exit 0 + pass; 1080p render_to_window == n_imshow (74/74) cả 3 lần; JSON lần 1 code_dirty false, commit ea93fa1 (= C1); grep 'users[\/]+' = 0. Natural có 2/72 khung đi render_to_window (khớp ghi nhận review U2d TB-2; nay được đếm trong path_counts).
   - Bổ sung (THẤP-B review U2d v2): mã thoát 3 lần C2 ghi ở `_work/_plan15_l13/l13c_c2_exitcodes.log` (run1/2/3 exit=0, bản sao output lệnh nền của orchestrator). Số hud dùng cho R2 lấy từ JSON: info.hud_p50_delta_ms 3.790 (lần 1).
+
+## Lần sửa 13c — XW (2026-10-09, vslt-coder-claude chạy lệnh; tại 79b73b2; `docs/plans/15-lan-sua-13c.md` §4 hàng XW, AC-X1, AC-W1)
+
+Chạy nối tiếp X1 rồi W1, không trùng lần đo DC1 nào (không có tiến trình python khác lúc chạy). Không sửa `src/`, `level1_demo.py`, `tests/`.
+
+**X1 (AC-X1 = `15-lan-sua-13b.md:116-119`)** — `PY = .venv/Scripts/python`.
+- (i) 5 lần `PY -m unittest tests.test_hand_landmarks_ws.TestReset.test_reset_segments_and_graphs -v` → `_work/_plan15_l13/x1_iso_{1..5}.log`: 1 OK / 4 FAIL (iso_2 OK; iso_1, 3, 4, 5 `FAILED (failures=1)`).
+- (ii) 3 lần `PY -m unittest tests.test_hand_landmarks_ws -v` → `x1_mod_{1..3}.log`: 3 OK / 0 FAIL (`Ran 9 tests`, `OK` cả 3).
+- Tổng 4/8 OK ⇒ theo luật AC-X1 giữ nhãn "chập chờn"; tần suất: chạy riêng 1/5 OK, cả module 3/3 OK. Không DỪNG.
+- 5 dòng cuối traceback đầu tiên (`x1_iso_1.log`):
+  ```
+  File "...\tests\test_hand_landmarks_ws.py", line 185, in test_reset_segments_and_graphs
+    self.assertEqual([g["closes"] for g in spy.graphs], [1, 1, 1, 1])   # last graph closed with the session
+  AssertionError: Lists differ: [1, 1, 1, 0] != [1, 1, 1, 1]
+  First differing element 3:
+  0
+  ```
+  iso_3/4/5 cùng `AssertionError: Lists differ: [1, 1, 1, 0] != [1, 1, 1, 1]` (graph cuối chưa được đóng khi kiểm).
+
+**W1 (AC-W1, thông tin, không phải gate)** — script tạm `_work/_plan15_l13/w1_probe.py` (KHÔNG commit). Lệnh:
+`PYTHONIOENCODING=utf-8 .venv/Scripts/python _work/_plan15_l13/w1_probe.py > _work/_plan15_l13/w1_probe.log 2>&1` → exit 0.
+Cửa sổ THẬT (không vá `imshow`/`namedWindow`/`resizeWindow`/`waitKey`); chỉ bọc `cv2.getWindowImageRect` (ghi rect), đếm `Hud.compose`/`render_to_window`
+(bọc hàm gốc như C1), và bọc pass-through `app._window_image` để ghi cỡ tự nhiên `(w, h + panel_h)`, cỡ ảnh trả về và `cam_rect` của
+`fit_layout(w, h, panel_h, rect)` mỗi khung. Clip D2 `data/external/hauuto_raw/raw/raw/hau/a_hau_A_001.mp4`, `--pace realtime`; cv2 5.0.0, backend WIN32, python 3.11.9.
+- Cỡ tự nhiên khung 1: `(640, 643)`.
+- Rect khung 1, 2, 5: đều `(41, 57, 640, 643)` (khung 2 rect w,h == cỡ tự nhiên khung 1: True ⇒ không lệch viền/DPI trên máy này; câu
+  "ở cỡ mặc định mọi khung đi `render_to_window`" KHÔNG áp dụng).
+- Tập rect khác nhau: 1 giá trị `(41, 57, 640, 643)` × 69 khung (69 lần gọi getWindowImageRect / 69 khung).
+- `path_counts`: `{'Hud.compose': 67, 'render_to_window': 2}` (khớp số khung mỗi đường ghi theo khung).
+- Số khung cỡ tự nhiên khác khung trước (panel đổi cao): 2 (khung 6 và 8); tập cỡ tự nhiên `(640, 643)` × 67, `(640, 667)` × 2 (khung 6–7).
+- Tiêu đề thật (`FindWindowW` theo tên + `GetWindowTextW`): `'VSLT Level 1 (f: toan man hinh)'`, khớp `WINDOW_NAME`.
+- Nhận xét (U2b THẤP-3): khi panel cao thêm 24 px (643 → 667) mà cửa sổ giữ 640×643 (app chỉ `resizeWindow` một lần ở khung đầu), 2 khung đó đi
+  `render_to_window`: `cam_rect` đổi từ `(0, 0, 640, 480)` sang `(11, 0, 617, 462)` (scale 0.964), tức ảnh camera CO lại và DỊCH ngang 11 px rồi
+  trở lại ở khung 8. Cỡ ảnh đưa vào `imshow` giữ `(640, 643)` cả 69 khung. Tần suất trên clip D2: 2/69 khung (2 lần đổi đường). Đây là số đo một
+  lượt, phụ thuộc nội dung panel; chuyển R2 §8 câu 2 + VU.
