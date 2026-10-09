@@ -10,7 +10,7 @@
 - LẦN SỬA 12 (cloud, 2026-10-06, theo phản hồi webcam của người dùng): `docs/plans/15-lan-sua-12.md`. Mã: ddd7904 (G1 cổng chuyển động decoder, H1 HandednessLock, config rev9), 13759a6 (script dominant_hand_check), 85a6a91 (app: tắt tự cách mặc định, --dominant-hand lock, nối cổng), 551e1b2 (G1b: không cắt chữ biến thể của chữ vừa phát). Bằng chứng: reports/level1_realtime_2026-10-06/{dominant_hand_check,rearm_check_gate,rearm_check_gate_v2}.json. CHƯA review (vslt-reviewer local). Còn: phiên webcam người dùng so rev8 và rev9.
 - HEAD: ba9e107 (+ commit state này) | Nhánh: cloud/2026-10-04-level1-rearm
 - Tắt máy: CHỈ khi người dùng yêu cầu rõ trong hội thoại (quyết định 2026-10-04 01:15). Lần gần nhất: 9/10 02:12 tắt theo yêu cầu "khi nào xong thì tắt máy giúp tôi lần này" (hết hiệu lực sau phiên đó).
-- Trạng thái phiên: 09:25 9/10 khôi phục (5h dùng 0%). Đã APPROVE: U1+U1a (d1a8308), U2a cf5e2cc (docs/reviews/15-l13-u2a-review.md). ĐANG GIAO vslt-coder-claude bước U2b theo docs/plans/15-lan-sua-13b.md §4 (nối WINDOW_NORMAL, getWindowImageRect dự phòng, AC-U4/U4b/U6b). VIỆC KẾ: orchestrator kiểm git+test → reviewer U2b → U2c (agy; THẤP-2 review U2a: điểm mù rA nét chữ/rB lề đáy — hỏi planner có khóa ở U2c) → U2d → X1 trước V1.
+- Trạng thái phiên: 10:47 9/10 (5h dùng 24%). U2b XONG b0cbcf1 (vslt-coder-claude; orchestrator chạy lại tests.test_level1_demo Ran 150 OK; coder: level1 all Ran 499 OK skip 1). ĐANG GIAO vslt-reviewer U2b. VIỆC KẾ: APPROVE → U2c (agy; giả định coder U2b: resizeWindow 1 lần ở khung đầu — U2c xem thứ tự với --fullscreen; THẤP-2 review U2a điểm mù rA/rB) → U2d → X1 trước V1.
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
