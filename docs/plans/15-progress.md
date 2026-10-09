@@ -10,7 +10,7 @@ Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_wo
 - 2026-10-09 U2d xong (commit `15: L13-U2d script đo chi phí hiển thị (AC-U5, DC1)`). Script `scripts/level1_display_cost.py` + test `tests/test_level1_display_cost.py` đạt (AC-U5, gate DC1).
 - ĐANG LÀM: không.
 - Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a). R1 (commit `15: R1` trên nhánh cloud; CHỜ LOCAL: AC-S18 + S18b trên clip thật). A2b (`71fc664` mã + `4b5d736` config; AC-W3 đạt).
-  Lần sửa 13/13c: M0 (5a32cff; ghi chép sửa ở commit U1), U1 (commit `15: L13-U1`), U1a (commit `acdcf63`), U2a (`cf5e2cc`), U2b (`b0cbcf1`), U2c (`4f5da6b`), U2d (`ea93fa1` C1 + `b7f7396` C2), XW (`6be8815`), T1.
+  Lần sửa 13/13c: M0 (5a32cff; ghi chép sửa ở commit U1), U1 (commit `15: L13-U1`), U1a (commit `acdcf63`), U2a (`cf5e2cc`), U2b (`b0cbcf1`), U2c (`00d320c` + `6144970`), U2d (`ea93fa1` C1 + `44a9d69` C2), XW (`6be8815`), T1 (`235be2b`).
 - Còn lại (lần sửa 13/13c): T2, G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5.
 
 ## B0 — mốc (2026-10-03)
