@@ -3769,6 +3769,391 @@ class TestWindowAndFullscreenU2t2(unittest.TestCase):
             self.assertLessEqual(len(hud._fonts), 8)
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 13d G2c (deliberate gestures in the app)
+# AC-G6 / AC-D9 of docs/plans/15-lan-sua-13d.md. The landmark sequences below are a chuỗi tạo có kiểm soát để kiểm logic
+# (controlled sequence built to check the logic): the hand templates of tests/test_level1_gestures.py placed by hand in
+# a 640 x 480 frame, fed to Level1App._process through a scripted session; they are not data and no number here is a
+# measurement. The design parameters come from configs/level1_gestures.json (load_gesture_config), never typed here.
+import hashlib  # noqa: E402
+import math  # noqa: E402
+import re  # noqa: E402
+import types  # noqa: E402
+
+from src.data.alphabet_preprocessing import DEFAULT_ALPHABET_PREPROCESSING  # noqa: E402
+from src.inference import level1_gestures  # noqa: E402
+from tests.test_level1_gestures import FLAT, OPEN_PALM, PALM, hand, stroke_path, to_mediapipe  # noqa: E402
+
+GESTURE_CONFIG = "configs/level1_gestures.json"   # the preset's value (repository-relative, '/' separators)
+G2C_W, G2C_H = 640, 480                          # frame size of the scripted frames (a webcam frame size)
+G2C_DT = 1000.0 / 30.0                            # ms between two scripted frames (30 frames per second)
+WAVE_LINE_RE = r"^\[Cử chỉ: vẫy (\d+)/(\d+)\]$"
+BACKSPACE_FLASH_LINE = "[Ký hiệu: Xóa (Backspace)]"
+GESTURES_JSON_KEYS = ("config_path", "config_sha256", "values", "overrides", "counts")
+GESTURES_COUNT_KEYS = ("palm_frames", "flat_frames", "spaces_added", "backspaces_added", "emits")
+
+
+def _gesture_values(path=GESTURE_CONFIG):
+    return level1_gestures.load_gesture_config(os.path.join(PROJECT_ROOT, path))["values"]
+
+
+def _mp(template, cx, cy):
+    """MediaPipe-normalised [21, 3] landmarks of a template hand centred at (cx, cy) of the aspect-corrected plane."""
+    return to_mediapipe(hand(template, cx, cy), G2C_W, G2C_H)
+
+
+def _palm_sequence(values):
+    """Open palm: 3 frames without hand, 16 frames moving right fast (segmenter 'moving'), then held still for twice
+    space_hold_ms (segmenter 'holding'; the deliberate space fires once), then 3 frames without hand."""
+    moving = [_mp(OPEN_PALM, 0.25 + 0.05 * i, 0.55) for i in range(16)]
+    still = [_mp(OPEN_PALM, 0.25 + 0.05 * 15, 0.55)] * (int(math.ceil(2 * values["space_hold_ms"] / G2C_DT)) + 1)
+    return [None] * 3 + moving + still + [None] * 3
+
+
+def _wave_sequence(values):
+    """Flat hand waved: 2 horizontal strokes of 1.2 x wave_min_amplitude palm lengths (the backspace fires once at the
+    end of the second one), framed by 3 frames without hand."""
+    amp = 1.2 * values["wave_min_amplitude"] * PALM
+    xs = stroke_path(0.6, [amp, -amp], 8)
+    return [None] * 3 + [_mp(FLAT, x, 0.55) for x in xs] + [None] * 3
+
+
+class _NoLabelClassifier:
+    """Test double of Level1Classifier for the gesture path: every segment / window is 'too_few_frames' (no letter),
+    so the tokens of a run come from the gestures only. Not a model: it never predicts anything."""
+    min_detected_frames = int(DEFAULT_ALPHABET_PREPROCESSING["min_detected_frames"])
+
+    def warmup(self):
+        return 0.0
+
+    def classify(self, segment, top_k):
+        return {"status": "too_few_frames", "frames": segment.n_frames, "detected_frames": segment.n_detected,
+                "model_type": "none", "checkpoint": None}
+
+
+class _ScriptedSession:
+    """HandLandmarkSession stand-in: the scripted landmarks of each call in turn (None = no hand)."""
+
+    def __init__(self, frames):
+        self.frames = list(frames)
+        self.i = 0
+
+    def process(self, frame_bgr):
+        lm = self.frames[self.i]
+        self.i += 1
+        return (None, None, None) if lm is None else (np.array(lm, copy=True), "Right", 0.9)
+
+    def close(self):
+        pass
+
+
+class _G2cAppMixin:
+    """Level1App on scripted frames: --checkpoint is a stub file (the classifier is _NoLabelClassifier), the frames
+    go through Level1App._process like the frames of a video."""
+
+    def setUp(self):
+        os.makedirs(TMP_PARENT, exist_ok=True)
+        self.tmp = tempfile.mkdtemp(prefix="vslt_p15_g2c_", dir=TMP_PARENT)
+        self.addCleanup(shutil.rmtree, self.tmp, True)
+        self.stub_ckpt = os.path.join(self.tmp, "stub_checkpoint.pt")
+        with open(self.stub_ckpt, "wb") as f:
+            f.write(b"not a checkpoint: Level1App only hashes it when a classifier is given")
+        self.values = _gesture_values()
+
+    def _app(self, *argv):
+        args = args_new("--source", "scripted.mp4", "--headless", "--checkpoint", self.stub_ckpt, *argv)
+        return app_mod.Level1App(args, argv=list(argv), classifier=_NoLabelClassifier())
+
+    def _drive(self, app, frames, t0=0.0, until=None):
+        """Every scripted frame through app._process at t0 + i * G2C_DT; stops early (returns the index) when
+        until(app) is true after a frame."""
+        session = _ScriptedSession(frames)
+        image = np.zeros((G2C_H, G2C_W, 3), dtype=np.uint8)
+        for i in range(len(frames)):
+            app._process(session, image, time.perf_counter(), t0 + i * G2C_DT)
+            if until is not None and until(app):
+                return i
+        return None
+
+    @staticmethod
+    def _report(app):
+        reader = types.SimpleNamespace(kind="video", fps=1000.0 / G2C_DT, props=None)
+        return app.report(reader)
+
+    @staticmethod
+    def _spy_engine(app):
+        """Records (ts, landmarks is None, width, height, still, result) of every GestureEngine.step of `app`."""
+        calls = []
+        orig = app.gesture_engine.step
+
+        def step(ts_ms, landmarks, width, height, still):
+            out = orig(ts_ms, landmarks, width, height, still)
+            calls.append((ts_ms, landmarks is None, width, height, still, dict(out)))
+            return out
+        app.gesture_engine.step = step
+        return calls
+
+    @staticmethod
+    def _spy_segmenter_state(app):
+        """ts -> segmenter state right after the segmenter.push of that frame."""
+        states = {}
+        orig = app.segmenter.push
+
+        def push(ts_ms, landmarks, handedness, w, h):
+            events = orig(ts_ms, landmarks, handedness, w, h)
+            states[ts_ms] = app.segmenter.state
+            return events
+        app.segmenter.push = push
+        return states
+
+
+class TestGestureConfigArgsG6(unittest.TestCase):
+    """AC-G6 (parser / preset): --gesture-config PATH (default None = the gestures of before); the preset adds
+    --gesture-config configs/level1_gestures.json, so the argv main() runs without --headless contains it; the app
+    uses GestureEngine of src.inference.level1_gestures (the one the measuring script will import, G3)."""
+
+    def test_g6_flag_and_default(self):
+        p = app_mod.build_parser()
+        self.assertIn("--gesture-config", p.format_help())
+        self.assertIsNone(args_new("--source", CLIP).gesture_config)
+        self.assertEqual(args_new("--source", CLIP, "--gesture-config", GESTURE_CONFIG).gesture_config, GESTURE_CONFIG)
+
+    def test_g6_preset_contains_the_gesture_config(self):
+        argv = app_mod.DEFAULT_DEMO_ARGV
+        self.assertIn("--gesture-config", argv)
+        self.assertEqual(argv[argv.index("--gesture-config") + 1], GESTURE_CONFIG)
+        self.assertEqual(app_mod.build_parser().parse_args(argv).gesture_config, GESTURE_CONFIG)
+
+    def test_g6_effective_argv_of_main(self):
+        """main([]) = the webcam preset: the argv given to Level1App holds --gesture-config configs/level1_gestures.json;
+        a --headless run gets no preset (the argv as given: no gesture config)."""
+        import contextlib
+        import io
+        from unittest import mock
+        seen = []
+
+        class _FakeApp:
+            def __init__(self, args, argv=None):
+                seen.append((args, list(argv)))
+
+            def run(self):
+                return {"text": "", "tokens": [], "segments": [], "source": {"mode": "gui"}}
+        with mock.patch.object(app_mod, "Level1App", _FakeApp), contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(app_mod.main([]), 0)
+            self.assertEqual(app_mod.main(["--source", CLIP, "--headless"]), 0)
+        (args, argv), (args_h, argv_h) = seen
+        i = argv.index("--gesture-config")
+        self.assertEqual(argv[i:i + 2], ["--gesture-config", GESTURE_CONFIG])
+        self.assertEqual(args.gesture_config, GESTURE_CONFIG)
+        self.assertNotIn("--gesture-config", argv_h)
+        self.assertIsNone(args_h.gesture_config)
+
+    def test_g6_space_hold_ms_presence(self):
+        """--space-hold-ms keeps its default (old path, test_s3_help_and_defaults) and the parser records whether it
+        was on the command line (abbreviated or '=' forms too): only then it replaces space_hold_ms of the config."""
+        self.assertIs(args_new("--source", CLIP).space_hold_ms_given, False)
+        self.assertEqual(args_new("--source", CLIP).space_hold_ms, app_mod.GESTURE_SPACE_HOLD)
+        for argv in (["--space-hold-ms", "400"], ["--space-hold-ms=400"], ["--space-hold", "400"]):
+            a = args_new("--source", CLIP, *argv)
+            self.assertIs(a.space_hold_ms_given, True, argv)
+            self.assertEqual(a.space_hold_ms, 400.0, argv)
+        self.assertIs(args_new("--source", CLIP, "--space-hold-ms", str(app_mod.GESTURE_SPACE_HOLD)).space_hold_ms_given,
+                      True)
+
+    def test_g6_app_uses_the_shared_engine(self):
+        self.assertIs(app_mod.GestureEngine, level1_gestures.GestureEngine)
+        self.assertIs(app_mod.load_gesture_config, level1_gestures.load_gesture_config)
+
+
+class TestGestureEngineAppD9(_G2cAppMixin, unittest.TestCase):
+    """AC-D9 on scripted frames through Level1App._process (both rearm modes): with --gesture-config the engine gets
+    still == (segmenter.state != "moving") of the same frame and the real frame size (frames without hand too); the
+    old trackers are never called; an open-palm frame of the engine reaches the classifier window as a frame without
+    hand when --gesture-space; the JSON block `gestures`; the HUD lines; no flag -> no `gestures`."""
+
+    MODES = (("motion_pose", ()), ("classifier", ("--config", REV9_DEMO_CONFIG)))
+    ON = ("--gesture-config", GESTURE_CONFIG, "--gesture-space", "--gesture-backspace")
+
+    def test_d9a_still_of_the_same_frame_and_real_frame_size(self):
+        for mode, extra in self.MODES:
+            with self.subTest(mode=mode):
+                app = self._app(*extra, *self.ON)
+                calls, states = self._spy_engine(app), self._spy_segmenter_state(app)
+                frames = _palm_sequence(self.values) + _wave_sequence(self.values)
+                self._drive(app, frames)
+                self.assertEqual(len(calls), len(frames))
+                stills = [c[4] for c in calls]
+                self.assertEqual(set(stills), {True, False})               # both segmenter states are in the sequence
+                for ts, _none, _w, _h, still, _out in calls:
+                    self.assertEqual(still, states[ts] != "moving", ts)
+                self.assertEqual({(c[2], c[3]) for c in calls}, {(G2C_W, G2C_H)})
+                self.assertTrue(any(c[1] for c in calls))                  # frames without hand reach the engine
+                self.assertEqual(sum(c[5]["space"] for c in calls), 1)
+                self.assertEqual(sum(c[5]["backspace"] for c in calls), 1)
+
+    def test_d9a_old_trackers_not_called(self):
+        from unittest import mock
+        for mode, extra in self.MODES:
+            with self.subTest(mode=mode):
+                app = self._app(*extra, *self.ON)
+                with mock.patch.object(app.space_tracker, "update", side_effect=AssertionError("old space")) as sp, \
+                        mock.patch.object(app.backspace_tracker, "update",
+                                          side_effect=AssertionError("old backspace")) as bs:
+                    self._drive(app, _palm_sequence(self.values) + _wave_sequence(self.values))
+                self.assertEqual((sp.call_count, bs.call_count), (0, 0))
+                self.assertEqual((app.space_tracker.n_emits, app.backspace_tracker.n_emits), (0, 0))
+                self.assertEqual((app.gesture_engine.space.n_emits, app.gesture_engine.wave.n_emits), (1, 1))
+
+    def test_d9a_engine_palm_frames_reach_the_window_without_hand(self):
+        app = self._app("--config", REV9_DEMO_CONFIG, *self.ON)
+        calls, rec = self._spy_engine(app), _spy_inputs(app)
+        self._drive(app, _palm_sequence(self.values) + _wave_sequence(self.values))
+        window = {ts: lm for ts, lm, _hd in rec["window"]}
+        palm = [c[0] for c in calls if c[5]["is_palm"]]
+        other_hand = [c[0] for c in calls if not c[1] and not c[5]["is_palm"]]
+        self.assertGreater(len(palm), 0)
+        self.assertGreater(len(other_hand), 0)
+        for ts in palm:
+            self.assertIsNone(window[ts], ts)
+        for ts in other_hand:
+            self.assertIsNotNone(window[ts], ts)
+        # --no-gesture-space: the open palm is not a gesture, its frames reach the window with their hand
+        app = self._app("--config", REV9_DEMO_CONFIG, "--gesture-config", GESTURE_CONFIG, "--no-gesture-space",
+                        "--gesture-backspace")
+        calls, rec = self._spy_engine(app), _spy_inputs(app)
+        self._drive(app, _palm_sequence(self.values))
+        window = {ts: lm for ts, lm, _hd in rec["window"]}
+        self.assertTrue(all(window[c[0]] is not None for c in calls if c[5]["is_palm"]))
+        self.assertEqual(app.speller.tokens, [])
+
+    def test_d9b_json_block_and_gesture_events(self):
+        for mode, extra in self.MODES:
+            with self.subTest(mode=mode):
+                app = self._app(*extra, *self.ON)
+                calls = self._spy_engine(app)
+                app.speller.key("tone_1", t_ms=0.0)                         # a token typed before the gestures
+                self._drive(app, _palm_sequence(self.values) + _wave_sequence(self.values))
+                self.assertEqual(app.speller.tokens, ["dấu sắc"])           # space added, then deleted
+                r = self._report(app)
+                self.assertNotIn("gesture_space", r)
+                self.assertNotIn("gesture_backspace", r)
+                g = r["gestures"]
+                self.assertEqual(tuple(g), GESTURES_JSON_KEYS)
+                with open(os.path.join(PROJECT_ROOT, GESTURE_CONFIG), "rb") as f:
+                    self.assertEqual(g["config_sha256"], hashlib.sha256(f.read()).hexdigest())
+                self.assertEqual(g["config_path"], GESTURE_CONFIG)
+                self.assertEqual(g["values"], self.values)
+                self.assertEqual(g["overrides"], {})
+                self.assertEqual(tuple(g["counts"]), GESTURES_COUNT_KEYS)
+                self.assertEqual(g["counts"]["palm_frames"], sum(c[5]["is_palm"] for c in calls))
+                self.assertEqual(g["counts"]["flat_frames"], sum(c[5]["is_flat"] for c in calls))
+                self.assertEqual((g["counts"]["spaces_added"], g["counts"]["backspaces_added"]), (1, 1))
+                self.assertEqual(g["counts"]["emits"], {"space": 1, "backspace": 1})
+                ev = [e for e in r["events"] if e.get("event") in ("gesture_space", "gesture_backspace")]
+                self.assertEqual([e["event"] for e in ev], ["gesture_space", "gesture_backspace"])
+                self.assertTrue(all(e["source"] == "gesture" for e in ev), ev)
+                self.assertEqual([e["t_ms"] for e in ev], [c[0] for c in calls if c[5]["space"] or c[5]["backspace"]])
+                json.dumps(r)                                               # the report is JSON
+
+    def test_d9b_space_hold_ms_overrides_the_config(self):
+        half = self.values["space_hold_ms"] / 2.0
+        for hold in (half, app_mod.GESTURE_SPACE_HOLD):
+            with self.subTest(hold=hold):
+                app = self._app(*self.ON, "--space-hold-ms", str(hold))
+                self.assertEqual(app.gesture_engine.space.hold_ms, float(hold))
+                r = self._report(app)
+                self.assertEqual(r["gestures"]["overrides"], {"space_hold_ms": float(hold)})
+                self.assertEqual(r["gestures"]["values"], self.values)      # the file's values; overrides apart
+        app = self._app(*self.ON)
+        self.assertEqual(app.gesture_engine.space.hold_ms, float(self.values["space_hold_ms"]))
+
+    def test_d9b_flash_from_the_loaded_config(self):
+        """The HUD flash after a gesture lasts gesture_flash_ms of the config given by --gesture-config (not of the
+        default path): a copy of the config with twice the flash still shows it where the committed one does not."""
+        with open(os.path.join(PROJECT_ROOT, GESTURE_CONFIG), encoding="utf-8") as f:
+            raw = json.load(f)
+        raw["gesture_flash_ms"]["value"] = 2 * raw["gesture_flash_ms"]["value"]
+        long_cfg = os.path.join(self.tmp, "gestures_long_flash.json")
+        with open(long_cfg, "w", encoding="utf-8") as f:
+            json.dump(raw, f, ensure_ascii=False, indent=2)
+        flash = float(self.values["gesture_flash_ms"])
+        lines = {}
+        for name, cfg in (("committed", GESTURE_CONFIG), ("long", long_cfg)):
+            app = self._app("--gesture-config", cfg, "--gesture-backspace")
+            app.speller.key("tone_1", t_ms=0.0)
+            calls = self._spy_engine(app)
+            frames = _wave_sequence(self.values)
+            self._drive(app, frames)
+            t_emit = [c[0] for c in calls if c[5]["backspace"]]
+            self.assertEqual(len(t_emit), 1)
+            n_after = int(math.ceil(flash / G2C_DT)) + 1
+            self._drive(app, [None] * n_after, t0=len(frames) * G2C_DT)
+            self.assertGreaterEqual(app.last_ts - t_emit[0], flash)
+            lines[name] = app._gesture_line()
+            if name == "long":
+                g = self._report(app)["gestures"]
+                self.assertEqual(g["values"]["gesture_flash_ms"], 2 * self.values["gesture_flash_ms"])
+                with open(long_cfg, "rb") as f:
+                    self.assertEqual(g["config_sha256"], hashlib.sha256(f.read()).hexdigest())
+        self.assertIsNone(lines["committed"])
+        self.assertEqual(lines["long"], BACKSPACE_FLASH_LINE)
+
+    def test_d9c_hud_lines_while_holding_and_waving(self):
+        app = self._app(*self.ON)
+        space = app.gesture_engine.space
+        self._drive(app, _palm_sequence(self.values), until=lambda a: a.gesture_engine.space.held_ms > 0)
+        m = re.match(GESTURE_LINE_RE, app._gesture_line() or "")
+        self.assertIsNotNone(m, app._gesture_line())
+        self.assertEqual(m.group(1), f"{space.held_ms:.0f}")
+        self.assertEqual(m.group(2), f"{self.values['space_hold_ms']:.0f}")
+        self.assertIn(app._gesture_line(), app._hud_lines()[1])
+        app = self._app(*self.ON)
+        self._drive(app, _wave_sequence(self.values), until=lambda a: a.gesture_engine.wave.strokes > 0)
+        m = re.match(WAVE_LINE_RE, app._gesture_line() or "")
+        self.assertIsNotNone(m, app._gesture_line())
+        self.assertEqual(int(m.group(1)), app.gesture_engine.wave.strokes)
+        self.assertEqual(int(m.group(2)), self.values["wave_min_strokes"])
+        self.assertIn(app._gesture_line(), app._hud_lines()[1])
+        # the wave line with --gesture-backspace alone (the old HUD showed gesture lines only with --gesture-space)
+        app = self._app("--gesture-config", GESTURE_CONFIG, "--gesture-backspace")
+        self._drive(app, _wave_sequence(self.values), until=lambda a: a.gesture_engine.wave.strokes > 0)
+        self.assertIn(app._gesture_line(), app._hud_lines()[1])
+        self.assertIsNotNone(re.match(WAVE_LINE_RE, app._gesture_line() or ""))
+
+    def test_d9_pause_resets_and_skips_the_engine(self):
+        app = self._app(*self.ON)
+        calls = self._spy_engine(app)
+        self._drive(app, _palm_sequence(self.values), until=lambda a: a.gesture_engine.space.held_ms > 0)
+        n = len(calls)
+        app._key(app_mod.KEY_PAUSE)
+        self.assertEqual(app.gesture_engine.space.held_ms, 0.0)
+        self._drive(app, _palm_sequence(self.values), t0=10000.0)
+        self.assertEqual(len(calls), n)                                     # paused: no step
+        self.assertEqual(app.speller.tokens, [])
+
+    def test_d9_bad_gesture_config_is_an_input_error(self):
+        with self.assertRaises(app_mod.SourceError):
+            self._app("--gesture-config", os.path.join(self.tmp, "missing.json"))
+        bad = os.path.join(self.tmp, "bad.json")
+        with open(os.path.join(PROJECT_ROOT, GESTURE_CONFIG), encoding="utf-8") as f:
+            raw = json.load(f)
+        raw.pop("space_hold_ms")
+        with open(bad, "w", encoding="utf-8") as f:
+            json.dump(raw, f)
+        with self.assertRaises(app_mod.SourceError):
+            self._app("--gesture-config", bad)
+
+    def test_d9d_no_flag_no_gestures_block(self):
+        for mode, extra in self.MODES:
+            with self.subTest(mode=mode):
+                app = self._app(*extra, "--gesture-space", "--gesture-backspace")
+                self.assertIsNone(app.gesture_engine)
+                self._drive(app, _palm_sequence(self.values) + _wave_sequence(self.values))
+                r = self._report(app)
+                self.assertNotIn("gestures", r)
+                ev = [e for e in r["events"] if e.get("event") in ("gesture_space", "gesture_backspace")]
+                self.assertTrue(all("source" not in e for e in ev), ev)
+
+
 if __name__ == "__main__":
     unittest.main()
 

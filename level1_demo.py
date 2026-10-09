@@ -43,6 +43,14 @@ Gesture (plan 15 lần sửa 9, with --gesture-space): open palm (5 fingers spre
   (default 250) = Space, once per gesture (change the hand shape or withdraw the hand before the next one); HUD line
   [Cử chỉ: Dấu cách <held>/<hold>] while held, [Ký hiệu: Dấu cách (Space)] right after. In rearm_mode classifier an
   open-palm frame reaches the window as a frame without hand (it is never classified as a letter).
+Deliberate gestures (plan 15 lần sửa 13 §3.2 / 13d G2c, with --gesture-config configs/level1_gestures.json; in the
+  webcam preset): GestureEngine of src/inference/level1_gestures.py replaces the trackers above for the gestures turned
+  on (--gesture-space, --gesture-backspace): Space = open palm held STILL (segmenter not "moving") for space_hold_ms of
+  the config (--space-hold-ms given on the command line replaces it, JSON gestures.overrides); Backspace = flat hand
+  waved left / right (wave_min_strokes strokes). HUD [Cử chỉ: Dấu cách <held>/<hold>] while the palm is held,
+  [Cử chỉ: vẫy <strokes>/<min strokes>] while waving, then the flash line for gesture_flash_ms of the config. The JSON
+  gets `gestures` (config path / sha256 / values / overrides / counts) in place of gesture_space / gesture_backspace,
+  and the gesture events carry source "gesture".
 
 Re-arm (config rearm_mode, written to the JSON as rearm_mode; plan 15 lần sửa 4 §3.4):
   motion_pose  every SignSegment of the segmenter is classified and gives one token (behaviour before lần sửa 4)
@@ -89,6 +97,7 @@ if sys.platform == "win32":
 from src.inference.hand_live import LEVEL1_HANDS_KWARGS, HandLandmarkSession  # noqa: E402
 from src.inference.level1_display import (PanelBuilder, draw_panel_overlays, fit_layout,  # noqa: E402
                                           render_to_window, scaled_px)
+from src.inference.level1_gestures import GestureEngine, load_gesture_config  # noqa: E402
 from src.inference.level1_core import (CLAHE_CLIP_LIMIT, CLAHE_TILE_GRID, GESTURE_BACKSPACE_DEFAULT,  # noqa: E402
                                        LOW_LIGHT_THRESHOLD, BackspaceGestureTracker, gesture_defaults,
                                        HandednessLock, LandmarkSmoother, Level1Classifier, Level1Speller,
@@ -898,6 +907,27 @@ class Level1App:
         self.backspace_tracker = BackspaceGestureTracker()
         self.gesture_backspace_flash_ts: Optional[float] = None  # stream time of the last gesture backspace (HUD flash)
         self.gesture_counts = {"palm_frames": 0, "spaces_added": 0, "flat_frames": 0, "backspaces_added": 0}
+        # --gesture-config (plan 15 lần sửa 13 §3.2 mục 4, 13d G2c): GestureEngine in place of the two trackers above
+        # for the gestures turned on (they are kept, never called); --space-hold-ms ON the command line replaces
+        # space_hold_ms of the config (gestures.overrides). Without the flag the gestures of before, unchanged.
+        self.gesture_cfg: Optional[Dict[str, Any]] = None
+        self.gesture_values: Optional[Dict[str, Any]] = None
+        self.gesture_overrides: Dict[str, Any] = {}
+        self.gesture_engine: Optional[GestureEngine] = None
+        self.gesture_emits = {"space": 0, "backspace": 0}
+        gesture_config = getattr(args, "gesture_config", None)
+        if gesture_config is not None:
+            gesture_path = resolve_path(gesture_config)
+            if not os.path.isfile(gesture_path):
+                raise SourceError(f"gesture config not found: {gesture_config}")
+            try:
+                self.gesture_cfg = load_gesture_config(gesture_path)
+            except ValueError as e:
+                raise SourceError(f"gesture config {gesture_config}: {e}") from None
+            if getattr(args, "space_hold_ms_given", False):
+                self.gesture_overrides["space_hold_ms"] = float(args.space_hold_ms)
+            self.gesture_values = {**self.gesture_cfg["values"], **self.gesture_overrides}
+            self.gesture_engine = GestureEngine(self.gesture_values)
         self.foreshortened_run = 0  # consecutive hand frames with foreshortening_ratio < FORESHORTEN_RATIO_MIN (P3)
         # lần sửa 12 H1: 'auto' -> MediaPipe's label of each frame (no lock); 'lock' (or its aliases Right / Left) ->
         # the majority of MediaPipe's own labels on the first hand frames, for the rest of the run
@@ -1094,6 +1124,8 @@ class Level1App:
                 self.segmenter.reset()
                 self.space_tracker.reset()
                 self.backspace_tracker.reset()
+                if self.gesture_engine is not None:
+                    self.gesture_engine.reset()
                 if self.classifier_mode:
                     self.window.reset()
                     self.timeline.append(["reset", self.last_ts, False, True, None])
@@ -1131,7 +1163,10 @@ class Level1App:
         added = self.speller.key("space", t_ms=ts_ms)
         self.gesture_counts["spaces_added"] += int(added)
         self.gesture_flash_ts = ts_ms
-        self._log("gesture_space", t_ms=ts_ms, added=added)
+        if self.gesture_engine is not None:  # --gesture-config only (13d G2c): the event says where it came from
+            self._log("gesture_space", t_ms=ts_ms, added=added, source="gesture")
+        else:
+            self._log("gesture_space", t_ms=ts_ms, added=added)
 
     # -------------------------------------------------------------- flat hand flick = Backspace
     def _gesture_backspace_step(self, ts_ms: float, landmarks, is_flat: bool, has_hand: bool) -> None:
@@ -1152,10 +1187,59 @@ class Level1App:
             self.decoder.reset()
         self.gesture_counts["backspaces_added"] += int(changed)
         self.gesture_backspace_flash_ts = ts_ms
-        self._log("gesture_backspace", t_ms=ts_ms, changed=changed)
+        if self.gesture_engine is not None:  # --gesture-config only (13d G2c)
+            self._log("gesture_backspace", t_ms=ts_ms, changed=changed, source="gesture")
+        else:
+            self._log("gesture_backspace", t_ms=ts_ms, changed=changed)
+
+    # -------------------------------------------------------------- deliberate gestures (--gesture-config, 13d G2c)
+    def _gesture_engine_step(self, ts_ms: float, landmarks, w: int, h: int, still: bool) -> None:
+        """One frame of GestureEngine (plan 15 lần sửa 13 §3.2 mục 4): the landmarks of the frame (None = no hand) with
+        the real frame size (frames without hand too), still = the segmenter of the SAME frame is not "moving". Only the
+        gestures turned on count and are applied; a space / backspace goes to the speller like the old trackers' (in
+        rearm_mode classifier through the timeline, after the labels of the frames before it)."""
+        out = self.gesture_engine.step(ts_ms, landmarks, w, h, still)
+        fired = []
+        if self.gesture_space:
+            self.gesture_counts["palm_frames"] += int(out["is_palm"])
+            if out["space"]:
+                fired.append("space")
+        if self.gesture_backspace:
+            self.gesture_counts["flat_frames"] += int(out["is_flat"])
+            if out["backspace"]:
+                fired.append("backspace")
+        for kind in fired:
+            self.gesture_emits[kind] += 1
+            if self.classifier_mode:
+                self.timeline.append([kind, ts_ms, False, True, None])
+                self._drain_timeline()
+            elif kind == "space":
+                self._apply_gesture_space(ts_ms)
+            else:
+                self._apply_gesture_backspace(ts_ms)
+
+    def _gesture_engine_line(self) -> Optional[str]:
+        """HUD of --gesture-config: backspace flash / space flash (gesture_flash_ms of the loaded config) / open palm held
+        [Cử chỉ: Dấu cách <held>/<hold>] / wave [Cử chỉ: vẫy <strokes>/<wave_min_strokes>]; else None."""
+        eng = self.gesture_engine
+        flash = float(self.gesture_values["gesture_flash_ms"])
+        now = self.last_ts
+        if now is not None and self.gesture_backspace_flash_ts is not None \
+                and now - self.gesture_backspace_flash_ts < flash:
+            return "[Ký hiệu: Xóa (Backspace)]"
+        if now is not None and self.gesture_flash_ts is not None and now - self.gesture_flash_ts < flash:
+            return "[Ký hiệu: Dấu cách (Space)]"
+        sp = eng.space
+        if self.gesture_space and sp.armed and sp.run_since is not None:
+            return f"[Cử chỉ: Dấu cách {sp.held_ms:.0f}/{sp.hold_ms:.0f}]"
+        if self.gesture_backspace and eng.wave.strokes > 0:
+            return f"[Cử chỉ: vẫy {eng.wave.strokes}/{eng.wave.min_strokes}]"
+        return None
 
     def _gesture_line(self) -> Optional[str]:
         """HUD: backspace flash / space flash / open palm progress / flat hand ready hint; else None."""
+        if self.gesture_engine is not None:
+            return self._gesture_engine_line()
         if (self.gesture_backspace_flash_ts is not None and self.last_ts is not None
                 and self.last_ts - self.gesture_backspace_flash_ts < float(gesture_defaults()["gesture_flash_ms"])):
             return "[Ký hiệu: Xóa (Backspace)]"
@@ -1232,7 +1316,8 @@ class Level1App:
             small.append(f"[MP: conf={self.min_detection_conf:.2f} | CLAHE: {'on' if self.auto_enhance else 'off'}]")
         if self.hand_lock is not None:  # lần sửa 12 H1: only with --dominant-hand lock (or Right / Left)
             small.append(self._hand_line())
-        gesture = self._gesture_line() if self.gesture_space else None
+        gesture_hud = self.gesture_space or (self.gesture_engine is not None and self.gesture_backspace)
+        gesture = self._gesture_line() if gesture_hud else None
         if gesture is not None:  # lần sửa 9: only while the open palm is held / right after its space
             small.append(gesture)
         if self.foreshortened_run > FORESHORTEN_FRAMES:  # lần sửa 10 P3: index pointing at the camera
@@ -1278,8 +1363,10 @@ class Level1App:
         gesture_bs = self.gesture_backspace and not self.paused
         # open palm check (lần sửa 9): timed inside the segmenter stage (no new stage: the report keeps its stages)
         is_space = gesture_sp and landmarks is not None and is_open_palm_space(aspect_points(landmarks, w, h))
-        # flat hand check: 5 straight fingers held together (not spread like space)
-        is_flat = gesture_bs and landmarks is not None and is_flat_hand_backspace(aspect_points(landmarks, w, h))
+        # flat hand check: 5 straight fingers held together (not spread like space); old flick tracker only (with
+        # --gesture-config the engine checks the flat hand itself)
+        is_flat = (self.gesture_engine is None and gesture_bs and landmarks is not None
+                   and is_flat_hand_backspace(aspect_points(landmarks, w, h)))
         # angle hint (lần sửa 10 P3): timed inside the segmenter stage like the open palm check
         self._angle_step(landmarks, w, h)
         if not self.paused:
@@ -1291,11 +1378,15 @@ class Level1App:
             self._window_frame(ts_ms, None if is_space else landmarks, handedness, w, h,
                                moving=self.segmenter.state == "moving")
             t2 = time.perf_counter()
-        if gesture_sp:
-            self._gesture_step(ts_ms, is_space, landmarks is not None)
-        if gesture_bs:
-            self._gesture_backspace_step(ts_ms, aspect_points(landmarks, w, h) if landmarks is not None else None,
-                                        is_flat, landmarks is not None)
+        if self.gesture_engine is not None:  # 13d G2c: after segmenter.push -> the segmenter state of THIS frame
+            if gesture_sp or gesture_bs:
+                self._gesture_engine_step(ts_ms, landmarks, w, h, still=self.segmenter.state != "moving")
+        else:
+            if gesture_sp:
+                self._gesture_step(ts_ms, is_space, landmarks is not None)
+            if gesture_bs:
+                self._gesture_backspace_step(ts_ms, aspect_points(landmarks, w, h) if landmarks is not None else None,
+                                            is_flat, landmarks is not None)
         self.last_ts = ts_ms
         self.counts["frames_processed"] += 1
         if self.worker is not None:
@@ -1513,6 +1604,17 @@ class Level1App:
             report["landmark_smoothing"] = {"enabled": True, "alpha_static": sm.alpha_static,
                                             "alpha_dynamic": sm.alpha_dynamic, "speed_threshold": sm.speed_threshold,
                                             "frames_static": sm.n_static, "frames_dynamic": sm.n_dynamic}
+        if self.gesture_engine is not None:  # --gesture-config only (13d G2c); the old trackers' keys are not written
+            c = self.gesture_counts
+            report["gestures"] = {"config_path": report_path(self.gesture_cfg["path"]),
+                                  "config_sha256": self.gesture_cfg["sha256"],
+                                  "values": dict(self.gesture_cfg["values"]),
+                                  "overrides": dict(self.gesture_overrides),
+                                  "counts": {"palm_frames": c["palm_frames"], "flat_frames": c["flat_frames"],
+                                             "spaces_added": c["spaces_added"],
+                                             "backspaces_added": c["backspaces_added"],
+                                             "emits": dict(self.gesture_emits)}}
+            return report
         # lần sửa 9 S3: gesture on and (an open-palm frame seen or --space-hold-ms not the default); a run without open
         # palm at the default hold, or with --no-gesture-space, keeps exactly the keys of before
         tr = self.space_tracker
@@ -1554,6 +1656,16 @@ def detection_conf(text: str) -> float:
     return value
 
 
+class _StoreGiven(argparse.Action):
+    """Stores the value and records that the option was on the command line (namespace.<dest>_given = True; the
+    abbreviated and '=' forms count too). --space-hold-ms keeps its default for the old tracker, and replaces
+    space_hold_ms of --gesture-config only when given (plan 15 lần sửa 13 §3.2 mục 4)."""
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        setattr(namespace, self.dest, values)
+        setattr(namespace, self.dest + "_given", True)
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="VSLT Level 1 (fingerspelling) realtime desktop app (plan 15).")
     p.add_argument("--source", default="0", help="webcam index (e.g. 0) or a video file (default %(default)s)")
@@ -1590,8 +1702,17 @@ def build_parser() -> argparse.ArgumentParser:
                    help="open palm (5 fingers spread, thumb out) held --space-hold-ms adds one space; change the hand "
                         "shape or withdraw the hand before the next one (written to the JSON as gesture_space; "
                         "default off: a relaxed open hand is easily taken for the gesture)")
-    p.add_argument("--space-hold-ms", type=positive_ms, default=GESTURE_SPACE_HOLD,
-                   help="hold time in milliseconds of the open palm before its space (default %(default)s)")
+    p.add_argument("--space-hold-ms", type=positive_ms, default=GESTURE_SPACE_HOLD, action=_StoreGiven,
+                   help="hold time in milliseconds of the open palm before its space (default %(default)s; with "
+                        "--gesture-config: replaces space_hold_ms of the config, written to the JSON as "
+                        "gestures.overrides)")
+    p.set_defaults(space_hold_ms_given=False)
+    p.add_argument("--gesture-config", default=None,
+                   help="deliberate gestures (plan 15 lần sửa 13): parameter file of GestureEngine, e.g. "
+                        "configs/level1_gestures.json (in the webcam preset); the gestures turned on "
+                        "(--gesture-space, --gesture-backspace) become an open palm held still = Space and a flat hand "
+                        "waved left / right = Backspace (written to the JSON as gestures); default: the gestures of "
+                        "before")
     p.add_argument("--gesture-backspace", action=argparse.BooleanOptionalAction, default=GESTURE_BACKSPACE_DEFAULT,
                    help="flat hand (5 fingers straight together) flick/swipe triggers Backspace (default on)")
     p.add_argument("--dominant-hand", choices=list(DOMINANT_HAND_CHOICES), default="auto",
@@ -1619,6 +1740,7 @@ DEFAULT_DEMO_ARGV = [
     "--unikey-mode",
     "--gesture-space",
     "--gesture-backspace",
+    "--gesture-config", "configs/level1_gestures.json",
 ]
 
 

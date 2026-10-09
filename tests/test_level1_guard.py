@@ -30,6 +30,7 @@ PLAN15_FILES = (
     "src/inference/level1_timing.py",
     "src/inference/level1_textbox.py",
     "src/inference/level1_display.py",
+    "src/inference/level1_gestures.py",
 )
 ENTRYPOINTS_15 = ("level1_demo.py",)
 
