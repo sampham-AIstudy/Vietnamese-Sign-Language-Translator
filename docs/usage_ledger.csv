@@ -87,3 +87,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-09T14:10Z,vslt-reviewer,15,L13-G1 review,30,37,7,0,ok
 2026-10-09T14:20Z,vslt-planner,15,L13d plan,37,45,8,0,ok
 2026-10-09T14:45Z,vslt-coder-claude,15,L13-G2a,45,55,10,0,ok
+2026-10-09T14:50Z,vslt-reviewer,15,13d G2a review,55,60,5,0,ok
