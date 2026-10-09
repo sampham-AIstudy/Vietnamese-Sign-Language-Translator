@@ -73,3 +73,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-09T03:45Z,vslt-coder-claude,15,L13-U2b (window wiring + AC-U6b),0,24,24,0,ok
 2026-10-09T04:05Z,vslt-reviewer,15,L13-U2b review,24,36,12,0,ok
 2026-10-09T06:50Z,vslt-coder(agy bridge x2 + orchestrator),15,L13-U2c (net drop + agy timeout; orchestrator verify/commit),36,52,16,0,ok
+2026-10-09T07:20Z,vslt-reviewer,15,L13-U2c review,52,?,?,0,ok (window crossed 5h reset)
