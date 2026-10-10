@@ -100,3 +100,5 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-10T07:00Z,vslt-reviewer,15,L13-K1 review,16,22,6,0,ok
 2026-10-10T07:20Z,vslt-coder-claude,15,L13-K2 (wire unikey into speller),22,34,12,0,ok
 2026-10-10T07:40Z,vslt-reviewer,15,L13-K2 review,34,38,4,0,ok
+2026-10-10T07:55Z,vslt-planner,15,L13f plan (UI side layout),39,53,14,0,ok
+2026-10-10T08:30Z,vslt-coder-claude,15,L13f-F1 fixed panel slots,53,65,12,0,ok
