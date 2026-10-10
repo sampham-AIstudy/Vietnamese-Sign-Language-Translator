@@ -4154,6 +4154,253 @@ class TestGestureEngineAppD9(_G2cAppMixin, unittest.TestCase):
                 self.assertTrue(all("source" not in e for e in ev), ev)
 
 
+# ------------------------------------------------------------------ plan 15 lần sửa 13f F1 (panel of fixed slots)
+# AC-F1 of docs/plans/15-lan-sua-13f.md: Level1App._panel_lines gives the HUD a list of slots whose length never changes
+# in a run (5 + the MediaPipe slot + the hand-lock slot), so the natural window size is constant and the camera image
+# never shrinks or moves with the panel text; the gesture slot is always there ("[Cử chỉ: none]" when there is nothing)
+# and one alert slot shows the angle hint, else the LAST warning, else the tone change, else "". The warning codes and
+# tone changes below are stub text set by the test (display only, no data).
+F1_WARNINGS = ("f1_warning_1", "f1_warning_2", "f1_warning_3")
+F1_LONG_WARNING = "f1_long_warning_" + "x" * 300
+F1_TONES = ({"from": "dấu sắc", "to": "dấu huyền"},)
+F1_STATS = ["fps 30.0 | hud 1.2ms"]
+
+
+class _ResizeFollowingRecorder(_ScaledWindowRecorder):
+    """_ScaledWindowRecorder (unchanged) whose getWindowImageRect follows the window like the real window of W1:
+    cv2.error before the first resizeWindow, then (0, 0, w, h) of the latest resizeWindow."""
+
+    def getWindowImageRect(self, name):
+        if not self.resized:
+            raise app_mod.cv2.error("no window size yet (test: before the first resizeWindow)")
+        w, h = self.resized[-1][1:3]
+        return (0, 0, w, h)
+
+
+def _f1_view():
+    """Synthetic display image 480 x 640, asymmetric (as W1b)."""
+    view = np.zeros((480, 640, 3), dtype=np.uint8)
+    view[:, :, 0] = np.tile(np.linspace(0, 255, 640, dtype=np.uint8), (480, 1))
+    view[:, :, 1] = np.tile(np.linspace(255, 0, 640, dtype=np.uint8), (480, 1))
+    view[:100, :100] = (255, 128, 64)
+    return view
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestFixedPanel13f(unittest.TestCase):
+    """AC-F1 of 15-lan-sua-13f (items 1-7). States (a)-(i) of §5 set on ONE app by the test (_walk), plus "fg" =
+    (f) + (g) without the angle hint (the only state where a warning and a tone change compete for the alert slot).
+    Two apps: the default one (args_for: --gesture-space on) and a 7-slot one (--dominant-hand lock --auto-enhance)."""
+
+    STATES = ("a", "i", "d", "e", "f", "g", "fg", "b", "c", "h")
+    SEVEN = ("--dominant-hand", "lock", "--auto-enhance")  # --auto-enhance => detection_custom True
+
+    @classmethod
+    def _app(cls, *extra):
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            return app_mod.Level1App(args_for("--source", CLIP, *extra))
+        finally:
+            os.chdir(cwd)
+
+    @staticmethod
+    def _stub(real, warnings=(), tones=()):
+        """Speller stand-in: only `view` is read by the HUD; the real view with these warnings / tone changes."""
+        import copy
+        view = copy.deepcopy(real.view)
+        view["warnings"] = [{"code": c} for c in warnings]
+        view["tone_changes"] = [dict(tc) for tc in tones]
+        return types.SimpleNamespace(view=view)
+
+    @classmethod
+    def _walk(cls, app):
+        """Puts `app` through the states in STATES order and yields each name while the app is in that state."""
+        over = app_mod.FORESHORTEN_FRAMES + 1
+        real = app.speller
+        yield "a"                                                       # (a) just built
+        app.paused = True
+        yield "i"                                                       # (i) paused
+        app.paused = False
+        saved = (app.gesture_space, app.gesture_backspace)
+        app.gesture_space, app.gesture_backspace = False, False
+        yield "d"                                                       # (d) no gesture on
+        app.gesture_space, app.gesture_backspace = saved
+        app.foreshortened_run = over
+        yield "e"                                                       # (e) angle hint
+        app.foreshortened_run = 0
+        app.speller = cls._stub(real, F1_WARNINGS)
+        yield "f"                                                       # (f) 3 warnings
+        app.speller = cls._stub(real, (), F1_TONES)
+        yield "g"                                                       # (g) tone change
+        app.speller = cls._stub(real, F1_WARNINGS, F1_TONES)
+        yield "fg"                                                      # (f) + (g)
+        app.speller = real
+        for t in (100.0, 160.0, 220.0):
+            app._gesture_step(t, True, True)
+        yield "b"                                                       # (b) open palm held
+        app._gesture_step(350.0, True, True)
+        yield "c"                                                       # (c) space just emitted (flash)
+        app.foreshortened_run = over
+        app.speller = cls._stub(real, F1_WARNINGS + (F1_LONG_WARNING,), F1_TONES)
+        yield "h"                                                       # (h) (c) + (e) + (f) + (g) + long warning
+
+    @classmethod
+    def _record(cls, app):
+        out = {}
+        for name in cls._walk(app):
+            out[name] = {"hud": app._hud_lines(), "panel": app._panel_lines(), "gesture": app._gesture_line(),
+                         "custom": app.detection_custom, "lock": app.hand_lock is not None}
+        return out
+
+    @classmethod
+    def setUpClass(cls):
+        cls.app = cls._app()
+        cls.app7 = cls._app(*cls.SEVEN)
+        cls.records = {"default": cls._record(cls.app), "seven": cls._record(cls.app7)}
+
+    def test_f1_1_gesture_none_line(self):
+        self.assertEqual(app_mod.GESTURE_NONE_LINE, "[Cử chỉ: none]")
+
+    def test_f1_2_text_progress_stats_same_as_hud_lines(self):
+        for which, rec in self.records.items():
+            self.assertEqual(tuple(rec), self.STATES)
+            for name, r in rec.items():
+                with self.subTest(app=which, state=name):
+                    hud, panel = r["hud"], r["panel"]
+                    self.assertEqual(len(panel), 4)
+                    self.assertEqual(panel[0], hud[0])
+                    self.assertEqual(panel[2], hud[2])
+                    self.assertEqual(panel[3], hud[3])
+
+    def test_f1_3_slot_oracle(self):
+        angle = app_mod.ANGLE_HINT_LINE
+        for which, rec in self.records.items():
+            for name, r in rec.items():
+                with self.subTest(app=which, state=name):
+                    s = r["hud"][1]
+                    mp = [x for x in s if x.startswith("[MP:")]
+                    hand = [x for x in s if x.startswith("[Tay:")]
+                    self.assertEqual(len(mp), int(r["custom"]))
+                    self.assertEqual(len(hand), int(r["lock"]))
+                    gestures = [x for x in s if x.startswith("[Cử chỉ:") or x.startswith("[Ký hiệu:")]
+                    g = gestures[0] if gestures else "[Cử chỉ: none]"
+                    warns = [x for x in s if x.startswith("Cảnh báo: ")]
+                    tones = [x for x in s if x.startswith("đổi dấu: ")]
+                    if angle in s:
+                        a = angle
+                    elif warns:
+                        a = warns[-1]
+                    elif tones:
+                        a = tones[0]
+                    else:
+                        a = ""
+                    expected = [s[0], s[1]] + mp + hand + [g] + [a] + [s[-1]]
+                    self.assertEqual(r["panel"][1], expected)
+                    if name == "h":
+                        self.assertEqual(a, angle)
+                    if name == "f":
+                        self.assertEqual(a, "Cảnh báo: f1_warning_3")
+                    if name == "fg":
+                        self.assertEqual(a, "Cảnh báo: f1_warning_3")
+                    if name == "g":
+                        self.assertEqual(a, "đổi dấu: sắc → huyền")
+
+    def test_f1_4_fixed_slot_count_and_panel_height(self):
+        for which, app in (("default", self.app), ("seven", self.app7)):
+            with self.subTest(app=which):
+                rec = self.records[which]
+                lens = {len(r["panel"][1]) for r in rec.values()}
+                heights = {app.hud.panel_height(r["panel"][0], r["panel"][1], len(r["panel"][3])) for r in rec.values()}
+                self.assertEqual(len(lens), 1, lens)
+                self.assertEqual(len(heights), 1, heights)
+                self.assertEqual(lens.pop(), 5 + int(app.detection_custom) + int(app.hand_lock is not None))
+        self.assertTrue(self.app7.detection_custom)
+        self.assertIsNotNone(self.app7.hand_lock)
+        self.assertEqual({len(r["panel"][1]) for r in self.records["seven"].values()}, {7})
+
+    def test_f1_5_gesture_slot_fixed_index(self):
+        for which, app in (("default", self.app), ("seven", self.app7)):
+            k = 2 + int(app.detection_custom) + int(app.hand_lock is not None)
+            rec = self.records[which]
+            for name in ("a", "d", "i"):
+                with self.subTest(app=which, state=name):
+                    self.assertEqual(rec[name]["panel"][1][k], "[Cử chỉ: none]")
+            for name in ("b", "c"):
+                with self.subTest(app=which, state=name):
+                    self.assertIsNotNone(rec[name]["gesture"])
+                    self.assertEqual(rec[name]["panel"][1][k], rec[name]["gesture"])
+            self.assertTrue(rec["b"]["gesture"].startswith("[Cử chỉ: Dấu cách "), rec["b"]["gesture"])
+            self.assertEqual(rec["c"]["gesture"], "[Ký hiệu: Dấu cách (Space)]")
+
+    def test_f1_6_app_run_window_follows_resize(self):
+        """The D2 clip in window mode (every frame read), the window rect following resizeWindow like the real
+        window: each frame's compose gets the slots of that frame, one image size, never render_to_window."""
+        from unittest import mock
+        rec = _ResizeFollowingRecorder()
+        render_calls, panels, composed = [], [], []
+        real_render = app_mod.render_to_window
+
+        def render(*a, **k):
+            render_calls.append(1)
+            return real_render(*a, **k)
+
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            with mock.patch.multiple(app_mod.cv2, **rec.patches()), \
+                    mock.patch.object(app_mod, "render_to_window", side_effect=render):
+                app = app_mod.Level1App(args_for("--source", CLIP))
+                real_panel = app._panel_lines
+                real_compose = app.hud.compose
+
+                def panel_lines():
+                    out = real_panel()
+                    panels.append(list(out[1]))
+                    return out
+
+                def compose(view, text_or_view, small, hold_progress, stats_lines=()):
+                    composed.append(list(small))
+                    return real_compose(view, text_or_view, small, hold_progress, stats_lines)
+
+                app._panel_lines = panel_lines
+                app.hud.compose = compose
+                report = app.run()
+        finally:
+            os.chdir(cwd)
+        processed = report["counts"]["frames_processed"]
+        self.assertGreater(processed, 0)
+        self.assertEqual(len(panels), processed)
+        self.assertEqual(len(composed), processed)
+        for i, (slots, small) in enumerate(zip(panels, composed)):
+            self.assertEqual(small, slots, i)
+        self.assertEqual(len(rec.shown), processed)
+        self.assertEqual(len(set(rec.shown)), 1, set(rec.shown))
+        self.assertEqual(len(render_calls), 0)
+        self.assertEqual(len(rec.resized), 1, rec.resized)
+
+    def test_f1_7_camera_pixels_same_for_any_panel_text(self):
+        from unittest import mock
+        view = _f1_view()
+        tb_a, slots_a = self.records["default"]["a"]["panel"][:2]
+        tb_h, slots_h = self.records["default"]["h"]["panel"][:2]
+        for mode in ("natural_rect", "cv2_error"):
+            with self.subTest(rect=mode):
+                app = self._app()
+                ph = app.hud.panel_height(tb_a, slots_a, len(F1_STATS))
+                images = []
+                for tb, slots, hold in ((tb_a, slots_a, 0.0), (tb_h, slots_h, 0.6)):
+                    rec = _ScaledWindowRecorder(rect=(0, 0, 640, 480 + ph))
+                    if mode == "cv2_error":
+                        rec.getWindowImageRect = _window_rect_raises
+                    with mock.patch.multiple(app_mod.cv2, **rec.patches()):
+                        images.append(app._window_image(view.copy(), tb, slots, hold, list(F1_STATS)))
+                ref, alt = images
+                self.assertEqual(ref.shape, (480 + ph, 640, 3))
+                self.assertEqual(ref.shape, alt.shape)
+                self.assertTrue(np.array_equal(ref[:480], alt[:480]))
+
+
 if __name__ == "__main__":
     unittest.main()
 

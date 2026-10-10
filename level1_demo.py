@@ -160,6 +160,9 @@ TRACE_MAX_ENTRIES = 20000  # later windows are counted (n_windows) but not kept;
 GESTURE_SPACE_HOLD = 250.0    # open palm held this long (armed) -> one space
 GESTURE_SPACE_REARM = 150.0   # another hand shape held longer than this (or no hand) -> armed again
 GESTURE_SPACE_FLASH = 600.0   # "[Ký hiệu: Dấu cách (Space)]" shown this long after the space
+# gesture slot of the panel (plan 15 lần sửa 13f §3.2) when no gesture line is shown (or no gesture is on): the slot is
+# always there, so the panel keeps its height
+GESTURE_NONE_LINE = "[Cử chỉ: none]"
 # --smooth-landmarks default (plan 15 lần sửa 10 P2): OFF. The plan writes default=True, but its AC-10d / §1 require the
 # run without the new flags to be the app of before; smoothing changes the landmarks of every frame, so the segments and
 # windows of the default run (pinned by the older tests against earlier commits) would change.
@@ -1336,6 +1339,29 @@ class Level1App:
         progress = 0.0 if self.classifier_mode else st["hold_progress"]  # no hold bar of the segmenter in classifier
         return tb_view, small, progress, stats
 
+    def _panel_lines(self):
+        """Panel of a FIXED number of slots (plan 15 lần sửa 13f §3.2): (tb_view, slots, progress, stats), tb_view /
+        progress / stats those of _hud_lines. slots = last sign, decoder / state line, [MP line] (detection_custom),
+        [hand line] (hand_lock), the gesture slot (always: the gesture line, else GESTURE_NONE_LINE), ONE alert slot
+        (angle hint > "Cảnh báo: " + code of the LAST warning > tone change > ""), the keys line. The number of slots
+        depends only on the flags, so the panel height (and the natural window size) never changes with the text and
+        the camera image is never shrunk or moved by it. Display only: the JSON keeps every warning."""
+        tb_view, small, progress, stats = self._hud_lines()
+        n_head = 2 + int(self.detection_custom) + int(self.hand_lock is not None)
+        gesture_hud = self.gesture_space or (self.gesture_engine is not None and self.gesture_backspace)
+        gesture = self._gesture_line() if gesture_hud else None
+        warnings = tb_view.get("warnings", [])
+        if self.foreshortened_run > FORESHORTEN_FRAMES:
+            alert = ANGLE_HINT_LINE
+        elif warnings:
+            alert = "Cảnh báo: " + warnings[-1]["code"]
+        elif tb_view.get("tone_changes", []):
+            alert = small[n_head + int(gesture is not None)]  # the "đổi dấu: x → y" line of _hud_lines
+        else:
+            alert = ""
+        slots = list(small[:n_head]) + [GESTURE_NONE_LINE if gesture is None else gesture, alert, small[-1]]
+        return tb_view, slots, progress, stats
+
     def _process(self, session, frame: np.ndarray, t_cap: float, ts_ms: float) -> None:
         t0 = time.perf_counter()
         self.process_starts.append(t0)
@@ -1400,7 +1426,7 @@ class Level1App:
         t3 = time.perf_counter()
         self.times.add("draw_landmarks", (t3 - t2) * 1000.0)
         view = display_view(frame, self.args.display_mirror)
-        tb_view, small, progress, stats = self._hud_lines()
+        tb_view, small, progress, stats = self._panel_lines()
         view = self._window_image(view, tb_view, small, progress, stats)
         t4 = time.perf_counter()
         self.times.add("hud", (t4 - t3) * 1000.0)
