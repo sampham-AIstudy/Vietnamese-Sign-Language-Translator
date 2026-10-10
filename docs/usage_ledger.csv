@@ -106,3 +106,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-10T10:45Z,vslt-coder-claude,15,L13f-F2 (CẦN PLANNER: G7 vs H1 hold bar edges; no code),70,83,13,0,ok
 2026-10-10T19:40Z,vslt-planner,15,L13f-a plan,0,3,3,1,ok
 2026-10-10T20:10Z,vslt-coder-claude,15,L13f-F2 layout core,3,28,25,4,ok
+2026-10-10T20:25Z,vslt-reviewer,15,L13f-F2 review,28,32,4,0,ok
