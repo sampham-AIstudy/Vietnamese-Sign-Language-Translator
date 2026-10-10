@@ -83,6 +83,10 @@ không che vùng tay của ảnh camera.
     (`reports/level1_realtime_2026-10-05/pose_evidence.json`).
 13. Tham số của bộ giải mã nhãn được chọn sau thăm dò trên chính chuỗi ghép dùng để kiểm (ghi trong `rearm_check_d4.json`); không chỉnh
     tiếp theo kết quả kiểm hay phiên webcam.
+14. Gõ kiểu Unikey (`--unikey-mode`, mặc định bật; kế hoạch 15 lần sửa 13 §4.2): chữ model nhận được ghép vào chữ cái CUỐI của âm tiết
+    đang gõ theo 15 cặp cố định (vd "a" rồi "â" → "â"; "b,a,dấu sắc" rồi "â" → "bấ"), ghi sự kiện nguồn `fusion` kèm dự đoán của model.
+    Ngoại lệ "uơ" (F3): "u" + "ơ" chỉ thành "ư" khi "u" là chữ cái đầu âm tiết; sau phụ âm đầu giữ "uơ" (thuở, quơ, huơ, khuơ), nên
+    "uơ" sau phụ âm đầu KHÔNG tự thành "ươ" — muốn "ươ" (vd "người") phải ký thẳng chữ "ư" rồi "ơ" (F5). Không có luật "uow" → "ươ".
 
 ## 5. Nguồn số liệu
 

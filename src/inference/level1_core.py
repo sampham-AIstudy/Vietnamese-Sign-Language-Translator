@@ -7,7 +7,8 @@ Level 1 ("Đánh vần") core shared by the desktop app (level1_demo.py) and, la
   rounding of POST /api/fingerspelling/sequence plus a status.
 - Level1Speller: accepts tokens (model result >= accept_confidence, or a key press), keeps the event order and
   composes the text with fingerspelling_compose.compose (never guesses letters; a letter is only replaced by its
-  diacritic variant when the label decoder says so, on_label).
+  diacritic variant when the label decoder says so, on_label, or, in unikey mode, by the Telex-style fusion of
+  level1_unikey.fusion_target, logged with source 'fusion').
 - enhance_low_light(frame_bgr): adaptive CLAHE on the L channel of a dark frame before hand detection (plan 15 lần sửa
   8 M2; the desktop demo's --auto-enhance only, never on the training / offline path).
 - LandmarkSmoother: adaptive moving average of the hand points (plan 15 lần sửa 10 P2; the desktop demo's
@@ -33,7 +34,8 @@ import numpy as np
 
 from src.data.alphabet_preprocessing import DEFAULT_ALPHABET_PREPROCESSING, alphabet_clip_features
 from src.inference.fingerspelling_compose import SPACE, TONE_MARKS, compose, token_kind
-from src.inference.level1_segmenter import DIACRITIC_FUSION, VARIANT_BASE, is_variant_of
+from src.inference.level1_segmenter import VARIANT_BASE, is_variant_of
+from src.inference.level1_unikey import fusion_target
 
 # key -> (kind, check); kind: "number" | "int" | "bool" | "str" | "str_list" | "enum" (check = name in ENUMS)
 CONFIG_SPEC = {
@@ -253,22 +255,18 @@ class Level1Classifier:
 # Speller (plan 15 §3.4)
 # ----------------------------------------------------------------------------------------------------------------------
 KEY_NAMES = ("backspace", "space", "accept", "repeat", "clear", "tone_1", "tone_2", "tone_3", "tone_4", "tone_5")
-DIACRITIC_FUSION = {
-    # Base letter -> {trigger signs -> target accented vowel}
-    "a": {"â": "â", "ô": "â", "ê": "â", "ă": "ă"},
-    "o": {"â": "ô", "ô": "ô", "ê": "ô", "ơ": "ơ", "ư": "ơ"},
-    "e": {"â": "ê", "ô": "ê", "ê": "ê"},
-    "u": {"ơ": "ư", "ư": "ư"},
-    "d": {"đ": "đ"},
-}
 
 
 class Level1Speller:
     """Token list + event log. Events of the segmenter are applied in emission order: a WordGap emitted after
-    segment k waits for k's result. Text = compose(tokens)["text"]; letters are never edited or guessed.
+    segment k waits for k's result. Text = compose(tokens)["text"]; letters are never guessed (a typed letter is only
+    edited by unikey fusion, into the variant the model output).
 
     - result with status 'ok' and confidence >= accept_confidence -> token added (source 'model');
       otherwise kept as the latest rejected candidate (not added);
+    - unikey mode (plan 15 lần sửa 13 §4.2): an accepted tone mark replaces the tone of the active syllable in place;
+      an accepted letter that level1_unikey.fusion_target fuses into a typed letter (Telex "aa" -> "â") replaces that
+      letter (source 'fusion', with the model's prediction and the rule), on_result and on_label alike;
     - word gap -> ' ' when the last token exists and is not ' ' (source 'model', reason 'word_gap');
     - keys (source 'key'): backspace = remove the last token (nothing on an empty list); space = ' ' with the same
       rule as a word gap; accept = add the latest rejected candidate that has a prediction; repeat = add the last
@@ -359,12 +357,7 @@ class Level1Speller:
                 idx, old_tone = self._find_tone_in_active_syllable()
                 self.tokens[idx] = prediction
                 self._log("replace", prediction, "model", t_ms, seq=seq, confidence=conf, replaced=old_tone)
-            elif self.unikey_mode and self.tokens and self.tokens[-1] in DIACRITIC_FUSION and prediction in DIACRITIC_FUSION[self.tokens[-1]]:
-                old = self.tokens[-1]
-                target = DIACRITIC_FUSION[old][prediction]
-                self.tokens[-1] = target
-                self._log("replace", target, "model", t_ms, seq=seq, confidence=conf, replaced=old)
-            else:
+            elif not self._fuse(seq, prediction, conf, t_ms):
                 self.tokens.append(prediction)
                 self._log("add", prediction, "model", t_ms, seq=seq, confidence=conf)
         else:
@@ -376,7 +369,8 @@ class Level1Speller:
         """Label emitted by Level1LabelDecoder (rearm_mode 'classifier', plan 15 lần sửa 4 §3.4), applied at once
         (no segment queue: the decoder emits in timestamp order). Accepted with the same rule as on_result
         (confidence >= accept_confidence). action 'append' = token added; 'replace' = the last token is replaced
-        when it is the base letter of the label (VARIANT_BASE), otherwise the label is added."""
+        when it is the base letter of the label (VARIANT_BASE, source 'model'), otherwise the label is added; in
+        unikey mode a fusion (source 'fusion') or an in-place tone change also returns action 'replace'."""
         prediction, conf, t_ms = emit.prediction, emit.confidence, emit.ts_ms
         accepted = conf is not None and conf >= self.accept_confidence
         action = None
@@ -388,12 +382,8 @@ class Level1Speller:
             self.tokens[-1] = prediction
             action = "replace"
             self._log("replace", prediction, "model", t_ms, seq=seq, confidence=conf, replaced=old)
-        elif self.unikey_mode and self.tokens and self.tokens[-1] in DIACRITIC_FUSION and prediction in DIACRITIC_FUSION[self.tokens[-1]]:
-            old = self.tokens[-1]
-            target = DIACRITIC_FUSION[old][prediction]
-            self.tokens[-1] = target
+        elif self._fuse(seq, prediction, conf, t_ms):
             action = "replace"
-            self._log("replace", target, "model", t_ms, seq=seq, confidence=conf, replaced=old)
         elif self.unikey_mode and self._is_tone(prediction) and self._find_tone_in_active_syllable() is not None:
             idx, old_tone = self._find_tone_in_active_syllable()
             self.tokens[idx] = prediction
@@ -405,6 +395,23 @@ class Level1Speller:
             self._log("add", prediction, "model", t_ms, seq=seq, confidence=conf)
         return {"seq": seq, "accepted": accepted, "status": "ok", "prediction": prediction, "confidence": conf,
                 "action": action}
+
+    def _fuse(self, seq: int, prediction: Optional[str], conf: Optional[float], t_ms: Optional[float]) -> bool:
+        """Unikey mode only: when fusion_target fuses the accepted `prediction` into a typed letter, that letter is
+        replaced (one token by one token; tone tokens untouched) and the replacement is logged with source 'fusion',
+        the model's prediction, the replaced letter, its index and the rule (plan 15 lần sửa 13 §4.2 F6, F7).
+        Returns False (nothing changed) when there is nothing to fuse."""
+        if not self.unikey_mode:
+            return False
+        hit = fusion_target(self.tokens, prediction)
+        if hit is None:
+            return False
+        index, target, rule = hit
+        old = self.tokens[index]
+        self.tokens[index] = target
+        self._log("replace", target, "fusion", t_ms, seq=seq, prediction=prediction, confidence=conf, replaced=old,
+                  index=index, rule=rule)
+        return True
 
     def on_word_gap(self, t_ms: Optional[float] = None) -> bool:
         if self.tokens and self.tokens[-1] != SPACE:
