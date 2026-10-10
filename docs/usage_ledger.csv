@@ -99,3 +99,4 @@ time_utc,agent,plan,unit,five_before,five_after,five_delta,seven_delta,quality
 2026-10-10T06:45Z,vslt-coder-claude,15,L13-K1 (unikey module),8,16,8,0,ok
 2026-10-10T07:00Z,vslt-reviewer,15,L13-K1 review,16,22,6,0,ok
 2026-10-10T07:20Z,vslt-coder-claude,15,L13-K2 (wire unikey into speller),22,34,12,0,ok
+2026-10-10T07:40Z,vslt-reviewer,15,L13-K2 review,34,?,?,0,ok
