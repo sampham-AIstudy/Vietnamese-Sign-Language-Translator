@@ -672,6 +672,322 @@ class TestU2OverlaysExactT1(unittest.TestCase):
                 self.assertTrue(np.array_equal(canvas[py : py + ph, px : px + cw], E))
 
 
+# ------------------------------------------------------------------------------------------------------------ AC-F2
+DISPLAY_B0_COMMIT = "4925aaf"  # plan 15-lan-sua-13f B0: level1_display.py before F2 (vertical render reference)
+F2_INVALID_WINDOWS = [((-1, -1, -1, -1),), ((0, 0),), (None,), (None, None), ((0, 0, 0, 0),), ((-1, -1),), ((1920,),),
+                      ((1, 2, 3),), (0, 1080), (1920, 0), (1920, -5), (-1, -1), ("abc", 1080), (float("nan"), 1080),
+                      ((10, 20, 0, 1080),), ((10, 20, 1920, -1),), (1920, None)]  # the list of test_u1_invalid_windows
+F2_GRID = range(200, 4001, 175)
+F2_G4_WINDOWS = ((1920, 1080), (2400, 800), (3000, 700), (1024, 768))
+F2_169_WINDOWS = ((1280, 720), (1366, 768), (1600, 900), (1920, 1080), (2560, 1440), (3840, 2160))
+F2_G7_WINDOWS = ((1920, 1080), (2560, 1080), (1024, 768), (1920, 1200))
+F2_G8_WINDOWS = ((640, 680), (1280, 1360), (600, 2000), (800, 900), (700, 1400))
+
+
+def _display_module_at(commit):
+    """src/inference/level1_display.py at `commit` loaded from `git show` into an in-memory module (nothing written)."""
+    r = subprocess.run(["git", "show", f"{commit}:src/inference/level1_display.py"], cwd=PROJECT_ROOT,
+                       capture_output=True, text=True, encoding="utf-8")
+    if r.returncode != 0:
+        raise AssertionError(f"git show {commit}:src/inference/level1_display.py failed: {r.stderr.strip()}")
+    name = f"_level1_display_ref_{commit}"
+    mod = types.ModuleType(name)
+    sys.modules[name] = mod
+    try:
+        exec(compile(r.stdout, f"<git show {commit}:level1_display.py>", "exec"), mod.__dict__)
+    finally:
+        sys.modules.pop(name, None)
+    return mod
+
+
+def _s_side(w, h, cam_w=640, cam_h=480):
+    """Camera scale of the side layout, written literally from the plan: P = ceil(w / 4), min(h / cam_h, (w - P) / cam_w)."""
+    P = -(-w // 4)
+    return min(h / cam_h, (w - P) / cam_w)
+
+
+def _outside_rects_mask(layout):
+    """True on every window pixel outside cam_rect and panel_rect."""
+    m = np.ones((layout.win_h, layout.win_w), dtype=bool)
+    for x, y, w, h in (layout.cam_rect, layout.panel_rect):
+        m[y:y + h, x:x + w] = False
+    return m
+
+
+class TestSideLayout13f(unittest.TestCase):
+    """AC-F2 (plan 15-lan-sua-13f §3.3 with lần sửa 13f-a): fit_window_layout (camera left, panel right over the full
+    height, chosen when it gives a larger camera), render_to_window on the side layout (panel at its own scale), the
+    vertical layout unchanged, wrap_rows."""
+
+    BG = (40, 40, 40)
+
+    @classmethod
+    def setUpClass(cls):
+        cls.font_path, cls.font_size = _font()
+
+    def _check_side_geometry(self, L, cam_w, cam_h, w, h, side_ref_h, msg):
+        """G4 geometry of one side layout; returns True when h / side_ref_h is the smallest term of panel_scale."""
+        P = -(-w // 4)
+        cx, cy, cw, ch = L.cam_rect
+        self.assertEqual(cx, 0, msg)
+        self.assertEqual(cy, (h - ch) // 2, msg)
+        self.assertEqual(L.panel_rect, (cw, 0, w - cw, h), msg)
+        self.assertGreaterEqual(w - cw, P, msg)
+        self.assertEqual((L.x0, L.y0, L.content_w, L.content_h, L.win_w, L.win_h), (0, 0, w, h, w, h), msg)
+        self.assertLessEqual(abs(L.scale - _s_side(w, h, cam_w, cam_h)), 1e-9, msg)
+        self.assertLessEqual(abs(cw / ch / (cam_w / cam_h) - 1.0), 0.01, msg)
+        self.assertTrue(abs(ch - h) <= 1 or abs(cw - (w - P)) <= 1, msg)
+        terms = [L.scale, (w - cw) / 320]
+        if side_ref_h is not None:
+            terms.append(h / side_ref_h)
+        self.assertLessEqual(abs(L.panel_scale - min(terms)), 1e-9, msg)
+        return side_ref_h is not None and h / side_ref_h < min(L.scale, (w - cw) / 320)
+
+    # G1
+    def test_g1_invalid_windows_natural(self):
+        natural = disp.fit_layout(640, 480, 200)
+        for inv in F2_INVALID_WINDOWS:
+            for ref_h in (None, 300):
+                with self.subTest(win=inv, side_ref_h=ref_h):
+                    L = disp.fit_window_layout(640, 480, 200, *inv, side_ref_h=ref_h)
+                    self.assertEqual(L, natural)
+                    self.assertIs(L.side, False)
+                    self.assertIsNone(L.panel_scale)
+
+    # G2
+    def test_g2_natural_window_is_vertical(self):
+        for panel_h in (150, 200, 283, 400):
+            for win in [(640, 480 + panel_h), ((0, 0, 640, 480 + panel_h),)]:
+                with self.subTest(panel_h=panel_h, win=win):
+                    L = disp.fit_window_layout(640, 480, panel_h, *win)
+                    self.assertEqual(L, disp.fit_layout(640, 480, panel_h))
+                    self.assertEqual(L, disp.fit_layout(640, 480, panel_h, *win))
+                    self.assertIs(L.side, False)
+                    self.assertIsNone(L.panel_scale)
+
+    def test_g2b_layout_new_fields_default(self):
+        """§3.3: two new trailing fields with defaults; 9 positional arguments as before; iteration keeps 7 fields."""
+        a = disp.DisplayLayout(1.0, 640, 680, 0, 0, (0, 0, 640, 480), (0, 480, 640, 200), 640, 680)
+        self.assertIs(a.side, False)
+        self.assertIsNone(a.panel_scale)
+        self.assertEqual(a, disp.fit_layout(640, 480, 200))
+        L = disp.fit_window_layout(640, 480, 200, 1920, 1080)
+        self.assertIs(L.side, True)
+        self.assertEqual(len(tuple(L)), 7)
+        self.assertNotEqual(L, disp.DisplayLayout(*tuple(L), L.win_w, L.win_h))  # side / panel_scale compared
+        self.assertEqual(disp.SIDE_PANEL_REF_W, 320)
+
+    # G3 + G4 (cam 640x480)
+    def test_g3_g4_choice_rule_and_side_geometry_grid(self):
+        n_side = n_below = 0
+        for panel_h in (200, 283):
+            for w in F2_GRID:
+                for h in F2_GRID:
+                    msg = f"panel_h={panel_h} win={w}x{h}"
+                    L = disp.fit_window_layout(640, 480, panel_h, w, h)
+                    below = disp.fit_layout(640, 480, panel_h, w, h)
+                    s_side = _s_side(w, h)
+                    self.assertEqual(L.side, s_side > below.scale + 1e-12, msg)
+                    if not L.side:
+                        self.assertEqual(L, below, msg)
+                        n_below += 1
+                    else:
+                        self._check_side_geometry(L, 640, 480, w, h, None, msg)
+                        n_side += 1
+        self.assertGreater(n_side, 0)
+        self.assertGreater(n_below, 0)
+
+    # G4 (cam 640x360, 13f-a §3.2)
+    def test_g4_side_geometry_cam_640x360(self):
+        n_side = n_ref_smallest = 0
+        for panel_h in (200, 283):
+            for ref_h in (None, 300, 451, 600):
+                for w, h in F2_G4_WINDOWS:
+                    msg = f"cam 640x360 panel_h={panel_h} side_ref_h={ref_h} win={w}x{h}"
+                    L = disp.fit_window_layout(640, 360, panel_h, w, h, side_ref_h=ref_h)
+                    if not L.side:
+                        self.assertEqual(L, disp.fit_layout(640, 360, panel_h, w, h), msg)
+                        continue
+                    n_side += 1
+                    n_ref_smallest += self._check_side_geometry(L, 640, 360, w, h, ref_h, msg)
+        self.assertGreater(n_side, 0)  # anti-empty (13f-a)
+        self.assertGreater(n_ref_smallest, 0)  # the h / side_ref_h term decides at least once
+
+    def test_g4b_side_ref_h_not_positive_is_dropped(self):
+        ref = disp.fit_window_layout(640, 480, 200, 2400, 800)
+        for bad in (0, -5):
+            self.assertEqual(disp.fit_window_layout(640, 480, 200, 2400, 800, side_ref_h=bad), ref)
+
+    # G5
+    def test_g5_black_bars_16_9(self):
+        for w, h in F2_169_WINDOWS:
+            for panel_h in (200, 283, 400):
+                with self.subTest(win=(w, h), panel_h=panel_h):
+                    L = disp.fit_window_layout(640, 480, panel_h, w, h)
+                    self.assertIs(L.side, True)
+                    _, _, cw, ch = L.cam_rect
+                    _, _, pw, ph = L.panel_rect
+                    black = w * h - cw * ch - pw * ph
+                    self.assertLessEqual(black, 0.005 * w * h)
+                    if (w, h) == (1920, 1080):
+                        self.assertEqual(L.cam_rect, (0, 0, 1440, 1080))
+                        self.assertEqual(L.panel_rect, (1440, 0, 480, 1080))
+                        self.assertEqual(black, 0)
+        old = disp.fit_layout(640, 480, 200, 1920, 1080)  # control: the vertical layout leaves wide black bars
+        self.assertGreater(1 - old.content_w * old.content_h / (1920 * 1080), 0.3)
+
+    # G6
+    def test_g6_panel_readable_16_9(self):
+        for w, h in F2_169_WINDOWS:
+            with self.subTest(win=(w, h)):
+                L = disp.fit_window_layout(640, 480, 283, w, h, side_ref_h=355)
+                self.assertIs(L.side, True)
+                self.assertGreaterEqual(L.panel_scale, 1.0)
+
+    # G7 (oracle of 13f-a §3.2)
+    def test_g7_render_side_exact(self):
+        view = _view(1300)
+        n_ps_differs = 0
+        for w, h in F2_G7_WINDOWS:
+            for panel_h in (200, 283):
+                L = disp.fit_window_layout(640, 480, panel_h, w, h)
+                self.assertIs(L.side, True, (w, h, panel_h))
+                n_ps_differs += L.panel_scale != L.scale
+                ps = L.panel_scale
+                cx, cy, cw, ch = L.cam_rect
+                px, py, pw, ph = L.panel_rect
+                expected_cam = cv2.resize(view, (cw, ch), interpolation=cv2.INTER_LINEAR)
+                for hold in (0.0, 0.5):
+                    for stats in ([], ["fps 30.0 | hud 1.2ms"]):
+                        with self.subTest(win=(w, h), panel_h=panel_h, hold=hold, stats=len(stats)):
+                            calls = []
+
+                            def builder(bw, bh, s, n):
+                                calls.append((bw, bh, s, n))
+                                return np.full((bh, bw, 3), self.BG, dtype=np.uint8), disp.scaled_px(18, s)
+
+                            out = disp.render_to_window(view, builder, stats, hold, L)
+                            self.assertEqual(out.shape, (h, w, 3))
+                            self.assertTrue(np.array_equal(out[cy:cy + ch, cx:cx + cw], expected_cam))
+                            self.assertEqual(calls, [(pw, ph, L.panel_scale, len(stats))])
+                            E = np.full((ph, pw, 3), self.BG, dtype=np.uint8)
+                            if hold > 0:
+                                cv2.rectangle(E, (0, 0), (int(pw * hold), disp.scaled_px(3, ps)), (0, 200, 0), -1)
+                            n = len(stats)
+                            step = disp.scaled_px(18, ps)
+                            for i, line in enumerate(stats):
+                                cv2.putText(E, line, (int(8 * ps), ph - int(10 * ps) - (n - 1 - i) * step),
+                                            cv2.FONT_HERSHEY_SIMPLEX, 0.45 * ps, (160, 255, 160),
+                                            max(1, int(round(ps))), cv2.LINE_AA)
+                            self.assertTrue(np.array_equal(out[py:py + ph, px:px + pw], E))
+                            self.assertEqual(int(np.count_nonzero(out[_outside_rects_mask(L)])), 0)
+        self.assertGreater(n_ps_differs, 0)  # anti-empty (13f-a): the panel scale differs from the camera scale
+
+    # G8
+    def test_g8_vertical_unchanged(self):
+        b0 = _display_module_at(DISPLAY_B0_COMMIT)
+        view = _view(1400)
+        for w, h in F2_G8_WINDOWS:
+            for tv, small, stats, hold in [(VIEWS[1], [HINT, "gợi ý"], ["p50 1", "p50 2"], 0.5), (VIEWS[0], [], [], 1.0),
+                                           (VIEWS[2], SMALLS[2], ["p50 1"], 0.0)]:
+                with self.subTest(win=(w, h), small=len(small), stats=len(stats)):
+                    hud = app_mod.Hud(self.font_path, self.font_size)
+                    ph = hud.panel_height(tv, small, len(stats))
+                    L = disp.fit_window_layout(CAM_W, CAM_H, ph, w, h)
+                    L0 = disp.fit_layout(CAM_W, CAM_H, ph, w, h)
+                    self.assertIs(L.side, False)
+                    self.assertEqual(L, L0)
+                    a = disp.render_to_window(view, hud.panel_builder(tv, small), stats, hold, L)
+                    b = disp.render_to_window(view, app_mod.Hud(self.font_path, self.font_size).panel_builder(tv, small),
+                                              stats, hold, L0)
+                    self.assertTrue(np.array_equal(a, b))
+                    # the vertical render is the one of B0 (same layout from the B0 fit_layout)
+                    LB = b0.fit_layout(CAM_W, CAM_H, ph, w, h)
+                    self.assertEqual(tuple(LB), tuple(L))
+                    c = b0.render_to_window(view, app_mod.Hud(self.font_path, self.font_size).panel_builder(tv, small),
+                                            stats, hold, LB)
+                    self.assertTrue(np.array_equal(a, c))
+
+    # G9
+    def test_g9_side_input_unchanged(self):
+        def solid(bw, bh, s, n):
+            return np.full((bh, bw, 3), 200, np.uint8), max(1, int(14 * s))
+
+        for w, h in ((1920, 1080), (2560, 1080), (854, 480)):
+            L = disp.fit_window_layout(640, 480, 200, w, h)
+            self.assertIs(L.side, True)
+            x, y, cw, ch = L.cam_rect
+            for seed in (1500, 1501):
+                with self.subTest(win=(w, h), seed=seed):
+                    view = _view(seed)
+                    before = view.copy()
+                    out = disp.render_to_window(view, solid, ["fps 1"], 0.4, L)
+                    self.assertTrue(np.array_equal(view, before))
+                    self.assertFalse(np.shares_memory(out, view))
+                    expected = before if (cw, ch) == (640, 480) else cv2.resize(before, (cw, ch),
+                                                                               interpolation=cv2.INTER_LINEAR)
+                    self.assertTrue(np.array_equal(out[y:y + ch, x:x + cw], expected))
+                    ro = before.copy()
+                    ro.flags.writeable = False
+                    self.assertTrue(np.array_equal(disp.render_to_window(ro, solid, ["fps 1"], 0.4, L), out))
+        self.assertEqual(disp.fit_window_layout(640, 480, 200, 854, 480).cam_rect, (0, 0, 640, 480))  # copy branch
+
+    def test_g9b_side_builder_protocol_checked(self):
+        L = disp.fit_window_layout(640, 480, 200, 1920, 1080)
+        bad = (lambda bw, bh, s, n: (np.zeros((bh + 3, bw, 3), np.uint8), 1))
+        with self.assertRaises(ValueError):
+            disp.render_to_window(_view(5), bad, [], 0.0, L)
+
+    # G10
+    def _check_rows(self, rows, measure, max_w, budget, msg=""):
+        self.assertEqual(len(rows), budget, msg)
+        for r in rows:
+            if r:
+                self.assertLessEqual(measure(r), max_w, (msg, r))
+
+    def test_g10_wrap_rows_char_measure(self):
+        m = lambda s: 10 * len(s)  # noqa: E731
+        text = "xin chào bạn nhé"
+        rows = disp.wrap_rows(text, m, 100, 3)
+        self._check_rows(rows, m, 100, 3)
+        self.assertEqual(" ".join(r for r in rows if r).split(), text.split())
+        self.assertFalse(any(r.endswith("…") for r in rows))
+        self.assertEqual(rows[-1], "")  # padded with ""
+        long_text = "một câu rất dài " * 10
+        rows = disp.wrap_rows(long_text, m, 100, 2)
+        self._check_rows(rows, m, 100, 2)
+        self.assertTrue(rows[-1].endswith("…"))
+        word = "a" * 50
+        rows = disp.wrap_rows(word, m, 100, 3)
+        self._check_rows(rows, m, 100, 3)
+        self.assertEqual(rows[:2], ["a" * 10, "a" * 10])  # cut by characters
+        self.assertTrue(rows[-1].endswith("…"))
+        rows = disp.wrap_rows(word, m, 100, 5)
+        self.assertEqual(rows, ["a" * 10] * 5)
+        self.assertEqual(disp.wrap_rows("", m, 100, 3), ["", "", ""])
+        self.assertEqual(disp.wrap_rows("   ", m, 100, 2), ["", ""])
+        for bad in (0, -1):
+            with self.assertRaises(ValueError):
+                disp.wrap_rows(text, m, 100, bad)
+        self.assertEqual(disp.wrap_rows(text, m, 5, 3), ["", "", ""])
+
+    def test_g10_wrap_rows_real_font(self):
+        meas = app_mod.Hud(self.font_path, self.font_size)._fonts_at(1.5)[1].getlength
+        text = "[Cử chỉ: Dấu cách — giữ lòng bàn tay 0.6 s] Trạng thái: đang ghép từ"
+        rows = disp.wrap_rows(text, meas, 4000, 2)
+        self._check_rows(rows, meas, 4000, 2)
+        self.assertEqual(" ".join(r for r in rows if r).split(), text.split())
+        for max_w in (180, 300, 460):
+            for budget in (1, 2, 3):
+                with self.subTest(max_w=max_w, budget=budget):
+                    rows = disp.wrap_rows(text * 4, meas, max_w, budget)
+                    self._check_rows(rows, meas, max_w, budget)
+                    self.assertTrue(rows[-1].endswith("…"))
+                    rows = disp.wrap_rows(text, meas, max_w, 8)
+                    self._check_rows(rows, meas, max_w, 8)
+                    self.assertEqual(" ".join(r for r in rows if r).split(), text.split())
+
+
 if __name__ == "__main__":
     unittest.main()
 
