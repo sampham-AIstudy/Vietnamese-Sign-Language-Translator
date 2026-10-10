@@ -5,6 +5,7 @@
 > LẦN SỬA 13c (2026-10-09): xem docs/plans/15-lan-sua-13c.md — sửa U2d (gate DC1 fail-closed, giữ ngưỡng 1.25), thêm T1/T2 (chỉ test, khóa đột biến sống U2a–U2c), XW (X1 + thăm dò cửa sổ thật) trước V1, câu Giới hạn R2.
 > LẦN SỬA 13d (2026-10-09): xem docs/plans/15-lan-sua-13d.md — chốt P1 (giữ: mất tay hủy giữ space), P2 (đổi: khung trong cooldown không đệm vẫy), NaN = không tay; hàng G2 thay bằng G2a/G2b/G2c (vslt-coder-claude) với AC-D1…D9 (khóa đột biến R2/R4, THẤP-1/4).
 > LẦN SỬA 13e (2026-10-09): xem docs/plans/15-lan-sua-13e.md — G2b chọn (a): shim nhập tạm "GESTURE_BACKSPACE_FLASH" CHỈ THÊM dòng trong _hud_module_at (tests/test_level1_display.py) + test AC-E2; AC-G5 giữ đủ 5 tên; đột biến M9/M10 trên worktree.
+> LẦN SỬA 13f (2026-10-10): xem docs/plans/15-lan-sua-13f.md — giao diện theo VU: panel số ô cố định (camera không co/dịch), dòng cử chỉ luôn hiện "[Cử chỉ: none]", bố cục cạnh nhau (camera trái, panel phải) khi cửa sổ rộng/fullscreen 16:9 không dải đen; F1→F2→F3 (vslt-coder-claude) → F4 (cầu nối: DC1 đo lại + thăm dò cửa sổ thật W2) → VU2 người dùng; ngoại lệ test E5 (W1b, ≤ 5 dòng).
 
 > CẦN NGƯỜI DÙNG (KHÔNG chặn các bước khác): (1) quay 24 clip cử chỉ thật sau bước G2 (§3.4, ~10 phút) — chỉ bước G5 chờ việc này;
 > (2) THÔNG BÁO: gỡ khỏi git KHÔNG xóa 84 npz user1 khỏi lịch sử đã push lên GitHub công khai — xóa hẳn cần viết lại lịch sử + force
@@ -382,6 +383,7 @@ sau mỗi bước: cầu nối xác minh độc lập + vslt-reviewer kiểm ri�
 > LẦN SỬA 13c (2026-10-09): xem docs/plans/15-lan-sua-13c.md — sửa U2d (gate DC1 fail-closed, giữ ngưỡng 1.25), thêm T1/T2 (chỉ test, khóa đột biến sống U2a–U2c), XW (X1 + thăm dò cửa sổ thật) trước V1, câu Giới hạn R2.
 > LẦN SỬA 13d (2026-10-09): xem docs/plans/15-lan-sua-13d.md — chốt P1 (giữ: mất tay hủy giữ space), P2 (đổi: khung trong cooldown không đệm vẫy), NaN = không tay; hàng G2 thay bằng G2a/G2b/G2c (vslt-coder-claude) với AC-D1…D9 (khóa đột biến R2/R4, THẤP-1/4).
 > LẦN SỬA 13e (2026-10-09): xem docs/plans/15-lan-sua-13e.md — G2b chọn (a): shim nhập tạm "GESTURE_BACKSPACE_FLASH" CHỈ THÊM dòng trong _hud_module_at (tests/test_level1_display.py) + test AC-E2; AC-G5 giữ đủ 5 tên; đột biến M9/M10 trên worktree.
+> LẦN SỬA 13f (2026-10-10): xem docs/plans/15-lan-sua-13f.md — giao diện theo VU: panel số ô cố định (camera không co/dịch), dòng cử chỉ luôn hiện "[Cử chỉ: none]", bố cục cạnh nhau (camera trái, panel phải) khi cửa sổ rộng/fullscreen 16:9 không dải đen; F1→F2→F3 (vslt-coder-claude) → F4 (cầu nối: DC1 đo lại + thăm dò cửa sổ thật W2) → VU2 người dùng; ngoại lệ test E5 (W1b, ≤ 5 dòng).
 
 Tổng ≈ 22 giờ coder. Đường tới DEMO (thứ tự ưu tiên của orchestrator): M0 → U1 → U2 → G1 → G2 → G3 → K1 → K2 (≈ 11,5 h) — sau K2 có thể demo;
 V1 nên xong trước demo (test xanh, hồ sơ model). Cắt khi thiếu thời gian (cắt từ cuối): R1 → D3 → V2 → R2 (giữ phần docs Giới hạn tối thiểu) → D2/D1.
