@@ -1,5 +1,7 @@
 # Kế hoạch 15 — LẦN SỬA 13f: giao diện demo Cấp 1 theo phản hồi cửa sổ thật (VU 2026-10-10 14:50)
 
+> LẦN SỬA 13f-a (docs/plans/15-lan-sua-13f-a.md, 2026-10-11): G7 oracle thanh hold = cv2.rectangle cả mép (khớp draw_panel_overlays/H1/U7, khóa M0 cad8cdc), chỉ khi hold>0; G4/G7 panel_h ∈ {200,283}, G7 side_ref_h=None + chống rỗng; nhánh dọc render_to_window giữ nguyên B0. Đè lên AC-F2 và §3.3.
+
 CẦN NGƯỜI DÙNG (KHÔNG chặn bước code F1–F4): một lần nhìn cửa sổ thật sau F4 (việc VU2, §7). Mọi bước code và đo tự chạy được.
 
 Ngày: 2026-10-10. Nhánh `cloud/2026-10-04-level1-rearm`, HEAD lúc lập `4925aaf` (gọi là B0). Mốc test gần nhất: K2 `3a78019`, LALL `Ran 681`,
