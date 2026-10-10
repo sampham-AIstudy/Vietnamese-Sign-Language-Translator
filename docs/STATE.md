@@ -10,7 +10,7 @@
 - LẦN SỬA 12 (cloud, 2026-10-06, theo phản hồi webcam của người dùng): `docs/plans/15-lan-sua-12.md`. Mã: ddd7904 (G1 cổng chuyển động decoder, H1 HandednessLock, config rev9), 13759a6 (script dominant_hand_check), 85a6a91 (app: tắt tự cách mặc định, --dominant-hand lock, nối cổng), 551e1b2 (G1b: không cắt chữ biến thể của chữ vừa phát). Bằng chứng: reports/level1_realtime_2026-10-06/{dominant_hand_check,rearm_check_gate,rearm_check_gate_v2}.json. CHƯA review (vslt-reviewer local). Còn: phiên webcam người dùng so rev8 và rev9.
 - HEAD: ba9e107 (+ commit state này) | Nhánh: cloud/2026-10-04-level1-rearm
 - Tắt máy: CHỈ khi người dùng yêu cầu rõ trong hội thoại (quyết định 2026-10-04 01:15). Lần gần nhất: 10/10 04:42 tắt theo yêu cầu "xong thì tắt máy cho tôi nhé" (hết hiệu lực sau phiên đó).
-- Trạng thái phiên: 14:45 10/10. ĐƯỜNG DEMO CẤP 1 DESKTOP XONG (đều APPROVE): U2, 13c, G1, G2a–G2c (cử chỉ chỉ khi cố ý, --gesture-config), G3 (GF 0/770), K1 82eebcd + K2 3a78019 (gõ dấu kiểu Unikey; docs/reviews/15-l13-k2-review.md). CHỜ NGƯỜI DÙNG: làm V1 (hồ sơ model v6, ~2 h) hay bỏ; R2 tối thiểu (tài liệu Giới hạn cho báo cáo, ~1 h) — đề xuất. THẤP mở cho planner (không chặn): word_gap ngoài quét AC-K3; [đ,i]+đ nối thêm; docstring tests/test_level1_unikey.py:4-6. VU người dùng (3 câu cửa sổ thật) không chặn. Không agent/agy chạy. Chỉ 1 phiên Claude.
+- Trạng thái phiên: 14:52 10/10 (5h ~40%). Đường demo Cấp 1 xong (K2 APPROVE 3a78019). Người dùng trả lời VU 14:50 ⇒ việc giao diện mới (bố cục cạnh nhau cho fullscreen, panel cố định chiều cao để camera không co/dịch, dòng cử chỉ luôn hiện "none"). ĐANG GIAO vslt-planner lần sửa 13f (giao diện). V1/R2 tối thiểu vẫn chờ người dùng chọn. Chỉ 1 phiên Claude.
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -224,6 +224,7 @@
   Chi tiết + số đo: docs/prompts/orchestrator_resume_addendum.md mục 6.
 - (2026-10-09 14:07) Tiêu đề cửa sổ demo Cấp 1: chữ KHÔNG DẤU "VSLT Level 1 (f: toan man hinh)" (OpenCV Windows hiện sai chữ có dấu trong tiêu đề).
 - (2026-10-10 02:12) Ưu tiên hoàn thiện Cấp 1 để DEMO bằng app Python desktop (level1_demo.py); các phần khác (web Việc 5/6, Cấp 2, D1–D3, R1, G5) CHƯA làm. Lý do người dùng: demo web bị trễ nhiều hơn desktop.
+- (2026-10-10 14:50) Trả lời VU (cửa sổ thật): (1) CÓ — ảnh camera co/dịch khi dòng chữ dưới thay đổi ⇒ phải sửa; (2) fullscreen dùng được nhưng có black bar hai bên ⇒ đổi bố cục: video bên TRÁI, panel thông tin (thanh/chữ) bên PHẢI (hoặc bố cục khác tận dụng hết màn hình, planner chọn); (3) tiêu đề đọc được; (4) dòng cử chỉ chỉ hiện khi cử động, không ký thì ẩn ⇒ LUÔN hiện, không có gì thì ghi "none" (không ẩn).
 
 ## Câu hỏi chờ người dùng
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
