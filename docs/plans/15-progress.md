@@ -1968,4 +1968,4 @@ Cửa sổ THẬT (không vá `imshow`/`namedWindow`/`resizeWindow`/`waitKey`); 
   - Khớp với U2 (app chạy 1 phút): `emits: {"space": 5, "backspace": 0}` (dấu cách trong app vốn hoạt động tốt; chỉ xóa bị nghẽn do tỉ lệ phẳng 80–85% và vẫy có dịch chuyển dọc nhẹ tỉ lệ 0.6).
   - Rẽ nhánh quyết định: `stop_offline_ok: true` do G-0 kích hoạt trên `space`. Theo §4 và §9: DỪNG báo Planner để chốt nhánh xử lý.
 
-
+> LẦN SỬA 13h (2026-10-11): xem docs/plans/15-lan-sua-13h.md — G-0..G-3 áp THEO TỪNG CỬ CHỈ (làm rõ "từng cử chỉ g" của §3.3 13g, số không đổi): space design_ok giữ design, backspace đi G-1/G-2, G-3 gộp; R0 review S1–S3 (kèm nghi lỗi skeleton gộp = 0)→S3a agy sửa decisions theo cử chỉ + counts k/5→S3b tái sinh D commit sạch→S3c đối chiếu U2→S6 config 13g chỉ khóa trong tuned_values (⊆ wave_*)→S6b GF 770 clip (trượt ⇒ DỪNG)→U3/S7 GT→S8 preset; số tới hạn chỉ lấy từ JSON sau APPROVE.

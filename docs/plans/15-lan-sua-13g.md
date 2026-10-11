@@ -1,5 +1,7 @@
 # Kế hoạch 15 — LẦN SỬA 13g: chẩn đoán cử chỉ không nhận + khung xương lệch (VU2), xử lý DC1 trượt
 
+> LẦN SỬA 13h (2026-10-11): xem docs/plans/15-lan-sua-13h.md — G-0..G-3 áp THEO TỪNG CỬ CHỈ (làm rõ "từng cử chỉ g" của §3.3 13g, số không đổi): space design_ok giữ design, backspace đi G-1/G-2, G-3 gộp; R0 review S1–S3 (kèm nghi lỗi skeleton gộp = 0)→S3a agy sửa decisions theo cử chỉ + counts k/5→S3b tái sinh D commit sạch→S3c đối chiếu U2→S6 config 13g chỉ khóa trong tuned_values (⊆ wave_*)→S6b GF 770 clip (trượt ⇒ DỪNG)→U3/S7 GT→S8 preset; số tới hạn chỉ lấy từ JSON sau APPROVE.
+
 **CẦN NGƯỜI DÙNG** (chặn S3 trở đi, KHÔNG chặn S1/S2/S9): U1 quay 12 clip chẩn đoán + U2 chạy app 1 phút (§5); U3 quay 24 clip kiểm
 (chỉ khi S6 có đổi ngưỡng); VU3 nhìn lại khung xương sau S5. Không đổi model chữ cái; preset chỉ đổi file cử chỉ ở S8 sau khi GF+GT đạt.
 
