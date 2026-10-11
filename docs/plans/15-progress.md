@@ -1952,3 +1952,20 @@ Cửa sổ THẬT (không vá `imshow`/`namedWindow`/`resizeWindow`/`waitKey`); 
 - Test: `tests/test_level1_gesture_diag.py` AC-1..AC-8 xanh 15/15 test; test_level1_guard xanh 4/4; test_backend_source_guard xanh 28/28.
 - Tiếp theo: S3 (chạy chẩn đoán trên tập D của người dùng với process-fps = 15.5), S5, S6, S6b.
 
+## Lần sửa 13g — S3 (2026-10-11, agy/cầu nối; 15-lan-sua-13g §3.2, §3.3, §4, §9)
+- Chạy: `.\.venv\Scripts\python.exe scripts/level1_gesture_diag.py --clips-dir data/collected_gestures/13g_D --process-fps 15.5 --out reports/level1_realtime_2026-10-11/gesture_diag_D.json` tại commit `01e3809` (`code_dirty: false`).
+- Kết quả Khung xương (R-S):
+  - `p90(smooth) <= p90(track)` (độ lệch mượt LandmarkSmoother ~0.005–0.008 palm length nhỏ hơn hẳn sai số tracking video vs static của MediaPipe ~0.023–0.026 palm length).
+  - Quyết định: `fix_draw_raw: false`, `suggest_no_auto_enhance: false`, `mediapipe_limit: true` (độ lệch thuộc về giới hạn nhận diện MediaPipe, S5 không kích hoạt).
+- Kết quả Cử chỉ (R-G):
+  - `space`: 5/5 clip đạt ở `design` (cả native và process-fps) ⇒ `g0_results["space"] = true`.
+  - `backspace`: 0/5 clip đạt ở `design`, nhưng 5/5 clip đạt ở `floor` (`g1_results["backspace"] = false`, sàn vượt qua).
+  - Giá trị tới hạn cô lập của `backspace`:
+    - `wave_window_ms`: crits=[1500, 1500, 1500, 1500, 1500] ⇒ lưới nghiêm ngặt nhất 1500 (= design 1500).
+    - `wave_min_amplitude`: crits=[0.6, 0.6, 0.6, 0.6, 0.6] ⇒ lưới nghiêm ngặt nhất 0.60 (= design 0.60).
+    - `wave_max_vertical_ratio`: crits=[0.5, 0.6, 0.5, 0.6, 0.6] ⇒ lưới nghiêm ngặt nhất 0.6 (design 0.5, sàn 1.0).
+    - `wave_min_flat_fraction`: crits=[0.8, 0.9, 0.85, 0.8, 0.85] ⇒ lưới nghiêm ngặt nhất 0.80 (design 0.9, sàn 0.6).
+  - Khớp với U2 (app chạy 1 phút): `emits: {"space": 5, "backspace": 0}` (dấu cách trong app vốn hoạt động tốt; chỉ xóa bị nghẽn do tỉ lệ phẳng 80–85% và vẫy có dịch chuyển dọc nhẹ tỉ lệ 0.6).
+  - Rẽ nhánh quyết định: `stop_offline_ok: true` do G-0 kích hoạt trên `space`. Theo §4 và §9: DỪNG báo Planner để chốt nhánh xử lý.
+
+

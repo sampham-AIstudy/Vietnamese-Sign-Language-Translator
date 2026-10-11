@@ -1,0 +1,847 @@
+{
+  "generated_by": {
+    "command": "scripts/level1_gesture_diag.py --clips-dir data/collected_gestures/13g_D --process-fps 15.5 --out reports/level1_realtime_2026-10-11/gesture_diag_D.json",
+    "commit": "01e380927e16651b2112c13de06462481191bd42",
+    "code_dirty": false,
+    "utc": "2026-10-11T10:10:50Z"
+  },
+  "configs": {
+    "segmenter": {
+      "path": "configs/level1_demo_classifier_rev9.json",
+      "sha256": "736a9a3c0ae5d6b66d7dd0b25b9dc868a9296ee6673c69e82249104a1368088d"
+    },
+    "gestures": {
+      "path": "configs/level1_gestures.json",
+      "sha256": "442b6d6c35dbb0f2b5b1ffad03dac410a7c73a767946b015cde8923e7a4b46e5"
+    }
+  },
+  "clips_dir": "data/collected_gestures/13g_D",
+  "total_clips": 12,
+  "rules": {
+    "_note": "Đặt trước ở 15-lan-sua-13g §3.3, coder và orchestrator không đổi",
+    "skeleton": {
+      "rs1_formula": "p90(smooth) > p90(track) => fix_draw_raw = True",
+      "rs2_formula": "p90(enh) > p90(track) => suggest_no_auto_enhance = True",
+      "default": "Không cái nào => mediapipe_limit = True"
+    },
+    "gestures": {
+      "pass_fraction": 0.8,
+      "grid": {
+        "space_hold_ms": {
+          "design": 600,
+          "floor": 400,
+          "step": 50,
+          "direction": "larger_is_stricter"
+        },
+        "space_dropout_frames": {
+          "design": 1,
+          "floor": 3,
+          "step": 1,
+          "direction": "smaller_is_stricter"
+        },
+        "wave_window_ms": {
+          "design": 1500,
+          "floor": 2500,
+          "step": 250,
+          "direction": "smaller_is_stricter"
+        },
+        "wave_min_amplitude": {
+          "design": 0.6,
+          "floor": 0.35,
+          "step": 0.05,
+          "direction": "larger_is_stricter"
+        },
+        "wave_max_vertical_ratio": {
+          "design": 0.5,
+          "floor": 1.0,
+          "step": 0.1,
+          "direction": "smaller_is_stricter"
+        },
+        "wave_min_flat_fraction": {
+          "design": 0.9,
+          "floor": 0.6,
+          "step": 0.05,
+          "direction": "larger_is_stricter"
+        }
+      }
+    }
+  },
+  "skeleton": {
+    "moving_smooth": {
+      "p50": 0.0,
+      "p90": 0.0,
+      "count": 12
+    },
+    "moving_track": {
+      "p50": 0.0,
+      "p90": 0.0,
+      "count": 12
+    },
+    "moving_enh": {
+      "p50": 0.0,
+      "p90": 0.0,
+      "count": 12
+    }
+  },
+  "gesture_ablation": {
+    "g0": {
+      "space": true,
+      "backspace": false
+    },
+    "decisions": {
+      "stop_offline_ok": true,
+      "stop_outside_config": false,
+      "stop_combined": false,
+      "tuned_values": {}
+    }
+  },
+  "decisions": {
+    "fix_draw_raw": false,
+    "suggest_no_auto_enhance": false,
+    "mediapipe_limit": true,
+    "stop_offline_ok": true,
+    "stop_outside_config": false,
+    "stop_combined": false,
+    "tuned_values": {}
+  },
+  "per_clip": {
+    "space": [
+      {
+        "file": "space_01.mp4",
+        "n_frames": 76,
+        "ts_source": "pos_msec",
+        "native": {
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 1.0,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 1.0,
+            "flat": 0.0,
+            "still": 0.9868421052631579
+          },
+          "smooth": {
+            "p50": 0.0026514319068398906,
+            "p90": 0.005253706070776879,
+            "count": 76
+          },
+          "track": {
+            "p50": 0.023726616281720198,
+            "p90": 0.02577026425684202,
+            "count": 76
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 76
+          }
+        },
+        "process_fps": {
+          "fps_target": 15.5,
+          "n_frames": 38,
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 1.0,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 1.0,
+            "flat": 0.0,
+            "still": 0.9736842105263158
+          },
+          "smooth": {
+            "p50": 0.004146590982904461,
+            "p90": 0.007862609577654606,
+            "count": 38
+          },
+          "track": {
+            "p50": 0.02329222800864618,
+            "p90": 0.02569165256144768,
+            "count": 38
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 38
+          }
+        }
+      },
+      {
+        "file": "space_02.mp4",
+        "n_frames": 76,
+        "ts_source": "pos_msec",
+        "native": {
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 1.0,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 1.0,
+            "flat": 0.0,
+            "still": 0.9868421052631579
+          },
+          "smooth": {
+            "p50": 0.007561676175198338,
+            "p90": 0.014536509642249895,
+            "count": 76
+          },
+          "track": {
+            "p50": 0.02285591040688016,
+            "p90": 0.0276103122750471,
+            "count": 76
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 76
+          }
+        },
+        "process_fps": {
+          "fps_target": 15.5,
+          "n_frames": 38,
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 1.0,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 1.0,
+            "flat": 0.0,
+            "still": 0.9736842105263158
+          },
+          "smooth": {
+            "p50": 0.012920207363936804,
+            "p90": 0.027511098345999588,
+            "count": 38
+          },
+          "track": {
+            "p50": 0.022698924542922803,
+            "p90": 0.02707020442338589,
+            "count": 38
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 38
+          }
+        }
+      },
+      {
+        "file": "space_03.mp4",
+        "n_frames": 76,
+        "ts_source": "pos_msec",
+        "native": {
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 1.0,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 1.0,
+            "flat": 0.0,
+            "still": 0.9868421052631579
+          },
+          "smooth": {
+            "p50": 0.004891315207594316,
+            "p90": 0.009635380025041315,
+            "count": 76
+          },
+          "track": {
+            "p50": 0.020144867094714577,
+            "p90": 0.024025177021692375,
+            "count": 76
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 76
+          }
+        },
+        "process_fps": {
+          "fps_target": 15.5,
+          "n_frames": 38,
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 1.0,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 1.0,
+            "flat": 0.0,
+            "still": 0.9736842105263158
+          },
+          "smooth": {
+            "p50": 0.008666562959157367,
+            "p90": 0.01583993643655436,
+            "count": 38
+          },
+          "track": {
+            "p50": 0.01969516610127981,
+            "p90": 0.023995332849878852,
+            "count": 38
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 38
+          }
+        }
+      },
+      {
+        "file": "space_04.mp4",
+        "n_frames": 76,
+        "ts_source": "pos_msec",
+        "native": {
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 1.0,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 1.0,
+            "flat": 0.0,
+            "still": 0.9868421052631579
+          },
+          "smooth": {
+            "p50": 0.0038035126091362733,
+            "p90": 0.007557253853897004,
+            "count": 76
+          },
+          "track": {
+            "p50": 0.012419102881411393,
+            "p90": 0.013985243642088563,
+            "count": 76
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 76
+          }
+        },
+        "process_fps": {
+          "fps_target": 15.5,
+          "n_frames": 38,
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 1.0,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 1.0,
+            "flat": 0.0,
+            "still": 0.9736842105263158
+          },
+          "smooth": {
+            "p50": 0.006164112041829307,
+            "p90": 0.01123318772613729,
+            "count": 38
+          },
+          "track": {
+            "p50": 0.012305045164091186,
+            "p90": 0.014109926790551579,
+            "count": 38
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 38
+          }
+        }
+      },
+      {
+        "file": "space_05.mp4",
+        "n_frames": 76,
+        "ts_source": "pos_msec",
+        "native": {
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 1.0,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 1.0,
+            "flat": 0.0,
+            "still": 0.9868421052631579
+          },
+          "smooth": {
+            "p50": 0.005070612562952182,
+            "p90": 0.009979612507366412,
+            "count": 76
+          },
+          "track": {
+            "p50": 0.014200757445843174,
+            "p90": 0.016600332287560304,
+            "count": 76
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 76
+          }
+        },
+        "process_fps": {
+          "fps_target": 15.5,
+          "n_frames": 38,
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 1.0,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 1.0,
+            "flat": 0.0,
+            "still": 0.9736842105263158
+          },
+          "smooth": {
+            "p50": 0.008171914689239002,
+            "p90": 0.021059395640093806,
+            "count": 38
+          },
+          "track": {
+            "p50": 0.014037693488460498,
+            "p90": 0.016220036366875443,
+            "count": 38
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 38
+          }
+        }
+      }
+    ],
+    "backspace": [
+      {
+        "file": "backspace_01.mp4",
+        "n_frames": 76,
+        "ts_source": "pos_msec",
+        "native": {
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 0.8289473684210527,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 0.0,
+            "flat": 0.8157894736842105,
+            "still": 0.9868421052631579
+          },
+          "smooth": {
+            "p50": 0.014075091810627896,
+            "p90": 0.029683317342439133,
+            "count": 76
+          },
+          "track": {
+            "p50": 0.018163217471486325,
+            "p90": 0.036895162181057935,
+            "count": 63
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 76
+          }
+        },
+        "process_fps": {
+          "fps_target": 15.5,
+          "n_frames": 38,
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 0.8421052631578947,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 0.0,
+            "flat": 0.8157894736842105,
+            "still": 0.9736842105263158
+          },
+          "smooth": {
+            "p50": 0.032495650766298706,
+            "p90": 0.04658015399548374,
+            "count": 38
+          },
+          "track": {
+            "p50": 0.01911871512176957,
+            "p90": 0.04569819331652166,
+            "count": 32
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 38
+          }
+        }
+      },
+      {
+        "file": "backspace_02.mp4",
+        "n_frames": 76,
+        "ts_source": "pos_msec",
+        "native": {
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 0.7236842105263158,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 0.0,
+            "flat": 0.9210526315789473,
+            "still": 0.9868421052631579
+          },
+          "smooth": {
+            "p50": 0.018754891034303528,
+            "p90": 0.03580722845992721,
+            "count": 76
+          },
+          "track": {
+            "p50": 0.01935317789406227,
+            "p90": 0.03408630729118278,
+            "count": 55
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 76
+          }
+        },
+        "process_fps": {
+          "fps_target": 15.5,
+          "n_frames": 38,
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 0.7105263157894737,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 0.0,
+            "flat": 0.9210526315789473,
+            "still": 0.9736842105263158
+          },
+          "smooth": {
+            "p50": 0.041029855622111006,
+            "p90": 0.05832028848668514,
+            "count": 38
+          },
+          "track": {
+            "p50": 0.020807096217209865,
+            "p90": 0.052558323785721194,
+            "count": 27
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 38
+          }
+        }
+      },
+      {
+        "file": "backspace_03.mp4",
+        "n_frames": 76,
+        "ts_source": "pos_msec",
+        "native": {
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 0.6447368421052632,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 0.0,
+            "flat": 0.75,
+            "still": 0.9868421052631579
+          },
+          "smooth": {
+            "p50": 0.016967167676667123,
+            "p90": 0.03738607818039357,
+            "count": 76
+          },
+          "track": {
+            "p50": 0.019910826997653754,
+            "p90": 0.047063671994313154,
+            "count": 49
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 76
+          }
+        },
+        "process_fps": {
+          "fps_target": 15.5,
+          "n_frames": 38,
+          "hand_rate": {
+            "app_video": 0.9210526315789473,
+            "static": 0.7368421052631579,
+            "no_clahe": 0.9210526315789473
+          },
+          "pose_rates_on_hand": {
+            "palm": 0.0,
+            "flat": 0.8571428571428571,
+            "still": 0.8857142857142857
+          },
+          "smooth": {
+            "p50": 0.033462481880914746,
+            "p90": 0.05658327559401634,
+            "count": 35
+          },
+          "track": {
+            "p50": 0.020078518706397628,
+            "p90": 0.094803881543778,
+            "count": 25
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 35
+          }
+        }
+      },
+      {
+        "file": "backspace_04.mp4",
+        "n_frames": 76,
+        "ts_source": "pos_msec",
+        "native": {
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 0.6842105263157895,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 0.0,
+            "flat": 0.7105263157894737,
+            "still": 0.9868421052631579
+          },
+          "smooth": {
+            "p50": 0.017892752235771536,
+            "p90": 0.03327924424946441,
+            "count": 76
+          },
+          "track": {
+            "p50": 0.018433165423982413,
+            "p90": 0.04457431568319772,
+            "count": 52
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 76
+          }
+        },
+        "process_fps": {
+          "fps_target": 15.5,
+          "n_frames": 38,
+          "hand_rate": {
+            "app_video": 0.9736842105263158,
+            "static": 0.6842105263157895,
+            "no_clahe": 0.9736842105263158
+          },
+          "pose_rates_on_hand": {
+            "palm": 0.0,
+            "flat": 0.8108108108108109,
+            "still": 0.9459459459459459
+          },
+          "smooth": {
+            "p50": 0.022925890325625923,
+            "p90": 0.05429047062624616,
+            "count": 37
+          },
+          "track": {
+            "p50": 0.019666968922771793,
+            "p90": 0.07121564412994169,
+            "count": 26
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 37
+          }
+        }
+      },
+      {
+        "file": "backspace_05.mp4",
+        "n_frames": 76,
+        "ts_source": "pos_msec",
+        "native": {
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 0.6447368421052632,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 0.0,
+            "flat": 0.6710526315789473,
+            "still": 0.9868421052631579
+          },
+          "smooth": {
+            "p50": 0.018466614129673306,
+            "p90": 0.03450164918624382,
+            "count": 76
+          },
+          "track": {
+            "p50": 0.02049116271687613,
+            "p90": 0.05475526966178154,
+            "count": 49
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 76
+          }
+        },
+        "process_fps": {
+          "fps_target": 15.5,
+          "n_frames": 38,
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 0.6052631578947368,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 0.0,
+            "flat": 0.6842105263157895,
+            "still": 0.9736842105263158
+          },
+          "smooth": {
+            "p50": 0.036890120234731594,
+            "p90": 0.059544327215619815,
+            "count": 38
+          },
+          "track": {
+            "p50": 0.021368650252529424,
+            "p90": 0.04773729086397089,
+            "count": 23
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 38
+          }
+        }
+      }
+    ],
+    "spell": [
+      {
+        "file": "spell_01.mp4",
+        "n_frames": 184,
+        "ts_source": "pos_msec",
+        "native": {
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 0.9891304347826086,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 0.0,
+            "flat": 0.20108695652173914,
+            "still": 0.9945652173913043
+          },
+          "smooth": {
+            "p50": 0.0073022192106841945,
+            "p90": 0.01986320431884054,
+            "count": 184
+          },
+          "track": {
+            "p50": 0.0226074734978636,
+            "p90": 0.04178240754236311,
+            "count": 182
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 184
+          }
+        },
+        "process_fps": {
+          "fps_target": 15.5,
+          "n_frames": 92,
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 0.9782608695652174,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 0.0,
+            "flat": 0.1956521739130435,
+            "still": 0.9891304347826086
+          },
+          "smooth": {
+            "p50": 0.01191770736903105,
+            "p90": 0.0355417203639302,
+            "count": 92
+          },
+          "track": {
+            "p50": 0.02279094216788697,
+            "p90": 0.04286855277933496,
+            "count": 90
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 92
+          }
+        }
+      },
+      {
+        "file": "spell_02.mp4",
+        "n_frames": 184,
+        "ts_source": "pos_msec",
+        "native": {
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 0.9728260869565217,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 0.0,
+            "flat": 0.0,
+            "still": 0.9945652173913043
+          },
+          "smooth": {
+            "p50": 0.006936596476956774,
+            "p90": 0.01801171911844304,
+            "count": 184
+          },
+          "track": {
+            "p50": 0.034096304590109934,
+            "p90": 0.05919259469540354,
+            "count": 179
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 184
+          }
+        },
+        "process_fps": {
+          "fps_target": 15.5,
+          "n_frames": 92,
+          "hand_rate": {
+            "app_video": 1.0,
+            "static": 0.967391304347826,
+            "no_clahe": 1.0
+          },
+          "pose_rates_on_hand": {
+            "palm": 0.0,
+            "flat": 0.010869565217391304,
+            "still": 0.9891304347826086
+          },
+          "smooth": {
+            "p50": 0.010920889901364118,
+            "p90": 0.03173593043376324,
+            "count": 92
+          },
+          "track": {
+            "p50": 0.03498265899944237,
+            "p90": 0.07528196325461989,
+            "count": 89
+          },
+          "enh": {
+            "p50": 0.0,
+            "p90": 0.0,
+            "count": 92
+          }
+        }
+      }
+    ]
+  }
+}
