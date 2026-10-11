@@ -10,7 +10,7 @@
 - LẦN SỬA 12 (cloud, 2026-10-06, theo phản hồi webcam của người dùng): `docs/plans/15-lan-sua-12.md`. Mã: ddd7904 (G1 cổng chuyển động decoder, H1 HandednessLock, config rev9), 13759a6 (script dominant_hand_check), 85a6a91 (app: tắt tự cách mặc định, --dominant-hand lock, nối cổng), 551e1b2 (G1b: không cắt chữ biến thể của chữ vừa phát). Bằng chứng: reports/level1_realtime_2026-10-06/{dominant_hand_check,rearm_check_gate,rearm_check_gate_v2}.json. CHƯA review (vslt-reviewer local). Còn: phiên webcam người dùng so rev8 và rev9.
 - HEAD: ba9e107 (+ commit state này) | Nhánh: cloud/2026-10-04-level1-rearm
 - Tắt máy: CHỈ khi người dùng yêu cầu rõ trong hội thoại (quyết định 2026-10-04 01:15). Lần gần nhất: 11/10 03:23 tắt theo yêu cầu "khi nào done tắt máy cho tôi nhé" (hết hiệu lực sau phiên đó).
-- Trạng thái phiên: 16:10 11/10 DỪNG (5h 33%, 7d 93% — reset tuần 15/10 ~16:20). 13f: F1 40aa56c, F2 01ca9c4, F3 cee4e4a đều APPROVE (bố cục cạnh nhau đã nối vào app). F4(a) DC1 TRƯỢT 2/3 lần (ratio_p50 1.0391 / 1.6356 / 1.8550; ngưỡng 1.25) ⇒ DỪNG theo AC-F4, JSON không commit (giữ _work/_plan15_l13/l13f_f4_run{1,2,3}.json), chi tiết cuối docs/plans/15-progress.md; W2 chưa chạy. VIỆC KẾ: vslt-planner xử lý DC1 trượt (không chỉnh tham số theo kết quả; xem ý ratio nhạy tải máy: chặng mediapipe lượt 1080p cao hơn natural) — chờ người dùng chọn thời điểm vì hạn mức tuần 93%. Sau đó W2 → VU2. App hiện dùng được (fullscreen đã cạnh nhau). Không agent chạy. Chỉ 1 phiên Claude.
+- Trạng thái phiên: 16:35 11/10 (7d 93%). 13f F1–F3 APPROVE; F4(a) DC1 trượt 2/3 (chờ planner). VU2 người dùng: hết black bar; LỖI khung xương tay lệch + cử chỉ space/backspace cố ý không nhận. ĐANG GIAO vslt-planner lần sửa 13g (chẩn đoán + sửa: độ nhạy cử chỉ cố ý, khung xương lệch, DC1 trượt). Code sau đó giao agy (vslt-coder), Claude chỉ review. Tạm thời demo dùng cử chỉ cũ: bỏ --gesture-config. Chỉ 1 phiên Claude.
 
 ## Đã xong (đã APPROVE)
 - Bước 4a–4c (kế hoạch 01): kết luận B. Ứng viên Cấp 2 = H-keepz-360. Báo cáo: reports/step4_2026-09-26/REPORT.md;
@@ -225,6 +225,7 @@
 - (2026-10-09 14:07) Tiêu đề cửa sổ demo Cấp 1: chữ KHÔNG DẤU "VSLT Level 1 (f: toan man hinh)" (OpenCV Windows hiện sai chữ có dấu trong tiêu đề).
 - (2026-10-10 02:12) Ưu tiên hoàn thiện Cấp 1 để DEMO bằng app Python desktop (level1_demo.py); các phần khác (web Việc 5/6, Cấp 2, D1–D3, R1, G5) CHƯA làm. Lý do người dùng: demo web bị trễ nhiều hơn desktop.
 - (2026-10-10 14:50) Trả lời VU (cửa sổ thật): (1) CÓ — ảnh camera co/dịch khi dòng chữ dưới thay đổi ⇒ phải sửa; (2) fullscreen dùng được nhưng có black bar hai bên ⇒ đổi bố cục: video bên TRÁI, panel thông tin (thanh/chữ) bên PHẢI (hoặc bố cục khác tận dụng hết màn hình, planner chọn); (3) tiêu đề đọc được; (4) dòng cử chỉ chỉ hiện khi cử động, không ký thì ẩn ⇒ LUÔN hiện, không có gì thì ghi "none" (không ẩn).
+- (2026-10-11 ~16:30) VU2 người dùng: fullscreen HẾT black bar (đạt). LỖI: (1) khung xương tay MediaPipe vẽ "lệch lệch", chưa chính xác; (2) ký cử chỉ space/backspace (đường cố ý --gesture-config) KHÔNG nhận. Phân công mới: Claude CHỈ lập kế hoạch + review; code giao agy (vslt-coder cầu nối) — không dùng vslt-coder-claude trừ khi agy không khả dụng.
 
 ## Câu hỏi chờ người dùng
 - (từ review 06 phần 2) Nếu không khôi phục được dữ liệu: có chấp nhận bằng chứng lịch sử tại 0491877 kèm ghi giới hạn không?
