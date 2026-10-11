@@ -8,10 +8,9 @@ Lệnh `python` = `PYTHONIOENCODING=utf-8 .venv/Scripts/python`. Log tạm: `_wo
 - 2026-10-09 U2b xong (commit `15: L13-U2b nối cửa sổ co giãn (AC-U4/U4b/U6b)`, vslt-coder-claude). Reviewer U2b: APPROVE (`e165990`).
 - 2026-10-09 U2c xong (commit `15: L13-U2c phím f, --fullscreen, --[no-]display-mirror, LRU font (AC-U6/U8)`).
 - 2026-10-09 U2d xong (commit `15: L13-U2d script đo chi phí hiển thị (AC-U5, DC1)`). Script `scripts/level1_display_cost.py` + test `tests/test_level1_display_cost.py` đạt (AC-U5, gate DC1).
-- ĐANG LÀM: 13f F3 xong (`cee4e4a` `15: L13f-F3 …`: `_window_image` chọn bố cục bằng `fit_window_layout`, `Hud.side_rows/side_panel_height/side_panel_builder`; E5 W1b), chờ cầu nối + reviewer F3; F4 chưa làm. F2 (`01ca9c4`) APPROVE. F1 (`40aa56c`) APPROVE. K2 (`3a78019`) APPROVE. K1 (`82eebcd`) APPROVE. G3 (`65122fd` + `1260c05`) APPROVE. G2c (`415f5fa`) APPROVE. G2b (`342326e`) APPROVE. G2a (`70b9055`) APPROVE. G1 (`e2ee6f8`) APPROVE. T2: b5762ec + 3a07a8c, APPROVE.
-- Xong: B0 (4e4d9e3), B1 (966ea4b), B2 (58b31ce), B3 (WIP 75e3116 + commit `15: B3`), B4 (commit `15: B4`), B5 (3ebc7b9), T1 (92fce21), A1 (commit code 72167b9 + commit báo cáo 1ca53f3), T2 (ec19b1d; code ở ad7c126), A2 (6067611 + config commit `15: A2 config hiệu chỉnh`), R0 (code `a3970a6` + báo cáo `reports/level1_realtime_2026-10-04/rearm_check_r0.json`). A2a (code ở WIP `dddfde8` + commit `15: A2a` trên nhánh cloud; CHỜ LOCAL: AC-S18 trên clip thật + sinh lại rearm_check_r0.json bằng lệnh ở mục A2a). R1 (commit `15: R1` trên nhánh cloud; CHỜ LOCAL: AC-S18 + S18b trên clip thật). A2b (`71fc664` mã + `4b5d736` config; AC-W3 đạt).
-  Lần sửa 13/13c: M0 (5a32cff; ghi chép sửa ở commit U1), U1 (commit `15: L13-U1`), U1a (commit `acdcf63`), U2a (`cf5e2cc`), U2b (`b0cbcf1`), U2c (`00d320c` + `6144970`), U2d (`ea93fa1` C1 + `44a9d69` C2), XW (`6be8815`), T1 (`235be2b`).
-- Còn lại (lần sửa 13/13c): T2 (hoàn tất test W1a, W1b, F1, L1; chờ reviewer), G1..G3, K1..K2, V1, D1, V2, D2, D3, R1, R2, G5.
+- ĐANG LÀM: 13g S1 (scripts/level1_gesture_diag.py + tests/test_level1_gesture_diag.py AC-1..AC-4; U1/U2 người dùng đã xong).
+- Xong: 13f (F1, F2, F3 xong và APPROVE; F4 DC1 ghi Giới hạn tại 13g S9); K1, K2; G1..G3; T2; U2a..U2d.
+- Còn lại (13g): S1 (đang làm), S2 (ablation cử chỉ + R-G), S3, S5, S6, S6b, U3/VU3, S7, S8.
 
 ## B0 — mốc (2026-10-03)
 - HEAD lúc bắt đầu: `6c4f5e0` (đã push). Không sửa mã ở B0.
@@ -1942,3 +1941,7 @@ Cửa sổ THẬT (không vá `imshow`/`namedWindow`/`resizeWindow`/`waitKey`); 
 - Quan sát (không phải kết luận): chặng hud tăng ~3.9–5.0 ms nhưng chặng mediapipe ở lượt 1080p cao hơn lượt natural 1.4–10.5 ms trong cùng lần đo ⇒ ratio nhạy với tải máy/thứ tự lượt (THẤP-2/3 cũ của U2d). Planner quyết; KHÔNG chỉnh SIDE_PANEL_REF_W/luật ô, KHÔNG đo lại để chọn lần.
 
 > LẦN SỬA 13g (2026-10-11): xem docs/plans/15-lan-sua-13g.md — VU2: chẩn đoán cử chỉ không nhận (người dùng quay 12 clip D + chạy app 1 phút; script level1_gesture_diag.py ablation qua GestureEngine, quy tắc nới ngưỡng G-0..G-3 đặt trước, sàn cố định) và khung xương lệch (đo smooth/track/CLAHE, R-S ⇒ vẽ landmark thô); S9→S1→S2 (agy)→S3 (cầu nối)→S5/S6 (agy)→S6b GF→U3 T 24 clip→S7 GT→S8 preset; DC1 = Giới hạn (3 JSON trượt commit làm bằng chứng); demo tạm: --no-gesture-space --no-gesture-backspace + phím SPACE/BACKSPACE.
+
+## Lần sửa 13g — S1 (2026-10-11, agy; 15-lan-sua-13g §3.2, §3.3, §6 AC-1..AC-4)
+- ĐANG LÀM: S1 script chẩn đoán phần 1 (scripts/level1_gesture_diag.py) + test tests/test_level1_gesture_diag.py (AC-1..AC-4); U1 (12 clip D) và U2 đã hoàn tất bởi người dùng.
+- Còn lại: S2 (ablation + R-G), S3, S5, S6, S6b, U3/VU3, S7, S8.
