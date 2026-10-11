@@ -96,7 +96,7 @@ if sys.platform == "win32":
 
 from src.inference.hand_live import LEVEL1_HANDS_KWARGS, HandLandmarkSession  # noqa: E402
 from src.inference.level1_display import (PanelBuilder, draw_panel_overlays, fit_layout,  # noqa: E402
-                                          render_to_window, scaled_px)
+                                          fit_window_layout, render_to_window, scaled_px, wrap_rows)
 from src.inference.level1_gestures import GestureEngine, load_gesture_config  # noqa: E402
 from src.inference.level1_core import (CLAHE_CLIP_LIMIT, CLAHE_TILE_GRID, GESTURE_BACKSPACE_DEFAULT,  # noqa: E402
                                        LOW_LIGHT_THRESHOLD, BackspaceGestureTracker, gesture_defaults,
@@ -502,6 +502,9 @@ class Hud:
     CURSOR_INSET_BOTTOM = 4  # cursor line: inset from the bottom of the line
     CURSOR_WIDTH = 2
     PREVIEW_GAP = 4          # gap between the cursor and the preview label
+    # Side layout (plan 15 lần sửa 13f §3.4): rows given to every panel slot, the last slot (keys line) one more
+    SIDE_ROWS_PER_SLOT = 2
+    SIDE_ROWS_LAST_SLOT = 3
 
     def __init__(self, font_path: str, font_size: int):
         from PIL import ImageFont
@@ -516,6 +519,8 @@ class Hud:
         self._fonts = collections.OrderedDict([(font_size, (self.font, self.small))])  # font px -> (font, small font)
         self._scaled_key = None
         self._scaled_panel = None
+        self._side_key = None
+        self._side_panel = None
 
     @staticmethod
     def _small_px(font_px: int) -> int:
@@ -687,6 +692,43 @@ class Hud:
                 self._scaled_panel = self._build(width, text_or_view, small, n_stats, scale, height)
                 self._scaled_key = key
             return self._scaled_panel, self.line_steps(scale)[1]
+
+        return build
+
+    def side_rows(self, slots: Sequence[str], scale: float, width: int) -> List[str]:
+        """Rows of the side panel (plan 15 lần sửa 13f §3.4): every slot wrapped by wrap_rows with the small font at
+        `scale` into the panel width less both text margins, on exactly SIDE_ROWS_PER_SLOT rows (SIDE_ROWS_LAST_SLOT
+        for the last slot); overflow is cut with '…'. The row of every slot is fixed, whatever its text."""
+        slots = list(slots)
+        measure = self._fonts_at(scale)[1].getlength
+        max_w = width - 2 * scaled_px(self.PAD_X, scale)
+        rows: List[str] = []
+        for i, slot in enumerate(slots):
+            budget = self.SIDE_ROWS_LAST_SLOT if i == len(slots) - 1 else self.SIDE_ROWS_PER_SLOT
+            rows.extend(wrap_rows(slot, measure, max_w, budget))
+        return rows
+
+    def side_panel_height(self, n_slots: int, n_stats: int, scale: float = 1.0) -> int:
+        """Height of the side panel of `n_slots` slots (one main line, the rows of side_rows, `n_stats` stats rows)
+        at `scale`: panel_height of a view dict with SIDE_ROWS_PER_SLOT x (n_slots - 1) + SIDE_ROWS_LAST_SLOT small
+        lines. Used as side_ref_h of fit_window_layout, so the side panel rows fit the window height."""
+        n_rows = self.SIDE_ROWS_PER_SLOT * (n_slots - 1) + self.SIDE_ROWS_LAST_SLOT
+        return self.panel_height({}, [""] * n_rows, n_stats, scale)
+
+    def side_panel_builder(self, text_or_view: Any, slots: Sequence[str]) -> PanelBuilder:
+        """PanelBuilder of render_to_window for the side layout: build(width, height, scale, n_stats) = _build of the
+        text and the side_rows of `slots` at that width and scale, exactly height x width (stats line step returned).
+        Cached apart from panel_builder by (width, height, scale, font px, text, slots, n_stats)."""
+        slots = list(slots)
+        view_key = self._view_cache_key(text_or_view)
+
+        def build(width: int, height: int, scale: float, n_stats: int) -> Tuple[np.ndarray, int]:
+            key = (width, height, scale, self.font_px(scale), view_key, tuple(slots), n_stats)
+            if key != self._side_key:
+                self._side_panel = self._build(width, text_or_view, self.side_rows(slots, scale, width), n_stats,
+                                               scale, height)
+                self._side_key = key
+            return self._side_panel, self.line_steps(scale)[1]
 
         return build
 
@@ -1448,7 +1490,11 @@ class Level1App:
         (landmarks drawn, mirrored; never the frame given to MediaPipe). The first image shown resizes the window once
         to the natural size (camera image + panel). The window image rect is read every frame: no usable size
         (cv2.error, no getWindowImageRect, invalid rect) or the natural size => Hud.compose (the image of the old
-        fixed window); any other size => the content scaled into it (render_to_window, same text and overlays)."""
+        fixed window); any other size => the content scaled into it (render_to_window, same text and overlays).
+
+        Plan 15 lần sửa 13f §3.4: `small` is the list of panel slots (_panel_lines); the layout is fit_window_layout,
+        so a window where the camera gets a larger scale beside the panel gets the side layout (camera at the left,
+        the slots wrapped on fixed rows in the panel on the right, Hud.side_panel_builder)."""
         h, w = view.shape[:2]
         panel_h = self.hud.panel_height(text_or_view, small, len(stats_lines))
         if not self.fullscreen and not self.window_sized:
@@ -1461,10 +1507,15 @@ class Level1App:
             rect = cv2.getWindowImageRect(WINDOW_NAME)
         except (cv2.error, AttributeError):
             rect = None
-        layout = fit_layout(w, h, panel_h, rect)
+        layout = fit_window_layout(w, h, panel_h, rect,
+                                   side_ref_h=self.hud.side_panel_height(len(small), len(stats_lines)))
         if layout == fit_layout(w, h, panel_h):
             return self.hud.compose(view, text_or_view, small, hold_progress, stats_lines)
-        return render_to_window(view, self.hud.panel_builder(text_or_view, small), stats_lines, hold_progress, layout)
+        if layout.side:
+            builder = self.hud.side_panel_builder(text_or_view, small)
+        else:
+            builder = self.hud.panel_builder(text_or_view, small)
+        return render_to_window(view, builder, stats_lines, hold_progress, layout)
 
     # -------------------------------------------------------------- run
     def _open_reader(self):

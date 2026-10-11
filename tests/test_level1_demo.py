@@ -3697,10 +3697,12 @@ class TestWindowAndFullscreenU2t2(unittest.TestCase):
             with mock.patch.multiple(app_mod.cv2, **rec_b.patches()):
                 out_b = app._window_image(view.copy(), tov, small, hold, stats)
                 ph = app.hud.panel_height(tov, small, 1)
-                L = app_mod.fit_layout(640, 480, ph, (0, 0, 1920, 1080))
-                cam_h = L.cam_rect[3]
-                cam_region = out_b[L.y0 : L.y0 + cam_h, L.x0 : L.x0 + L.content_w]
-                expected_cam = app_mod.cv2.resize(view, (L.content_w, cam_h), interpolation=app_mod.cv2.INTER_LINEAR)
+                L = app_mod.fit_window_layout(640, 480, ph, (0, 0, 1920, 1080),
+                                              side_ref_h=app.hud.side_panel_height(len(small), 1))
+                self.assertTrue(L.side)
+                cx, cy, cw, ch = L.cam_rect
+                cam_region = out_b[cy : cy + ch, cx : cx + cw]
+                expected_cam = app_mod.cv2.resize(view, (cw, ch), interpolation=app_mod.cv2.INTER_LINEAR)
                 self.assertTrue(np.array_equal(cam_region, expected_cam))
                 self.assertTrue(np.any(np.all(out_b == (0, 200, 0), axis=-1)))
         finally:
@@ -4399,6 +4401,240 @@ class TestFixedPanel13f(unittest.TestCase):
                 self.assertEqual(ref.shape, (480 + ph, 640, 3))
                 self.assertEqual(ref.shape, alt.shape)
                 self.assertTrue(np.array_equal(ref[:480], alt[:480]))
+
+
+# ------------------------------------------------------------------ plan 15 lần sửa 13f F3 (side layout in the app)
+# AC-F3 of docs/plans/15-lan-sua-13f.md (with 13f-a): Level1App._window_image picks the layout with fit_window_layout;
+# a window wider than the vertical layout needs gets the side layout (camera at the left edge, panel of wrapped slot
+# rows on the right, font scale panel_scale), the natural window still Hud.compose. The view is the synthetic
+# asymmetric image of W1b (a test pattern, not data); the oracle is built in the test from a fresh Hud with the same
+# font, wrap_rows and draw_panel_overlays (the numbers 2 / 3 rows, 8 px margin, 4 px top padding written literally).
+from src.inference.level1_display import draw_panel_overlays as _f3_overlays  # noqa: E402
+from src.inference.level1_display import fit_window_layout as _f3_fit_window  # noqa: E402
+from src.inference.level1_display import wrap_rows as _f3_wrap_rows  # noqa: E402
+
+F3_STATS = ["fps 30.0 | hud 1.2ms"]
+F3_HOLD = 0.6
+F3_TONE_LINE = "đổi dấu: sắc → huyền"
+
+
+def _f3_view(h=480, w=640):
+    """Synthetic display image h x w, asymmetric (as W1b)."""
+    view = np.zeros((h, w, 3), dtype=np.uint8)
+    view[:, :, 0] = np.tile(np.linspace(0, 255, w, dtype=np.uint8), (h, 1))
+    view[:, :, 1] = np.tile(np.linspace(255, 0, w, dtype=np.uint8), (h, 1))
+    view[:100, :100] = (255, 128, 64)
+    return view
+
+
+@unittest.skipUnless(not _MISSING, SKIP_REASON)
+class TestSideLayoutApp13f(unittest.TestCase):
+    """AC-F3 H1, H1c, H2, H3, H4 of 15-lan-sua-13f, plus the gaps noted by the F1 review (state "bg" = (b) + (g):
+    gesture slot and tone change together; a hold progress > 0) and the F2 review (a tie keeps the vertical layout).
+    Slots of states (a) / (h) come from TestFixedPanel13f._walk on the default app and the 7-slot app."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.app = TestFixedPanel13f._app()
+        cls.app7 = TestFixedPanel13f._app(*TestFixedPanel13f.SEVEN)
+        cls.records = {"default": TestFixedPanel13f._record(cls.app), "seven": TestFixedPanel13f._record(cls.app7)}
+
+    def _window(self, app, rect, tb, slots, hold, view=None, stats=F3_STATS):
+        """app._window_image under a recorder giving `rect` ("error": getWindowImageRect raises cv2.error); returns
+        (image, layout given to render_to_window, None when the image came from Hud.compose)."""
+        from unittest import mock
+        rec = _ScaledWindowRecorder(rect=None if rect == "error" else rect)
+        if rect == "error":
+            rec.getWindowImageRect = _window_rect_raises
+        layouts = []
+        real_render = app_mod.render_to_window
+
+        def render(*a, **k):
+            layouts.append(a[4] if len(a) > 4 else k["layout"])
+            return real_render(*a, **k)
+
+        view = _f3_view() if view is None else view
+        with mock.patch.multiple(app_mod.cv2, **rec.patches()), \
+                mock.patch.object(app_mod, "render_to_window", side_effect=render):
+            out = app._window_image(view.copy(), tb, list(slots), hold, list(stats))
+        self.assertLessEqual(len(layouts), 1)
+        return out, (layouts[0] if layouts else None)
+
+    @staticmethod
+    def _side_expected(app, tb, slots, L, hold, stats=F3_STATS):
+        """(rows, panel image) of the side panel, built in the test: every slot wrapped by wrap_rows with the small
+        font at panel_scale, max width = panel width - 2 x int(8 x ps), 2 rows (3 for the last slot); then Hud._build
+        of a fresh Hud at the panel size and draw_panel_overlays at the top of the panel."""
+        ref = app_mod.Hud(app.hud.font_path, app.hud.font_size)
+        ps = L.panel_scale
+        pw, ph = L.panel_rect[2], L.panel_rect[3]
+        measure = ref._fonts_at(ps)[1].getlength
+        rows = []
+        for i, slot in enumerate(slots):
+            rows += _f3_wrap_rows(slot, measure, pw - 2 * int(8 * ps), 3 if i == len(slots) - 1 else 2)
+        panel = ref._build(pw, tb, rows, len(stats), ps, ph)
+        _f3_overlays(panel, 0, hold, stats, ref.line_steps(ps)[1], ps)
+        return rows, panel
+
+    def test_h1_side_layout_1080p(self):
+        hud = self.app.hud
+        for state in ("a", "h"):
+            with self.subTest(state=state):
+                tb, slots = self.records["default"][state]["panel"][:2]
+                ph = hud.panel_height(tb, slots, 1)
+                L = _f3_fit_window(640, 480, ph, (0, 0, 1920, 1080), side_ref_h=hud.side_panel_height(len(slots), 1))
+                self.assertTrue(L.side)
+                out, used = self._window(self.app, (0, 0, 1920, 1080), tb, slots, F3_HOLD)
+                self.assertEqual(used, L)
+                self.assertEqual(out.shape, (1080, 1920, 3))
+                cam = app_mod.cv2.resize(_f3_view(), (1440, 1080), interpolation=app_mod.cv2.INTER_LINEAR)
+                self.assertTrue(np.array_equal(out[0:1080, 0:1440], cam))
+                self.assertEqual(L.panel_rect, (1440, 0, 480, 1080))
+                rows, panel = self._side_expected(self.app, tb, slots, L, F3_HOLD)
+                self.assertEqual(len(rows), 2 * (len(slots) - 1) + 3)
+                self.assertEqual(hud.side_rows(slots, L.panel_scale, 480), rows)
+                self.assertTrue(np.array_equal(out[0:1080, 1440:1920], panel))
+                self.assertTrue(np.any(np.all(out[:, 1440:] == (0, 200, 0), axis=-1)))
+                if state == "h":  # the alert slot shows the angle hint (priority over the warnings, §3.2)
+                    self.assertIn(app_mod.ANGLE_HINT_LINE, rows)
+
+    def test_h1c_seven_slots_height_term(self):
+        hud = self.app7.hud
+        tb, slots = self.records["seven"]["a"]["panel"][:2]
+        self.assertEqual(len(slots), 7)
+        ph = hud.panel_height(tb, slots, 1)
+        ref_h = hud.side_panel_height(7, 1)
+        L = _f3_fit_window(640, 360, ph, (0, 0, 2400, 800), side_ref_h=ref_h)
+        self.assertTrue(L.side)
+        x, y, cw, ch = L.cam_rect
+        px, py, pw, pph = L.panel_rect
+        terms = (L.scale, (2400 - cw) / 320, 800 / ref_h)
+        self.assertLess(terms[2], min(terms[:2]), terms)
+        self.assertAlmostEqual(L.panel_scale, terms[2], delta=1e-9)
+        view = _f3_view(360, 640)
+        out, used = self._window(self.app7, (0, 0, 2400, 800), tb, slots, F3_HOLD, view=view)
+        self.assertEqual(used, L)
+        self.assertEqual(out.shape, (800, 2400, 3))
+        cam = app_mod.cv2.resize(view, (cw, ch), interpolation=app_mod.cv2.INTER_LINEAR)
+        self.assertTrue(np.array_equal(out[y:y + ch, x:x + cw], cam))
+        rows, panel = self._side_expected(self.app7, tb, slots, L, F3_HOLD)
+        self.assertEqual(len(rows), 2 * (7 - 1) + 3)
+        self.assertTrue(np.array_equal(out[py:py + pph, px:px + pw], panel))
+        ps = L.panel_scale
+        line_step, small_step = hud.line_steps(ps)
+        num_big = 1 if isinstance(tb, dict) else len(tb)
+        first = int(4 * ps) + num_big * line_step
+        for i in range(len(rows)):  # bottom of every row above the one stats row
+            self.assertLessEqual(first + (i + 1) * small_step, pph - 1 * small_step, i)
+
+    def test_h2_camera_independent_of_panel_content(self):
+        rec = self.records["default"]
+        tb_a, slots_a = rec["a"]["panel"][:2]
+        tb_h, slots_h = rec["h"]["panel"][:2]
+        ph = self.app.hud.panel_height(tb_a, slots_a, 1)
+        self.assertEqual(ph, self.app.hud.panel_height(tb_h, slots_h, 1))
+        rects = ("error", (0, 0, 640, 480 + ph), (0, 0, 1920, 1080), (0, 0, 1280, 1360), (0, 0, 1000, 700),
+                 (0, 0, 2560, 1080))
+        paths = set()
+        for rect in rects:
+            with self.subTest(rect=rect):
+                ref, la = self._window(self.app, rect, tb_a, slots_a, 0.0)
+                alt, lb = self._window(self.app, rect, tb_h, slots_h, 0.6)
+                self.assertEqual(ref.shape, alt.shape)
+                self.assertEqual(la is None, lb is None)
+                ca = (0, 0, 640, 480) if la is None else la.cam_rect
+                cb = (0, 0, 640, 480) if lb is None else lb.cam_rect
+                self.assertEqual(ca, cb)
+                x, y, cw, ch = ca
+                self.assertTrue(np.array_equal(ref[y:y + ch, x:x + cw], alt[y:y + ch, x:x + cw]))
+                paths.add("compose" if la is None else ("side" if la.side else "below"))
+        self.assertEqual(paths, {"compose", "side", "below"})
+
+    def test_h3_app_run_1080p_side(self):
+        from unittest import mock
+        rec = _ScaledWindowRecorder(rect=(0, 0, 1920, 1080))
+        layouts = []
+        real_render = app_mod.render_to_window
+
+        def render(*a, **k):
+            layouts.append(a[4] if len(a) > 4 else k["layout"])
+            return real_render(*a, **k)
+
+        cwd = os.getcwd()
+        os.chdir(PROJECT_ROOT)
+        try:
+            with mock.patch.multiple(app_mod.cv2, **rec.patches()), \
+                    mock.patch.object(app_mod, "render_to_window", side_effect=render):
+                app = app_mod.Level1App(args_for("--source", CLIP, "--pace", "realtime"))
+                report = app.run()
+        finally:
+            os.chdir(cwd)
+        processed = report["counts"]["frames_processed"]
+        self.assertGreater(processed, 0)
+        self.assertEqual(len(rec.shown), processed)
+        self.assertEqual(set(rec.shown), {(1080, 1920, 3)})
+        self.assertEqual(len(layouts), processed)
+        self.assertEqual({L.cam_rect for L in layouts}, {(0, 0, 1440, 1080)})
+        self.assertTrue(all(L.side for L in layouts))
+        self.assertEqual(len(rec.resized), 1, rec.resized)
+
+    def test_h4_side_panel_fits_camera_height(self):
+        cap = app_mod.cv2.VideoCapture(os.path.join(PROJECT_ROOT, CLIP))
+        try:
+            ok, frame = cap.read()
+        finally:
+            cap.release()
+        self.assertTrue(ok)
+        for n in (5, 6, 7):
+            with self.subTest(slots=n):
+                self.assertLessEqual(self.app.hud.side_panel_height(n, 2), frame.shape[0])
+
+    def test_f3_state_bg_gesture_and_tone_change(self):
+        """F1 review THẤP-1: gesture line and tone change at once (no warning, no angle hint): the alert slot is the
+        tone change, the gesture slot the gesture line."""
+        for which, extra in (("default", ()), ("seven", TestFixedPanel13f.SEVEN)):
+            with self.subTest(app=which):
+                app = TestFixedPanel13f._app(*extra)
+                real = app.speller
+                for t in (100.0, 160.0, 220.0):
+                    app._gesture_step(t, True, True)
+                app.speller = TestFixedPanel13f._stub(real, (), F1_TONES)
+                gesture = app._gesture_line()
+                self.assertIsNotNone(gesture)
+                self.assertTrue(gesture.startswith("[Cử chỉ: Dấu cách "), gesture)
+                self.assertEqual(app.foreshortened_run, 0)
+                slots = app._panel_lines()[1]
+                k = 2 + int(app.detection_custom) + int(app.hand_lock is not None)
+                self.assertEqual(len(slots), k + 3)
+                self.assertEqual(slots[k], gesture)
+                self.assertEqual(slots[k + 1], F3_TONE_LINE)
+                self.assertEqual(slots[-1], app._hud_lines()[1][-1])
+
+    def test_f3_hold_progress_above_zero(self):
+        """F1 review THẤP-2: a hold progress > 0 (segmenter status stubbed by the test) reaches _panel_lines as in
+        _hud_lines and is drawn as the hold bar at the top of the side panel."""
+        app = TestFixedPanel13f._app()
+        self.assertFalse(app.classifier_mode)
+        real_status = app.segmenter.status
+        app.segmenter.status = lambda: {**real_status(), "hold_progress": 0.4}
+        hud_progress = app._hud_lines()[2]
+        tb, slots, progress, stats = app._panel_lines()
+        self.assertEqual(hud_progress, 0.4)
+        self.assertEqual(progress, hud_progress)
+        out, L = self._window(app, (0, 0, 1920, 1080), tb, slots, progress)
+        self.assertTrue(L.side)
+        px, py, pw, ph = L.panel_rect
+        ps = L.panel_scale
+        bar = out[py:py + int(3 * ps) + 1, px:px + int(pw * 0.4) + 1]
+        self.assertTrue(np.all(bar == (0, 200, 0)))
+        self.assertFalse(np.any(np.all(out[py:py + int(3 * ps) + 1, px + int(pw * 0.4) + 1:px + pw] == (0, 200, 0),
+                                       axis=-1)))
+
+    def test_f3_tie_keeps_vertical(self):
+        """F2 review THẤP-1: equal camera scales (1.2 both) => the vertical layout."""
+        L = _f3_fit_window(640, 480, 200, 1024, 816)
+        self.assertIs(L.side, False)
+        self.assertEqual(L, app_mod.fit_layout(640, 480, 200, 1024, 816))
 
 
 if __name__ == "__main__":
