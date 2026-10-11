@@ -1943,5 +1943,12 @@ Cửa sổ THẬT (không vá `imshow`/`namedWindow`/`resizeWindow`/`waitKey`); 
 > LẦN SỬA 13g (2026-10-11): xem docs/plans/15-lan-sua-13g.md — VU2: chẩn đoán cử chỉ không nhận (người dùng quay 12 clip D + chạy app 1 phút; script level1_gesture_diag.py ablation qua GestureEngine, quy tắc nới ngưỡng G-0..G-3 đặt trước, sàn cố định) và khung xương lệch (đo smooth/track/CLAHE, R-S ⇒ vẽ landmark thô); S9→S1→S2 (agy)→S3 (cầu nối)→S5/S6 (agy)→S6b GF→U3 T 24 clip→S7 GT→S8 preset; DC1 = Giới hạn (3 JSON trượt commit làm bằng chứng); demo tạm: --no-gesture-space --no-gesture-backspace + phím SPACE/BACKSPACE.
 
 ## Lần sửa 13g — S1 (2026-10-11, agy; 15-lan-sua-13g §3.2, §3.3, §6 AC-1..AC-4)
-- ĐANG LÀM: S1 script chẩn đoán phần 1 (scripts/level1_gesture_diag.py) + test tests/test_level1_gesture_diag.py (AC-1..AC-4); U1 (12 clip D) và U2 đã hoàn tất bởi người dùng.
-- Còn lại: S2 (ablation + R-G), S3, S5, S6, S6b, U3/VU3, S7, S8.
+- Commit: `a794d00` (`15: L13g-S1 script phan 1 doc video, khung xuong, timestamp va test AC-1..AC-4`).
+- Mã: `scripts/level1_gesture_diag.py` (crop_and_resize 4:3 INTER_AREA, resolve_timestamps POS_MSEC/fps, filter_process_fps, dev(a,b) trên aspect_points, p50/p90 percentiles, evaluate_rs_rules R-S1/R-S2, session_factory tiêm được).
+- Test: `tests/test_level1_gesture_diag.py` AC-1..AC-4, AC-8 xanh 12/12 test; test_level1_guard xanh 4/4; test_backend_source_guard xanh 28/28.
+
+## Lần sửa 13g — S2 (2026-10-11, agy; 15-lan-sua-13g §3.2, §3.3, §6 AC-5..AC-8)
+- Hoàn thành S2: ablation cử chỉ qua `GestureEngine` thực tế (6 tham số: `space_hold_ms`, `space_dropout_frames`, `wave_window_ms`, `wave_min_amplitude`, `wave_max_vertical_ratio`, `wave_min_flat_fraction`), tìm giá trị tới hạn cô lập $c_i(p)$, chọn giá trị lưới nghiêm ngặt nhất thỏa mãn $\ge 4/5$, quy tắc R-G G-0..G-3, và chế độ `--mode gate` (GT1/GT2 gate 12 clip/cử chỉ).
+- Test: `tests/test_level1_gesture_diag.py` AC-1..AC-8 xanh 15/15 test; test_level1_guard xanh 4/4; test_backend_source_guard xanh 28/28.
+- Tiếp theo: S3 (chạy chẩn đoán trên tập D của người dùng với process-fps = 15.5), S5, S6, S6b.
+

@@ -225,6 +225,220 @@ class TestLevel1GestureDiagS1(unittest.TestCase):
         self.assertFalse(r4["suggest_no_auto_enhance"])
 
     # -------------------------------------------------------------------------
+    # AC-5: Ablation dùng GestureEngine thật
+    # -------------------------------------------------------------------------
+    def test_ac5_ablation_real_engine(self):
+        """Ablation trên chuỗi tổng hợp với GestureEngine thật:
+        - vẫy 2 nét biên độ 0.8x palm phát ở design;
+        - vẫy biên độ 0.5x palm không phát ở design, c(wave_min_amplitude) = 0.5;
+        - giữ xòe 500 ms không phát ở design (600), c(space_hold_ms) = 500.
+        """
+        from tests.test_level1_gestures import (
+            DESIGN_TABLE,
+            FLAT,
+            OPEN_PALM,
+            PALM,
+            hand,
+            stroke_path,
+            to_mediapipe,
+        )
+        from scripts.level1_gesture_diag import (
+            find_critical_value,
+            make_floor_values,
+            run_engine_on_sequence,
+        )
+
+        floor_values = make_floor_values(DESIGN_TABLE)
+        dt = 25.0  # 40 fps
+        w, h = TARGET_W, TARGET_H
+
+        # 1. Giữ xòe 500 ms (20 frames * 25ms = 500ms)
+        space_seq_500 = []
+        for i in range(21):
+            ts = i * dt
+            # Bàn tay xòe ở giữa màn hình
+            pts = hand(OPEN_PALM, 0.5, 0.5, PALM)
+            lm = to_mediapipe(pts, w, h)
+            space_seq_500.append((ts, lm, w, h, True))  # still = True
+
+        # Tại design (space_hold_ms=600): KHÔNG phát
+        emits_design = run_engine_on_sequence(DESIGN_TABLE, space_seq_500)
+        self.assertEqual(emits_design["space"], 0)
+
+        # c(space_hold_ms) trên lưới [600, 550, 500, 450, 400]
+        c_space = find_critical_value(space_seq_500, "space_hold_ms", "space", floor_values)
+        self.assertEqual(c_space, 500)
+
+        # 2. Vẫy 2 nét: biên độ 0.8x palm vs 0.5x palm
+        def make_wave_seq(amp_ratio):
+            xs = stroke_path(0.5, [amp_ratio * PALM, -amp_ratio * PALM], frames_per_stroke=10)
+            seq = []
+            for i, x in enumerate(xs):
+                ts = i * dt
+                pts = hand(FLAT, x, 0.5, PALM)
+                lm = to_mediapipe(pts, w, h)
+                seq.append((ts, lm, w, h, False))
+            return seq
+
+        wave_seq_08 = make_wave_seq(0.8)
+        emits_08 = run_engine_on_sequence(DESIGN_TABLE, wave_seq_08)
+        self.assertGreaterEqual(emits_08["backspace"], 1, "Vẫy 0.8x palm phải phát ở design")
+
+        wave_seq_05 = make_wave_seq(0.5)
+        emits_05 = run_engine_on_sequence(DESIGN_TABLE, wave_seq_05)
+        self.assertEqual(emits_05["backspace"], 0, "Vẫy 0.5x palm không phát ở design")
+
+        c_wave = find_critical_value(wave_seq_05, "wave_min_amplitude", "backspace", floor_values)
+        self.assertEqual(c_wave, 0.50, "c(wave_min_amplitude) cho chuỗi 0.5x palm phải bằng 0.50")
+
+    # -------------------------------------------------------------------------
+    # AC-6: Quy tắc R-G (G-0..G-3) với bộ chạy giả tiêm vào
+    # -------------------------------------------------------------------------
+    def test_ac6_rg_decision_rules(self):
+        """Kiểm tra đầy đủ G-0, G-1, G-2, G-3 qua bộ chạy giả (mock runner)."""
+        from tests.test_level1_gestures import DESIGN_TABLE
+        from scripts.level1_gesture_diag import evaluate_gesture_rules
+
+        # Ca 1: G-0: design phát ở >= 4/5 clip trên cả 2 biến thể -> stop_offline_ok = True
+        def runner_g0(values, clip):
+            return {"space": 1, "backspace": 0}
+
+        clips_cat = {
+            "space": [{"cat": "space", "idx": i} for i in range(5)],
+            "backspace": [{"cat": "backspace", "idx": i} for i in range(5)],
+            "spell": [{"cat": "spell", "idx": i} for i in range(2)],
+        }
+        res_g0 = evaluate_gesture_rules(clips_cat, clips_cat, DESIGN_TABLE, runner=runner_g0)
+        self.assertTrue(res_g0["decisions"]["stop_offline_ok"])
+
+        # Ca 2: G-1: floor phát ở < 4/5 clip (< 4) -> stop_outside_config = True
+        def runner_g1(values, clip):
+            # Chỉ 2 clip phát
+            if clip.get("idx", 0) < 2 and clip.get("cat") == "space":
+                return {"space": 1, "backspace": 0}
+            return {"space": 0, "backspace": 0}
+
+        res_g1 = evaluate_gesture_rules(clips_cat, clips_cat, DESIGN_TABLE, runner=runner_g1)
+        self.assertTrue(res_g1["decisions"]["stop_outside_config"])
+
+        # Ca 3: G-2 & G-3: Tính ngưỡng tới hạn, lấy giá trị lỏng hơn giữa 2 biến thể, không vượt sàn
+        def runner_g2(values, clip):
+            cat = clip.get("cat")
+            idx = clip.get("idx", 0)
+            if cat == "spell":
+                return {"space": 0, "backspace": 0}
+            hold = values.get("space_hold_ms", 600)
+            amp = values.get("wave_min_amplitude", 0.6)
+            sp = 1 if cat == "space" and hold <= 450 and idx < 4 else 0
+            bs = 1 if cat == "backspace" and amp <= 0.50 and idx < 4 else 0
+            return {"space": sp, "backspace": bs}
+
+        res_g2 = evaluate_gesture_rules(clips_cat, None, DESIGN_TABLE, runner=runner_g2)
+        dec = res_g2["decisions"]
+        self.assertFalse(dec["stop_offline_ok"])
+        self.assertFalse(dec["stop_outside_config"])
+        self.assertFalse(dec["stop_combined"])
+        self.assertIn("space_hold_ms", dec["tuned_values"])
+        self.assertEqual(dec["tuned_values"]["space_hold_ms"], 450)
+
+        # Ca 4: G-3 thất bại nếu có phát ngược hoặc phát trên spell
+        def runner_g3_spell_polluted(values, clip):
+            cat = clip.get("cat")
+            if cat == "spell":
+                return {"space": 1, "backspace": 0}
+            return {"space": 1, "backspace": 0}
+
+        res_g3 = evaluate_gesture_rules(clips_cat, None, DESIGN_TABLE, runner=runner_g3_spell_polluted)
+        self.assertTrue(res_g3["decisions"]["stop_offline_ok"] or res_g3["decisions"]["stop_combined"])
+
+    # -------------------------------------------------------------------------
+    # AC-7: Chế độ --mode gate (GT1/GT2)
+    # -------------------------------------------------------------------------
+    def test_ac7_mode_gate(self):
+        """Kiểm tra chế độ --mode gate:
+        - 10/12 + 0 ngược => pass
+        - 9/12 => fail
+        - 10/12 nhưng 1 clip phát ngược => clip đó không đạt
+        - Số clip != 12 => fail-closed (pass = False) + lý do.
+        """
+        from scripts.level1_gesture_diag import run_gate_mode
+
+        # 1. 10/12 space (0 back), 10/12 backspace (0 space) -> PASS
+        def runner_pass(values, clip_idx):
+            # clip_idx 0..9 phát đúng, 10..11 không phát
+            if clip_idx < 10:
+                return {"space": 1, "backspace": 0}
+            return {"space": 0, "backspace": 0}
+
+        def runner_back_pass(values, clip_idx):
+            if clip_idx < 10:
+                return {"space": 0, "backspace": 1}
+            return {"space": 0, "backspace": 0}
+
+        clips_12 = {"space": list(range(12)), "backspace": list(range(12))}
+
+        def runner_combined_pass(values, c):
+            # Nếu c là space clip (chẵn/lẻ phân biệt qua đối số)
+            return {"space": 1, "backspace": 0} if c < 10 else {"space": 0, "backspace": 0}
+
+        # Tạo runner phân biệt cử chỉ theo c
+        class MockGateRunner:
+            def __call__(self, values, c):
+                is_space_clip = c.get("is_space", False)
+                idx = c.get("idx", 0)
+                if is_space_clip:
+                    return {"space": 1 if idx < 10 else 0, "backspace": 0}
+                else:
+                    return {"space": 0, "backspace": 1 if idx < 10 else 0}
+
+        clips_pass = {
+            "space": [{"is_space": True, "idx": i} for i in range(12)],
+            "backspace": [{"is_space": False, "idx": i} for i in range(12)],
+        }
+        res_pass = run_gate_mode(clips_pass, {}, runner=MockGateRunner())
+        self.assertTrue(res_pass["pass"], f"Gate phải pass với 10/12, lý do: {res_pass.get('reason')}")
+
+        # 2. 9/12 -> FAIL
+        class MockGateRunner9:
+            def __call__(self, values, c):
+                is_space_clip = c.get("is_space", False)
+                idx = c.get("idx", 0)
+                if is_space_clip:
+                    return {"space": 1 if idx < 9 else 0, "backspace": 0}
+                else:
+                    return {"space": 0, "backspace": 1 if idx < 10 else 0}
+
+        res_fail9 = run_gate_mode(clips_pass, {}, runner=MockGateRunner9())
+        self.assertFalse(res_fail9["pass"])
+        self.assertEqual(res_fail9["gt1"]["valid"], 9)
+
+        # 3. 10/12 space nhưng 1 clip phát ngược backspace -> clip đó bị loại (chỉ còn 9 hợp lệ) -> FAIL
+        class MockGateRunnerInverse:
+            def __call__(self, values, c):
+                is_space_clip = c.get("is_space", False)
+                idx = c.get("idx", 0)
+                if is_space_clip:
+                    # Clip idx=0 phát cả space và backspace (phát ngược)
+                    if idx == 0:
+                        return {"space": 1, "backspace": 1}
+                    return {"space": 1 if idx < 10 else 0, "backspace": 0}
+                else:
+                    return {"space": 0, "backspace": 1 if idx < 10 else 0}
+
+        res_inverse = run_gate_mode(clips_pass, {}, runner=MockGateRunnerInverse())
+        self.assertFalse(res_inverse["pass"])
+        self.assertEqual(res_inverse["gt1"]["valid"], 9)
+
+        # 4. Fail-closed khi số clip != 12
+        clips_wrong_count = {
+            "space": list(range(11)),  # chỉ 11 clip
+            "backspace": list(range(12)),
+        }
+        res_closed = run_gate_mode(clips_wrong_count, {})
+        self.assertFalse(res_closed["pass"])
+        self.assertIn("Fail-closed", res_closed["reason"])
+
+    # -------------------------------------------------------------------------
     # AC-8: Cấu trúc JSON & Privacy
     # -------------------------------------------------------------------------
     def test_ac8_json_structure_and_privacy(self):
@@ -258,3 +472,4 @@ class TestLevel1GestureDiagS1(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

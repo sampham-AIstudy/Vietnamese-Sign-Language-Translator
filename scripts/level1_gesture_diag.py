@@ -33,6 +33,8 @@ from src.inference.level1_core import (  # noqa: E402
     HandednessLock,
     LandmarkSmoother,
     enhance_low_light,
+    is_flat_hand_backspace,
+    is_open_palm_space,
     load_level1_config,
 )
 from src.inference.level1_gestures import (  # noqa: E402
@@ -41,6 +43,55 @@ from src.inference.level1_gestures import (  # noqa: E402
     palm_len,
 )
 from src.inference.level1_segmenter import Level1SignSegmenter, aspect_points  # noqa: E402
+
+ADJUSTABLE_KEYS = {
+    "space": ["space_hold_ms", "space_dropout_frames"],
+    "backspace": [
+        "wave_window_ms",
+        "wave_min_amplitude",
+        "wave_max_vertical_ratio",
+        "wave_min_flat_fraction",
+    ],
+}
+
+GRIDS = {
+    "space_hold_ms": {
+        "design": 600,
+        "floor": 400,
+        "values": [600, 550, 500, 450, 400],
+        "direction": "larger_is_stricter",
+    },
+    "space_dropout_frames": {
+        "design": 1,
+        "floor": 3,
+        "values": [1, 2, 3],
+        "direction": "smaller_is_stricter",
+    },
+    "wave_window_ms": {
+        "design": 1500,
+        "floor": 2500,
+        "values": [1500, 1750, 2000, 2250, 2500],
+        "direction": "smaller_is_stricter",
+    },
+    "wave_min_amplitude": {
+        "design": 0.6,
+        "floor": 0.35,
+        "values": [0.60, 0.55, 0.50, 0.45, 0.40, 0.35],
+        "direction": "larger_is_stricter",
+    },
+    "wave_max_vertical_ratio": {
+        "design": 0.5,
+        "floor": 1.0,
+        "values": [0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+        "direction": "smaller_is_stricter",
+    },
+    "wave_min_flat_fraction": {
+        "design": 0.9,
+        "floor": 0.6,
+        "values": [0.90, 0.85, 0.80, 0.75, 0.70, 0.65, 0.60],
+        "direction": "larger_is_stricter",
+    },
+}
 
 # Hằng số quy tắc đặt trước theo Kế hoạch 15 — Lần sửa 13g §3.3
 PRESET_RULES_13G: Dict[str, Any] = {
@@ -274,6 +325,12 @@ def run_pipeline_on_frames(
     has_hand_no_clahe = 0
 
     frame_details = []
+    frames_seq_smooth: List[Tuple[float, Optional[np.ndarray], int, int, bool]] = []
+    frames_seq_raw: List[Tuple[float, Optional[np.ndarray], int, int, bool]] = []
+
+    n_palm = 0
+    n_flat = 0
+    n_still_hand = 0
 
     for i in range(n_frames):
         frame = frames[i]
@@ -305,12 +362,25 @@ def run_pipeline_on_frames(
         # Cập nhật segmenter
         segmenter.push(ts, lm_smooth, handedness, w, h)
         is_moving = segmenter.state == "moving"
+        still = not is_moving
+
+        # Lưu chuỗi cho GestureEngine
+        frames_seq_smooth.append((ts, lm_smooth, w, h, still))
+        frames_seq_raw.append((ts, lm_raw, w, h, still))
 
         # Tính độ lệch khung xương trên aspect_points
         pts_raw = aspect_points(lm_raw, w, h) if lm_raw is not None else None
         pts_smooth = aspect_points(lm_smooth, w, h) if lm_smooth is not None else None
         pts_static = aspect_points(lm_static, w, h) if lm_static is not None else None
         pts_no_clahe = aspect_points(lm_no_clahe, w, h) if lm_no_clahe is not None else None
+
+        if pts_smooth is not None:
+            if is_open_palm_space(pts_smooth):
+                n_palm += 1
+            if is_flat_hand_backspace(pts_smooth):
+                n_flat += 1
+            if still:
+                n_still_hand += 1
 
         d_smooth = dev(pts_smooth, pts_raw, pts_raw)
         d_track = dev(pts_raw, pts_static, pts_raw)
@@ -379,6 +449,13 @@ def run_pipeline_on_frames(
             "app_video": float(has_hand_app / n_frames),
             "static": float(has_hand_static / n_frames),
             "no_clahe": float(has_hand_no_clahe / n_frames),
+        },
+        "frames_seq_smooth": frames_seq_smooth,
+        "frames_seq_raw": frames_seq_raw,
+        "pose_rates_on_hand": {
+            "palm": float(n_palm / has_hand_app) if has_hand_app > 0 else 0.0,
+            "flat": float(n_flat / has_hand_app) if has_hand_app > 0 else 0.0,
+            "still": float(n_still_hand / has_hand_app) if has_hand_app > 0 else 0.0,
         },
     }
 
@@ -464,6 +541,294 @@ def find_clips(clips_dir: str) -> Dict[str, List[str]]:
     return found
 
 
+# =============================================================================
+# 6. ABLATION CU CHI & QUY TAC QUYET DINH R-G (AC-5, AC-6, AC-7)
+# =============================================================================
+def make_floor_values(design_values: Dict[str, Any]) -> Dict[str, Any]:
+    """Tạo bộ cấu hình floor (lỏng nhất cho phép theo §3.3)."""
+    vals = dict(design_values)
+    for k, info in GRIDS.items():
+        vals[k] = info["floor"]
+    return vals
+
+
+def make_isolated_values(floor_values: Dict[str, Any], key: str, val: Any) -> Dict[str, Any]:
+    """Tạo bộ cấu hình cô lập: khóa key mang giá trị val, các khóa khác ở floor."""
+    vals = dict(floor_values)
+    vals[key] = val
+    return vals
+
+
+def run_engine_on_sequence(
+    values: Dict[str, Any],
+    frames_seq: Sequence[Tuple[float, Optional[np.ndarray], int, int, bool]],
+) -> Dict[str, Any]:
+    """Chạy GestureEngine trên chuỗi khung đã tính trước."""
+    engine = GestureEngine(values)
+    emits_space = 0
+    emits_backspace = 0
+    max_strokes = 0
+    for ts, lm, w, h, still in frames_seq:
+        res = engine.step(ts, lm, w, h, still=still)
+        if res["space"]:
+            emits_space += 1
+        if res["backspace"]:
+            emits_backspace += 1
+        if hasattr(engine, "wave") and hasattr(engine.wave, "strokes"):
+            if engine.wave.strokes > max_strokes:
+                max_strokes = engine.wave.strokes
+    return {
+        "space": emits_space,
+        "backspace": emits_backspace,
+        "max_strokes": max_strokes,
+    }
+
+
+def find_critical_value(
+    clip_seq: Any,
+    key: str,
+    gesture_name: str,
+    floor_values: Dict[str, Any],
+    runner: Optional[Callable[..., Any]] = None,
+) -> Optional[Any]:
+    """Tìm giá trị tới hạn cô lập c_i(p): giá trị CHẶT nhất trên lưới mà clip còn phát."""
+    grid_vals = GRIDS[key]["values"]  # Đã sắp xếp từ CHẶT nhất đến LỎNG nhất
+    for v in grid_vals:
+        test_values = make_isolated_values(floor_values, key, v)
+        if runner is not None:
+            emits = runner(test_values, clip_seq)
+        else:
+            emits = run_engine_on_sequence(test_values, clip_seq)
+        if emits.get(gesture_name, 0) >= 1:
+            return v  # Vì duyệt từ chặt đến lỏng nên giá trị đầu tiên phát là giá trị chặt nhất
+    return None
+
+
+def is_looser_or_equal(cand: Any, crit: Any, key: str) -> bool:
+    """Kiểm tra cand có lỏng hơn hoặc bằng mốc tới hạn crit không."""
+    if crit is None:
+        return False
+    direction = GRIDS[key]["direction"]
+    if direction == "larger_is_stricter":
+        return cand <= crit + 1e-9
+    else:
+        return cand >= crit - 1e-9
+
+
+def pick_looser(key: str, v1: Any, v2: Any) -> Any:
+    """Lấy giá trị LỎNG hơn giữa hai giá trị."""
+    if v1 is None:
+        return v2
+    if v2 is None:
+        return v1
+    direction = GRIDS[key]["direction"]
+    if direction == "larger_is_stricter":
+        return min(v1, v2)
+    else:
+        return max(v1, v2)
+
+
+def strictest_grid_satisfying(
+    key: str, critical_values: Sequence[Any], fraction: float = 0.8
+) -> Optional[Any]:
+    """Tìm giá trị CHẶT nhất trên lưới thỏa mãn >= pass_fraction số clip."""
+    total = len(critical_values)
+    needed = int(np.ceil(total * fraction))
+    grid_vals = GRIDS[key]["values"]  # Duyệt từ chặt nhất đến lỏng nhất
+    for cand in grid_vals:
+        count = sum(1 for c in critical_values if is_looser_or_equal(cand, c, key))
+        if count >= needed:
+            return cand
+    return None
+
+
+def evaluate_gesture_rules(
+    clips_native: Dict[str, List[Any]],
+    clips_pfps: Optional[Dict[str, List[Any]]],
+    design_values: Dict[str, Any],
+    runner: Optional[Callable[..., Any]] = None,
+) -> Dict[str, Any]:
+    """Thực thi đầy đủ thuật toán nới ngưỡng R-G (G-0..G-3) theo §3.3."""
+    floor_values = make_floor_values(design_values)
+    gestures = ["space", "backspace"]
+
+    decisions: Dict[str, Any] = {
+        "stop_offline_ok": False,
+        "stop_outside_config": False,
+        "stop_combined": False,
+        "tuned_values": {},
+    }
+
+    def _get_emits(values: Dict[str, Any], clip_seq: Any) -> Dict[str, int]:
+        if runner is not None:
+            return runner(values, clip_seq)
+        return run_engine_on_sequence(values, clip_seq)
+
+    # 1. Kiểm tra G-0: design phát ở >= 4/5 clip trên CẢ hai biến thể
+    g0_results: Dict[str, bool] = {}
+    for g in gestures:
+        native_clips = clips_native.get(g, [])
+        nat_count = sum(1 for c in native_clips if _get_emits(design_values, c).get(g, 0) >= 1)
+        nat_ok = nat_count >= int(np.ceil(len(native_clips) * 0.8)) if native_clips else False
+
+        pfps_ok = True
+        if clips_pfps and clips_pfps.get(g):
+            pfps_clips = clips_pfps[g]
+            pfps_count = sum(1 for c in pfps_clips if _get_emits(design_values, c).get(g, 0) >= 1)
+            pfps_ok = pfps_count >= int(np.ceil(len(pfps_clips) * 0.8))
+
+        g0_results[g] = bool(nat_ok and pfps_ok)
+
+    if any(g0_results.values()):
+        decisions["stop_offline_ok"] = True
+        return {"g0": g0_results, "decisions": decisions}
+
+    # 2. Kiểm tra G-1: floor phát ở < 4/5 clip
+    g1_results: Dict[str, bool] = {}
+    for g in gestures:
+        native_clips = clips_native.get(g, [])
+        nat_count = sum(1 for c in native_clips if _get_emits(floor_values, c).get(g, 0) >= 1)
+        nat_ok = nat_count >= int(np.ceil(len(native_clips) * 0.8)) if native_clips else False
+
+        pfps_ok = True
+        if clips_pfps and clips_pfps.get(g):
+            pfps_clips = clips_pfps[g]
+            pfps_count = sum(1 for c in pfps_clips if _get_emits(floor_values, c).get(g, 0) >= 1)
+            pfps_ok = pfps_count >= int(np.ceil(len(pfps_clips) * 0.8))
+
+        g1_results[g] = not (nat_ok and pfps_ok)
+
+    if any(g1_results.values()):
+        decisions["stop_outside_config"] = True
+        return {"g0": g0_results, "g1": g1_results, "decisions": decisions}
+
+    # 3. G-2: Tối ưu từng khóa cô lập
+    g2_tuned: Dict[str, Any] = {}
+    ablation_details: Dict[str, Any] = {}
+
+    for g in gestures:
+        keys = ADJUSTABLE_KEYS[g]
+        native_clips = clips_native.get(g, [])
+        pfps_clips = (clips_pfps.get(g, []) if clips_pfps else [])
+
+        for p in keys:
+            crits_nat = [find_critical_value(c, p, g, floor_values, runner) for c in native_clips]
+            v_nat = strictest_grid_satisfying(p, crits_nat, 0.8)
+
+            if pfps_clips:
+                crits_pfps = [find_critical_value(c, p, g, floor_values, runner) for c in pfps_clips]
+                v_pfps = strictest_grid_satisfying(p, crits_pfps, 0.8)
+                v_final = pick_looser(p, v_nat, v_pfps)
+            else:
+                crits_pfps = []
+                v_pfps = None
+                v_final = v_nat
+
+            g2_tuned[p] = v_final
+            ablation_details[p] = {
+                "crits_native": crits_nat,
+                "crits_process_fps": crits_pfps,
+                "v_native": v_nat,
+                "v_process_fps": v_pfps,
+                "v_final": v_final,
+            }
+
+    # 4. G-3: Chạy lại với bộ giá trị mới kết hợp trên D
+    combined_values = dict(design_values)
+    combined_values.update(g2_tuned)
+
+    space_clips = clips_native.get("space", [])
+    back_clips = clips_native.get("backspace", [])
+    spell_clips = clips_native.get("spell", [])
+
+    space_emits = [_get_emits(combined_values, c) for c in space_clips]
+    back_emits = [_get_emits(combined_values, c) for c in back_clips]
+    spell_emits = [_get_emits(combined_values, c) for c in spell_clips]
+
+    # Điều kiện G-3:
+    # - mỗi g phát >= 4/5
+    space_pass = sum(1 for e in space_emits if e.get("space", 0) >= 1) >= int(np.ceil(len(space_clips) * 0.8))
+    back_pass = sum(1 for e in back_emits if e.get("backspace", 0) >= 1) >= int(np.ceil(len(back_clips) * 0.8))
+
+    # - 0 lần phát cử chỉ ngược
+    space_inverse_0 = all(e.get("backspace", 0) == 0 for e in space_emits)
+    back_inverse_0 = all(e.get("space", 0) == 0 for e in back_emits)
+
+    # - 0 lần phát trên spell
+    spell_clean = all(e.get("space", 0) == 0 and e.get("backspace", 0) == 0 for e in spell_emits)
+
+    g3_ok = bool(space_pass and back_pass and space_inverse_0 and back_inverse_0 and spell_clean)
+
+    if not g3_ok:
+        decisions["stop_combined"] = True
+    else:
+        decisions["tuned_values"] = {
+            k: v for k, v in combined_values.items() if v != design_values.get(k)
+        }
+
+    return {
+        "g0": g0_results,
+        "g1": g1_results,
+        "g2_ablation": ablation_details,
+        "g3_checks": {
+            "space_pass": space_pass,
+            "backspace_pass": back_pass,
+            "space_inverse_zero": space_inverse_0,
+            "backspace_inverse_zero": back_inverse_0,
+            "spell_clean": spell_clean,
+        },
+        "decisions": decisions,
+    }
+
+
+def run_gate_mode(
+    clips_by_cat: Dict[str, List[Any]],
+    gesture_values: Dict[str, Any],
+    runner: Optional[Callable[..., Any]] = None,
+) -> Dict[str, Any]:
+    """AC-7: Chế độ --mode gate kiểm tra GT1/GT2 trên tập kiểm thử T (fail-closed khi số clip != 12)."""
+    space_clips = clips_by_cat.get("space", [])
+    back_clips = clips_by_cat.get("backspace", [])
+
+    if len(space_clips) != 12 or len(back_clips) != 12:
+        return {
+            "pass": False,
+            "reason": f"Fail-closed: Số clip mỗi cử chỉ phải bằng 12 (thực tế: space={len(space_clips)}, backspace={len(back_clips)})",
+            "gt1": {"valid": 0, "total": len(space_clips), "pass": False},
+            "gt2": {"valid": 0, "total": len(back_clips), "pass": False},
+        }
+
+    def _get_emits(c: Any) -> Dict[str, int]:
+        if runner is not None:
+            return runner(gesture_values, c)
+        return run_engine_on_sequence(gesture_values, c)
+
+    # GT1: >= 10/12 clip space có >= 1 space và 0 backspace
+    gt1_valid = 0
+    for c in space_clips:
+        e = _get_emits(c)
+        if e.get("space", 0) >= 1 and e.get("backspace", 0) == 0:
+            gt1_valid += 1
+
+    # GT2: >= 10/12 clip backspace có >= 1 backspace và 0 space
+    gt2_valid = 0
+    for c in back_clips:
+        e = _get_emits(c)
+        if e.get("backspace", 0) >= 1 and e.get("space", 0) == 0:
+            gt2_valid += 1
+
+    gt1_pass = gt1_valid >= 10
+    gt2_pass = gt2_valid >= 10
+    pass_all = bool(gt1_pass and gt2_pass)
+
+    return {
+        "pass": pass_all,
+        "gt1": {"valid": gt1_valid, "total": 12, "pass": gt1_pass},
+        "gt2": {"valid": gt2_valid, "total": 12, "pass": gt2_pass},
+        "reason": "OK" if pass_all else f"Chưa đạt ngưỡng (GT1: {gt1_valid}/12, GT2: {gt2_valid}/12)",
+    }
+
+
 def run_diag(
     clips_dir: str,
     seg_config_path: str = "configs/level1_demo_classifier_rev9.json",
@@ -487,6 +852,8 @@ def run_diag(
     all_enh_moving: List[float] = []
 
     per_clip_results: Dict[str, Any] = {}
+    clips_seq_native: Dict[str, List[Any]] = {"space": [], "backspace": [], "spell": []}
+    clips_seq_pfps: Dict[str, List[Any]] = {"space": [], "backspace": [], "spell": []}
 
     for cat, paths in clips_by_cat.items():
         per_clip_results[cat] = []
@@ -511,12 +878,15 @@ def run_diag(
             all_track_moving.extend(res_native["dev_track_moving"])
             all_enh_moving.extend(res_native["dev_enh_moving"])
 
+            clips_seq_native[cat].append(res_native["frames_seq_smooth"])
+
             clip_entry: Dict[str, Any] = {
                 "file": clip_name,
                 "n_frames": res_native["n_frames"],
                 "ts_source": ts_source,
                 "native": {
                     "hand_rate": res_native["hand_rate"],
+                    "pose_rates_on_hand": res_native.get("pose_rates_on_hand"),
                     "smooth": compute_percentiles(res_native["dev_smooth_all"]),
                     "track": compute_percentiles(res_native["dev_track_all"]),
                     "enh": compute_percentiles(res_native["dev_enh_all"]),
@@ -534,10 +904,12 @@ def run_diag(
                     session_factory=session_factory,
                     save_overlays=False,
                 )
+                clips_seq_pfps[cat].append(res_pfps["frames_seq_smooth"])
                 clip_entry["process_fps"] = {
                     "fps_target": float(process_fps),
                     "n_frames": res_pfps["n_frames"],
                     "hand_rate": res_pfps["hand_rate"],
+                    "pose_rates_on_hand": res_pfps.get("pose_rates_on_hand"),
                     "smooth": compute_percentiles(res_pfps["dev_smooth_all"]),
                     "track": compute_percentiles(res_pfps["dev_track_all"]),
                     "enh": compute_percentiles(res_pfps["dev_enh_all"]),
@@ -558,6 +930,16 @@ def run_diag(
 
     rs_decisions = evaluate_rs_rules(p90_s, p90_t, p90_e)
 
+    # Chạy ablation cử chỉ R-G (G-0..G-3)
+    has_pfps = process_fps is not None and process_fps > 0
+    rg_eval = evaluate_gesture_rules(
+        clips_native=clips_seq_native,
+        clips_pfps=clips_seq_pfps if has_pfps else None,
+        design_values=gesture_cfg["values"],
+    )
+
+    combined_decisions = {**rs_decisions, **rg_eval["decisions"]}
+
     report = {
         "generated_by": build_metadata(argv if argv is not None else sys.argv),
         "configs": {
@@ -568,7 +950,8 @@ def run_diag(
         "total_clips": total_clips_count,
         "rules": PRESET_RULES_13G,
         "skeleton": skeleton_stats,
-        "decisions": rs_decisions,
+        "gesture_ablation": rg_eval,
+        "decisions": combined_decisions,
         "per_clip": per_clip_results,
     }
     return report
@@ -586,15 +969,42 @@ def main():
     parser.add_argument("--mode", default="diag", choices=["diag", "gate"], help="Che do chay: diag (D) hoac gate (T)")
     args = parser.parse_args()
 
-    report = run_diag(
-        clips_dir=args.clips_dir,
-        seg_config_path=args.segmenter_config,
-        gesture_config_path=args.gesture_config,
-        process_fps=args.process_fps,
-        auto_enhance=not args.no_auto_enhance,
-        overlay_dir=args.overlay_dir,
-        argv=sys.argv,
-    )
+    if args.mode == "gate":
+        # Mode gate cho tập kiểm thử T
+        gesture_cfg = load_gesture_config(args.gesture_config)
+        clips_by_cat = find_clips(args.clips_dir)
+        seg_cfg = load_level1_config(args.segmenter_config)
+
+        # Chạy pipeline để lấy chuỗi smoothed frames cho mỗi clip
+        clips_seq: Dict[str, List[Any]] = {"space": [], "backspace": []}
+        for cat in ("space", "backspace"):
+            for p in clips_by_cat.get(cat, []):
+                frames, timestamps, _ = read_clip_frames(p)
+                if args.process_fps is not None and args.process_fps > 0:
+                    frames, timestamps = filter_process_fps(frames, timestamps, args.process_fps)
+                res = run_pipeline_on_frames(
+                    frames, timestamps, seg_cfg["values"], auto_enhance=not args.no_auto_enhance
+                )
+                clips_seq[cat].append(res["frames_seq_smooth"])
+
+        gate_res = run_gate_mode(clips_seq, gesture_cfg["values"])
+        report = {
+            "generated_by": build_metadata(sys.argv),
+            "mode": "gate",
+            "clips_dir": args.clips_dir,
+            "gesture_config": {"path": args.gesture_config, "sha256": sha256_file(args.gesture_config)},
+            "gate_result": gate_res,
+        }
+    else:
+        report = run_diag(
+            clips_dir=args.clips_dir,
+            seg_config_path=args.segmenter_config,
+            gesture_config_path=args.gesture_config,
+            process_fps=args.process_fps,
+            auto_enhance=not args.no_auto_enhance,
+            overlay_dir=args.overlay_dir,
+            argv=sys.argv,
+        )
 
     if args.out:
         os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
@@ -609,4 +1019,5 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
 
